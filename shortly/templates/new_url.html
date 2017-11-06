@@ -13,36 +13,4 @@
       <input type=submit value="Check Availability">
   </form>
 
-  <div id="results"></div>
-
-<script>
-let form = document.getElementById('check');
-    
-form.addEventListener('submit', getAvalability);
-
-function getAvalability(e) {
-  console.log("woop");
-  e.preventDefault();
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", 'https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput', true);
-
-  //Send the proper header information along with the request
-  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-  xhr.onreadystatechange = function(e) {//Call a function when the state changes.
-        if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                        // Request finished. Do processing here.
-          console.log(e.target.response);
-          showResult({'response':e.target.response});
-        }
-  }
-  xhr.send("buildingnumber=72&buildingname=&thoroughfare=&posttown=&PostCode=LE7+7FL&uprn=&URL=&SP_NAME=a%2520service%2520provider&VERSION=50&MS=E&AEA=yes&CAP=no");
-}
-
-function showResult(kargs) {
-  let output = document.getElementById('results');
-  output.innerHTML = kargs.response;
-}
-</script>
-
 {% endblock %}
