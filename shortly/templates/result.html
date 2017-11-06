@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Result{% endblock %}
+{% block body %}
+  <h1>Result</h1>
+
+  
+  <h2>Fibre</h2>
+  <p>
+    {{ result['VDSL Range A'] }} <br />
+    Down:<br />
+    {{ result['VDSL Range A']['Downstream']['high'] }} <br />
+    {{ result['VDSL Range A']['Downstream']['low'] }} <br />
+    Up:<br />
+    {{ result['VDSL Range A']['Upstream']['high'] }} <br />
+    {{ result['VDSL Range A']['Upstream']['low'] }} <br />
+  </p>
+
+  <h2>ADSL</h2>
+  {{ result['WBC ADSL 2+'] }} <br />
+  Down:<br />
+  {{ result['WBC ADSL 2+']['Downstream'] }} <br />
+  {{ result['WBC ADSL 2+']['Upstream'] }} <br />
+
+{% endblock %}
+
