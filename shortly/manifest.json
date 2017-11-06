@@ -1,0 +1,15 @@
+{
+		"short_name": "Broadband Availability Checker",
+  "name": "Broadband Availability Checker - Karma Computing",
+  "icons": [
+    {
+      "src":"/static/icon192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/?utm_source=homescreen",
+  "background_color": "#1e88e5",
+  "Theme_color": "#1e88e5",
+  "display": "standalone"
+}

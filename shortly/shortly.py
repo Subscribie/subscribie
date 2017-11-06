@@ -18,6 +18,7 @@ class Shortly(object):
                                      autoescape=True)
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
+            Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw'),
             Rule('/<short_id>', endpoint='follow_short_link'),
@@ -26,6 +27,9 @@ class Shortly(object):
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
+
+    def on_manifest(self, template_name, **context):
+        return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
 
     def on_sw(self, template_name, **context):
         return Response(file('sw.js'), direct_passthrough=True, mimetype='application/javascript')
