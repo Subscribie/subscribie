@@ -1,5 +1,4 @@
 import os
-import redis
 import urlparse
 import requests
 from werkzeug.wrappers import Request, Response
@@ -12,7 +11,6 @@ from bs4 import BeautifulSoup
 
 class Shortly(object):
     def __init__(self, config):
-        self.redis = redis.Redis(config['redis_host'], config['redis_port'])
         template_path = os.path.join(os.path.dirname(__file__), 'templates')
         self.jinja_env = Environment(loader=FileSystemLoader(template_path),
                                      autoescape=True)
@@ -21,8 +19,6 @@ class Shortly(object):
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw'),
-            Rule('/<short_id>', endpoint='follow_short_link'),
-            Rule('/<short_id>+', endpoint='short_link_details')
         ])
 
     def on_appjs(self, template_name, **context):
@@ -81,35 +77,6 @@ class Shortly(object):
         return self.render_template('new_url.html', error=error)
 
 
-
-
-    def insert_url(self, url):
-        short_id = self.redis.get('reverse-url:' + url)
-        if short_id is not None:
-            return short_id
-        url_num = self.redis.incr('last-url-id')
-        short_id = base36_encode(url_num)
-        self.redis.set('url-target:' + short_id, url)
-        self.redis.set('reverse-url:' + url, short_id)
-        return short_id
-
-    def on_follow_short_link(self, request, short_id):
-	link_target = self.redis.get('url-target:' + short_id)
-	if link_target is None:
-	    raise NotFound()
-        self.redis.incr('click-count:' + short_id)
-        return redirect(link_target)
-
-    def on_short_link_details(self, request, short_id):
-        link_target = self.redis.get('url-target:' + short_id)
-        if link_target is None:
-            raise NotFound()
-        click_count = int(self.redis.get('click_count:' + short_id) or 0)
-        return self.render_template('short_link_details.html',
-            link_target=link_target,
-            short_id=short_id,
-            click_count=click_count
-        )
 
     def dispatch_request(self, request):
         adapter = self.url_map.bind_to_environ(request.environ)
