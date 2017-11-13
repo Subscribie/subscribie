@@ -1,4 +1,5 @@
-Broadband availability checker.
+# Karma Broadband Automate 
+
 
 # Goals
 - Automate customer acquisition of broadband customers
