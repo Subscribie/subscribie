@@ -16,6 +16,7 @@ class Shortly(object):
                                      autoescape=True)
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
+            Rule('/pay', endpoint='pay'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw'),
@@ -23,6 +24,7 @@ class Shortly(object):
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
+
 
     def on_manifest(self, template_name, **context):
         return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
@@ -33,6 +35,13 @@ class Shortly(object):
     def render_template(self, template_name, **context):
         t = self.jinja_env.get_template(template_name)
         return Response(t.render(context), mimetype='text/html')
+
+
+    def on_pay(self, template_name, **context):
+        message = "yolo" 
+        if request.method == 'POST':
+            return self.render_template('thankyou.html', message=message)
+        return self.render_template('pay.html', message=message)
 
 
     def on_new_url(self,request):
