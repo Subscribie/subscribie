@@ -1,21 +1,66 @@
 <!doctype html>
+<head>
 <html lang=en>
 <title>{% block title %}{% endblock %} | Karma Computing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" type="text/css" href="/static/bulma.css">
+<link rel="stylesheet" type="text/css" href="/static/font-awesome.min.css">
 <meta name="theme-color" content="#1e88e5">
+</head>
 
-<div class=box>
-  <h1><a href="/">Karma Computing</a></h1>
-  <p class=tagline>Honest broadband vailability checker in your area.</p>
-  <p>Otherwise available (non mobile friendly) at <a href="https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput">dslchecker</a>
-    {% block body %}{% endblock %}
+<body>
+  <section class="hero is-info kcBlue is-fullheight">
+  <!-- Hero head: will stick at the top -->
+  <div class="hero-head">
+    <header class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://www.karmacomputing.co.uk">
+            <img src="/static/logo_with_white_text.svg" alt="Karma Computing ltd" width="112" height="28">
+          </a>
+
+          <button class="button navbar-burger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-info" href="https://www.karmacomputing.co.uk">
+                  <span class="icon">
+                    <i class="fa fa-arrow-left"></i>
+                  </span>
+                  <span>Main Website</span>
+                </a>
+              </p>
+              <p class="control">
+                <a class="button is-info" href="https://www.karmacomputing.co.uk">
+                  <span class="icon">
+                    <i class="fa fa-phone"></i>
+                  </span>
+                  <span>Contact Us</span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
   </div>
 
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+
+</section>
+</body>
+
 <script src="/app.js"></script>
-<style>
-label {
-    display:block;
-}
-</style>
 </html>
