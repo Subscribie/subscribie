@@ -6,10 +6,15 @@
     {% if error %}
     <p class=error><stong>Error:</strong> {{ error }}
       {% endif %}
-    <p>House number:
-      <input type=text name=buildingnumber id="buildingnumber" value="{{ buildingnumber }}" class=buildingnumberinput >
-    <p>Postcode:
-      <input type=text name=PostCode id="PostCode" value="{{ PostCode }}" class=PostCodeinput >
+
+      <label for=buildingnumber>
+      House number: <input type=text name=buildingnumber id=buildingnumber value="{{ buildingnumber }}" >
+      </label> <br />
+
+      <label for=PostCode>
+      Postcode: <input type=text name=PostCode id=PostCode value="{{ PostCode }}">
+      </label> <br />
+
       <input type=submit value="Check Availability">
   </form>
 
