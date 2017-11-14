@@ -8,15 +8,21 @@ from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup
+import gocardless_pro
 
 class Shortly(object):
     def __init__(self, config):
         template_path = os.path.join(os.path.dirname(__file__), 'templates')
         self.jinja_env = Environment(loader=FileSystemLoader(template_path),
                                      autoescape=True)
+        self.gocclient = gocardless_pro.Client(
+            access_token ='sandbox_Cgp7gAVXCNsc_vStksIq2bqfNgT7TFXd2zarJZHe',
+            environment='sandbox'
+        )
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
             Rule('/sign', endpoint='sign'),
+            Rule('/new_customer', endpoint='new_customer'),
             Rule('/pay', endpoint='pay'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
@@ -41,10 +47,36 @@ class Shortly(object):
         return self.render_template('signature.html')
 
     def on_pay(self, request):
-        message = "yolo" 
+        customers = self.gocclient.customers.list().records
+        print(customers)
+        print([customer.email for customer in customers])
         if request.method == 'POST':
-            return self.render_template('thankyou.html', message=message)
-        return self.render_template('pay.html', message=message)
+            return self.render_template('thankyou.html', customers=customers)
+        return self.render_template('pay.html', customers=customers)
+
+    def on_new_customer(self, request):
+        redirect_flow = self.gocclient.redirect_flows.create(
+            params = {
+                "description" : "Karma Computing Broadband",
+                "session_token" : "dummy_session_token",
+                "success_redirect_url" : "https://developer.gocardless.com/example-redirect-uri",
+                "prefilled_customer" : {
+                    "given_name" : "Tim",
+                    "family_name": "Rogers",
+                    "address_line1": "338-346 Goswell Road",
+                    "city" : "London",
+                    "postal_code": "ECIV1 7LQ",
+                    "email": "timrogers@example.com",
+                }
+            }
+        )
+        # Hold on to this ID - we'll need it when we 
+        # "confirm" the dedirect flow later
+        print("ID: {} ".format(redirect_flow.id))
+        print("URL: {} ".format(redirect_flow.redirect_url))
+        return self.render_template('new_customer.html')
+        
+     
 
 
     def on_new_url(self,request):
@@ -134,7 +166,7 @@ def base36_encode(number):
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     app = create_app()
-    run_simple('127.0.0.1', 5000, app, use_debugger=False, use_reloader=True)
+    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
 
 application = create_app()
 
