@@ -16,6 +16,7 @@ class Shortly(object):
                                      autoescape=True)
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
+            Rule('/sign', endpoint='sign'),
             Rule('/pay', endpoint='pay'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
@@ -36,8 +37,10 @@ class Shortly(object):
         t = self.jinja_env.get_template(template_name)
         return Response(t.render(context), mimetype='text/html')
 
+    def on_sign(self,request):
+        return self.render_template('signature.html')
 
-    def on_pay(self, template_name, **context):
+    def on_pay(self, request):
         message = "yolo" 
         if request.method == 'POST':
             return self.render_template('thankyou.html', message=message)
