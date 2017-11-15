@@ -3,4 +3,35 @@
 {% block body %}
   <h1>New Customer</h1>
 
+  <form action="" id="new_customer" method=post action=/new_customer >
+    {% if error %}
+    <p class=error><stong>Error:</strong> {{ error }}
+      {% endif %}
+			
+			<label>First Name: 
+				<input class="input is-large" type="text" placeholder="First Name" name=given_name id=given_name value="{{ given_name }}">
+			</label>
+			<label>Last Name: 
+				<input class="input is-large" type="text" placeholder="Last Name" name=family_name id=family_name value="{{ family_name }}">
+			</label>
+			<br />
+			<label>Address Line 1
+				<input class="input is-large" type="text" placeholder="Address Line 1" name=address_line1 id=address_line1 value="{{ address_line1 }}">
+			</label>
+
+			<label>City:
+				<input class="input is-large" type="text" placeholder=City name=city id=city value="{{ city }}">
+			</label>
+
+			<label>Postcode: 
+				<input class="input is-large" type="text" placeholder="Post Code" name=postal_code id=postal_code value="{{ postal_code }}">
+			</label>
+
+			<label>Email: 
+				<input class="input is-large" type="text" placeholder="Email" name=email id=email value="{{ email }}">
+			</label>
+
+      <input type=submit class="button is-large" value="Confirm Payment">
+  </form>
+
 {% endblock %}

@@ -23,6 +23,7 @@ class Shortly(object):
             Rule('/', endpoint='new_url'),
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
+            Rule('/complete_mandate', endpoint='complete_mandate'),
             Rule('/pay', endpoint='pay'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
@@ -55,28 +56,56 @@ class Shortly(object):
         return self.render_template('pay.html', customers=customers)
 
     def on_new_customer(self, request):
-        redirect_flow = self.gocclient.redirect_flows.create(
-            params = {
-                "description" : "Karma Computing Broadband",
-                "session_token" : "dummy_session_token",
-                "success_redirect_url" : "https://developer.gocardless.com/example-redirect-uri",
-                "prefilled_customer" : {
-                    "given_name" : "Tim",
-                    "family_name": "Rogers",
-                    "address_line1": "338-346 Goswell Road",
-                    "city" : "London",
-                    "postal_code": "ECIV1 7LQ",
-                    "email": "timrogers@example.com",
+        if request.method == 'POST':
+            given_name = request.form['given_name']
+            family_name = request.form['family_name']
+            address_line1 = request.form['address_line1']
+            city = request.form['city']
+            postal_code = request.form['postal_code']
+            email = request.form['email']
+
+            redirect_flow = self.gocclient.redirect_flows.create(
+                params = {
+                    "description" : "Karma Computing Broadband",
+                    "session_token" : "dummy_session_token",
+                    "success_redirect_url" : "http://localhost/complete_mandate",
+                    "prefilled_customer" : {
+                        "given_name" : given_name,
+                        "family_name": family_name,
+                        "address_line1": address_line1,
+                        "city" : city,
+                        "postal_code": postal_code,
+                        "email": email,
+                    }
                 }
-            }
-        )
-        # Hold on to this ID - we'll need it when we 
-        # "confirm" the dedirect flow later
-        print("ID: {} ".format(redirect_flow.id))
-        print("URL: {} ".format(redirect_flow.redirect_url))
-        return self.render_template('new_customer.html')
+            )
+            # Hold on to this ID - we'll need it when we 
+            # "confirm" the dedirect flow later
+            print("ID: {} ".format(redirect_flow.id))
+            print("URL: {} ".format(redirect_flow.redirect_url))
+            return redirect(redirect_flow.redirect_url)
+        else:
+            return self.render_template('new_customer.html')
         
-     
+    def on_complete_mandate(self, request):
+        redirect_flow_id = request.args.get('redirect_flow_id')
+        print("Recieved flow ID: {} ".format(redirect_flow_id))
+
+        redirect_flow = self.gocclient.redirect_flows.complete(
+            redirect_flow_id,
+            params = {
+                "session_token": "dummy_session_token"
+        })
+        print ("Mandate: {}".format(redirect_flow.links.mandate))
+        # Save this mandate ID for the next section.
+        print ("Customer: {}".format(redirect_flow.links.customer))
+
+        # Display a confirmation page to the customer, telling them 
+        # their Direct Debit has been set up. You could build your own, 
+        # or use ours, which shows all the relevant information and is 
+        # translated into all the languages we support.
+        print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
+        return redirect(redirect_flow.confirmation_url)
 
 
     def on_new_url(self,request):
