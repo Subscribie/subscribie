@@ -3,8 +3,13 @@
   document.getElementById("check").addEventListener('submit', makeRequest);
 
   function makeRequest(e) {
-		e.preventDefault();
     httpRequest = new XMLHttpRequest();
+    //Disable check availability button
+    document.getElementById('checkAvailability').disabled = true;
+    //Hide banner
+    document.getElementById("telegraphPole").style.display = 'none';
+    //Show loading gif
+    document.getElementById("loading").style.display = 'inline';
 
     if (!httpRequest) {
       console.log('Giving up :( Cannot create an XMLHTTP instance');
@@ -21,7 +26,6 @@
   function alertContents() {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) {
-        alert(httpRequest.responseText);
       } else {
         console.log('There was a problem with the request.');
       }
