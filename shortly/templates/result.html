@@ -3,6 +3,13 @@
 {% block body %}
   <h1>Result</h1>
 
+  {% if canFibre %}
+    We can fibre!
+  {% endif %}
+
+  {% if canADSL %}
+    We can ADSL!
+  {% endif %}
 
   <h2>Fibre</h2>
   <p>
@@ -21,66 +28,61 @@
   {{ result['WBC ADSL 2+']['Downstream'] }} <br />
   {{ result['WBC ADSL 2+']['Upstream'] }} <br />
 
-  <img src="/static/house_telegraph_pole_success.svg" style="max-width: 800px; width:75%;" />
+  {% if canADSL or canFibre %}
+    <img src="/static/house_telegraph_pole_success.svg" style="max-width: 800px; width:75%;" />
 
-  <h1 class="title is-1">Good News!</h1>
-  <h2 class="subtitle is-3">We can provide the following service(s) to your property:</h2>
+    <h1 class="title is-1">Good News!</h1>
+    <h2 class="subtitle is-3">We can provide the following service(s) to your property:</h2>
 
-  <div class="pricing-table" style="max-width:800px; margin:auto">
-    <div class="pricing-plan is-info">
-      <div class="plan-header"><span style="color:black">ADSL</span></div>
-      <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>34.99</span><span style="color:black">/month</span></div>
-      <div class="plan-items">
-        <div class="plan-item">Download up to 24Mbps</div>
-        <div class="plan-item">Upload up to 2Mbps</div>
-        <div class="plan-item">Unlimited Usage!</div>
-        <div class="plan-item">Happy, Friendly UK Support</div>
-      </div>
-      <div class="plan-footer">
-        <button class="button is-fullwidth">Continue</button>
-      </div>
-    </div>
+  {% else %}
 
-    <div class="pricing-plan is-success is-active">
-      <div class="plan-header"><span style="color:black">Fibre</span></div>
-      <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>41.99</span><span style="color:black">/month</span></div>
-      <div class="plan-items">
-        <div class="plan-item">Blazing fast up to 80Mbps</div>
-        <div class="plan-item">Speedy uploads up to 20Mbps</div>
-        <div class="plan-item">Unlimited Usage!</div>
-        <div class="plan-item">Happy, Friendly UK Support</div>
-      </div>
-      <div class="plan-footer">
-        <button class="button is-fullwidth">Continue</button>
-      </div>
-    </div>
-  </div>
+    <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 800px; width:75%;" />
+
+    <h1 class="title is-1">Oh, you might need to ring us</h1>
+    <h2 class="subtitle is-3">We couldn't find your address, but don't worry!</h2>
+
+    <p>Please contact us using the number or email address below</p>
+  {% endif %}
 
   <div class="pricing-table" style="max-width:800px; margin:auto">
-    <div class="pricing-plan is-info">
-      <div class="plan-header"><span style="color:black">ADSL</span></div>
-      <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>34.99</span><span style="color:black">/month</span></div>
-      <div class="plan-items">
-        <div class="plan-item">Download up to 24Mbps</div>
-        <div class="plan-item">Upload up to 2Mbps</div>
-        <div class="plan-item">Unlimited Usage!</div>
-        <div class="plan-item">Happy, Friendly UK Support</div>
+
+    {% if canADSL %}
+      <div class="pricing-plan is-info">
+        <div class="plan-header"><span style="color:black">ADSL</span></div>
+        <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>34.99</span><span style="color:black">/month</span></div>
+        <div class="plan-items">
+          <div class="plan-item">Download up to 24Mbps</div>
+          <div class="plan-item">Upload up to 2Mbps</div>
+          <div class="plan-item">Unlimited Usage!</div>
+          <div class="plan-item">Happy, Friendly UK Support</div>
+        </div>
+        <div class="plan-footer">
+          <a href="/new_customer" class="button is-fullwidth">Continue</a>
+        </div>
       </div>
-      <div class="plan-footer">
-        <button class="button is-fullwidth">Continue</button>
+    {% endif %}
+
+    {% if canFibre %}
+      <div class="pricing-plan is-success is-active">
+        <div class="plan-header"><span style="color:black">Fibre</span></div>
+        <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>41.99</span><span style="color:black">/month</span></div>
+        <div class="plan-items">
+          <div class="plan-item">Blazing fast up to 80Mbps</div>
+          <div class="plan-item">Speedy uploads up to 20Mbps</div>
+          <div class="plan-item">Unlimited Usage!</div>
+          <div class="plan-item">Happy, Friendly UK Support</div>
+        </div>
+        <div class="plan-footer">
+          <a href="/new_customer" class="button is-fullwidth">Continue</a>
+        </div>
       </div>
-    </div>
+     {% endif %}
   </div>
+
 
   <h2 class="title is-3">Full steam ahead!</h2>
   <h2 class="subtitle is-4">What can you do on ADSL?</h2>
 
-<img src="/static/house_telegraph_pole_fail.svg" style="max-width: 800px; width:75%;" />
-
-<h1 class="title is-1">Oh, you might need to ring us</h1>
-<h2 class="subtitle is-3">We couldn't find your address, but don't worry!</h2>
-
-<p>Please contact us using the number or email address below</p>
 
 
 {% endblock %}

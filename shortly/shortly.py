@@ -68,7 +68,7 @@ class Shortly(object):
                 params = {
                     "description" : "Karma Computing Broadband",
                     "session_token" : "dummy_session_token",
-                    "success_redirect_url" : "http://localhost/complete_mandate",
+                    "success_redirect_url" : "http://localhost:5000/complete_mandate",
                     "prefilled_customer" : {
                         "given_name" : given_name,
                         "family_name": family_name,
@@ -112,7 +112,8 @@ class Shortly(object):
         error = None
         result = ''
         if request.method == 'POST':
-            #url = request.form['url']
+            canADSL = False
+            canFibre = False
             if not is_valid_lookup(request.form):
                 error = 'Please enter a valid request'
             else:
@@ -133,8 +134,18 @@ class Shortly(object):
 			    #print index, child
 			    if index == 3:
 				result['VDSL Range A']['Downstream']['high'] = child.text
+                                try:
+                                    float(child.text)
+                                    canFibre = True
+                                except ValueError as verr:
+                                    canFibre = False
 			    if index == 5:
 				result['VDSL Range A']['Downstream']['low'] = child.text
+                                try:
+                                    float(child.text)
+                                    canFibre = True
+                                except ValueError as verr:
+                                    canFibre = False
 			    if index == 7:
 			       result['VDSL Range A']['Upstream']['high'] = child.text
 			    if index == 9:
@@ -143,11 +154,16 @@ class Shortly(object):
 			for index, child in enumerate(span.parent.parent.children):
 			    print index, child
 			    if index == 3:
-				result['WBC ADSL 2+']['Downstream'] = child.text
+				result['WBC ADSL 2+']['Downstream'] = child.text.replace('Up to ','')
+                                try:
+                                    float(child.text.replace('Up to ',''))
+                                    canADSL = True
+                                except ValueError as verr:
+                                    canADSL = False
 			    if index == 5:
-				result['WBC ADSL 2+']['Upstream'] = child.text
-                return self.render_template('result.html', result=result)
-        return self.render_template('new_url.html', error=error)
+				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
+                return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre)
+        return self.render_template('new_url.html', error=error, cheese=True)
 
 
 
