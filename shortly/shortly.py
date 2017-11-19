@@ -27,18 +27,18 @@ class Shortly(object):
             Rule('/pay', endpoint='pay'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
-            Rule('/sw.js', endpoint='sw'),
+            Rule('/sw.js', endpoint='sw')
         ])
 
     def on_appjs(self, template_name, **context):
-        return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/app.js'), direct_passthrough=True, mimetype='application/javascript')
 
 
     def on_manifest(self, template_name, **context):
-        return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/manifest.json'), direct_passthrough=True, mimetype='application/json')
 
     def on_sw(self, template_name, **context):
-        return Response(file('sw.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/sw.js'), direct_passthrough=True, mimetype='application/javascript')
 
     def render_template(self, template_name, **context):
         t = self.jinja_env.get_template(template_name)
@@ -68,7 +68,7 @@ class Shortly(object):
                 params = {
                     "description" : "Karma Computing Broadband",
                     "session_token" : "dummy_session_token",
-                    "success_redirect_url" : "http://localhost:5000/complete_mandate",
+                    "success_redirect_url" : "http://broadband-availability-checker.karmacomputing.co.uk/complete_mandate",
                     "prefilled_customer" : {
                         "given_name" : given_name,
                         "family_name": family_name,
@@ -167,6 +167,18 @@ class Shortly(object):
 
 
 
+
+
+    def insert_url(self, url):
+        short_id = self.redis.get('reverse-url:' + url)
+        if short_id is not None:
+            return short_id
+        url_num = self.redis.incr('last-url-id')
+        short_id = base36_encode(url_num)
+        self.redis.set('url-target:' + short_id, url)
+        self.redis.set('reverse-url:' + url, short_id)
+        return short_id
+
     def dispatch_request(self, request):
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
@@ -211,7 +223,7 @@ def base36_encode(number):
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     app = create_app()
-    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+    run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
 application = create_app()
 
