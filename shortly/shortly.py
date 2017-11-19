@@ -68,6 +68,15 @@ class Shortly(object):
             city = request.form['city']
             postal_code = request.form['postal_code']
             email = request.form['email']
+            mobile = request.form['mobile']
+            # Store customer 
+            sid = request.cookies.get('karma_cookie')
+            con = sqlite3.connect('karma.db')
+            cur = con.cursor()
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, given_name, family_name, address_line1, city, postal_code, email, mobile))
+            con.commit()
+            cur.execute("SELECT * FROM person")
+            print cur.fetchone()
 
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
@@ -122,7 +131,7 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect('karma.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?)", (buildingnumber, PostCode, sid))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?)", (sid, buildingnumber, PostCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
