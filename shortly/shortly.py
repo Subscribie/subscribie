@@ -7,10 +7,15 @@ from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
 from jinja2 import Environment, FileSystemLoader
+from werkzeug.contrib.sessions import SessionMiddleware, \
+          FilesystemSessionStore
 from bs4 import BeautifulSoup
 import gocardless_pro
+import sqlite3
 
 class Shortly(object):
+    session_store = FilesystemSessionStore()
+
     def __init__(self, config):
         template_path = os.path.join(os.path.dirname(__file__), 'templates')
         self.jinja_env = Environment(loader=FileSystemLoader(template_path),
@@ -67,7 +72,7 @@ class Shortly(object):
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
                     "description" : "Karma Computing Broadband",
-                    "session_token" : "dummy_session_token",
+                    "session_token" : request.cookies.get('karma_cookie'),
                     "success_redirect_url" : "http://localhost:5000/complete_mandate",
                     "prefilled_customer" : {
                         "given_name" : given_name,
@@ -94,7 +99,7 @@ class Shortly(object):
         redirect_flow = self.gocclient.redirect_flows.complete(
             redirect_flow_id,
             params = {
-                "session_token": "dummy_session_token"
+                "session_token": request.cookies.get('karma_cookie')
         })
         print ("Mandate: {}".format(redirect_flow.links.mandate))
         # Save this mandate ID for the next section.
@@ -112,6 +117,15 @@ class Shortly(object):
         error = None
         result = ''
         if request.method == 'POST':
+            buildingnumber = request.form['buildingnumber']
+            PostCode = request.form['PostCode']
+            sid = request.cookies.get('karma_cookie')
+            con = sqlite3.connect('karma.db')
+            cur = con.cursor()
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?)", (buildingnumber, PostCode, sid))
+            con.commit()
+            cur.execute("SELECT * FROM lookups")
+            print cur.fetchone()
             canADSL = False
             canFibre = False
             if not is_valid_lookup(request.form):
@@ -179,6 +193,14 @@ class Shortly(object):
     def wsgi_app(self, environ, start_response):
         request = Request(environ)
         response = self.dispatch_request(request)
+        sid = request.cookies.get('karma_cookie')
+        if sid is None:
+            request.session = self.session_store.new()
+        else:
+            request.session = self.session_store.get(sid)
+        self.session_store.save(request.session)
+        response.set_cookie('karma_cookie', request.session.sid)
+
         return response(environ, start_response)
 
     def __call__(self, environ, start_response):
