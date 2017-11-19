@@ -30,7 +30,7 @@ class Shortly(object):
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
-            Rule('/pay', endpoint='pay'),
+            Rule('/thankyou', endpoint='thankyou'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw'),
@@ -53,13 +53,8 @@ class Shortly(object):
     def on_sign(self,request):
         return self.render_template('signature.html')
 
-    def on_pay(self, request):
-        customers = self.gocclient.customers.list().records
-        print(customers)
-        print([customer.email for customer in customers])
-        if request.method == 'POST':
-            return self.render_template('thankyou.html', customers=customers)
-        return self.render_template('pay.html', customers=customers)
+    def on_thankyou(self, request):
+        return self.render_template('thankyou.html')
 
     def on_new_customer(self, request):
         if request.method == 'POST':
@@ -71,11 +66,12 @@ class Shortly(object):
             email = request.form['email']
             mobile = request.form['mobile']
             now = datetime.datetime.now()
+            wants = request.args.get('plan')
             # Store customer 
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect('karma.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile))
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
@@ -116,12 +112,27 @@ class Shortly(object):
         # Save this mandate ID for the next section.
         print ("Customer: {}".format(redirect_flow.links.customer))
 
+        # Store customer 
+        sid = request.cookies.get('karma_cookie')
+        now = datetime.datetime.now()
+        mandate = redirect_flow.links.mandate
+        customer = redirect_flow.links.customer
+        flow = redirect_flow_id
+
+        con = sqlite3.connect('karma.db')
+        cur = con.cursor()
+        cur.execute("INSERT INTO mandates VALUES (?, ?, ?, ?, ?)", (sid, now, mandate, customer, flow))
+        con.commit()
+        cur.execute("SELECT * FROM mandates")
+        print cur.fetchone()
+
+
         # Display a confirmation page to the customer, telling them 
         # their Direct Debit has been set up. You could build your own, 
         # or use ours, which shows all the relevant information and is 
         # translated into all the languages we support.
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
-        return redirect(redirect_flow.confirmation_url)
+        return redirect('http://localhost:5000/thankyou')
 
 
     def on_new_url(self,request):
