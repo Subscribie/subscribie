@@ -1,4 +1,5 @@
 import os
+import datetime
 import urlparse
 import requests
 from werkzeug.wrappers import Request, Response
@@ -69,11 +70,12 @@ class Shortly(object):
             postal_code = request.form['postal_code']
             email = request.form['email']
             mobile = request.form['mobile']
+            now = datetime.datetime.now()
             # Store customer 
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect('karma.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, given_name, family_name, address_line1, city, postal_code, email, mobile))
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
@@ -128,10 +130,11 @@ class Shortly(object):
         if request.method == 'POST':
             buildingnumber = request.form['buildingnumber']
             PostCode = request.form['PostCode']
+            now = datetime.datetime.now()
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect('karma.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?)", (sid, buildingnumber, PostCode))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?)", (sid, now, buildingnumber, PostCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
