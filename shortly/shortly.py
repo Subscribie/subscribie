@@ -75,6 +75,7 @@ class Shortly(object):
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
+            con.close()
 
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
@@ -125,6 +126,7 @@ class Shortly(object):
         con.commit()
         cur.execute("SELECT * FROM mandates")
         print cur.fetchone()
+        con.close()
 
 
         # Display a confirmation page to the customer, telling them 
@@ -149,6 +151,7 @@ class Shortly(object):
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
+            con.close()
             canADSL = False
             canFibre = False
             if not is_valid_lookup(request.form):
