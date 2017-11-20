@@ -1,0 +1,18 @@
+# Setup 
+
+### Create database
+python createdb.py
+
+### Create .env file
+Example .env file: 
+export success_redirect_url=http://localhost:5000/complete_mandate
+export thankyou_url=http://localhost:5000/thankyou
+export db_full_path=./karma.db
+
+### Run the script locally
+
+`sudo python shortly.py`
+
+Note: On the server, the app is presented as a wsgi application which apache loads in
+see: http://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html 
+(looks more complicated that it is)
