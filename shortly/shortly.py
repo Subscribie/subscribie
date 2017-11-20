@@ -1,4 +1,5 @@
 import os
+import datetime
 import urlparse
 import requests
 from werkzeug.wrappers import Request, Response
@@ -7,10 +8,15 @@ from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
 from jinja2 import Environment, FileSystemLoader
+from werkzeug.contrib.sessions import SessionMiddleware, \
+          FilesystemSessionStore
 from bs4 import BeautifulSoup
 import gocardless_pro
+import sqlite3
 
 class Shortly(object):
+    session_store = FilesystemSessionStore()
+
     def __init__(self, config):
         template_path = os.path.join(os.path.dirname(__file__), 'templates')
         self.jinja_env = Environment(loader=FileSystemLoader(template_path),
@@ -24,7 +30,7 @@ class Shortly(object):
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
-            Rule('/pay', endpoint='pay'),
+            Rule('/thankyou', endpoint='thankyou'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw')
@@ -47,13 +53,8 @@ class Shortly(object):
     def on_sign(self,request):
         return self.render_template('signature.html')
 
-    def on_pay(self, request):
-        customers = self.gocclient.customers.list().records
-        print(customers)
-        print([customer.email for customer in customers])
-        if request.method == 'POST':
-            return self.render_template('thankyou.html', customers=customers)
-        return self.render_template('pay.html', customers=customers)
+    def on_thankyou(self, request):
+        return self.render_template('thankyou.html')
 
     def on_new_customer(self, request):
         if request.method == 'POST':
@@ -63,11 +64,22 @@ class Shortly(object):
             city = request.form['city']
             postal_code = request.form['postal_code']
             email = request.form['email']
+            mobile = request.form['mobile']
+            now = datetime.datetime.now()
+            wants = request.args.get('plan')
+            # Store customer 
+            sid = request.cookies.get('karma_cookie')
+            con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+            cur = con.cursor()
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants))
+            con.commit()
+            cur.execute("SELECT * FROM person")
+            print cur.fetchone()
 
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
                     "description" : "Karma Computing Broadband",
-                    "session_token" : "dummy_session_token",
+                    "session_token" : request.cookies.get('karma_cookie'),
                     "success_redirect_url" : "http://broadband-availability-checker.karmacomputing.co.uk/complete_mandate",
                     "prefilled_customer" : {
                         "given_name" : given_name,
@@ -94,24 +106,49 @@ class Shortly(object):
         redirect_flow = self.gocclient.redirect_flows.complete(
             redirect_flow_id,
             params = {
-                "session_token": "dummy_session_token"
+                "session_token": request.cookies.get('karma_cookie')
         })
         print ("Mandate: {}".format(redirect_flow.links.mandate))
         # Save this mandate ID for the next section.
         print ("Customer: {}".format(redirect_flow.links.customer))
+
+        # Store customer 
+        sid = request.cookies.get('karma_cookie')
+        now = datetime.datetime.now()
+        mandate = redirect_flow.links.mandate
+        customer = redirect_flow.links.customer
+        flow = redirect_flow_id
+
+        con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+        cur = con.cursor()
+        cur.execute("INSERT INTO mandates VALUES (?, ?, ?, ?, ?)", (sid, now, mandate, customer, flow))
+        con.commit()
+        cur.execute("SELECT * FROM mandates")
+        print cur.fetchone()
+
 
         # Display a confirmation page to the customer, telling them 
         # their Direct Debit has been set up. You could build your own, 
         # or use ours, which shows all the relevant information and is 
         # translated into all the languages we support.
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
-        return redirect(redirect_flow.confirmation_url)
+        return redirect('http://broadband-availability-checker.karmacomputing.co.uk/thankyou')
 
 
     def on_new_url(self,request):
         error = None
         result = ''
         if request.method == 'POST':
+            buildingnumber = request.form['buildingnumber']
+            PostCode = request.form['PostCode']
+            now = datetime.datetime.now()
+            sid = request.cookies.get('karma_cookie')
+            con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+            cur = con.cursor()
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?)", (sid, now, buildingnumber, PostCode))
+            con.commit()
+            cur.execute("SELECT * FROM lookups")
+            print cur.fetchone()
             canADSL = False
             canFibre = False
             if not is_valid_lookup(request.form):
@@ -191,6 +228,14 @@ class Shortly(object):
     def wsgi_app(self, environ, start_response):
         request = Request(environ)
         response = self.dispatch_request(request)
+        sid = request.cookies.get('karma_cookie')
+        if sid is None:
+            request.session = self.session_store.new()
+        else:
+            request.session = self.session_store.get(sid)
+        self.session_store.save(request.session)
+        response.set_cookie('karma_cookie', request.session.sid)
+
         return response(environ, start_response)
 
     def __call__(self, environ, start_response):
