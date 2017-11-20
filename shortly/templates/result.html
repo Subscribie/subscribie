@@ -1,48 +1,32 @@
 {% extends "layout.html" %}
 {% block title %}Result{% endblock %}
 {% block body %}
-  <h1>Result</h1>
 
-  {% if canFibre %}
-    We can fibre!
-  {% endif %}
+  {% if canADSL and canFibre %}
+    <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 800px; width:75%;" />
 
-  {% if canADSL %}
-    We can ADSL!
-  {% endif %}
-
-  <h2>Fibre</h2>
-  <p>
-    {{ result['VDSL Range A'] }} <br />
-    Down:<br />
-    {{ result['VDSL Range A']['Downstream']['high'] }} <br />
-    {{ result['VDSL Range A']['Downstream']['low'] }} <br />
-    Up:<br />
-    {{ result['VDSL Range A']['Upstream']['high'] }} <br />
-    {{ result['VDSL Range A']['Upstream']['low'] }} <br />
-  </p>
-
-  <h2>ADSL</h2>
-  {{ result['WBC ADSL 2+'] }} <br />
-  Down:<br />
-  {{ result['WBC ADSL 2+']['Downstream'] }} <br />
-  {{ result['WBC ADSL 2+']['Upstream'] }} <br />
-
-  {% if canADSL or canFibre %}
-    <img src="/static/house_telegraph_pole_success.svg" style="max-width: 800px; width:75%;" />
-
-    <h1 class="title is-1">Good News!</h1>
+    <h1 class="title is-1">Great News!</h1>
     <h2 class="subtitle is-3">We can provide the following service(s) to your property:</h2>
 
-  {% else %}
+    {% elif canADSL  %}
 
-    <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 800px; width:75%;" />
+      <img src="/static/house_telegraph_pole.svg" style="max-width: 800px; width:75%;" />
+      <h1 class="title is-1">Good News!</h1>
+      <h2 class="subtitle is-3">We're able to provide ADSL to your property.</h2>
 
-    <h1 class="title is-1">Oh, you might need to ring us</h1>
-    <h2 class="subtitle is-3">We couldn't find your address, but don't worry!</h2>
+      <p>Please contact us using the number or email address below</p>
 
-    <p>Please contact us using the number or email address below</p>
+      {% else %}
+
+      <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 800px; width:75%;" />
+
+      <h1 class="title is-1">Please give us a call</h1>
+      <h2 class="subtitle is-3">We couldn't find your address, but don't worry!</h2>
+
+      <p>Please contact us using the number or email address below</p>
+
   {% endif %}
+
 
   <div class="pricing-table" style="max-width:800px; margin:auto">
 
@@ -51,10 +35,10 @@
         <div class="plan-header"><span style="color:black">ADSL</span></div>
         <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>34.99</span><span style="color:black">/month</span></div>
         <div class="plan-items">
-          <div class="plan-item">Download up to 24Mbps</div>
-          <div class="plan-item">Upload up to 2Mbps</div>
+          <div class="plan-item">Download up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps*</div>
+          <div class="plan-item">Upload up to 2Mbps*</div>
           <div class="plan-item">Unlimited Usage!</div>
-          <div class="plan-item">Happy, Friendly UK Support</div>
+          <div class="plan-item">Friendly UK Support</div>
         </div>
         <div class="plan-footer">
           <a href="/new_customer?plan=adsl" class="button is-fullwidth">Continue</a>
@@ -67,10 +51,10 @@
         <div class="plan-header"><span style="color:black">Fibre</span></div>
         <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>41.99</span><span style="color:black">/month</span></div>
         <div class="plan-items">
-          <div class="plan-item">Blazing fast up to 80Mbps</div>
-          <div class="plan-item">Speedy uploads up to 20Mbps</div>
+          <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] }}mbps*</div>
+          <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] }}Mbps*</div>
           <div class="plan-item">Unlimited Usage!</div>
-          <div class="plan-item">Happy, Friendly UK Support</div>
+          <div class="plan-item">Friendly UK Support</div>
         </div>
         <div class="plan-footer">
           <a href="/new_customer?plan=fibre" class="button is-fullwidth">Continue</a>
@@ -78,11 +62,5 @@
       </div>
      {% endif %}
   </div>
-
-
-  <h2 class="title is-3">Full steam ahead!</h2>
-  <h2 class="subtitle is-4">What can you do on ADSL?</h2>
-
-
 
 {% endblock %}

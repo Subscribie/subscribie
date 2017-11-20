@@ -1,4 +1,6 @@
 import os
+from os import environ
+from subprocess import Popen, PIPE
 import datetime
 import urlparse
 import requests
@@ -69,18 +71,19 @@ class Shortly(object):
             wants = request.args.get('plan')
             # Store customer 
             sid = request.cookies.get('karma_cookie')
-            con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+            con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
             cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
+            con.close()
 
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
                     "description" : "Karma Computing Broadband",
                     "session_token" : request.cookies.get('karma_cookie'),
-                    "success_redirect_url" : "http://broadband-availability-checker.karmacomputing.co.uk/complete_mandate",
+                    "success_redirect_url" : os.getenv('success_redirect_url'),
                     "prefilled_customer" : {
                         "given_name" : given_name,
                         "family_name": family_name,
@@ -125,6 +128,7 @@ class Shortly(object):
         con.commit()
         cur.execute("SELECT * FROM mandates")
         print cur.fetchone()
+        con.close()
 
 
         # Display a confirmation page to the customer, telling them 
@@ -132,8 +136,7 @@ class Shortly(object):
         # or use ours, which shows all the relevant information and is 
         # translated into all the languages we support.
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
-        return redirect('http://broadband-availability-checker.karmacomputing.co.uk/thankyou')
-
+        return redirect(os.getenv('thankyou_url'))
 
     def on_new_url(self,request):
         error = None
@@ -149,6 +152,7 @@ class Shortly(object):
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
+            con.close()
             canADSL = False
             canFibre = False
             if not is_valid_lookup(request.form):
@@ -265,7 +269,19 @@ def base36_encode(number):
         base36.append('0123456789abcdefghijklmnopqrstuvwxyz'[i])
     return ''.join(reversed(base36))
 
+def source(script, update=1):
+    pipe = Popen(". %s; env" % script, stdout=PIPE, shell=True)
+    data = pipe.communicate()[0]
+
+    env = dict((line.split("=", 1) for line in data.splitlines()))
+    if update:
+        environ.update(env)
+
+    return env 
+
+
 if __name__ == '__main__':
+    source("./.env")
     from werkzeug.serving import run_simple
     app = create_app()
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
