@@ -286,6 +286,7 @@ if __name__ == '__main__':
     app = create_app()
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
+source("/home/karmacomputing/broadband-availability-checker/shortly/.env")
 application = create_app()
 
 
