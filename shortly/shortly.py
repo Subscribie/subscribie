@@ -1,4 +1,6 @@
 import os
+from os import environ
+from subprocess import Popen, PIPE
 import datetime
 import urlparse
 import requests
@@ -33,18 +35,18 @@ class Shortly(object):
             Rule('/thankyou', endpoint='thankyou'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
-            Rule('/sw.js', endpoint='sw'),
+            Rule('/sw.js', endpoint='sw')
         ])
 
     def on_appjs(self, template_name, **context):
-        return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/app.js'), direct_passthrough=True, mimetype='application/javascript')
 
 
     def on_manifest(self, template_name, **context):
-        return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/manifest.json'), direct_passthrough=True, mimetype='application/json')
 
     def on_sw(self, template_name, **context):
-        return Response(file('sw.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/sw.js'), direct_passthrough=True, mimetype='application/javascript')
 
     def render_template(self, template_name, **context):
         t = self.jinja_env.get_template(template_name)
@@ -69,7 +71,7 @@ class Shortly(object):
             wants = request.args.get('plan')
             # Store customer 
             sid = request.cookies.get('karma_cookie')
-            con = sqlite3.connect('karma.db')
+            con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
             cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants))
             con.commit()
@@ -81,7 +83,7 @@ class Shortly(object):
                 params = {
                     "description" : "Karma Computing Broadband",
                     "session_token" : request.cookies.get('karma_cookie'),
-                    "success_redirect_url" : "http://localhost:5000/complete_mandate",
+                    "success_redirect_url" : os.getenv('success_redirect_url'),
                     "prefilled_customer" : {
                         "given_name" : given_name,
                         "family_name": family_name,
@@ -120,7 +122,7 @@ class Shortly(object):
         customer = redirect_flow.links.customer
         flow = redirect_flow_id
 
-        con = sqlite3.connect('karma.db')
+        con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
         cur = con.cursor()
         cur.execute("INSERT INTO mandates VALUES (?, ?, ?, ?, ?)", (sid, now, mandate, customer, flow))
         con.commit()
@@ -134,8 +136,7 @@ class Shortly(object):
         # or use ours, which shows all the relevant information and is 
         # translated into all the languages we support.
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
-        return redirect('http://localhost:5000/thankyou')
-
+        return redirect(os.getenv('thankyou_url'))
 
     def on_new_url(self,request):
         error = None
@@ -145,7 +146,7 @@ class Shortly(object):
             PostCode = request.form['PostCode']
             now = datetime.datetime.now()
             sid = request.cookies.get('karma_cookie')
-            con = sqlite3.connect('karma.db')
+            con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
             cur = con.cursor()
             cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?)", (sid, now, buildingnumber, PostCode))
             con.commit()
@@ -207,6 +208,18 @@ class Shortly(object):
 
 
 
+
+
+    def insert_url(self, url):
+        short_id = self.redis.get('reverse-url:' + url)
+        if short_id is not None:
+            return short_id
+        url_num = self.redis.incr('last-url-id')
+        short_id = base36_encode(url_num)
+        self.redis.set('url-target:' + short_id, url)
+        self.redis.set('reverse-url:' + url, short_id)
+        return short_id
+
     def dispatch_request(self, request):
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
@@ -256,11 +269,24 @@ def base36_encode(number):
         base36.append('0123456789abcdefghijklmnopqrstuvwxyz'[i])
     return ''.join(reversed(base36))
 
+def source(script, update=1):
+    pipe = Popen(". %s; env" % script, stdout=PIPE, shell=True)
+    data = pipe.communicate()[0]
+
+    env = dict((line.split("=", 1) for line in data.splitlines()))
+    if update:
+        environ.update(env)
+
+    return env 
+
+
 if __name__ == '__main__':
+    source("./.env")
     from werkzeug.serving import run_simple
     app = create_app()
-    run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
+    run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
+source("/home/karmacomputing/broadband-availability-checker/shortly/.env")
 application = create_app()
 
 
