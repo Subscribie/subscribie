@@ -1,5 +1,5 @@
-<svg width="1309px" height="490px" viewBox="0 0 1309 490" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="success">
-    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1309px" height="490px" viewBox="0 0 1309 490" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Artboard-Copy">
             <path d="M463,131.625 C463,125.202187 457.85375,120 451.5,120 L428.5,120 C422.14625,120 417,125.202187 417,131.625 L417,201.375 C417,207.797812 422.14625,213 428.5,213 L451.5,213 C457.85375,213 463,207.797812 463,201.375 L463,131.625 Z" id="Shape" fill-opacity="0.51319067" fill="#FFFFFF" fill-rule="nonzero"></path>
@@ -25,31 +25,45 @@
             <path d="M1069.5,383.5 L1127.5,383.5" id="Line" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"></path>
             <path d="M1069.5,411.5 L1127.5,411.5" id="Line" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"></path>
             <path d="M1069.5,425.5 L1127.5,425.5" id="Line" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"></path>
-            <g id="Amaze1">
+            <g id="Amaze">
               <animate id="animation0" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation.end" />
-              <g id="Amaze1" transform="translate(440.033009, 63.033009) rotate(45.000000) translate(-440.033009, -63.033009) translate(367.033009, 61.033009)" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
+              <g id="Amaze-1" transform="translate(364.000000, 61.000000)" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
                 <animate id="animation1" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation2.end" />
                 <animate id="animation2" attributeName="opacity" from="1" to="0" dur="1s" begin="animation1.end" />
-                <path d="M0.5,1.5 L30.5,1.5" id="Line-7"></path>
-                <path d="M115.5,2.5 L145.5,2.5" id="Line-7"></path>
+                  <path d="M0.5,1.5 L30.5,1.5" id="Line-7"></path>
+                  <path d="M115.5,2.5 L145.5,2.5" id="Line-7"></path>
               </g>
-              <path d="M364.5,62.5 L394.5,62.5" id="Line-7" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
+              <g id="Amaze-3" transform="translate(440.033009, 63.033009) rotate(45.000000) translate(-440.033009, -63.033009) translate(367.033009, 61.033009)" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
                 <animate id="animation3" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation4.end" />
                 <animate id="animation4" attributeName="opacity" from="1" to="0" dur="1s" begin="animation3.end" />
-              </path>
-              <path d="M479.5,63.5 L509.5,63.5" id="Line-7" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-                <animate id="animation5" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation6.end" />
-                <animate id="animation6" attributeName="opacity" from="1" to="0" dur="1s" begin="animation5.end" />
-              </path>
+                  <path d="M0.5,1.5 L30.5,1.5" id="Line-7"></path>
+                  <path d="M115.5,2.5 L145.5,2.5" id="Line-7"></path>
+              </g>
               <g id="Amaze2" transform="translate(440.033009, 63.033009) scale(-1, 1) rotate(45.000000) translate(-440.033009, -63.033009) translate(367.033009, 61.033009)" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-                <animate id="animation7" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation8.end" />
-                <animate id="animation8" attributeName="opacity" from="1" to="0" dur="1s" begin="animation7.end" />
-                <path d="M0.5,1.5 L30.5,1.5" id="Line-7"></path>
-                <path d="M115.5,2.5 L145.5,2.5" id="Line-7"></path>
+                <animate id="animation5" attributeName="opacity" from="0" to="1" dur="1s" begin="0s;animation5.end" />
+                <animate id="animation6" attributeName="opacity" from="1" to="0" dur="1s" begin="animation5.end" />
+                  <path d="M0.5,1.5 L30.5,1.5" id="Line-7"></path>
+                  <path d="M115.5,2.5 L145.5,2.5" id="Line-7"></path>
               </g>
             </g>
-            <path d="M509,224 C562.414216,213.443007 598.414216,205.77634 617,201 C661.125462,189.660246 700.51592,174.723511 700.652886,174.665524 C734.865075,160.181316 752,134 744,112 C737.45417,93.9989673 722,62 685,80 C648,98 667,134 667,134 C674.417023,147.866608 687,153 688.925511,153.868574 C711.533335,164.066676 732.780051,160.22334 753.327692,154.389649 C753.367661,154.378302 803,134 846,116 C902.338303,92.4165244 933.75983,51.2303287 934,51" id="AnimatedLine" stroke="#FFFFFF" stroke-width="6"></path>
+            <path d="M508,270.114301 C538.68696,242.279403 561.020294,223.94607 575,215.114301 C625.10854,183.457909 656.96596,172.131621 657,172.114301 C706.184154,147.087872 709.52178,109.687427 698.644511,82.6377497 C691.430923,64.6989415 658.978159,39.9163224 626.062416,58.717455 C593.146672,77.5185876 593.775441,111.668172 606.249853,134.098678 C618.463189,156.059737 659.276705,174.549449 708.460859,149.52302 C708.624318,149.439846 738.641642,130.837451 808,115.114301 C829.963873,110.135214 872.297206,104.468548 935,98.1143009" id="AnimatedLine" stroke="#FFFFFF" stroke-width="6" transform="translate(721.500000, 161.057150) scale(-1, -1) translate(-721.500000, -161.057150) "></path>
             <path d="" id="Oval-2" stroke="#979797" fill="#D8D8D8"></path>
+            <path d="M812,222.666666 C812,225.121266 810.010153,227.11111 807.555556,227.11111 L780.888889,227.11111 L772,235.999999 L772,200.444444 C772,197.989844 773.989844,196 776.444444,196 L807.555556,196 C810.010155,196 812,197.989844 812,200.444444 L812,222.666666 Z" id="message" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M806.290908,198.800215 C803.338744,195.405779 798.193817,195.047233 794.799363,197.999384 C792.991801,199.571426 791.96789,201.859438 792,204.254766 L792,206.072947 C785.510291,206.241227 779.36731,203.149257 775.636365,197.836584 C775.636365,197.836584 768.363638,214.20022 784.727273,221.472947 C780.982781,224.014711 776.522109,225.289183 772,225.109311 C788.363636,234.200219 808.363635,225.109311 808.363635,204.200221 C808.361967,203.693875 808.31328,203.188677 808.2182,202.691231 C810.073855,200.861195 811.383345,198.550649 812,196.018395 C810.258882,197.246537 808.331108,198.185869 806.290908,198.800215 Z" id="twitter" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            <g id="headphones" transform="translate(772.000000, 192.000000)" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1.66785333e-06,33.3333333 L1.66785333e-06,20 L1.66785356e-06,20.000003 C2.27606812e-13,8.95431413 8.95431278,3.01991111e-06 20.0000017,3.01991111e-06 C31.0456906,1.35205778e-06 40.0000017,8.95431413 40.0000017,20.000003 C40.0000017,20.000003 40.0000017,20.000003 40.0000017,20.000003 L40.0000017,33.3333364" id="Shape"></path>
+                <path d="M40,35.5555556 L40,35.5555556 C40,38.0101556 38.0101533,40 35.5555556,40 L33.3333333,40 L33.3333331,40 C30.8787331,39.9999999 28.8888887,38.0101533 28.8888887,35.5555556 C28.8888887,35.5555556 28.8888887,35.5555556 28.8888887,35.5555556 L28.8888887,28.8888889 L28.8888887,28.8888896 C28.8888883,26.4342896 30.8787331,24.4444451 33.3333331,24.4444451 L39.9999998,24.4444451 L40,35.5555556 Z M-2.64697796e-23,35.5555556 L5.13168889e-14,35.5555562 C3.70633385e-07,38.0101562 1.98984667,40.0000007 4.44444444,40.0000007 L6.66666667,40.0000007 L6.66666647,40.0000007 C9.12126647,40.0000008 11.1111109,38.0101562 11.1111109,35.5555562 L11.1111109,28.8888896 L11.1111109,28.8888896 C11.1111109,26.4342896 9.12126425,24.4444451 6.66666647,24.4444451 L-1.94272837e-07,24.4444451 L-2.64697796e-23,35.5555556 Z" id="Shape"></path>
+            </g>
+            <g id="film" transform="translate(772.000000, 196.000000)" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.36,40 C1.95206,40 0,38.04794 0,35.64 L0,4.36 C0,1.95206 1.95206,0 4.36,0 L35.64,0 C38.04794,0 40,1.95206 40,4.36 L40,35.64 C40,38.04794 38.04794,40 35.64,40 L4.36,40 Z" id="Shape"></path>
+                <path d="M10,0 L10,40" id="path-1"></path>
+                <path d="M30,0 L30,40" id="path-1"></path>
+                <path d="M0,20 L40,20" id="Shape"></path>
+                <path d="M0,10 L10,10" id="path-2"></path>
+                <path d="M0,30 L10,30" id="path-2"></path>
+                <path d="M30,30 L40,30" id="path-2"></path>
+                <path d="M30,10 L40,10" id="path-2"></path>
+            </g>
         </g>
     </g>
 </svg>

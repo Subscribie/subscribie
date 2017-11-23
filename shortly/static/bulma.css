@@ -1,3 +1,53 @@
+.success #AnimatedLine {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  animation: dash 3s ease-out both
+}
+
+@-webkit-keyframes dash {
+    from {
+        stroke-dashoffset: 900
+    }
+
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+@-moz-keyframes dash {
+    from {
+        stroke-dashoffset: 900
+    }
+
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+@-o-keyframes dash {
+    from {
+        stroke-dashoffset: 900
+    }
+
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+@keyframes dash {
+    from {
+        stroke-dashoffset: 900
+    }
+
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
 .hero.kcBlue{
 
   background-color: #364F65 !important;
