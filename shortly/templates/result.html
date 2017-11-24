@@ -12,9 +12,9 @@
 
       <img src="/static/house_telegraph_pole.svg" style="max-width: 800px; width:75%;" />
       <h1 class="title is-1">Good News!</h1>
-      <h2 class="subtitle is-3">We're able to provide ADSL to your property.</h2>
+      <h2 class="subtitle is-3">We're able to provide standard broadband to your property.</h2>
 
-      <p>Please contact us using the number or email address below</p>
+      <br />
 
       {% else %}
 
@@ -32,7 +32,7 @@
 
     {% if canADSL %}
       <div class="pricing-plan is-info">
-        <div class="plan-header"><span style="color:black">ADSL</span></div>
+        <div class="plan-header"><span style="color:black">Standard (ADSL)</span></div>
         <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">&pound;</span>34.99</span><span style="color:black">/month</span></div>
         <div class="plan-items">
           <div class="plan-item">Download up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps*</div>

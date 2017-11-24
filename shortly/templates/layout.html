@@ -13,43 +13,35 @@
   <section class="hero is-info kcBlue is-fullheight">
   <!-- Hero head: will stick at the top -->
   <div class="hero-head">
-    <header class="navbar">
+    <nav class="navbar">
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item" href="https://www.karmacomputing.co.uk">
             <img src="/static/logo_with_white_text.svg" alt="Karma Computing ltd" width="112" height="28">
           </a>
-
-          <button class="button navbar-burger">
+          <span class="navbar-burger burger" data-target="navbarMenuHeroB">
             <span></span>
             <span></span>
             <span></span>
-          </button>
+          </span>
         </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="field is-grouped">
-              <p class="control">
-                <a class="button is-info" href="https://www.karmacomputing.co.uk">
-                  <span class="icon">
-                    <i class="fa fa-arrow-left"></i>
-                  </span>
-                  <span>Main Website</span>
-                </a>
-              </p>
-              <p class="control">
-                <a class="button is-info" href="https://www.karmacomputing.co.uk">
-                  <span class="icon">
-                    <i class="fa fa-phone"></i>
-                  </span>
-                  <span>Contact Us</span>
-                </a>
-              </p>
-            </div>
+        <div id="navbarMenuHeroB" class="navbar-menu">
+          <div class="navbar-end">
+            <a class="navbar-item" href="https://www.karmacomputing.co.uk">
+              Main Website
+            </a>
+            <span class="navbar-item">
+              <a class="button is-info is-inverted">
+                <span class="icon">
+                  <i class="fa fa-phone"></i>
+                </span>
+                <span>Contact Us</span>
+              </a>
+            </span>
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   </div>
 
   <!-- Hero content: will be in the middle -->
@@ -62,6 +54,6 @@
 </section>
 </body>
 
-<script src="/app.js"></script>
+<script src="/static/app.js"></script>
 <script src="/static/example.js"></script>
 </html>
