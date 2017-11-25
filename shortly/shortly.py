@@ -39,14 +39,14 @@ class Shortly(object):
         ])
 
     def on_appjs(self, template_name, **context):
-        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/app.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
 
 
     def on_manifest(self, template_name, **context):
-        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/manifest.json'), direct_passthrough=True, mimetype='application/json')
+        return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
 
     def on_sw(self, template_name, **context):
-        return Response(file('/home/karmacomputing/broadband-availability-checker/shortly/sw.js'), direct_passthrough=True, mimetype='application/javascript')
+        return Response(file('sw.js'), direct_passthrough=True, mimetype='application/javascript')
 
     def render_template(self, template_name, **context):
         t = self.jinja_env.get_template(template_name)
