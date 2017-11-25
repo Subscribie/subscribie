@@ -122,7 +122,7 @@ class Shortly(object):
         customer = redirect_flow.links.customer
         flow = redirect_flow_id
 
-        con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+        con = sqlite3.connect(os.getenv('db_full_path'))
         cur = con.cursor()
         cur.execute("INSERT INTO mandates VALUES (?, ?, ?, ?, ?)", (sid, now, mandate, customer, flow))
         con.commit()
@@ -146,7 +146,7 @@ class Shortly(object):
             PostCode = request.form['PostCode']
             now = datetime.datetime.now()
             sid = request.cookies.get('karma_cookie')
-            con = sqlite3.connect('/home/karmacomputing/broadband-availability-checker/shortly/karma.db')
+            con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
             cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?)", (sid, now, buildingnumber, PostCode))
             con.commit()
@@ -237,8 +237,11 @@ class Shortly(object):
             request.session = self.session_store.new()
         else:
             request.session = self.session_store.get(sid)
-        self.session_store.save(request.session)
-        response.set_cookie('karma_cookie', request.session.sid)
+        try:
+            self.session_store.save(request.session)
+            response.set_cookie('karma_cookie', request.session.sid)
+        except AttributeError as e:
+            pass
 
         return response(environ, start_response)
 
