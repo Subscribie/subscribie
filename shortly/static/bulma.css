@@ -5,9 +5,9 @@
   stroke-miterlimit: 10;
   stroke-dasharray: 900;
   stroke-dashoffset: 0;
-  animation: dash 2.5s;
-  -webkit-animation-timing-function: ease-out;
-  animation-timing-function: ease-out;
+  animation: dash 4s;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
 }
 
 @-webkit-keyframes dash {

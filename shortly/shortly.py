@@ -33,6 +33,7 @@ class Shortly(object):
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
             Rule('/thankyou', endpoint='thankyou'),
+            Rule('/gettingstarted', endpoint='gettingstarted'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw')
