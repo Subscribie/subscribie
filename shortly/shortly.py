@@ -59,6 +59,9 @@ class Shortly(object):
     def on_thankyou(self, request):
         return self.render_template('thankyou.html')
 
+    def on_gettingstarted(self, request):
+        return self.render_template('gettingstarted.html')
+
     def on_new_customer(self, request):
         if request.method == 'POST':
             given_name = request.form['given_name']

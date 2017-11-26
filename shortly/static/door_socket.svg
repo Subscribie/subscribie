@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1092px" height="763px" viewBox="0 0 1092 763" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard 3</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-3">
+            <path d="M305.5,399.5 L294.5,424.5" id="Line" stroke="#364F65" stroke-linecap="square"></path>
+            <path d="M426.5,399.5 L415.5,424.5" id="Line" stroke="#364F65" stroke-linecap="square" transform="translate(421.000000, 412.000000) scale(-1, 1) translate(-421.000000, -412.000000) "></path>
+            <path d="M197.5,282.5 L522.5,282.5" id="Line-10" stroke="#364F65" stroke-width="3" stroke-linecap="square"></path>
+            <polygon id="Rectangle-16" fill="#FFFFFF" points="174 466 919 466 999 623 94 623"></polygon>
+            <polygon id="Rectangle" fill="#FFFFFF" transform="translate(969.000000, 374.500000) scale(-1, 1) translate(-969.000000, -374.500000) " points="927 127 1011 127 1011 462 927 622"></polygon>
+            <polygon id="Rectangle" fill="#FFFFFF" points="82 127 166 127 166 462 82 622"></polygon>
+            <path d="M175,129 L918,129 L918,459 L175,459 L175,129 Z M697,214 C694.790861,214 693,215.790861 693,218 L693,453 C693,456.313708 695.686292,459 699,459 L816,459 C819.313708,459 822,456.313708 822,453 L822,218 C822,215.790861 820.209139,214 818,214 L697,214 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+            <rect id="Rectangle-19" fill="#FFFFFF" x="726" y="241" width="30" height="30"></rect>
+            <rect id="Rectangle-19" fill="#FFFFFF" x="761" y="241" width="30" height="30"></rect>
+            <rect id="Rectangle-19" fill="#FFFFFF" x="726" y="276" width="30" height="30"></rect>
+            <rect id="Rectangle-19" fill="#FFFFFF" x="761" y="276" width="30" height="30"></rect>
+            <circle id="Oval-5" fill="#FFFFFF" cx="713.5" cy="352.5" r="7.5"></circle>
+            <rect id="Rectangle-20" fill="#364F65" x="523" y="412" width="15" height="15"></rect>
+            <rect id="Rectangle-20" fill="#364F65" x="542" y="412" width="15" height="15"></rect>
+        </g>
+    </g>
+</svg>
