@@ -24,8 +24,8 @@ class Shortly(object):
         self.jinja_env = Environment(loader=FileSystemLoader(template_path),
                                      autoescape=True)
         self.gocclient = gocardless_pro.Client(
-            access_token ='sandbox_Cgp7gAVXCNsc_vStksIq2bqfNgT7TFXd2zarJZHe',
-            environment='sandbox'
+            access_token = os.getenv('gocardless_token'),
+            environment= os.getenv('gocardless_environment')
         )
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
