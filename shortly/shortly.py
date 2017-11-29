@@ -42,7 +42,6 @@ class Shortly(object):
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
 
-
     def on_manifest(self, template_name, **context):
         return Response(file('manifest.json'), direct_passthrough=True, mimetype='application/json')
 
@@ -73,7 +72,7 @@ class Shortly(object):
             mobile = request.form['mobile']
             now = datetime.datetime.now()
             wants = request.args.get('plan')
-            # Store customer 
+            # Store customer
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
@@ -98,14 +97,14 @@ class Shortly(object):
                     }
                 }
             )
-            # Hold on to this ID - we'll need it when we 
+            # Hold on to this ID - we'll need it when we
             # "confirm" the dedirect flow later
             print("ID: {} ".format(redirect_flow.id))
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
             return self.render_template('new_customer.html')
-        
+
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
         print("Recieved flow ID: {} ".format(redirect_flow_id))
@@ -119,7 +118,7 @@ class Shortly(object):
         # Save this mandate ID for the next section.
         print ("Customer: {}".format(redirect_flow.links.customer))
 
-        # Store customer 
+        # Store customer
         sid = request.cookies.get('karma_cookie')
         now = datetime.datetime.now()
         mandate = redirect_flow.links.mandate
@@ -135,9 +134,9 @@ class Shortly(object):
         con.close()
 
 
-        # Display a confirmation page to the customer, telling them 
-        # their Direct Debit has been set up. You could build your own, 
-        # or use ours, which shows all the relevant information and is 
+        # Display a confirmation page to the customer, telling them
+        # their Direct Debit has been set up. You could build your own,
+        # or use ours, which shows all the relevant information and is
         # translated into all the languages we support.
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
         return redirect(os.getenv('thankyou_url'))
@@ -149,6 +148,7 @@ class Shortly(object):
             buildingnumber = request.form['buildingnumber']
             PostCode = request.form['PostCode']
             now = datetime.datetime.now()
+            prettyTime = datetime.datetime.now().strftime("%H:%M %D")
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
@@ -162,7 +162,7 @@ class Shortly(object):
             if not is_valid_lookup(request.form):
                 error = 'Please enter a valid request'
             else:
-                r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput', 
+                r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput',
                                  data = {'buildingnumber': request.form['buildingnumber'],
                                        'PostCode': request.form['PostCode']})
                 result = r.text
@@ -207,7 +207,7 @@ class Shortly(object):
                                     canADSL = False
 			    if index == 5:
 				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
-                return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre)
+                return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime)
         return self.render_template('new_url.html', error=error, cheese=True)
 
 
@@ -284,7 +284,7 @@ def source(script, update=1):
     if update:
         environ.update(env)
 
-    return env 
+    return env
 
 
 if __name__ == '__main__':
@@ -295,5 +295,3 @@ if __name__ == '__main__':
 
 source("/home/karmacomputing/broadband-availability-checker/shortly/.env")
 application = create_app()
-
-

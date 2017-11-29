@@ -38,10 +38,11 @@
           <div class="plan-item">Download up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps*</div>
           <div class="plan-item">Upload up to 2Mbps*</div>
           <div class="plan-item">Unlimited Usage!</div>
+          <div class="plan-item">Only 3 month minimum contract</div>
           <div class="plan-item">Friendly UK Support</div>
         </div>
         <div class="plan-footer">
-          <a href="/new_customer?plan=adsl" class="button is-fullwidth">Continue</a>
+          <a href="/new_customer?plan=adsl" class="button is-large is-fullwidth">Continue</a>
         </div>
       </div>
     {% endif %}
@@ -54,13 +55,25 @@
           <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] }}mbps*</div>
           <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] }}Mbps*</div>
           <div class="plan-item">Unlimited Usage!</div>
+          <div class="plan-item">12 month minimum contract</div>
           <div class="plan-item">Friendly UK Support</div>
         </div>
         <div class="plan-footer">
-          <a href="/new_customer?plan=fibre" class="button is-fullwidth">Continue</a>
+          <a href="/new_customer?plan=fibre" class="button is-large is-fullwidth">Continue</a>
         </div>
       </div>
      {% endif %}
   </div>
+  <br />
+  <small>These results were generated at: {{ now }} for: {{ buildingnumber }}, {{ PostCode }} and are subject to change at any time.</small>
+  <br />
+  <br />
+  <p>- -</p>
+  <br />
+  <h3 class="title is-3 is-size-4-mobile">Learn More</h3>
+  <h3 class="subtitle is-4 is-size-5-mobile">What's the difference between Fibre and ADSL?</h3>
+  <br />
+  <h4 class="title is-5 is-size-5-mobile">About these results</h3>
+  <p style="text-align:left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on OpenReach's network prediction, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem (for example your line might not actually be able to receive Fibre).<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
 
 {% endblock %}
