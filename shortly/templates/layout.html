@@ -71,4 +71,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script src="/static/app.js"></script>
 <script src="/static/example.js"></script>
+<!-- Google Code for tawk.to Chat Conversion -->
+<script>
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  gtag('event', 'conversion', {
+      'send_to': 'AW-878294506/qWg4CKiW7XcQ6uvmogM',
+      'event_callback': callback
+  });
+  return false;
+}
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion_async.js" charset="utf-8" async="async"></script>
+<script type="text/javascript">
+
+var Tawk_API = Tawk_API || {};
+Tawk_API.onChatStarted = function(){   
+       gtag_report_conversion();
+};
+</script>
 </html>
