@@ -22,6 +22,14 @@
   <h1 class="title is-1 is-size-3-mobile">Broadband Availability Checker</h1>
   <h2 class="subtitle is-3 is-size-5-mobile">Let's see what you can get</h2>
 
+  <article class="message is-danger">
+    <div class="message-header">
+      <p><b>Christmas Connection Deadline</b></p>
+    </div>
+    <div class="message-body has-text-left">New orders may not be activated by Christmas, as we're quickly approaching the deadline! Orders must be placed by the 11th of December in order to be activated by the 25th, however we cannot guarantee this.</div>
+  </article>
+  <br />
+
   <form action="" id="check" method=post>
     {% if error %}
     <p class=error><stong>Error:</strong> {{ error }}
@@ -45,6 +53,7 @@
           </div>
         </div>
       </div>
+
       <input type=submit id="checkAvailability" class="button is-large" value="Check Availability">
   </form>
 <br />
