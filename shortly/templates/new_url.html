@@ -62,4 +62,38 @@
 <p style="font-weight:600">Enter your house number and postcode into the form above to see what services we're able to offer you.</p>
 <p>Because every line is different, this is the best way for us to give you a predicted speed. We only use this to test your line, and we don't ever send you spam.</p>
 
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+      "@id": "https://karmacomputing.co.uk",
+      "name": "Karma"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+      "@id": "https://broadband-availability-checker.karmacomputing.co.uk",
+      "name": "Broadband Availability Checker"
+      }
+  }]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://broadband-availability-checker.karmacomputing.co.uk",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://broadband-availability-checker.karmacomputing.co.uk/?PostCode={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
 {% endblock %}
