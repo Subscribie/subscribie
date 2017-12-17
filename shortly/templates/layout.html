@@ -12,59 +12,69 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5K5C9DR');</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- End Google Tag Manager -->
-
 </head>
 
 <body>
+
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5K5C9DR"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-  <section class="hero is-info kcBlue is-fullheight">
-  <!-- Hero head: will stick at the top -->
-  <div class="hero-head">
-    <nav class="navbar">
-      <div class="container">
-        <div class="navbar-brand">
+
+  <nav class="navbar is-info kcBlue">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <img src="/static/logo_with_white_text.svg" alt="Karma Computing ltd" width="112" height="28">
+        </a>
+        <span class="navbar-burger burger" data-target="navbarMenuHeroB">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </div>
+      <div id="navbarMenuHeroB" class="navbar-menu">
+        <div class="navbar-end">
           <a class="navbar-item" href="https://www.karmacomputing.co.uk">
-            <img src="/static/logo_with_white_text.svg" alt="Karma Computing ltd" width="112" height="28">
+            Main Website
           </a>
-          <span class="navbar-burger burger" data-target="navbarMenuHeroB">
-            <span></span>
-            <span></span>
-            <span></span>
+          <a class="navbar-item" href="/gettingstarted">
+            Existing Customers
+          </a>
+          <span class="navbar-item">
+            <a class="button is-info is-inverted" href="https://www.karmacomputing.co.uk/page/website.contactus">
+              <span>Contact Us</span>
+            </a>
           </span>
         </div>
-        <div id="navbarMenuHeroB" class="navbar-menu">
-          <div class="navbar-end">
-            <a class="navbar-item" href="https://www.karmacomputing.co.uk">
-              Main Website
-            </a>
-            <a class="navbar-item" href="/gettingstarted">
-              Existing Customer
-            </a>
-            <span class="navbar-item">
-              <a class="button is-info is-inverted" href="https://www.karmacomputing.co.uk/page/website.contactus">
-                <span>Contact Us</span>
-              </a>
-            </span>
-          </div>
-        </div>
       </div>
-    </nav>
-  </div>
-
-  <!-- Hero content: will be in the middle -->
-  <div class="hero-body">
-    <div class="container has-text-centered">
-      {% block body %}{% endblock %}
     </div>
-  </div>
+  </nav>
 
-  {% block footer %}{% endblock %}
+  <section class="hero kcBlue" style="margin-bottom:25px;">
+    <div class="hero-body has-text-centered">
+      {% block hero %}{% endblock %}
+    </div>
+  <img src="/static/rounded_border.png" style="width:100%;" />
+  </section>
+  <main class="main">
+    {% block body %}{% endblock %}
+  </main>
+  <footer class="footer" style="padding: 3rem 1.5rem 3rem;">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          <strong>KC Broadband Checker</strong> by <a href="https://www.karmacomputing.co.uk">Karma Computing Ltd</a>.
+          <br />Made with <3 by the KC gang in Newcastle upon Tyne</a>.
+        </p>
+        <br />
+        <a href="#" class="button is-small">Scroll back to top</a>
+      </div>
+    </div>
+  </footer>
 
-</section>
 </body>
 
 <script src="/static/app.js"></script>
