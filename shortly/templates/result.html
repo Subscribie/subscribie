@@ -31,7 +31,7 @@
     {% if canADSL %}
 
       <div class="pricing-plan">
-        <div class="plan-header" style="color:#8dc047">Standard (ADSL)</div>
+        <div class="plan-header" style="color:#8dc047"><img src="/static/speedo_adsl.svg" style="width:50%;display:block; margin:auto"/>Standard (ADSL)</div>
         <div class="plan-items">
           <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps*</div>
           <div class="plan-item">Upload speed up to 2Mbps*</div>
@@ -51,14 +51,14 @@
     {% if canFibre %}
 
       <div class="pricing-plan">
-        <div class="plan-header" style="color:#db802d">Fibre</div>
+        <div class="plan-header" style="color:#db802d"><img src="/static/speedo_fibre40.svg" style="width:50%;display:block; margin:auto"/>Fibre</div>
         <div class="plan-items">
           <div class="plan-item">Super fast up to 40mbps*</div>
           <div class="plan-item">Quick uploads up to 10Mbps*</div>
           <div class="plan-item">Unlimited Usage</div>
           <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
           <div class="plan-item">Friendly UK Support</div>
-          <div class="plan-item">Only 3 Month Minimum Term</div>
+          <div class="plan-item">12 Month Minimum Term</div>
         </div>
         <div class="plan-footer">
           <div class="plan-price"><span style="color:#db802d" class="plan-price-amount"><span class="plan-price-currency">&pound;</span>41.99</span>/month</div>
@@ -67,14 +67,14 @@
       </div>
 
       <div class="pricing-plan">
-        <div class="plan-header" style="color:#e73b1a">Fibre <i><b>Plus</b></i></div>
+        <div class="plan-header" style="color:#e73b1a"><img src="/static/speedo_fibre80.svg" style="width:50%;display:block; margin:auto"/><span>Fibre <i><b>Plus</b></i></span></div>
         <div class="plan-items">
           <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] }}mbps*</div>
           <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] }}Mbps*</div>
           <div class="plan-item">Unlimited Usage</div>
           <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
           <div class="plan-item">Friendly UK Support</div>
-          <div class="plan-item">Only 3 Month Minimum Term</div>
+          <div class="plan-item">12 Month Minimum Term</div>
         </div>
         <div class="plan-footer">
           <div class="plan-price"><span style="color:#e73b1a" class="plan-price-amount"><span class="plan-price-currency">&pound;</span>44.99</span>/month</div>
@@ -122,16 +122,14 @@
   </div>
 </div>
 
-<div class="section">
-  <div class="container">
-    <h4 class="title is-5 is-size-5-mobile">About these results</h3>
-    <p style="text-align:left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on OpenReach's network prediction, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem (for example your line might not actually be able to receive Fibre).<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
-    {% if canADSL or canFibre %}
-    <br />
+<div class="kcBlue has-text-white">
+  <div class="section">
+    <div class="container">
+          <h3 class="title is-4 has-text-white">About these results</h3>
+          <p class="has-text-left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on OpenReach's network prediction, like all predictions they are not always 100% accurate. You can check this prediction for yourself, <a href="http://dslchecker.bt.com">by clicking here</a>. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem (for example your line might not actually be able to receive Fibre).<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
+    </div>
   </div>
 </div>
-
-{% endif %}
 
   <script>
     $('.pricing-plan').hover(
