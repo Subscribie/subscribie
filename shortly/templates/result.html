@@ -36,7 +36,9 @@
           <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps*</div>
           <div class="plan-item">Upload speed up to 2Mbps*</div>
           <div class="plan-item">Unlimited Usage</div>
-          <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
+          {% if  nophone is sameas false %}
+            <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
+          {% endif %}
           <div class="plan-item">Friendly UK Support</div>
           <div class="plan-item">Only 3 Month Minimum Term</div>
         </div>

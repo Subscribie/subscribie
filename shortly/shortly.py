@@ -4,6 +4,7 @@ from subprocess import Popen, PIPE
 import datetime
 import urlparse
 import requests
+import werkzeug
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException, NotFound
@@ -143,6 +144,7 @@ class Shortly(object):
 
     def on_new_url(self,request):
         error = None
+        nophone = False
         result = ''
         if request.method == 'POST':
             buildingnumber = request.form['buildingnumber']
@@ -207,7 +209,9 @@ class Shortly(object):
                                     canADSL = False
 			    if index == 5:
 				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
-                return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime)
+                if 'nophone' in request.headers['Cookie']:
+                    nophone=True
+                return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime, nophone=nophone)
         return self.render_template('new_url.html', error=error, cheese=True)
 
 
@@ -225,6 +229,7 @@ class Shortly(object):
         return short_id
 
     def dispatch_request(self, request):
+        print request.headers['Cookie']
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
             endpoint, values = adapter.match()
