@@ -145,6 +145,11 @@ class Shortly(object):
     def on_new_url(self,request):
         error = None
         nophone = False
+        try:
+            if 'nophone' in request.headers['Cookie']:
+                nophone=True
+        except  KeyError:
+            pass
         result = ''
         if request.method == 'POST':
             buildingnumber = request.form['buildingnumber']
@@ -215,7 +220,7 @@ class Shortly(object):
                 except  KeyError:
                     pass
                 return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime, nophone=nophone)
-        return self.render_template('new_url.html', error=error, cheese=True)
+        return self.render_template('new_url.html', error=error, cheese=True, nophone=nophone)
 
 
 
