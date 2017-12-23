@@ -209,8 +209,11 @@ class Shortly(object):
                                     canADSL = False
 			    if index == 5:
 				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
-                if 'nophone' in request.headers['Cookie']:
-                    nophone=True
+                try:
+                    if 'nophone' in request.headers['Cookie']:
+                        nophone=True
+                except  KeyError:
+                    pass
                 return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime, nophone=nophone)
         return self.render_template('new_url.html', error=error, cheese=True)
 
@@ -229,7 +232,6 @@ class Shortly(object):
         return short_id
 
     def dispatch_request(self, request):
-        print request.headers['Cookie']
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
             endpoint, values = adapter.match()
