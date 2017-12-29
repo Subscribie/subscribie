@@ -4,14 +4,14 @@
 {% block hero %}
 
   {% if canADSL and canFibre %}
-    <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 800px; width:75%;" />
+    <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 500px; width:75%;" />
 
     <h1 style="color:white" class="title is-1 is-size-3-mobile">Great News!</h1>
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">We can provide the following service(s) to your property:</h2>
 
     {% elif canADSL  %}
 
-      <img src="/static/house_telegraph_pole.svg" style="max-width: 800px; width:75%;" />
+      <img src="/static/house_telegraph_pole.svg" style="max-width: 500px; width:75%;" />
       <h1 style="color:white" class="title is-1 is-size-3-mobile">Good News!</h1>
       <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">We're able to provide standard broadband to your property.</h2>
 
@@ -19,7 +19,7 @@
 
       {% else %}
 
-      <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 800px; width:75%;" />
+      <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 500px; width:75%;" />
 
       <h1 style="color:white" class="title is-1 is-size-3-mobile">Please give us a call</h1>
       <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">We couldn't find your address, but don't worry!</h2>
@@ -96,7 +96,7 @@
      {% endif %}
   </div>
   <br />
-  <p class="has-text-centered has-text-white">These results were generated at: {{ now }} for: {{ buildingnumber }}, {{ PostCode }}.</p>
+  <p class="has-text-centered has-text-white">These results were generated at: {{ now }} for: {{ buildingnumber }} {{ streetname }}, {{ postCode }}.</p>
 
 {% endblock %}
 

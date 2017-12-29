@@ -29,16 +29,24 @@ class Shortly(object):
             environment= os.getenv('gocardless_environment')
         )
         self.url_map = Map([
-            Rule('/', endpoint='new_url'),
+            Rule('/', endpoint='start'),
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
             Rule('/thankyou', endpoint='thankyou'),
             Rule('/gettingstarted', endpoint='gettingstarted'),
+            Rule('/prerequisites', endpoint='prerequisites'),
             Rule('/manifest.json', endpoint='manifest'),
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw')
         ])
+
+    buildingnumber = ''
+    route = ''
+    locality = ''
+    administrative_area_level_1 = ''
+    country = ''
+    postCode = ''
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
@@ -61,6 +69,9 @@ class Shortly(object):
 
     def on_gettingstarted(self, request):
         return self.render_template('gettingstarted.html')
+
+    def on_prerequisites(self, request):
+        return self.render_template('prerequisites.html')
 
     def on_new_customer(self, request):
         if request.method == 'POST':
@@ -104,7 +115,7 @@ class Shortly(object):
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
-            return self.render_template('new_customer.html')
+            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, locality=locality, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -142,7 +153,7 @@ class Shortly(object):
         print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
         return redirect(os.getenv('thankyou_url'))
 
-    def on_new_url(self,request):
+    def on_start(self,request):
         error = None
         nophone = False
         try:
@@ -152,14 +163,24 @@ class Shortly(object):
             pass
         result = ''
         if request.method == 'POST':
-            buildingnumber = request.form['buildingnumber']
-            PostCode = request.form['PostCode']
+            global buildingnumber
+            buildingnumber = request.form['street_number']
+            global route
+            route = request.form['route']
+            global locality
+            locality = request.form['locality']
+            global administrative_area_level_1
+            administrative_area_level_1 = request.form['administrative_area_level_1']
+            global country
+            country = request.form['country']
+            global postCode
+            postCode = request.form['postal_code']
             now = datetime.datetime.now()
             prettyTime = datetime.datetime.now().strftime("%H:%M %D")
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?)", (sid, now, buildingnumber, PostCode))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, locality, administrative_area_level_1, country, postCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
@@ -170,8 +191,8 @@ class Shortly(object):
                 error = 'Please enter a valid request'
             else:
                 r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput',
-                                 data = {'buildingnumber': request.form['buildingnumber'],
-                                       'PostCode': request.form['PostCode']})
+                                 data = {'buildingnumber': request.form['street_number'],
+                                       'postCode': request.form['postal_code']})
                 result = r.text
                 soup = BeautifulSoup(r.text, 'html.parser')
                 soup.prettify()
@@ -219,8 +240,8 @@ class Shortly(object):
                         nophone=True
                 except  KeyError:
                     pass
-                return self.render_template('result.html', result=result, canADSL=canADSL, buildingnumber=buildingnumber, canFibre=canFibre, PostCode=PostCode, now=prettyTime, nophone=nophone)
-        return self.render_template('new_url.html', error=error, cheese=True, nophone=nophone)
+                return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, streetname=route, postCode=postCode, now=prettyTime, nophone=nophone)
+        return self.render_template('start.html', error=error, cheese=True, nophone=nophone)
 
 
 

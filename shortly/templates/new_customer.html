@@ -4,7 +4,7 @@
 {% block hero %}
 
   <div class="container">
-    <img src="/static/house_telegraph_pole_connection.svg" style="max-width: 800px; width:75%;" />
+    <img src="/static/house_telegraph_pole_connection.svg" style="max-width: 500px; width:75%;" />
     <h1 style="color:white" class="title is-1 is-size-3-mobile">It's great to meet you</h1>
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Fill in the form below to confirm your details</h2>
   </div>
@@ -71,7 +71,7 @@
         <div class="field">
           <label for="address_line1" class="label">Address Line 1</label>
           <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=address_line1 id=address_line1 value="{{ address_line1 }}" placeholder="123 Sample Lane">
+            <input class="input is-medium" type="text" name=address_line1 id=address_line1 value="{{ buildingnumber }} {{ route }}" placeholder="123 Sample Lane">
           </p>
         </div>
       </div>
@@ -79,7 +79,7 @@
         <div class="field">
           <label for="city" class="label">City / Town</label>
           <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=city id=city value="{{ city }}" placeholder="Newcastle upon Tyne">
+            <input class="input is-medium" type="text" name=city id=city value="{{ locality }}" placeholder="Newcastle upon Tyne">
           </p>
         </div>
       </div>
@@ -90,7 +90,7 @@
         <div class="field">
           <label for="postal_code" class="label">Postcode</label>
           <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=postal_code id=postal_code value="{{ postal_code }}" placeholder="AB12 3CD">
+            <input class="input is-medium" type="text" name=postal_code id=postal_code value="{{ postCode }}" placeholder="AB12 3CD">
           </p>
         </div>
       </div>

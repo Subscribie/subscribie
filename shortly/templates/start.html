@@ -25,39 +25,26 @@
       <p class=error><stong>Error:</strong> {{ error }}
       {% endif %}
 
-      <br />
+      <div style="max-width:500px; margin:auto">
 
-      <article class="message is-info" style="max-width:750px; margin:auto">
-        <div class="message-header">
-          <p><b>Christmas Orders Deadline</b></p>
-        </div>
-        <div class="message-body has-text-left">Orders placed after the 20th of December will be processed after the 27th. Support over the Christmas period will also be reduced and therefore only for urgent queries. Warmest thoughts and best wishes for a wonderful holiday and a very happy new year!</div>
-      </article>
-
-      <br />
-
-      <div class="columns" style="max-width:750px; margin:auto">
-        <div class="column is-half">
-          <div class="field">
-            <label for="buildingnumber" class="label is-large is-small-mobile" style="color:white">House Number</label>
-            <div class="control">
-              <input class="input is-large" type="text" placeholder="12A" name=buildingnumber id=buildingnumber value="{{ buildingnumber }}">
-            </div>
+        <div class="field">
+          <label for="googleAddressSearch" class="label is-medium is-small-mobile" style="color:white">Start selecting your address</label>
+          <div class="control">
+            <input class="input is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
           </div>
         </div>
-        <div class="column is-half">
-          <div class="field">
-            <label for="PostCode" class="label is-large is-small-mobile" style="color:white">Post Code</label>
-            <div class="control">
-              <input class="input is-large" type="text" placeholder="AB12 34CD" name=PostCode id=PostCode value="{{ PostCode }}">
-            </div>
-          </div>
+        <div class="is-hidden">
+          <input type="hidden" class="field" id="street_number" name="street_number" disabled="true"></input>
+          <input type="hidden" class="field" id="route" name="route" disabled="true"></input>
+          <input type="hidden" class="field" id="locality" name="locality" disabled="true"></input>
+          <input type="hidden" class="field" id="administrative_area_level_1" name="administrative_area_level_1" disabled="true"></input>
+          <input type="hidden" class="field" id="postal_code" name="postal_code" disabled="true"></input>
+          <input type="hidden" class="field" id="country" name="country" disabled="true"></input>
         </div>
-      </div>
-
-      <div style="max-width:750px; margin:auto">
         <input type=submit id="checkAvailability" class="button is-large is-fullwidth is-info" value="Check Availability">
+
       </div>
+
     </form>
 
 
@@ -154,7 +141,7 @@
 <div class="section hero">
   <div class="container has-text-centered">
     <small>
-    Unlimited Broadband is subject to our Fair Use Policy, as we want to make sure everyone can enjoy the same great service. If you're even close to approaching the Fair Usage limit, we'll let you know by email with some tips of how to make sure you don't exceed this limit. You can read more about our Fair Use Policy at our support site, or by clicking here: <a href="/">KC Telecoms Fair Use & Terms</a>. 8 minutes to download a film is based on the following: 1) the movie is 4.7GB in size (typical high bitrate 1080p MP4 movie) and 2) the connection speed between the PC downloading the file and the server is a stable 80Mbps. You may experience slightly slower download times than the prediction shown. 
+    Unlimited Broadband is subject to our Fair Use Policy, as we want to make sure everyone can enjoy the same great service. If you're even close to approaching the Fair Usage limit, we'll let you know by email with some tips of how to make sure you don't exceed this limit. You can read more about our Fair Use Policy at our support site, or by clicking here: <a href="/">KC Telecoms Fair Use & Terms</a>. 8 minutes to download a film is based on the following: 1) the movie is 4.7GB in size (typical high bitrate 1080p MP4 movie) and 2) the connection speed between the PC downloading the file and the server is a stable 80Mbps. You may experience slightly slower download times than the prediction shown.
     {% if nophone is sameas false %}
     Unlimited calls are subject to a Fair Use Policy. To prevent unexpected overages on your phone service, by default we block calls to premium rate services and international numbers, you can remove this block by contacting a support rep.
     {% endif %}
@@ -194,6 +181,52 @@
     "query-input": "required name=search_term_string"
   }
 }
+</script>
+
+<script>
+
+var placeSearch, autocomplete;
+var componentForm = {
+  street_number: 'short_name',
+  route: 'long_name',
+  locality: 'long_name',
+  administrative_area_level_1: 'short_name',
+  country: 'long_name',
+  postal_code: 'short_name'
+};
+
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('googleAddressSearch')),
+      {types: ['geocode']});
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', fillInAddress);
+}
+
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+
+  for (var component in componentForm) {
+    document.getElementById(component).value = '';
+    document.getElementById(component).disabled = false;
+  }
+
+  // Get each component of the address from the place details
+  // and fill the corresponding field on the form.
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    if (componentForm[addressType]) {
+      var val = place.address_components[i][componentForm[addressType]];
+      document.getElementById(addressType).value = val;
+    }
+  }
+}
+
 </script>
 
 {% endblock %}
