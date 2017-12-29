@@ -36,7 +36,7 @@
           <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps</div>
           <div class="plan-item">Upload speed up to 2Mbps</div>
           <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas true %}
+          {% if  nophone is sameas false %}
             <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
           {% else %}
             <div class="plan-item">One <em>fixed</em> price</em></div>
@@ -60,7 +60,7 @@
           <div class="plan-item">Super fast up to 40Mbps</div>
           <div class="plan-item">Quick uploads up to 10Mbps</div>
           <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas true %}
+          {% if  nophone is sameas false %}
             <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
           {% else %}
             <div class="plan-item">One <em>fixed</em> price</em></div>
@@ -80,7 +80,7 @@
           <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] }}Mbps</div>
           <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] }}Mbps</div>
           <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas true %}
+          {% if  nophone is sameas false %}
             <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
           {% else %}
             <div class="plan-item">One <em>fixed</em> price</em></div>
