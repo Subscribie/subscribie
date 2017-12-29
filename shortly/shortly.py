@@ -30,6 +30,7 @@ class Shortly(object):
         )
         self.url_map = Map([
             Rule('/', endpoint='new_url'),
+            Rule('/broadband-availability-postcode-checker', endpoint='broadband_availability_postcode_checker'),
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
@@ -39,6 +40,9 @@ class Shortly(object):
             Rule('/app.js', endpoint='appjs'),
             Rule('/sw.js', endpoint='sw')
         ])
+
+    def on_broadband_availability_postcode_checker(self,request):
+        return self.render_template('broadband-availability-postcode-checker.html')
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
