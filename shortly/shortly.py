@@ -30,6 +30,7 @@ class Shortly(object):
         )
         self.url_map = Map([
             Rule('/', endpoint='start'),
+            Rule('/broadband-availability-postcode-checker', endpoint='broadband_availability_postcode_checker'),
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
@@ -173,6 +174,9 @@ class Shortly(object):
             administrative_area_level_1 = request.form['administrative_area_level_1']
             global country
             country = request.form['country']
+
+            if country != 'United Kingdom':
+                return self.render_template('start.html', erroricon='em-gb', error="We only support addresses in the United Kingdom, please try again.")
             global postCode
             postCode = request.form['postal_code']
             now = datetime.datetime.now()
@@ -326,5 +330,5 @@ if __name__ == '__main__':
     app = create_app()
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
-source("/home/karmacomputing/broadband-availability-checker/shortly/.env")
+source("/Users/connor/Karma\ Computing/Dev/broadband-availability-checker/shortly/.env")
 application = create_app()

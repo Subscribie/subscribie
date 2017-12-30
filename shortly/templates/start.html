@@ -21,11 +21,15 @@
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Let's see what you can get</h2>
 
     <form action="" id="check" method=post>
-      {% if error %}
-      <p class=error><stong>Error:</strong> {{ error }}
-      {% endif %}
+
 
       <div style="max-width:500px; margin:auto">
+
+        {% if error %}
+        <div class="notification is-info>"
+          <p><strong><i class='em {{ erroricon }}'></i> {{ error }}</strong></p>
+        </div>
+        {% endif %}
 
         <div class="field">
           <label for="googleAddressSearch" class="label is-medium is-small-mobile" style="color:white">Start selecting your address</label>
@@ -201,7 +205,8 @@ function initAutocomplete() {
   autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */(document.getElementById('googleAddressSearch')),
       {types: ['geocode']});
-
+      autocomplete.setComponentRestrictions(
+            {'country': ['gb', 'uk']});
   // When the user selects an address from the dropdown, populate the address
   // fields in the form.
   autocomplete.addListener('place_changed', fillInAddress);
