@@ -44,7 +44,7 @@ class Shortly(object):
 
     buildingnumber = ''
     route = ''
-    locality = ''
+    postal_town = ''
     administrative_area_level_1 = ''
     country = ''
     postCode = ''
@@ -73,6 +73,9 @@ class Shortly(object):
 
     def on_prerequisites(self, request):
         return self.render_template('prerequisites.html')
+
+    def on_broadband_availability_postcode_checker(self,request):
+        return self.render_template('broadband-availability-postcode-checker.html')
 
     def on_new_customer(self, request):
         if request.method == 'POST':
@@ -116,7 +119,7 @@ class Shortly(object):
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
-            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, locality=locality, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode)
+            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -168,15 +171,16 @@ class Shortly(object):
             buildingnumber = request.form['street_number']
             global route
             route = request.form['route']
-            global locality
-            locality = request.form['locality']
+            global postal_town
+            postal_town = request.form['postal_town']
             global administrative_area_level_1
             administrative_area_level_1 = request.form['administrative_area_level_1']
             global country
             country = request.form['country']
 
             if country != 'United Kingdom':
-                return self.render_template('start.html', erroricon='em-gb', error="We only support addresses in the United Kingdom, please try again.")
+                return self.render_template('start.html', erroricon='em-gb', error="We couldn't find that address, make sure it's in the UK and try again.")
+
             global postCode
             postCode = request.form['postal_code']
             now = datetime.datetime.now()
@@ -184,7 +188,7 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, locality, administrative_area_level_1, country, postCode))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, postal_town, administrative_area_level_1, country, postCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
