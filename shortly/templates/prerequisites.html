@@ -1,12 +1,29 @@
 {% extends "layout.html" %}
-{% block title %}Result{% endblock %}
+{% block title %}Nearly Done{% endblock %}
 
 {% block hero %}
 
   <img src="/static/prerequisites.svg" style="max-width: 500px; width:75%;" />
 
-  <h1 style="color:white" class="title is-1 is-size-3-mobile">Final Steps</h1>
-  <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Tell us about your premises to speed up your order</h2>
+  <h1 style="color:white" class="title is-1 is-size-3-mobile">Final Questions</h1>
+  <div class="question1">
+    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Does your premises already have a phone line?</h2>
+    <div class="container" style="width:75%; max-width:800px;">
+      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+        <div class="column">
+          <a class="button is-success is-fullwidth is-large" id="1_yes">Yes</a>
+        </div>
+        <div class="column">
+          <a class="button is-danger is-fullwidth is-large" id="1_no">No</a>
+        </div>
+      </div>
+      <a class="button is-fullwidth is-outline">Do I have a phone line?</a><br />
+      <small style="text-align:center; color:white">If your property has a telephone line already installed, click 'Yes'. Otherwise click 'No' If you don't know, select 'No'.</small>
+    </div>
+  </div>
+  <div class="question1_title" style="display:none">
+    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Great, please answer the questions below...</h2>
+  </div>
 
 {% endblock %}
 
@@ -16,29 +33,9 @@
 
   <div class="section">
 
-    <div class="container has-text-centered question1">
-
-      <h3 class="title is-3">Does your property have a phone line already?</h3>
-      <p class="subtitle is-5">If your property has a telephone line already installed, click 'Yes'. Otherwise click 'No' If you don't know, select 'No'.</p>
-
-      <div class="container" style="width:75%; max-width:800px;">
-        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-          <div class="column">
-            <a class="button is-success is-fullwidth is-large" id="1_yes">Yes</a>
-          </div>
-          <div class="column">
-            <a class="button is-danger is-fullwidth is-large" id="1_no">No</a>
-          </div>
-        </div>
-        <a class="button is-fullwidth is-outline">Do I have a phone line?</a>
-      </div>
-
-    </div>
-
     <div class="container question2" id="phoneline_yes" style="display:none">
 
-      <h3 class="title is-3 has-text-centered">You've got a phone line</h3>
-      <h4 class="subtitle is-5 has-text-centered">Nearly done, please answer the following questions</h4>
+      <h3 class="title is-4 has-text-centered">You've got a phone line</h3>
       <p class="has-text-centered"><a class="button is-small is-warning">Change first answer</a></p>
 
       <br />
@@ -75,7 +72,6 @@
     <div class="container question2" id="phoneline_no" style="display:none">
 
       <h3 class="title is-3 has-text-centered">You haven't got a phone line</h3>
-      <h4 class="subtitle is-5 has-text-centered">Please answer the following questions, this really helps our network team.</h4>
       <p class="has-text-centered"><a class="button is-small is-warning">Change first answer</a></p>
 
       <br />
@@ -113,9 +109,9 @@
       </div>
     </div>
 
-  </div>
 
   </form>
+</div>
 
   <div class="section">
     <div class="container">
@@ -130,10 +126,12 @@
          function(){ $(this).removeClass('is-active') }
     )
     $('#1_yes').click(
-          function(){ $('.question2').hide(), $('.question1').fadeOut(), $('#phoneline_yes').fadeIn() }
+    function(){
+      $('.question2').hide(),$('.question1').fadeOut(1000, function(){$('.question1_title').fadeIn(1000, function(){$('#phoneline_yes').fadeIn()})})}
     )
     $('#1_no').click(
-         function(){ $('.question2').hide(), $('.question1').fadeOut(), $('#phoneline_no').fadeIn() }
+    function(){
+      $('.question2').hide(),$('.question1').fadeOut(1000, function(){$('.question1_title').fadeIn(1000, function(){$('#phoneline_no').fadeIn()})})}
     )
 
   </script>

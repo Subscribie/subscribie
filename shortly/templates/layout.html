@@ -15,7 +15,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- End Google Tag Manager -->
 <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
-</head>
+<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet"></head>
 
 <body>
 
@@ -105,4 +105,34 @@ Tawk_API.onChatStarted = function(){
        gtag_report_conversion();
 };
 </script>
+
+<script type="application/javascript">
+    jQuery(document).ready(function ($) {
+      $('.modal-button').click(function() {
+        console.log("Modal Opened");
+        var target = $(this).data('target');
+        $('html').addClass('is-clipped');
+        $('#' + target).addClass('is-active');
+      });
+      $('.modal-background, .modal-close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-head .delete').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-body #close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $(document).on('keyup',function(e) {
+        if (e.keyCode == 27) {
+          $('html').removeClass('is-clipped');
+          $('.modal').removeClass('is-active');
+        }
+      });
+    });
+  </script>
+
 </html>

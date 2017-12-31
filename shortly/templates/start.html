@@ -23,7 +23,7 @@
     <form action="" id="check" method=post>
 
 
-      <div style="max-width:500px; margin:auto">
+      <div style="max-width:800px; margin:auto">
 
         {% if error %}
         <div class="notification is-info>"
@@ -31,21 +31,23 @@
         </div>
         {% endif %}
 
-        <div class="field">
-          <label for="googleAddressSearch" class="label is-medium is-small-mobile" style="color:white">Start selecting your address</label>
-          <div class="control">
-            <input class="input is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input is-fullwidth is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
+          </div>
+          <div class="control is-expanded">
+            <input type=submit id="checkAvailability" class="button is-fullwidth is-success is-large" value="Check Availability">
           </div>
         </div>
+
         <div class="is-hidden">
           <input type="hidden" class="field" id="street_number" name="street_number" disabled="true"></input>
           <input type="hidden" class="field" id="route" name="route" disabled="true"></input>
-          <input type="hidden" class="field" id="locality" name="locality" disabled="true"></input>
+          <input type="hidden" class="field" id="postal_town" name="postal_town" disabled="true"></input>
           <input type="hidden" class="field" id="administrative_area_level_1" name="administrative_area_level_1" disabled="true"></input>
           <input type="hidden" class="field" id="postal_code" name="postal_code" disabled="true"></input>
           <input type="hidden" class="field" id="country" name="country" disabled="true"></input>
         </div>
-        <input type=submit id="checkAvailability" class="button is-large is-fullwidth is-info" value="Check Availability">
 
       </div>
 
@@ -122,7 +124,7 @@
       <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
         <div class="column">
         <h3 class="title is-3 has-text-white">Unlimited 01, 02 & 03 Calls</h3>
-          <p>In additon to unlimited broadband, we bundle every package with unlimited calls to UK landlines and 0800 numbers. So you can natter to Gran for as long as you like&#42;.</p>
+          <p>In addition to unlimited broadband, we bundle every package with unlimited calls to UK landlines and 0800 numbers. So you can natter to Gran for as long as you like&#42;.</p>
         </div>
         <div class="column">
           <img src="/static/phone_calls.svg" style="max-height:300px;margin: auto; display: block;">
@@ -193,7 +195,7 @@ var placeSearch, autocomplete;
 var componentForm = {
   street_number: 'short_name',
   route: 'long_name',
-  locality: 'long_name',
+  postal_town: 'long_name',
   administrative_area_level_1: 'short_name',
   country: 'long_name',
   postal_code: 'short_name'
@@ -206,7 +208,7 @@ function initAutocomplete() {
       /** @type {!HTMLInputElement} */(document.getElementById('googleAddressSearch')),
       {types: ['geocode']});
       autocomplete.setComponentRestrictions(
-            {'country': ['gb', 'uk']});
+            {'country': ['gb']});
   // When the user selects an address from the dropdown, populate the address
   // fields in the form.
   autocomplete.addListener('place_changed', fillInAddress);
