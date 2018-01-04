@@ -16,6 +16,7 @@ from werkzeug.contrib.sessions import SessionMiddleware, \
 from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
+import smtplib
 
 class Shortly(object):
     session_store = FilesystemSessionStore()
@@ -340,5 +341,5 @@ if __name__ == '__main__':
     app = create_app()
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
-source("/Users/connor/Karma\ Computing/Dev/broadband-availability-checker/shortly/.env")
+source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
 application = create_app()
