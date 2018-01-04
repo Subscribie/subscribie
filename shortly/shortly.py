@@ -42,6 +42,8 @@ class Shortly(object):
             Rule('/sw.js', endpoint='sw')
         ])
 
+    # Declare some stuff globally, as we need the address info over several functions
+
     buildingnumber = ''
     route = ''
     postal_town = ''
@@ -81,9 +83,13 @@ class Shortly(object):
         if request.method == 'POST':
             given_name = request.form['given_name']
             family_name = request.form['family_name']
-            address_line1 = request.form['address_line1']
-            city = request.form['city']
-            postal_code = request.form['postal_code']
+            global buildingnumber
+            global route
+            address_line1 = buildingnumber + ", " + route
+            global postal_town
+            city = postal_town
+            global postCode
+            postal_code = postCode
             email = request.form['email']
             mobile = request.form['mobile']
             now = datetime.datetime.now()
@@ -92,7 +98,7 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
-            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants))
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants, 'null', 'null'))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
