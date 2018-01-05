@@ -121,27 +121,42 @@
   </div>
 </div>
 
-<div class="section">
-  <div class="container">
+{% if canFibre %}
 
-    <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-      <div class="column">
-        <h3 class="title is-3">What can I do on Fibre and Fibre Plus?</h3>
-        <p class="has-text-left">In addition to all the benefits ADSL brings, Fibre allows for much faster upload and download speeds. With this brings enhanced streaming of <strong>HD content</strong>, <strong>online gaming</strong> &amp; <strong>remote capabilities</strong>. Available to ~80% of UK households and premises, the speeds offered can support <strong>up to 20 users </strong>at the same time. Again, your speeds will depend on how far away from the cabinet or telephone exchange you are.</p>
+  <div class="section">
+    <div class="container">
+
+      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+        <div class="column">
+          <h3 class="title is-3">What can I do on Fibre and Fibre Plus?</h3>
+          <p class="has-text-left">In addition to all the benefits ADSL brings, Fibre allows for much faster upload and download speeds. With this brings enhanced streaming of <strong>HD content</strong>, <strong>online gaming</strong> &amp; <strong>remote capabilities</strong>. Available to ~80% of UK households and premises, the speeds offered can support <strong>up to 20 users </strong>at the same time. Again, your speeds will depend on how far away from the cabinet or telephone exchange you are.</p>
+        </div>
+        <div class="column">
+          <img src="/static/fibre.svg" style="max-height:300px">
+        </div>
       </div>
-      <div class="column">
-        <img src="/static/fibre.svg" style="max-height:300px">
-      </div>
+
     </div>
-
   </div>
-</div>
+
+{% else %}
+
+  <div class="section">
+    <div class="container">
+
+      <h3 class="title is-3">Fibre isn't available in your area yet.</h3>
+      <p class="has-text-left">Our checker couldn't find Fibre for your address, but all is not lost. For many homes and businesses ADSL (Standard) broadband is perfectly fast and stable.</p>
+
+    </div>
+  </div>
+
+{% endif %}
 
 <div class="kcBlue has-text-white">
   <div class="section">
     <div class="container">
           <h3 class="title is-4 has-text-white">About these results</h3>
-          <p class="has-text-left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on <a href="http://dslchecker.bt.com" target="_blank">OpenReach's network prediction</a>, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem preventing your order.<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
+          <p class="has-text-left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on <a href="http://dslchecker.bt.com" class="has-text-white" target="_blank">OpenReach's network prediction</a>, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem preventing your order.<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
     </div>
   </div>
 </div>

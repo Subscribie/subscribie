@@ -51,6 +51,8 @@ class Shortly(object):
     administrative_area_level_1 = ''
     country = ''
     postCode = ''
+    uptoSpeedFibre = ''
+    uptoSpeedADSL = ''
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
@@ -126,7 +128,8 @@ class Shortly(object):
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
-            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode)
+            package = request.args["plan"]
+            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode, package=package, uptoSpeedFibre=uptoSpeedFibre, uptoSpeedADSL=uptoSpeedADSL)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -255,6 +258,10 @@ class Shortly(object):
                         nophone=True
                 except  KeyError:
                     pass
+                global uptoSpeedFibre
+                uptoSpeedFibre = result['VDSL Range A']['Downstream']['high']
+                global uptoSpeedADSL
+                uptoSpeedADSL = result['WBC ADSL 2+']['Downstream']
                 return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, streetname=route, postCode=postCode, now=prettyTime, nophone=nophone)
         return self.render_template('start.html', error=error, cheese=True, nophone=nophone)
 

@@ -34,3 +34,5 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 });
+
+var accordions=document.querySelectorAll(".accordions");accordions&&accordions.forEach(function(c){var a=c.querySelectorAll(".accordion");a&&a.forEach(function(a){a.querySelector(".toggle").addEventListener("click",function(b){b.preventDefault();b=b.target.parentNode.parentNode;if(!b.classList.contains("is-active")){var a=c.querySelector(".accordion.is-active");a&&a.classList.remove("is-active");b.classList.add("is-active")}})})});
