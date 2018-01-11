@@ -7,7 +7,7 @@ import requests
 import werkzeug
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.exceptions import HTTPException, NotFound, default_exceptions
 from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
 from jinja2 import Environment, FileSystemLoader
@@ -53,6 +53,10 @@ class Shortly(object):
     postCode = ''
     uptoSpeedFibre = ''
     uptoSpeedADSL = ''
+
+    #####################
+    #   Error Routes
+    #####################
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
@@ -341,7 +345,6 @@ def source(script, update=1):
 
     return env
 
-
 if __name__ == '__main__':
     source("./.env")
     from werkzeug.serving import run_simple
@@ -349,4 +352,17 @@ if __name__ == '__main__':
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
 source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
+
+def show_errormessage(error):
+    desc = error.get_description(flask.request.environ)
+    return render_template('error.html',
+        code=error.code,
+        name=error.name,
+        description=Markup(desc)
+    ), error.code
+
+for _exc in default_exceptions:
+    app.error_handlers[_exc] = show_errormessage
+del _exc
+
 application = create_app()
