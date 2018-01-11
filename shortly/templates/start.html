@@ -31,37 +31,85 @@
         </div>
         {% endif %}
 
-        <div class="field has-addons is-hidden-touch">
-          <div class="control is-expanded">
-            <input class="input is-fullwidth is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
-          </div>
-          <div class="control is-expanded">
-            <a onclick="check.submit();" id="checkAvailabilityDesktop" class="button go is-fullwidth is-success is-large">Check Availability</a>
-          </div>
-        </div>
+        <div id="interactivePicker">
 
-        <noscript>
-            <div class="notification is-danger">
-              <p>This checker can't yet work without JS. Please enable JavaScript in order to view this site in all its glory.</p>
+          <div class="field has-addons is-hidden-touch">
+            <div class="control is-expanded">
+              <input class="input is-fullwidth is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
             </div>
-        </noscript>
+            <div class="control is-expanded">
+              <a onclick="check.submit();" id="checkAvailabilityDesktop" class="button go is-fullwidth is-success is-large">Check Availability</a>
+            </div>
+          </div>
 
-        <div class="field is-hidden-desktop">
-          <div class="control is-expanded">
-            <input class="input is-fullwidth is-large is-radiusless" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
+          <noscript>
+              <div class="notification is-danger">
+                <p>This checker can't yet work without JS. Please enable JavaScript in order to view this site in all its glory.</p>
+              </div>
+          </noscript>
+
+          <div class="field is-hidden-desktop">
+            <div class="control is-expanded">
+              <input class="input is-fullwidth is-large is-radiusless" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
+            </div>
+            <div class="control is-expanded">
+              <a onclick="check.submit();" id="checkAvailabilityMobile" class="button go is-fullwidth is-success is-large is-radiusless" style="margin-top:0.5em">Check Availability</a>
+            </div>
           </div>
-          <div class="control is-expanded">
-            <a onclick="check.submit();" id="checkAvailabilityMobile" class="button go is-fullwidth is-success is-large is-radiusless" style="margin-top:0.5em">Check Availability</a>
-          </div>
+
+          <a id="cantFind" class="button is-fullwidth is-light is-small" style="margin-top:0.5em">I can't find my address</a>
+
         </div>
 
-        <div class="is-hidden">
-          <input type="hidden" class="field" id="street_number" name="street_number" disabled="true"></input>
-          <input type="hidden" class="field" id="route" name="route" disabled="true"></input>
-          <input type="hidden" class="field" id="postal_town" name="postal_town" disabled="true"></input>
-          <input type="hidden" class="field" id="administrative_area_level_1" name="administrative_area_level_1" disabled="true"></input>
-          <input type="hidden" class="field" id="postal_code" name="postal_code" disabled="true"></input>
-          <input type="hidden" class="field" id="country" name="country" disabled="true"></input>
+        <div class="has-text-left" id="addressNotFound" style="display:none">
+          <div class="columns">
+              <div class="column is-one-third">
+                <div class="field">
+                  <label class="label has-text-white">Number / Name</label>
+                  <div class="control">
+                    <input class="input" id="street_number" name="street_number"></input>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="label has-text-white">Street Name</label>
+                  <div class="control">
+                    <input class="input" id="route" name="route"></input>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label has-text-white">City</label>
+                <div class="control">
+                  <input class="input" id="postal_town" name="postal_town" disabled="true"></input>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label has-text-white">Post Code</label>
+                <div class="control">
+                  <input class="input" id="postal_code" name="postal_code" disabled="true"></input>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-hidden">
+            <label class="label has-text-white">Country</label>
+            <div class="control">
+              <input class="input" id="administrative_area_level_1" name="administrative_area_level_1" disabled="true"></input>
+            </div>
+          </div>
+          <input class="input is-hidden" id="country" name="country" value="United Kingdom" disabled="true"></input>
+
+          <br />
+          <input type=submit id="checkAvailability" class="button is-fullwidth is-success is-large" value="Check Availability">
+
         </div>
 
       </div>
@@ -248,6 +296,7 @@ function fillInAddress() {
   $(function(){
    function submitForm(){
       document.check.submit();
+      $('#checkAvailabilityDesktop').removeClass('is-loading').removeClass('is-warning').addClass('is-success')
     };
        window.setTimeout( submitForm, 500 ); // 0.5 seconds
     });
@@ -270,11 +319,20 @@ function fillInAddressMobile() {
   $(function(){
    function submitForm(){
       document.check.submit();
+      $('#checkAvailabilityMobile').removeClass('is-loading').removeClass('is-warning').addClass('is-success')
     };
        window.setTimeout( submitForm, 500 ); // 0.5 seconds
     });
 }
 
+</script>
+
+<script>
+  $('#cantFind').click(
+  function(){
+    console.info("User cant see address"),
+    $('#interactivePicker').fadeOut(500, function(){$('#addressNotFound').fadeIn()})}
+  )
 </script>
 
 {% endblock %}
