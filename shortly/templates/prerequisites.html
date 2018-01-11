@@ -21,8 +21,11 @@
       <small style="text-align:center; color:white">If your property has a telephone line already installed, click 'Yes'. Otherwise click 'No' If you don't know, select 'No'.</small>
     </div>
   </div>
-  <div class="question1_title" style="display:none">
+  <div class="question1_yes_title" style="display:none">
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Great, please answer the questions below...</h2>
+  </div>
+  <div class="question1_no_title" style="display:none">
+    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Thank you, please answer the questions below...</h2>
   </div>
 
 {% endblock %}
@@ -30,87 +33,87 @@
 {% block body %}
 
   <form id="prereq">
+    <input type="text" class="is-hidden" name="phoneline" id="phoneline"/>
+    <div class="section">
 
-  <div class="section">
+      <div class="container question2" id="phoneline_yes" style="display:none">
 
-    <div class="container question2" id="phoneline_yes" style="display:none">
+        <h3 class="title is-4 has-text-centered">You've got a phone line</h3>
+        <p class="has-text-centered"><a class="button is-small is-warning changeQ1">Change first answer</a></p>
 
-      <h3 class="title is-4 has-text-centered">You've got a phone line</h3>
-      <p class="has-text-centered"><a class="button is-small is-warning">Change first answer</a></p>
+        <br />
+        <br />
 
-      <br />
-
-      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-        <div class="column">
-          <h3 class="title is-4">What's your current landline number?</h3>
-          <p>If you've already got a line into your premises, we need to know the current landline number. This helps us with the line registration process, to make sure we take over the correct line. If you don't know this, please enter 'Not Known'. We may contact you regarding your order if this causes any problems.</p>
+        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column">
+            <h3 class="title is-4">What's your current landline number?</h3>
+            <p>If you've already got a line into your premises, we need to know the current landline number. This helps us with the line registration process, to make sure we take over the correct line. If you don't know this, please enter 'Not Known'. We may contact you regarding your order if this causes any problems.</p>
+          </div>
+          <div class="column">
+            <div class="field">
+              <input id="current_cli" type="text" name="current_cli" placeholder="E.g. 01291409800" class="input is-large">
+            </div>
+          </div>
         </div>
-        <div class="column">
-          <div class="field">
-            <input id="1" type="text" name="current_cli" placeholder="E.g. 01291409800" class="input is-large">
+
+        <br />
+
+        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column">
+            <h3 class="title is-4">Is your master socket in good condition?</h3>
+            <p>To get the best possible broadband service, you need to use your master phone socket. If you need help finding this, click the button below. If the socket is in a good condition and correctly fitted, click the slider to Yes./p>
+          </div>
+          <div class="column">
+            <div class="field">
+              <input id="mastersocket_condition" type="checkbox" name="mastersocket_condition" class="switch is-large is-rounded is-success">
+              <label for="mastersocket_condition">Yes, the socket is in good condition<label>
+            </div>
           </div>
         </div>
       </div>
 
-      <br />
+      <div class="container question2" id="phoneline_no" style="display:none">
 
-      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-        <div class="column">
-          <h3 class="title is-4">Do you require a new line to be installed?</h3>
-          <p>How can you be expected to browse the internet... with a wire attached?! Not here, we'll send you a free Wireless Hub when you sign up. It comes pre-configured with everything set (including a simple but secure WiFi password), so you just need to simply Plug and Play.</p>
+        <h3 class="title is-3 has-text-centered">You haven't got a phone line</h3>
+        <p class="has-text-centered"><a class="button is-small is-warning changeQ1">Change first answer</a></p>
+
+        <br />
+        <br />
+
+        <p>Because you don't have a phone line already installed, we'll have to send an engineer round to get you connected to our network. Our connection is delivered using Openreach's telephone network, so even if you don't want to make phone calls, you still need a live telephone wire connected to your premises. We can typically do this for free (terms and conditions apply) if you agree to a 24 month contract instead of 3 months for ADSL <i>or</i> 12 for Fibre. We need to ask a few more questions about your property before we can begin the planning stage.</p>
+
+        <br />
+        <br />
+
+        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column">
+            <h3 class="title is-4">Are you in a new build?</h3>
+            <p>If you're in a new build, there may already be plans to connect your premises to the OpenReach network. Click the toggle to state if you're in a new building. We define new as a building that has been developed/built in the last 6 months.</p>
+          </div>
+          <div class="column">
+            <div class="field">
+              <input id="newBuild" type="checkbox" name="newBuild" class="switch is-large is-rounded is-success">
+              <label for="newBuild">Yes, I'm in a new building<label>
+            </div>
+          </div>
         </div>
-        <div class="column">
-          <div class="field">
-            <input id="2" type="checkbox" name="2" class="switch is-large is-rounded is-success">
-            <label for="2">Yes, I need an engineer to install a line<label>
+
+        <br />
+
+        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column">
+            <h3 class="title is-4">Do you have any other types of sockets in your premises?</h3>
+            <p>For example, do you have a Virgin Media or Telewest socket within the premises. Please detail these in the text box to the right. If none, enter 'None'.</p>
+          </div>
+          <div class="column">
+            <div class="field">
+              <input id="otherSockets" type="text" name="otherSockets" class="input is-large">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="container question2" id="phoneline_no" style="display:none">
-
-      <h3 class="title is-3 has-text-centered">You haven't got a phone line</h3>
-      <p class="has-text-centered"><a class="button is-small is-warning">Change first answer</a></p>
-
-      <br />
-
-      <p>Because you don't have a phone line already installed, we'll have to send an engineer round to get you connected to our network. Our connection is delivered using Openreach's telephone network, so even if you don't want to make phone calls, you still need a live telephone wire connected to your premises. We can typically do this for free (terms and conditions apply) if you agree to a 24 month contract instead of 3 months for ADSL <i>or</i> 12 for Fibre. We need to ask a few more questions about your property before we can begin the planning stage.</p>
-
-      <br />
-
-      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-        <div class="column">
-          <h3 class="title is-4">Are you in a new build?</h3>
-          <p>If you're in a new build, there may already be plans to connect your premises to the OpenReach network. Click the toggle to state if you're in a new building. We define new as a building that has been developed/built in the last 6 months.</p>
-        </div>
-        <div class="column">
-          <div class="field">
-            <input id="newBuild" type="checkbox" name="newBuild" class="switch is-large is-rounded is-success">
-            <label for="newBuild">Yes, I'm in a new building<label>
-          </div>
-        </div>
-      </div>
-
-      <br />
-
-      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-        <div class="column">
-          <h3 class="title is-4">Do you require a new line to be installed?</h3>
-          <p>How can you be expected to browse the internet... with a wire attached?! Not here, we'll send you a free Wireless Hub when you sign up. It comes pre-configured with everything set (including a simple but secure WiFi password), so you just need to simply Plug and Play.</p>
-        </div>
-        <div class="column">
-          <div class="field">
-            <input id="modem" type="checkbox" name="modem" class="switch is-large is-rounded is-success">
-            <label for="modem">Yes, I need an engineer to install a line<label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  </form>
-</div>
+    </form>
+  </div>
 
   <div class="section">
     <div class="container">
@@ -126,11 +129,18 @@
     )
     $('#1_yes').click(
     function(){
-      $('.question2').hide(),$('.question1').fadeOut(1000, function(){$('.question1_title').fadeIn(1000, function(){$('#phoneline_yes').fadeIn()})})}
+      console.info("Q1 Clicked Yes"),
+      $('input[name=phoneline]').val('YES'),$('.question2').hide(),$('.question1').fadeOut(500, function(){$('.question1_yes_title').fadeIn(750, function(){$('#phoneline_yes').fadeIn()})})}
     )
     $('#1_no').click(
     function(){
-      $('.question2').hide(),$('.question1').fadeOut(1000, function(){$('.question1_title').fadeIn(1000, function(){$('#phoneline_no').fadeIn()})})}
+      console.info("Q1 Clicked No"),
+      $('input[name=phoneline]').val('NO'),$('.question2').hide(),$('.question1').fadeOut(500, function(){$('.question1_no_title').fadeIn(750, function(){$('#phoneline_no').fadeIn()})})}
+    )
+    $('.changeQ1').click(
+    function(){
+      console.info("Q1 Return, reset original answer"),
+      $('input[name=phoneline]').val('0'),$('.question2').hide(),$('.question1_no_title').hide(),$('.question1_yes_title').hide(),$('.question1').fadeIn()}
     )
 
   </script>

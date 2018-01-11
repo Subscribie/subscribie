@@ -7,7 +7,7 @@ import requests
 import werkzeug
 from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.exceptions import HTTPException, NotFound, default_exceptions
 from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
 from jinja2 import Environment, FileSystemLoader
@@ -51,6 +51,12 @@ class Shortly(object):
     administrative_area_level_1 = ''
     country = ''
     postCode = ''
+    uptoSpeedFibre = ''
+    uptoSpeedADSL = ''
+
+    #####################
+    #   Error Routes
+    #####################
 
     def on_appjs(self, template_name, **context):
         return Response(file('app.js'), direct_passthrough=True, mimetype='application/javascript')
@@ -126,7 +132,8 @@ class Shortly(object):
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
-            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode)
+            package = request.args["plan"]
+            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode, package=package, uptoSpeedFibre=uptoSpeedFibre, uptoSpeedADSL=uptoSpeedADSL)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -255,6 +262,10 @@ class Shortly(object):
                         nophone=True
                 except  KeyError:
                     pass
+                global uptoSpeedFibre
+                uptoSpeedFibre = result['VDSL Range A']['Downstream']['high']
+                global uptoSpeedADSL
+                uptoSpeedADSL = result['WBC ADSL 2+']['Downstream']
                 return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, streetname=route, postCode=postCode, now=prettyTime, nophone=nophone)
         return self.render_template('start.html', error=error, cheese=True, nophone=nophone)
 
@@ -334,7 +345,6 @@ def source(script, update=1):
 
     return env
 
-
 if __name__ == '__main__':
     source("./.env")
     from werkzeug.serving import run_simple
@@ -342,4 +352,17 @@ if __name__ == '__main__':
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
 source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
+
+def show_errormessage(error):
+    desc = error.get_description(flask.request.environ)
+    return render_template('error.html',
+        code=error.code,
+        name=error.name,
+        description=Markup(desc)
+    ), error.code
+
+for _exc in default_exceptions:
+    app.error_handlers[_exc] = show_errormessage
+del _exc
+
 application = create_app()

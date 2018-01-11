@@ -75,6 +75,8 @@
       </div>
     </div>
 
+    <br />
+
     <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your Address</h3>
     <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">The address shown below is where the broadband service will be installed and activated. If your billing address is different, enter this on the next stage.</p>
 
@@ -89,12 +91,70 @@
       </div>
     </div>
     <p>We filled in your address information based on the address you searched for. Please make sure this is correct as any errors may result in your order being delayed or cancelled. You must also have permission from either the landlord or property owner that you can change the service provider of the line serving this premises.</p>
+
+    <br /><br />
+
+    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your Broadband Plan</h3>
+    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">This is the broadband plan you've selected, good choice!</p>
+
+    <div class="notification is-light">
+      <div class="columns">
+        <div class="column">
+          {% if package == "adsl" %}
+            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Standard Broadband - Up to {{ uptoSpeedADSL }}Mbps</p>
+          {% elif package == "fibre" %}
+            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Fibre Broadband - Up to {{ uptoSpeedFibre }}Mbps</p>
+          {% elif package == "fibre_plus" %}
+            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Fibre Plus Broadband - Up to {{ uptoSpeedFibre }}Mbps</p>
+          {% endif %}
+        </div>
+        <div class="column is-one-third" style="text-align:right">
+          <a class="button is-dark is-small is-fullwidth" style="max-width: 300px; display: inline-flex;"><span class="icon is-small is-left"><i class="fas fa-edit"></i></span>&nbsp;&nbsp;Change Broadband Package</a>
+        </div>
+      </div>
+    </div>
+    <p>We'll run a few more checks to make sure the speed show above is what you'll receive, if there are any difference we'll let you know. </p>
+
     <br />
     <input type=submit class="button is-success is-large is-pulled-right" value="Continue to Payment">
     <br /><br />
 
   </form>
 </div>
+</div>
+
+<div class="kcBlue has-text-white">
+
+  <div class="section">
+    <div class="container">
+
+      <h3 class="title is-4 has-text-white">Broadband Terms and Conditions</h3>
+
+      <div class="tab blue">
+        <input class="accordian" id="tab-four" type="checkbox" name="tabs2">
+        <label class="accordian" for="tab-four">ADSL Broadband Terms</label>
+        <div class="tab-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+        </div>
+      </div>
+      <div class="tab blue">
+        <input class="accordian" id="tab-five" type="checkbox" name="tabs2">
+        <label class="accordian" for="tab-five">Fibre &amp; Fibre Plus Terms</label>
+        <div class="tab-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+        </div>
+      </div>
+      <div class="tab blue">
+        <input class="accordian" id="tab-six" type="checkbox" name="tabs2">
+        <label class="accordian" for="tab-six">About Your Service</label>
+        <div class="tab-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <div class="modal" id="modalResetAddress">
