@@ -20,7 +20,7 @@
     <h1 style="color:white" class="title is-1 is-size-3-mobile">Broadband Availability Checker</h1>
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Enter your address to get started</h2>
 
-    <form action="" id="check" method=post>
+    <form action="" name="check" id="check" method=post>
 
 
       <div style="max-width:800px; margin:auto">
@@ -31,12 +31,27 @@
         </div>
         {% endif %}
 
-        <div class="field has-addons">
+        <div class="field has-addons is-hidden-touch">
           <div class="control is-expanded">
             <input class="input is-fullwidth is-large" type="text" placeholder="Type Address Here..." name=googleAddressSearch id=googleAddressSearch>
           </div>
           <div class="control is-expanded">
-            <input type=submit id="checkAvailability" class="button is-fullwidth is-success is-large" value="Check Availability">
+            <a onclick="check.submit();" id="checkAvailabilityDesktop" class="button go is-fullwidth is-success is-large">Check Availability</a>
+          </div>
+        </div>
+
+        <noscript>
+            <div class="notification is-danger">
+              <p>This checker can't yet work without JS. Please enable JavaScript in order to view this site in all its glory.</p>
+            </div>
+        </noscript>
+
+        <div class="field is-hidden-desktop">
+          <div class="control is-expanded">
+            <input class="input is-fullwidth is-large is-radiusless" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
+          </div>
+          <div class="control is-expanded">
+            <a onclick="check.submit();" id="checkAvailabilityMobile" class="button go is-fullwidth is-success is-large is-radiusless" style="margin-top:0.5em">Check Availability</a>
           </div>
         </div>
 
@@ -191,7 +206,7 @@
 
 <script>
 
-var placeSearch, autocomplete;
+var placeSearch, autocomplete, autocompleteMobile;
 var componentForm = {
   street_number: 'short_name',
   route: 'long_name',
@@ -202,29 +217,26 @@ var componentForm = {
 };
 
 function initAutocomplete() {
-  // Create the autocomplete object, restricting the search to geographical
-  // location types.
   autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */(document.getElementById('googleAddressSearch')),
       {types: ['geocode']});
-      autocomplete.setComponentRestrictions(
+  autocompleteMobile = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('googleAddressSearchMobile')),
+      {types: ['geocode']});
+  autocomplete.setComponentRestrictions(
+        {'country': ['gb']});
+  autocompleteMobile.setComponentRestrictions(
             {'country': ['gb']});
-  // When the user selects an address from the dropdown, populate the address
-  // fields in the form.
   autocomplete.addListener('place_changed', fillInAddress);
+  autocompleteMobile.addListener('place_changed', fillInAddressMobile);
 }
 
 function fillInAddress() {
-  // Get the place details from the autocomplete object.
   var place = autocomplete.getPlace();
-
   for (var component in componentForm) {
     document.getElementById(component).value = '';
     document.getElementById(component).disabled = false;
   }
-
-  // Get each component of the address from the place details
-  // and fill the corresponding field on the form.
   for (var i = 0; i < place.address_components.length; i++) {
     var addressType = place.address_components[i].types[0];
     if (componentForm[addressType]) {
@@ -232,6 +244,35 @@ function fillInAddress() {
       document.getElementById(addressType).value = val;
     }
   }
+  $('#checkAvailabilityDesktop').removeClass('is-success').addClass('is-warning').addClass('is-loading');
+  $(function(){
+   function submitForm(){
+      document.check.submit();
+    };
+       window.setTimeout( submitForm, 500 ); // 0.5 seconds
+    });
+}
+
+function fillInAddressMobile() {
+  var place = autocompleteMobile.getPlace();
+  for (var component in componentForm) {
+    document.getElementById(component).value = '';
+    document.getElementById(component).disabled = false;
+  }
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    if (componentForm[addressType]) {
+      var val = place.address_components[i][componentForm[addressType]];
+      document.getElementById(addressType).value = val;
+    }
+  }
+  $('#checkAvailabilityMobile').removeClass('is-success').addClass('is-warning').addClass('is-loading');
+  $(function(){
+   function submitForm(){
+      document.check.submit();
+    };
+       window.setTimeout( submitForm, 500 ); // 0.5 seconds
+    });
 }
 
 </script>
