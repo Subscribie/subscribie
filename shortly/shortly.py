@@ -48,7 +48,6 @@ class Shortly(object):
     buildingnumber = ''
     route = ''
     postal_town = ''
-    administrative_area_level_1 = ''
     country = ''
     postCode = ''
     uptoSpeedFibre = ''
@@ -133,7 +132,7 @@ class Shortly(object):
             return redirect(redirect_flow.redirect_url)
         else:
             package = request.args["plan"]
-            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, administrative_area_level_1=administrative_area_level_1, country=country, postCode=postCode, package=package, uptoSpeedFibre=uptoSpeedFibre, uptoSpeedADSL=uptoSpeedADSL)
+            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, country=country, postCode=postCode, package=package, uptoSpeedFibre=uptoSpeedFibre, uptoSpeedADSL=uptoSpeedADSL)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -187,8 +186,6 @@ class Shortly(object):
             route = request.form['route']
             global postal_town
             postal_town = request.form['postal_town']
-            global administrative_area_level_1
-            administrative_area_level_1 = request.form['administrative_area_level_1']
             global country
             country = request.form['country']
 
@@ -202,7 +199,7 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, postal_town, administrative_area_level_1, country, postCode))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, postal_town, 'Not Defined', country, postCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
@@ -213,7 +210,7 @@ class Shortly(object):
                 error = 'Please enter a valid request'
             else:
                 r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput',
-                                 data = {'buildingnumber': request.form['street_number'],
+                                 data = {'buildingnumber': request.form['street_number'], 'thoroughfare': request.form['route'],
                                        'postCode': request.form['postal_code']})
                 result = r.text
                 soup = BeautifulSoup(r.text, 'html.parser')
@@ -352,17 +349,5 @@ if __name__ == '__main__':
     run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
 source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
-
-def show_errormessage(error):
-    desc = error.get_description(flask.request.environ)
-    return render_template('error.html',
-        code=error.code,
-        name=error.name,
-        description=Markup(desc)
-    ), error.code
-
-for _exc in default_exceptions:
-    app.error_handlers[_exc] = show_errormessage
-del _exc
 
 application = create_app()
