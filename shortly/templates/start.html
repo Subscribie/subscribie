@@ -35,7 +35,7 @@
 
           <div class="field has-addons is-hidden-touch">
             <div class="control is-expanded">
-              <input class="input is-fullwidth is-large" type="text" placeholder="e.g. 123 Sample Street" name=googleAddressSearch id=googleAddressSearch>
+              <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="e.g. 123 Sample Street" name=googleAddressSearch id=googleAddressSearch>
             </div>
             <div class="control is-expanded">
               <a onclick="check.submit();" id="checkAvailabilityDesktop" class="button go is-fullwidth is-success is-large">Check Availability</a>
@@ -50,7 +50,7 @@
 
           <div class="field is-hidden-desktop">
             <div class="control is-expanded">
-              <input class="input is-fullwidth is-large is-radiusless" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
+              <input class="input is-fullwidth is-large is-radiusless data-hj-whitelist" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
             </div>
             <div class="control is-expanded">
               <a onclick="check.submit();" id="checkAvailabilityMobile" class="button go is-fullwidth is-success is-large is-radiusless" style="margin-top:0.5em">Check Availability</a>
@@ -68,7 +68,7 @@
                 <div class="field">
                   <label class="label has-text-white">Number / Name</label>
                   <div class="control">
-                    <input class="input" id="street_number" name="street_number"></input>
+                    <input class="input data-hj-whitelist" id="street_number" name="street_number"></input>
                   </div>
                 </div>
               </div>
@@ -76,7 +76,7 @@
                 <div class="field">
                   <label class="label has-text-white">Street Name</label>
                   <div class="control">
-                    <input class="input" id="route" name="route"></input>
+                    <input class="input data-hj-whitelist" id="route" name="route"></input>
                   </div>
                 </div>
               </div>
@@ -86,7 +86,7 @@
               <div class="field">
                 <label class="label has-text-white">City</label>
                 <div class="control">
-                  <input class="input" id="postal_town" name="postal_town"></input>
+                  <input class="input data-hj-whitelist" id="postal_town" name="postal_town"></input>
                 </div>
               </div>
             </div>
@@ -94,7 +94,7 @@
               <div class="field">
                 <label class="label has-text-white">Post Code</label>
                 <div class="control">
-                  <input class="input" id="postal_code" name="postal_code"></input>
+                  <input class="input data-hj-whitelist" id="postal_code" name="postal_code"></input>
                 </div>
               </div>
             </div>

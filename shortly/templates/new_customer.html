@@ -30,7 +30,7 @@
         <div class="field">
           <label for="given_name" class="label">First Name</label>
           <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=given_name id=given_name value="{{ given_name }}" placeholder="Enter your first name">
+            <input class="input is-medium data-hj-whitelist" type="text" name=given_name id=given_name value="{{ given_name }}" placeholder="Enter your first name">
             <span class="icon is-small is-left">
               <i class="fas fa-user"></i>
             </span>
@@ -39,7 +39,7 @@
       </div>
       <div class="column">
         <div class="field">
-          <label for="family_name" class="label">Last Name</label>
+          <label for="family_name" class="label data-hj-whitelist">Last Name</label>
           <p class="control has-icons-left">
             <input class="input is-medium" type="text" name=family_name id=family_name value="{{ family_name }}" placeholder="...and now your last name">
             <span class="icon is-small is-left">
@@ -55,7 +55,7 @@
         <div class="field">
           <label for="mobile" class="label">Main Contact Number</label>
           <p class="control has-icons-left">
-            <input class="input is-medium" type="tel" name=mobile id=mobile value="{{ mobile }}" placeholder="Enter your mobile number">
+            <input class="input is-medium data-hj-whitelist" type="tel" name=mobile id=mobile value="{{ mobile }}" placeholder="Enter your mobile number">
             <span class="icon is-small is-left">
               <i class="fas fa-phone"></i>
             </span>
@@ -64,7 +64,7 @@
       </div>
       <div class="column">
         <div class="field">
-          <label for="email" class="label">Email Address</label>
+          <label for="email" class="label data-hj-whitelist">Email Address</label>
           <p class="control has-icons-left">
             <input class="input is-medium" type="email" name=email id=email value="{{ email }}" placeholder="...and now your email address">
             <span class="icon is-small is-left">
