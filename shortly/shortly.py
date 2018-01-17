@@ -43,16 +43,6 @@ class Shortly(object):
             Rule('/sw.js', endpoint='sw')
         ])
 
-    # Declare some stuff globally, as we need the address info over several functions
-
-    buildingnumber = ''
-    route = ''
-    postal_town = ''
-    country = ''
-    postCode = ''
-    uptoSpeedFibre = ''
-    uptoSpeedADSL = ''
-
     #####################
     #   Error Routes
     #####################
@@ -94,12 +84,8 @@ class Shortly(object):
         if request.method == 'POST':
             given_name = request.form['given_name']
             family_name = request.form['family_name']
-            global buildingnumber
-            global route
             address_line1 = buildingnumber + ", " + route
-            global postal_town
             city = postal_town
-            global postCode
             postal_code = postCode
             email = request.form['email']
             mobile = request.form['mobile']
