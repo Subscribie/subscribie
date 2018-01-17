@@ -123,7 +123,7 @@ class Shortly(object):
             return redirect(redirect_flow.redirect_url)
         else:
             package = request.args["plan"]
-            return self.render_template('new_customer.html', buildingnumber=buildingnumber, route=route, postal_town=postal_town, country=country, postCode=postCode, package=package, uptoSpeedFibre=uptoSpeedFibre, uptoSpeedADSL=uptoSpeedADSL)
+            return self.render_template('new_customer.html', package=package)
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -171,26 +171,14 @@ class Shortly(object):
             pass
         result = ''
         if request.method == 'POST':
-            global buildingnumber
-            buildingnumber = request.form['street_number']
-            global route
-            route = request.form['route']
-            global postal_town
-            postal_town = request.form['postal_town']
-            global country
-            country = request.form['country']
-
-            if country != 'United Kingdom':
-                return self.render_template('start.html', erroricon='em-gb', error="We couldn't find that address, make sure it's in the UK and try again.")
-
-            global postCode
-            postCode = request.form['postal_code']
+            buildingnumber = request.form['buildingnumber']
+            PostCode = request.form['PostCode']
             now = datetime.datetime.now()
             prettyTime = datetime.datetime.now().strftime("%H:%M %D")
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv('db_full_path'))
             cur = con.cursor()
-            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, route, postal_town, 'Not Defined', country, postCode))
+            cur.execute("INSERT INTO lookups VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, buildingnumber, '', '', '', '', PostCode))
             con.commit()
             cur.execute("SELECT * FROM lookups")
             print cur.fetchone()
@@ -201,8 +189,8 @@ class Shortly(object):
                 error = 'Please enter a valid request'
             else:
                 r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput',
-                                 data = {'buildingnumber': request.form['street_number'], 'thoroughfare': request.form['route'],
-                                       'postCode': request.form['postal_code']})
+                                 data = {'buildingnumber': request.form['buildingnumber'], 
+                                       'postCode': request.form['PostCode']})
                 result = r.text
                 soup = BeautifulSoup(r.text, 'html.parser')
                 soup.prettify()
@@ -250,11 +238,9 @@ class Shortly(object):
                         nophone=True
                 except  KeyError:
                     pass
-                global uptoSpeedFibre
                 uptoSpeedFibre = result['VDSL Range A']['Downstream']['high']
-                global uptoSpeedADSL
                 uptoSpeedADSL = result['WBC ADSL 2+']['Downstream']
-                return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, streetname=route, postCode=postCode, now=prettyTime, nophone=nophone)
+                return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
         return self.render_template('start.html', error=error, cheese=True, nophone=nophone)
 
 
