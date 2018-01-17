@@ -22,95 +22,35 @@
 
     <form action="" name="check" id="check" method=post>
 
-
       <div style="max-width:800px; margin:auto">
-
         {% if error %}
         <div class="notification is-info>"
           <p><strong><i class='em {{ erroricon }}'></i> {{ error }}</strong></p>
         </div>
         {% endif %}
 
-        <div id="interactivePicker">
-
-          <div class="field has-addons is-hidden-touch">
+          <div class="field">
             <div class="control is-expanded">
-              <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="e.g. 123 Sample Street" name=googleAddressSearch id=googleAddressSearch>
-            </div>
-            <div class="control is-expanded">
-              <a onclick="check.submit();" id="checkAvailabilityDesktop" class="button go is-fullwidth is-success is-large">Check Availability</a>
+              <label class="label" for="buildingnumber">House/Building Number:
+                <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="House/Building Number" name="buildingnumber" id="buildingnumber">
+              </label>
             </div>
           </div>
 
-          <noscript>
-              <div class="notification is-danger">
-                <p>This checker can't yet work without JS. Please enable JavaScript in order to view this site in all its glory.</p>
-              </div>
-          </noscript>
-
-          <div class="field is-hidden-desktop">
+          <div class="field">
             <div class="control is-expanded">
-              <input class="input is-fullwidth is-large is-radiusless data-hj-whitelist" type="text" placeholder="Type Address Here..." name=googleAddressSearchMobile id=googleAddressSearchMobile>
+              <label class="label" for="PostCode">Postcode: 
+                <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="AB12 34CD" name="PostCode" id="PostCode">
+              </label>
             </div>
+          </div>
+
+          <div class="field">
             <div class="control is-expanded">
-              <a onclick="check.submit();" id="checkAvailabilityMobile" class="button go is-fullwidth is-success is-large is-radiusless" style="margin-top:0.5em">Check Availability</a>
+              <input type="submit" id="checkAvailability" class="button go is-fullwidth is-success is-large" value="Check Availability" />
             </div>
           </div>
-
-          <a id="cantFind" class="button is-outlined is-light" style="margin-top:0.5em">I can't find my address</a>
-
-        </div>
-
-        <div class="has-text-left" id="addressNotFound" style="display:none">
-
-          <div class="columns">
-              <div class="column is-one-third">
-                <div class="field">
-                  <label class="label has-text-white">Number / Name</label>
-                  <div class="control">
-                    <input class="input data-hj-whitelist" id="street_number" name="street_number"></input>
-                  </div>
-                </div>
-              </div>
-              <div class="column">
-                <div class="field">
-                  <label class="label has-text-white">Street Name</label>
-                  <div class="control">
-                    <input class="input data-hj-whitelist" id="route" name="route"></input>
-                  </div>
-                </div>
-              </div>
-          </div>
-          <div class="columns">
-            <div class="column">
-              <div class="field">
-                <label class="label has-text-white">City</label>
-                <div class="control">
-                  <input class="input data-hj-whitelist" id="postal_town" name="postal_town"></input>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label has-text-white">Post Code</label>
-                <div class="control">
-                  <input class="input data-hj-whitelist" id="postal_code" name="postal_code"></input>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <input class="input is-hidden" id="country" name="country" value="United Kingdom"></input>
-
-          <br />
-          <input type=submit class="button is-fullwidth is-success is-large" value="Check Availability">
-
-          <a class="button is-outlined is-light" style="margin-top:1em" href="https://support.karmacomputing.co.uk/">If you still can't find results for your home or business, check out this KB resource.</a>
-
-        </div>
-
       </div>
-
     </form>
 
 
