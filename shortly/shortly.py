@@ -80,6 +80,11 @@ class Shortly(object):
         return self.render_template('gettingstarted.html')
 
     def on_prerequisites(self, request):
+        """
+        Render template with mandatory questions for a
+        sucessful onboarding e.g. "Do you already have 
+        a x,y,z?".
+        """
         return self.render_template('prerequisites.html')
 
     def on_broadband_availability_postcode_checker(self,request):
