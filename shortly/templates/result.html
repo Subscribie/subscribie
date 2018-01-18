@@ -23,9 +23,6 @@
 
       <h1 style="color:white" class="title is-1 is-size-3-mobile">We couldn't check that address</h1>
       <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">But do get in touch, we're here to help!</h2>
-      <div class="container" style="width:100%; max-width:800px;">
-        <p style="color:white;">Our checker couldn't find this address, but don't worry. Start a chat using the widget below and one of the team will be able to manually check what services we can offer you. Sometimes our checker doesn't work with apartment buildings with complex numbering schemes. Copy and Paste the snippet of text below this paragraph into the chat window.</p>
-      </div>
 
   {% endif %}
 
@@ -107,8 +104,11 @@
 
 <script>
   localStorage.setItem('buildingnumber', '{{ buildingnumber }}');
-  localStorage.setItem('postCode', '{{ postCode }}'); 
+  localStorage.setItem('postCode', '{{ postCode }}');
 </script>
+
+
+{% if canADSL %}
 
 <div class="section">
   <div class="container">
@@ -126,31 +126,44 @@
   </div>
 </div>
 
-{% if canFibre %}
+  {% if canFibre %}
 
-  <div class="section">
-    <div class="container">
+    <div class="section">
+      <div class="container">
 
-      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
-        <div class="column">
-          <h3 class="title is-3">What can I do on Fibre and Fibre Plus?</h3>
-          <p class="has-text-left">In addition to all the benefits ADSL brings, Fibre allows for much faster upload and download speeds. With this brings enhanced streaming of <strong>HD content</strong>, <strong>online gaming</strong> &amp; <strong>remote capabilities</strong>. Available to ~80% of UK households and premises, the speeds offered can support <strong>up to 20 users </strong>at the same time. Again, your speeds will depend on how far away from the cabinet or telephone exchange you are.</p>
+        <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column">
+            <h3 class="title is-3">What can I do on Fibre and Fibre Plus?</h3>
+            <p class="has-text-left">In addition to all the benefits ADSL brings, Fibre allows for much faster upload and download speeds. With this brings enhanced streaming of <strong>HD content</strong>, <strong>online gaming</strong> &amp; <strong>remote capabilities</strong>. Available to ~80% of UK households and premises, the speeds offered can support <strong>up to 20 users </strong>at the same time. Again, your speeds will depend on how far away from the cabinet or telephone exchange you are.</p>
+          </div>
+          <div class="column">
+            <img src="/static/fibre.svg" style="max-height:300px">
+          </div>
         </div>
-        <div class="column">
-          <img src="/static/fibre.svg" style="max-height:300px">
-        </div>
+
       </div>
-
     </div>
-  </div>
+
+  {% else %}
+
+    <div class="section">
+      <div class="container">
+
+        <h3 class="title is-3">Fibre isn't available in your area yet.</h3>
+        <p class="has-text-left">Our checker couldn't find Fibre for your address, but all is not lost. For many homes and businesses ADSL (Standard) broadband is perfectly fast and stable.</p>
+
+      </div>
+    </div>
+
+  {% endif %}
 
 {% else %}
 
   <div class="section">
     <div class="container">
 
-      <h3 class="title is-3">Fibre isn't available in your area yet.</h3>
-      <p class="has-text-left">Our checker couldn't find Fibre for your address, but all is not lost. For many homes and businesses ADSL (Standard) broadband is perfectly fast and stable.</p>
+      <h3 class="title is-3">Getting in touch about your order</h3>
+      <p class="has-text-left">Our checker couldn't find this address, but don't worry. Start a chat using the widget below and one of the team will be able to manually check what services we can offer you. Sometimes our checker doesn't work with apartment buildings with complex numbering schemes. Copy and Paste the snippet of text below this paragraph into the chat window.</p>
 
     </div>
   </div>
