@@ -34,6 +34,7 @@ class Shortly(object):
             Rule('/broadband-availability-postcode-checker', endpoint='broadband_availability_postcode_checker'),
             Rule('/sign', endpoint='sign'),
             Rule('/new_customer', endpoint='new_customer'),
+            Rule('/establish_mandate', endpoint='establish_mandate'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
             Rule('/thankyou', endpoint='thankyou'),
             Rule('/gettingstarted', endpoint='gettingstarted'),
@@ -72,7 +73,7 @@ class Shortly(object):
     def on_prerequisites(self, request):
         """
         Render template with mandatory questions for a
-        sucessful onboarding e.g. "Do you already have 
+        sucessful onboarding e.g. "Do you already have
         a x,y,z?".
         """
         return self.render_template('prerequisites.html')
@@ -101,18 +102,39 @@ class Shortly(object):
             print cur.fetchone()
             con.close()
 
+            #TODO: redirect to Crab
+            return redirect(os.getenv('establish_mandate_url'))
+
+        #GET request
+        else:
+            package = request.args["plan"]
+            return self.render_template('new_customer.html', package=package)
+
+    def on_establish_mandate(self, request):
+        #lookup the customer with sid and get their relevant details
+        sid = request.cookies.get('karma_cookie')
+        con = sqlite3.connect(os.getenv("db_full_path"))
+        cur = con.cursor()
+        cur.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,))
+        res = cur.fetchone()
+        print res
+        con.close()
+
+        if res:
+            #TODO: validate that hasInstantPaid is true for the customer
+
             redirect_flow = self.gocclient.redirect_flows.create(
                 params = {
                     "description" : "Karma Computing Broadband",
-                    "session_token" : request.cookies.get('karma_cookie'),
+                    "session_token" : sid,
                     "success_redirect_url" : os.getenv('success_redirect_url'),
                     "prefilled_customer" : {
-                        "given_name" : given_name,
-                        "family_name": family_name,
-                        "address_line1": address_line1,
-                        "city" : city,
-                        "postal_code": postal_code,
-                        "email": email,
+                        "given_name" : res[2],
+                        "family_name": res[3],
+                        "address_line1": res[4],
+                        "city" : res[5],
+                        "postal_code": res[6],
+                        "email": res[7]
                     }
                 }
             )
@@ -122,8 +144,8 @@ class Shortly(object):
             print("URL: {} ".format(redirect_flow.redirect_url))
             return redirect(redirect_flow.redirect_url)
         else:
-            package = request.args["plan"]
-            return self.render_template('new_customer.html', package=package)
+            print "no customer found with sid"
+            #TODO: respond with 400
 
     def on_complete_mandate(self, request):
         redirect_flow_id = request.args.get('redirect_flow_id')
@@ -171,6 +193,7 @@ class Shortly(object):
             pass
         result = ''
         if request.method == 'POST':
+            print(os.getenv('db_full_path'))
             buildingnumber = request.form['buildingnumber']
             PostCode = request.form['PostCode']
             now = datetime.datetime.now()
@@ -189,7 +212,7 @@ class Shortly(object):
                 error = 'Please enter a valid request'
             else:
                 r = requests.post('https://www.dslchecker.bt.com/adsl/ADSLChecker.AddressOutput',
-                                 data = {'buildingnumber': request.form['buildingnumber'], 
+                                 data = {'buildingnumber': request.form['buildingnumber'],
                                        'postCode': request.form['PostCode']})
                 result = r.text
                 soup = BeautifulSoup(r.text, 'html.parser')
@@ -326,8 +349,9 @@ if __name__ == '__main__':
     if (os.getenv('environment') == 'local'):
         run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
     else:
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True) 
+        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
 
-source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
+#source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
+source('.env')
 
 application = create_app()
