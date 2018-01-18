@@ -84,9 +84,9 @@ class Shortly(object):
         if request.method == 'POST':
             given_name = request.form['given_name']
             family_name = request.form['family_name']
-            address_line1 = buildingnumber + ", " + route
-            city = postal_town
-            postal_code = postCode
+            address_line1 = request.form['address_line1']
+            city = request.form['city']
+            postal_code = request.form['postal_code']
             email = request.form['email']
             mobile = request.form['mobile']
             now = datetime.datetime.now()
@@ -107,12 +107,6 @@ class Shortly(object):
                     "session_token" : request.cookies.get('karma_cookie'),
                     "success_redirect_url" : os.getenv('success_redirect_url'),
                     "prefilled_customer" : {
-                        "given_name" : given_name,
-                        "family_name": family_name,
-                        "address_line1": address_line1,
-                        "city" : city,
-                        "postal_code": postal_code,
-                        "email": email,
                     }
                 }
             )

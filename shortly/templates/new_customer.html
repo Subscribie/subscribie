@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block body %}
-
 <div class="section">
   <div class="container">
 
@@ -30,21 +29,15 @@
         <div class="field">
           <label for="given_name" class="label">First Name</label>
           <p class="control has-icons-left">
-            <input class="input is-medium data-hj-whitelist" type="text" name=given_name id=given_name value="{{ given_name }}" placeholder="Enter your first name">
-            <span class="icon is-small is-left">
-              <i class="fas fa-user"></i>
-            </span>
+            <input class="input is-medium" type="text" name=given_name id=given_name value="{{ given_name }}" placeholder="Enter your first name">
           </p>
         </div>
       </div>
       <div class="column">
         <div class="field">
-          <label for="family_name" class="label data-hj-whitelist">Last Name</label>
+          <label for="family_name" class="label">Last Name</label>
           <p class="control has-icons-left">
             <input class="input is-medium" type="text" name=family_name id=family_name value="{{ family_name }}" placeholder="...and now your last name">
-            <span class="icon is-small is-left">
-              <i class="fas fa-user"></i>
-            </span>
           </p>
         </div>
       </div>
@@ -53,108 +46,65 @@
     <div class="columns" style="text-align:left">
       <div class="column">
         <div class="field">
-          <label for="mobile" class="label">Main Contact Number</label>
+          <label for="mobile" class="label">Mobile Contact Number</label>
           <p class="control has-icons-left">
-            <input class="input is-medium data-hj-whitelist" type="tel" name=mobile id=mobile value="{{ mobile }}" placeholder="Enter your mobile number">
-            <span class="icon is-small is-left">
-              <i class="fas fa-phone"></i>
-            </span>
+            <input class="input is-medium" type="tel" name=mobile id=mobile value="{{ mobile }}" placeholder="Enter your mobile number">
           </p>
         </div>
       </div>
       <div class="column">
         <div class="field">
-          <label for="email" class="label data-hj-whitelist">Email Address</label>
+          <label for="email" class="label">Email Address</label>
           <p class="control has-icons-left">
             <input class="input is-medium" type="email" name=email id=email value="{{ email }}" placeholder="...and now your email address">
-            <span class="icon is-small is-left">
-              <i class="fas fa-envelope"></i>
-            </span>
           </p>
         </div>
       </div>
     </div>
 
     <br />
-
-    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your Address</h3>
-    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">The address shown below is where the broadband service will be installed and activated. If your billing address is different, enter this on the next stage.</p>
-
-    <div class="notification is-light">
-      <div class="columns">
-        <div class="column">
-          <p><i class="em em-house_with_garden"></i>&nbsp;&nbsp;{{ buildingnumber }} {{ route }}, {{ postal_town }}, {{ postCode }}</p>
-        </div>
-        <div class="column is-one-third" style="text-align:right">
-          <a class="button is-dark is-small is-fullwidth modal-button" data-target="modalResetAddress" style="max-width: 300px; display: inline-flex;"><span class="icon is-small is-left"><i class="fas fa-edit"></i></span>&nbsp;&nbsp;Change Service Address</a>
-        </div>
-      </div>
-    </div>
-    <p>We filled in your address information based on the address you searched for. Please make sure this is correct as any errors may result in your order being delayed or cancelled. You must also have permission from either the landlord or property owner that you can change the service provider of the line serving this premises.</p>
-
-    <br /><br />
-
-    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your Broadband Plan</h3>
-    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">This is the broadband plan you've selected, good choice!</p>
-
-    <div class="notification is-light">
-      <div class="columns">
-        <div class="column">
-          {% if package == "adsl" %}
-            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Standard Broadband - Up to {{ uptoSpeedADSL }}Mbps</p>
-          {% elif package == "fibre" %}
-            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Fibre Broadband - Up to {{ uptoSpeedFibre }}Mbps</p>
-          {% elif package == "fibre_plus" %}
-            <p><i class="em em-three_button_mouse"></i>&nbsp;&nbsp;Fibre Plus Broadband - Up to {{ uptoSpeedFibre }}Mbps</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <p>We'll run a few more checks to make sure the speed show above is what you'll receive, if there are any difference we'll let you know. </p>
-
     <br />
-    <input type=submit class="button is-success is-large is-pulled-right" value="Continue to Payment">
     <br /><br />
+
+    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Confirm Your Address</h3>
+    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">This must be the address where the service is being installed. If your billing address is different, enter this on the next stage.</p>
+
+    <div class="columns" style="text-align:left">
+      <div class="column">
+        <div class="field">
+          <label for="address_line1" class="label">Address Line 1</label>
+          <p class="control has-icons-left">
+            <input class="input is-medium" type="text" name=address_line1 id=address_line1 value="{{ address_line1 }}" placeholder="123 Sample Lane">
+          </p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label for="city" class="label">City / Town</label>
+          <p class="control has-icons-left">
+            <input class="input is-medium" type="text" name=city id=city value="{{ city }}" placeholder="Newcastle upon Tyne">
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns" style="text-align:left">
+      <div class="column">
+        <div class="field">
+          <label for="postal_code" class="label">Postcode</label>
+          <p class="control has-icons-left">
+            <input class="input is-medium" type="text" name=postal_code id=postal_code value="{{ postal_code }}" placeholder="AB12 3CD">
+          </p>
+        </div>
+      </div>
+        <div class="column">
+
+        </div>
+      </div>
+    <input type=submit class="button is-success is-large is-fullwidth" value="Continue to Payment">
 
   </form>
 </div>
-</div>
-
-<div class="kcBlue has-text-white">
-
-  <div class="section">
-    <div class="container">
-
-      <h3 class="title is-4 has-text-white">Broadband Terms and Conditions</h3>
-
-      <div class="tab blue">
-        <input class="accordian" id="tab-four" type="checkbox" name="tabs2">
-        <label class="accordian" for="tab-four">Broadband Terms</label>
-        <div class="tab-content">
-          <p>View our latest Terms and Conditions document by clicking the link below:</p>
-          <a class="button is-outlined is-light is-fullwidth" target="_blank" style="margin-top:0.5em" href="https://support.karmacomputing.co.uk/Broadband%20&%20Phone/T%20&%20Cs/Terms%20and%20Conditions">KC Broadband Terms and Conditions</a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<div class="modal" id="modalResetAddress">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title"><i class="em em-information_desk_person"></i>&nbsp;&nbsp;Change Service Address</p>
-    </header>
-    <section class="modal-card-body">
-      <p>Because the plan you've selected was checked against your address, click the button below to check again with a different 
-        address.</p>
-      <br />
-      <a href="/" class="button is-medium is-dark is-fullwidth">Check a different address</a>
-    </section>
-  </div>
-  <button class="modal-close is-large" aria-label="close"></button>
 </div>
 
 {% endblock %}
