@@ -96,15 +96,15 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
-            #TODO: change hasInstantPaid default to false once you redirect to Crab
             cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants, 'null', 'null', True))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
             con.close()
 
-            #TODO: redirect to Crab
-            return redirect(os.getenv('establish_mandate_url'))
+            #redirect to Crab
+            return redirect(os.getenv('crab_url'))
+            #return redirect(os.getenv('establish_mandate_url'))
 
         #GET request
         else:

@@ -5,6 +5,7 @@ python createdb.py
 
 ### Create .env file
 Example .env file:
+export crab_url=http://localhost:80/index.php
 export establish_mandate_url=http://localhost:5000/establish_mandate 
 export success_redirect_url=http://localhost:5000/complete_mandate
 export thankyou_url=http://localhost:5000/thankyou
