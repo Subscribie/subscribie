@@ -96,7 +96,8 @@ class Shortly(object):
             sid = request.cookies.get('karma_cookie')
             con = sqlite3.connect(os.getenv("db_full_path"))
             cur = con.cursor()
-            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants, 'null', 'null'))
+            #TODO: change hasInstantPaid default to false once you redirect to Crab
+            cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants, 'null', 'null', True))
             con.commit()
             cur.execute("SELECT * FROM person")
             print cur.fetchone()
@@ -121,28 +122,31 @@ class Shortly(object):
         con.close()
 
         if res:
-            #TODO: validate that hasInstantPaid is true for the customer
-
-            redirect_flow = self.gocclient.redirect_flows.create(
-                params = {
-                    "description" : "Karma Computing Broadband",
-                    "session_token" : sid,
-                    "success_redirect_url" : os.getenv('success_redirect_url'),
-                    "prefilled_customer" : {
-                        "given_name" : res[2],
-                        "family_name": res[3],
-                        "address_line1": res[4],
-                        "city" : res[5],
-                        "postal_code": res[6],
-                        "email": res[7]
+            # validate that hasInstantPaid is true for the customer
+            if res[12] == True:
+                redirect_flow = self.gocclient.redirect_flows.create(
+                    params = {
+                        "description" : "Karma Computing Broadband",
+                        "session_token" : sid,
+                        "success_redirect_url" : os.getenv('success_redirect_url'),
+                        "prefilled_customer" : {
+                            "given_name" : res[2],
+                            "family_name": res[3],
+                            "address_line1": res[4],
+                            "city" : res[5],
+                            "postal_code": res[6],
+                            "email": res[7]
+                        }
                     }
-                }
-            )
-            # Hold on to this ID - we'll need it when we
-            # "confirm" the dedirect flow later
-            print("ID: {} ".format(redirect_flow.id))
-            print("URL: {} ".format(redirect_flow.redirect_url))
-            return redirect(redirect_flow.redirect_url)
+                )
+                # Hold on to this ID - we'll need it when we
+                # "confirm" the dedirect flow later
+                print("ID: {} ".format(redirect_flow.id))
+                print("URL: {} ".format(redirect_flow.redirect_url))
+                return redirect(redirect_flow.redirect_url)
+            else:
+                print "hasInstantPaid on this customer was false"
+                #TODO: respond with 403
         else:
             print "no customer found with sid"
             #TODO: respond with 400
