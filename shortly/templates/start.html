@@ -18,7 +18,7 @@
           </g>
         <path id="AnimatedLine" d="M510.217728,222.316058 C568.986227,224.564773 638.201475,209.79413 717.863471,178.004132 C797.525468,146.214133 869.933166,103.630715 935.086566,50.253879" id="Line-9" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" transform="translate(722.652147, 136.396387) scale(-1, 1) rotate(44.000000) translate(-722.652147, -136.396387) "></path>
     <h1 style="color:white" class="title is-1 is-size-3-mobile">Broadband Availability Checker</h1>
-    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Search for your house number and street to get started</h2>
+    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Enter your house number and postcode to get started</h2>
 
     <form action="" name="check" id="check" method=post>
 
@@ -29,27 +29,29 @@
         </div>
         {% endif %}
 
-          <div class="field">
-            <div class="control is-expanded">
-              <label class="label" for="buildingnumber">House/Building Number:
-                <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="House/Building Number" name="buildingnumber" id="buildingnumber">
-              </label>
+        <div class="columns is-paddingless" style="max-width:750px; margin:auto">
+          <div class="column is-half">
+            <div class="field">
+              <label for="buildingnumber" class="label is-large is-small-mobile" style="color:white">House Number</label>
+              <div class="control">
+                <input class="input is-large data-hj-whitelist" type="text" placeholder="12A" name=buildingnumber id=buildingnumber value="{{ buildingnumber }}">
+              </div>
             </div>
           </div>
+          <div class="column is-half">
+            <div class="field">
+              <label for="PostCode" class="label is-large is-small-mobile" style="color:white">Post Code</label>
+              <div class="control">
+                <input class="input is-large data-hj-whitelist" type="text" placeholder="AB12 34CD" name=PostCode id=PostCode value="{{ PostCode }}">
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div class="field">
-            <div class="control is-expanded">
-              <label class="label" for="PostCode">Postcode: 
-                <input class="input is-fullwidth is-large data-hj-whitelist" type="text" placeholder="AB12 34CD" name="PostCode" id="PostCode">
-              </label>
-            </div>
-          </div>
+        <div style="max-width:750px; margin:auto; padding: 0.75rem;">
+          <input type=submit id="checkAvailability" class="button is-large is-fullwidth is-success" value="Check Availability">
+        </div>
 
-          <div class="field">
-            <div class="control is-expanded">
-              <input type="submit" id="checkAvailability" class="button go is-fullwidth is-success is-large" value="Check Availability" />
-            </div>
-          </div>
       </div>
     </form>
 
