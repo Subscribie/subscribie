@@ -89,12 +89,6 @@ class Shortly(object):
                     "session_token" : request.cookies.get('karma_cookie'),
                     "success_redirect_url" : os.getenv('success_redirect_url'),
                     "prefilled_customer" : {
-                        "given_name" : given_name,
-                        "family_name": family_name,
-                        "address_line1": address_line1,
-                        "city" : city,
-                        "postal_code": postal_code,
-                        "email": email,
                     }
                 }
             )
