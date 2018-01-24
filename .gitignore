@@ -1,4 +1,5 @@
 env/
 *.swp
 .env
+shortly/.env
 shortly/kcBroadband.db
