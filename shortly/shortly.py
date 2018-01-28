@@ -1,4 +1,5 @@
 import os
+import time
 from os import environ
 from subprocess import Popen, PIPE
 import datetime
@@ -17,6 +18,7 @@ from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
 import smtplib
+from penguin_rest import Rest 
 
 class Shortly(object):
     session_store = FilesystemSessionStore()
@@ -226,6 +228,8 @@ class Shortly(object):
                 result['VDSL Range A'] = {'Downstream': {'high':'', 'low':''},'Upstream': {'high':'', 'low':''}}
                 result['WBC ADSL 2+'] = {'Downstream': '','Upstream': ''}
 
+
+
 		for span in soup.find_all('span'):
 		    if "VDSL Range A (Clean)" in span:
 			for index, child in enumerate(span.parent.parent.children):
@@ -267,6 +271,16 @@ class Shortly(object):
                     pass
                 uptoSpeedFibre = result['VDSL Range A']['Downstream']['high']
                 uptoSpeedADSL = result['WBC ADSL 2+']['Downstream']
+
+                fields = {'title':time.time(),
+                      'field_building_number':request.form['buildingnumber'],
+                      'field_postcode_availability':request.form['PostCode'],
+                      'field_vdsl_a_clean_mbps_high_dl':result['VDSL Range A']['Downstream']['high'],
+                      'field_vdsl_a_clean_mbps_low_dl':result['VDSL Range A']['Downstream']['low'],
+                      'field_vdsl_a_clean_mbps_high_ul':result['VDSL Range A']['Upstream']['high'],
+                      'field_vdsl_a_clean_mbps_low_ul': result['VDSL Range A']['Upstream']['low']}
+                Rest.post(entity='broadband_availability_lookup', fields=fields)
+
                 return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
         return self.render_template('start.html', error=error, cheese=True, nophone=nophone)
 
