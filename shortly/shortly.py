@@ -188,7 +188,7 @@ class Shortly(object):
         sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
         from_email = Email("broadband@karmacomputing.co.uk", "Broadband Team")
         to_email = Email("connorloughlin@gmail.com")
-        subject = "I'm replacing the subject tag"
+        subject = "Prefilled"
         content = Content("text/html", "There has been an error constructing this email.")
         mail = Mail(from_email, subject, to_email, content)
         mail.personalizations[0].add_substitution(Substitution("-name-", "Connor Loughlin"))
