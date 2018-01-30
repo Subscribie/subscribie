@@ -105,7 +105,7 @@ class Shortly(object):
             con.close()
 
             #redirect to Crab with sid in the query
-            return redirect(os.getenv('crab_url') + '?sid=' + sid)
+            return redirect(os.getenv('crab_url') + '?sid=' + sid + '&package=' + wants + '&fname=' + given_name)
             #return redirect(os.getenv('establish_mandate_url'))
 
         #GET request
