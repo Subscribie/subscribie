@@ -18,7 +18,9 @@ from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
 import smtplib
-from penguin_rest import Rest 
+from penguin_rest import Rest
+import sendgrid
+from sendgrid.helpers.mail import *
 
 class Shortly(object):
     session_store = FilesystemSessionStore()
@@ -181,6 +183,26 @@ class Shortly(object):
         print cur.fetchone()
         con.close()
 
+        # Send email to the customer, yay!
+
+        sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+        from_email = Email("broadband@karmacomputing.co.uk", "Broadband Team")
+        to_email = Email("connorloughlin@gmail.com")
+        subject = "I'm replacing the subject tag"
+        content = Content("text/html", "There has been an error constructing this email.")
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-name-", "Connor Loughlin"))
+        mail.personalizations[0].add_substitution(Substitution("-package-", "Fibre Plus"))
+        mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", "41.99"))
+        mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
+        try:
+            response = sg.client.mail.send.post(request_body=mail.get())
+        except urllib.HTTPError as e:
+            print (e.read())
+            exit()
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
 
         # Display a confirmation page to the customer, telling them
         # their Direct Debit has been set up. You could build your own,
