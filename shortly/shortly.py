@@ -364,10 +364,10 @@ if __name__ == '__main__':
     source("./.env")
     from werkzeug.serving import run_simple
     app = create_app()
-    if (os.getenv('environment') == 'local'):
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
-    else:
+    if (os.getenv('ENV') == 'live'):
         run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
+    else:
+        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
 
 #source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
 source('.env')
