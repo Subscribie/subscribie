@@ -1,6 +1,8 @@
 import os
-import time
 from os import environ
+from os.path import join, dirname
+from dotenv import load_dotenv
+import time
 from subprocess import Popen, PIPE
 import datetime
 import urlparse
@@ -24,13 +26,14 @@ class Shortly(object):
     session_store = FilesystemSessionStore()
 
     def __init__(self, config):
-        template_path = os.path.join(os.path.dirname(__file__), 'templates')
-        self.jinja_env = Environment(loader=FileSystemLoader(template_path),
-                                     autoescape=True)
+        source("./.env")
         self.gocclient = gocardless_pro.Client(
             access_token = os.getenv('gocardless_token'),
             environment= os.getenv('gocardless_environment')
         )
+        template_path = os.path.join(os.path.dirname(__file__), 'templates')
+        self.jinja_env = Environment(loader=FileSystemLoader(template_path),
+                                     autoescape=True)
         self.url_map = Map([
             Rule('/', endpoint='start'),
             Rule('/broadband-availability-postcode-checker', endpoint='broadband_availability_postcode_checker'),
@@ -326,10 +329,8 @@ class Shortly(object):
     def __call__(self, environ, start_response):
         return self.wsgi_app(environ, start_response)
 
-def create_app(redis_host='localhost', redis_port=6379, with_static=True):
+def create_app(with_static=True):
     app = Shortly({
-        'redis_host': redis_host,
-        'redis_port': redis_port
     })
     if with_static:
         app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
@@ -361,15 +362,9 @@ def source(script, update=1):
     return env
 
 if __name__ == '__main__':
-    source("./.env")
     from werkzeug.serving import run_simple
     app = create_app()
-    if (os.getenv('ENV') == 'live'):
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
-    else:
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
+    run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
 
-#source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
-source('.env')
 
 application = create_app()
