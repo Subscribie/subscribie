@@ -41,6 +41,7 @@ class Shortly(object):
             Rule('/establish_mandate', endpoint='establish_mandate'),
             Rule('/complete_mandate', endpoint='complete_mandate'),
             Rule('/thankyou', endpoint='thankyou'),
+            Rule('/test', endpoint='test'),
             Rule('/gettingstarted', endpoint='gettingstarted'),
             Rule('/prerequisites', endpoint='prerequisites'),
             Rule('/manifest.json', endpoint='manifest'),
@@ -69,6 +70,85 @@ class Shortly(object):
         return self.render_template('signature.html')
 
     def on_thankyou(self, request):
+        return self.render_template('thankyou.html')
+
+    def on_test(self, request):
+
+        sid = "7a924ff4030a765278ed2da95000da67fbcdd75e"
+        con = sqlite3.connect(os.getenv('db_full_path'))
+        cur = con.cursor()
+        cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
+        row = cur.fetchone()
+        customerName = row[2] + " " + row[3]
+        customerAddress = row[4] + ", " + row[5] + ", " + row[6]
+        customerEmail = row[7]
+        customerPhone = row[8]
+        broadbandPackage = row[9]
+        customerExistingLine = row[10]
+        customerExistingNumber = row[11]
+
+        currentDate = datetime.datetime.now()
+        goLive = currentDate + datetime.timedelta(days = 15)
+
+        if broadbandPackage == "adsl":
+            broadbandPackage = "ADSL 2+"
+            contractExpiry = goLive + datetime.timedelta(days = 90)
+            monthlyCost = "34.99"
+        elif broadbandPackage == "fibre":
+            broadbandPackage = "FTTC 40:10"
+            contractExpiry = goLive + datetime.timedelta(days = 365)
+            monthlyCost = "41.99"
+        elif broadbandPackage == "fibre_plus":
+            broadbandPackage = "FTTC 80:20"
+            contractExpiry = goLive + datetime.timedelta(days = 365)
+            monthlyCost = "41.99"
+
+        contractExpiry = contractExpiry.strftime('%d/%m/%Y') + "*"
+        goLive = goLive.strftime('%d/%m/%Y')
+
+        ## ADMIN
+        sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+        from_email = Email("broadband@karmacomputing.co.uk", "BB ORDER")
+        to_email = Email("broadband@karmacomputing.co.uk")
+        subject = "NEW BROABDAND ORDER"
+        content = Content("text/html", "There has been an error constructing this email.")
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-customerPhone-", customerPhone))
+        mail.personalizations[0].add_substitution(Substitution("-customerAddress-", customerAddress))
+        mail.personalizations[0].add_substitution(Substitution("-customerEmail-", customerEmail))
+        mail.personalizations[0].add_substitution(Substitution("-broadbandPackage-", broadbandPackage))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingLine-", customerExistingLine))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
+        mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
+        try:
+            response = sg.client.mail.send.post(request_body=mail.get())
+        except urllib.HTTPError as e:
+            print (e.read())
+            exit()
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+
+        ## CUSTOMER
+        from_email = Email("broadband@karmacomputing.co.uk", "Karma Broadband Team")
+        to_email = Email(customerEmail)
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-package-", broadbandPackage))
+        mail.personalizations[0].add_substitution(Substitution("-contractExpiry-", contractExpiry))
+        mail.personalizations[0].add_substitution(Substitution("-goLive-", goLive))
+        mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", monthlyCost))
+        mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
+        try:
+            response = sg.client.mail.send.post(request_body=mail.get())
+        except urllib.HTTPError as e:
+            print (e.read())
+            exit()
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+
         return self.render_template('thankyou.html')
 
     def on_gettingstarted(self, request):
@@ -177,23 +257,68 @@ class Shortly(object):
 
         con = sqlite3.connect(os.getenv('db_full_path'))
         cur = con.cursor()
-        cur.execute("INSERT INTO mandates VALUES (?, ?, ?, ?, ?)", (sid, now, mandate, customer, flow))
-        con.commit()
-        cur.execute("SELECT * FROM mandates")
-        print cur.fetchone()
-        con.close()
+        cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
+        row = cur.fetchone()
+        customerName = row[2] + " " + row[3]
+        customerAddress = row[4] + ", " + row[5] + ", " + row[6]
+        customerEmail = row[7]
+        customerPhone = row[8]
+        broadbandPackage = row[9]
+        customerExistingLine = row[10]
+        customerExistingNumber = row[11]
 
-        # Send email to the customer, yay!
+        currentDate = datetime.datetime.now()
+        goLive = currentDate + datetime.timedelta(days = 15)
 
+        if broadbandPackage == "adsl":
+            broadbandPackage = "ADSL 2+"
+            contractExpiry = goLive + datetime.timedelta(days = 90)
+            monthlyCost = "34.99"
+        elif broadbandPackage == "fibre":
+            broadbandPackage = "FTTC 40:10"
+            contractExpiry = goLive + datetime.timedelta(days = 365)
+            monthlyCost = "41.99"
+        elif broadbandPackage == "fibre_plus":
+            broadbandPackage = "FTTC 80:20"
+            contractExpiry = goLive + datetime.timedelta(days = 365)
+            monthlyCost = "41.99"
+
+        contractExpiry = contractExpiry.strftime('%d/%m/%Y') + "*"
+        goLive = goLive.strftime('%d/%m/%Y')
+
+        ## ADMIN
         sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
-        from_email = Email("broadband@karmacomputing.co.uk", "Broadband Team")
-        to_email = Email("connorloughlin@gmail.com")
-        subject = "Prefilled"
+        from_email = Email("broadband@karmacomputing.co.uk", "BB ORDER")
+        to_email = Email("broadband@karmacomputing.co.uk")
+        subject = "NEW BROABDAND ORDER"
         content = Content("text/html", "There has been an error constructing this email.")
         mail = Mail(from_email, subject, to_email, content)
-        mail.personalizations[0].add_substitution(Substitution("-name-", "Connor Loughlin"))
-        mail.personalizations[0].add_substitution(Substitution("-package-", "Fibre Plus"))
-        mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", "41.99"))
+        mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-customerPhone-", customerPhone))
+        mail.personalizations[0].add_substitution(Substitution("-customerAddress-", customerAddress))
+        mail.personalizations[0].add_substitution(Substitution("-customerEmail-", customerEmail))
+        mail.personalizations[0].add_substitution(Substitution("-broadbandPackage-", broadbandPackage))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingLine-", customerExistingLine))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
+        mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
+        try:
+            response = sg.client.mail.send.post(request_body=mail.get())
+        except urllib.HTTPError as e:
+            print (e.read())
+            exit()
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+
+        ## CUSTOMER
+        from_email = Email("broadband@karmacomputing.co.uk", "Karma Broadband Team")
+        to_email = Email(customerEmail)
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-package-", broadbandPackage))
+        mail.personalizations[0].add_substitution(Substitution("-contractExpiry-", contractExpiry))
+        mail.personalizations[0].add_substitution(Substitution("-goLive-", goLive))
+        mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", monthlyCost))
         mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
         try:
             response = sg.client.mail.send.post(request_body=mail.get())
