@@ -229,7 +229,8 @@ class Shortly(object):
                 result = {}
                 result['VDSL Range A'] = {'Downstream': {'high':'', 'low':''},'Upstream': {'high':'', 'low':''}}
                 result['WBC ADSL 2+'] = {'Downstream': '','Upstream': ''}
-
+                result['WBC ADSL 2+ Annex M'] = {'Downstream': '','Upstream': ''}
+		result['ADSL Max'] = {'Downstream': '','Upstream': ''}
 
 
 		for span in soup.find_all('span'):
@@ -254,7 +255,8 @@ class Shortly(object):
 			       result['VDSL Range A']['Upstream']['high'] = child.text
 			    if index == 9:
 			       result['VDSL Range A']['Upstream']['low'] = child.text
-		    if "WBC ADSL 2+" in span:
+
+	            if "WBC ADSL 2+" in span:
 			for index, child in enumerate(span.parent.parent.children):
 			    print index, child
 			    if index == 3:
@@ -266,6 +268,39 @@ class Shortly(object):
                                     canADSL = False
 			    if index == 5:
 				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
+				if result['WBC ADSL 2+']['Upstream'].find("--") != -1:
+                    			result['WBC ADSL 2+']['Upstream'] = ""
+
+		    if "WBC ADSL 2+ Annex M" in span:
+			for index, child in enumerate(span.parent.parent.children):
+			    print index, child
+			    if index == 3:
+				result['WBC ADSL 2+ Annex M']['Downstream'] = child.text.replace('Up to ','')
+                                try:
+                                    float(child.text.replace('Up to ',''))
+                                    canADSL = True
+                                except ValueError as verr:
+                                    canADSL = False
+			    if index == 5:
+				result['WBC ADSL 2+ Annex M']['Upstream'] = child.text.replace('Up to ','')
+		                if result['WBC ADSL 2+ Annex M']['Upstream'].find("--") != -1:
+                    			result['WBC ADSL 2+ Annex M']['Upstream'] = ""
+
+		    if "ADSL Max" in span:
+                        for index, child in enumerate(span.parent.parent.children):
+                            print index, child
+                            if index == 3:
+                                result['ADSL Max']['Downstream'] = child.text.replace('Up to ','')
+                                try:
+                                    float(child.text.replace('Up to ',''))
+                                    canADSL = True
+                                except ValueError as verr:
+                                    canADSL = False
+                            if index == 5:
+                                result['ADSL Max']['Upstream'] = child.text.replace('Up to ','')
+				if result['ADSL Max']['Upstream'].find("--") != -1:
+                    			result['ADSL Max']['Upstream'] = ""
+
                 try:
                     if 'nophone' in request.headers['Cookie']:
                         nophone=True
@@ -280,7 +315,13 @@ class Shortly(object):
                       'field_vdsl_a_clean_mbps_high_dl':result['VDSL Range A']['Downstream']['high'],
                       'field_vdsl_a_clean_mbps_low_dl':result['VDSL Range A']['Downstream']['low'],
                       'field_vdsl_a_clean_mbps_high_ul':result['VDSL Range A']['Upstream']['high'],
-                      'field_vdsl_a_clean_mbps_low_ul': result['VDSL Range A']['Upstream']['low']}
+                      'field_vdsl_a_clean_mbps_low_ul': result['VDSL Range A']['Upstream']['low'],
+                      'field_adsl_2_downstream': result['WBC ADSL 2+']['Downstream'],
+                      'field_adsl_2_upstream': result['WBC ADSL 2+']['Upstream'],
+                      'field_adsl_2_annex_m_downstream': result['WBC ADSL 2+ Annex M']['Downstream'],
+                      'field_adsl_2_annex_m_upstream': result['WBC ADSL 2+ Annex M']['Upstream'],
+                      'field_adsl_max_downstream': result['ADSL Max']['Downstream'],
+                      'field_adsl_max_upstream': result['ADSL Max']['Upstream']}
                 Rest.post(entity='broadband_availability_lookup', fields=fields)
 
                 return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
