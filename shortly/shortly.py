@@ -1,7 +1,6 @@
 import os
 from os import environ
 from os.path import join, dirname
-from dotenv import load_dotenv
 import time
 from subprocess import Popen, PIPE
 import datetime
