@@ -1,6 +1,7 @@
 import os
-import time
 from os import environ
+from os.path import join, dirname
+import time
 from subprocess import Popen, PIPE
 import datetime
 import urlparse
@@ -26,13 +27,14 @@ class Shortly(object):
     session_store = FilesystemSessionStore()
 
     def __init__(self, config):
-        template_path = os.path.join(os.path.dirname(__file__), 'templates')
-        self.jinja_env = Environment(loader=FileSystemLoader(template_path),
-                                     autoescape=True)
+        source("./.env")
         self.gocclient = gocardless_pro.Client(
             access_token = os.getenv('gocardless_token'),
             environment= os.getenv('gocardless_environment')
         )
+        template_path = os.path.join(os.path.dirname(__file__), 'templates')
+        self.jinja_env = Environment(loader=FileSystemLoader(template_path),
+                                     autoescape=True)
         self.url_map = Map([
             Rule('/', endpoint='start'),
             Rule('/broadband-availability-postcode-checker', endpoint='broadband_availability_postcode_checker'),
@@ -374,7 +376,8 @@ class Shortly(object):
                 result = {}
                 result['VDSL Range A'] = {'Downstream': {'high':'', 'low':''},'Upstream': {'high':'', 'low':''}}
                 result['WBC ADSL 2+'] = {'Downstream': '','Upstream': ''}
-
+                result['WBC ADSL 2+ Annex M'] = {'Downstream': '','Upstream': ''}
+		result['ADSL Max'] = {'Downstream': '','Upstream': ''}
 
 
 		for span in soup.find_all('span'):
@@ -399,7 +402,8 @@ class Shortly(object):
 			       result['VDSL Range A']['Upstream']['high'] = child.text
 			    if index == 9:
 			       result['VDSL Range A']['Upstream']['low'] = child.text
-		    if "WBC ADSL 2+" in span:
+
+	            if "WBC ADSL 2+" in span:
 			for index, child in enumerate(span.parent.parent.children):
 			    print index, child
 			    if index == 3:
@@ -411,6 +415,39 @@ class Shortly(object):
                                     canADSL = False
 			    if index == 5:
 				result['WBC ADSL 2+']['Upstream'] = child.text.replace('Up to ','')
+				if result['WBC ADSL 2+']['Upstream'].find("--") != -1:
+                    			result['WBC ADSL 2+']['Upstream'] = ""
+
+		    if "WBC ADSL 2+ Annex M" in span:
+			for index, child in enumerate(span.parent.parent.children):
+			    print index, child
+			    if index == 3:
+				result['WBC ADSL 2+ Annex M']['Downstream'] = child.text.replace('Up to ','')
+                                try:
+                                    float(child.text.replace('Up to ',''))
+                                    canADSL = True
+                                except ValueError as verr:
+                                    canADSL = False
+			    if index == 5:
+				result['WBC ADSL 2+ Annex M']['Upstream'] = child.text.replace('Up to ','')
+		                if result['WBC ADSL 2+ Annex M']['Upstream'].find("--") != -1:
+                    			result['WBC ADSL 2+ Annex M']['Upstream'] = ""
+
+		    if "ADSL Max" in span:
+                        for index, child in enumerate(span.parent.parent.children):
+                            print index, child
+                            if index == 3:
+                                result['ADSL Max']['Downstream'] = child.text.replace('Up to ','')
+                                try:
+                                    float(child.text.replace('Up to ',''))
+                                    canADSL = True
+                                except ValueError as verr:
+                                    canADSL = False
+                            if index == 5:
+                                result['ADSL Max']['Upstream'] = child.text.replace('Up to ','')
+				if result['ADSL Max']['Upstream'].find("--") != -1:
+                    			result['ADSL Max']['Upstream'] = ""
+
                 try:
                     if 'nophone' in request.headers['Cookie']:
                         nophone=True
@@ -425,7 +462,13 @@ class Shortly(object):
                       'field_vdsl_a_clean_mbps_high_dl':result['VDSL Range A']['Downstream']['high'],
                       'field_vdsl_a_clean_mbps_low_dl':result['VDSL Range A']['Downstream']['low'],
                       'field_vdsl_a_clean_mbps_high_ul':result['VDSL Range A']['Upstream']['high'],
-                      'field_vdsl_a_clean_mbps_low_ul': result['VDSL Range A']['Upstream']['low']}
+                      'field_vdsl_a_clean_mbps_low_ul': result['VDSL Range A']['Upstream']['low'],
+                      'field_adsl_2_downstream': result['WBC ADSL 2+']['Downstream'],
+                      'field_adsl_2_upstream': result['WBC ADSL 2+']['Upstream'],
+                      'field_adsl_2_annex_m_downstream': result['WBC ADSL 2+ Annex M']['Downstream'],
+                      'field_adsl_2_annex_m_upstream': result['WBC ADSL 2+ Annex M']['Upstream'],
+                      'field_adsl_max_downstream': result['ADSL Max']['Downstream'],
+                      'field_adsl_max_upstream': result['ADSL Max']['Upstream']}
                 Rest.post(entity='broadband_availability_lookup', fields=fields)
 
                 return self.render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
@@ -473,10 +516,8 @@ class Shortly(object):
     def __call__(self, environ, start_response):
         return self.wsgi_app(environ, start_response)
 
-def create_app(redis_host='localhost', redis_port=6379, with_static=True):
+def create_app(with_static=True):
     app = Shortly({
-        'redis_host': redis_host,
-        'redis_port': redis_port
     })
     if with_static:
         app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
@@ -508,15 +549,9 @@ def source(script, update=1):
     return env
 
 if __name__ == '__main__':
-    source("./.env")
     from werkzeug.serving import run_simple
     app = create_app()
-    if (os.getenv('environment') == 'local'):
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
-    else:
-        run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True)
+    run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=True, ssl_context='adhoc')
 
-#source(r"/Users/connorloughlin/KC - Development/broadband-availability-checker/shortly/.env")
-source('.env')
 
 application = create_app()
