@@ -10,6 +10,8 @@ def post(fields='', entity=''):
 
     endpoint = os.getenv('penguin_url') + "/node?_format=hal_json"
     entity_href = ''.join(['"',os.getenv('penguin_url'), '/rest/type/node/', entity,'"'])
+    # Replace https with http for entity href only (endpoint remains https)
+    entity_href = entity_href.replace('https','http')
 
     def format_fields(fields):
 	fields_formatted = {}
