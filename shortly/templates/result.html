@@ -18,22 +18,19 @@
       <br />
 
       {% else %}
+        <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 500px; width:75%;" />
 
-      <img src="/static/house_telegraph_pole_fail.svg" style="max-width: 500px; width:75%;" />
-
-      <h1 style="color:white" class="title is-1 is-size-3-mobile">We couldn't check that address</h1>
-      <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">But do get in touch, we're here to help!</h2>
+        <h1 style="color:white" class="title is-1 is-size-3-mobile">Let's get started!</h1>
+        <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Choose your package</h2>
 
   {% endif %}
 
   <div class="pricing-table is-horizontal" style="max-width:1000px; margin:auto">
 
-    {% if canADSL %}
-
       <div class="pricing-plan">
         <div class="plan-header" style="color:#8dc047"><img src="/static/speedo_adsl.svg" style="width:50%;display:block; margin:auto"/>Standard (ADSL)</div>
         <div class="plan-items">
-          <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] }}Mbps</div>
+          <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] or 24 }}Mbps</div>
           <div class="plan-item">Upload speed up to 2Mbps</div>
           <div class="plan-item">Unlimited Usage</div>
           {% if  nophone is sameas false %}
@@ -51,9 +48,12 @@
         </div>
       </div>
 
-    {% endif %}
-
-    {% if canFibre %}
+    {# 
+      Show fibre packages even if address lookup failed.
+      If we know explicitly fibre wasn't available we don't 
+      show fibre as option.
+    #}
+    {% if canFibre or canADSL != True %}
 
       <div class="pricing-plan">
         <div class="plan-header" style="color:#db802d"><img src="/static/speedo_fibre40.svg" style="width:50%;display:block; margin:auto"/>Fibre</div>
@@ -79,8 +79,8 @@
       <div class="pricing-plan">
         <div class="plan-header" style="color:#e73b1a"><img src="/static/speedo_fibre80.svg" style="width:50%;display:block; margin:auto"/><span>Fibre <i><b>Plus</b></i></span></div>
         <div class="plan-items">
-          <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] }}Mbps</div>
-          <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] }}Mbps</div>
+          <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] or 80 }}Mbps</div>
+          <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] or 20 }}Mbps</div>
           <div class="plan-item">Unlimited Usage</div>
           {% if  nophone is sameas false %}
             <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
@@ -152,8 +152,8 @@
     <div class="section">
       <div class="container">
 
-        <h3 class="title is-3">Fibre isn't available in your area yet.</h3>
-        <p class="has-text-left">Our checker couldn't find Fibre for your address, but all is not lost. For many homes and businesses ADSL (Standard) broadband is perfectly fast and stable.</p>
+        <h3 class="title is-3">It's OK! Fibre isn't available in your area yet.</h3>
+        <p class="has-text-left">Our checker couldn't find Fibre for your address, but don't worry. For many peopl ADSL (Standard) broadband is perfectly fast enough. For example the BBC states that "BBC iPlayer programmes stream at up to 2.8 Mbps" and recommends a speed slightly above that, so 17Mb ADSL broadband is more than enough!</p>
 
       </div>
     </div>
@@ -165,9 +165,10 @@
   <div class="section">
     <div class="container">
 
-      <h3 class="title is-3">Getting in touch about your order</h3>
-      <p class="has-text-left">Our checker couldn't find this address, but don't worry. Start a chat using the widget below and one of the team will be able to manually check what services we can offer you. Sometimes our checker doesn't work with apartment buildings with complex numbering schemes. Copy and Paste the snippet of text below this paragraph into the chat window.</p>
-
+      <h3 class="title is-3">If you need an installation, we'll handle it all for you</h3>
+      <p class="has-text-left">Thanks for giving us your address, we'll contact you after you complete your order. Some buildings need
+          an installation visit before you can get online. If an install is needed, the minimum contract length is 24 months, but we cover
+          the install cost for you in return so it's fair!</p>
     </div>
   </div>
 
@@ -175,9 +176,11 @@
 
 <div class="kcBlue has-text-white">
   <div class="section">
-    <div class="container">
+      <div class="container">
+          {% if canFibre or canADSL %}
           <h3 class="title is-4 has-text-white">About these results</h3>
-          <p class="has-text-left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on <a href="http://dslchecker.bt.com" class="has-text-white" target="_blank">OpenReach's network prediction</a>, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem preventing your order.<br /><br />The prices shown are generated assuming you have an in/active phone line installed in the premises, otherwise there may be an excess construction charge applied to your account - again we will discuss this with you before anything is actioned. The price also assumes you're paying by Direct Debit, our preferred payment method.</p>
+          <p class="has-text-left">We generated these results based on your line, we're upfront in that respect as there's nothing worse than signing up for a super fast package just to find you actually receive not even a tenth of the advertised speed. The speeds reported are based on <a href="http://dslchecker.bt.com" class="has-text-white" target="_blank">OpenReach's network prediction</a>, like all predictions they are not always 100% accurate. When processing your order we will again check your line to see if you're able to receive a good service and contact you if we think there may a problem preventing your order.<br /></p>
+          {% endif %}
     </div>
   </div>
 </div>
