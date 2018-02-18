@@ -8,6 +8,7 @@ import gocardless_pro
 import sqlite3
 import smtplib
 from penguin_rest import Rest
+from jamla import Jamla
 import sendgrid
 from sendgrid.helpers.mail import *
 from flask import Flask, render_template, session, redirect, url_for, escape, request
@@ -16,6 +17,11 @@ import datetime
 app = Flask(__name__)
 app.config.from_pyfile('.env')
 app.secret_key = app.config['SECRET_KEY']
+with app.app_context():
+    from flask import g
+    jamla = getattr(g, 'jamla', None)
+    if jamla is None:
+        jamla = Jamla.load(app.config['JAMLA_PATH'])
 
 @app.route('/', methods=['POST'])
 def result():
