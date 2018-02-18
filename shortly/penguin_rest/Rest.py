@@ -7,10 +7,10 @@ def post(fields='', entity=''):
     print "Posting to penguin!"
 
     #Get CSRF token
-    token = str(requests.get(app.config['PENGIUN_URL'] + '/session/token').text)
+    token = str(requests.get(app.config['PENGUIN_URL'] + '/session/token').text)
 
-    endpoint = app.config['PENGIUN_URL'] + "/node?_format=hal_json"
-    entity_href = ''.join(['"', app.config['PENGIUN_URL'], '/rest/type/node/', entity,'"'])
+    endpoint = app.config['PENGUIN_URL'] + "/node?_format=hal_json"
+    entity_href = ''.join(['"', app.config['PENGUIN_URL'], '/rest/type/node/', entity,'"'])
     # Replace https with http for entity href only (endpoint remains https)
     entity_href = entity_href.replace('https','http')
 
