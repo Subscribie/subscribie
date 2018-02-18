@@ -7,6 +7,9 @@ then
     sudo service apache2 reload
 else
     echo "hedgehog is in development mode. Starting simple python server..."
-    sudo python shortly.py
+    export FLASK_DEBUG=1
+    export HEDGEHOG_ENV=./.env
+    export FLASK_APP=Hedgehog.py
+    flask run
 fi
 

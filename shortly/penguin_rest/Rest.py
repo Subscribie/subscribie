@@ -1,15 +1,16 @@
 import requests
 import os
 import json
+from flask import current_app as app
 
 def post(fields='', entity=''):
     print "Posting to penguin!"
 
     #Get CSRF token
-    token = str(requests.get(os.getenv('penguin_url') + '/session/token').text)
+    token = str(requests.get(app.config['PENGIUN_URL'] + '/session/token').text)
 
-    endpoint = os.getenv('penguin_url') + "/node?_format=hal_json"
-    entity_href = ''.join(['"',os.getenv('penguin_url'), '/rest/type/node/', entity,'"'])
+    endpoint = app.config['PENGIUN_URL'] + "/node?_format=hal_json"
+    entity_href = ''.join(['"', app.config['PENGIUN_URL'], '/rest/type/node/', entity,'"'])
     # Replace https with http for entity href only (endpoint remains https)
     entity_href = entity_href.replace('https','http')
 
@@ -41,8 +42,8 @@ def post(fields='', entity=''):
     }'''
 
     #Post the new node (a Contact) to the endpoint.
-    user = os.getenv('rest_user')
-    password = os.getenv('rest_password')
+    user = app.config['REST_USER']
+    password = app.config['REST_PASSWORD']
     r = requests.post(endpoint, data=payload, headers=headers, auth=(user,password))
 
     #Check was a success 
