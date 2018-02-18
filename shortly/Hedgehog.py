@@ -1,4 +1,5 @@
 import os
+import random
 from os import environ
 from base64 import b64encode
 import requests
@@ -13,6 +14,8 @@ import sendgrid
 from sendgrid.helpers.mail import *
 from flask import Flask, render_template, session, redirect, url_for, escape, request
 import datetime
+
+alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
 app = Flask(__name__)
 app.config.from_pyfile('.env')
@@ -154,7 +157,7 @@ def result():
 
 @app.route('/', methods=['GET'])
 def start():
-    session['sid'] = b64encode(os.urandom(24)).decode('utf-8')
+    session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
     error = None
     nophone = False
     try:
@@ -186,7 +189,7 @@ def store_customer():
     now = datetime.datetime.now()
     wants = request.args.get('plan')
     # Store customer
-    sid = session['sid'] 
+    sid = session['sid']
     print "##################"
     con = sqlite3.connect(app.config["DB_FULL_PATH"])
     cur = con.cursor()
@@ -267,7 +270,7 @@ def on_complete_mandate():
     print ("Customer: {}".format(redirect_flow.links.customer))
 
     # Store customer
-    sid = session['sid'] 
+    sid = session['sid']
     now = datetime.datetime.now()
     mandate = redirect_flow.links.mandate
     customer = redirect_flow.links.customer
