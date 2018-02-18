@@ -367,3 +367,5 @@ def on_prerequisites():
     a x,y,z?".
     """
     return render_template('prerequisites.html')
+
+application = app
