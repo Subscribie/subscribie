@@ -27,76 +27,25 @@
 
   <div class="pricing-table is-horizontal" style="max-width:1000px; margin:auto">
 
-      <div class="pricing-plan">
-        <div class="plan-header" style="color:#8dc047"><img src="/static/speedo_adsl.svg" style="width:50%;display:block; margin:auto"/>Standard (ADSL)</div>
-        <div class="plan-items">
-          <div class="plan-item">Download speed up to {{ result['WBC ADSL 2+']['Downstream'] or 24 }}Mbps</div>
-          <div class="plan-item">Upload speed up to 2Mbps</div>
-          <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas false %}
-            <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
-          {% else %}
-            <div class="plan-item">One <em>fixed</em> price</em></div>
-          {% endif %}
-          <div class="plan-item">Friendly UK Support</div>
-          <div class="plan-item">Only 3 Month Minimum Term</div>
-        </div>
-        <div class="plan-footer">
-          <div class="plan-price" style="padding-bottom:0;"><span style="color:#8dc047" class="plan-price-amount"><span class="plan-price-currency">&pound;</span>31.99</span>/month</div>
-          <small style="margin-bottom:1rem;">Upfront cost: &pound;29.99</small>
-          <a href="/new_customer?plan=adsl" style="background-color:#8dc047" class="button is-fullwidth is-info">Continue</a>
-        </div>
-      </div>
 
-    {# 
-      Show fibre packages even if address lookup failed.
-      If we know explicitly fibre wasn't available we don't 
-      show fibre as option.
-    #}
-    {% if canFibre or canADSL != True %}
-
-      <div class="pricing-plan">
-        <div class="plan-header" style="color:#db802d"><img src="/static/speedo_fibre40.svg" style="width:50%;display:block; margin:auto"/>Fibre</div>
-        <div class="plan-items">
-          <div class="plan-item">Super fast up to 40Mbps</div>
-          <div class="plan-item">Quick uploads up to 10Mbps</div>
-          <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas false %}
-            <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
-          {% else %}
-            <div class="plan-item">One <em>fixed</em> price</em></div>
-          {% endif %}
-          <div class="plan-item">Friendly UK Support</div>
-          <div class="plan-item">12 Month Minimum Term</div>
-        </div>
-        <div class="plan-footer">
-          <div class="plan-price" style="padding-bottom:0;"><span style="color:#db802d" class="plan-price-amount"><span class="plan-price-currency">&pound;</span>38.20</span>/month</div>
-          <small style="margin-bottom:1rem;">Upfront cost: &pound;35.40</small>
-          <a href="/new_customer?plan=fibre" style="background-color:#db802d" class="button is-fullwidth is-info">Continue</a>
-        </div>
-      </div>
-
-      <div class="pricing-plan">
-        <div class="plan-header" style="color:#e73b1a"><img src="/static/speedo_fibre80.svg" style="width:50%;display:block; margin:auto"/><span>Fibre <i><b>Plus</b></i></span></div>
-        <div class="plan-items">
-          <div class="plan-item">Blazing fast up to {{ result['VDSL Range A']['Downstream']['high'] or 80 }}Mbps</div>
-          <div class="plan-item">Speedy uploads up to {{ result['VDSL Range A']['Upstream']['high'] or 20 }}Mbps</div>
-          <div class="plan-item">Unlimited Usage</div>
-          {% if  nophone is sameas false %}
-            <div class="plan-item">Unlimited 01, 02, 03 Calls</div>
-          {% else %}
-            <div class="plan-item">One <em>fixed</em> price</em></div>
-          {% endif %}
-          <div class="plan-item">Friendly UK Support</div>
-          <div class="plan-item">12 Month Minimum Term</div>
-        </div>
-        <div class="plan-footer">
-          <div class="plan-price" style="padding-bottom:0;"><span style="color:#e73b1a" class="plan-price-amount"><span class="plan-price-currency">&pound;</span>40.86</span>/month</div>
-          <small style="margin-bottom:1rem;">Upfront cost: &pound;39.60</small>
-          <a href="/new_customer?plan=fibre_plus" style="background-color:#e73b1a" class="button is-fullwidth is-info">Continue</a>
-        </div>
-      </div>
-     {% endif %}
+      {% for item in jamla['items'] %}
+          <div class="pricing-plan">
+              <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
+              <div class="plan-items">
+              {% for sellingPoint in item['selling_points'] %}
+                  <div class="plan-item">{{ sellingPoint|safe }}</div>
+              {% endfor %}
+              </div>
+            <div class="plan-footer">
+                <div class="plan-price" style="padding-bottom:0;">
+                    <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
+                        <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']) }}</span>/month
+                </div>
+                <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']) }}</small>
+                <a href="{{ item['oboarding_start_url'] }}" style="background-color:{{ item['primary_colour'] }}" class="button is-fullwidth is-info">Continue</a>
+            </div>
+          </div>
+      {% endfor %}
   </div>
   <br />
   <p class="has-text-centered has-text-white">These results were generated at: {{ now }} for: {{ buildingnumber }} {{ streetname }}, {{ postCode }}.</p>

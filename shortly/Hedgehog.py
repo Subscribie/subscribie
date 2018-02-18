@@ -149,7 +149,7 @@ def result():
               'field_adsl_max_upstream': result['ADSL Max']['Upstream']}
         Rest.post(entity='broadband_availability_lookup', fields=fields)
 
-    return render_template('result.html', result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
+    return render_template('result.html', jamla=jamla, result=result, canADSL=canADSL, canFibre=canFibre, buildingnumber=buildingnumber, postCode=PostCode, now=prettyTime, nophone=nophone)
 
 
 @app.route('/', methods=['GET'])
