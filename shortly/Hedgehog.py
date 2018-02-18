@@ -14,7 +14,7 @@ from flask import Flask, render_template, session, redirect, url_for, escape, re
 import datetime
 
 app = Flask(__name__)
-app.config.from_envvar('HEDGEHOG_ENV')
+app.config.from_pyfile('.env')
 app.secret_key = app.config['SECRET_KEY']
 
 @app.route('/', methods=['POST'])
