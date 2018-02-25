@@ -1,4 +1,6 @@
 version: 1
+site:
+    template_folder: ../../../templates
 payment_providers:
     - paypal:
          - sepa_direct_supported: No
@@ -41,7 +43,7 @@ items:
       primary_colour: "#8dc047"
       icons:
           - 
-              - src: yogabasic148.png
+              - src: yogabasic48.png
                 size: 48x48
                 type: image/png
               - src: images/yogabasic192.png
@@ -72,7 +74,7 @@ items:
           type: image/svg+xml
       icons:
           - 
-              - src: images/yogapro148.png
+              - src: images/yogapro48.png
                 size: 48x48
                 type: image/png
               - src: images/yogapro192.png
@@ -102,7 +104,7 @@ items:
           type: image/svg+xml
       icons:
           - 
-              - src: images/yogaguru148.png
+              - src: images/yogaguru48.png
                 size: 48x48
                 type: image/png
               - src: images/yogaguru192.png
