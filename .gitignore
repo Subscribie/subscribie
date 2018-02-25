@@ -4,3 +4,4 @@ env/
 .env
 shortly/.env
 shortly/kcBroadband.db
+shortly/venv/
