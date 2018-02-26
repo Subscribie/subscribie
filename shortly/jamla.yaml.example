@@ -1,4 +1,6 @@
 version: 1
+site:
+      template_folder: ../../../templates
 payment_providers:
     - paypal:
          - sepa_direct_supported: No
