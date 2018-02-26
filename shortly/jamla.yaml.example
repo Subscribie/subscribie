@@ -1,0 +1,110 @@
+version: 1
+payment_providers:
+    - paypal:
+         - sepa_direct_supported: No
+         - subscription_supported: Yes
+         - instant_payment_supported: Yes
+         - variable_payments_supported: No
+    - stripe: 
+         - sepa_direct_supported: No
+         - subscription_supported: Yes
+         - instant_payment_supported: Yes
+         - variable_payments_supported: No
+    - gocardless:
+         - sepa_direct_supported: No
+         - subscription_supported: Yes
+         - instant_payment_supported: Yes
+         - variable_payments_supported: Yes
+
+items:
+    - sku: yogabasic
+      title: Yoga Basic Level 1
+      sell_price: 29.99
+      monthly_price: 31.99
+      subscription: Yes
+      subscription_terms:
+          - minimum_term_months: 4
+      requirements:
+        - instant_payment: Yes
+        - subscription: Yes
+        - customer_address: Yes
+        - customer_contact_details_required: Yes
+      oboarding_start_url: /new_customer?plan=yogabasic
+      selling_points:
+          - Reach for the toes!
+          - 45 Hours Access
+          - Feel better about your health
+          - Only 4 Month Minimum Term
+      primary_icon:
+          src: /static/yogabasic.svg
+          type: image/svg+xml
+      primary_colour: "#8dc047"
+      icons:
+          - 
+              - src: yogabasic148.png
+                size: 48x48
+                type: image/png
+              - src: images/yogabasic192.png
+                size: 192x192
+                type: image/png
+
+    - sku: yogapro
+      title: Yogo Pro
+      sell_price: 35.40
+      monthly_price: 35.40
+      subscription: Yes
+      subscription_terms:
+          - minimum_term_months: 12
+      requirements:
+        - instant_payment: Yes
+        - subscription: Yes
+        - customer_address: Yes
+        - customer_contact_details_required: Yes
+      oboarding_start_url: /new_customer?plan=yogapro
+      selling_points:
+          - Reach for the toes!
+          - 90 Hours Access
+          - Become a pro in 90 hours
+          - 12 Month Minimum Term
+      primary_colour: "#db802d"
+      primary_icon:
+          src: /static/yogapro.svg
+          type: image/svg+xml
+      icons:
+          - 
+              - src: images/yogapro148.png
+                size: 48x48
+                type: image/png
+              - src: images/yogapro192.png
+                size: 192x192
+                type: image/png
+    - sku: yogamaster
+      title: Yoga <i><b>Guru</b></i>
+      sell_price: 39.60
+      monthly_price: 40.86
+      subscription: Yes
+      subscription_terms:
+          - minimum_term_months: 12
+      requirements:
+        - instant_payment: Yes
+        - subscription: Yes
+        - customer_address: Yes
+        - customer_contact_details_required: Yes
+      oboarding_start_url: /new_customer?plan=yogaguru
+      selling_points:
+          - Reach for the sky and back again!
+          - Unlimited Access
+          - Become a guru in no time 
+          - 12 Month Minimum Term
+      primary_colour: "#e73b1a"
+      primary_icon:
+          src: /static/yogaguru.svg
+          type: image/svg+xml
+      icons:
+          - 
+              - src: images/yogaguru148.png
+                size: 48x48
+                type: image/png
+              - src: images/yogaguru192.png
+                size: 192x192
+                type: image/png
