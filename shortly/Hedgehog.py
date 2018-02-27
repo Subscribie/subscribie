@@ -13,13 +13,33 @@ from jamla import Jamla
 import sendgrid
 from sendgrid.helpers.mail import *
 from flask import Flask, render_template, session, redirect, url_for, escape, request
+import flask
 import jinja2
 import datetime
 
+class MyFlask(flask.Flask):
+
+    def __init__(self, import_name, static_folder):
+        super(MyFlask, self).__init__(import_name)
+        self.static_folder = static_folder
 
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
-app = Flask(__name__)
+# Load Jamla for static asset path, otherwise fallback to default
+try:
+    jamla = Jamla.load('../../../jamla.yaml')
+    if jamla['site']['static_folder'] is not None:
+        static_folder = jamla['site']['static_folder']
+except: 
+    static_folder = 'static'
+    pass
+
+print "The static folder is set to: " + static_folder 
+
+
+# Work out static folder (from jamla or fallback to default)
+
+app = MyFlask(__name__, static_folder=static_folder)
 app.config.from_pyfile('.env')
 app.secret_key = app.config['SECRET_KEY']
 with app.app_context():
@@ -33,6 +53,7 @@ my_loader = jinja2.ChoiceLoader([
             app.jinja_loader,
         ])
 app.jinja_loader = my_loader
+
 
 @app.route('/', methods=['GET'])
 def choose():
@@ -85,38 +106,38 @@ def establish_mandate():
     con.close()
 
     if res:
-        # validate that hasInstantPaid is true for the customer
-        if res[12] == True:
-            gocclient = gocardless_pro.Client(
-                access_token = app.config['GOCARDLESS_TOKEN'],
-                environment= app.config['GOCARDLESS_ENVIRONMENT']
-            )
-            redirect_flow = gocclient.redirect_flows.create(
-                params = {
-                    "description" : "Karma Computing Broadband",
-                    "session_token" : sid,
-                    "success_redirect_url" : app.config['SUCCESS_REDIRECT_URL'],
-                    "prefilled_customer" : {
-                        "given_name" : res[2],
-                        "family_name": res[3],
-                        "address_line1": res[4],
-                        "city" : res[5],
-                        "postal_code": res[6],
-                        "email": res[7]
-                    }
-                }
-            )
-            # Hold on to this ID - we'll need it when we
-            # "confirm" the dedirect flow later
-            print("ID: {} ".format(redirect_flow.id))
-            print("URL: {} ".format(redirect_flow.redirect_url))
-            return redirect(redirect_flow.redirect_url)
-        else:
-            print "hasInstantPaid on this customer was false"
-            #TODO: respond with 403
+	# validate that hasInstantPaid is true for the customer
+	if res[12] == True:
+	    gocclient = gocardless_pro.Client(
+		access_token = app.config['GOCARDLESS_TOKEN'],
+		environment= app.config['GOCARDLESS_ENVIRONMENT']
+	    )
+	    redirect_flow = gocclient.redirect_flows.create(
+		params = {
+		    "description" : "Karma Computing Broadband",
+		    "session_token" : sid,
+		    "success_redirect_url" : app.config['SUCCESS_REDIRECT_URL'],
+		    "prefilled_customer" : {
+			"given_name" : res[2],
+			"family_name": res[3],
+			"address_line1": res[4],
+			"city" : res[5],
+			"postal_code": res[6],
+			"email": res[7]
+		    }
+		}
+	    )
+	    # Hold on to this ID - we'll need it when we
+	    # "confirm" the dedirect flow later
+	    print("ID: {} ".format(redirect_flow.id))
+	    print("URL: {} ".format(redirect_flow.redirect_url))
+	    return redirect(redirect_flow.redirect_url)
+	else:
+	    print "hasInstantPaid on this customer was false"
+	    #TODO: respond with 403
     else:
-        print "no customer found with sid"
-        #TODO: respond with 400
+	print "no customer found with sid"
+	#TODO: respond with 400
 
 @app.route('/complete_mandate', methods=['GET'])
 def on_complete_mandate():
@@ -124,14 +145,14 @@ def on_complete_mandate():
     print("Recieved flow ID: {} ".format(redirect_flow_id))
 
     gocclient = gocardless_pro.Client(
-        access_token = app.config['GOCARDLESS_TOKEN'],
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+	access_token = app.config['GOCARDLESS_TOKEN'],
+	environment= app.config['GOCARDLESS_ENVIRONMENT']
     )
 
     redirect_flow = gocclient.redirect_flows.complete(
-        redirect_flow_id,
-        params = {
-            "session_token": session['sid']
+	redirect_flow_id,
+	params = {
+	    "session_token": session['sid']
     })
     print ("Mandate: {}".format(redirect_flow.links.mandate))
     # Save this mandate ID for the next section.
@@ -179,9 +200,9 @@ def on_complete_mandate():
     mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
     mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
     try:
-        response = sg.client.mail.send.post(request_body=mail.get())
+	response = sg.client.mail.send.post(request_body=mail.get())
     except Exception:
-        pass
+	pass
 
     ## CUSTOMER
     from_email = Email("broadband@karmacomputing.co.uk", "Karma Broadband Team")
@@ -194,9 +215,9 @@ def on_complete_mandate():
     mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", monthlyCost))
     mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
     try:
-        response = sg.client.mail.send.post(request_body=mail.get())
+	response = sg.client.mail.send.post(request_body=mail.get())
     except Exception:
-        pass
+	pass
 
     # Display a confirmation page to the customer, telling them
     # their Direct Debit has been set up. You could build your own,
@@ -225,5 +246,6 @@ def on_prerequisites():
     a x,y,z?".
     """
     return render_template('prerequisites.html')
+
 
 application = app
