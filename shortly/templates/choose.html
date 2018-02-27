@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Choose your package{% endblock %}
+
+{% block hero %}
+
+        <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 500px; width:75%;" />
+
+        <h1 style="color:white" class="title is-1 is-size-3-mobile">Let's get started!</h1>
+        <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Choose your package</h2>
+
+  <div class="pricing-table is-horizontal" style="max-width:1000px; margin:auto">
+
+
+      {% for item in jamla['items'] %}
+          <div class="pricing-plan">
+              <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
+              <div class="plan-items">
+              {% for sellingPoint in item['selling_points'] %}
+                  <div class="plan-item">{{ sellingPoint|safe }}</div>
+              {% endfor %}
+              </div>
+            <div class="plan-footer">
+                <div class="plan-price" style="padding-bottom:0;">
+                    <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
+                        <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']) }}</span>/month
+                </div>
+                <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']) }}</small>
+                <a href="{{ item['oboarding_start_url'] }}" style="background-color:{{ item['primary_colour'] }}" class="button is-fullwidth is-info">Continue</a>
+            </div>
+          </div>
+      {% endfor %}
+  </div>
+  <br />
+  <p class="has-text-centered has-text-white">These results were generated at: {{ now }} for: {{ buildingnumber }} {{ streetname }}, {{ postCode }}.</p>
+
+{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="section">
+      <div class="container">
+
+        <h3 class="title is-3">Reasons to choose us</h3>
+        {{ lipsum(n=2, html=True, min=20, max=100) }} 
+      </div>
+    </div>
+
+
+  <div class="section">
+    <div class="container">
+
+      <h3 class="title is-3">Last chance to convince</h3>
+        {{ lipsum(n=1, html=True, min=20, max=100) }} 
+    </div>
+    <a href="#" class="button">Choose your package</a>
+  </div>
+
+
+  <script>
+    $('.pricing-plan').hover(
+         function(){ $(this).addClass('is-active') },
+         function(){ $(this).removeClass('is-active') }
+  )
+  </script>
+
+{% endblock %}

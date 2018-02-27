@@ -1,6 +1,7 @@
 version: 1
 site:
       template_folder: ../../../templates
+      static_folder: path/to/static/assets
 payment_providers:
     - paypal:
          - sepa_direct_supported: No
@@ -19,94 +20,99 @@ payment_providers:
          - variable_payments_supported: Yes
 
 items:
-    - sku: yogabasic
-      title: Yoga Basic Level 1
-      sell_price: 29.99
-      monthly_price: 31.99
+    - sku: basicwebhosting 
+      title: Starter Hosting
+      sell_price: 0.00
+      monthly_price: 4.99
+      lead_time_days: 1
       subscription: Yes
       subscription_terms:
-          - minimum_term_months: 4
+          minimum_term_months: 12
       requirements:
-        - instant_payment: Yes
-        - subscription: Yes
-        - customer_address: Yes
-        - customer_contact_details_required: Yes
-      oboarding_start_url: /new_customer?plan=yogabasic
+        instant_payment: False
+        subscription: True
+        customer_address: True
+        customer_contact_details_required: True
+      oboarding_start_url: /new_customer?plan=basicwebhosting
       selling_points:
-          - Reach for the toes!
-          - 45 Hours Access
-          - Feel better about your health
-          - Only 4 Month Minimum Term
+          - Small websites
+          - FTP Access
+          - 5GB space
+          - 1000Mb Bandwidth
       primary_icon:
-          src: /static/yogabasic.svg
+          src: /static/basicwebhosting.svg
           type: image/svg+xml
       primary_colour: "#8dc047"
       icons:
           - 
-              - src: yogabasic148.png
+              - src: basicwebhosting48.png
                 size: 48x48
                 type: image/png
-              - src: images/yogabasic192.png
+              - src: images/basicwebhosting192.png
                 size: 192x192
                 type: image/png
 
-    - sku: yogapro
-      title: Yogo Pro
-      sell_price: 35.40
-      monthly_price: 35.40
+    - sku: standardwebhosting
+      title: Standard Web Hosting
+      sell_price: 0.00
+      monthly_price: 8.99
+      lead_time_days: 1
       subscription: Yes
       subscription_terms:
           - minimum_term_months: 12
       requirements:
-        - instant_payment: Yes
-        - subscription: Yes
-        - customer_address: Yes
-        - customer_contact_details_required: Yes
-      oboarding_start_url: /new_customer?plan=yogapro
+        instant_payment: False
+        subscription: True
+        customer_address: True
+        customer_contact_details_required: True
+      oboarding_start_url: /new_customer?plan=standardwebhosting
       selling_points:
-          - Reach for the toes!
-          - 90 Hours Access
-          - Become a pro in 90 hours
-          - 12 Month Minimum Term
+          - Larger websites
+          - FTP Access
+          - 10GB space
+          - 2000Mb Bandwidth
       primary_colour: "#db802d"
       primary_icon:
-          src: /static/yogapro.svg
+          src: /static/standardwebhosting.svg
           type: image/svg+xml
       icons:
           - 
-              - src: images/yogapro148.png
+              - src: images/standardwebhosting48.png
                 size: 48x48
                 type: image/png
-              - src: images/yogapro192.png
+              - src: images/standardwebhosting192.png
                 size: 192x192
                 type: image/png
-    - sku: yogamaster
-      title: Yoga <i><b>Guru</b></i>
-      sell_price: 39.60
-      monthly_price: 40.86
+    - sku: smallbusinesswebhosting
+      title: Small Business Web Hosting
+      sell_price: 0.00
+      monthly_price: 25.85
+      lead_time_days: 1
       subscription: Yes
       subscription_terms:
-          - minimum_term_months: 12
+          minimum_term_months: 24
       requirements:
-        - instant_payment: Yes
-        - subscription: Yes
-        - customer_address: Yes
-        - customer_contact_details_required: Yes
-      oboarding_start_url: /new_customer?plan=yogaguru
+        instant_payment: False
+        subscription: True
+        customer_address: True
+        customer_contact_details_required: True
+      oboarding_start_url: /new_customer?plan=smallbusinesswebhosting
       selling_points:
-          - Reach for the sky and back again!
-          - Unlimited Access
-          - Become a guru in no time 
-          - 12 Month Minimum Term
+          - Busy websites
+          - FTP Access
+          - 60GB space
+          - 4000Mb Bandwidth
+          - Telephone support
+          - 24 Month Minimum Term
       primary_colour: "#e73b1a"
       primary_icon:
-          src: /static/yogaguru.svg
+          src: /static/smallbusinesswebhosting.svg
           type: image/svg+xml
       icons:
           - 
-              - src: images/yogaguru148.png
+              - src: images/smallbusinesswebhosting48.png
                 size: 48x48
                 type: image/png
-              - src: images/yogaguru192.png
+              - src: images/smallbusinesswebhosting192.png
                 size: 192x192
                 type: image/png
