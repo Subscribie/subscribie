@@ -27,17 +27,16 @@ alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
 # Load Jamla for static asset path, otherwise fallback to default
 try:
-    jamla = Jamla.load('../../../jamla.yaml')
+    jamla = Jamla.load('/home/karmacomputing/www/hosting.karmacomputing.co.uk/jamla.yaml')
     if jamla['site']['static_folder'] is not None:
         static_folder = jamla['site']['static_folder']
 except: 
+    print "WARNING: Could not locate parent jamla.yaml so falling back to default"
     static_folder = 'static'
     pass
-
 print "The static folder is set to: " + static_folder 
 
 
-# Work out static folder (from jamla or fallback to default)
 
 app = MyFlask(__name__, static_folder=static_folder)
 app.config.from_pyfile('.env')
@@ -47,9 +46,8 @@ with app.app_context():
     jamla = getattr(g, 'jamla', None)
     if jamla is None:
         jamla = Jamla.load(app.config['JAMLA_PATH'])
-
 my_loader = jinja2.ChoiceLoader([
-            jinja2.FileSystemLoader([jamla['site']['template_folder']]),
+            jinja2.FileSystemLoader(app.config['TEMPLATE_PATH']),
             app.jinja_loader,
         ])
 app.jinja_loader = my_loader
