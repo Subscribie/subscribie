@@ -1,7 +1,4 @@
 version: 1
-site:
-      static_folder: /path/to/static
-      template_folder: /path/to/templates
 payment_providers:
     - paypal:
          - sepa_direct_supported: No
