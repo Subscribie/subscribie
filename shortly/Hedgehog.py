@@ -33,12 +33,11 @@ with app.app_context():
     if jamla is None:
         jamla = Jamla.load(app.config['JAMLA_PATH'])
 my_loader = jinja2.ChoiceLoader([
-            jinja2.FileSystemLoader(jamla['site']['template_folder']),
+            jinja2.FileSystemLoader(app.config['TEMPLATE_FOLDER']),
             app.jinja_loader,
         ])
 app.jinja_loader = my_loader
-app.static_folder = jamla['site']['static_folder']
-
+app.static_folder = app.config['STATIC_FOLDER']
 
 @app.route('/', methods=['GET'])
 def choose():
