@@ -1,6 +1,4 @@
 version: 1
-site:
-      static_folder: path/to/static/assets
 payment_providers:
     - paypal:
          - sepa_direct_supported: No

@@ -19,26 +19,12 @@ import datetime
 
 class MyFlask(flask.Flask):
 
-    def __init__(self, import_name, static_folder):
+    def __init__(self, import_name):
         super(MyFlask, self).__init__(import_name)
-        self.static_folder = static_folder
 
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
-# Load Jamla for static asset path, otherwise fallback to default
-try:
-    jamla = Jamla.load('../../../jamla.yaml')
-    if jamla['site']['static_folder'] is not None:
-        static_folder = jamla['site']['static_folder']
-except: 
-    print "WARNING: Could not locate parent jamla.yaml so falling back to default"
-    static_folder = 'static'
-    pass
-print "The static folder is set to: " + static_folder 
-
-
-
-app = MyFlask(__name__, static_folder=static_folder)
+app = MyFlask(__name__)
 app.config.from_pyfile('.env')
 app.secret_key = app.config['SECRET_KEY']
 with app.app_context():
@@ -47,14 +33,16 @@ with app.app_context():
     if jamla is None:
         jamla = Jamla.load(app.config['JAMLA_PATH'])
 my_loader = jinja2.ChoiceLoader([
-            jinja2.FileSystemLoader(app.config['TEMPLATE_PATH']),
+            jinja2.FileSystemLoader(jamla['site']['template_folder']),
             app.jinja_loader,
         ])
 app.jinja_loader = my_loader
+app.static_folder = jamla['site']['static_folder']
 
 
 @app.route('/', methods=['GET'])
 def choose():
+    print app.static_folder
     session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
 
     return render_template('choose.html', jamla=jamla)
