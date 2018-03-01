@@ -27,7 +27,7 @@ alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
 # Load Jamla for static asset path, otherwise fallback to default
 try:
-    jamla = Jamla.load('/home/karmacomputing/www/hosting.karmacomputing.co.uk/jamla.yaml')
+    jamla = Jamla.load('../../../jamla.yaml')
     if jamla['site']['static_folder'] is not None:
         static_folder = jamla['site']['static_folder']
 except: 
