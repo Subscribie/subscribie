@@ -41,10 +41,24 @@ app.static_folder = app.config['STATIC_FOLDER']
 
 @app.route('/', methods=['GET'])
 def choose():
-    print app.static_folder
     session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
 
     return render_template('choose.html', jamla=jamla)
+
+# Register yml pages as routes
+for i,v in enumerate(jamla['pages']):
+    path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
+    template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
+    view_func_name = jamla['pages'][i].keys()[0]
+    ##Generate view function
+    generate_view_func = """def %s_view_func():
+    return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
+    exec(generate_view_func)
+    method_name = view_func_name + "_view_func"
+    possibles = globals().copy()
+    possibles.update(locals())
+    view_func = possibles.get(method_name)
+    app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
 
 @app.route('/new_customer', methods=['GET'])
 def new_customer():

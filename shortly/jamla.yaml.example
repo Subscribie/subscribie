@@ -107,3 +107,10 @@ items:
               - src: images/item3192.png
                 size: 192x192
                 type: image/png
+pages:
+    - privacy:
+        path: "privacy"
+        template_file: "privacy.html"
+    - demo:
+        path: "demo"
+        template_file: "demo.html"
