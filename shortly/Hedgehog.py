@@ -63,7 +63,7 @@ for i,v in enumerate(jamla['pages']):
 @app.route('/new_customer', methods=['GET'])
 def new_customer():
     package = request.args.get('plan','not set')
-    return render_template('new_customer.html', package=package)
+    return render_template('new_customer.html', jamla=jamla, package=package)
 
 @app.route('/new_customer', methods=['POST'])
 def store_customer():
