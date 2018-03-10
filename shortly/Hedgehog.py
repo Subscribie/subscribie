@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
 import smtplib
-from penguin_rest import Rest
+from penguin_rest import Decorators
 from jamla import Jamla
 import sendgrid
 from sendgrid.helpers.mail import *
@@ -66,6 +66,7 @@ def new_customer():
     return render_template('new_customer.html', jamla=jamla, package=package)
 
 @app.route('/new_customer', methods=['POST'])
+@Decorators.create_customer
 def store_customer():
     given_name = request.form['given_name']
     family_name = request.form['family_name']
