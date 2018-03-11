@@ -16,6 +16,7 @@ from flask import Flask, render_template, session, redirect, url_for, escape, re
 import flask
 import jinja2
 import datetime
+from penguin_rest import Rest
 
 class MyFlask(flask.Flask):
 
@@ -247,5 +248,40 @@ def on_prerequisites():
     """
     return render_template('prerequisites.html')
 
+@app.route('/push-payments', methods=['GET'])
+def push_payments():
+    """
+    Push payments to Penguin.
+    Assume a gocardless endpoint for now.
+    """
+    gocclient = gocardless_pro.Client(
+        access_token = app.config['GOCARDLESS_TOKEN'],
+        environment= app.config['GOCARDLESS_ENVIRONMENT']
+    )
+    #Loop customers
+    for payments in gocclient.payments.list().records:
+        ##Loop each payment within payment response body
+        response = payments.api_response.body
+        for payment in response['payments']:
+            print payment
+            print payment['status']
+            print "##"
+            # Push to Penguin
+            print "Creating transaction to penguin.."
+            title = "a transaction title"
+            fields = { 
+                'title':title,
+                'field_gocardless_payment_id': payment['id'],
+                'field_gocardless_payout_id': payment['links']['payout'],
+                'field_gocardless_payment_status': payment['status'],
+                'field_mandate_id': payment['links']['mandate'],
+                'field_gocardless_subscription_id': payment['links']['subscription'],
+                'field_gocardless_amount_refunded': payment['amount_refunded'],
+                'field_gocardless_charge_date': payment['charge_date'],
+                'field_gocardless_created_at' : payment['created_at'],
+                'field_gocardless_creditor_id': payment['links']['creditor']
+            }
+            Rest.post(entity='transaction', fields=fields)
+            
 
 application = app
