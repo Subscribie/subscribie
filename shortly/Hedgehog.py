@@ -186,22 +186,22 @@ def on_complete_mandate():
     goLive = "ASAP"
 
     ## ADMIN
-    sg = sendgrid.SendGridAPIClient(apikey=app.config['SENDGRID_API_KEY'])
-    from_email = Email("broadband@karmacomputing.co.uk", "BB ORDER")
-    to_email = Email("broadband@karmacomputing.co.uk")
-    subject = "NEW BROABDAND ORDER"
-    content = Content("text/html", "There has been an error constructing this email.")
-    mail = Mail(from_email, subject, to_email, content)
-    mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
-    mail.personalizations[0].add_substitution(Substitution("-customerPhone-", customerPhone))
-    mail.personalizations[0].add_substitution(Substitution("-customerAddress-", customerAddress))
-    mail.personalizations[0].add_substitution(Substitution("-customerEmail-", customerEmail))
-    mail.personalizations[0].add_substitution(Substitution("-broadbandPackage-", chosenPackage))
-    mail.personalizations[0].add_substitution(Substitution("-customerExistingLine-", customerExistingLine))
-    mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
-    mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
     try:
-	response = sg.client.mail.send.post(request_body=mail.get())
+        sg = sendgrid.SendGridAPIClient(apikey=app.config['SENDGRID_API_KEY'])
+        from_email = Email("broadband@karmacomputing.co.uk", "BB ORDER")
+        to_email = Email("broadband@karmacomputing.co.uk")
+        subject = "NEW BROABDAND ORDER"
+        content = Content("text/html", "There has been an error constructing this email.")
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-customerName-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-customerPhone-", customerPhone))
+        mail.personalizations[0].add_substitution(Substitution("-customerAddress-", customerAddress))
+        mail.personalizations[0].add_substitution(Substitution("-customerEmail-", customerEmail))
+        mail.personalizations[0].add_substitution(Substitution("-broadbandPackage-", chosenPackage))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingLine-", customerExistingLine))
+        mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
+        mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
+        response = sg.client.mail.send.post(request_body=mail.get())
     except Exception:
 	pass
 
@@ -273,6 +273,7 @@ def push_payments():
                 'title':title,
                 'field_gocardless_payment_id': payment['id'],
                 'field_gocardless_payout_id': payment['links']['payout'],
+                'field_gocardless_amount': payment['amount'],
                 'field_gocardless_payment_status': payment['status'],
                 'field_mandate_id': payment['links']['mandate'],
                 'field_gocardless_subscription_id': payment['links']['subscription'],
@@ -283,5 +284,6 @@ def push_payments():
             }
             Rest.post(entity='transaction', fields=fields)
 
+    return "Payments have been pushed"
 
 application = app
