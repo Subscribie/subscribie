@@ -3,7 +3,7 @@
 
 {% block hero %}
 
-        <img src="/static/house_telegraph_pole_fibre.svg" style="max-width: 500px; width:75%;" />
+        <img src="/static/{{ jamla['company']['start_image'] }}" style="max-width: 500px; width:75%;" />
 
         <h1 style="color:white" class="title is-1 is-size-3-mobile">Let's get started!</h1>
         <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Choose your package</h2>
@@ -42,8 +42,9 @@
     <div class="section">
       <div class="container">
 
-        <h3 class="title is-3">Reasons to choose us</h3>
-        {{ lipsum(n=2, html=True, min=20, max=100) }} 
+        <h3 class="title is-3">Need Convincing?</h3>
+        {{ lipsum(n=2, html=True, min=20, max=100) }}
+
       </div>
     </div>
 
@@ -51,10 +52,10 @@
   <div class="section">
     <div class="container">
 
-      <h3 class="title is-3">Last chance to convince</h3>
-        {{ lipsum(n=1, html=True, min=20, max=100) }} 
+      <h3 class="title is-3">No really, do you?</h3>
+      {{ lipsum(n=1, html=True, min=20, max=100) }}
+
     </div>
-    <a href="#" class="button">Choose your package</a>
   </div>
 
 

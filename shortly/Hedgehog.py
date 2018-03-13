@@ -229,7 +229,7 @@ def on_complete_mandate():
 
 @app.route('/thankyou', methods=['GET'])
 def thankyou():
-    return render_template('thankyou.html')
+    return render_template('thankyou.html', jamla=jamla)
 
 @app.route('/broadband_availability_postcode_checker')
 def broadband_availability_postcode_checker():
@@ -269,7 +269,7 @@ def push_payments():
             # Push to Penguin
             print "Creating transaction to penguin.."
             title = "a transaction title"
-            fields = { 
+            fields = {
                 'title':title,
                 'field_gocardless_payment_id': payment['id'],
                 'field_gocardless_payout_id': payment['links']['payout'],
@@ -282,6 +282,6 @@ def push_payments():
                 'field_gocardless_creditor_id': payment['links']['creditor']
             }
             Rest.post(entity='transaction', fields=fields)
-            
+
 
 application = app
