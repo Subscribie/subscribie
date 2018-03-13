@@ -273,6 +273,7 @@ def push_payments():
                 'title':title,
                 'field_gocardless_payment_id': payment['id'],
                 'field_gocardless_payout_id': payment['links']['payout'],
+                'field_gocardless_amount': payment['amount'],
                 'field_gocardless_payment_status': payment['status'],
                 'field_mandate_id': payment['links']['mandate'],
                 'field_gocardless_subscription_id': payment['links']['subscription'],
