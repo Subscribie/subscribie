@@ -202,20 +202,17 @@ def on_complete_mandate():
         mail.personalizations[0].add_substitution(Substitution("-customerExistingNumber-", customerExistingNumber))
         mail.template_id = "8b49f623-9368-4cf6-94c1-53cc2f429b9b"
         response = sg.client.mail.send.post(request_body=mail.get())
-    except Exception:
-	pass
 
-    ## CUSTOMER
-    from_email = Email("broadband@karmacomputing.co.uk", "Karma Broadband Team")
-    to_email = Email(customerEmail)
-    mail = Mail(from_email, subject, to_email, content)
-    mail.personalizations[0].add_substitution(Substitution("-name-", customerName))
-    mail.personalizations[0].add_substitution(Substitution("-package-", chosenPackage))
-    mail.personalizations[0].add_substitution(Substitution("-contractExpiry-", contractExpiry))
-    mail.personalizations[0].add_substitution(Substitution("-goLive-", goLive))
-    mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", monthlyCost))
-    mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
-    try:
+        ## CUSTOMER
+        from_email = Email("broadband@karmacomputing.co.uk", "Karma Broadband Team")
+        to_email = Email(customerEmail)
+        mail = Mail(from_email, subject, to_email, content)
+        mail.personalizations[0].add_substitution(Substitution("-name-", customerName))
+        mail.personalizations[0].add_substitution(Substitution("-package-", chosenPackage))
+        mail.personalizations[0].add_substitution(Substitution("-contractExpiry-", contractExpiry))
+        mail.personalizations[0].add_substitution(Substitution("-goLive-", goLive))
+        mail.personalizations[0].add_substitution(Substitution("-monthlyCost-", monthlyCost))
+        mail.template_id = "0c383660-2801-4448-b3cf-9bb608de9ec7"
 	response = sg.client.mail.send.post(request_body=mail.get())
     except Exception:
 	pass
