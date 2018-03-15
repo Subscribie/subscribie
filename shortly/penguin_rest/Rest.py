@@ -50,7 +50,12 @@ def post(fields='', entity=''):
     if r.status_code == 201:
 	print "Success"
         print r.text
+        return r
     else:
 	print "Fail"
 	print r.status_code
         print r.text
+        return r
+
+def patch():
+    pass
