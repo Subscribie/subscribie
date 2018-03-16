@@ -1,5 +1,5 @@
 from penguin_rest import Rest
-from flask import g, request, redirect, url_for
+from flask import g, request, redirect, url_for, session
 from functools import wraps
 import json
 
@@ -17,7 +17,7 @@ def create_customer(f):
             resp = json.loads(r.text)
             partner_nid = resp['nid'][0]['value']
             print "Partner node id is: " + str(partner_nid)
-            print r
+            session['partner_nid'] = partner_nid
         except Exception as e:
             print "Failed creating partner of customer type.."
             print e

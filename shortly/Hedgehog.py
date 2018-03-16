@@ -155,9 +155,11 @@ def on_complete_mandate():
 	params = {
 	    "session_token": session['sid']
     })
+    # Save this mandate & customer ID for the next section.
     print ("Mandate: {}".format(redirect_flow.links.mandate))
-    # Save this mandate ID for the next section.
     print ("Customer: {}".format(redirect_flow.links.customer))
+    session['gocardless_mandate_id'] = redirect_flow.links.mandate
+    session['gocardless_customer_id'] = redirect_flow.links.customer
 
     # Store customer
     sid = session['sid']
@@ -226,6 +228,9 @@ def on_complete_mandate():
 
 @app.route('/thankyou', methods=['GET'])
 def thankyou():
+    print "##### The partner nid is:" + str(session['partner_nid'])
+    print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
+    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
     return render_template('thankyou.html', jamla=jamla)
 
 @app.route('/broadband_availability_postcode_checker')
