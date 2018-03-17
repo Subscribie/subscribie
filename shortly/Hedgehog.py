@@ -160,6 +160,12 @@ def on_complete_mandate():
     print ("Customer: {}".format(redirect_flow.links.customer))
     session['gocardless_mandate_id'] = redirect_flow.links.mandate
     session['gocardless_customer_id'] = redirect_flow.links.customer
+    # Update Partner record with Gocardless Mandate & Customer Id
+    fields = {
+        'field_gocardless_mandate_id': session['gocardless_mandate_id'],
+        'field_gocardless_customer_id':session['gocardless_customer_id']
+    }
+    Rest.patch(session['partner_nid'], 'partner', fields, embeded=False) 
 
     # Store customer
     sid = session['sid']
