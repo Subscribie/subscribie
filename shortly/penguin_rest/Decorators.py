@@ -57,3 +57,20 @@ def create_contact(f):
             print e
         return f(*args, **kwargs)
     return decorated_function
+
+def attach_contact_partner(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            print "Attaching contact to partner record.."
+            #Get uuid of contact record
+            contact = Rest.get("/api/contact/" + str(session['contact_nid']))
+            contact_uuid = contact.json()[0]['uuid'][0]['value']
+            print "The contact uuid is: " + contact_uuid
+            embeded = {'field_contacts':[{'uuid':contact_uuid}]}
+            r = Rest.patch(nid=session['partner_nid'], entity='partner', fields=None, embeded=embeded)
+        except Exception as e:
+            print "Failed attaching contact to partner record..."
+            print e
+        return f(*args, **kwargs)
+    return decorated_function

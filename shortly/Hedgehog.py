@@ -69,6 +69,7 @@ def new_customer():
 @app.route('/new_customer', methods=['POST'])
 @Decorators.create_partner
 @Decorators.create_contact
+@Decorators.attach_contact_partner
 def store_customer():
     given_name = request.form['given_name']
     family_name = request.form['family_name']
