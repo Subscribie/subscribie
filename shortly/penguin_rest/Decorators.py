@@ -18,6 +18,17 @@ def create_customer(f):
             partner_nid = resp['nid'][0]['value']
             print "Partner node id is: " + str(partner_nid)
             session['partner_nid'] = partner_nid
+            #Test updating (patch) a partner
+            fields = { 
+                'field_customer':0,
+                'title':"changed"
+            }
+            # Test updated embeded field referenced (patch) a partner with 
+            # multiple contacts
+            embeded = {'field_contacts':[{'uuid':'8d19ade2-8486-4522-b8a1-920b308c8318'}, {'uuid':'c685897a-8435-40f0-b2e2-35b26051bff8'}]}
+
+            Rest.patch(nid=partner_nid, entity='partner', fields=fields, embeded=embeded)
+
         except Exception as e:
             print "Failed creating partner of customer type.."
             print e

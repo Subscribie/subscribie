@@ -65,7 +65,7 @@ def post(fields='', entity=''):
         print r.text
         return r
 
-def patch(nid, entity, fields):
+def patch(nid, entity, fields, embeded=None):
     print "Patching to Penguin!"
 
     endpoint = app.config['PENGUIN_URL'] + "/node/" + str(nid) + "?_format=hal_json"
@@ -86,8 +86,22 @@ def patch(nid, entity, fields):
     payload = payload + '''
     }
     },'''
-    payload = payload + format_fields(fields) + '''
-    }'''
+    payload = payload + format_fields(fields)
+    # Include embeded field updates (if present)
+    if embeded:
+        payload = payload + '''
+	,"_embedded": {
+	  "http://127.0.0.1:8088/rest/relation/node/partner/field_contacts": ['''
+        max = len(embeded['field_contacts']) -1
+        for index, item in enumerate(embeded['field_contacts']):
+	    payload = payload + "{"
+	    payload = payload + format_fields(item)
+            payload = payload + "}"
+            if max > 0 and index != max:
+                payload = payload + ","
+        payload = payload + "]}"
+    payload = payload + "}"
+
 
     #Post the new node (a Contact) to the endpoint.
     user = app.config['REST_USER']
@@ -98,10 +112,16 @@ def patch(nid, entity, fields):
     if r.status_code == 200:
 	print "Patch Successful"
 	print r.status_code
+        print "## Payload was ###"
+        print payload
+        print "**##" * 20
         print r.text
         return r
     else:
 	print "Patch Fail"
 	print r.status_code
         print r.text
+        print "## Payload was ###"
+        print payload
+        print "**##" * 20
         return r
