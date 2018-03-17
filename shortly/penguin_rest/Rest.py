@@ -15,15 +15,24 @@ def get_headers():
     }
     return headers
 
+def get(r):
+    headers = get_headers()
+    r = requests.get(app.config['PENGUIN_URL'] + r, headers=headers)
+    return r
+
+
 
 def format_fields(fields):
-    fields_formatted = {}
-    for index, value in enumerate(fields):
-        fields_formatted[value] = [{"value": fields[value]}]
-    #Convert to json
-    fields_formatted = json.dumps(fields_formatted)
-    #Remove outer brackets and return
-    return fields_formatted[1:-1]
+    if fields is not None:
+        fields_formatted = {}
+        for index, value in enumerate(fields):
+            fields_formatted[value] = [{"value": fields[value]}]
+        #Convert to json
+        fields_formatted = json.dumps(fields_formatted)
+        #Remove outer brackets and return
+        return fields_formatted[1:-1]
+    print "No fields passed. Note: Embeded fields are passed seperatly see Rest.patch()."
+    return ''
 
 def post(fields='', entity=''):
     print "Posting to penguin!"
@@ -89,8 +98,10 @@ def patch(nid, entity, fields, embeded=None):
     payload = payload + format_fields(fields)
     # Include embeded field updates (if present)
     if embeded:
+        if fields is not None:
+            payload = payload + ","
         payload = payload + '''
-	,"_embedded": {
+	"_embedded": {
 	  "http://127.0.0.1:8088/rest/relation/node/partner/field_contacts": ['''
         max = len(embeded['field_contacts']) -1
         for index, item in enumerate(embeded['field_contacts']):
@@ -114,7 +125,7 @@ def patch(nid, entity, fields, embeded=None):
 	print r.status_code
         print "## Payload was ###"
         print payload
-        print "**##" * 20
+        print "#" * 80
         print r.text
         return r
     else:
