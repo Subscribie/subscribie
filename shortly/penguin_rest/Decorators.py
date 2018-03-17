@@ -23,3 +23,37 @@ def create_partner(f):
             print e
         return f(*args, **kwargs)
     return decorated_function
+
+def create_contact(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            print "Creating contact.."
+            fname = request.form['given_name']
+            lname = request.form['family_name'] 
+            title = fname + lname
+            mobile = request.form['mobile']
+            email = request.form['email'] 
+            address_line1 = request.form['address_line1']
+            city = request.form['city']
+            postcode = request.form['postal_code']
+            fields = {
+                'title':title,
+                'field_first_name': fname,
+                'field_last_name' : lname,
+                'field_mobile': mobile,
+                'field_email' : email,
+                'field_address_line_1': address_line1,
+                'field_city' : city,
+                'field_postcode' : postcode
+            }
+            r = Rest.post(entity='contact', fields=fields)
+            resp = json.loads(r.text)
+            contact_nid = resp['nid'][0]['value']
+            print "Contact node id is: " + str(contact_nid)
+            session['contact_nid'] = contact_nid
+        except Exception as e:
+            print "Failed creating contact..."
+            print e
+        return f(*args, **kwargs)
+    return decorated_function
