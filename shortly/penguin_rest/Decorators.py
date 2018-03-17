@@ -3,7 +3,7 @@ from flask import g, request, redirect, url_for, session
 from functools import wraps
 import json
 
-def create_customer(f):
+def create_partner(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:

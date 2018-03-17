@@ -67,7 +67,7 @@ def new_customer():
     return render_template('new_customer.html', jamla=jamla, package=package)
 
 @app.route('/new_customer', methods=['POST'])
-@Decorators.create_customer
+@Decorators.create_partner
 def store_customer():
     given_name = request.form['given_name']
     family_name = request.form['family_name']
