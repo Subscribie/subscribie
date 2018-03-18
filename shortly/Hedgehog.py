@@ -70,6 +70,11 @@ def sku_get_index(sku):
         if jamla['items'][index]['sku'] == str(sku):
             return index
     return False
+
+def sku_get_title(sku):
+    index = sku_get_index(sku)
+    title  = jamla['items'][index]['title']
+    return title
     
 def sku_get_monthly_price(sku):
     price = jamla['items'][sku_get_index(sku)]['monthly_price']
@@ -209,6 +214,20 @@ def on_complete_mandate():
     currentDate = datetime.datetime.now()
     goLive = currentDate + datetime.timedelta(days = 15)
 
+    # Create subscription
+    gocclient.subscriptions.create(params={
+        "amount":sku_get_monthly_price(session['plan']),
+        "currency":"GBP",
+        "name": sku_get_title(session['plan']),
+        "interval_unit": "monthly",
+        "metadata": {
+            "sku":session['plan']
+        },
+        "links": {
+            "mandate":session['gocardless_mandate_id']
+        }
+    })
+
     #TODO loop over Jamla items vs chosenPackage to work out contractExpiry, monthlycost, lead_time
     contractExpiry = goLive + datetime.timedelta(days = 365)
     monthlyCost = "As quoted"
@@ -298,10 +317,14 @@ def push_payments():
             # Push to Penguin
             print "Creating transaction to penguin.."
             title = "a transaction title"
+            try:
+                payout_id = payment['links']['payout']
+            except:
+                payout_id = None
             fields = {
                 'title':title,
                 'field_gocardless_payment_id': payment['id'],
-                'field_gocardless_payout_id': payment['links']['payout'],
+                'field_gocardless_payout_id': payout_id,
                 'field_gocardless_amount': payment['amount'],
                 'field_gocardless_payment_status': payment['status'],
                 'field_mandate_id': payment['links']['mandate'],
