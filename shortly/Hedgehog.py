@@ -65,6 +65,16 @@ def sku_exists(sku):
         if item['sku'] == str(sku):
             return True
     return False 
+def sku_get_index(sku):
+    for index,v in enumerate(jamla['items']):
+        if jamla['items'][index]['sku'] == str(sku):
+            return index
+    return False
+    
+def sku_get_monthly_price(sku):
+    price = jamla['items'][sku_get_index(sku)]['monthly_price']
+    return price
+
 
 @app.route('/new_customer', methods=['GET'])
 def new_customer():
