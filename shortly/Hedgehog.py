@@ -43,7 +43,6 @@ app.static_folder = app.config['STATIC_FOLDER']
 @app.route('/', methods=['GET'])
 def choose():
     session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
-
     return render_template('choose.html', jamla=jamla)
 
 # Register yml pages as routes
@@ -60,6 +59,12 @@ for i,v in enumerate(jamla['pages']):
     possibles.update(locals())
     view_func = possibles.get(method_name)
     app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
+
+def sku_exists(sku):
+    for item in jamla['items']:
+        if item['sku'] == str(sku):
+            return True
+    return False 
 
 @app.route('/new_customer', methods=['GET'])
 def new_customer():
@@ -79,9 +84,13 @@ def store_customer():
     email = request.form['email']
     mobile = request.form['mobile']
     now = datetime.datetime.now()
-    wants = request.args.get('plan')
-    # Store customer
+    # Store customer in session
     sid = session['sid']
+
+    # Store plan in session
+    if sku_exists(request.args.get('plan')):
+        wants = request.args.get('plan')
+        session['plan'] = wants
     print "##################"
     con = sqlite3.connect(app.config["DB_FULL_PATH"])
     cur = con.cursor()
