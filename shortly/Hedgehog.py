@@ -296,6 +296,7 @@ def on_prerequisites():
     """
     return render_template('prerequisites.html')
 
+
 @app.route('/push-payments', methods=['GET'])
 def push_payments():
     """
@@ -337,5 +338,15 @@ def push_payments():
             Rest.post(entity='transaction', fields=fields)
 
     return "Payments have been pushed"
+
+@app.route('/retry-payment/<payment_id>', methods=['GET'])
+def retry_payment(payment_id):
+    gocclient = gocardless_pro.Client(
+        access_token = app.config['GOCARDLESS_TOKEN'],
+        environment= app.config['GOCARDLESS_ENVIRONMENT']
+    )
+    r = gocclient.payments.retry(payment_id)
+
+    return "Payment (" + payment_id + " retried." + str(r)
 
 application = app
