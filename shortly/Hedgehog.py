@@ -296,6 +296,38 @@ def on_prerequisites():
     """
     return render_template('prerequisites.html')
 
+@app.route('/push-mandates', methods=['GET'])
+def push_mandates():
+    gocclient = gocardless_pro.Client(
+        access_token = app.config['GOCARDLESS_TOKEN'],
+        environment= app.config['GOCARDLESS_ENVIRONMENT']
+    )
+    #Loop mandates
+    for mandate in gocclient.mandates.list().records:
+        print "##"
+        # Push to Penguin
+        print "Pushing mandate to penguin.."
+        title = mandate.id
+        fields = {
+            'title':title,
+            'field_gocardless_created_at': mandate.created_at,
+            'field_gocardless_cust_bank_id': mandate.attributes['links']['customer_bank_account'],
+            'field_gocardless_mandate_creditr': mandate.attributes['links']['creditor'],
+            'field_gocardless_mandate_cust_id': mandate.attributes['links']['customer'],
+            'field_gocardless_mandate_id': mandate.id,
+            'field_gocardless_mandate_ref': mandate.reference,
+            'field_gocardless_mandate_scheme': mandate.scheme, 
+            'field_gocardless_mandate_status': mandate.status,
+            'field_gocardless_metadata' : str(mandate.metadata),
+            'field_gocardless_new_mandate_id': '',
+            'field_gocardless_pmts_req_approv': mandate.payments_require_approval,
+            'field_gocardless_next_pos_charge': mandate.next_possible_charge_date
+        }
+        Rest.post(entity='mandate', fields=fields)
+
+
+
+    return "Mandates pushed"
 
 @app.route('/push-payments', methods=['GET'])
 def push_payments():
