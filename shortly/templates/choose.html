@@ -10,44 +10,45 @@
 
   <div class="pricing-table is-horizontal" style="max-width:1000px; margin:auto">
 
+    {% for item in jamla['items'] %}
 
-      {% for item in jamla['items'] %}
-          <div class="pricing-plan">
-              <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
-              <div class="plan-items">
-              {% for sellingPoint in item['selling_points'] %}
-                  <div class="plan-item">{{ sellingPoint|safe }}</div>
-              {% endfor %}
-              </div>
-            <div class="plan-footer">
-                <div class="plan-price" style="padding-bottom:0;">
-                    <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
-                        <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']) }}</span>/month
-                </div>
-                <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']) }}</small>
-                <a href="{{ item['oboarding_start_url'] }}" style="background-color:{{ item['primary_colour'] }}" class="button is-fullwidth is-info">Continue</a>
+      <div class="pricing-plan">
+        <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
+        <div class="plan-items">
+        {% for sellingPoint in item['selling_points'] %}
+            <div class="plan-item">{{ sellingPoint|safe }}</div>
+        {% endfor %}
+        </div>
+        <div class="plan-footer">
+            <div class="plan-price" style="padding-bottom:0;">
+                <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
+                    <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']) }}</span>/month
             </div>
-          </div>
-      {% endfor %}
+            <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']) }}</small>
+            <a href="/new_customer?plan={{ item['sku'] }}" style="background-color:{{ item['primary_colour'] }}" class="button is-fullwidth is-info">Continue</a>
+        </div>
+      </div>
+
+    {% endfor %}
+
   </div>
+
   <br />
+
   <p class="has-text-centered has-text-white"></p>
 
 {% endblock %}
 
 {% block body %}
 
+  <div class="section">
+    <div class="container">
 
+      <h3 class="title is-3">Need Convincing?</h3>
+      {{ lipsum(n=2, html=True, min=20, max=100) }}
 
-    <div class="section">
-      <div class="container">
-
-        <h3 class="title is-3">Need Convincing?</h3>
-        {{ lipsum(n=2, html=True, min=20, max=100) }}
-
-      </div>
     </div>
-
+  </div>
 
   <div class="section">
     <div class="container">
@@ -57,7 +58,6 @@
 
     </div>
   </div>
-
 
   <script>
     $('.pricing-plan').hover(
