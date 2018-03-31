@@ -47,7 +47,7 @@ with app.app_context():
         session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
         return render_template('choose.html', jamla=jamla)
 
-# Register yml pages as routes & import any custom modules they depend on
+    # Register yml pages as routes
     for i,v in enumerate(jamla['pages']):
         path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
         template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
@@ -61,13 +61,12 @@ with app.app_context():
         possibles.update(locals())
         view_func = possibles.get(method_name)
         app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
-        ## Import custom modules if page has them
-        if 'depends' in jamla['pages'][i][jamla['pages'][i].keys()[0]]:
-            for moduleName in jamla['pages'][i][jamla['pages'][i].keys()[0]]['depends']:
-                print moduleName + " is the module name."
-                __import__(moduleName)
 
-
+    # Import any custom modules
+    if jamla['modules']:
+        for moduleName in jamla['modules']:
+            print "Importing module: " + moduleName
+            __import__(moduleName)
 
     def sku_exists(sku):
         for item in jamla['items']:

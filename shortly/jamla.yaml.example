@@ -111,3 +111,4 @@ pages:
     - demo:
         path: "demo"
         template_file: "demo.html"
+modules:
