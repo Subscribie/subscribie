@@ -11,8 +11,12 @@ import sqlite3
 import smtplib
 from penguin_rest import Decorators
 from jamla import Jamla
-import sendgrid
-from sendgrid.helpers.mail import *
+try:
+    import sendgrid
+    from sendgrid.helpers.mail import *
+except Exception:
+    pass
+
 from flask import Flask, render_template, session, redirect, url_for, escape, request
 import flask
 import jinja2
