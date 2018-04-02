@@ -34,6 +34,7 @@ app = MyFlask(__name__)
 with app.app_context():
     app.config.from_pyfile('.env')
     app.secret_key = app.config['SECRET_KEY']
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     with app.app_context():
         from flask import g
         jamla = getattr(g, 'jamla', None)
