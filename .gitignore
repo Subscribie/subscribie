@@ -6,3 +6,4 @@ shortly/.env
 shortly/kcBroadband.db
 shortly/venv/
 shortly/jamla.yaml
+shortly/instance/*

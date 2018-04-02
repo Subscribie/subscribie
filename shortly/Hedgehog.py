@@ -53,22 +53,23 @@ with app.app_context():
 	    return render_template('choose.html', jamla=jamla)
 
 	# Register yml pages as routes
-	for i,v in enumerate(jamla['pages']):
-	    path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
-	    template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
-	    view_func_name = jamla['pages'][i].keys()[0]
-	    ##Generate view function
-	    generate_view_func = """def %s_view_func():
-	    return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
-	    exec(generate_view_func)
-	    method_name = view_func_name + "_view_func"
-	    possibles = globals().copy()
-	    possibles.update(locals())
-	    view_func = possibles.get(method_name)
-	    app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
+        if 'pages' in jamla:
+            for i,v in enumerate(jamla['pages']):
+                path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
+                template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
+                view_func_name = jamla['pages'][i].keys()[0]
+                ##Generate view function
+                generate_view_func = """def %s_view_func():
+                return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
+                exec(generate_view_func)
+                method_name = view_func_name + "_view_func"
+                possibles = globals().copy()
+                possibles.update(locals())
+                view_func = possibles.get(method_name)
+                app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
 
 	# Import any custom modules
-	if jamla['modules']:
+	if 'modules' in jamla:
 	    for moduleName in jamla['modules']:
 		print "Importing module: " + moduleName
 		__import__(moduleName)
