@@ -7,6 +7,15 @@ def load(src = 'example.yaml'):
         print (section)
     return cfg
 
+def get_primary_icons(jamla=None):
+    """ Returns list of all static file paths """
+    if jamla is None:
+        raise Exception("get_primary_icons expects a jamla object")
+    icons = []
+    for item in jamla['items']:
+        icons.append(item['primary_icon']['src'])
+    return icons
+
 
 
 
