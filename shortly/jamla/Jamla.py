@@ -13,7 +13,8 @@ def get_primary_icons(jamla=None):
         raise Exception("get_primary_icons expects a jamla object")
     icons = []
     for item in jamla['items']:
-        icons.append(item['primary_icon']['src'])
+        if item['primary_icon']['src']:
+            icons.append(item['primary_icon']['src'])
     return icons
 
 
