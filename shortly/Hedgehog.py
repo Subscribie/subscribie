@@ -189,17 +189,58 @@ with app.app_context():
 		access_token = app.config['GOCARDLESS_TOKEN'],
 		environment= app.config['GOCARDLESS_ENVIRONMENT']
 	    )
+            try:
+                redirect_flow = gocclient.redirect_flows.complete(
+                    redirect_flow_id,
+                    params = {
+                        "session_token": session['sid']
+                })
+	        print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
+                # Save this mandate & customer ID for the next section.
+                print ("Mandate: {}".format(redirect_flow.links.mandate))
+                print ("Customer: {}".format(redirect_flow.links.customer))
+                session['gocardless_mandate_id'] = redirect_flow.links.mandate
+                session['gocardless_customer_id'] = redirect_flow.links.customer
+                # Store customer
+                sid = session['sid']
+                now = datetime.datetime.now()
+                mandate = redirect_flow.links.mandate
+                customer = redirect_flow.links.customer
+                flow = redirect_flow_id
 
-	    redirect_flow = gocclient.redirect_flows.complete(
-		redirect_flow_id,
-		params = {
-		    "session_token": session['sid']
-	    })
-	    # Save this mandate & customer ID for the next section.
-	    print ("Mandate: {}".format(redirect_flow.links.mandate))
-	    print ("Customer: {}".format(redirect_flow.links.customer))
-	    session['gocardless_mandate_id'] = redirect_flow.links.mandate
-	    session['gocardless_customer_id'] = redirect_flow.links.customer
+                con = sqlite3.connect(app.config['DB_FULL_PATH'])
+                cur = con.cursor()
+                cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
+                row = cur.fetchone()
+                customerName = row[2] + " " + row[3]
+                customerAddress = row[4] + ", " + row[5] + ", " + row[6]
+                customerEmail = row[7]
+                customerPhone = row[8]
+                chosenPackage = row[9]
+                customerExistingLine = row[10]
+                customerExistingNumber = row[11]
+
+                # Create subscription
+                gocclient.subscriptions.create(params={
+                    "amount":sku_get_monthly_price(session['plan']),
+                    "currency":"GBP",
+                    "name": sku_get_title(session['plan']),
+                    "interval_unit": "monthly",
+                    "metadata": {
+                        "sku":session['plan']
+                    },
+                    "links": {
+                        "mandate":session['gocardless_mandate_id']
+                    }
+                })
+            except Exception as e:
+                if isinstance(e, gocardless_pro.errors.InvalidStateError):
+                    if e.error['type'] == 'invalid_state':
+                        # Allow pass through if redirect flow already completed
+                        if e.errors[0]['reason'] == "redirect_flow_already_completed":
+                            pass
+
+            # Update Penguin customer record via Rest api
             try:
                 # Update Partner record with Gocardless Mandate & Customer Id
                 fields = {
@@ -212,42 +253,10 @@ with app.app_context():
                 print "Posting to Penguin failed."
 
 
-	    # Store customer
-	    sid = session['sid']
-	    now = datetime.datetime.now()
-	    mandate = redirect_flow.links.mandate
-	    customer = redirect_flow.links.customer
-	    flow = redirect_flow_id
-
-	    con = sqlite3.connect(app.config['DB_FULL_PATH'])
-	    cur = con.cursor()
-	    cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
-	    row = cur.fetchone()
-	    customerName = row[2] + " " + row[3]
-	    customerAddress = row[4] + ", " + row[5] + ", " + row[6]
-	    customerEmail = row[7]
-	    customerPhone = row[8]
-	    chosenPackage = row[9]
-	    customerExistingLine = row[10]
-	    customerExistingNumber = row[11]
-	    currentDate = datetime.datetime.now()
-	    goLive = currentDate + datetime.timedelta(days = 15)
-
-	    # Create subscription
-	    gocclient.subscriptions.create(params={
-		"amount":sku_get_monthly_price(session['plan']),
-		"currency":"GBP",
-		"name": sku_get_title(session['plan']),
-		"interval_unit": "monthly",
-		"metadata": {
-		    "sku":session['plan']
-		},
-		"links": {
-		    "mandate":session['gocardless_mandate_id']
-		}
-	    })
 
 	    #TODO loop over Jamla items vs chosenPackage to work out contractExpiry, monthlycost, lead_time
+            currentDate = datetime.datetime.now()
+            goLive = currentDate + datetime.timedelta(days = 15)
 	    contractExpiry = goLive + datetime.timedelta(days = 365)
 	    monthlyCost = "As quoted"
 	    goLive = "ASAP"
@@ -288,12 +297,10 @@ with app.app_context():
 	    # their Direct Debit has been set up. You could build your own,
 	    # or use ours, which shows all the relevant information and is
 	    # translated into all the languages we support.
-	    print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
 	    return redirect(app.config['THANKYOU_URL'])
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
-	    print "##### The partner nid is:" + str(session['partner_nid'])
 	    print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
