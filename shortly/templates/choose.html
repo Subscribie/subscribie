@@ -1,64 +1,49 @@
 {% extends "layout.html" %}
-{% block title %}Choose your package{% endblock %}
+{% block title %} Choose your package {% endblock %}
 
 {% block hero %}
 
-        <img src="/static/{{ jamla['company']['start_image'] }}" style="max-width: 500px; width:75%;" />
-
-        <h1 style="color:white" class="title is-1 is-size-3-mobile">Let's get started!</h1>
-        <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Choose your package</h2>
-
-  <div class="pricing-table is-horizontal" style="max-width:1000px; margin:auto">
-
-    {% for item in jamla['items'] %}
-
-      <div class="pricing-plan">
-        <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
-        <div class="plan-items">
-        {% for sellingPoint in item['selling_points'] %}
-            <div class="plan-item">{{ sellingPoint|safe }}</div>
-        {% endfor %}
-        </div>
-        <div class="plan-footer">
-            <div class="plan-price" style="padding-bottom:0;">
-                <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
-                    <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price'] / 100) }}</span>/month
-            </div>
-            <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price'] / 100)  }}</small>
-            <a href="/new_customer?plan={{ item['sku'] }}"
-                style="background-color:{{ item['primary_colour'] }}" class="button is-fullwidth is-info">Continue</a>
-        </div>
-      </div>
-
-    {% endfor %}
-
-  </div>
-
-  <br />
-
-  <p class="has-text-centered has-text-white"></p>
+    <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
+    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Choose your package</h2>
 
 {% endblock %}
 
 {% block body %}
 
-  <div class="section">
-    <div class="container">
+<div class="section">
+  <div class="container">
 
-      <h3 class="title is-3">Need Convincing?</h3>
-      {{ lipsum(n=2, html=True, min=20, max=100) }}
+      <h3 class="title is-4 has-text-centered is-size-4-mobile">Make your choice</h2>
 
-    </div>
+      <div id="pricing-table-vertical">
+        <div class="pricing-table" style="max-width:1000px; margin:auto;">
+          {% for item in jamla['items'] %}
+            <div class="pricing-plan">
+                <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
+                <div class="plan-items">
+                {% for sellingPoint in item['selling_points'] %}
+                    <div class="plan-item">{{ sellingPoint|safe }}</div>
+                {% endfor %}
+                </div>
+              <div class="plan-footer">
+                  <div class="plan-price" style="padding-bottom:0;">
+                      <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
+                          <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']/100) }}</span>/month
+                  </div>
+                  <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']/100) }}</small>
+                  <a href="/new_customer?plan={{ item['sku'] }}" 
+                      style="background-color:{{ item['primary_colour'] }}" 
+                      class="button is-fullwidth is-info">
+                  Choose</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
   </div>
+</div>
 
-  <div class="section">
-    <div class="container">
-
-      <h3 class="title is-3">No really, do you?</h3>
-      {{ lipsum(n=1, html=True, min=20, max=100) }}
-
-    </div>
-  </div>
 
   <script>
     $('.pricing-plan').hover(
@@ -66,5 +51,20 @@
          function(){ $(this).removeClass('is-active') }
   )
   </script>
+
+  <script>
+    function showHorizontal() {
+      document.getElementById('pricing-table-horizontal').style.display = "block";
+      document.getElementById('pricing-table-vertical').style.display = "none";
+      console.log('Button Clicked!');
+    }
+    function showVertical() {
+      document.getElementById('pricing-table-vertical').style.display = "block";
+      document.getElementById('pricing-table-horizontal').style.display = "none";
+      console.log('Button Clicked!');
+    }
+  </script>
+
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
 {% endblock %}
