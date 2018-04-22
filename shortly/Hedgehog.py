@@ -305,23 +305,6 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
-	@app.route('/broadband_availability_postcode_checker')
-	def broadband_availability_postcode_checker():
-	    return render_template('broadband-availability-postcode-checker.html')
-
-	@app.route('/gettingstarted', methods=['GET'])
-	def on_gettingstarted():
-	    return render_template('gettingstarted.html')
-
-	@app.route('/prerequisites', methods=['GET'])
-	def on_prerequisites():
-	    """
-	    Render template with mandatory questions for a
-	    sucessful onboarding e.g. "Do you already have
-	    a x,y,z?".
-	    """
-	    return render_template('prerequisites.html')
-
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
 	    gocclient = gocardless_pro.Client(
