@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %} Login {% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
+    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Login</h2>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="section">
+  <div class="container">
+
+      <h3 class="title is-4 has-text-centered is-size-4-mobile">Smart Login</h2>
+		<form method="POST" action="/login">
+			{{ form.csrf_token }}
+			{{ form.email.label }} {{ form.email(size=20) }}
+            <br />
+			<input type="submit" value="Magic Login">
+		</form>
+  </div>
+</div>
+
+
+  <script>
+    $('.pricing-plan').hover(
+         function(){ $(this).addClass('is-active') },
+         function(){ $(this).removeClass('is-active') }
+  )
+  </script>
+
+  <script>
+    function showHorizontal() {
+      document.getElementById('pricing-table-horizontal').style.display = "block";
+      document.getElementById('pricing-table-vertical').style.display = "none";
+      console.log('Button Clicked!');
+    }
+    function showVertical() {
+      document.getElementById('pricing-table-vertical').style.display = "block";
+      document.getElementById('pricing-table-horizontal').style.display = "none";
+      console.log('Button Clicked!');
+    }
+  </script>
+
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+{% endblock %}
