@@ -4,7 +4,7 @@
 {% block hero %}
 
     <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
-    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Choose your package</h2>
+    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Welcome to our shop</h2>
 
 {% endblock %}
 
@@ -15,7 +15,7 @@
 
       <h3 class="title is-4 has-text-centered is-size-4-mobile">Make your choice</h2>
 
-      <div id="pricing-table-vertical">
+      <div id="pricing-table">
         <div class="pricing-table" style="max-width:1000px; margin:auto;">
           {% for item in jamla['items'] %}
             <div class="pricing-plan">
@@ -30,9 +30,15 @@
                       <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
                           <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']/100) }}</span>/month
                   </div>
-                  <small style="margin-bottom:1rem;">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']/100) }}</small>
-                  <a href="/new_customer?plan={{ item['sku'] }}" 
-                      style="background-color:{{ item['primary_colour'] }}" 
+
+                  {% if item['sell_price'] %}
+                    <small>Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']/100) }}</small></br></br>
+                  {% else %}
+                    <small>Upfront cost: None</small></br></br>
+                  {% endif %}
+
+                  <a href="/new_customer?plan={{ item['sku'] }}"
+                      style="background-color:{{ item['primary_colour'] }}"
                       class="button is-fullwidth is-info">
                   Choose</a>
               </div>

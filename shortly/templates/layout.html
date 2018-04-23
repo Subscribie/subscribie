@@ -4,7 +4,7 @@
 <title>{% block title %}{% endblock %} | {{ jamla['company']['name'] }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/static/bulma.css">
+<link rel="stylesheet" href="/static/style.css">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 <meta name="theme-color" content="#1e88e5">
 <!-- Google Tag Manager -->
@@ -30,25 +30,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+          {% if jamla['company']['logo'] %}
+            <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+          {% else %}
+            {{ jamla['company']['name'] }}
+          {% endif %}
         </a>
-        <span class="navbar-burger burger" data-target="navbarMenuHeroB">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </div>
-      <div id="navbarMenuHeroB" class="navbar-menu">
-        <div class="navbar-end">
-          <a class="navbar-item" href="/">
-            Home
-          </a>
-          <span class="navbar-item">
-            <a class="button is-info is-inverted" href="/contact">
-              <span>Contact Us</span>
-            </a>
-          </span>
-        </div>
       </div>
     </div>
   </nav>
@@ -71,9 +58,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="content has-text-centered">
         <p>
           By <a href="/">{{ jamla['company']['name'] }}</a>.
-          <br />Made with <3 by the <a href="https://www.karmacomputing.co.uk" title="Karma Subscription Website Builder">KC</a> gang in Newcastle upon Tyne</a>.
+          <br />
         </p>
-        <br />
+        <small>Made possible by <a href="https://www.karmacomputing.co.uk" title="Karma Subscription Website Builder">Karma Computing</a> in Newcastle upon Tyne.</small>
+        <br /><br />
         <a href="#" class="button is-small">Scroll back to top</a>
       </div>
     </div>
