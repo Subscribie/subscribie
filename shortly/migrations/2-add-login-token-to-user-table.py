@@ -16,21 +16,20 @@ def up():
 def down():                                                                      
     con = sqlite3.connect(args.db)                                               
     cur = con.cursor()                                                           
-    cur.execute('''                                                              
+    cur.executescript('''                                                              
     BEGIN TRANSACTION;
+    DROP TABLE IF EXISTS temp_user;
     ALTER TABLE user RENAME TO temp_user;
 
-    CREATE TABLE IF NOT EXISTS user (    
+    CREATE TABLE user (    
         email text,    
         created_at timestamp,    
         active boolean    
        );
 
-    INSERT INTO user
-        SELECT email, created_at, active
-    FROM 
-    temp_user;
+    INSERT INTO user SELECT email, created_at, active FROM temp_user;
     DROP TABLE temp_user;
+    COMMIT;
     ''')                                                                         
     con.commit() 
 
