@@ -1,29 +1,36 @@
-import os,sys
-sys.path.append('../../../modules')
-import random
+import os
 from os import environ
-from base64 import b64encode
+import sys
+import random
 import requests
 import time
-from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
 import smtplib
-from penguin_rest import Decorators
-from jamla import Jamla
+import jinja2 
+import flask
+import flask_login
+import datetime
+from base64 import b64encode
+from bs4 import BeautifulSoup
+from flask_wtf import FlaskForm                                                  
+from wtforms import (StringField, FloatField, FieldList, FileField, validators,  
+                         BooleanField, TextField)                                                     
+from wtforms.validators import DataRequired
 try:
     import sendgrid
     from sendgrid.helpers.mail import *
 except Exception:
     pass
-
-from flask import Flask, render_template, session, redirect, url_for, escape, request
-import flask
-import jinja2
-import datetime
+from flask import (Flask, render_template, session, redirect, url_for, escape, 
+                   request)
+from jamla import Jamla
+from penguin_rest import Decorators
 from penguin_rest import Rest
+sys.path.append('../../../modules')
 
 class MyFlask(flask.Flask):
+
 
     def __init__(self, import_name):
         super(MyFlask, self).__init__(import_name)
