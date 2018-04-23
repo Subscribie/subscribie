@@ -337,7 +337,6 @@ with app.app_context():
 	        con.commit()
                 con.close()
                 # Send email with token link
-                import pdb;pdb.set_trace() 
                 return ("Valid user")
 
         @app.route('/login', methods=['GET'])
