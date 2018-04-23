@@ -54,6 +54,9 @@ with app.app_context():
         app.jinja_loader = my_loader
         app.static_folder = app.config['STATIC_FOLDER']
 
+        login_manager = flask_login.LoginManager()
+        login_manager.init_app(app)
+
 	@app.route('/', methods=['GET'])
 	def choose():
 	    session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
@@ -312,6 +315,24 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
+        @app.route('/login', methods=['GET', 'POST'])
+        def login():
+            form = LoginForm()
+            if form.validate_on_submit():
+                # Login and valudate the user.
+                # user should be an instance of your 'User' class
+                login_user(user)
+
+                flask.flash('Logged in successfully.')
+                next = flask.request.args.get('next')
+                # is_safe_url should check if the url is safe for
+                # redirects. See:
+                # http://flask.pocoo.org/snippets/62
+                if not is_safe_url(next):
+                    return flask.abort(400)
+                return flask.redirect(next or flask.url_for('index'))
+            return render_template('login.html', form=form, jamla=jamla)
+
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
 	    gocclient = gocardless_pro.Client(
@@ -396,5 +417,8 @@ with app.app_context():
 	    r = gocclient.payments.retry(payment_id)
 
 	    return "Payment (" + payment_id + " retried." + str(r)
+
+class LoginForm(FlaskForm):
+    email = StringField('email', validators=[DataRequired()])
 
 application = app
