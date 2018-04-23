@@ -11,12 +11,11 @@ import jinja2
 import flask
 import flask_login
 import datetime
-from base64 import b64encode
-from bs4 import BeautifulSoup
+from base64 import b64encode, urlsafe_b64encode
 from flask_wtf import FlaskForm                                                  
 from wtforms import (StringField, FloatField, FieldList, FileField, validators,  
                          BooleanField, TextField)                                                     
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email as EmailValid
 try:
     import sendgrid
     from sendgrid.helpers.mail import *
@@ -315,7 +314,33 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
-        @app.route('/login', methods=['GET', 'POST'])
+        @app.route('/login', methods=['POST'])
+        def generate_login_token():
+            form = LoginForm()
+            if form.validate_on_submit():
+                # Check valid email
+                email = (form.data['email'],)
+                con = sqlite3.connect(app.config["DB_FULL_PATH"])
+                cur = con.cursor()
+                cur.execute('SELECT COUNT(*) FROM user WHERE email=?', email)
+                result = bool(cur.fetchone()[0])
+                con.close()
+                if result is False:
+                    return("Invalid valid user")
+                # Generate login token
+                login_token = urlsafe_b64encode(os.urandom(24))
+                email = str(form.data['email'])
+                con = sqlite3.connect(app.config["DB_FULL_PATH"])
+                cur = con.cursor()
+                # Insert login token into db
+                cur.execute(""" UPDATE user SET login_token= ? WHERE email= ? """,(login_token,email))
+	        con.commit()
+                con.close()
+                # Send email with token link
+                import pdb;pdb.set_trace() 
+                return ("Valid user")
+
+        @app.route('/login', methods=['GET'])
         def login():
             form = LoginForm()
             if form.validate_on_submit():
@@ -419,6 +444,6 @@ with app.app_context():
 	    return "Payment (" + payment_id + " retried." + str(r)
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[DataRequired()])
+    email = StringField('email', validators= [ DataRequired(), EmailValid()])
 
 application = app
