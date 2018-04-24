@@ -20,3 +20,14 @@ export gocardless_environment="use sandbox (testing) or live"
 Note: On the server, the app is presented as a wsgi application which apache loads in
 see: http://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html 
 (looks more complicated that it is)
+
+## Protecting routes
+Decorate a protected route with a `@flask_login.login_required` decorator after
+your `@app.route('/path')` decorators.
+
+E.g:
+
+        @app.route('/my-account-page')                                                 
+        @flask_login.login_required                                              
+        def myaccount():                                                         
+            return 'My account page'
