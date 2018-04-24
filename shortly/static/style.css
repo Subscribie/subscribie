@@ -1,3 +1,63 @@
+.is-divider, .is-divider-vertical {
+  display: block;
+  position: relative;
+}
+
+.is-divider[data-content]::after, .is-divider-vertical[data-content]::after {
+  background: white;
+  color: #b5b5b5;
+  content: attr(data-content);
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: .5rem .8rem;
+  -webkit-transform: translateY(-1.1rem);
+  -ms-transform: translateY(-1.1rem);
+  transform: translateY(-1.1rem);
+  text-align: center;
+}
+
+.is-divider {
+  border-top: 0.1rem solid #dbdbdb;
+  height: .1rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.is-divider-vertical {
+  display: block;
+  padding: 2rem;
+  position: relative;
+}
+
+.is-divider-vertical::before {
+  border-left: 0.1rem solid #dbdbdb;
+  bottom: 1rem;
+  content: "";
+  display: block;
+  left: 50%;
+  position: absolute;
+  top: 1rem;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+.is-divider-vertical[data-content]::after {
+  left: 50%;
+  padding: .4rem 0;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.vertical-align{
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
 .tick {
   stroke-dasharray: 100;
   stroke-dashoffset: 1000;
