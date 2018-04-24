@@ -78,7 +78,7 @@ with app.app_context():
 	    for item in jamla['items']:
 		if item['sku'] == str(sku):
 		    return True
-	    return False 
+	    return False
 	def sku_get_index(sku):
 	    for index,v in enumerate(jamla['items']):
 		if jamla['items'][index]['sku'] == str(sku):
@@ -89,7 +89,7 @@ with app.app_context():
 	    index = sku_get_index(sku)
 	    title  = jamla['items'][index]['title']
 	    return title
-	    
+
 	def sku_get_monthly_price(sku):
 	    price = jamla['items'][sku_get_index(sku)]['monthly_price']
 	    return price
@@ -107,7 +107,7 @@ with app.app_context():
 	def store_customer():
 	    given_name = request.form['given_name']
 	    family_name = request.form['family_name']
-	    address_line1 = request.form['address_line1']
+	    address_line1 = request.form['street_number'] + " " + request.form['route']
 	    city = request.form['city']
 	    postal_code = request.form['postal_code']
 	    email = request.form['email']
@@ -342,7 +342,7 @@ with app.app_context():
 		    'field_gocardless_mandate_cust_id': mandate.attributes['links']['customer'],
 		    'field_gocardless_mandate_id': mandate.id,
 		    'field_gocardless_mandate_ref': mandate.reference,
-		    'field_gocardless_mandate_scheme': mandate.scheme, 
+		    'field_gocardless_mandate_scheme': mandate.scheme,
 		    'field_gocardless_mandate_status': mandate.status,
 		    'field_gocardless_metadata' : str(mandate.metadata),
 		    'field_gocardless_new_mandate_id': '',
