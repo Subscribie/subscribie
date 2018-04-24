@@ -358,10 +358,11 @@ with app.app_context():
             con.close()
             if result is None:
                 return "Invalid token"
-            # Otherwise, must have been a valid code
+            # Invaldate previous token
+            new_login_token = urlsafe_b64encode(os.urandom(24))
             con = sqlite3.connect(app.config["DB_FULL_PATH"])
             cur = con.cursor()
-            cur.execute('UPDATE user SET login_token=? WHERE login_token=?', ('', login_token,))
+            cur.execute('UPDATE user SET login_token=? WHERE login_token=?', (new_login_token, login_token,))
             con.commit()
             con.close()
 
