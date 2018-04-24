@@ -7,6 +7,7 @@ import time
 import gocardless_pro
 import sqlite3
 import smtplib
+from email.mime.text import MIMEText
 import jinja2 
 import flask
 import flask_login
@@ -314,6 +315,10 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
+        @app.route('/login/<code>', methods=['GET'])
+        def validate_login(code):
+            return "Code is %s" % code;
+
         @app.route('/login', methods=['POST'])
         def generate_login_token():
             form = LoginForm()
@@ -337,6 +342,15 @@ with app.app_context():
 	        con.commit()
                 con.close()
                 # Send email with token link
+                login_url = ''.join(['http://127.0.0.1:5000/login/', login_token])
+                msg = MIMEText(login_url)
+                msg['Subject'] = 'Magic login'
+                msg['From'] = 'root@localhost'
+                msg['To'] = 'chris@karmacomputing.co.uk'
+                # Perform smtp send
+                s = smtplib.SMTP(app.config['EMAIL_HOST'])
+                s.sendmail('chris@karmacomputing.co.uk', 'enquiries@karmacomputing.co.uk', msg.as_string())
+                s.quit()
                 return ("Valid user")
 
         @app.route('/login', methods=['GET'])
