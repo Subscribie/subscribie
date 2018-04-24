@@ -64,7 +64,13 @@ with app.app_context():
 
         @login_manager.user_loader
         def user_loader(email):
-            if email not in users:
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            con.row_factory = sqlite3.Row # Dict based result set
+            cur = con.cursor()
+            cur.execute('SELECT email FROM user WHERE email=?', (str(email),))
+            result = cur.fetchone()
+            con.close()
+            if result is None:
                 return
             user = User()
             user.id = email
@@ -339,9 +345,43 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
-        @app.route('/login/<code>', methods=['GET'])
-        def validate_login(code):
-            return "Code is %s" % code;
+        @app.route('/login/<login_token>', methods=['GET'])
+        def validate_login(login_token):
+            if len(login_token) < 10:
+                return 'Invalid token'
+            # Try to get email from login_token
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            con.row_factory = sqlite3.Row # Dict based result set
+            cur = con.cursor()
+            cur.execute('SELECT email FROM user WHERE login_token=?', (login_token,))
+            result = cur.fetchone()
+            con.close()
+            if result is None:
+                return "Invalid token"
+            # Otherwise, must have been a valid code
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            cur = con.cursor()
+            cur.execute('UPDATE user SET login_token=? WHERE login_token=?', ('', login_token,))
+            con.commit()
+            con.close()
+
+            email = result['email']
+            user = User()
+            user.id = email
+            flask_login.login_user(user)
+            return redirect(url_for('protected'))
+
+            return "Code is %s" % login_token;
+
+        @app.route('/logout')
+        def logout():
+            flask_login.logout_user()
+            return 'Logged out'
+
+        @app.route('/protected')
+        @flask_login.login_required
+        def protected():
+            return 'Logged in as: ' + flask_login.current_user.id
 
         @app.route('/login', methods=['POST'])
         def generate_login_token():
@@ -366,7 +406,7 @@ with app.app_context():
 	        con.commit()
                 con.close()
                 # Send email with token link
-                login_url = ''.join(['http://127.0.0.1:5000/login/', login_token])
+                login_url = ''.join([request.host_url, 'login/', login_token])
                 msg = MIMEText(login_url)
                 msg['Subject'] = 'Magic login'
                 msg['From'] = 'root@localhost'
@@ -375,24 +415,11 @@ with app.app_context():
                 s = smtplib.SMTP(app.config['EMAIL_HOST'])
                 s.sendmail('chris@karmacomputing.co.uk', 'enquiries@karmacomputing.co.uk', msg.as_string())
                 s.quit()
-                return ("Valid user")
+                return ("Check your email")
 
         @app.route('/login', methods=['GET'])
         def login():
             form = LoginForm()
-            if form.validate_on_submit():
-                # Login and valudate the user.
-                # user should be an instance of your 'User' class
-                login_user(user)
-
-                flask.flash('Logged in successfully.')
-                next = flask.request.args.get('next')
-                # is_safe_url should check if the url is safe for
-                # redirects. See:
-                # http://flask.pocoo.org/snippets/62
-                if not is_safe_url(next):
-                    return flask.abort(400)
-                return flask.redirect(next or flask.url_for('index'))
             return render_template('login.html', form=form, jamla=jamla)
 
 	@app.route('/push-mandates', methods=['GET'])
