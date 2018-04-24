@@ -3,8 +3,15 @@
 
 {% block hero %}
 
-    <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
-    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Welcome to our shop</h2>
+    <div class="columns vertical-align">
+      <div class="column">
+        <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
+        <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Welcome to our shop</h2>
+      </div>
+      <div class="column is-one-third" style="text-align:right">
+        <img src="/static/open.svg" style="height:100%;" />
+      </div>
+    </div>
 
 {% endblock %}
 
@@ -16,7 +23,7 @@
       <h3 class="title is-4 has-text-centered is-size-4-mobile">Make your choice</h2>
 
       <div id="pricing-table">
-        <div class="pricing-table" style="max-width:1000px; margin:auto;">
+        <div class="pricing-table">
           {% for item in jamla['items'] %}
             <div class="pricing-plan">
                 <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>

@@ -43,8 +43,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="site-content">
 
     <section class="hero kcBlue">
-      <div class="hero-body has-text-centered">
-        {% block hero %}{% endblock %}
+      <div class="hero-body">
+        <div class="container" style="z-index:9999">
+            {% block hero %}{% endblock %}
+        </div>
       </div>
     </section>
     <main class="main">
@@ -101,5 +103,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
     });
   </script>
+
+  <script>
+
+    // Google Place Autocomplete Form - developers.google.com
+    // Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 3.0 License, and code samples are licensed under the Apache 2.0 License. For details, see our Site Policies. Java is a registered trademark of Oracle and/or its affiliates.
+
+    var placeSearch, autocomplete;
+    var componentForm = {
+    street_number: 'short_name',
+    route: 'long_name',
+    postal_town: 'long_name',
+    administrative_area_level_1: 'short_name',
+    country: 'long_name',
+    postal_code: 'short_name'
+    };
+
+    function initAutocomplete() {
+    // Create the autocomplete object, restricting the search to geographical
+    // location types.
+    autocomplete = new google.maps.places.Autocomplete(
+        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+        {types: ['geocode']});
+
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    autocomplete.addListener('place_changed', fillInAddress);
+    }
+
+    function fillInAddress() {
+    // Get the place details from the autocomplete object.
+    var place = autocomplete.getPlace();
+
+    for (var component in componentForm) {
+      document.getElementById(component).value = '';
+      document.getElementById(component).disabled = false;
+    }
+
+    // Get each component of the address from the place details
+    // and fill the corresponding field on the form.
+    for (var i = 0; i < place.address_components.length; i++) {
+      var addressType = place.address_components[i].types[0];
+      if (componentForm[addressType]) {
+        var val = place.address_components[i][componentForm[addressType]];
+        document.getElementById(addressType).value = val;
+      }
+    }
+    $( ".address_hidden" ).fadeIn( "slow");
+    $( "#manualAddress" ).hide();
+  }
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwpRJuS_MGipAl3KDtmxZ5YVi3eUaCeqA&libraries=places&callback=initAutocomplete" async defer></script>
 
 </html>

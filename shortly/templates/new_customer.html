@@ -3,11 +3,21 @@
 
 {% block hero %}
 
-  <div class="container">
+  <div class="columns vertical-align">
+    <div class="column">
+      <h1 class="title is-1 has-text-white is-size-1-mobile">Order Information</h1>
+      <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Complete the form below</h2>
+    </div>
+    <div class="column is-one-third" style="text-align:right">
+      <img src="/static/mutli-box.svg" style="height:100%;" />
+    </div>
+  </div>
+
+  <!--<div class="container">
     <img src="/static/onboarding.svg" style="max-width: 350px; width:75%;" />
     <h1 style="color:white" class="title is-1 is-size-3-mobile">It's great to meet you</h1>
     <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Fill in the form below to confirm your details</h2>
-  </div>
+  </div> -->
 
 {% endblock %}
 
@@ -21,87 +31,202 @@
       <p class=error><stong>Error:</strong> {{ error }}
     {% endif %}
 
-    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your details</h3>
-    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
+    <div class="columns">
+        <div class="column is-two-thirds">
 
-    <div class="columns" style="text-align:left">
-      <div class="column">
-        <div class="field">
-          <label for="given_name" class="label">First Name</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=given_name id=given_name value="{{ given_name }}" placeholder="Enter your first name">
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="field">
-          <label for="family_name" class="label">Last Name</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=family_name id=family_name value="{{ family_name }}" placeholder="...and now your last name">
-          </p>
-        </div>
-      </div>
-    </div>
+          <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your details</h3>
+          <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
 
-    <div class="columns" style="text-align:left">
-      <div class="column">
-        <div class="field">
-          <label for="mobile" class="label">Mobile Contact Number</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="tel" name=mobile id=mobile value="{{ mobile }}" placeholder="Enter your mobile number">
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="field">
-          <label for="email" class="label">Email Address</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="email" name=email id=email value="{{ email }}" placeholder="...and now your email address">
-          </p>
-        </div>
-      </div>
-    </div>
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label">Your Name</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name=given_name id=given_name placeholder="John" value="{{ given_name }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name=family_name id=family_name placeholder="Smith" value="{{ family_name }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
 
-    <br />
-    <br />
-    <br /><br />
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label">Email</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
 
-    <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Confirm Your Address</h3>
-    <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">This must be the address where the service is being installed. If your billing address is different, enter this on the next stage.</p>
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label">Phone</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
 
-    <div class="columns" style="text-align:left">
-      <div class="column">
-        <div class="field">
-          <label for="address_line1" class="label">Address Line 1</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=address_line1 id=address_line1 value="{{ address_line1 }}" placeholder="123 Sample Lane">
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="field">
-          <label for="city" class="label">City / Town</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=city id=city value="{{ city }}" placeholder="Newcastle upon Tyne">
-          </p>
-        </div>
-      </div>
-    </div>
 
-    <div class="columns" style="text-align:left">
-      <div class="column">
-        <div class="field">
-          <label for="postal_code" class="label">Postcode</label>
-          <p class="control has-icons-left">
-            <input class="input is-medium" type="text" name=postal_code id=postal_code value="{{ postal_code }}" placeholder="AB12 3CD">
-          </p>
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label">Email</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <br />
+
+          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Your Address</h3>
+          <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">Use the box below to search for your address. If you can't find it.</p>
+
+          <div class="field">
+            <p class="control is-expanded has-icons-left">
+              <input class="input is-large is-fullwidth" autocomplete="random" type="email" id="autocomplete" name="autocomplete" placeholder="Start typing to find your address">
+              <span class="icon is-small is-left">
+                <i class="fas fa-map"></i>
+              </span>
+            </p>
+          </div>
+
+          <div class="is-divider" data-content="Address"></div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">Line 1</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=street_number id=street_number placeholder="123">
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=route id=route placeholder="Sample Street">
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">Town / City</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=postal_town id=postal_town placeholder="Newcastle upon Tyne">
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">County</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=administrative_area_level_1 id=administrative_area_level_1 placeholder="Tyne &amp; Wear">
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">Country / Post Code</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=country id=country placeholder="United Kingdom">
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="text" name=postal_code id=postal_code placeholder="NE1 2SW">
+                </p>
+              </div>
+            </div>
+          </div>
+
+
         </div>
-      </div>
+
+        <div class="is-divider-vertical"></div>
+
         <div class="column">
 
+          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Order Summary</h3>
+
+          {% for item in jamla['items'] %}
+            {% if item['sku'] == request.args.get('plan') %}
+
+              <h4 class="title is-5 is-size-5-mobile" style="text-align:left">{{ item['title'] }}</h4>
+              <div class="content">
+                <ul>
+                {% for selling_points in item['selling_points'] %}
+                  <li><p class="subtitle is-6">{{ selling_points }}</p></li>
+                {% endfor %}
+                </ul>
+              </div>
+              <div class="content has-text-right">
+                {% for requirement in item['requirements'] %}
+                  {% if requirement['instant_payment'] == True %}
+                    <p><b>Pay today:</b> <span class="tag is-success is-medium">&pound;{{ "%.2f"|format(item['sell_price']/100) }}</span></p>
+                  {% endif %}
+                  {% if requirement['subscription'] == True %}
+                    <p><b>Price per month:</b> <span class="tag is-info is-large">&pound;{{ "%.2f"|format(item['monthly_price']/100) }}</span></p>
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+
+            {% endif %}
+          {% endfor %}
+
         </div>
-      </div>
-    <input type=submit class="button is-success is-large is-fullwidth" value="Continue to Payment">
+    </div>
+
+    <input type=submit class="button is-success is-medium is-fullwidth" value="Continue to Payment">
 
   </form>
 </div>
