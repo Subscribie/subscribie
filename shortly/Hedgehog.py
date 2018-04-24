@@ -1,29 +1,36 @@
-import os,sys
-sys.path.append('../../../modules')
-import random
+import os
 from os import environ
-from base64 import b64encode
+import sys
+import random
 import requests
 import time
-from bs4 import BeautifulSoup
 import gocardless_pro
 import sqlite3
 import smtplib
-from penguin_rest import Decorators
-from jamla import Jamla
+from email.mime.text import MIMEText
+import jinja2 
+import flask
+import flask_login
+import datetime
+from base64 import b64encode, urlsafe_b64encode
+from flask_wtf import FlaskForm                                                  
+from wtforms import (StringField, FloatField, FieldList, FileField, validators,  
+                         BooleanField, TextField)                                                     
+from wtforms.validators import DataRequired, Email as EmailValid
 try:
     import sendgrid
     from sendgrid.helpers.mail import *
 except Exception:
     pass
-
-from flask import Flask, render_template, session, redirect, url_for, escape, request
-import flask
-import jinja2
-import datetime
+from flask import (Flask, render_template, session, redirect, url_for, escape, 
+                   request)
+from jamla import Jamla
+from penguin_rest import Decorators
 from penguin_rest import Rest
+sys.path.append('../../../modules')
 
 class MyFlask(flask.Flask):
+
 
     def __init__(self, import_name):
         super(MyFlask, self).__init__(import_name)
@@ -46,6 +53,39 @@ with app.app_context():
             ])
         app.jinja_loader = my_loader
         app.static_folder = app.config['STATIC_FOLDER']
+
+        login_manager = flask_login.LoginManager()
+        login_manager.init_app(app)
+        # Mock database
+        users = {'foo@bar.tld': {'password':'secret'}}
+
+        class User(flask_login.UserMixin):
+            pass
+
+        @login_manager.user_loader
+        def user_loader(email):
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            con.row_factory = sqlite3.Row # Dict based result set
+            cur = con.cursor()
+            cur.execute('SELECT email FROM user WHERE email=?', (str(email),))
+            result = cur.fetchone()
+            con.close()
+            if result is None:
+                return
+            user = User()
+            user.id = email
+            return user
+
+        @login_manager.request_loader
+        def request_loader(request):
+            email = request.form.get('email')
+            if email not in users:
+                return
+            user = User()
+            user.id = email
+
+            user.is_authenticated = request.form['password'] == users['email']['password']
+            return user
 
 	@app.route('/', methods=['GET'])
 	def choose():
@@ -305,22 +345,83 @@ with app.app_context():
 	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
 	    return render_template('thankyou.html', jamla=jamla)
 
-	@app.route('/broadband_availability_postcode_checker')
-	def broadband_availability_postcode_checker():
-	    return render_template('broadband-availability-postcode-checker.html')
+        @app.route('/login/<login_token>', methods=['GET'])
+        def validate_login(login_token):
+            if len(login_token) < 10:
+                return 'Invalid token'
+            # Try to get email from login_token
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            con.row_factory = sqlite3.Row # Dict based result set
+            cur = con.cursor()
+            cur.execute('SELECT email FROM user WHERE login_token=?', (login_token,))
+            result = cur.fetchone()
+            con.close()
+            if result is None:
+                return "Invalid token"
+            # Invaldate previous token
+            new_login_token = urlsafe_b64encode(os.urandom(24))
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            cur = con.cursor()
+            cur.execute('UPDATE user SET login_token=? WHERE login_token=?', (new_login_token, login_token,))
+            con.commit()
+            con.close()
 
-	@app.route('/gettingstarted', methods=['GET'])
-	def on_gettingstarted():
-	    return render_template('gettingstarted.html')
+            email = result['email']
+            user = User()
+            user.id = email
+            flask_login.login_user(user)
+            return redirect(url_for('protected'))
 
-	@app.route('/prerequisites', methods=['GET'])
-	def on_prerequisites():
-	    """
-	    Render template with mandatory questions for a
-	    sucessful onboarding e.g. "Do you already have
-	    a x,y,z?".
-	    """
-	    return render_template('prerequisites.html')
+            return "Code is %s" % login_token;
+
+        @app.route('/logout')
+        def logout():
+            flask_login.logout_user()
+            return 'Logged out'
+
+        @app.route('/protected')
+        @flask_login.login_required
+        def protected():
+            return 'Logged in as: ' + flask_login.current_user.id
+
+        @app.route('/login', methods=['POST'])
+        def generate_login_token():
+            form = LoginForm()
+            if form.validate_on_submit():
+                # Check valid email
+                email = (form.data['email'],)
+                con = sqlite3.connect(app.config["DB_FULL_PATH"])
+                cur = con.cursor()
+                cur.execute('SELECT COUNT(*) FROM user WHERE email=?', email)
+                result = bool(cur.fetchone()[0])
+                con.close()
+                if result is False:
+                    return("Invalid valid user")
+                # Generate login token
+                login_token = urlsafe_b64encode(os.urandom(24))
+                email = str(form.data['email'])
+                con = sqlite3.connect(app.config["DB_FULL_PATH"])
+                cur = con.cursor()
+                # Insert login token into db
+                cur.execute(""" UPDATE user SET login_token= ? WHERE email= ? """,(login_token,email))
+	        con.commit()
+                con.close()
+                # Send email with token link
+                login_url = ''.join([request.host_url, 'login/', login_token])
+                msg = MIMEText(login_url)
+                msg['Subject'] = 'Magic login'
+                msg['From'] = 'root@localhost'
+                msg['To'] = 'chris@karmacomputing.co.uk'
+                # Perform smtp send
+                s = smtplib.SMTP(app.config['EMAIL_HOST'])
+                s.sendmail('chris@karmacomputing.co.uk', 'enquiries@karmacomputing.co.uk', msg.as_string())
+                s.quit()
+                return ("Check your email")
+
+        @app.route('/login', methods=['GET'])
+        def login():
+            form = LoginForm()
+            return render_template('login.html', form=form, jamla=jamla)
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
@@ -406,5 +507,8 @@ with app.app_context():
 	    r = gocclient.payments.retry(payment_id)
 
 	    return "Payment (" + payment_id + " retried." + str(r)
+
+class LoginForm(FlaskForm):
+    email = StringField('email', validators= [ DataRequired(), EmailValid()])
 
 application = app
