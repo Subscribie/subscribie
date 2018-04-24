@@ -22,10 +22,13 @@ see: http://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-gu
 (looks more complicated that it is)
 
 ## Protecting routes
+
 Decorate a protected route with a `@flask_login.login_required` decorator after
 your `@app.route('/path')` decorators.
 
-E.g:
+We use the flask_login for authenticated session management, so all docs there will be relevant: https://github.com/maxcountryman/flask-login
+
+E.g: To mage a route 'protected'
 
         @app.route('/my-account-page')                                                 
         @flask_login.login_required                                              
