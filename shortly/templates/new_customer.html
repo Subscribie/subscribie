@@ -96,32 +96,15 @@
           <br />
 
           <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Your Address</h3>
-          <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">Use the box below to search for your address. If you can't find it.</p>
-
-          <div class="field">
-            <p class="control is-expanded has-icons-left">
-              <input class="input is-large is-fullwidth" autocomplete="random" type="text" id="autocomplete" name="autocomplete" placeholder="Start typing to find your address">
-              <span class="icon is-small is-left">
-                <i class="fas fa-map"></i>
-              </span>
-            </p>
-          </div>
-
-          <div class="is-divider" data-content="Enter Address Manually"></div>
 
           <div class="field is-horizontal">
             <div class="field-label is-normal">
-              <label class="label">Line 1</label>
+                <label class="label">Address line 1</label>
             </div>
             <div class="field-body">
               <div class="field">
                 <p class="control is-expanded">
-                  <input class="input" type="text" name=street_number id=street_number placeholder="123">
-                </p>
-              </div>
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name=route id=route placeholder="Sample Street">
+                  <input class="input" type="text" name="address_line_one" id="address_line_one">
                 </p>
               </div>
             </div>
@@ -129,12 +112,12 @@
 
           <div class="field is-horizontal">
             <div class="field-label is-normal">
-              <label class="label">Town / City</label>
+              <label class="label">City</label>
             </div>
             <div class="field-body">
               <div class="field">
                 <p class="control is-expanded">
-                  <input class="input" type="text" name=postal_town id=postal_town placeholder="Newcastle upon Tyne">
+                  <input class="input" type="text" name="city" id="city">
                 </p>
               </div>
             </div>
@@ -142,35 +125,16 @@
 
           <div class="field is-horizontal">
             <div class="field-label is-normal">
-              <label class="label">County</label>
+              <label class="label">Post Code</label>
             </div>
             <div class="field-body">
               <div class="field">
                 <p class="control is-expanded">
-                  <input class="input" type="text" name=administrative_area_level_1 id=administrative_area_level_1 placeholder="Tyne &amp; Wear">
+                  <input class="input" type="text" name="postcode" id="postcode">
                 </p>
               </div>
             </div>
           </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label">Country / Post Code</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name=country id=country placeholder="United Kingdom">
-                </p>
-              </div>
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name=postal_code id=postal_code placeholder="NE1 2SW">
-                </p>
-              </div>
-            </div>
-          </div>
-
 
         </div>
 

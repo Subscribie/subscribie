@@ -147,9 +147,9 @@ with app.app_context():
 	def store_customer():
 	    given_name = request.form['given_name']
 	    family_name = request.form['family_name']
-	    address_line1 = request.form['street_number'] + " " + request.form['route']
+	    address_line1 = request.form['address_line_one'] 
 	    city = request.form['city']
-	    postal_code = request.form['postal_code']
+	    postal_code = request.form['postcode']
 	    email = request.form['email']
 	    mobile = request.form['mobile']
 	    now = datetime.datetime.now()
