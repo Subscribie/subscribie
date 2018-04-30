@@ -420,10 +420,17 @@ with app.app_context():
                 msg['From'] = 'enquiries@karmacomputing.co.uk'
                 msg['To'] = email
                 # Perform smtp send
-                s = smtplib.SMTP(app.config['EMAIL_HOST'])
-                s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string())
-                s.quit()
-                return ("Check your email")
+                print "#"*80
+                print "Sending Login Email:"
+                print login_url
+                print "#"*80
+                try:
+                    s = smtplib.SMTP(app.config['EMAIL_HOST'])
+                    s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string())
+                    s.quit()
+                    return ("Check your email")
+                except Exception:
+                    return ("Failed to generate login email.")
 
         @app.route('/login', methods=['GET'])
         def login():
