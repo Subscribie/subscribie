@@ -410,11 +410,11 @@ with app.app_context():
                 login_url = ''.join([request.host_url, 'login/', login_token])
                 msg = MIMEText(login_url)
                 msg['Subject'] = 'Magic login'
-                msg['From'] = 'root@localhost'
-                msg['To'] = 'chris@karmacomputing.co.uk'
+                msg['From'] = 'enquiries@karmacomputing.co.uk'
+                msg['To'] = email
                 # Perform smtp send
                 s = smtplib.SMTP(app.config['EMAIL_HOST'])
-                s.sendmail('chris@karmacomputing.co.uk', 'enquiries@karmacomputing.co.uk', msg.as_string())
+                s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string())
                 s.quit()
                 return ("Check your email")
 
