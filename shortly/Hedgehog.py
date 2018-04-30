@@ -138,38 +138,45 @@ with app.app_context():
 	@app.route('/new_customer', methods=['GET'])
 	def new_customer():
 	    package = request.args.get('plan','not set')
-	    return render_template('new_customer.html', jamla=jamla, package=package)
+            form = CustomerForm()
+	    return render_template('new_customer.html', jamla=jamla, form=form, package=package)
 
 	@app.route('/new_customer', methods=['POST'])
 	@Decorators.create_partner
 	@Decorators.create_contact
 	@Decorators.attach_contact_partner
 	def store_customer():
-	    given_name = request.form['given_name']
-	    family_name = request.form['family_name']
-	    address_line1 = request.form['address_line_one'] 
-	    city = request.form['city']
-	    postal_code = request.form['postcode']
-	    email = request.form['email']
-	    mobile = request.form['mobile']
-	    now = datetime.datetime.now()
-	    # Store customer in session
-	    sid = session['sid']
+            form = CustomerForm()
+            if form.validate():
+                given_name = form.data['given_name']
+                family_name = form.data['family_name']
+                address_line_one = form.data['address_line_one'] 
+                city = form.data['city']
+                postcode = form.data['postcode']
+                email = form.data['email']
+                mobile = form.data['mobile']
+                now = datetime.datetime.now()
+                # Store customer in session
+                sid = session['sid']
 
-	    # Store plan in session
-	    if sku_exists(request.args.get('plan')):
-		wants = request.args.get('plan')
-		session['plan'] = wants
-	    print "##################"
-	    con = sqlite3.connect(app.config["DB_FULL_PATH"])
-	    cur = con.cursor()
-	    cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name, address_line1, city, postal_code, email, mobile, wants, 'null', 'null', False))
-	    con.commit()
-	    cur.execute("SELECT * FROM person")
-	    print cur.fetchone()
-	    con.close()
-	    #redirect to Crab with sid in the query
-	    return redirect(app.config["CRAB_URL"] + '?sid=' + sid + '&package=' + wants + '&fname=' + given_name)
+                # Store plan in session
+                if sku_exists(request.args.get('plan')):
+                    wants = request.args.get('plan')
+                    session['plan'] = wants
+                print "##################"
+                con = sqlite3.connect(app.config["DB_FULL_PATH"])
+                cur = con.cursor()
+                cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name,
+                            address_line_one, city, postcode, email, mobile,
+                            wants, 'null', 'null', False))
+                con.commit()
+                cur.execute("SELECT * FROM person")
+                print cur.fetchone()
+                con.close()
+                #redirect to Crab with sid in the query
+	        return redirect(app.config["CRAB_URL"] + '?sid=' + sid + '&package=' + wants + '&fname=' + given_name)
+            else:
+                return "Invalid form"
 
 	@app.route('/sign', methods=['GET'])
 	def on_sign(self,request):
@@ -510,5 +517,14 @@ with app.app_context():
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators= [ DataRequired(), EmailValid()])
+
+class CustomerForm(FlaskForm):
+    given_name = StringField('given_name', validators = [DataRequired()])
+    family_name = StringField('family_name', validators = [DataRequired()])
+    mobile = StringField('mobile', validators = [DataRequired()])
+    email = StringField('email', validators = [DataRequired()])
+    address_line_one = StringField('address_line_one', validators = [DataRequired()])
+    city = StringField('city', validators = [DataRequired()])
+    postcode = StringField('postcode', validators = [DataRequired()])
 
 application = app
