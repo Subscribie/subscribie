@@ -13,12 +13,6 @@
     </div>
   </div>
 
-  <!--<div class="container">
-    <img src="/static/onboarding.svg" style="max-width: 350px; width:75%;" />
-    <h1 style="color:white" class="title is-1 is-size-3-mobile">It's great to meet you</h1>
-    <h2 style="color:white" class="subtitle is-3 is-size-5-mobile">Fill in the form below to confirm your details</h2>
-  </div> -->
-
 {% endblock %}
 
 {% block body %}
@@ -26,6 +20,8 @@
   <div class="container">
 
   <form action="" id="new_customer" method=post action=/new_customer >
+
+    {{ form.csrf_token }}
 
     {% if error %}
       <p class=error><stong>Error:</strong> {{ error }}
