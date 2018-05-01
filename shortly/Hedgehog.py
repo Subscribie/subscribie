@@ -451,7 +451,7 @@ with app.app_context():
 
         @app.route('/connect/gocardless', methods=['GET'])
         @flask_login.login_required
-        def connect_gocardless():
+        def connect_gocardless_start():
 	    flow = OAuth2WebServerFlow(
 	        client_id=app.config['GOCARDLESS_CLIENT_ID'],
 		client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
@@ -475,6 +475,28 @@ with app.app_context():
 	    # as a link on the page
 	    return flask.redirect(authorize_url, code=302)
 	    #End gocardless oauth
+
+        @app.route('/connect/gocardless/oauth/complete', methods=['GET'])
+        @flask_login.login_required
+        def gocardless_oauth_complete():
+	    flow = OAuth2WebServerFlow(
+		    client_id=app.config['GOCARDLESS_CLIENT_ID'],
+		    client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
+		    scope="read_write",
+		    # You'll need to use exactly the same redirect URI as in the last step
+		    redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
+		    # Once you go live, this should be set to https://connect.gocardless.com. You'll
+		    # also need to create a live app and update your client ID and secret.
+		    auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
+		    token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
+		    initial_view="signup"
+	    )
+            access_token = flow.step2_exchange(request.args.get('code'))
+
+            # You should store the user's access token - you'll need it to make API requests on their
+            # behalf in future. If you want to handle webhooks for your users, you should also store
+            # their organisation ID which will allow you to identify webhooks belonging to them.
+            return "The acess_token is: " + access_token.access_token
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
