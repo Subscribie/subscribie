@@ -392,7 +392,12 @@ with app.app_context():
         @app.route('/dashboard')
         @flask_login.login_required
         def dashboard():
-            return render_template('dashboard.html', jamla=jamla)
+            if has_connected('gocardless', jamla):
+                gocardless_connected = True
+            else:
+                gocardless_connected = False
+            return render_template('dashboard.html', jamla=jamla,
+                                   gocardless_connected=gocardless_connected)
 
         @app.route('/protected')
         @flask_login.login_required
@@ -494,7 +499,7 @@ with app.app_context():
             flask_login.current_user.gocardless_access_token = access_token.access_token
             flask_login.current_user.gocardless_organisation_id = access_token.token_response['organisation_id']
 
-            return "Gocardless connected." 
+            return redirect(url_for('dashboard'))
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
@@ -592,5 +597,19 @@ class CustomerForm(FlaskForm):
     address_line_one = StringField('address_line_one', validators = [DataRequired()])
     city = StringField('city', validators = [DataRequired()])
     postcode = StringField('postcode', validators = [DataRequired()])
+
+def has_connected(service, jamla):
+    if service == 'gocardless':
+        try:
+            # May exist is flask session if jamla hasn't reloaded yet
+            flask_login.current_user.gocardless_access_token
+        except AttributeError:
+            pass
+        # May have already been loaded from file is instance has been stated
+        # with access_token token already present
+        access_token = jamla['payment_providers']['gocardless']['access_token']
+        if access_token is not None and len(access_token) > 0:
+            return True
+        return False
 
 application = app

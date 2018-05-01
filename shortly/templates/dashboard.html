@@ -4,7 +4,12 @@
 {% block body %}
 
 
-<a href="/connect/gocardless">Connor your gocardless account</a>
+{% if gocardless_connected %}
+    You have connected your GoCardless account!
+{% else %}
+    <a href="/connect/gocardless">Connect your gocardless account</a>
+{% endif %} {# end if connected gocardless #}
+
 <br />
 <a href="/connect/stripe">Connect your stripe account</a>
 
