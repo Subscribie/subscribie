@@ -27,6 +27,7 @@ from flask import (Flask, render_template, session, redirect, url_for, escape,
 from jamla import Jamla
 from penguin_rest import Decorators
 from penguin_rest import Rest
+from oauth2client.client import OAuth2WebServerFlow
 sys.path.append('../../../modules')
 
 class MyFlask(flask.Flask):
@@ -53,6 +54,7 @@ with app.app_context():
             ])
         app.jinja_loader = my_loader
         app.static_folder = app.config['STATIC_FOLDER']
+
 
         login_manager = flask_login.LoginManager()
         login_manager.init_app(app)
@@ -450,7 +452,29 @@ with app.app_context():
         @app.route('/connect/gocardless', methods=['GET'])
         @flask_login.login_required
         def connect_gocardless():
-            return "Connect Gocardless"
+	    flow = OAuth2WebServerFlow(
+	        client_id=app.config['GOCARDLESS_CLIENT_ID'],
+		client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
+		scope="read_write",
+		redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
+		# Once you go live, this should be set to https://connect.gocardless.com. You'll
+		# also need to create a live app and update your client ID and secret.
+		auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
+		token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
+		initial_view="signup",
+		prefill={
+		    "email": "tim@gocardless.com",
+		    "given_name": "Tim",
+		    "family_name": "Rogers",
+		    "organisation_name": "Tim's Fishing Store"
+		}
+	    )
+            authorize_url = flow.step1_get_authorize_url()
+
+	    # You'll now want to direct your user to the URL - you could redirect them or display it
+	    # as a link on the page
+	    return flask.redirect(authorize_url, code=302)
+	    #End gocardless oauth
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
