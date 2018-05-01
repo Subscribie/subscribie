@@ -458,8 +458,6 @@ with app.app_context():
 		client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
 		scope="read_write",
 		redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
-		# Once you go live, this should be set to https://connect.gocardless.com. You'll
-		# also need to create a live app and update your client ID and secret.
 		auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
 		token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
 		initial_view="signup",
@@ -471,11 +469,7 @@ with app.app_context():
 		}
 	    )
             authorize_url = flow.step1_get_authorize_url()
-
-	    # You'll now want to direct your user to the URL - you could redirect them or display it
-	    # as a link on the page
 	    return flask.redirect(authorize_url, code=302)
-	    #End gocardless oauth
 
         @app.route('/connect/gocardless/oauth/complete', methods=['GET'])
         @flask_login.login_required
@@ -486,28 +480,21 @@ with app.app_context():
 		    scope="read_write",
 		    # You'll need to use exactly the same redirect URI as in the last step
 		    redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
-		    # Once you go live, this should be set to https://connect.gocardless.com. You'll
-		    # also need to create a live app and update your client ID and secret.
 		    auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
 		    token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
 		    initial_view="signup"
 	    )
             access_token = flow.step2_exchange(request.args.get('code'))
 
-            # You should store the user's access token - you'll need it to make API requests on their
-            # behalf in future. If you want to handle webhooks for your users, you should also store
-            # their organisation ID which will allow you to identify webhooks belonging to them.
             jamla['payment_providers']['gocardless']['access_token'] = access_token.access_token
             fp = open(app.config['JAMLA_PATH'], 'w')
-            # Save updated jamla file                                                                
+            # Overwrite jamla file with gocardless access_token                                                              
             yaml.safe_dump(jamla,fp , default_flow_style=False)
             # Set users current session to store access_token for instant access
-            flask_login.current_user.update(
-             gocardless_access_token=access_token.acess_token,
-             gocardless_organisation_id=access_token.token_response['organisation_id']
-            )
+            flask_login.current_user.gocardless_access_token = access_token.access_token
+            flask_login.current_user.gocardless_organisation_id = access_token.token_response['organisation_id']
 
-            return "The acess_token is: " + access_token.access_token
+            return "Gocardless connected." 
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
