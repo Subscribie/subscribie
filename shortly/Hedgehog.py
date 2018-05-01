@@ -386,6 +386,11 @@ with app.app_context():
             flask_login.logout_user()
             return 'Logged out'
 
+        @app.route('/dashboard')
+        @flask_login.login_required
+        def dashboard():
+            return render_template('dashboard.html', jamla=jamla)
+
         @app.route('/protected')
         @flask_login.login_required
         def protected():
@@ -436,6 +441,16 @@ with app.app_context():
         def login():
             form = LoginForm()
             return render_template('login.html', form=form, jamla=jamla)
+
+        @app.route('/connect/stripe', methods=['GET'])
+        @flask_login.login_required
+        def connect_stripe():
+            return "Connect Stripe."
+
+        @app.route('/connect/gocardless', methods=['GET'])
+        @flask_login.login_required
+        def connect_gocardless():
+            return "Connect Gocardless"
 
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
