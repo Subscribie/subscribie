@@ -173,8 +173,6 @@ with app.app_context():
                             address_line_one, city, postcode, email, mobile,
                             wants, 'null', 'null', False))
                 con.commit()
-                cur.execute("SELECT * FROM person")
-                print cur.fetchone()
                 con.close()
                 #redirect to Crab with sid in the query
 	        return redirect(app.config["CRAB_URL"] + '?sid=' + sid + '&package=' + wants + '&fname=' + given_name)
@@ -619,6 +617,14 @@ def get_secret(service, name, jamla):
                 return flask_login.current_user.gocardless_access_token
             except AttributeError:
                 pass
-            return jamla['payment_providers']['gocardless']['access_token']
+            try:
+                return jamla['payment_providers']['gocardless']['access_token']
+            except Exception:
+                pass
+            try:
+                return app.config['GOCARDLESS_TOKEN']
+            except Exception:
+                pass
+
 
 application = app
