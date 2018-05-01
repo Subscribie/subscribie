@@ -28,6 +28,7 @@ from jamla import Jamla
 from penguin_rest import Decorators
 from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
+import yaml
 sys.path.append('../../../modules')
 
 class MyFlask(flask.Flask):
@@ -496,6 +497,16 @@ with app.app_context():
             # You should store the user's access token - you'll need it to make API requests on their
             # behalf in future. If you want to handle webhooks for your users, you should also store
             # their organisation ID which will allow you to identify webhooks belonging to them.
+            jamla['payment_providers']['gocardless']['access_token'] = access_token.access_token
+            fp = open(app.config['JAMLA_PATH'], 'w')
+            # Save updated jamla file                                                                
+            yaml.safe_dump(jamla,fp , default_flow_style=False)
+            # Set users current session to store access_token for instant access
+            flask_login.current_user.update(
+             gocardless_access_token=access_token.acess_token,
+             gocardless_organisation_id=access_token.token_response['organisation_id']
+            )
+
             return "The acess_token is: " + access_token.access_token
 
 	@app.route('/push-mandates', methods=['GET'])
