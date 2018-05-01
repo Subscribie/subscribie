@@ -200,7 +200,7 @@ with app.app_context():
 		# validate that hasInstantPaid is true for the customer
 		if res[12] == True:
 		    gocclient = gocardless_pro.Client(
-			access_token = app.config['GOCARDLESS_TOKEN'],
+			access_token = get_secret('gocardless', 'access_token', jamla),
 			environment= app.config['GOCARDLESS_ENVIRONMENT']
 		    )
 		    redirect_flow = gocclient.redirect_flows.create(
@@ -236,7 +236,7 @@ with app.app_context():
 	    print("Recieved flow ID: {} ".format(redirect_flow_id))
 
 	    gocclient = gocardless_pro.Client(
-		access_token = app.config['GOCARDLESS_TOKEN'],
+		access_token = get_secret('gocardless', 'access_token', jamla),
 		environment= app.config['GOCARDLESS_ENVIRONMENT']
 	    )
             try:
@@ -504,7 +504,7 @@ with app.app_context():
 	@app.route('/push-mandates', methods=['GET'])
 	def push_mandates():
 	    gocclient = gocardless_pro.Client(
-		access_token = app.config['GOCARDLESS_TOKEN'],
+		access_token = get_secret('gocardless', 'access_token', jamla),
 		environment= app.config['GOCARDLESS_ENVIRONMENT']
 	    )
 	    #Loop mandates
@@ -541,7 +541,7 @@ with app.app_context():
 	    Assume a gocardless endpoint for now.
 	    """
 	    gocclient = gocardless_pro.Client(
-		access_token = app.config['GOCARDLESS_TOKEN'],
+		access_token = get_secret('gocardless', 'access_token', jamla),
 		environment= app.config['GOCARDLESS_ENVIRONMENT']
 	    )
 	    #Loop customers
@@ -579,7 +579,7 @@ with app.app_context():
 	@app.route('/retry-payment/<payment_id>', methods=['GET'])
 	def retry_payment(payment_id):
 	    gocclient = gocardless_pro.Client(
-		access_token = app.config['GOCARDLESS_TOKEN'],
+		access_token = get_secret('gocardless', 'access_token', jamla),
 		environment= app.config['GOCARDLESS_ENVIRONMENT']
 	    )
 	    r = gocclient.payments.retry(payment_id)
@@ -611,5 +611,14 @@ def has_connected(service, jamla):
         if access_token is not None and len(access_token) > 0:
             return True
         return False
+
+def get_secret(service, name, jamla):
+    if service == 'gocardless' and name == 'access_token':
+        if has_connected('gocardless', jamla):
+            try:
+                return flask_login.current_user.gocardless_access_token
+            except AttributeError:
+                pass
+            return jamla['payment_providers']['gocardless']['access_token']
 
 application = app
