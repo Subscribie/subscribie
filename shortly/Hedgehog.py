@@ -394,8 +394,13 @@ with app.app_context():
                 gocardless_connected = True
             else:
                 gocardless_connected = False
+            if has_connected('stripe', jamla):
+                stripe_connected = True
+            else:
+                stripe_connected = False
             return render_template('dashboard.html', jamla=jamla,
-                                   gocardless_connected=gocardless_connected)
+                                   gocardless_connected=gocardless_connected,
+                                   stripe_connected=stripe_connected)
 
         @app.route('/protected')
         @flask_login.login_required
@@ -452,6 +457,28 @@ with app.app_context():
         @flask_login.login_required
         def connect_stripe():
             return "Connect Stripe."
+
+        @app.route('/connect/stripe/manually', methods=['GET', 'POST'])
+        @flask_login.login_required
+        def connect_stripe_manually():
+            form = StripeConnectForm()
+            if form.validate_on_submit():
+                publishable_key = form.data['publishable_key'] 
+                secret_key = form.data['secret_key']
+                jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
+                jamla['payment_providers']['stripe']['secret_key'] = secret_key
+                fp = open(app.config['JAMLA_PATH'], 'w')
+                # Overwrite jamla file with gocardless access_token                                                              
+                yaml.safe_dump(jamla,fp , default_flow_style=False)
+                flask_login.current_user.stripe_publishable_key = publishable_key
+                # Set Crab JS
+                fp = open(app.config['CRAB_PATH'] + 'js_env/STRIPE_PUBLIC_KEY.env', 'w')
+                fp.write(publishable_key)
+                fp.close()
+                return redirect(url_for('dashboard'))
+            else:
+                return render_template('connect_stripe_manually.html', form=form,
+                        jamla=jamla)
 
         @app.route('/connect/gocardless/manually', methods=['GET', 'POST'])
         @flask_login.login_required
@@ -616,6 +643,10 @@ class CustomerForm(FlaskForm):
 class GocardlessConnectForm(FlaskForm):
     access_token = StringField('access_token', validators = [DataRequired()])
 
+class StripeConnectForm(FlaskForm):
+    publishable_key = StringField('publishable_key', validators = [DataRequired()])
+    secret_key = StringField('secret_key', validators = [DataRequired()])
+
 def has_connected(service, jamla):
     if service == 'gocardless':
         try:
@@ -627,6 +658,17 @@ def has_connected(service, jamla):
         # with access_token token already present
         access_token = jamla['payment_providers']['gocardless']['access_token']
         if access_token is not None and len(access_token) > 0:
+            return True
+    if service == 'stripe':
+        try:
+            # May exist is flask session if jamla hasn't reloaded yet
+            flask_login.current_user.stripe_publishable_key
+        except AttributeError:
+            pass
+        # May have already been loaded from file is instance has been stated
+        # with access_token token already present
+        publishable_key= jamla['payment_providers']['stripe']['publishable_key']
+        if publishable_key is not None and len(publishable_key) > 0:
             return True
         return False
 
