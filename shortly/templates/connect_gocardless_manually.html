@@ -1,0 +1,25 @@
+{% extends "layout.html" %}                                                      
+{% block title %} Connect GoCardless Manually {% endblock %}
+
+{% block body %}
+
+
+{% if gocardless_connected %}
+You have already connected your GoCardless account, but you can do it again if
+you want.
+{% endif %} {# end if connected gocardless #}
+
+Enter your GoCardless access token.
+<form action="" method="POST" action="/">           
+                                                                                   
+    {{ form.csrf_token }}
+    <label>Access Token: 
+        <input id="access_token" name="access_token" type="password" />
+    </label>
+    <input type="submit" value="submit" />
+</form>
+
+<br />
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "layout.html" %}                                                      
+{% block title %} Connect Stripe Manually {% endblock %}
+
+{% block body %}
+
+
+Enter your Stripe API keys:
+<form action="" method="POST" action="/">           
+                                                                                   
+    {{ form.csrf_token }}
+    <label>Publishable key: 
+        <input id="publishable_key" name="publishable_key" type="text" />
+    </label>
+    <label>Secret key: 
+        <input id="secret_key" name="secret_key" type="text" />
+    </label>
+    <input type="submit" value="submit" />
+</form>
+
+<br />
+
+
+{% endblock %}
