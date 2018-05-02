@@ -453,6 +453,23 @@ with app.app_context():
         def connect_stripe():
             return "Connect Stripe."
 
+        @app.route('/connect/gocardless/manually', methods=['GET', 'POST'])
+        @flask_login.login_required
+        def connect_gocardless_manually():
+            form = GocardlessConnectForm()
+            if form.validate_on_submit():
+                access_token = form.data['access_token']
+                jamla['payment_providers']['gocardless']['access_token'] = access_token
+                fp = open(app.config['JAMLA_PATH'], 'w')
+                # Overwrite jamla file with gocardless access_token                                                              
+                yaml.safe_dump(jamla,fp , default_flow_style=False)
+                # Set users current session to store access_token for instant access
+                flask_login.current_user.gocardless_access_token = access_token
+                return form.data['access_token']
+            else:
+                return render_template('connect_gocardless_manually.html', form=form,
+                        jamla=jamla)
+
         @app.route('/connect/gocardless', methods=['GET'])
         @flask_login.login_required
         def connect_gocardless_start():
@@ -595,6 +612,9 @@ class CustomerForm(FlaskForm):
     address_line_one = StringField('address_line_one', validators = [DataRequired()])
     city = StringField('city', validators = [DataRequired()])
     postcode = StringField('postcode', validators = [DataRequired()])
+
+class GocardlessConnectForm(FlaskForm):
+    access_token = StringField('access_token', validators = [DataRequired()])
 
 def has_connected(service, jamla):
     if service == 'gocardless':
