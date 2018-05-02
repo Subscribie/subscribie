@@ -400,7 +400,7 @@ with app.app_context():
         @app.route('/protected')
         @flask_login.login_required
         def protected():
-            return 'Logged in as: ' + flask_login.current_user.id
+            return redirect(url_for('dashboard'));
 
         @app.route('/login', methods=['POST'])
         def generate_login_token():
