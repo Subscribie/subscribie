@@ -349,9 +349,16 @@ with app.app_context():
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
-	    print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
-	    print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
-	    return render_template('thankyou.html', jamla=jamla)
+            try:
+	        print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
+	        print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
+            except KeyError:
+                print 
+	        print "##### No mandate for this transaction" 
+                print " (OK as not all items require a direct debit mandate)"
+	        print "#####" 
+            finally:
+	        return render_template('thankyou.html', jamla=jamla)
 
         @app.route('/login/<login_token>', methods=['GET'])
         def validate_login(login_token):
