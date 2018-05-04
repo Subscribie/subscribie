@@ -23,13 +23,19 @@ try:
 except Exception:
     pass
 from flask import (Flask, render_template, session, redirect, url_for, escape, 
-                   request)
+                   request, current_app)
 from jamla import Jamla
 from penguin_rest import Decorators
 from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
+from blinker import Namespace
 sys.path.append('../../../modules')
+
+# Register signals
+hedgehog_signals = Namespace()
+
+journey_complete = hedgehog_signals.signal('journey_complete')
 
 class MyFlask(flask.Flask):
 
@@ -349,6 +355,9 @@ with app.app_context():
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
+            # Send journey_complete signal
+            import pdb;pdb.set_trace()
+            journey_complete.send(current_app._get_current_object())
             try:
 	        print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
 	        print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
