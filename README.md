@@ -1,36 +1,36 @@
-# Karma Broadband Automate 
+# Setup 
 
-Live URL: http://broadband-availability-checker.karmacomputing.co.uk
+### Create database
+python createdb.py
 
-# Goals
-- Automate customer acquisition of broadband customers
-- Availability checker 
-- Payment collection (direct debit mandate)
-- Customer infor collection & storage 
-- Anything else?
+### Create .env file
+Example .env file:
+export crab_url=http://localhost:80/index.php
+export establish_mandate_url=http://localhost:5000/establish_mandate 
+export success_redirect_url=http://localhost:5000/complete_mandate
+export thankyou_url=http://localhost:5000/thankyou
+export db_full_path=./kcBroadband.db
+export gocardless_token="GET_FROM_GOCARDLESS"
+export gocardless_environment="use sandbox (testing) or live"
 
-^ Not necessarily in that order!
+### Run the script locally
 
-# Supporting goals
-- PWA (Progressive web app) should work offline (except when lookup is performed, obviously)
-
-
-- Started out as a Werkzeug tutorial when learning Werkzeug, so lots of cruft to remove
-
-Environment: 
-
-- Install python
-- Install Werkzeug
-- Inatall jinja2, bs4
-
-#How to run
-`cd shortly`
 `sudo python shortly.py`
 
-# Read
+Note: On the server, the app is presented as a wsgi application which apache loads in
+see: http://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html 
+(looks more complicated that it is)
 
-- https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+## Protecting routes
 
-# Resources
+Decorate a protected route with a `@flask_login.login_required` decorator after
+your `@app.route('/path')` decorators.
 
-- https://developer.mozilla.org/en-US/Apps/Progressive
+We use the flask_login for authenticated session management, so all docs there will be relevant: https://github.com/maxcountryman/flask-login
+
+E.g: To mage a route 'protected'
+
+        @app.route('/my-account-page')                                                 
+        @flask_login.login_required                                              
+        def myaccount():                                                         
+            return 'My account page'
