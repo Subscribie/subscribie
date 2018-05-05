@@ -3,14 +3,12 @@
     hedgehog.signals
     ~~~~~~~~~~~~~
 
-    Implements signals based on blinker if available, otherwise
-    falls silently back to a noop.
+    Implements signals using blinker.
 
-    :copyright: (c) 2015 by Armin Ronacher.
-    :license: BSD, see LICENSE for more details.
+    Influenced by Flask framework signals (c) 2015 by Armin Ronacher.
 """
 from blinker import signal
 
 # Hedgehog Core signals.  For usage examples grep the source code
-#journey_complete = signal('journey-complete')
+journey_complete = signal('journey-complete')
 

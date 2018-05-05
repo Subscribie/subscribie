@@ -352,7 +352,6 @@ with app.app_context():
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
-            import pdb;pdb.set_trace()
             def my_subscriber(sender):
                 print "caught signal!"
             # Send journey_complete signal

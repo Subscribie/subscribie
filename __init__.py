@@ -14,4 +14,4 @@ __version__ = '0.0.1'
 # jamla
 import jamla
 # the signals
-#from .signals import journey_complete
+from .signals import journey_complete
