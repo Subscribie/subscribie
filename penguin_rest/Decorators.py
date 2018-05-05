@@ -1,4 +1,4 @@
-from penguin_rest import Rest
+import Rest
 from flask import g, request, redirect, url_for, session
 from functools import wraps
 import json

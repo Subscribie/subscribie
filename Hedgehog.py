@@ -29,7 +29,9 @@ from penguin_rest import Decorators
 from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
-sys.path.append('../../../modules')
+#from hedgehog import journey_complete
+from blinker import signal
+sys.path.append('../../modules')
 
 
 class MyFlask(flask.Flask):
@@ -350,8 +352,13 @@ with app.app_context():
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
+            import pdb;pdb.set_trace()
+            def my_subscriber(sender):
+                print "caught signal!"
             # Send journey_complete signal
-            journey_complete.send(current_app._get_current_object())
+            journey_complete = signal('journey-complete')
+            journey_complete.connect(my_subscriber)
+            journey_complete.send("anything")
             try:
 	        print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
 	        print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
