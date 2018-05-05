@@ -29,7 +29,7 @@ from penguin_rest import Decorators
 from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
-#from hedgehog import journey_complete
+from hedgehog import journey_complete
 from blinker import signal
 sys.path.append('../../modules')
 
@@ -352,12 +352,8 @@ with app.app_context():
 
 	@app.route('/thankyou', methods=['GET'])
 	def thankyou():
-            def my_subscriber(sender):
-                print "caught signal!"
             # Send journey_complete signal
-            journey_complete = signal('journey-complete')
-            journey_complete.connect(my_subscriber)
-            journey_complete.send("anything")
+            journey_complete.send(current_app._get_current_object())
             try:
 	        print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
 	        print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
