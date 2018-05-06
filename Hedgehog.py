@@ -24,12 +24,11 @@ except Exception:
     pass
 from flask import (Flask, render_template, session, redirect, url_for, escape, 
                    request, current_app)
-from jamla import Jamla
 from penguin_rest import Decorators
 from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
-from hedgehog import journey_complete
+from hedgehog import Jamla, journey_complete
 from blinker import signal
 sys.path.append('../../modules')
 
@@ -49,9 +48,10 @@ with app.app_context():
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     with app.app_context():
         from flask import g
+        jamlaApp = Jamla()
         jamla = getattr(g, 'jamla', None)
         if jamla is None:
-            jamla = Jamla.load(app.config['JAMLA_PATH'])
+            jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
         my_loader = jinja2.ChoiceLoader([
                 jinja2.FileSystemLoader(app.config['TEMPLATE_FOLDER']),
                 app.jinja_loader,
