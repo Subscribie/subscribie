@@ -37,7 +37,7 @@ from .jamla import Jamla
 from .forms import (LoginForm, CustomerForm, GocardlessConnectForm, 
                     StripeConnectForm)
 from blinker import signal
-sys.path.append('../../modules')
+sys.path.append('../../../modules')
 
 """The Hedgehog object implements a flask application suited to subscription 
 based web applications and acts as the central object. Once it is created    
@@ -127,49 +127,7 @@ if 'pages' in jamla:
 if 'modules' in jamla:
     for moduleName in jamla['modules']:
         pass
-        #print "Importing module: " + moduleName
-        #__import__(moduleName)
-
-
-def has_connected(service, jamla):
-    if service == 'gocardless':
-        try:
-            # May exist is flask session if jamla hasn't reloaded yet
-            flask_login.current_user.gocardless_access_token
-        except AttributeError:
-            pass
-        # May have already been loaded from file is instance has been stated
-        # with access_token token already present
-        access_token = jamla['payment_providers']['gocardless']['access_token']
-        if access_token is not None and len(access_token) > 0:
-            return True
-    if service == 'stripe':
-        try:
-            # May exist is flask session if jamla hasn't reloaded yet
-            flask_login.current_user.stripe_publishable_key
-        except AttributeError:
-            pass
-        # May have already been loaded from file is instance has been stated
-        # with access_token token already present
-        publishable_key= jamla['payment_providers']['stripe']['publishable_key']
-        if publishable_key is not None and len(publishable_key) > 0:
-            return True
-        return False
-
-def get_secret(service, name, jamla):
-    if service == 'gocardless' and name == 'access_token':
-        if has_connected('gocardless', jamla):
-            try:
-                return flask_login.current_user.gocardless_access_token
-            except AttributeError:
-                pass
-            try:
-                return jamla['payment_providers']['gocardless']['access_token']
-            except Exception:
-                pass
-            try:
-                return app.config['GOCARDLESS_TOKEN']
-            except Exception:
-                pass
+        print "Importing module: " + moduleName
+        __import__(moduleName)
 
 application = app
