@@ -7,3 +7,4 @@ shortly/kcBroadband.db
 shortly/venv/*
 shortly/jamla.yaml
 shortly/instance/*
+hedgehog.egg-info/*
