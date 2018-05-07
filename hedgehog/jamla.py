@@ -1,4 +1,4 @@
-import yaml
+import yaml, flask_login
 
 class Jamla():
 
@@ -42,3 +42,43 @@ class Jamla():
                 icons.append(item['primary_icon']['src'])
         return icons
 
+    def has_connected(self, service):                                               
+	if service == 'gocardless':                                                  
+	    try:                                                                     
+		# May exist is flask session if jamla hasn't reloaded yet            
+		flask_login.current_user.gocardless_access_token                     
+	    except AttributeError:                                                   
+		pass                                                                 
+	    # May have already been loaded from file is instance has been stated        
+	    # with access_token token already present                                
+	    access_token = self.jamla['payment_providers']['gocardless']['access_token']  
+	    if access_token is not None and len(access_token) > 0:                   
+		return True                                                          
+	if service == 'stripe':                                                      
+	    try:                                                                     
+		# May exist is flask session if jamla hasn't reloaded yet            
+		flask_login.current_user.stripe_publishable_key                      
+	    except AttributeError:                                                   
+		pass                                                                 
+	    # May have already been loaded from file is instance has been stated        
+	    # with access_token token already present                                
+	    publishable_key= self.jamla['payment_providers']['stripe']['publishable_key'] 
+	    if publishable_key is not None and len(publishable_key) > 0:             
+		return True                                                          
+	    return False
+
+    def get_secret(self, service, name):                                            
+	if service == 'gocardless' and name == 'access_token':                       
+	    if self.has_connected('gocardless'):                                   
+		try:                                                                 
+		    return flask_login.current_user.gocardless_access_token          
+		except AttributeError:                                               
+		    pass                                                             
+		try:                                                                 
+		    return self.jamla['payment_providers']['gocardless']['access_token']  
+		except Exception:                                                    
+		    pass                                                             
+		try:                                                                 
+		    return app.config['GOCARDLESS_TOKEN']                            
+		except Exception:                                                    
+		    pass
