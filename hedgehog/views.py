@@ -3,7 +3,8 @@ import random
 import sqlite3
 import flask_login
 from hedgehog import app, Jamla, session, render_template, \
-     request, redirect, alphanum, CustomerForm
+     request, redirect, alphanum, CustomerForm, gocardless_pro, \
+     journey_complete, current_app
 from base64 import b64encode, urlsafe_b64encode 
 
 jamlaApp = Jamla()                                                               
@@ -55,7 +56,9 @@ def store_customer():
         return "Invalid form"
 
 @app.route('/establish_mandate', methods=['GET'])                                
-def establish_mandate():                                                         
+def establish_mandate():
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(app.config['JAMLA_PATH'])
     #lookup the customer with sid and get their relevant details                 
     sid = session['sid']                                                         
     con = sqlite3.connect(app.config["DB_FULL_PATH"])                            
@@ -69,7 +72,7 @@ def establish_mandate():
         # validate that hasInstantPaid is true for the customer                  
         if res[12] == True:                                                      
             gocclient = gocardless_pro.Client(                                   
-                access_token = get_secret('gocardless', 'access_token', jamla),  
+                access_token = jamlaApp.get_secret('gocardless', 'access_token'),  
                 environment= app.config['GOCARDLESS_ENVIRONMENT']                
             )                                                                    
             redirect_flow = gocclient.redirect_flows.create(                     
@@ -100,12 +103,14 @@ def establish_mandate():
         #TODO: respond with 400
 
 @app.route('/complete_mandate', methods=['GET'])                                 
-def on_complete_mandate():                                                       
+def on_complete_mandate():
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(app.config['JAMLA_PATH'])
     redirect_flow_id = request.args.get('redirect_flow_id')                      
     print("Recieved flow ID: {} ".format(redirect_flow_id))                      
                                                                                  
     gocclient = gocardless_pro.Client(                                           
-        access_token = get_secret('gocardless', 'access_token', jamla),          
+        access_token = jamlaApp.get_secret('gocardless', 'access_token'),          
         environment= app.config['GOCARDLESS_ENVIRONMENT']                        
     )                                                                            
     try:                                                                         
