@@ -2,6 +2,8 @@ import os
 import datetime
 import random
 import sqlite3
+import smtplib                                                                   
+from email.mime.text import MIMEText
 import flask_login
 from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
