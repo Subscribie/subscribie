@@ -5,9 +5,10 @@ import sqlite3
 import smtplib                                                                   
 from email.mime.text import MIMEText
 import flask_login
-from hedgehog import app, Jamla, User, session, render_template, \
+from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
      journey_complete, current_app
+import User
 from base64 import b64encode, urlsafe_b64encode 
 
 jamlaApp = Jamla()                                                               
