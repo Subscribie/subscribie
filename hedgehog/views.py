@@ -298,6 +298,8 @@ def connect_stripe():
 @flask_login.login_required                                                      
 def connect_stripe_manually():                                                   
     form = StripeConnectForm()                                                   
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     if form.validate_on_submit():                                                
         publishable_key = form.data['publishable_key']                           
         secret_key = form.data['secret_key']                                     
@@ -320,6 +322,8 @@ def connect_stripe_manually():
 @flask_login.login_required                                                      
 def connect_gocardless_manually():                                               
     form = GocardlessConnectForm()                                               
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     if form.validate_on_submit():                                                
         access_token = form.data['access_token']                                 
         jamla['payment_providers']['gocardless']['access_token'] = access_token  
@@ -357,6 +361,8 @@ def connect_gocardless_start():
 @app.route('/connect/gocardless/oauth/complete', methods=['GET'])                
 @flask_login.login_required                                                      
 def gocardless_oauth_complete():                                                 
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     flow = OAuth2WebServerFlow(                                                  
             client_id=app.config['GOCARDLESS_CLIENT_ID'],                        
             client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],                
@@ -381,6 +387,8 @@ def gocardless_oauth_complete():
 
 @app.route('/push-mandates', methods=['GET'])                                    
 def push_mandates():                                                             
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(                                           
         access_token = get_secret('gocardless', 'access_token', jamla),          
         environment= app.config['GOCARDLESS_ENVIRONMENT']                        
@@ -415,8 +423,10 @@ def push_payments():
     Push payments to Penguin.                                                    
     Assume a gocardless endpoint for now.                                        
     """                                                                          
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(                                           
-        access_token = get_secret('gocardless', 'access_token', jamla),          
+        access_token = get_secret('gocardless', 'access_token'),          
         environment= app.config['GOCARDLESS_ENVIRONMENT']                        
     )                                                                            
     #Loop customers                                                              
@@ -453,8 +463,10 @@ def push_payments():
 
 @app.route('/retry-payment/<payment_id>', methods=['GET'])                       
 def retry_payment(payment_id):                                                   
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(                                           
-        access_token = get_secret('gocardless', 'access_token', jamla),          
+        access_token = get_secret('gocardless', 'access_token'),          
         environment= app.config['GOCARDLESS_ENVIRONMENT']                        
     )                                                                            
     r = gocclient.payments.retry(payment_id)                                     
