@@ -223,11 +223,13 @@ def logout():
 @app.route('/dashboard')                                                         
 @flask_login.login_required                                                      
 def dashboard():                                                                 
-    if has_connected('gocardless', jamla):                                       
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+    if jamlaApp.has_connected('gocardless'):                                       
         gocardless_connected = True                                              
     else:                                                                        
         gocardless_connected = False                                             
-    if has_connected('stripe', jamla):                                           
+    if jamlaApp.has_connected('stripe'):                                           
         stripe_connected = True                                                  
     else:                                                                        
         stripe_connected = False                                                 
