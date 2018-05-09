@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 import flask_login
 from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
-     journey_complete, current_app, redirect, url_for)
+     journey_complete, current_app, redirect, url_for
 from User import User
 from base64 import b64encode, urlsafe_b64encode 
 
