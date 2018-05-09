@@ -4,13 +4,12 @@ import datetime
 import random
 import sqlite3
 import smtplib                                                                   
-from email.mime.text import MIMEText
 import flask_login
 from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
      journey_complete, GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, StripeConnectForm
-from User import User
+from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode 
 
 jamlaApp = Jamla()                                                               
@@ -174,9 +173,9 @@ def on_complete_mandate():
     return redirect(app.config['THANKYOU_URL'])
 
 @app.route('/thankyou', methods=['GET'])                                         
-def thankyou():                                                                  
+def thankyou():
     # Send journey_complete signal                                               
-    journey_complete.send(current_app._get_current_object())                     
+    journey_complete.send(current_app._get_current_object(), email=session['email'])                     
     try:                                                                         
         print "##### The Mandate id is:" + str(session['gocardless_mandate_id']) 
         print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
@@ -248,39 +247,8 @@ def protected():
 def generate_login_token():                                                      
     form = LoginForm()                                                           
     if form.validate_on_submit():                                                
-        # Check valid email                                                      
-        email = (form.data['email'],)                                            
-        con = sqlite3.connect(app.config["DB_FULL_PATH"])                        
-        cur = con.cursor()                                                       
-        cur.execute('SELECT COUNT(*) FROM user WHERE email=?', email)            
-        result = bool(cur.fetchone()[0])                                         
-        con.close()                                                              
-        if result is False:                                                      
-            return("Invalid valid user")                                         
-        # Generate login token                                                   
-        login_token = urlsafe_b64encode(os.urandom(24))                          
-        email = str(form.data['email'])                                          
-        con = sqlite3.connect(app.config["DB_FULL_PATH"])                        
-        cur = con.cursor()                                                       
-        # Insert login token into db                                             
-        cur.execute(""" UPDATE user SET login_token= ? WHERE email= ? """,(login_token,email))
-        con.commit()                                                             
-        con.close()                                                              
-        # Send email with token link                                             
-        login_url = ''.join([request.host_url, 'login/', login_token])           
-        msg = MIMEText(login_url)                                                
-        msg['Subject'] = 'Magic login'                                           
-        msg['From'] = 'enquiries@karmacomputing.co.uk'                           
-        msg['To'] = email                                                        
-        # Perform smtp send                                                      
-        print "#"*80                                                             
-        print "Sending Login Email:"                                             
-        print login_url                                                          
-        print "#"*80
-        try:                                                                     
-            s = smtplib.SMTP(app.config['EMAIL_HOST'])                           
-            s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string()) 
-            s.quit()                                                             
+        try:
+            send_login_url(form.data['email'])
             return ("Check your email")                                          
         except Exception:                                                        
             return ("Failed to generate login email.")

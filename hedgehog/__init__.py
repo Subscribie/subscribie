@@ -34,6 +34,7 @@ from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
+from .User import User, send_login_url, generate_login_url
 from .forms import (LoginForm, CustomerForm, GocardlessConnectForm, 
                     StripeConnectForm)
 from blinker import signal
@@ -78,9 +79,6 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 # Mock database
 users = {'foo@bar.tld': {'password':'secret'}}
-
-class User(flask_login.UserMixin):
-    pass
 
 @login_manager.user_loader
 def user_loader(email):
