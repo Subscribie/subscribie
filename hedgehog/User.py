@@ -1,7 +1,7 @@
 import os
 import flask_login
 import sqlite3
-from hedgehog import current_app
+from hedgehog import current_app, request
 from email.mime.text import MIMEText
 from base64 import b64encode, urlsafe_b64encode
 
