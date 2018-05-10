@@ -250,7 +250,8 @@ def generate_login_token():
         try:
             send_login_url(form.data['email'])
             return ("Check your email")                                          
-        except Exception:                                                        
+        except Exception as e:                                                        
+            print e
             return ("Failed to generate login email.")
 @app.route('/login', methods=['GET'])                                            
 def login():                                                                     
