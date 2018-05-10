@@ -4,6 +4,7 @@ import sqlite3
 from hedgehog import current_app, request
 from email.mime.text import MIMEText
 from base64 import b64encode, urlsafe_b64encode
+import smtplib
 
 app = current_app
 
@@ -38,13 +39,13 @@ def send_login_url(email):
     msg['To'] = email                                                            
     # Perform smtp send                                                             
     print "#"*80                                                                 
-    print "Sending Login Email:"                                                 
+    print ''.join(["Sending Login Email to ", email, ':'])                                                
     print login_url                                                              
     print "#"*80                                                                 
     try:                                                                         
         s = smtplib.SMTP(app.config['EMAIL_HOST'])                               
         s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string())     
         s.quit()                                                                 
-        return True                                                              
-    except Exception:
+    except Exception as e:
+        print e
         return ("Failed to generate login email.")
