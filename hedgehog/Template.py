@@ -20,7 +20,6 @@ def load_template(app):
     except Exception as e:
         print "Falling back to default template"
         templatepath = ''.join([app.config['TEMPLATE_FOLDER'], 'jesmond/'])
-    import pdb;pdb.set_trace()
     my_loader = jinja2.ChoiceLoader([                                                
 	    jinja2.FileSystemLoader(templatepath),                  
 	    app.jinja_loader,                                                        
