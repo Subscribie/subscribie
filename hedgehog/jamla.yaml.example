@@ -1,6 +1,8 @@
 version: 1
 company:
     name: "My Company Ltd"
+template:                                                                        
+    name: jesmond
 payment_providers:
     paypal:
         - sepa_direct_supported: No

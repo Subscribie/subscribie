@@ -37,6 +37,7 @@ from .jamla import Jamla
 from .User import User, send_login_url, generate_login_url
 from .forms import (LoginForm, CustomerForm, GocardlessConnectForm, 
                     StripeConnectForm)
+from .Template import load_template
 from blinker import signal
 sys.path.append('../../../modules')
 
@@ -65,15 +66,10 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 import  hedgehog.views
 
-jamlaApp = Jamla()
+jamlaApp = Jamla()                                                               
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-my_loader = jinja2.ChoiceLoader([
-        jinja2.FileSystemLoader(app.config['TEMPLATE_FOLDER']),
-        app.jinja_loader,
-    ])
-app.jinja_loader = my_loader
-app.static_folder = app.config['STATIC_FOLDER']
 
+load_template(app)
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
