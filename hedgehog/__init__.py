@@ -37,7 +37,7 @@ from .jamla import Jamla
 from .User import User, send_login_url, generate_login_url
 from .forms import (LoginForm, CustomerForm, GocardlessConnectForm, 
                     StripeConnectForm)
-from .Template import load_template
+from .Template import load_theme
 from blinker import signal
 sys.path.append('../../../modules')
 
@@ -69,7 +69,7 @@ import  hedgehog.views
 jamlaApp = Jamla()                                                               
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
 
-load_template(app)
+load_theme(app)
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)

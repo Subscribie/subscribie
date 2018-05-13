@@ -3,25 +3,25 @@ import jinja2
 import os
 
 
-def load_template(app):
+def load_theme(app):
     jamlaApp = Jamla()                                                               
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
 
     try:
-        if os.path.isdir(jamla['template']['name']):
-            #Allow template path to be specified as absolute path
-            templatepath = jamla['template']['name']
+        if os.path.isdir(jamla['theme']['name']):
+            #Allow theme path to be specified as absolute path
+            themepath = jamla['theme']['name']
         else:
-            #Most client code will pass template by name
-            templatepath = ''.join([app.config['TEMPLATE_FOLDER'], 
-                                  jamla['template']['name'], '/'])
-        if os.path.exists(templatepath) is False:
+            #Most client code will pass theme by name
+            themepath = ''.join([app.config['TEMPLATE_FOLDER'], 
+                                  jamla['theme']['name'], '/'])
+        if os.path.exists(themepath) is False:
             raise
     except Exception as e:
-        print "Falling back to default template"
-        templatepath = ''.join([app.config['TEMPLATE_FOLDER'], 'jesmond/'])
+        print "Falling back to default theme"
+        themepath = ''.join([app.config['TEMPLATE_FOLDER'], 'jesmond/'])
     my_loader = jinja2.ChoiceLoader([                                                
-	    jinja2.FileSystemLoader(templatepath),                  
+	    jinja2.FileSystemLoader(themepath),                  
 	    app.jinja_loader,                                                        
 	])                                                                           
     app.jinja_loader = my_loader                                                     
