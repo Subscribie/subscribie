@@ -3,8 +3,21 @@
 
 {% block hero %}
 
-    <h1 class="title is-1 has-text-white is-size-1-mobile">{{ jamla['company']['name'] }}</h1>
-    <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Login</h2>
+    <h1 class="title is-1 has-text-white has-text-centered is-size-1-mobile">Manage My Shop</h1>
+
+    <div class="box" style="max-width:800px; margin:3rem auto;">
+      <h2 class="title is-3 has-text-centered is-size-3-mobile">You'll need to authenticate to continue</h2>
+      <p>Pop your email address that you signed up with in the box below and we'll ping you an email, click the link in that email and you'll be securely logged in.</p>
+      <br />
+      <form method="POST" action="/login">
+  			{{ form.csrf_token }}
+        <input id="email" class="input is-large" name="email" type="email" placeholder="Email Address" value="">
+        <br />
+  			<button type="submit" style="margin-top:0.5rem" class="button is-large is-success is-fullwidth">
+          <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Magic Login</span>
+        </button>
+  		</form>
+    </div>
 
 {% endblock %}
 
@@ -13,13 +26,7 @@
 <div class="section">
   <div class="container">
 
-      <h3 class="title is-4 has-text-centered is-size-4-mobile">Smart Login</h2>
-		<form method="POST" action="/login">
-			{{ form.csrf_token }}
-			{{ form.email.label }} {{ form.email(size=20) }}
-            <br />
-			<input type="submit" value="Magic Login">
-		</form>
+
   </div>
 </div>
 
