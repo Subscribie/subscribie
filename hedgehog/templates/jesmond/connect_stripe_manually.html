@@ -28,6 +28,7 @@
     <div class="columns">
       <div class="column">
         <h2 class="title is-3">Connect Stripe to your shop</h2>
+        <div class="notification {% if stripe_connected %}is-success{% else %}is-light{% endif %}"><p><b>Status: </b>{% if stripe_connected %}Stripe is already connected!{% else %}Stripe isn't yet configured, use the form below.{% endif %}</p></div>
         <p>To start taking one-off payments, please connect your Stripe account by copy &amp; pasting your Stripe API keys into the boxes below. You need to enter both your publishable and secret key.</p>
         <br />
         <form class="form" action="" method="POST" action="/">
@@ -40,7 +41,7 @@
               <div class="field-body">
                 <div class="field">
                   <div class="control">
-                    <input class="input" type="text" name="publishable_key" placeholder="...">
+                    <input class="input" type="text" name="publishable_key" id="publishable_key" placeholder="...">
                   </div>
                 </div>
               </div>
@@ -52,12 +53,12 @@
               <div class="field-body">
                 <div class="field">
                   <div class="control">
-                    <input class="input" type="text" name="secret_key" placeholder="...">
+                    <input class="input" type="text" name="secret_key" id="secret_key" placeholder="...">
                   </div>
                 </div>
               </div>
-            </div>
-            <button type="submit" class="button is-fullwidth is-success">Connect Stripe</button>
+            </div><br />
+            <button type="submit" class="button is-fullwidth is-info">{% if stripe_connected %}Reconnect{% else %}Connect{% endif %} Stripe</button>
         </form>
       </div>
       <div class="is-divider-vertical"></div>
@@ -67,9 +68,6 @@
         <p>In order to link Stripe, you must already have a Stripe account created. If you do not yet have an account, <a href="https://dashboard.stripe.com/register">click here</a> to create one.<br /><br />Once logged in, on the left menu, click 'Developers' then 'API Keys'. To be able to copy the 'Secret Key' click 'Reveal Live Key Token'.</p>
       </div>
     </div>
-
-
-
 
   </div>
 </div>
