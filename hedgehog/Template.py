@@ -19,7 +19,9 @@ def load_theme(app):
             raise
     except Exception as e:
         print "Falling back to default theme"
-        themepath = ''.join([app.config['TEMPLATE_FOLDER'], 'jesmond/'])
+        print e
+        themepath =  app.config['TEMPLATE_FOLDER'] + 'jesmond' 
+        themepath = os.path.dirname(os.path.realpath(__file__)) + "/templates/jesmond/"
     my_loader = jinja2.ChoiceLoader([                                                
 	    jinja2.FileSystemLoader(themepath),                  
 	    app.jinja_loader,                                                        
