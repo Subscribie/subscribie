@@ -40,6 +40,8 @@ def store_customer():
         now = datetime.datetime.now()
         # Store customer in session
         sid = session['sid']
+        # Store email in session
+        session['email'] = email
 
         # Store plan in session
 	jamlaApp = Jamla()
