@@ -19,17 +19,17 @@ class Jamla():
 	return False                                                                 
     def sku_get_index(self, sku):                                                          
 	for index,v in enumerate(self.jamla['items']):                                    
-	    if jamla['items'][index]['sku'] == str(sku):                             
+	    if self.jamla['items'][index]['sku'] == str(sku):                             
 		return index                                                         
 	return False                                                                 
 										     
     def sku_get_title(self, sku):                                                          
-	index = sku_get_index(sku)                                                   
+	index = self.sku_get_index(sku)                                                   
 	title  = self.jamla['items'][index]['title']                                      
 	return title                                                                 
 										     
     def sku_get_monthly_price(self, sku):                                                  
-	price = self.jamla['items'][sku_get_index(sku)]['monthly_price']                  
+	price = self.jamla['items'][self.sku_get_index(sku)]['monthly_price']                  
 	return price
 
     def get_primary_icons(self, jamla=None):
