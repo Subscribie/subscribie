@@ -20,37 +20,3 @@
     </div>
 
 {% endblock %}
-
-{% block body %}
-
-<div class="section">
-  <div class="container">
-
-
-  </div>
-</div>
-
-
-  <script>
-    $('.pricing-plan').hover(
-         function(){ $(this).addClass('is-active') },
-         function(){ $(this).removeClass('is-active') }
-  )
-  </script>
-
-  <script>
-    function showHorizontal() {
-      document.getElementById('pricing-table-horizontal').style.display = "block";
-      document.getElementById('pricing-table-vertical').style.display = "none";
-      console.log('Button Clicked!');
-    }
-    function showVertical() {
-      document.getElementById('pricing-table-vertical').style.display = "block";
-      document.getElementById('pricing-table-horizontal').style.display = "none";
-      console.log('Button Clicked!');
-    }
-  </script>
-
-  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-
-{% endblock %}
