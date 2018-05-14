@@ -116,6 +116,7 @@ def on_complete_mandate():
     redirect_flow_id = request.args.get('redirect_flow_id')
     print("Recieved flow ID: {} ".format(redirect_flow_id))
 
+    print "Setting up client environment as: " + app.config['GOCARDLESS_ENVIRONMENT']
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
         environment= app.config['GOCARDLESS_ENVIRONMENT']
@@ -151,11 +152,16 @@ def on_complete_mandate():
         customerExistingLine = row[10]
         customerExistingNumber = row[11]
 
+        print "Creating subscription with amount: " + str(jamlaApp.sku_get_monthly_price(session['plan']))
+        print "Creating subscription with name: " + jamlaApp.sku_get_title(session['plan'])
+        print "Plan session is set to: " + str(session['plan'])
+        print "Mandate id is set to: " + session['gocardless_mandate_id']
+
         # Create subscription
         gocclient.subscriptions.create(params={
-            "amount":sku_get_monthly_price(session['plan']),
+            "amount":jamlaApp.sku_get_monthly_price(session['plan']),
             "currency":"GBP",
-            "name": sku_get_title(session['plan']),
+            "name": jamlaApp.sku_get_title(session['plan']),
             "interval_unit": "monthly",
             "metadata": {
                 "sku":session['plan']
@@ -165,6 +171,7 @@ def on_complete_mandate():
             }
         })
     except Exception as e:
+        print e
         if isinstance(e, gocardless_pro.errors.InvalidStateError):
             if e.error['type'] == 'invalid_state':
                 # Allow pass through if redirect flow already completed
