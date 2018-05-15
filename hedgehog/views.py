@@ -318,7 +318,7 @@ def connect_gocardless_manually():
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         # Set users current session to store access_token for instant access
         flask_login.current_user.gocardless_access_token = access_token
-        return form.data['access_token']
+        return redirect(url_for('dashboard'))
     else:
         return render_template('connect_gocardless_manually.html', form=form,
                 jamla=jamla, gocardless_connected=gocardless_connected)
