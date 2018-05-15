@@ -39,7 +39,6 @@ from .forms import (LoginForm, CustomerForm, GocardlessConnectForm,
                     StripeConnectForm)
 from .Template import load_theme
 from blinker import signal
-sys.path.append('../../../modules')
 
 """The Hedgehog object implements a flask application suited to subscription 
 based web applications and acts as the central object. Once it is created    
@@ -68,6 +67,9 @@ import  hedgehog.views
 
 jamlaApp = Jamla()                                                               
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+
+# Set custom modules path
+sys.path.append(jamla['modules_path'])
 
 load_theme(app)
 

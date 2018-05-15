@@ -117,6 +117,6 @@ pages:
     - demo:
         path: "demo"
         template_file: "demo.html"
-modules_path: /path/to/custom/modules
+modules_path: ../../../modules
 modules:
     - mymodule
