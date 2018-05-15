@@ -1,7 +1,7 @@
 version: 1
 company:
     name: "My Company Ltd"
-template:                                                                        
+theme:                                                                        
     name: jesmond
 payment_providers:
     paypal:
