@@ -119,4 +119,3 @@ pages:
         template_file: "demo.html"
 modules_path: ../../../modules
 modules:
-    - mymodule
