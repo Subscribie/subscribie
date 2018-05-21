@@ -100,7 +100,7 @@ items:
           - "No upfront cost!"
       primary_colour: "#e73b1a"
       primary_icon:
-          src: /static/item380.svg
+          src: /static/item3.svg
           type: image/svg+xml
       icons:
           -
