@@ -57,10 +57,15 @@ def store_customer():
                     wants, 'null', 'null', False))
         con.commit()
         con.close()
-        #redirect to Crab with sid in the query
-        return redirect(app.config["CRAB_URL"] + '?sid=' + sid + '&package=' + wants + '&fname=' + given_name)
+        url = url_for('up_front', sid=sid, package=wants, fname=given_name)
+        return redirect(url)
     else:
         return "Invalid form"
+
+
+@app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
+def up_front(sid, package, fname):
+    return "replace Crab"
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
