@@ -119,6 +119,10 @@ if 'pages' in jamla:
         view_func = possibles.get(method_name)
         app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('jesmond/error-404.html'), 404
+
 # Import any custom modules
 if 'modules' in jamla:
     for moduleName in jamla['modules']:
