@@ -65,7 +65,9 @@ def store_customer():
 
 @app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
 def up_front(sid, package, fname):
-    return "replace Crab"
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(app.config['JAMLA_PATH'])
+    return render_template('up_front_payment.html', jamla=jamla, fname=fname)
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
