@@ -44,7 +44,6 @@
 
             <div class="columns">
                 <div class="column is-two-thirds">
-
                   <h2 class="title is-3">Please complete your order</h2>
                   <p>Great choice {{ fname }}, please complete the form below.</p><br />
                   <br />
@@ -52,17 +51,18 @@
                     <article class="message is-info is-medium">
                       <div class="message-body">
                         <p>Pay with your Credit/Debit Card</p><br />
-                        <form action="charge.php" method="post" id="payment-form">
+                        <form action="/up_front" method="post" id="payment-form">
                           <div class="form-row">
-                            <input id="sid" name="sid" type="hidden" value=' . $_SESSION["sid"] . '></input>
-                            <input id="package" name="package" type="hidden" value="' . $_SESSION['package']['name'] . '"></input>
+                            <input id="sid" name="sid" type="hidden" value="{{ sid }}"></input>
+                            <input id="package" name="package" type="hidden" value="{{ package }}"></input>
                             <div id="card-element">
                               <!-- a Stripe Element will be inserted here. -->
                             </div>
                             <div id="card-errors" role="alert"></div>
                           </div>
                           <br />
-                          <input type="submit" class="button is-medium is-success is-fullwidth" value="Pay &#163;' . number_format($_SESSION['package']['upfrontCost'] / 100, 2) . ' Today"></input>
+                          <input type="submit" class="button is-medium
+                          is-success is-fullwidth" value="Pay &#163; {{ "%.2f"|format(upfront_cost/100) }} Today"></input>
                         </form>
                       </div>
                     </article>
@@ -74,25 +74,24 @@
 
                   <h2 class="title is-4">Order Summary:</h2>
 
-                      <h4 class="title is-5 is-size-5-mobile" style="text-align:left"><?php echo $_SESSION['package']['friendlyName'] ?></h4>
+                      <h4 class="title is-5 is-size-5-mobile"
+                          style="text-align:left">{{ package|capitalize() }}</h4>
                       <div class="content">
                         <ul>
-                          <?php
-                          foreach ($_SESSION['package']['selling_points'] as $item)
-                          {
-                              echo "<li>" . $item . "</li>";
-                          }
-                          ?>
+                            {% for selling_point in selling_points %}
+                            <li>{{ selling_point }}</li>
+                            {% endfor %}
                         </ul>
                       </div>
                       <div class="content has-text-right">
-                        <p><b>Pay today:</b> <span class="tag is-success is-medium">&pound;<?php echo number_format($_SESSION['package']['upfrontCost'] / 100, 2) ?></span></p>
-                        <p><b>Price per month:</b> <span class="tag is-info is-large">&pound;<?php echo number_format($_SESSION['package']['monthlyCost'] / 100, 2) ?></span></p>
+                        <p><b>Pay today:</b> <span class="tag is-success
+                                is-medium">&pound; {{ "%.2f"|format(upfront_cost/100) }}</span></p>
+                        <p><b>Price per month:</b> <span class="tag is-info
+                                is-large">&pound; {{ "%.2f"|format(monthly_cost/100) }} </span></p>
                       </div>
 
                 </div>
             </div>
-
 
             <div class="notification is-danger <?php if($_GET[paymentError] != true){echo "is-hidden";}?>">
               <div class="columns">

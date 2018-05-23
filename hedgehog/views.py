@@ -66,8 +66,17 @@ def store_customer():
 @app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
 def up_front(sid, package, fname):
     jamlaApp = Jamla()
-    jamla = jamlaApp.load(app.config['JAMLA_PATH'])
-    return render_template('up_front_payment.html', jamla=jamla, fname=fname)
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+    selling_points = jamlaApp.get_selling_points(package)
+    upfront_cost = jamlaApp.sku_get_upfront_cost(package)
+    monthly_cost = jamlaApp.sku_get_monthly_price(package)
+    return render_template('up_front_payment.html', jamla=jamla,package=package,
+                           fname=fname, selling_points=selling_points, 
+                           upfront_cost=upfront_cost, monthly_cost=monthly_cost)
+
+@app.route('/up_front', methods=['POST'])
+def charge_up_front():
+    return "charge up front"
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
