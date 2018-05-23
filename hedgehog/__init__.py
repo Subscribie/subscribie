@@ -125,9 +125,12 @@ def page_not_found(e):
 
 # Import any custom modules
 if 'modules' in jamla:
-    for moduleName in jamla['modules']:
-        pass
-        print "Importing module: " + moduleName
-        __import__(moduleName)
+    try:
+        for moduleName in jamla['modules']:
+            print "Importing module: " + moduleName
+            __import__(moduleName)
+    except TypeError as e:
+        print e
+
 
 application = app
