@@ -74,6 +74,8 @@ def up_front(sid, package, fname):
     monthly_cost = jamlaApp.sku_get_monthly_price(package)
     session['upfront_cost'] = upfront_cost
     session['monthly_cost'] = monthly_cost
+    session['package'] = package
+
     return render_template('up_front_payment.html', jamla=jamla,package=package,
                            fname=fname, selling_points=selling_points, 
                            upfront_cost=upfront_cost, monthly_cost=monthly_cost)
@@ -86,20 +88,32 @@ def charge_up_front():
     charge['amount'] = session['upfront_cost']
     charge['currency'] = "GBP"
 
-    stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
-    customer = stripe.Customer.create(
-        email='customer@example.com',
-        source=request.form['token']
-    )
+    sid = session['sid']
+    con = sqlite3.connect(app.config["DB_FULL_PATH"])
+    cur = con.cursor()
+    cur.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,))
+    res = cur.fetchone()
+    con.close()
 
-    charge = stripe.Charge.create(
-        customer=customer.id,
-        amount=charge['amount'],
-        currency=charge['currency'],
-        description='Subscribie'
-    )
-    return "Good."
-    return redirect(app.config['ON_SUCCESS_URL'])
+    try: 
+        stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
+        customer = stripe.Customer.create(
+            email=res[7],
+            source=request.form['token']
+        )
+
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=charge['amount'],
+            currency=charge['currency'],
+            description='Subscribie'
+        )
+    except stripe.error.AuthenticationError as e:
+        return str(e)
+    if jamlaApp.requires_subscription(session['package']) is True:
+        return redirect(url_for('establish_mandate'))
+    else:
+        return redirect(url_for('thankyou'))
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
@@ -114,39 +128,34 @@ def establish_mandate():
     print res
     con.close()
 
-    if res:
-        # validate that hasInstantPaid is true for the customer
-        if res[12] == True:
-            gocclient = gocardless_pro.Client(
-                access_token = jamlaApp.get_secret('gocardless', 'access_token'),
-                environment= app.config['GOCARDLESS_ENVIRONMENT']
-            )
-            redirect_flow = gocclient.redirect_flows.create(
-                params = {
-                    "description" : "Karma Computing Broadband",
-                    "session_token" : sid,
-                    "success_redirect_url" : app.config['SUCCESS_REDIRECT_URL'],
-                    "prefilled_customer" : {
-                        "given_name" : res[2],
-                        "family_name": res[3],
-                        "address_line1": res[4],
-                        "city" : res[5],
-                        "postal_code": res[6],
-                        "email": res[7]
-                    }
-                }
-            )
-            # Hold on to this ID - we'll need it when we
-            # "confirm" the dedirect flow later
-            print("ID: {} ".format(redirect_flow.id))
-            print("URL: {} ".format(redirect_flow.redirect_url))
-            return redirect(redirect_flow.redirect_url)
-        else:
-            print "hasInstantPaid on this customer was false"
-            #TODO: respond with 403
-    else:
-        print "no customer found with sid"
-        #TODO: respond with 400
+    # validate that hasInstantPaid is true for the customer
+    gocclient = gocardless_pro.Client(
+        access_token = jamlaApp.get_secret('gocardless', 'access_token'),
+        environment= app.config['GOCARDLESS_ENVIRONMENT']
+    )
+
+    description = ' '.join([jamla['company']['name'], session['package']])
+
+    redirect_flow = gocclient.redirect_flows.create(
+        params = {
+            "description" : description,
+            "session_token" : sid,
+            "success_redirect_url" : app.config['SUCCESS_REDIRECT_URL'],
+            "prefilled_customer" : {
+                "given_name" : res[2],
+                "family_name": res[3],
+                "address_line1": res[4],
+                "city" : res[5],
+                "postal_code": res[6],
+                "email": res[7]
+            }
+        }
+    )
+    # Hold on to this ID - we'll need it when we
+    # "confirm" the dedirect flow later
+    print("ID: {} ".format(redirect_flow.id))
+    print("URL: {} ".format(redirect_flow.redirect_url))
+    return redirect(redirect_flow.redirect_url)
 
 @app.route('/complete_mandate', methods=['GET'])
 def on_complete_mandate():
