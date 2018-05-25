@@ -11,6 +11,8 @@ from hedgehog import app, Jamla, session, render_template, \
      redirect, url_for, StripeConnectForm
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
+import stripe
+
 
 jamlaApp = Jamla()
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
@@ -70,13 +72,34 @@ def up_front(sid, package, fname):
     selling_points = jamlaApp.get_selling_points(package)
     upfront_cost = jamlaApp.sku_get_upfront_cost(package)
     monthly_cost = jamlaApp.sku_get_monthly_price(package)
+    session['upfront_cost'] = upfront_cost
+    session['monthly_cost'] = monthly_cost
     return render_template('up_front_payment.html', jamla=jamla,package=package,
                            fname=fname, selling_points=selling_points, 
                            upfront_cost=upfront_cost, monthly_cost=monthly_cost)
 
 @app.route('/up_front', methods=['POST'])
 def charge_up_front():
-    return "charge up front"
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+    charge = {}
+    charge['amount'] = session['upfront_cost']
+    charge['currency'] = "GBP"
+
+    stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
+    customer = stripe.Customer.create(
+        email='customer@example.com',
+        source=request.form['token']
+    )
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=charge['amount'],
+        currency=charge['currency'],
+        description='Subscribie'
+    )
+    return "Good."
+    return redirect(app.config['ON_SUCCESS_URL'])
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
