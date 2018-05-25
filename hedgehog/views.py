@@ -339,8 +339,8 @@ def connect_stripe_manually():
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         flask_login.current_user.stripe_publishable_key = publishable_key
-        # Set Crab JS
-        fp = open(app.config['CRAB_PATH'] + 'js_env/STRIPE_PUBLIC_KEY.env', 'w')
+        # Set stripe public key JS
+        fp = open(app.config['STATIC_FOLDER'] + 'js_env/STRIPE_PUBLIC_KEY.env', 'w')
         fp.write(publishable_key)
         fp.close()
         return redirect(url_for('dashboard'))
