@@ -119,6 +119,15 @@ if 'pages' in jamla:
         view_func = possibles.get(method_name)
         app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
 
+# Handling Errors Gracefully
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('errors/404.html'), 404
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('errors/500.html'), 500
+
 # Import any custom modules
 if 'modules' in jamla:
     try:
