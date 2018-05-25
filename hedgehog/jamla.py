@@ -21,7 +21,11 @@ class Jamla():
 	for index,v in enumerate(self.jamla['items']):                                    
 	    if self.jamla['items'][index]['sku'] == str(sku):                             
 		return index                                                         
-	return False                                                                 
+	return False
+
+    def requires_subscription(self, sku):
+        index = self.sku_get_index(sku)
+        return bool(self.jamla['items'][index]['requirements']['subscription'])
 										     
     def sku_get_title(self, sku):                                                          
 	index = self.sku_get_index(sku)                                                   
