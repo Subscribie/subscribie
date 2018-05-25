@@ -59,7 +59,7 @@ def store_customer():
                     wants, 'null', 'null', False))
         con.commit()
         con.close()
-        url = url_for('up_front', sid=sid, package=wants, fname=given_name)
+        url = url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name)
         return redirect(url)
     else:
         return "Invalid form"
@@ -113,7 +113,7 @@ def charge_up_front():
     if jamlaApp.requires_subscription(session['package']) is True:
         return redirect(url_for('establish_mandate'))
     else:
-        return redirect(url_for('thankyou'))
+        return redirect(url_for('thankyou', _scheme='https', _external=True))
 
 @app.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
