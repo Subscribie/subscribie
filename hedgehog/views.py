@@ -338,6 +338,7 @@ def connect_stripe_manually():
         jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
         jamla['payment_providers']['stripe']['secret_key'] = secret_key
         # Overwrite jamla file with gocardless access_token
+        fp = open(app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         flask_login.current_user.stripe_publishable_key = publishable_key
         # Set stripe public key JS
