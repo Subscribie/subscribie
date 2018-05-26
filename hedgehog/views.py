@@ -72,13 +72,15 @@ def up_front(sid, package, fname):
     selling_points = jamlaApp.get_selling_points(package)
     upfront_cost = jamlaApp.sku_get_upfront_cost(package)
     monthly_cost = jamlaApp.sku_get_monthly_price(package)
+    stripe_pub_key = jamla['payment_providers']['stripe']['publishable_key']
     session['upfront_cost'] = upfront_cost
     session['monthly_cost'] = monthly_cost
     session['package'] = package
 
     return render_template('up_front_payment.html', jamla=jamla,package=package,
                            fname=fname, selling_points=selling_points, 
-                           upfront_cost=upfront_cost, monthly_cost=monthly_cost)
+                           upfront_cost=upfront_cost, monthly_cost=monthly_cost,
+                           sid=sid, stripe_pub_key=stripe_pub_key)
 
 @app.route('/up_front', methods=['POST'])
 def charge_up_front():
@@ -99,7 +101,7 @@ def charge_up_front():
         stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
         customer = stripe.Customer.create(
             email=res[7],
-            source=request.form['token']
+            source=request.form['stripeToken']
         )
 
         charge = stripe.Charge.create(
@@ -335,14 +337,10 @@ def connect_stripe_manually():
         secret_key = form.data['secret_key']
         jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
         jamla['payment_providers']['stripe']['secret_key'] = secret_key
-        fp = open(app.config['JAMLA_PATH'], 'w')
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         flask_login.current_user.stripe_publishable_key = publishable_key
         # Set stripe public key JS
-        fp = open(app.config['STATIC_FOLDER'] + 'js_env/STRIPE_PUBLIC_KEY.env', 'w+')
-        fp.write(publishable_key)
-        fp.close()
         return redirect(url_for('dashboard'))
     else:
         return render_template('connect_stripe_manually.html', form=form,
