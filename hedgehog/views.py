@@ -133,7 +133,7 @@ def establish_mandate():
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+        environment= jamla['payment_providers']['gocardless']['environment']
     )
 
     description = ' '.join([jamla['company']['name'], session['package']])
@@ -166,10 +166,10 @@ def on_complete_mandate():
     redirect_flow_id = request.args.get('redirect_flow_id')
     print("Recieved flow ID: {} ".format(redirect_flow_id))
 
-    print "Setting up client environment as: " + app.config['GOCARDLESS_ENVIRONMENT']
+    print "Setting up client environment as: " + jamla['payment_providers']['gocardless']['environment']
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+        environment = jamla['payment_providers']['gocardless']['environment']
     )
     try:
         redirect_flow = gocclient.redirect_flows.complete(
@@ -360,6 +360,12 @@ def connect_gocardless_manually():
     if form.validate_on_submit():
         access_token = form.data['access_token']
         jamla['payment_providers']['gocardless']['access_token'] = access_token
+        # Check if live or test api key was given
+        if "live" in access_token:
+            jamla['payment_providers']['gocardless']['environment'] = 'live'
+        else:
+            jamla['payment_providers']['gocardless']['environment'] = 'sandbox'
+
         fp = open(app.config['JAMLA_PATH'], 'w')
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
@@ -424,7 +430,7 @@ def push_mandates():
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token', jamla),
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+        environment = jamla['payment_providers']['gocardless']['environment'] = 'sandbox'
     )
     #Loop mandates
     for mandate in gocclient.mandates.list().records:
@@ -460,7 +466,7 @@ def push_payments():
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token'),
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+        environment= jamla['payment_providers']['gocardless']['environment']
     )
     #Loop customers
     for payments in gocclient.payments.list().records:
@@ -500,7 +506,7 @@ def retry_payment(payment_id):
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token'),
-        environment= app.config['GOCARDLESS_ENVIRONMENT']
+        environment = jamla['payment_providers']['gocardless']['environment']
     )
     r = gocclient.payments.retry(payment_id)
 
