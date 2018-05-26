@@ -430,7 +430,7 @@ def push_mandates():
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token', jamla),
-        environment = jamla['payment_providers']['gocardless']['environment'] = 'sandbox'
+        environment = jamla['payment_providers']['gocardless']['environment']
     )
     #Loop mandates
     for mandate in gocclient.mandates.list().records:
