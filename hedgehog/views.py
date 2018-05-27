@@ -136,7 +136,7 @@ def establish_mandate():
         environment= jamla['payment_providers']['gocardless']['environment']
     )
 
-    description = ' '.join([jamla['company']['name'], session['package']])
+    description = ' '.join([jamla['company']['name'],session['package']])[0:100]
 
     redirect_flow = gocclient.redirect_flows.create(
         params = {
