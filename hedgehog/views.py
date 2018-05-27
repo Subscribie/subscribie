@@ -297,6 +297,14 @@ def dashboard():
                            gocardless_connected=gocardless_connected,
                            stripe_connected=stripe_connected)
 
+@app.route('/edit')
+@flask_login.login_required
+def edit_jamla():
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+    return "edit items"
+
+
 @app.route('/protected')
 @flask_login.login_required
 def protected():
