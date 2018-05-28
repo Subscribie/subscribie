@@ -35,8 +35,8 @@ from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
 from .User import User, send_login_url, generate_login_url
-from .forms import (LoginForm, CustomerForm, GocardlessConnectForm, 
-                    StripeConnectForm)
+from .forms import (StripWhitespaceForm, LoginForm, CustomerForm, 
+                    GocardlessConnectForm, StripeConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
 

@@ -302,7 +302,7 @@ def dashboard():
 def edit_jamla():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-    return "edit items"
+    return render_template('edit_jamla.html', jamla=jamla)
 
 
 @app.route('/protected')
