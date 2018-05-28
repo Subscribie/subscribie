@@ -1,7 +1,31 @@
-<form method="post" action="#">
-    <textarea>
-        {{ jamla }}
+{% from "_formhelpers.html" import render_field %}
+<form method="post">
+<fieldset>
+<legend>Shop details</legend>
+    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}
+    {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
+</fieldset>
 
-    </textarea>
-    <input type="submit" />
+<fieldset>
+<legend>Items</legend>
+    {% for item in jamla['items'] %}
+    <fieldset>
+	<dl>
+      <dt><label>Title:</label></dt>
+	  <dd><input name="title-0" value="{{ jamla['items'][loop.index0]['title'] }}" /></dd>
+
+	  <dt><label>Monthly Price:</label></dt>
+      <dd><input name="monthly_price-0" type="number" value="{{ jamla['items'][loop.index0]['monthly_price'] }}" /></dd>
+    </dl>
+
+        <dl>
+          <dt><legend>Selling Points:</legend></dt>
+			{% for selling_point in jamla['items'][loop.index0]['selling_points'] %}
+				<dd><input name="selling_points-0" value="{{ selling_point }}" /></dd>
+			{% endfor %}
+        </dl>
+    </fieldset>
+    {% endfor %}
+</fieldset>
+  <p><input type="submit" value="Save">
 </form>

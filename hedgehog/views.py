@@ -8,7 +8,7 @@ import flask_login
 from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
      journey_complete, GocardlessConnectForm, StripeConnectForm, current_app, \
-     redirect, url_for, StripeConnectForm
+     redirect, url_for, StripeConnectForm, ItemsForm
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
 import stripe
@@ -297,12 +297,16 @@ def dashboard():
                            gocardless_connected=gocardless_connected,
                            stripe_connected=stripe_connected)
 
-@app.route('/edit')
+@app.route('/edit', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_jamla():
+    form = ItemsForm()
+    if request.method == 'POST' and form.validate():
+     # Save updated jamla
+     return "TODO Update"
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-    return render_template('edit_jamla.html', jamla=jamla)
+    return render_template('edit_jamla.html', jamla=jamla, form=form)
 
 
 @app.route('/protected')

@@ -20,8 +20,8 @@ def strip_whitespace(value):
 
 class ItemsForm(StripWhitespaceForm):                                            
     title = FieldList(StringField('Title', [validators.DataRequired()]), min_entries=1)
-    company_name = TextField('company_name')                                     
-    email = TextField('email', [validators.Email(), validators.DataRequired()])  
+    company_name = TextField('Company Name')                                     
+    email = TextField('Email', [validators.Email(), validators.DataRequired()])  
     instant_payment = FieldList(BooleanField('Up-Front Payment'), min_entries=1) 
     subscription = FieldList(BooleanField('Subscription'), min_entries=1)        
     sell_price = FieldList(FloatField('Sell Price'), min_entries=1)              
