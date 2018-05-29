@@ -317,12 +317,11 @@ def edit_jamla():
             jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
             jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
             jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
+            jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
 
         fp = open(app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         return redirect(url_for('choose'))
-    if request.method == "POST":
-        return "okO"
     return render_template('edit_jamla.html', jamla=jamla, form=form)
 
 
