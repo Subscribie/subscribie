@@ -24,7 +24,7 @@ class ItemsForm(StripWhitespaceForm):
     email = TextField('Email', [validators.Email(), validators.DataRequired()])  
     instant_payment = FieldList(BooleanField('Up-Front Payment'), min_entries=1) 
     subscription = FieldList(BooleanField('Subscription'), min_entries=1)        
-    sell_price = FieldList(FloatField('Sell Price'), min_entries=1)              
+    sell_price = FieldList(FloatField('Up-front Price'), min_entries=1)              
     monthly_price = FieldList(FloatField('Monthly Price'), min_entries=1)        
     selling_points = FieldList(FieldList(StringField('Unique Selling Point', [validators.DataRequired()]), min_entries=3), min_entries=1)
     images = UploadSet('images', IMAGES)                                         
