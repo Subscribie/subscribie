@@ -19,6 +19,8 @@ jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
 
 @app.route('/')
 def choose():
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
     return render_template('choose.html', jamla=jamla)
 
@@ -300,12 +302,27 @@ def dashboard():
 @app.route('/edit', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_jamla():
-    form = ItemsForm()
-    if request.method == 'POST' and form.validate():
-     # Save updated jamla
-     return "TODO Update"
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+    form = ItemsForm()
+    if form.validate_on_submit():
+        jamla['company']['name'] = request.form['company_name']
+        jamla['users'][0] = request.form['email']
+        # Loop items
+        for index in request.form.getlist('itemIndex', type=int):
+            # Get current values
+            # Update
+            jamla['items'][index]['title'] = getItem(form.title.data, index)
+            jamla['items'][index]['requirements']['subscription'] = bool(getItem(form.subscription.data, index))
+            jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
+            jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
+            jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
+
+        fp = open(app.config['JAMLA_PATH'], 'w')
+        yaml.safe_dump(jamla,fp , default_flow_style=False)
+        return redirect(url_for('choose'))
+    if request.method == "POST":
+        return "okO"
     return render_template('edit_jamla.html', jamla=jamla, form=form)
 
 
@@ -523,3 +540,9 @@ def retry_payment(payment_id):
     r = gocclient.payments.retry(payment_id)
 
     return "Payment (" + payment_id + " retried." + str(r)
+
+def getItem(container, i, default=None):                                         
+    try:                                                                         
+        return container[i]                                                      
+    except IndexError:                                                           
+        return default
