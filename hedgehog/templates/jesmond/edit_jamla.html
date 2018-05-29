@@ -52,11 +52,11 @@
 
         <dl>
           <dt><legend>Selling Points:</legend></dt>
-            {% set count = 0 %}
+            {% set ns = namespace(count=0) %}
             {% set outer_loop = loop %}
 			{% for selling_point in jamla['items'][loop.index0]['selling_points'] %}
-				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ count }}" value="{{ selling_point }}" /></dd>
-                {% set count = count + 1 %} 
+				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point }}" /></dd>
+                {% set ns.count = ns.count + 1 %} 
 			{% endfor %}
         </dl>
     </fieldset>
