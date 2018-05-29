@@ -11,11 +11,14 @@ from hedgehog import app, Jamla, session, render_template, \
      redirect, url_for, StripeConnectForm, ItemsForm
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
+from flask_uploads import configure_uploads, UploadSet, IMAGES
 import stripe
 
 
 jamlaApp = Jamla()
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
+images = UploadSet('images', IMAGES)
+configure_uploads(app, images)
 
 @app.route('/')
 def choose():
@@ -318,6 +321,11 @@ def edit_jamla():
             jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
             jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
             jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
+            # Primary icon image storage                                                          
+	    f = getItem(form.image.data, index)                                      
+	    if f:                                                                    
+                filename = images.save(f)
+		jamla['items'][index]['primary_icon'] = {'src': '/static/' + filename, 'type': ''} 
 
         fp = open(app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)

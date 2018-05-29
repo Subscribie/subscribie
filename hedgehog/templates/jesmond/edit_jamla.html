@@ -8,7 +8,7 @@
     </ul>                                                                        
   {% endif %} 
 
-<form method="post" action="#">
+<form method="post" action="#" enctype="multipart/form-data">
     {{ form.csrf_token }}
 <fieldset>
 <legend>Shop details</legend>
@@ -24,6 +24,10 @@
 	<dl>
       <dt><label>Title:</label></dt>
       <dd><input name="title-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['title'] }}" /></dd>
+
+      <dt><label>Primary Icon:</label></dt>
+      <dd><input type="file" name="image-{{ loop.index0 }}" /></dd>
+      <img src="{{ jamla['items'][loop.index0]['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>
 
 	  <dt><label>Requires Monthly Price:</label></dt>
       <dd><input name="subscription-{{ loop.index0 }}" type="checkbox"
