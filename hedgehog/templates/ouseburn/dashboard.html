@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %} Dashboard {% endblock %}
+
+{% block menu_item %}
+
+<span class="navbar-item">
+  <a href="/dashboard" class="button is-info is-inverted">
+    <span class="icon">
+      <i class="fas fa-home"></i>
+    </span>
+    <span>Dashboard</span>
+  </a>
+</span>
+
+<span class="navbar-item">
+  <a href="/" class="button is-info is-inverted">
+    <span class="icon">
+      <i class="fas fa-shopping-cart"></i>
+    </span>
+    <span>Back to Shop</span>
+  </a>
+</span>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+<h1 class="title is-1 has-text-white is-size-1-mobile">Manage My Shop</h1>
+
+  <div class="section">
+    <div class="container">
+      <div class="columns" style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;">
+          <div class="column is-narrow is-hidden-touch">
+            <figure class="image is-128x128" style="margin-right:2rem;">
+              <img src="/static/box.svg">
+            </figure>
+          </div>
+          <div class="column">
+            <h2 class="title is-3">Edit your Shop</h2>
+            <p class="subtitle is-5">Create, edit and remove packages from your Subscribie shop.</p>
+                <a class="button is-fullwidth is-medium is-success" href="/edit">Edit Items</a>
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="columns style="-webkit-box-align: center; -ms-flex-align: center; align-items: center;"">
+        <div class="column is-narrow is-hidden-touch">
+          <figure class="image is-128x128" style="margin-right:2rem;">
+            <img src="/static/cc_white.svg">
+          </figure>
+        </div>
+        <div class="column">
+          <h2 class="title is-3">Manage Payment Gateways</h2>
+          <p class="subtitle is-5">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
+          <br />
+          <div class="columns">
+            <div class="column">
+              <div class="box hover" style="flex:1">
+                <img src="/static/stripe.svg" style="width:50%; display:block; margin:auto">
+                <h3 class="title is-5">Stripe</h3>
+                <p>Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
+                <br />
+                <a class="button is-fullwidth
+                {% if stripe_connected  %}
+                  is-success
+                {% else %}
+                  is-info
+                {% endif %}
+                " href="/connect/stripe/manually">{% if stripe_connected  %}Stripe is Active! Click to reconnect Stripe{% else %}Connect to Stripe{% endif %}</a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="box hover" style="flex:1">
+                <img src="/static/gocardless-blue-rgb_2018.svg" style="width:50%; display:block; margin:2rem auto">
+                <h3 class="title is-5">GoCardless</h3>
+                <p>GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
+                <br />
+                <a class="button is-fullwidth
+                {% if gocardless_connected  %}
+                  is-success
+                {% else %}
+                  is-info
+                {% endif %}
+                " href="/connect/gocardless/manually">{% if gocardless_connected  %}GC is Active! Click to reconnect GoCardless{% else %}Connect to GoCardless{% endif %}</a>
+              </div>
+            </div>
+          </div>
+          <div class="notification">
+            <article class="media">
+              <figure class="media-left">
+                <p class="image is-64x64">
+                  <img src="/static/money.svg">
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p><strong class="has-text-black">Remember! Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p><small class="has-text-black">Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</small>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

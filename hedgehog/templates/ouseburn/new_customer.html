@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+{% block title %}New Customer{% endblock %}
+
+{% block body %}
+
+<div class="container has-text-white">
+
+  <form action="" id="new_customer" method=post action=/new_customer >
+
+    {{ form.csrf_token }}
+
+    <h1 class="title is-1 is-size-2-mobile" style="text-align:left">Your details</h1>
+    <p class="subtitle is-4 is-size-5-mobile" style="text-align:left">We'll use these to send your confirmation email(s) and billing information to, so it's important that these are valid.</p>
+
+    {% if error %}
+      <p class=error><stong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <br />
+
+    <div class="columns">
+        <div class="column is-two-thirds">
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label has-text-white">Your Name</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name=given_name id=given_name placeholder="John" value="{{ given_name }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name=family_name id=family_name placeholder="Smith" value="{{ family_name }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label has-text-white">Email</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label has-text-white">Phone</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <br />
+
+          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Your Address</h3>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+                <label class="label has-text-white">Address line 1</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name="address_line_one" id="address_line_one" placeholder="123 Sample Street">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-home"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label has-text-white">City</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name="city" id="city" placeholder="Newcastle upon Tyne">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-building"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label is-medium">
+              <label class="label has-text-white">Post Code</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded has-icons-left">
+                  <input class="input is-medium" type="text" name="postcode" id="postcode" placeholder="NE1 23FG">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-map"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <br />
+
+        </div>
+
+        <div class="is-divider-vertical"></div>
+
+        <div class="column">
+
+          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Order Summary</h3>
+          <p class="subtitle is-5">Here's a quick reminder of the package you've chosen:</p>
+
+          {% for item in jamla['items'] %}
+            {% if item['sku'] == request.args.get('plan') %}
+
+            <div class="box has-text-black">
+              <h4 class="title is-5 is-size-5-mobile has-text-black" style="text-align:left">{{ item['title'] }}</h4>
+              <div class="content has-text-black">
+                <ul>
+                {% for selling_points in item['selling_points'] %}
+                  <li><p class="subtitle is-6 has-text-black">{{ selling_points }}</p></li>
+                {% endfor %}
+                </ul>
+              </div>
+              <div class="content has-text-right">
+                {% for requirement in item['requirements'] %}
+                  {% if requirement['instant_payment'] == True %}
+                    <p><b>Pay today:</b> <span class="tag is-success is-medium">&pound;{{ "%.2f"|format(item['sell_price']/100) }}</span></p>
+                  {% endif %}
+                  {% if requirement['subscription'] == True %}
+                    <p><b>Price per month:</b> <span class="tag is-info is-large">&pound;{{ "%.2f"|format(item['monthly_price']/100) }}</span></p>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+            {% endif %}
+          {% endfor %}
+
+        </div>
+    </div>
+
+    <input type=submit class="button is-outline is-large is-fullwidth" value="Continue">
+
+  </form>
+
+</div>
+
+{% endblock %}
