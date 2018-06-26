@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block title %} Choose your package {% endblock %}
+
+{% block body %}
+
+    <div class="container has-text-centered">
+      <h1 class="title is-1">
+        Welcome to {{ jamla['company']['name']|safe }}
+      </h1>
+      <h2 class="subtitle is-3">Get started by choosing one of our packages!</h2>
+      <div id="pricing-table">
+        <div class="pricing-table">
+          {% for item in jamla['items'] %}
+            <div class="pricing-plan">
+                <div class="plan-header" style="color:{{ item['primary_colour'] }}"><img src="{{ item['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>{{ item['title']|safe }}</div>
+                <div class="plan-items">
+                {% for sellingPoint in item['selling_points'] %}
+                    <div class="plan-item">{{ sellingPoint|safe }}</div>
+                {% endfor %}
+                </div>
+              <div class="plan-footer">
+                  <div class="plan-price" style="padding-bottom:0;">
+                      <span style="color:{{ item['primary_colour'] }}" class="plan-price-amount">
+                          <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(item['monthly_price']/100) }}</span><span class="has-text-black">/month</span>
+                  </div>
+
+                  {% if item['sell_price'] %}
+                    <small class="has-text-black">Upfront cost: &pound;{{ "%.2f"|format(item['sell_price']/100) }}</small></br></br>
+                  {% else %}
+                    <small class="has-text-black">Upfront cost: None</small></br></br>
+                  {% endif %}
+
+                  <a href="/new_customer?plan={{ item['sku'] }}"
+                      style="background-color:{{ item['primary_colour'] }}"
+                      class="button is-fullwidth is-info is-medium">
+                  Choose {{ item['title']|safe }}</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+{% block outer %}
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3 has-text-centered">Explore the world of {{ jamla['company']['name'] }}.</h3>
+    <p class="has-text-centered">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas interdum erat at erat aliquet, eu accumsan mauris scelerisque. Nunc fringilla sodales est eget ultricies. Donec pellentesque tortor id eros tempus consectetur. Quisque sit amet dictum lacus, quis ultrices arcu. Praesent porttitor risus leo, nec ullamcorper purus auctor vel. Mauris odio metus, imperdiet at euismod eget, convallis ut lorem. Pellentesque fringilla, magna quis fringilla dignissim, sem arcu maximus lorem, in maximus lorem mi in ligula. Suspendisse et facilisis arcu, ac gravida odio. Duis eu gravida quam. Maecenas eu risus accumsan, blandit leo vel, suscipit lacus. Nulla fringilla est malesuada dapibus congue. Morbi tristique pellentesque odio nec hendrerit. In tincidunt iaculis nisl et semper.
+
+Proin scelerisque mauris ut magna lacinia posuere. Vivamus luctus, tellus vitae lacinia convallis, ipsum magna euismod risus, eu vehicula lorem augue nec metus. Nunc egestas vitae ante malesuada porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam interdum nibh elit, sed scelerisque nunc egestas non. Etiam consequat est vel tellus gravida, ac posuere metus viverra. Proin porttitor ac nisi vel rhoncus. Integer libero eros, blandit efficitur suscipit et, dapibus sit amet lacus.
+
+Fusce dignissim consectetur luctus. Donec vel venenatis velit. Sed risus est, accumsan sit amet varius quis, tempus eget mi. Pellentesque interdum ante nec lorem iaculis auctor. Proin interdum sed tortor ut euismod. Nulla a enim varius, molestie urna in, dictum dolor. Maecenas nec magna ante. Sed quis dui a elit tempus eleifend ut in eros. Nulla sit amet dui sed lorem luctus convallis eu ac diam. Cras et felis non dolor finibus rhoncus eu vitae urna. Phasellus volutpat aliquet metus, at venenatis dui dignissim quis. Vivamus vel molestie tellus. Nullam a auctor dui. Aliquam at sem nisl. Donec vitae aliquam tellus, vehicula pharetra quam.
+
+Vivamus condimentum tellus eu est vehicula, a tempus justo varius. Nullam molestie sodales commodo. Morbi tempus luctus nunc ac tincidunt. Donec libero tortor, fringilla id elit a, consectetur aliquam magna. Duis est mauris, consequat ac commodo a, aliquet ut magna. Integer maximus turpis eget pulvinar accumsan. Donec tincidunt cursus massa, id vestibulum quam volutpat non. Vivamus justo nisi, consectetur eu mauris quis, lobortis vulputate neque. Sed dictum velit eu pretium eleifend. Aliquam iaculis ligula tempor risus sodales varius. Morbi a nisi purus. In lacinia maximus orci id cursus. Sed sit amet lectus ac nunc convallis luctus eget sed leo. Proin id nunc vitae ante bibendum molestie a sit amet velit.
+
+Sed elit augue, dignissim nec auctor eget, consequat quis nisi. Integer in mi vitae est semper rutrum ut ullamcorper velit. Cras dignissim enim at consectetur rutrum. Ut nec lectus risus. Quisque molestie ultricies elit, non scelerisque libero sollicitudin non. Aenean in est mattis, suscipit purus vel, finibus magna. Ut at elementum dolor, a laoreet tortor. Praesent sit amet nibh sed metus varius rhoncus at vel ante. Etiam scelerisque massa sed dignissim sollicitudin.</p>
+  <br />
+  <div class="columns is-centered">
+    <div class="column">
+      <a href="#!">
+        <figure style="display:block; margin:auto" class="image is-64x64">
+          <img style="display:block; margin:auto" src="/static/fb.svg" />
+        </figure>
+      </a>
+    </div>
+    <div class="column">
+      <a href="#!">
+        <figure style="display:block; margin:auto" class="image is-64x64">
+          <img style="display:block; margin:auto" src="/static/insta.svg" />
+        </figure>
+      </a>
+    </div>
+    <div class="column">
+      <a href="#!">
+        <figure style="display:block; margin:auto" class="image is-64x64">
+          <img style="display:block; margin:auto" src="/static/twitter.svg" />
+        </figure>
+      </a>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+  <script>
+    $('.pricing-plan').hover(
+         function(){ $(this).addClass('is-active') },
+         function(){ $(this).removeClass('is-active') }
+  )
+  </script>
+
+{% endblock %}

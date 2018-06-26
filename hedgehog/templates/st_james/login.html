@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %} Login {% endblock %}
+
+{% block body %}
+    <div class="container has-text-centered" style="max-width:800px; margin:auto">
+      <h1 class="title is-1 has-text-white is-size-1-mobile">Manage My Shop</h1>
+        <p class="subtitle is-4 has-text-white is-size-4-mobile">Pop your email address that you signed up with in the box below and we'll ping you an email, click the link in that email and you'll be securely logged in.</p>
+        <br />
+        <form method="POST" action="/login">
+    			{{ form.csrf_token }}
+          <input id="email" class="input is-large" name="email" type="email" placeholder="Email Address" value="">
+          <br />
+    			<button type="submit" style="margin-top:0.5rem" class="button is-large is-outline is-fullwidth">
+            <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Magic Login</span>
+          </button>
+    		</form>
+    </div>
+
+{% endblock %}
