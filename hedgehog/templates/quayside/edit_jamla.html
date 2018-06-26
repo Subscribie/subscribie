@@ -1,0 +1,70 @@
+{% from "_formhelpers.html" import render_field %}
+
+  {% if form.errors %}                                                          
+    <ul class=errors>                                                            
+    {% for error in form.errors %}                                              
+      <li>{{ error }}</li>                                                       
+    {% endfor %}                                                                 
+    </ul>                                                                        
+  {% endif %} 
+
+<form method="post" action="#" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+<fieldset>
+<legend>Shop details</legend>
+    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}
+    {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
+</fieldset>
+
+<fieldset>
+<legend>Items</legend>
+    {% for item in jamla['items'] %}
+    <fieldset>
+    <input type="hidden" name="itemIndex" value="{{ loop.index0 }}" />
+	<dl>
+      <dt><label>Title:</label></dt>
+      <dd><input name="title-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['title'] }}" /></dd>
+
+      <dt><label>Primary Icon:</label></dt>
+      <dd><input type="file" name="image-{{ loop.index0 }}" /></dd>
+      <img src="{{ jamla['items'][loop.index0]['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>
+
+	  <dt><label>Requires Monthly Price:</label></dt>
+      <dd><input name="subscription-{{ loop.index0 }}" type="checkbox"
+          {% if
+            jamla['items'][loop.index0]['requirements']['subscription']|int %}
+            checked
+          {% endif %}
+          />
+      </dd>
+
+	  <dt><label>Monthly Price:</label></dt>
+      <dd><input name="monthly_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['monthly_price'] / 100 }}" /></dd>
+
+	  <dt><label>Requires Up-front Price:</label></dt>
+      <dd><input name="instant_payment-{{ loop.index0 }}" type="checkbox"
+          {% if
+            jamla['items'][loop.index0]['requirements']['instant_payment']|int %}
+            checked
+          {% endif %}
+          />
+      </dd>
+
+	  <dt><label>Up-front Price:</label></dt>
+      <dd><input name="sell_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['sell_price']/100 }}" /></dd>
+    </dl>
+
+        <dl>
+          <dt><legend>Selling Points:</legend></dt>
+            {% set ns = namespace(count=0) %}
+            {% set outer_loop = loop %}
+			{% for selling_point in jamla['items'][loop.index0]['selling_points'] %}
+				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point }}" /></dd>
+                {% set ns.count = ns.count + 1 %} 
+			{% endfor %}
+        </dl>
+    </fieldset>
+    {% endfor %}
+</fieldset>
+  <p><input type="submit" value="Save">
+</form>

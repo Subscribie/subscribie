@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block title %} Up-front payment {% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+  <h1 class="title is-1 is-size-2-mobile" style="text-align:left">Payment</h1>
+  <p class="subtitle is-4 is-size-5-mobile" style="text-align:left">You're nearly finished, we just need to take a one-off payment for your chosen package.</p>
+
+<div class="columns">
+    <div class="column">
+
+    <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Payment Information</h3>
+    <p class="subtitle is-5">This is how you'll pay for your chosen package.</p>
+
+    <br />
+
+		<p class="title is-5">
+           <b>Monthly cost:</b>
+           <span class="tag is-info is-medium">&pound; {{ "%.2f"|format(monthly_cost/100) }}</span>
+        </p>
+    <p class="title is-5">
+       <b>Total to pay today:</b>
+       <span class="tag is-success is-large">&pound; {{ "%.2f"|format(upfront_cost/100) }}</span>
+    </p>
+
+    <div style="display:none"><form action="/up_front" method="post" id="payment-form">
+  		<article>
+  		  <input id="sid" name="sid" type="hidden" value="{{ sid }}"></input>
+  		  <input id="package" name="package" type="hidden" value="{{ package }}"></input>
+  		</article>
+
+  		<script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  				data-key="{{ stripe_pub_key }}"
+  				data-description="{{ jamla['company']['name'] }} - {{ package }}"
+  				data-currency="gbp"
+  				data-amount="{{ upfront_cost }}"
+  				data-locale="auto">
+  		</script>
+    </form></div>
+
+     </div>
+
+     <div class="column">
+
+       <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Order Summary</h3>
+       <p class="subtitle is-5">Here's a quick reminder of the package you've chosen:</p>
+
+         <div class="box has-text-black">
+           <h4 class="title is-5 is-size-5-mobile has-text-black" style="text-align:left">{{ package|capitalize() }}</h4>
+           <div class="content has-text-black">
+             <ul>
+             {% for selling_point in selling_points %}
+               <li><p class="subtitle is-6 has-text-black">{{ selling_point }}</p></li>
+             {% endfor %}
+             </ul>
+           </div>
+         </div>
+     </div>
+
+</div><!-- end columns -->
+
+<div class="pay button is-large is-fullwidth">
+  <span class="icon">
+    <i class="fas fa-credit-card"></i>
+  </span>
+  <span>Click to Pay &pound; {{ "%.2f"|format(upfront_cost/100) }}</span>
+</div>
+
+<script>
+
+  $('.pay').on('click', function() {
+
+      $('.stripe-button-el').trigger('click');
+
+  });
+
+</script>
+<script src="/static/up_front.js"></script>
+
+{% endblock %}
