@@ -64,10 +64,16 @@ def store_customer():
                     wants, 'null', 'null', False))
         con.commit()
         con.close()
-        url = url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name)
-        return redirect(url)
+
+        if jamlaApp.requires_instantpayment(session['package']) is True:
+            return redirect(url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
+        else:
+            if jamlaApp.requires_subscription(session['package']) is True:
+                return redirect(url_for('establish_mandate'))
+            else:
+                return redirect(url_for('thankyou', _scheme='https', _external=True))
     else:
-        return "Invalid form"
+        return "Oops, there was an error processing that form, please go back and try again."
 
 
 @app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
@@ -83,7 +89,7 @@ def up_front(sid, package, fname):
     session['package'] = package
 
     return render_template('up_front_payment.html', jamla=jamla,package=package,
-                           fname=fname, selling_points=selling_points, 
+                           fname=fname, selling_points=selling_points,
                            upfront_cost=upfront_cost, monthly_cost=monthly_cost,
                            sid=sid, stripe_pub_key=stripe_pub_key)
 
@@ -102,7 +108,7 @@ def charge_up_front():
     res = cur.fetchone()
     con.close()
 
-    try: 
+    try:
         stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
         customer = stripe.Customer.create(
             email=res[7],
@@ -321,11 +327,11 @@ def edit_jamla():
             jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
             jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
             jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
-            # Primary icon image storage                                                          
-	    f = getItem(form.image.data, index)                                      
-	    if f:                                                                    
+            # Primary icon image storage
+	    f = getItem(form.image.data, index)
+	    if f:
                 filename = images.save(f)
-		jamla['items'][index]['primary_icon'] = {'src': '/static/' + filename, 'type': ''} 
+		jamla['items'][index]['primary_icon'] = {'src': '/static/' + filename, 'type': ''}
 
         fp = open(app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
@@ -548,8 +554,8 @@ def retry_payment(payment_id):
 
     return "Payment (" + payment_id + " retried." + str(r)
 
-def getItem(container, i, default=None):                                         
-    try:                                                                         
-        return container[i]                                                      
-    except IndexError:                                                           
+def getItem(container, i, default=None):
+    try:
+        return container[i]
+    except IndexError:
         return default
