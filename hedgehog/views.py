@@ -8,11 +8,14 @@ import flask_login
 from hedgehog import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
      journey_complete, GocardlessConnectForm, StripeConnectForm, current_app, \
-     redirect, url_for, StripeConnectForm, ItemsForm
+     redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
+     jsonify
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import stripe
+from flask_cors import CORS
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 jamlaApp = Jamla()
@@ -305,33 +308,18 @@ def dashboard():
 @app.route('/edit', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_jamla():
+    return render_template('formarraybasic/index.html')
+
+@app.route('/jamla', methods=['GET'])
+@app.route('/api/jamla', methods=['GET'])
+@flask_login.login_required
+def get_jamla():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-    form = ItemsForm()
-    if form.validate_on_submit():
-        jamla['company']['name'] = request.form['company_name']
-        jamla['users'][0] = request.form['email']
-        # Loop items
-        for index in request.form.getlist('itemIndex', type=int):
-            # Get current values
-            # Update
-            jamla['items'][index]['title'] = getItem(form.title.data, index)
-            jamla['items'][index]['requirements']['subscription'] = bool(getItem(form.subscription.data, index))
-            jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
-            jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
-            jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
-            jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
-            # Primary icon image storage                                                          
-	    f = getItem(form.image.data, index)                                      
-	    if f:                                                                    
-                filename = images.save(f)
-		jamla['items'][index]['primary_icon'] = {'src': '/static/' + filename, 'type': ''} 
-
-        fp = open(app.config['JAMLA_PATH'], 'w')
-        yaml.safe_dump(jamla,fp , default_flow_style=False)
-        return redirect(url_for('choose'))
-    return render_template('edit_jamla.html', jamla=jamla, form=form)
-
+    #Strip out private values TODO don't store them here, move to .env?
+    jamla['payment_providers'] = None
+    resp = dict(items=jamla['items'], company=jamla['company'], name="fred", email='me@example.com')
+    return jsonify(resp)
 
 @app.route('/protected')
 @flask_login.login_required
