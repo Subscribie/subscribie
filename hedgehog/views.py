@@ -30,6 +30,7 @@ def choose():
 @app.route('/new_customer', methods=['GET'])
 def new_customer():
     package = request.args.get('plan','not set')
+    session['package'] = package
     form = CustomerForm()
     return render_template('new_customer.html', jamla=jamla, form=form, package=package)
 
@@ -65,13 +66,11 @@ def store_customer():
         con.commit()
         con.close()
 
-        if jamlaApp.requires_instantpayment(session['package']) is True:
+        if jamlaApp.requires_instantpayment(session['package']):
             return redirect(url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
-        else:
-            if jamlaApp.requires_subscription(session['package']) is True:
-                return redirect(url_for('establish_mandate'))
-            else:
-                return redirect(url_for('thankyou', _scheme='https', _external=True))
+        if jamlaApp.requires_subscription(session['package']):
+            return redirect(url_for('establish_mandate'))
+        return redirect(url_for('thankyou', _scheme='https', _external=True))
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
@@ -86,7 +85,6 @@ def up_front(sid, package, fname):
     stripe_pub_key = jamla['payment_providers']['stripe']['publishable_key']
     session['upfront_cost'] = upfront_cost
     session['monthly_cost'] = monthly_cost
-    session['package'] = package
 
     return render_template('up_front_payment.html', jamla=jamla,package=package,
                            fname=fname, selling_points=selling_points,
