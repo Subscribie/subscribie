@@ -121,7 +121,7 @@ def charge_up_front():
         )
     except stripe.error.AuthenticationError as e:
         return str(e)
-    if jamlaApp.requires_subscription(session['package']) is True:
+    if jamlaApp.requires_subscription(session['package']):
         return redirect(url_for('establish_mandate'))
     else:
         return redirect(url_for('thankyou', _scheme='https', _external=True))
