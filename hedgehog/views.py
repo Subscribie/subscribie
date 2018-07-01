@@ -33,6 +33,7 @@ def choose():
 @app.route('/new_customer', methods=['GET'])
 def new_customer():
     package = request.args.get('plan','not set')
+    session['package'] = package
     form = CustomerForm()
     return render_template('new_customer.html', jamla=jamla, form=form, package=package)
 
@@ -67,10 +68,14 @@ def store_customer():
                     wants, 'null', 'null', False))
         con.commit()
         con.close()
-        url = url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name)
-        return redirect(url)
+
+        if jamlaApp.requires_instantpayment(session['package']):
+            return redirect(url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
+        if jamlaApp.requires_subscription(session['package']):
+            return redirect(url_for('establish_mandate'))
+        return redirect(url_for('thankyou', _scheme='https', _external=True))
     else:
-        return "Invalid form"
+        return "Oops, there was an error processing that form, please go back and try again."
 
 
 @app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
@@ -83,10 +88,9 @@ def up_front(sid, package, fname):
     stripe_pub_key = jamla['payment_providers']['stripe']['publishable_key']
     session['upfront_cost'] = upfront_cost
     session['monthly_cost'] = monthly_cost
-    session['package'] = package
 
     return render_template('up_front_payment.html', jamla=jamla,package=package,
-                           fname=fname, selling_points=selling_points, 
+                           fname=fname, selling_points=selling_points,
                            upfront_cost=upfront_cost, monthly_cost=monthly_cost,
                            sid=sid, stripe_pub_key=stripe_pub_key)
 
@@ -105,7 +109,7 @@ def charge_up_front():
     res = cur.fetchone()
     con.close()
 
-    try: 
+    try:
         stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
         customer = stripe.Customer.create(
             email=res[7],
@@ -120,7 +124,7 @@ def charge_up_front():
         )
     except stripe.error.AuthenticationError as e:
         return str(e)
-    if jamlaApp.requires_subscription(session['package']) is True:
+    if jamlaApp.requires_subscription(session['package']):
         return redirect(url_for('establish_mandate'))
     else:
         return redirect(url_for('thankyou', _scheme='https', _external=True))
@@ -536,8 +540,8 @@ def retry_payment(payment_id):
 
     return "Payment (" + payment_id + " retried." + str(r)
 
-def getItem(container, i, default=None):                                         
-    try:                                                                         
-        return container[i]                                                      
-    except IndexError:                                                           
+def getItem(container, i, default=None):
+    try:
+        return container[i]
+    except IndexError:
         return default
