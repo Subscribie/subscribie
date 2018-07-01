@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang=en>
+<head>
+<title>{% block title %}{% endblock %} | {{ jamla['company']['name'] }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/static/style_ponteland.css">
+<link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
+<meta name="theme-color" content="#1e88e5">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5K5C9DR');</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- End Google Tag Manager -->
+<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet"></head>
+<link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet"/>
+
+<body>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5K5C9DR"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <section class="hero is-info is-fullheight" style="background-image: linear-gradient(to top, #fcc5e4 0%, #fda34b 15%, #ff7882 35%, #c8699e 52%, #7046aa 71%, #0c1db8 87%, #020f75 100%) !important;">
+    <!-- Hero head: will stick at the top -->
+    <div class="hero-head">
+      <header class="navbar">
+        <div class="container">
+          <div class="navbar-brand">
+            <a href="/" class="navbar-item">
+              {% if jamla['company']['logo'] %}
+                <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+              {% else %}
+                {{ jamla['company']['name'] }}
+              {% endif %}
+            </a>
+            <span class="navbar-burger burger" data-target="navbarMenuHeroC">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navbarMenuHeroC" class="navbar-menu">
+            <div class="navbar-end">
+              {% block menu_item %}{% endblock %}
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+
+  <div class="hero-body">
+    {% block body %}{% endblock %}
+  </div>
+
+  </section>
+
+{% block outer %}{% endblock %}
+
+<footer class="footer">
+  <div class="content has-text-centered">
+  <p>
+    <strong>{{ jamla['company']['name'] }}</strong>
+  </p>
+  <p><small>We're powered by <a href="https://subscriptionwebsitebuilder.co.uk/">Subscribie</a></small></p>
+  <a href="/dashboard" class="button is-link is-small">Manage my Subscribie Shop</a>
+</div>
+</footer>
+
+</body>
+
+</html>
