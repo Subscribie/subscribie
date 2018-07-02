@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-                                                          
 """                                                                              
-    hedgehog.app                                                                 
+    subscribie.app                                                                 
     ~~~~~~~~~                                                                    
     A microframework for buiding subsciption websites.                                                                                 
-    This module implements the central hedgehog application.              
+    This module implements the central subscribie application.              
                                                                                  
     :copyright: (c) 2018 by Karma Crew                                           
 """
@@ -40,17 +40,17 @@ from .forms import (StripWhitespaceForm, LoginForm, CustomerForm,
 from .Template import load_theme
 from blinker import signal
 
-"""The Hedgehog object implements a flask application suited to subscription 
+"""The Subscribie object implements a flask application suited to subscription 
 based web applications and acts as the central object. Once it is created    
 it will act as a central registry for default views, application workflow,   
 the URL rules, and much more. Note most of the application must be defined   
 in Jamla format, a yaml based application markup.                            
                                                                              
-Usually you create a :class:`Hedgehog` instance in your main module or          
+Usually you create a :class:`Subscribie` instance in your main module or          
 in the :file:`__init__.py` file of your package like this::                  
                                                                              
-    from hedgehog import Hedgehog                                            
-    app = Hedgehog(__name__)                                                 
+    from subscribie import Subscribie 
+    app = Subscribie(__name__)                                                 
                                                                              
 """
 
@@ -63,7 +63,7 @@ app.config.from_pyfile('.env')
 app.secret_key = app.config['SECRET_KEY']                                           
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024                                 
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
-import  hedgehog.views
+import  subscribie.views
 
 jamlaApp = Jamla()                                                               
 jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
