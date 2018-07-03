@@ -1,8 +1,9 @@
 version: 1
 company:
     name: "My Company Ltd"
-theme:                                                                        
+theme: 
     name: jesmond
+    static_folder: ./static/
 payment_providers:
     paypal:
         sepa_direct_supported: No
