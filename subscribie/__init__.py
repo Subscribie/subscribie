@@ -53,7 +53,6 @@ in the :file:`__init__.py` file of your package like this::
     app = Subscribie(__name__)                                                 
                                                                              
 """
-
 # the signals                                                                    
 from .signals import journey_complete
 

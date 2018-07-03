@@ -5,7 +5,7 @@ import random
 import sqlite3
 import smtplib
 import flask_login
-from hedgehog import app, Jamla, session, render_template, \
+from subscribie import app, Jamla, session, render_template, \
      request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
      journey_complete, GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
