@@ -27,4 +27,4 @@ def load_theme(app):
 	    app.jinja_loader,                                                        
 	])                                                                           
     app.jinja_loader = my_loader                                                     
-    app.static_folder = app.config['STATIC_FOLDER']  
+    app.static_folder = jamla['theme']['static_folder']
