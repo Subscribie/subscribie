@@ -8,7 +8,7 @@ then
 else
     echo "subscribie is in development mode. Starting simple python server..."
     export FLASK_DEBUG=1
-    export HEDGEHOG_ENV=./.env
+    export SUBSCRIBIE_ENV=./.env
     export FLASK_APP=__init__.py
     flask run
 fi

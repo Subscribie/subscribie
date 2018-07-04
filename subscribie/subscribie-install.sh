@@ -17,4 +17,4 @@ python subscribie/subscribie/createdb.py # Initalize database
 for file in subscribie/subscribie/migrations/*; do ./$file -up -db "$PWD"/data.db; done
 cp subscribie/subscribie/run.sh ./
 sed -i s#FLASK_APP=#FLASK_APP=$PWD/subscribie/subscribie/#g run.sh
-sed -i s#HEDGEHOG_ENV=.*#HEDGEHOG_ENV=$PWD/subscribie/subscribie/.env#g run.sh
+sed -i s#SUBSCRIBIE_ENV=.*#SUBSCRIBIE_ENV=$PWD/subscribie/subscribie/.env#g run.sh

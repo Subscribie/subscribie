@@ -58,7 +58,7 @@ from .signals import journey_complete
 
 app = Flask(__name__)                                                            
 app.config['DEBUG'] = True                                                          
-app.config.from_pyfile('.env')                                                      
+app.config.from_pyfile(os.environ['SUBSCRIBIE_ENV'])
 app.secret_key = app.config['SECRET_KEY']                                           
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024                                 
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
