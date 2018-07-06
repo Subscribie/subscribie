@@ -26,4 +26,8 @@ setuptools.setup(
         'stripe',
         'gocardless_pro',
     ],
+    entry_points='''
+        [console_scripts]
+        Subscribie=subscribie:hello
+    ''',
 )

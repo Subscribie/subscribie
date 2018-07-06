@@ -77,6 +77,10 @@ login_manager.init_app(app)
 # Mock database
 users = {'foo@bar.tld': {'password':'secret'}}
 
+def hello():
+    print "Hello"
+    return True
+
 @login_manager.user_loader
 def user_loader(email):
     con = sqlite3.connect(app.config["DB_FULL_PATH"])
