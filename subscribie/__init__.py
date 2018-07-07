@@ -39,6 +39,7 @@ from .forms import (StripWhitespaceForm, LoginForm, CustomerForm,
                     GocardlessConnectForm, StripeConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
+from .cli import cli, run
 
 """The Subscribie object implements a flask application suited to subscription 
 based web applications and acts as the central object. Once it is created    
@@ -57,8 +58,16 @@ in the :file:`__init__.py` file of your package like this::
 from .signals import journey_complete
 
 app = Flask(__name__)                                                            
-app.config['DEBUG'] = True                                                          
-app.config.from_pyfile(os.environ['SUBSCRIBIE_ENV'])
+app.config['DEBUG'] = True
+try:
+    app.config.from_pyfile(os.environ['SUBSCRIBIE_ENV'])
+except (KeyError, IOError):
+    pass
+try:
+    cwd = os.getcwd()
+    app.config.from_pyfile(cwd + '/.env')
+except IOError:
+    pass
 app.secret_key = app.config['SECRET_KEY']                                           
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024                                 
 alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
