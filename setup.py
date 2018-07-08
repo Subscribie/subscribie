@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name='Subscribie',
+    name='subscribie',
     version="0.0.1",
     author="Christopher Simpson",
     author_email="chris@karmacomputing.co.uk",
@@ -14,7 +14,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires=[
-        'Click',
+        'subscribiecli',
         'flask',
         'flask_cors',
         'flask_login', 
@@ -29,6 +29,5 @@ setuptools.setup(
     ],
     entry_points='''
         [console_scripts]
-        subscribie=subscribie:cli
     ''',
 )

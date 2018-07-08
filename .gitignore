@@ -8,3 +8,5 @@ shortly/venv/*
 shortly/jamla.yaml
 shortly/instance/*
 hedgehog.egg-info/*
+Subscribie.egg-info*
+subscribie.egg-info/*
