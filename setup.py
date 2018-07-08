@@ -3,14 +3,14 @@ import setuptools
 setuptools.setup(
     name='subscribie',
     version="0.0.1",
-    author="Christopher Simpson",
-    author_email="chris@karmacomputing.co.uk",
+    author="Karma Computing",
+    author_email="subscribie@karmacomputing.co.uk",
     desciption="Recurring subscription management and billing",
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=(
         "Programming Language :: Python :: 2",
-        "OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: OS Independent",
     ),
     install_requires=[
