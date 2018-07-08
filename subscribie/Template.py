@@ -14,7 +14,9 @@ def load_theme(app):
         else:
             #Most client code will pass theme by name
             themepath = ''.join([app.config['TEMPLATE_FOLDER'], 
-                                  jamla['theme']['name'], '/'])
+                                 'theme-', 
+                                 jamla['theme']['name'], '/',
+                                 jamla['theme']['name']])
         if os.path.exists(themepath) is False:
             raise
     except Exception as e:
