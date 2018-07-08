@@ -34,10 +34,10 @@ items:
       subscription_terms:
           - minimum_term_months: 4
       requirements:
-        - instant_payment: Yes
-        - subscription: Yes
-        - customer_address: Yes
-        - customer_contact_details_required: Yes
+        instant_payment: Yes
+        subscription: Yes
+        customer_address: Yes
+        customer_contact_details_required: Yes
       selling_points:
           - Limited Usage
           - Friendly UK Support
@@ -63,10 +63,10 @@ items:
       subscription_terms:
           - minimum_term_months: 6
       requirements:
-        - instant_payment: Yes
-        - subscription: Yes
-        - customer_address: Yes
-        - customer_contact_details_required: Yes
+        instant_payment: Yes
+        subscription: Yes
+        customer_address: Yes
+        customer_contact_details_required: Yes
       selling_points:
           - Unlimited Usage
           - Email support
@@ -91,10 +91,10 @@ items:
       subscription_terms:
           - minimum_term_months: 12
       requirements:
-        - instant_payment: False
-        - subscription: True
-        - customer_address: True
-        - customer_contact_details_required: True
+        instant_payment: False
+        subscription: True
+        customer_address: True
+        customer_contact_details_required: True
       selling_points:
           - Unlimited Usage
           - Friendly telephone Support
