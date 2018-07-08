@@ -1,0 +1,3 @@
+[submodule "subscribie/themes/theme-jesmond"]
+	path = subscribie/themes/theme-jesmond
+	url = git@github.com:Subscribie/theme-jesmond.git
