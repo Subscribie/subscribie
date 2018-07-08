@@ -1,6 +1,6 @@
 {
-  "short_name": "Broadband",
-  "name": "Broadband Availability Checker - Karma Computing",
+  "short_name": "Subscribie",
+  "name": "Subscription website builder - Subscribie",
   "icons": [
     {
       "src":"/static/icon192x192.png",

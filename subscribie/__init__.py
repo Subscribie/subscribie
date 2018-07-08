@@ -5,7 +5,7 @@
     A microframework for buiding subsciption websites.                                                                                 
     This module implements the central subscribie application.              
                                                                                  
-    :copyright: (c) 2018 by Karma Crew                                           
+    :copyright: (c) 2018 by Karma Computing Ltd
 """
 import os
 from os import environ

@@ -35,7 +35,7 @@ def send_login_url(email):
     # Send email with token link                                                    
     msg = MIMEText(login_url)                                                    
     msg['Subject'] = 'Magic login'                                               
-    msg['From'] = 'enquiries@karmacomputing.co.uk'                               
+    msg['From'] = 'enquiries@localhost'                               
     msg['To'] = email                                                            
     # Perform smtp send                                                             
     print "#"*80                                                                 
@@ -44,7 +44,7 @@ def send_login_url(email):
     print "#"*80                                                                 
     try:                                                                         
         s = smtplib.SMTP(app.config['EMAIL_HOST'])                               
-        s.sendmail('enquiries@karmacomputing.co.uk', email, msg.as_string())     
+        s.sendmail('enquiries@localhost', email, msg.as_string())     
         s.quit()                                                                 
     except Exception as e:
         print e
