@@ -39,7 +39,6 @@ from .forms import (StripWhitespaceForm, LoginForm, CustomerForm,
                     GocardlessConnectForm, StripeConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
-from .cli import cli, run
 
 """The Subscribie object implements a flask application suited to subscription 
 based web applications and acts as the central object. Once it is created    
