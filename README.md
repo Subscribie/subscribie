@@ -34,3 +34,11 @@ http://docs.subscriptionwebsitebuilder.co.uk
 # Demo
 
 https://subscriptionwebsitebuilder.co.uk
+
+# Where can I get more help, if I need it?
+
+Read through the [docs](http://docs.subscriptionwebsitebuilder.co.uk), especially
+about the [Jamla
+file](http://docs.subscriptionwebsitebuilder.co.uk/jamla/jamla.html#jamla) 
+and comment on the [issue
+queue](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
