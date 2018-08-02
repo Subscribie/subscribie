@@ -6,7 +6,6 @@ import os
 def load_theme(app):
     jamlaApp = Jamla()                                                               
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-
     try:
         if os.path.isdir(jamla['theme']['name']):
             #Allow theme path to be specified as absolute path

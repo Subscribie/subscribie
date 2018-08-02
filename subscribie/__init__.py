@@ -69,11 +69,13 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
-
+    
+    from . import db
+    db.init_app(app)
     from . import auth
     from . import views
     app.register_blueprint(auth.bp)
-    #app.register_blueprint(views.bp)
+    app.register_blueprint(views.bp)
 
     """The Subscribie object implements a flask application suited to subscription 
     based web applications and acts as the central object. Once it is created    
