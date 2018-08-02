@@ -2,15 +2,17 @@ import yaml, flask_login
 
 class Jamla():
 
-    jamla = None
-
-    def load(self, src='example.yaml'):
-        with open(src, 'r') as ymlfile:
-            cfg = yaml.load(ymlfile)
-        for section in cfg:
-            print (section)
-        self.jamla = cfg
-        return cfg
+    def load(self, src='example.yaml', jamla=None):
+        if jamla:
+            self.jamla = jamla
+            return jamla
+        else:
+            with open(src, 'r') as ymlfile:
+                cfg = yaml.load(ymlfile)
+            for section in cfg:
+                print (section)
+            self.jamla = cfg
+            return cfg
 
     def sku_exists(self, sku):
 	for item in self.jamla['items']:

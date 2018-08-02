@@ -12,7 +12,7 @@ from subscribie import Jamla, session, render_template, \
      GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
      jsonify
-from subscribie.db import get_db
+from subscribie.db import get_jamla, get_db
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
@@ -27,13 +27,13 @@ bp = Blueprint('views', __name__, url_prefix=None)
 
 @bp.route('/')
 def choose():
-    jamla = get_db()
+    jamla = get_jamla()
     session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
     return render_template('choose.html', jamla=jamla)
 
 @bp.route('/new_customer', methods=['GET'])
 def new_customer():
-    jamla = get_db()
+    jamla = get_jamla()
     package = request.args.get('plan','not set')
     session['package'] = package
     form = CustomerForm()
@@ -58,18 +58,16 @@ def store_customer():
 
         # Store plan in session
 	jamlaApp = Jamla()
-        jamla = get_db()
+        jamla = get_jamla()
+        jamlaApp.load(jamla=jamla)
         if jamlaApp.sku_exists(request.args.get('plan')):
             wants = request.args.get('plan')
             session['plan'] = wants
-        print "##################"
-        con = sqlite3.connect(app.config["DB_FULL_PATH"])
-        cur = con.cursor()
-        cur.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name,
+        db = get_db()
+        db.execute("INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (sid, now, given_name, family_name,
                     address_line_one, city, postcode, email, mobile,
                     wants, 'null', 'null', False))
-        con.commit()
-        con.close()
+        db.commit()
 
         if jamlaApp.requires_instantpayment(session['package']):
             return redirect(url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
@@ -83,7 +81,7 @@ def store_customer():
 @bp.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
 def up_front(sid, package, fname):
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     selling_points = jamlaApp.get_selling_points(package)
     upfront_cost = jamlaApp.sku_get_upfront_cost(package)
     monthly_cost = jamlaApp.sku_get_monthly_price(package)
@@ -99,7 +97,7 @@ def up_front(sid, package, fname):
 @bp.route('/up_front', methods=['POST'])
 def charge_up_front():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     charge = {}
     charge['amount'] = session['upfront_cost']
     charge['currency'] = "GBP"
@@ -134,7 +132,7 @@ def charge_up_front():
 @bp.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     #lookup the customer with sid and get their relevant details
     sid = session['sid']
     con = sqlite3.connect(app.config["DB_FULL_PATH"])
@@ -176,7 +174,7 @@ def establish_mandate():
 @bp.route('/complete_mandate', methods=['GET'])
 def on_complete_mandate():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     redirect_flow_id = request.args.get('redirect_flow_id')
     print("Recieved flow ID: {} ".format(redirect_flow_id))
 
@@ -298,7 +296,7 @@ def logout():
 @flask_login.login_required
 def dashboard():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     if jamlaApp.has_connected('gocardless'):
         gocardless_connected = True
     else:
@@ -319,9 +317,9 @@ def edit_jamla():
 @bp.route('/jamla', methods=['GET'])
 @bp.route('/api/jamla', methods=['GET'])
 @flask_login.login_required
-def get_jamla():
+def fetch_jamla():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     #Strip out private values TODO don't store them here, move to .env?
     jamla['payment_providers'] = None
     resp = dict(items=jamla['items'], company=jamla['company'], name="fred", email='me@example.com')
@@ -357,7 +355,7 @@ def connect_stripe():
 def connect_stripe_manually():
     form = StripeConnectForm()
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     if jamlaApp.has_connected('stripe'):
         stripe_connected = True
     else:
@@ -382,7 +380,7 @@ def connect_stripe_manually():
 def connect_gocardless_manually():
     form = GocardlessConnectForm()
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     if jamlaApp.has_connected('gocardless'):
         gocardless_connected = True
     else:
@@ -431,7 +429,7 @@ def connect_gocardless_start():
 @flask_login.login_required
 def gocardless_oauth_complete():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     flow = OAuth2WebServerFlow(
             client_id=app.config['GOCARDLESS_CLIENT_ID'],
             client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
@@ -457,7 +455,7 @@ def gocardless_oauth_complete():
 @bp.route('/push-mandates', methods=['GET'])
 def push_mandates():
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token', jamla),
         environment = jamla['payment_providers']['gocardless']['environment']
@@ -493,7 +491,7 @@ def push_payments():
     Assume a gocardless endpoint for now.
     """
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token'),
         environment= jamla['payment_providers']['gocardless']['environment']
@@ -533,7 +531,7 @@ def push_payments():
 @bp.route('/retry-payment/<payment_id>', methods=['GET'])
 def retry_payment(payment_id):
     jamlaApp = Jamla()
-    jamla = get_db()
+    jamla = get_jamla()
     gocclient = gocardless_pro.Client(
         access_token = get_secret('gocardless', 'access_token'),
         environment = jamla['payment_providers']['gocardless']['environment']
