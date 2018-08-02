@@ -29,8 +29,6 @@ except Exception:
     pass
 from flask import (Flask, render_template, session, redirect, url_for, escape, 
                    request, current_app, send_from_directory, jsonify)
-from penguin_rest import Decorators
-from penguin_rest import Rest
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
@@ -39,6 +37,8 @@ from .forms import (StripWhitespaceForm, LoginForm, CustomerForm,
                     GocardlessConnectForm, StripeConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
+from flask_cors import CORS
+from flask_uploads import configure_uploads, UploadSet, IMAGES
 
 def create_app(test_config=None):
     # create and configure the app
@@ -49,7 +49,7 @@ def create_app(test_config=None):
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
+        app.config.from_pyfile('config.py', silent=False)
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -59,92 +59,80 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    jamlaApp = Jamla()                                                           
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])                          
+    images = UploadSet('images', IMAGES)                                         
+    configure_uploads(app, images)
+
     # a simple page that says hello!
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
 
     from . import auth
+    from . import views
     app.register_blueprint(auth.bp)
+    #app.register_blueprint(views.bp)
 
+    """The Subscribie object implements a flask application suited to subscription 
+    based web applications and acts as the central object. Once it is created    
+    it will act as a central registry for default views, application workflow,   
+    the URL rules, and much more. Note most of the application must be defined   
+    in Jamla format, a yaml based application markup.                            
+                                                                                 
+    Usually you create a :class:`Subscribie` instance in your main module or          
+    in the :file:`__init__.py` file of your package like this::                  
+                                                                                 
+        from subscribie import Subscribie 
+        app = Subscribie(__name__)                                                 
+                                                                                 
+    """
+    # the signals                                                                    
+    from .signals import journey_complete
+
+    alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
+
+    # Set custom modules path
+    sys.path.append(jamla['modules_path'])
+    with app.app_context(): 
+        load_theme(app)
+
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
+    # Mock database
+    users = {'foo@bar.tld': {'password':'secret'}}
+
+    # Register yml pages as routes
+    if 'pages' in jamla:
+        for i,v in enumerate(jamla['pages']):
+            path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
+            template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
+            view_func_name = jamla['pages'][i].keys()[0]
+            ##Generate view function
+            generate_view_func = """def %s_view_func():
+            return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
+            exec(generate_view_func) in globals(), locals()
+            method_name = view_func_name + "_view_func"
+            possibles = globals().copy()
+            possibles.update(locals())
+            view_func = possibles.get(method_name)
+            app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
+
+    # Handling Errors Gracefully
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+    @app.errorhandler(500)
+    def page_not_found(e):
+        return render_template('errors/500.html'), 500
+
+    # Import any custom modules
+    if 'modules' in jamla:
+        try:
+            for moduleName in jamla['modules']:
+                print "Importing module: " + moduleName
+                __import__(moduleName)
+        except TypeError as e:
+            print e
     return app
-
-"""The Subscribie object implements a flask application suited to subscription 
-based web applications and acts as the central object. Once it is created    
-it will act as a central registry for default views, application workflow,   
-the URL rules, and much more. Note most of the application must be defined   
-in Jamla format, a yaml based application markup.                            
-                                                                             
-Usually you create a :class:`Subscribie` instance in your main module or          
-in the :file:`__init__.py` file of your package like this::                  
-                                                                             
-    from subscribie import Subscribie 
-    app = Subscribie(__name__)                                                 
-                                                                             
-"""
-# the signals                                                                    
-from .signals import journey_complete
-
-app = Flask(__name__)                                                            
-app.config['DEBUG'] = True
-try:
-    app.config.from_pyfile(os.environ['SUBSCRIBIE_ENV'])
-except (KeyError, IOError):
-    pass
-try:
-    # attempt load from current path, if in mod_wsgi environment, 
-    # this may be setting the python-path parameter on WSGIDaemonProcess
-    app.config.from_pyfile('./.env')
-except IOError:
-    pass
-app.secret_key = app.config['SECRET_KEY']                                           
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024                                 
-alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
-import  subscribie.views
-
-jamlaApp = Jamla()                                                               
-jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-
-# Set custom modules path
-sys.path.append(jamla['modules_path'])
-
-load_theme(app)
-
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
-# Mock database
-users = {'foo@bar.tld': {'password':'secret'}}
-
-# Register yml pages as routes
-if 'pages' in jamla:
-    for i,v in enumerate(jamla['pages']):
-        path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
-        template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
-        view_func_name = jamla['pages'][i].keys()[0]
-        ##Generate view function
-        generate_view_func = """def %s_view_func():
-        return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
-        exec(generate_view_func)
-        method_name = view_func_name + "_view_func"
-        possibles = globals().copy()
-        possibles.update(locals())
-        view_func = possibles.get(method_name)
-        app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
-
-# Handling Errors Gracefully
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('errors/404.html'), 404
-@app.errorhandler(500)
-def page_not_found(e):
-    return render_template('errors/500.html'), 500
-
-# Import any custom modules
-if 'modules' in jamla:
-    try:
-        for moduleName in jamla['modules']:
-            print "Importing module: " + moduleName
-            __import__(moduleName)
-    except TypeError as e:
-        print e

@@ -1,3 +1,4 @@
+import functools
 import os
 import yaml
 import datetime
@@ -5,39 +6,39 @@ import random
 import sqlite3
 import smtplib
 import flask_login
-from subscribie import app, Jamla, session, render_template, \
-     request, redirect, alphanum, CustomerForm, LoginForm, gocardless_pro, \
-     journey_complete, GocardlessConnectForm, StripeConnectForm, current_app, \
+from signals import journey_complete
+from subscribie import Jamla, session, render_template, \
+     request, redirect, CustomerForm, LoginForm, gocardless_pro, \
+     GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
      jsonify
 from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import stripe
-from flask_cors import CORS
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+from flask import (                                                              
+    Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for       
+)                                                                                
+from werkzeug.security import check_password_hash, generate_password_hash        
+                                                                                 
+bp = Blueprint('views', __name__, url_prefix=None)
 
-jamlaApp = Jamla()
-jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
-images = UploadSet('images', IMAGES)
-configure_uploads(app, images)
-
-@app.route('/')
+@bp.route('/')
 def choose():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     session['sid'] = b64encode(''.join([alphanum[random.randint(0, len(alphanum) - 1)] for _ in range(0, 24)])).decode('utf-8')
     return render_template('choose.html', jamla=jamla)
 
-@app.route('/new_customer', methods=['GET'])
+@bp.route('/new_customer', methods=['GET'])
 def new_customer():
     package = request.args.get('plan','not set')
     session['package'] = package
     form = CustomerForm()
     return render_template('new_customer.html', jamla=jamla, form=form, package=package)
 
-@app.route('/new_customer', methods=['POST'])
+@bp.route('/new_customer', methods=['POST'])
 def store_customer():
     form = CustomerForm()
     if form.validate():
@@ -78,7 +79,7 @@ def store_customer():
         return "Oops, there was an error processing that form, please go back and try again."
 
 
-@app.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
+@bp.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
 def up_front(sid, package, fname):
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
@@ -94,7 +95,7 @@ def up_front(sid, package, fname):
                            upfront_cost=upfront_cost, monthly_cost=monthly_cost,
                            sid=sid, stripe_pub_key=stripe_pub_key)
 
-@app.route('/up_front', methods=['POST'])
+@bp.route('/up_front', methods=['POST'])
 def charge_up_front():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
@@ -129,7 +130,7 @@ def charge_up_front():
     else:
         return redirect(url_for('thankyou', _scheme='https', _external=True))
 
-@app.route('/establish_mandate', methods=['GET'])
+@bp.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(app.config['JAMLA_PATH'])
@@ -171,7 +172,7 @@ def establish_mandate():
     print("URL: {} ".format(redirect_flow.redirect_url))
     return redirect(redirect_flow.redirect_url)
 
-@app.route('/complete_mandate', methods=['GET'])
+@bp.route('/complete_mandate', methods=['GET'])
 def on_complete_mandate():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(app.config['JAMLA_PATH'])
@@ -243,7 +244,7 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(app.config['THANKYOU_URL'])
 
-@app.route('/thankyou', methods=['GET'])
+@bp.route('/thankyou', methods=['GET'])
 def thankyou():
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session['email'])
@@ -258,7 +259,7 @@ def thankyou():
     finally:
         return render_template('thankyou.html', jamla=jamla)
 
-@app.route('/login/<login_token>', methods=['GET'])
+@bp.route('/login/<login_token>', methods=['GET'])
 def validate_login(login_token):
     if len(login_token) < 10:
         return 'Invalid token'
@@ -287,12 +288,12 @@ def validate_login(login_token):
 
     return "Code is %s" % login_token;
 
-@app.route('/logout')
+@bp.route('/logout')
 def logout():
     flask_login.logout_user()
     return 'Logged out'
 
-@app.route('/dashboard')
+@bp.route('/dashboard')
 @flask_login.login_required
 def dashboard():
     jamlaApp = Jamla()
@@ -309,13 +310,13 @@ def dashboard():
                            gocardless_connected=gocardless_connected,
                            stripe_connected=stripe_connected)
 
-@app.route('/edit', methods=['GET', 'POST'])
+@bp.route('/edit', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_jamla():
     return render_template('formarraybasic/index.html')
 
-@app.route('/jamla', methods=['GET'])
-@app.route('/api/jamla', methods=['GET'])
+@bp.route('/jamla', methods=['GET'])
+@bp.route('/api/jamla', methods=['GET'])
 @flask_login.login_required
 def get_jamla():
     jamlaApp = Jamla()
@@ -325,12 +326,12 @@ def get_jamla():
     resp = dict(items=jamla['items'], company=jamla['company'], name="fred", email='me@example.com')
     return jsonify(resp)
 
-@app.route('/protected')
+@bp.route('/protected')
 @flask_login.login_required
 def protected():
     return redirect(url_for('dashboard'));
 
-@app.route('/login', methods=['POST'])
+@bp.route('/login', methods=['POST'])
 def generate_login_token():
     form = LoginForm()
     if form.validate_on_submit():
@@ -340,17 +341,17 @@ def generate_login_token():
         except Exception as e:
             print e
             return ("Failed to generate login email.")
-@app.route('/login', methods=['GET'])
+@bp.route('/login', methods=['GET'])
 def login():
     form = LoginForm()
     return render_template('login.html', form=form, jamla=jamla)
 
-@app.route('/connect/stripe', methods=['GET'])
+@bp.route('/connect/stripe', methods=['GET'])
 @flask_login.login_required
 def connect_stripe():
     return "Connect Stripe."
 
-@app.route('/connect/stripe/manually', methods=['GET', 'POST'])
+@bp.route('/connect/stripe/manually', methods=['GET', 'POST'])
 @flask_login.login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
@@ -375,7 +376,7 @@ def connect_stripe_manually():
         return render_template('connect_stripe_manually.html', form=form,
                 jamla=jamla, stripe_connected=stripe_connected)
 
-@app.route('/connect/gocardless/manually', methods=['GET', 'POST'])
+@bp.route('/connect/gocardless/manually', methods=['GET', 'POST'])
 @flask_login.login_required
 def connect_gocardless_manually():
     form = GocardlessConnectForm()
@@ -404,7 +405,7 @@ def connect_gocardless_manually():
         return render_template('connect_gocardless_manually.html', form=form,
                 jamla=jamla, gocardless_connected=gocardless_connected)
 
-@app.route('/connect/gocardless', methods=['GET'])
+@bp.route('/connect/gocardless', methods=['GET'])
 @flask_login.login_required
 def connect_gocardless_start():
     flow = OAuth2WebServerFlow(
@@ -425,7 +426,7 @@ def connect_gocardless_start():
     authorize_url = flow.step1_get_authorize_url()
     return flask.redirect(authorize_url, code=302)
 
-@app.route('/connect/gocardless/oauth/complete', methods=['GET'])
+@bp.route('/connect/gocardless/oauth/complete', methods=['GET'])
 @flask_login.login_required
 def gocardless_oauth_complete():
     jamlaApp = Jamla()
@@ -452,7 +453,7 @@ def gocardless_oauth_complete():
 
     return redirect(url_for('dashboard'))
 
-@app.route('/push-mandates', methods=['GET'])
+@bp.route('/push-mandates', methods=['GET'])
 def push_mandates():
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
@@ -484,7 +485,7 @@ def push_mandates():
         Rest.post(entity='mandate', fields=fields)
     return "Mandates pushed"
 
-@app.route('/push-payments', methods=['GET'])
+@bp.route('/push-payments', methods=['GET'])
 def push_payments():
     """
     Push payments to Penguin.
@@ -528,7 +529,7 @@ def push_payments():
 
     return "Payments have been pushed"
 
-@app.route('/retry-payment/<payment_id>', methods=['GET'])
+@bp.route('/retry-payment/<payment_id>', methods=['GET'])
 def retry_payment(payment_id):
     jamlaApp = Jamla()
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])

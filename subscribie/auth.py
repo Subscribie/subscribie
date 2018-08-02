@@ -1,11 +1,20 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Flask, Blueprint, flash, g, redirect, render_template, request, session, 
+    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+import flask_login
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+app = Flask(__name__)
+
+with app.app_context():
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
 
 @login_manager.user_loader                                                       
 def user_loader(email):                                                          
