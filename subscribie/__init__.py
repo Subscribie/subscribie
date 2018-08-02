@@ -64,6 +64,9 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
+    from . import auth
+    app.register_blueprint(auth.bp)
+
     return app
 
 """The Subscribie object implements a flask application suited to subscription 
@@ -111,31 +114,6 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 # Mock database
 users = {'foo@bar.tld': {'password':'secret'}}
-
-@login_manager.user_loader
-def user_loader(email):
-    con = sqlite3.connect(app.config["DB_FULL_PATH"])
-    con.row_factory = sqlite3.Row # Dict based result set
-    cur = con.cursor()
-    cur.execute('SELECT email FROM user WHERE email=?', (str(email),))
-    result = cur.fetchone()
-    con.close()
-    if result is None:
-        return
-    user = User()
-    user.id = email
-    return user
-
-@login_manager.request_loader
-def request_loader(request):
-    email = request.form.get('email')
-    if email not in users:
-        return
-    user = User()
-    user.id = email
-
-    user.is_authenticated = request.form['password'] == users['email']['password']
-    return user
 
 # Register yml pages as routes
 if 'pages' in jamla:
