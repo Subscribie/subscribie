@@ -63,8 +63,9 @@ try:
 except (KeyError, IOError):
     pass
 try:
-    cwd = os.getcwd()
-    app.config.from_pyfile(cwd + '/.env')
+    # attempt load from current path, if in mod_wsgi environment, 
+    # this may be setting the python-path parameter on WSGIDaemonProcess
+    app.config.from_pyfile('./.env')
 except IOError:
     pass
 app.secret_key = app.config['SECRET_KEY']                                           
