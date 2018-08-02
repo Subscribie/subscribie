@@ -41,4 +41,4 @@ Read through the [docs](http://docs.subscriptionwebsitebuilder.co.uk), especiall
 about the [Jamla
 file](http://docs.subscriptionwebsitebuilder.co.uk/jamla/jamla.html#jamla) 
 and comment on the [issue
-queue](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+queue](https://github.com/Subscribie/subscribie/issues)

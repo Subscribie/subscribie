@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='subscribie',
-    version="0.0.1",
+    version="0.0.4",
     author="Karma Computing",
     author_email="subscribie@karmacomputing.co.uk",
     desciption="Recurring subscription management and billing",
