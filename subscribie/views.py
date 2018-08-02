@@ -70,10 +70,10 @@ def store_customer():
         db.commit()
 
         if jamlaApp.requires_instantpayment(session['package']):
-            return redirect(url_for('up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
+            return redirect(url_for('views.up_front', _scheme='https', _external=True, sid=sid, package=wants, fname=given_name))
         if jamlaApp.requires_subscription(session['package']):
-            return redirect(url_for('establish_mandate'))
-        return redirect(url_for('thankyou', _scheme='https', _external=True))
+            return redirect(url_for('views.establish_mandate'))
+        return redirect(url_for('views.thankyou', _scheme='https', _external=True))
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
@@ -125,9 +125,9 @@ def charge_up_front():
     except stripe.error.AuthenticationError as e:
         return str(e)
     if jamlaApp.requires_subscription(session['package']):
-        return redirect(url_for('establish_mandate'))
+        return redirect(url_for('views.establish_mandate'))
     else:
-        return redirect(url_for('thankyou', _scheme='https', _external=True))
+        return redirect(url_for('views.thankyou', _scheme='https', _external=True))
 
 @bp.route('/establish_mandate', methods=['GET'])
 def establish_mandate():
@@ -283,7 +283,7 @@ def validate_login(login_token):
     user = User()
     user.id = email
     flask_login.login_user(user)
-    return redirect(url_for('protected'))
+    return redirect(url_for('views.protected'))
 
     return "Code is %s" % login_token;
 
@@ -328,7 +328,7 @@ def fetch_jamla():
 @bp.route('/protected')
 @flask_login.login_required
 def protected():
-    return redirect(url_for('dashboard'));
+    return redirect(url_for('views.dashboard'));
 
 @bp.route('/login', methods=['POST'])
 def generate_login_token():
@@ -370,7 +370,7 @@ def connect_stripe_manually():
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         flask_login.current_user.stripe_publishable_key = publishable_key
         # Set stripe public key JS
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('views.dashboard'))
     else:
         return render_template('connect_stripe_manually.html', form=form,
                 jamla=jamla, stripe_connected=stripe_connected)
@@ -399,7 +399,7 @@ def connect_gocardless_manually():
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         # Set users current session to store access_token for instant access
         flask_login.current_user.gocardless_access_token = access_token
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('views.dashboard'))
     else:
         return render_template('connect_gocardless_manually.html', form=form,
                 jamla=jamla, gocardless_connected=gocardless_connected)
@@ -450,7 +450,7 @@ def gocardless_oauth_complete():
     flask_login.current_user.gocardless_access_token = access_token.access_token
     flask_login.current_user.gocardless_organisation_id = access_token.token_response['organisation_id']
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('views.dashboard'))
 
 @bp.route('/push-mandates', methods=['GET'])
 def push_mandates():
