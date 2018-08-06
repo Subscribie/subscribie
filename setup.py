@@ -15,7 +15,7 @@ setuptools.setup(
     ),
     install_requires=[
         'subscribiecli',
-        'flask',
+        'flask>=1,<2',
         'flask_cors',
         'flask_login', 
         'flask_uploads',
