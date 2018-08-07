@@ -3,7 +3,7 @@ company:
     name: "My Company Ltd"
 theme: 
     name: jesmond
-    static_folder: ./static/
+    static_folder: /home/chris/test2/subscribie/themes/theme-jesmond/static/
 payment_providers:
     paypal:
         sepa_direct_supported: No
@@ -15,8 +15,8 @@ payment_providers:
         subscription_supported: Yes
         instant_payment_supported: Yes
         variable_payments_supported: No
-        publishable_key: ''
-        secret_key: ''
+        publishable_key: 'pk_test_abc'
+        secret_key: 'sk_test_abc'
     gocardless:
         sepa_direct_supported: No
         subscription_supported: Yes
@@ -28,8 +28,8 @@ payment_providers:
 items:
     - sku: item1
       title: Package 1
-      sell_price: 5.99
-      monthly_price: 9.99
+      sell_price: 599
+      monthly_price: 999
       subscription: Yes
       subscription_terms:
           - minimum_term_months: 4
@@ -57,8 +57,8 @@ items:
 
     - sku: item2
       title: Package 2
-      sell_price: 8.99
-      monthly_price: 15.99
+      sell_price: 899
+      monthly_price: 1599
       subscription: Yes
       subscription_terms:
           - minimum_term_months: 6
