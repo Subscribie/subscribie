@@ -136,13 +136,11 @@ def establish_mandate():
     jamlaApp.load(jamla=jamla)
     #lookup the customer with sid and get their relevant details
     sid = session['sid']
-    con = sqlite3.connect(app.config["DB_FULL_PATH"])
-    cur = con.cursor()
-    cur.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,))
-    res = cur.fetchone()
-    print res
-    con.close()
+    db = get_db()                                                                
+    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)
+                     ).fetchone()
 
+    print res
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
@@ -150,19 +148,18 @@ def establish_mandate():
     )
 
     description = ' '.join([jamla['company']['name'],session['package']])[0:100]
-
     redirect_flow = gocclient.redirect_flows.create(
         params = {
             "description" : description,
             "session_token" : sid,
-            "success_redirect_url" : app.config['SUCCESS_REDIRECT_URL'],
+            "success_redirect_url" : current_app.config['SUCCESS_REDIRECT_URL'],
             "prefilled_customer" : {
-                "given_name" : res[2],
-                "family_name": res[3],
-                "address_line1": res[4],
-                "city" : res[5],
-                "postal_code": res[6],
-                "email": res[7]
+                "given_name" : res['given_name'],
+                "family_name": res['family_name'],
+                "address_line1": res['address_line1'],
+                "city" : res['city'],
+                "postal_code": res['postal_code'],
+                "email": res['email']
             }
         }
     )
