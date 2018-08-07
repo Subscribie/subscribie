@@ -104,16 +104,14 @@ def charge_up_front():
     charge['currency'] = "GBP"
 
     sid = session['sid']
-    con = sqlite3.connect(app.config["DB_FULL_PATH"])
-    cur = con.cursor()
-    cur.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,))
-    res = cur.fetchone()
-    con.close()
 
+    db = get_db()                                                                
+    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)
+    ).fetchone()                                                             
     try:
         stripe.api_key = jamla['payment_providers']['stripe']['secret_key']
         customer = stripe.Customer.create(
-            email=res[7],
+            email=res['email'],
             source=request.form['stripeToken']
         )
 
