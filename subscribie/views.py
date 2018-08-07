@@ -81,6 +81,7 @@ def store_customer():
 @bp.route('/up_front/<sid>/<package>/<fname>', methods=['GET'])
 def up_front(sid, package, fname):
     jamlaApp = Jamla()
+    jamlaApp.load()
     jamla = get_jamla()
     selling_points = jamlaApp.get_selling_points(package)
     upfront_cost = jamlaApp.sku_get_upfront_cost(package)
