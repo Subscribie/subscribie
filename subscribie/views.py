@@ -240,10 +240,11 @@ def on_complete_mandate():
                     pass
     # Display a confirmation page to the customer, telling them
     # their Direct Debit has been set up.
-    return redirect(app.config['THANKYOU_URL'])
+    return redirect(current_app.config['THANKYOU_URL'])
 
 @bp.route('/thankyou', methods=['GET'])
 def thankyou():
+    jamla = get_jamla()
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session['email'])
     try:
