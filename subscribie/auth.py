@@ -41,7 +41,6 @@ def do_login(login_token):
     error = None
     user = db.execute('SELECT * FROM user WHERE login_token=?', (login_token,)
            ).fetchone()
-    import pdb;pdb.set_trace()
     if user is None:
         error = 'Incorrect login token'
 
@@ -78,6 +77,7 @@ def generate_login_url(email):
     login_token = urlsafe_b64encode(os.urandom(24))                              
     # Insert login token into db                                                    
     db.execute(""" UPDATE user SET login_token= ? WHERE email= ? """,(login_token,email))
+    db.commit()
     login_url = ''.join([request.host_url, 'auth/login/', login_token])               
     return login_url 
 

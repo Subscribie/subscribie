@@ -316,7 +316,7 @@ def connect_stripe_manually():
         # Overwrite jamla file with gocardless access_token
         fp = open(current_app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
-        g.user.stripe_publishable_key = publishable_key
+        session['stripe_publishable_key'] = publishable_key
         # Set stripe public key JS
         return redirect(url_for('views.dashboard'))
     else:
@@ -347,7 +347,7 @@ def connect_gocardless_manually():
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         # Set users current session to store access_token for instant access
-        g.user.gocardless_access_token = access_token
+        session['gocardless_access_token'] = access_token
         return redirect(url_for('views.dashboard'))
     else:
         return render_template('connect_gocardless_manually.html', form=form,
@@ -397,8 +397,8 @@ def gocardless_oauth_complete():
     # Overwrite jamla file with gocardless access_token
     yaml.safe_dump(jamla,fp , default_flow_style=False)
     # Set users current session to store access_token for instant access
-    g.user.gocardless_access_token = access_token.access_token
-    g.user.gocardless_organisation_id = access_token.token_response['organisation_id']
+    session['gocardless_access_token'] = access_token.access_token
+    session['gocardless_organisation_id'] = access_token.token_response['organisation_id']
 
     return redirect(url_for('views.dashboard'))
 
