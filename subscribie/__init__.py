@@ -19,7 +19,6 @@ import smtplib
 from email.mime.text import MIMEText
 import jinja2 
 import flask
-import flask_login
 import datetime
 from base64 import b64encode, urlsafe_b64encode
 try:
@@ -100,11 +99,6 @@ def create_app(test_config=None):
     sys.path.append(jamla['modules_path'])
     with app.app_context(): 
         load_theme(app)
-
-    login_manager = flask_login.LoginManager()
-    login_manager.init_app(app)
-    # Mock database
-    users = {'foo@bar.tld': {'password':'secret'}}
 
     # Register yml pages as routes
     if 'pages' in jamla:

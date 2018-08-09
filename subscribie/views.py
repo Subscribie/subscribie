@@ -5,7 +5,6 @@ import datetime
 import random
 import sqlite3
 import smtplib
-import flask_login
 from signals import journey_complete
 from subscribie import Jamla, session, render_template, \
      request, redirect, CustomerForm, LoginForm, gocardless_pro, \
@@ -13,10 +12,10 @@ from subscribie import Jamla, session, render_template, \
      redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
      jsonify
 from subscribie.db import get_jamla, get_db
-from .User import User, send_login_url
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import stripe
+from auth import login_required
 
 from flask import (                                                              
     Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for       
@@ -258,42 +257,8 @@ def thankyou():
     finally:
         return render_template('thankyou.html', jamla=jamla)
 
-@bp.route('/login/<login_token>', methods=['GET'])
-def validate_login(login_token):
-    if len(login_token) < 10:
-        return 'Invalid token'
-    # Try to get email from login_token
-    con = sqlite3.connect(current_app.config["DB_FULL_PATH"])
-    con.row_factory = sqlite3.Row # Dict based result set
-    cur = con.cursor()
-    cur.execute('SELECT email FROM user WHERE login_token=?', (login_token,))
-    result = cur.fetchone()
-    con.close()
-    if result is None:
-        return "Invalid token"
-    # Invaldate previous token
-    new_login_token = urlsafe_b64encode(os.urandom(24))
-    con = sqlite3.connect(current_app.config["DB_FULL_PATH"])
-    cur = con.cursor()
-    cur.execute('UPDATE user SET login_token=? WHERE login_token=?', (new_login_token, login_token,))
-    con.commit()
-    con.close()
-
-    email = result['email']
-    user = User()
-    user.id = email
-    flask_login.login_user(user)
-    return redirect(url_for('views.protected'))
-
-    return "Code is %s" % login_token;
-
-@bp.route('/logout')
-def logout():
-    flask_login.logout_user()
-    return 'Logged out'
-
 @bp.route('/dashboard')
-@flask_login.login_required
+@login_required
 def dashboard():
     jamla = get_jamla()
     jamlaApp = Jamla()
@@ -311,13 +276,13 @@ def dashboard():
                            stripe_connected=stripe_connected)
 
 @bp.route('/edit', methods=['GET', 'POST'])
-@flask_login.login_required
+@login_required
 def edit_jamla():
     return render_template('formarraybasic/index.html')
 
 @bp.route('/jamla', methods=['GET'])
 @bp.route('/api/jamla', methods=['GET'])
-@flask_login.login_required
+@login_required
 def fetch_jamla():
     jamla = get_jamla()
     jamlaApp = Jamla()
@@ -327,34 +292,13 @@ def fetch_jamla():
     resp = dict(items=jamla['items'], company=jamla['company'], name="fred", email='me@example.com')
     return jsonify(resp)
 
-@bp.route('/protected')
-@flask_login.login_required
-def protected():
-    return redirect(url_for('views.dashboard'));
-
-@bp.route('/login', methods=['POST'])
-def generate_login_token():
-    form = LoginForm()
-    if form.validate_on_submit():
-        try:
-            send_login_url(form.data['email'])
-            return ("Check your email")
-        except Exception as e:
-            print e
-            return ("Failed to generate login email.")
-@bp.route('/login', methods=['GET'])
-def login():
-    jamla = get_jamla()
-    form = LoginForm()
-    return render_template('login.html', form=form, jamla=jamla)
-
 @bp.route('/connect/stripe', methods=['GET'])
-@flask_login.login_required
+@login_required
 def connect_stripe():
     return "Connect Stripe."
 
 @bp.route('/connect/stripe/manually', methods=['GET', 'POST'])
-@flask_login.login_required
+@login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
     jamla = get_jamla()
@@ -372,7 +316,7 @@ def connect_stripe_manually():
         # Overwrite jamla file with gocardless access_token
         fp = open(current_app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
-        flask_login.current_user.stripe_publishable_key = publishable_key
+        g.user.stripe_publishable_key = publishable_key
         # Set stripe public key JS
         return redirect(url_for('views.dashboard'))
     else:
@@ -380,7 +324,7 @@ def connect_stripe_manually():
                 jamla=jamla, stripe_connected=stripe_connected)
 
 @bp.route('/connect/gocardless/manually', methods=['GET', 'POST'])
-@flask_login.login_required
+@login_required
 def connect_gocardless_manually():
     form = GocardlessConnectForm()
     jamla = get_jamla()
@@ -403,14 +347,14 @@ def connect_gocardless_manually():
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         # Set users current session to store access_token for instant access
-        flask_login.current_user.gocardless_access_token = access_token
+        g.user.gocardless_access_token = access_token
         return redirect(url_for('views.dashboard'))
     else:
         return render_template('connect_gocardless_manually.html', form=form,
                 jamla=jamla, gocardless_connected=gocardless_connected)
 
 @bp.route('/connect/gocardless', methods=['GET'])
-@flask_login.login_required
+@login_required
 def connect_gocardless_start():
     flow = OAuth2WebServerFlow(
         client_id=current_app.config['GOCARDLESS_CLIENT_ID'],
@@ -431,7 +375,7 @@ def connect_gocardless_start():
     return flask.redirect(authorize_url, code=302)
 
 @bp.route('/connect/gocardless/oauth/complete', methods=['GET'])
-@flask_login.login_required
+@login_required
 def gocardless_oauth_complete():
     jamla = get_jamla()
     jamlaApp = Jamla()
@@ -453,8 +397,8 @@ def gocardless_oauth_complete():
     # Overwrite jamla file with gocardless access_token
     yaml.safe_dump(jamla,fp , default_flow_style=False)
     # Set users current session to store access_token for instant access
-    flask_login.current_user.gocardless_access_token = access_token.access_token
-    flask_login.current_user.gocardless_organisation_id = access_token.token_response['organisation_id']
+    g.user.gocardless_access_token = access_token.access_token
+    g.user.gocardless_organisation_id = access_token.token_response['organisation_id']
 
     return redirect(url_for('views.dashboard'))
 
