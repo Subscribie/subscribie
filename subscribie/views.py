@@ -201,7 +201,7 @@ def on_complete_mandate():
         customer = redirect_flow.links.customer
         flow = redirect_flow_id
 
-        con = sqlite3.connect(app.config['DB_FULL_PATH'])
+        con = sqlite3.connect(current_app.config['DB_FULL_PATH'])
         cur = con.cursor()
         cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
         row = cur.fetchone()
@@ -263,7 +263,7 @@ def validate_login(login_token):
     if len(login_token) < 10:
         return 'Invalid token'
     # Try to get email from login_token
-    con = sqlite3.connect(app.config["DB_FULL_PATH"])
+    con = sqlite3.connect(current_app.config["DB_FULL_PATH"])
     con.row_factory = sqlite3.Row # Dict based result set
     cur = con.cursor()
     cur.execute('SELECT email FROM user WHERE login_token=?', (login_token,))
@@ -273,7 +273,7 @@ def validate_login(login_token):
         return "Invalid token"
     # Invaldate previous token
     new_login_token = urlsafe_b64encode(os.urandom(24))
-    con = sqlite3.connect(app.config["DB_FULL_PATH"])
+    con = sqlite3.connect(current_app.config["DB_FULL_PATH"])
     cur = con.cursor()
     cur.execute('UPDATE user SET login_token=? WHERE login_token=?', (new_login_token, login_token,))
     con.commit()
@@ -344,6 +344,7 @@ def generate_login_token():
             return ("Failed to generate login email.")
 @bp.route('/login', methods=['GET'])
 def login():
+    jamla = get_jamla()
     form = LoginForm()
     return render_template('login.html', form=form, jamla=jamla)
 
@@ -369,7 +370,7 @@ def connect_stripe_manually():
         jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
         jamla['payment_providers']['stripe']['secret_key'] = secret_key
         # Overwrite jamla file with gocardless access_token
-        fp = open(app.config['JAMLA_PATH'], 'w')
+        fp = open(current_app.config['JAMLA_PATH'], 'w')
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         flask_login.current_user.stripe_publishable_key = publishable_key
         # Set stripe public key JS
@@ -398,7 +399,7 @@ def connect_gocardless_manually():
         else:
             jamla['payment_providers']['gocardless']['environment'] = 'sandbox'
 
-        fp = open(app.config['JAMLA_PATH'], 'w')
+        fp = open(current_app.config['JAMLA_PATH'], 'w')
         # Overwrite jamla file with gocardless access_token
         yaml.safe_dump(jamla,fp , default_flow_style=False)
         # Set users current session to store access_token for instant access
@@ -412,8 +413,8 @@ def connect_gocardless_manually():
 @flask_login.login_required
 def connect_gocardless_start():
     flow = OAuth2WebServerFlow(
-        client_id=app.config['GOCARDLESS_CLIENT_ID'],
-        client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
+        client_id=current_app.config['GOCARDLESS_CLIENT_ID'],
+        client_secret=current_app.config['GOCARDLESS_CLIENT_SECRET'],
         scope="read_write",
         redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
         auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
@@ -436,8 +437,8 @@ def gocardless_oauth_complete():
     jamlaApp = Jamla()
     jamlaApp.load(jamla=jamla)
     flow = OAuth2WebServerFlow(
-            client_id=app.config['GOCARDLESS_CLIENT_ID'],
-            client_secret=app.config['GOCARDLESS_CLIENT_SECRET'],
+            client_id=current_app.config['GOCARDLESS_CLIENT_ID'],
+            client_secret=current_app.config['GOCARDLESS_CLIENT_SECRET'],
             scope="read_write",
             # You'll need to use exactly the same redirect URI as in the last step
             redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
@@ -448,7 +449,7 @@ def gocardless_oauth_complete():
     access_token = flow.step2_exchange(request.args.get('code'))
 
     jamla['payment_providers']['gocardless']['access_token'] = access_token.access_token
-    fp = open(app.config['JAMLA_PATH'], 'w')
+    fp = open(current_app.config['JAMLA_PATH'], 'w')
     # Overwrite jamla file with gocardless access_token
     yaml.safe_dump(jamla,fp , default_flow_style=False)
     # Set users current session to store access_token for instant access
