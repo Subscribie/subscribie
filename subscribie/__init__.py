@@ -134,6 +134,12 @@ def create_app(test_config=None):
                 try:
                     importedModule = __import__(moduleName)
                     if isinstance(getattr(importedModule, moduleName), Blueprint):
+                        # Load any config the Blueprint declares
+                        blueprint = getattr(importedModule, moduleName)
+                        blueprintConfig = ''.join([blueprint.root_path,'/',
+                                                   'config.py'])
+                        app.config.from_pyfile(blueprintConfig, silent=True)
+                        # Register the Blueprint
                         app.register_blueprint(getattr(importedModule,
                                                        moduleName))
                 except AttributeError:
