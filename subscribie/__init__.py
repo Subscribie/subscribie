@@ -27,7 +27,7 @@ try:
 except Exception:
     pass
 from flask import (Flask, render_template, session, redirect, url_for, escape, 
-                   request, current_app, send_from_directory, jsonify)
+                   request, current_app, send_from_directory, jsonify, Blueprint)
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
@@ -128,7 +128,16 @@ def create_app(test_config=None):
         try:
             for moduleName in jamla['modules']:
                 print "Importing module: " + moduleName
+                # Assume standard python module
                 __import__(moduleName)
+                # Register module as blueprint (if it is one)
+                try:
+                    importedModule = __import__(moduleName)
+                    if isinstance(getattr(importedModule, moduleName), Blueprint):
+                        app.register_blueprint(getattr(importedModule,
+                                                       moduleName))
+                except AttributeError:
+                    pass
         except TypeError as e:
             print e
     return app
