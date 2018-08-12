@@ -3,7 +3,6 @@ company:
     name: "My Company Ltd"
 theme: 
     name: jesmond
-    static_folder: /home/chris/test2/subscribie/themes/theme-jesmond/static/
 payment_providers:
     paypal:
         sepa_direct_supported: No
