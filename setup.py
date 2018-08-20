@@ -20,6 +20,7 @@ setuptools.setup(
         'flask_login', 
         'flask_uploads',
         'flask_wtf',
+        'flask_mail',
         'requests',
         'blinker',
         'oauth2client',
