@@ -23,7 +23,10 @@ payment_providers:
         variable_payments_supported: Yes
         access_token: ''
         environment: 'sandbox'
-
+integrations:                                                                    
+    google_tag_manager:                                                          
+        active: false                                                            
+        container_id:
 items:
     - sku: item1
       title: Package 1
