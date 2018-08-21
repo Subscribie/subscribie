@@ -9,8 +9,8 @@ from signals import journey_complete
 from subscribie import Jamla, session, render_template, \
      request, redirect, CustomerForm, LoginForm, gocardless_pro, \
      GocardlessConnectForm, StripeConnectForm, current_app, \
-     redirect, url_for, StripeConnectForm, ItemsForm, send_from_directory, \
-     jsonify
+     redirect, url_for, GoogleTagManagerConnectForm, ItemsForm,\
+     send_from_directory, jsonify
 from subscribie.db import get_jamla, get_db
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
@@ -322,6 +322,26 @@ def connect_stripe_manually():
     else:
         return render_template('connect_stripe_manually.html', form=form,
                 jamla=jamla, stripe_connected=stripe_connected)
+
+@bp.route('/connect/google_tag_manager/manually', methods=['GET', 'POST'])
+@login_required
+def connect_google_tag_manager_manually():
+    form = GoogleTagManagerConnectForm()
+    jamla = get_jamla()
+    jamlaApp = Jamla()
+    jamlaApp.load(jamla=jamla)
+    if form.validate_on_submit():
+        container_id = form.data['container_id']
+        jamla['integrations']['google_tag_manager']['container_id'] = container_id 
+        jamla['integrations']['google_tag_manager']['active'] = True
+        # Overwrite jamla file with google tag manager container_id
+        fp = open(current_app.config['JAMLA_PATH'], 'w')
+        yaml.safe_dump(jamla,fp , default_flow_style=False)
+        session['google_tag_manager_container_id'] = container_id
+        return redirect(url_for('views.dashboard'))
+    else:
+        return render_template('connect_google_tag_manager_manually.html', 
+                               form=form, jamla=jamla)
 
 @bp.route('/connect/gocardless/manually', methods=['GET', 'POST'])
 @login_required
