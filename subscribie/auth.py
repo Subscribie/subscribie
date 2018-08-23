@@ -32,7 +32,7 @@ def login():
     form = LoginForm()                                                           
     return render_template('login.html', form=form, jamla=jamla)
 
-@bp.route('login/<login_token>', methods=('GET', 'POST'))
+@bp.route('/login/<login_token>', methods=('GET', 'POST'))
 def do_login(login_token):
     if len(login_token) < 10:                                                    
         return 'Invalid token'                                                   
