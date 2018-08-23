@@ -32,7 +32,8 @@ from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
 from .forms import (StripWhitespaceForm, LoginForm, CustomerForm, 
-                    GocardlessConnectForm, StripeConnectForm, ItemsForm)
+                    GocardlessConnectForm, StripeConnectForm, 
+                    GoogleTagManagerConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
 from flask_cors import CORS

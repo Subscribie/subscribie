@@ -3,7 +3,6 @@ company:
     name: "My Company Ltd"
 theme: 
     name: jesmond
-    static_folder: /home/chris/test2/subscribie/themes/theme-jesmond/static/
 payment_providers:
     paypal:
         sepa_direct_supported: No
@@ -24,7 +23,10 @@ payment_providers:
         variable_payments_supported: Yes
         access_token: ''
         environment: 'sandbox'
-
+integrations:                                                                    
+    google_tag_manager:                                                          
+        active: false                                                            
+        container_id:
 items:
     - sku: item1
       title: Package 1

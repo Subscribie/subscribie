@@ -48,3 +48,6 @@ class GocardlessConnectForm(FlaskForm):
 class StripeConnectForm(FlaskForm):                                              
     publishable_key = StringField('publishable_key', validators = [DataRequired()])
     secret_key = StringField('secret_key', validators = [DataRequired()]) 
+
+class GoogleTagManagerConnectForm(FlaskForm):                                              
+    container_id = StringField('container_id', validators = [DataRequired()])
