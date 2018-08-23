@@ -59,7 +59,8 @@ def create_app(test_config=None):
         pass
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-    jamlaApp = Jamla()                                                           
+    jamlaApp = Jamla()
+    global jamla
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])                          
     images = UploadSet('images', IMAGES)                                         
     configure_uploads(app, images)
