@@ -2,7 +2,7 @@ import functools
 
 from flask import (
     Flask, Blueprint, flash, g, redirect, render_template, request, session, 
-    url_for, current_app
+    url_for, current_app, render_template_string
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from subscribie.db import get_jamla, get_db
@@ -20,8 +20,19 @@ def generate_login_token():
     form = LoginForm()                                                           
     if form.validate_on_submit():                                                
         try:                                                                     
-            send_login_url(form.data['email'])                                   
-            return ("Check your email")                                          
+            send_login_url(form.data['email'])
+            jamla = get_jamla()                                                          
+            source = ' \
+                {% extends "layout.html" %} \
+                {% block title %} Check your email {% endblock title %} \
+                {% block body %} \
+                 <div class="container"> \
+                  <h1 class="display-2">Great.</h1> \
+                  <h2>Now check your email.</h2> \
+                  <p class="lead">We\'ve just sent you a login link.</p> \
+                 </div> \
+                {% endblock body %} '
+            return render_template_string(source, jamla=jamla)
         except Exception as e:                                                   
             print e                                                              
             return ("Failed to generate login email.")
