@@ -10,7 +10,7 @@ from subscribie import Jamla, session, render_template, \
      request, redirect, CustomerForm, LoginForm, gocardless_pro, \
      GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, GoogleTagManagerConnectForm, ItemsForm,\
-     send_from_directory, jsonify
+     send_from_directory, jsonify, TawkConnectForm
 from subscribie.db import get_jamla, get_db
 from base64 import b64encode, urlsafe_b64encode
 from flask_uploads import configure_uploads, UploadSet, IMAGES
@@ -341,6 +341,26 @@ def connect_google_tag_manager_manually():
         return redirect(url_for('views.dashboard'))
     else:
         return render_template('connect_google_tag_manager_manually.html', 
+                               form=form, jamla=jamla)
+
+@bp.route('/connect/tawk/manually', methods=['GET', 'POST'])
+@login_required
+def connect_tawk_manually():
+    form = TawkConnectForm()
+    jamla = get_jamla()
+    jamlaApp = Jamla()
+    jamlaApp.load(jamla=jamla)
+    if form.validate_on_submit():
+        property_id = form.data['property_id']
+        jamla['integrations']['tawk']['property_id'] = property_id
+        jamla['integrations']['tawk']['active'] = True
+        # Overwrite jamla file with google tag manager container_id
+        fp = open(current_app.config['JAMLA_PATH'], 'w')
+        yaml.safe_dump(jamla,fp , default_flow_style=False)
+        session['tawk_property_id'] = property_id
+        return redirect(url_for('views.dashboard'))
+    else:
+        return render_template('connect_tawk_manually.html', 
                                form=form, jamla=jamla)
 
 @bp.route('/connect/gocardless/manually', methods=['GET', 'POST'])

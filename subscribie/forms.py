@@ -51,3 +51,6 @@ class StripeConnectForm(FlaskForm):
 
 class GoogleTagManagerConnectForm(FlaskForm):                                              
     container_id = StringField('container_id', validators = [DataRequired()])
+
+class TawkConnectForm(FlaskForm):                                              
+    property_id = StringField('property_id', validators = [DataRequired()])
