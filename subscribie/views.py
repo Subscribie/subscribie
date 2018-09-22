@@ -24,7 +24,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
                                                                                  
 bp = Blueprint('views', __name__, url_prefix=None)
 
-@bp.route('/')
+def index():
+    jamla = get_jamla()
+    session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
+    return render_template('index.html', jamla=jamla)
+
+@bp.route('/choose')
 def choose():
     jamla = get_jamla()
     session['sid'] = b64encode(os.urandom(10)).decode('utf-8')

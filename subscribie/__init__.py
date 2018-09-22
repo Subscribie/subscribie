@@ -77,6 +77,14 @@ def create_app(test_config=None):
     from . import views
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
+    try:
+        front_page = jamla['front_page']
+    except:
+        front_page = 'choose'
+    try:
+        app.add_url_rule('/', 'index', views.__getattribute__(front_page))
+    except AttributeError:
+        app.add_url_rule('/', 'index', views.__getattribute__('choose'))
 
     """The Subscribie object implements a flask application suited to subscription 
     based web applications and acts as the central object. Once it is created    
