@@ -1,14 +1,3 @@
-CREATE TABLE lookups (
-    sid text, 
-    ts timestamp, 
-    buildingnumber text, 
-    streetname text, 
-    locality text, 
-    administrative_area_level_1 text, 
-    country text, 
-    PostCode text
-);
-
 CREATE TABLE person (
     sid text , 
     ts timestamp, 
