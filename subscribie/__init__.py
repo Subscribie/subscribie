@@ -66,11 +66,6 @@ def create_app(test_config=None):
     images = UploadSet('images', IMAGES)                                         
     configure_uploads(app, images)
 
-    # a simple page that says hello!
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
     from . import db
     db.init_app(app)
     from . import auth
