@@ -50,7 +50,7 @@ def do_login(login_token):
     # Try to get email from login_token
     db = get_db()
     error = None
-    user = db.execute('SELECT * FROM user WHERE login_token=?', (login_token,)
+    user = db.execute('SELECT email FROM user WHERE login_token=?', (login_token,)
            ).fetchone()
     if user is None:
         error = 'Incorrect login token'
@@ -75,7 +75,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE email = ?', (user_id,)
+            'SELECT email, active FROM user WHERE email = ?', (user_id,)
         ).fetchone()
 
 def generate_login_url(email):
