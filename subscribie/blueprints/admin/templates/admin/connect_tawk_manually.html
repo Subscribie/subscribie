@@ -1,0 +1,107 @@
+{% extends "admin/layout.html" %}
+{% block title %} Connect Tawk Chat{% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+      Connect Tawk Chat
+    </h1>
+
+{% endblock %}
+
+{% block body %}
+
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <p>You're here: </p>
+        <li><a href="/">Shop</a></li>
+        <li><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+        <li class="is-active"><a href="#" aria-current="page">
+            Connect Tawk Chat</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <div class="columns">
+      <div class="column">
+        <h2 class="title is-3">Connect Tawk Chat to your shop</h2>
+        <div class="notification 
+          {% if jamla['integrations']['tawk']['property_id'] %}
+		is-success
+	  {% else %}
+		is-light
+	  {% endif %}">
+          <p><b>Status: </b>
+          {% if jamla['integrations']['tawk']['property_id'] %}
+           Tawk Chat is already connected!
+	  {% else %}Tawk Chat isn't yet configured, use the form below.
+          {% endif %}
+          </p>
+        </div>
+        <p>To start using Tawk Chat, copy &amp; paste your 
+           <em>Property ID</em> into the box below.
+        </p>
+        <br />
+        <img src="{{ url_for('admin.static', filename='tawk_property_id.png') }}" 
+            alt="Tawk property in url example" 
+            title="Where to find your Tawk property id" />
+        <p>You can find your Tawk property id by logging into your Tawk
+           account (Tawk is free), then selecting 'Admn' (the cog). Your
+           Tawk property id is in the url at the top. </p> 
+        <br />
+        <form class="form" action="" method="POST" action="/">
+
+            {{ form.csrf_token }}
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Property ID:</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input" type="text" name="property_id"
+                           id="property_id" placeholder="defjkkdfjkk">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="button is-fullwidth is-info">
+            {% if jamla['integrations']['tawk']['property_id'] %}
+            Reconnect
+	    {% else %}
+            Connect
+            {% endif %} 
+            Tawk Chat
+            </button>
+        </form>
+      </div>
+      <div class="is-divider-vertical"></div>
+      <div class="column is-one-third" style="padding:0;">
+        <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}" 
+            style="max-height:100px">
+        <h3 class="title is-5">Need some help?</h3>
+        <p>In order to link Tawk, you must already have an account 
+           created. If you do not yet have an account, 
+           <a href="https://www.tawk.to/" target="_blank">
+           register for a Tawk account</a>.
+           <br /><br />
+        </p>
+        <br />
+        <h3 class="title is-5">Using Tawk is FREE</h3>
+        <p>Subscribie does not charge you for the Tawk chat integration, 
+        but do make sure you learn how to use it to see the benefits.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}

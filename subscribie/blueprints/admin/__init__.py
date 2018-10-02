@@ -1,0 +1,265 @@
+from flask import Blueprint, render_template, abort
+from jinja2 import TemplateNotFound
+from subscribie import Jamla, session, render_template, \
+     request, redirect, gocardless_pro, \
+     GocardlessConnectForm, StripeConnectForm, current_app, \
+     redirect, url_for, GoogleTagManagerConnectForm, \
+     jsonify, TawkConnectForm
+from subscribie.auth import login_required
+from subscribie.db import get_jamla, get_db
+import yaml
+
+admin_theme = Blueprint('admin', __name__, template_folder='templates',
+                        static_folder='static')
+
+@admin_theme.route('/testing')
+def show():
+    return render_template('admin/index.html')
+
+@admin_theme.route('/dashboard')                     
+@login_required                                                                  
+def dashboard():
+    jamla = get_jamla()
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    if jamlaApp.has_connected('gocardless'):                                     
+        gocardless_connected = True                                              
+    else:                                                                        
+        gocardless_connected = False                                             
+    if jamlaApp.has_connected('stripe'):                                         
+        stripe_connected = True                                                  
+    else:                                                                        
+        stripe_connected = False                                                 
+    return render_template('admin/dashboard.html', jamla=jamla,                        
+                           gocardless_connected=gocardless_connected,            
+                           stripe_connected=stripe_connected)
+
+@admin_theme.route('/edit', methods=['GET', 'POST'])                                      
+@login_required                                                                  
+def edit_jamla():                                                                
+    return render_template('formarraybasic/index.html')
+
+@admin_theme.route('/connect/gocardless/manually', methods=['GET', 'POST'])               
+@login_required                                                                  
+def connect_gocardless_manually():                                               
+    form = GocardlessConnectForm()                                               
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    if jamlaApp.has_connected('gocardless'):                                     
+        gocardless_connected = True                                              
+    else:                                                                        
+        gocardless_connected = False                                             
+    if form.validate_on_submit():                                                
+        access_token = form.data['access_token']                                 
+        jamla['payment_providers']['gocardless']['access_token'] = access_token  
+        # Check if live or test api key was given                                
+        if "live" in access_token:                                               
+            jamla['payment_providers']['gocardless']['environment'] = 'live'     
+        else:                                                                    
+            jamla['payment_providers']['gocardless']['environment'] = 'sandbox'  
+                                                                                 
+        fp = open(current_app.config['JAMLA_PATH'], 'w')                         
+        # Overwrite jamla file with gocardless access_token                      
+        yaml.safe_dump(jamla,fp , default_flow_style=False)                      
+        # Set users current session to store access_token for instant access     
+        session['gocardless_access_token'] = access_token                        
+        return redirect(url_for('admin.dashboard'))                              
+    else:                                                                        
+        return render_template('admin/connect_gocardless_manually.html', form=form,    
+                jamla=jamla, gocardless_connected=gocardless_connected)
+
+@admin_theme.route('/connect/gocardless', methods=['GET'])                                
+@login_required                                                                  
+def connect_gocardless_start():                                                  
+    flow = OAuth2WebServerFlow(                                                  
+        client_id=current_app.config['GOCARDLESS_CLIENT_ID'],                    
+        client_secret=current_app.config['GOCARDLESS_CLIENT_SECRET'],            
+        scope="read_write",                                                      
+        redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",  
+        auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",       
+        token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",   
+        initial_view="signup",                                                   
+        prefill={                                                                
+            "email": "tim@gocardless.com",                                       
+            "given_name": "Tim",                                                 
+            "family_name": "Rogers",                                             
+            "organisation_name": "Tim's Fishing Store"                           
+        }                                                                        
+    )                                                                            
+    authorize_url = flow.step1_get_authorize_url()                               
+    return flask.redirect(authorize_url, code=302)
+
+@admin_theme.route('/connect/gocardless/oauth/complete', methods=['GET'])                 
+@login_required                                                                  
+def gocardless_oauth_complete():                                                 
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    flow = OAuth2WebServerFlow(                                                  
+            client_id=current_app.config['GOCARDLESS_CLIENT_ID'],                
+            client_secret=current_app.config['GOCARDLESS_CLIENT_SECRET'],        
+            scope="read_write",                                                  
+            # You'll need to use exactly the same redirect URI as in the last
+            # step
+            redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
+            auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",   
+            token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
+            initial_view="signup"                                                
+    )                                                                            
+    access_token = flow.step2_exchange(request.args.get('code'))                 
+                                                                                 
+    jamla['payment_providers']['gocardless']['access_token'] = access_token.access_token
+    fp = open(current_app.config['JAMLA_PATH'], 'w')                             
+    # Overwrite jamla file with gocardless access_token                          
+    yaml.safe_dump(jamla,fp , default_flow_style=False)                          
+    # Set users current session to store access_token for instant access         
+    session['gocardless_access_token'] = access_token.access_token               
+    session['gocardless_organisation_id'] = access_token.token_response['organisation_id']
+                                                                                 
+    return redirect(url_for('admin.dashboard'))
+
+@admin_theme.route('/connect/stripe/manually', methods=['GET', 'POST'])                   
+@login_required                                                                  
+def connect_stripe_manually():                                                   
+    form = StripeConnectForm()
+    import pdb;pdb.set_trace()
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    if jamlaApp.has_connected('stripe'):                                         
+        stripe_connected = True                                                  
+    else:                                                                        
+        stripe_connected = False                                                 
+    if form.validate_on_submit():                                                
+        publishable_key = form.data['publishable_key']                           
+        secret_key = form.data['secret_key']                                     
+        jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
+        jamla['payment_providers']['stripe']['secret_key'] = secret_key          
+        # Overwrite jamla file with gocardless access_token                      
+        fp = open(current_app.config['JAMLA_PATH'], 'w')                         
+        yaml.safe_dump(jamla,fp , default_flow_style=False)                      
+        session['stripe_publishable_key'] = publishable_key                      
+        # Set stripe public key JS                                               
+        return redirect(url_for('admin.dashboard'))                              
+    else:                                                                        
+        return render_template('admin/connect_stripe_manually.html', form=form,        
+                jamla=jamla, stripe_connected=stripe_connected)
+
+@admin_theme.route('/connect/google_tag_manager/manually', methods=['GET', 'POST'])       
+@login_required                                                                  
+def connect_google_tag_manager_manually():                                       
+    form = GoogleTagManagerConnectForm()                                         
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    if form.validate_on_submit():                                                
+        container_id = form.data['container_id']                                 
+        jamla['integrations']['google_tag_manager']['container_id'] = container_id
+        jamla['integrations']['google_tag_manager']['active'] = True             
+        # Overwrite jamla file with google tag manager container_id              
+        fp = open(current_app.config['JAMLA_PATH'], 'w')                         
+        yaml.safe_dump(jamla,fp , default_flow_style=False)                      
+        session['google_tag_manager_container_id'] = container_id                
+        return redirect(url_for('admin.dashboard'))                              
+    else:                                                                        
+        return render_template('connect_google_tag_manager_manually.html',       
+                               form=form, jamla=jamla)
+
+@admin_theme.route('/connect/tawk/manually', methods=['GET', 'POST'])                     
+@login_required                                                                  
+def connect_tawk_manually():                                                     
+    form = TawkConnectForm()                                                     
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    if form.validate_on_submit():                                                
+        property_id = form.data['property_id']                                   
+        jamla['integrations']['tawk']['property_id'] = property_id               
+        jamla['integrations']['tawk']['active'] = True                           
+        # Overwrite jamla file with google tag manager container_id              
+        fp = open(current_app.config['JAMLA_PATH'], 'w')                         
+        yaml.safe_dump(jamla,fp , default_flow_style=False)                      
+        session['tawk_property_id'] = property_id                                
+        return redirect(url_for('admin.dashboard'))                              
+    else:                                                                        
+        return render_template('admin/connect_tawk_manually.html',                     
+                               form=form, jamla=jamla)
+
+@admin_theme.route('/jamla', methods=['GET'])                                             
+@admin_theme.route('/api/jamla', methods=['GET'])                                         
+@login_required                                                                  
+def fetch_jamla():                                                               
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    #Strip out private values TODO don't store them here, move to .env?          
+    jamla['payment_providers'] = None                                            
+    resp = dict(items=jamla['items'], company=jamla['company'], name="fred",
+email='me@example.com')
+    return jsonify(resp)
+
+@admin_theme.route('/push-payments', methods=['GET'])                                     
+def push_payments():                                                             
+    """                                                                          
+    Push payments to Penguin.                                                    
+    Assume a gocardless endpoint for now.                                        
+    """                                                                          
+    jamla = get_jamla()                                                          
+    jamlaApp = Jamla()                                                           
+    jamlaApp.load(jamla=jamla)                                                   
+    gocclient = gocardless_pro.Client(                                           
+        access_token = get_secret('gocardless', 'access_token'),                 
+        environment= jamla['payment_providers']['gocardless']['environment']     
+    )                                                                            
+    #Loop customers                                                              
+    for payments in gocclient.payments.list().records:                           
+        ##Loop each payment within payment response body                         
+        response = payments.api_response.body                                    
+        for payment in response['payments']:                                     
+            print payment                                                        
+            print payment['status']                                              
+            print "##"                                                           
+            # Push to Penguin                                                    
+            print "Creating transaction to penguin.."                            
+            title = "a transaction title"                                        
+            try:                                                                 
+                payout_id = payment['links']['payout']                           
+            except:                                                              
+                payout_id = None                                                 
+            fields = {                                                           
+                'title':title,
+                'field_gocardless_payment_id': payment['id'],                    
+                'field_gocardless_payout_id': payout_id,                         
+                'field_gocardless_amount': payment['amount'],                    
+                'field_gocardless_payment_status': payment['status'],            
+                'field_mandate_id': payment['links']['mandate'],                 
+                'field_gocardless_subscription_id':
+payment['links']['subscription'],
+                'field_gocardless_amount_refunded': payment['amount_refunded'],  
+                'field_gocardless_charge_date': payment['charge_date'],          
+                'field_gocardless_created_at' : payment['created_at'],           
+                'field_gocardless_creditor_id': payment['links']['creditor']     
+            }                                                                    
+            Rest.post(entity='transaction', fields=fields)                       
+                                                                                 
+    return "Payments have been pushed"
+
+@admin_theme.route('/retry-payment/<payment_id>', methods=['GET'])                        
+def retry_payment(payment_id):                                                   
+    jamla = get_jamla()                                                          
+    jamlaapp = jamla()                                                           
+    jamlaapp.load(jamla=jamla)                                                   
+    gocclient = gocardless_pro.Client(                                           
+        access_token = get_secret('gocardless', 'access_token'),                 
+        environment = jamla['payment_providers']['gocardless']['environment']    
+    )                                                                            
+    r = gocclient.payments.retry(payment_id)                                     
+                                                                                 
+    return "Payment (" + payment_id + " retried." + str(r) 
+
+def getItem(container, i, default=None):                                         
+    try:                                                                         
+        return container[i]                                                      
+    except IndexError:                                                           
+        return default 

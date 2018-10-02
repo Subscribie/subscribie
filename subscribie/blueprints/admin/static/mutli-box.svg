@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg height="100px" viewBox="0 0 1057 342" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Box / Group / Multi</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Box-/-Group-/-Multi" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2" transform="translate(329.000000, 53.000000)" fill="#FFFFFF">
+            <path d="M0,0 L51.6033333,0 L51.6033333,54.8 L56.17,50.2333333 L60.28,54.8 L64.8466667,50.2333333 L68.9566667,54.8 L73.5233333,50.2333333 L77.6333333,54.8 L81.7433333,50.2333333 L85.8533333,54.8 L85.8533333,0 L137,0 L137,137 L0,137 L0,0 Z M79.0033333,106.403333 L79.0033333,128.78 L127.41,128.78 L127.41,106.403333 L79.0033333,106.403333 Z" id="Combined-Shape"></path>
+        </g>
+        <path d="M470,203 L508,203 L508,213 L518,223 L529,213 L540,223 L551,213 L562,223 L573,213 L584,223 L595,213 L595,203 L680,203 L680,323 L595,323 L595,303 L584,313 L573,303 L562,313 L551,303 L540,313 L529,303 L518,313 L508,303 L508,323 L470,323 L198,323 L198,313 L188,303 L177,313 L166,303 L155,313 L144,303 L133,313 L122,303 L111,313 L111,323 L26,323 L26,203 L111,203 L111,223 L122,213 L133,223 L144,213 L155,223 L166,213 L177,223 L188,213 L198,223 L198,203 L470,203 Z M648,209 L648,279 L672,279 L672,209 L648,209 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+        <g id="Group-2" transform="translate(701.000000, 21.000000)" fill="#FFFFFF">
+            <path d="M0,0 L113,0 L113,120 L123,110 L132,120 L142,110 L151,120 L161,110 L170,120 L179,110 L188,120 L188,0 L300,0 L300,300 L0,300 L0,0 Z M173,233 L173,282 L279,282 L279,233 L173,233 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>
