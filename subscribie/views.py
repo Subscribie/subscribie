@@ -7,7 +7,6 @@ from subscribie import Jamla, session, \
      CustomerForm, gocardless_pro, \
      current_app 
 from subscribie.db import get_jamla, get_db
-from base64 import b64encode 
 import stripe
 
 from flask import (                                                              
@@ -18,13 +17,11 @@ bp = Blueprint('views', __name__, url_prefix=None)
 
 def index():
     jamla = get_jamla()
-    session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
     return render_template('index.html', jamla=jamla)
 
 @bp.route('/choose')
 def choose():
     jamla = get_jamla()
-    session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
     return render_template('choose.html', jamla=jamla)
 
 @bp.route('/new_customer', methods=['GET'])
