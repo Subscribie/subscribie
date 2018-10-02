@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block title %} Connect Google Tag Manager{% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+      Connect Google Tag Manager
+    </h1>
+
+{% endblock %}
+
+{% block body %}
+
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <p>You're here: </p>
+        <li><a href="/">Shop</a></li>
+        <li><a href="/dashboard">Manage My Shop</a></li>
+        <li class="is-active"><a href="#" aria-current="page">
+            Connect Google Tag Manager</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <div class="columns">
+      <div class="column">
+        <h2 class="title is-3">Connect Google Tag Manager to your shop</h2>
+        <div class="notification 
+          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+		is-success
+	  {% else %}
+		is-light
+	  {% endif %}">
+          <p><b>Status: </b>
+          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+           Google Tag Manager is already connected!
+	  {% else %}Google Tag Manager isn't yet configured, use the form below.
+          {% endif %}
+          </p>
+        </div>
+        <p>To start tracking using Google Tag manager, copy &amp; paste your 
+           <em>container id</em> into the box below.
+        </p>
+        <br />
+        <form class="form" action="" method="POST" action="/">
+
+            {{ form.csrf_token }}
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Publishable Key:</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input" type="text" name="container_id"
+                           id="container_id" placeholder="GTM-ABC123">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="button is-fullwidth is-info">
+            {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+            Reconnect
+	    {% else %}
+            Connect
+            {% endif %} 
+            Google Tag Manager
+            </button>
+        </form>
+      </div>
+      <div class="is-divider-vertical"></div>
+      <div class="column is-one-third" style="padding:0;">
+        <img src="/static/google_tag_manager.jpg" style="max-height:100px">
+        <h3 class="title is-5">Need some help?</h3>
+        <p>In order to link Google Tag Manager, you must already have an account 
+           created. If you do not yet have an account, 
+           <a href="https://marketingplatform.google.com/about/tag-manager/">
+           register for Google Tag Manager</a> to create one.
+           <br /><br />
+        </p>
+        <br />
+        <h3 class="title is-5">Google Tag Manager is FREE</h3>
+        <p>Subscribie does not charge you for Google Tag Manager integration, 
+        but do make sure you learn how to use it to see the benefits.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}

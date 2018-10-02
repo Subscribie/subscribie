@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang=en>
+<head>
+<title>{% block title %}{% endblock %} | {{ jamla['company']['name'] }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
+
+{% if jamla['integrations']['google_tag_manager']['container_id'] 
+   and jamla['integrations']['google_tag_manager']['active']
+%}
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',
+    '{{ jamla['integrations']['google_tag_manager']['container_id'] }}');
+    </script>
+    <!-- End Google Tag Manager --> 
+{% endif %}
+
+{% if jamla['integrations']['tawk']['property_id'] 
+   and jamla['integrations']['tawk']['active']
+%}
+    <!-- Tawk Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var
+        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/{{ jamla['integrations']['tawk']['property_id'] }}/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+    <!-- End Tawk Chat -->
+{% endif %}
+
+<meta name="theme-color" content="#1e88e5">
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet"></head>
+<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
+
+<body>
+
+  <nav class="navbar is-info kcBlue">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          {% if jamla['company']['logo'] %}
+            <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+          {% else %}
+            {{ jamla['company']['name'] }}
+          {% endif %}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="site-content">
+    {% block top %}
+    {% endblock top %}
+    <section class="hero kcBlue">
+      <div class="hero-body">
+        <div class="container" style="z-index:9999">
+            {% block hero %}{% endblock %}
+        </div>
+      </div>
+    </section>
+    <main class="main">
+      {% block body %}{% endblock %}
+    </main>
+
+  </div>
+
+  <footer class="footer" style="padding: 3rem 1.5rem 3rem;">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          By <a href="/">{{ jamla['company']['name'] }}</a>.
+          <br />
+        </p>
+        <small>Made possible with <a href="https://subscriptionwebsitebuilder.co.uk"
+                title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</small>
+        <br />
+        <a href="{{ url_for('auth.login') }}">Login</a>
+        <br />
+        <a href="#" class="button is-small">Scroll back to top</a>
+      </div>
+    </div>
+  </footer>
+
+
+</body>
+
+<script type="application/javascript">
+    jQuery(document).ready(function ($) {
+      $('.modal-button').click(function() {
+        console.log("Modal Opened");
+        var target = $(this).data('target');
+        $('html').addClass('is-clipped');
+        $('#' + target).addClass('is-active');
+      });
+      $('.modal-background, .modal-close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-head .delete').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-body #close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $(document).on('keyup',function(e) {
+        if (e.keyCode == 27) {
+          $('html').removeClass('is-clipped');
+          $('.modal').removeClass('is-active');
+        }
+      });
+    });
+  </script>
+</html>

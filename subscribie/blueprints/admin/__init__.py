@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, abort
 from jinja2 import TemplateNotFound
-from subscribie import Jamla, session, render_template, \                        
-     request, redirect, gocardless_pro, \               
-     GocardlessConnectForm, StripeConnectForm, current_app, \                    
-     redirect, url_for, GoogleTagManagerConnectForm, \                 
+from subscribie import Jamla, session, render_template, \
+     request, redirect, gocardless_pro, \
+     GocardlessConnectForm, StripeConnectForm, current_app, \
+     redirect, url_for, GoogleTagManagerConnectForm, \
      jsonify, TawkConnectForm
-from auth import login_required
+from subscribie.auth import login_required
+from subscribie.db import get_jamla, get_db
+import yaml
 
 admin_theme = Blueprint('admin', __name__, template_folder='templates',
                         static_folder='static')
@@ -16,8 +18,8 @@ def show():
 
 @admin_theme.route('/dashboard')                     
 @login_required                                                                  
-def dashboard():                                                                 
-    jamla = get_jamla()                                                          
+def dashboard():
+    jamla = get_jamla()
     jamlaApp = Jamla()                                                           
     jamlaApp.load(jamla=jamla)                                                   
     if jamlaApp.has_connected('gocardless'):                                     
@@ -28,7 +30,7 @@ def dashboard():
         stripe_connected = True                                                  
     else:                                                                        
         stripe_connected = False                                                 
-    return render_template('dashboard.html', jamla=jamla,                        
+    return render_template('admin/dashboard.html', jamla=jamla,                        
                            gocardless_connected=gocardless_connected,            
                            stripe_connected=stripe_connected)
 
@@ -62,9 +64,9 @@ def connect_gocardless_manually():
         yaml.safe_dump(jamla,fp , default_flow_style=False)                      
         # Set users current session to store access_token for instant access     
         session['gocardless_access_token'] = access_token                        
-        return redirect(url_for('views.dashboard'))                              
+        return redirect(url_for('admin.dashboard'))                              
     else:                                                                        
-        return render_template('connect_gocardless_manually.html', form=form,    
+        return render_template('admin/connect_gocardless_manually.html', form=form,    
                 jamla=jamla, gocardless_connected=gocardless_connected)
 
 @admin_theme.route('/connect/gocardless', methods=['GET'])                                
@@ -107,22 +109,21 @@ def gocardless_oauth_complete():
     )                                                                            
     access_token = flow.step2_exchange(request.args.get('code'))                 
                                                                                  
-    jamla['payment_providers']['gocardless']['access_token'] =
-access_token.access_token
+    jamla['payment_providers']['gocardless']['access_token'] = access_token.access_token
     fp = open(current_app.config['JAMLA_PATH'], 'w')                             
     # Overwrite jamla file with gocardless access_token                          
     yaml.safe_dump(jamla,fp , default_flow_style=False)                          
     # Set users current session to store access_token for instant access         
     session['gocardless_access_token'] = access_token.access_token               
-    session['gocardless_organisation_id'] =
-access_token.token_response['organisation_id']
+    session['gocardless_organisation_id'] = access_token.token_response['organisation_id']
                                                                                  
-    return redirect(url_for('views.dashboard'))
+    return redirect(url_for('admin.dashboard'))
 
 @admin_theme.route('/connect/stripe/manually', methods=['GET', 'POST'])                   
 @login_required                                                                  
 def connect_stripe_manually():                                                   
-    form = StripeConnectForm()                                                   
+    form = StripeConnectForm()
+    import pdb;pdb.set_trace()
     jamla = get_jamla()                                                          
     jamlaApp = Jamla()                                                           
     jamlaApp.load(jamla=jamla)                                                   
@@ -133,17 +134,16 @@ def connect_stripe_manually():
     if form.validate_on_submit():                                                
         publishable_key = form.data['publishable_key']                           
         secret_key = form.data['secret_key']                                     
-        jamla['payment_providers']['stripe']['publishable_key'] =
-publishable_key
+        jamla['payment_providers']['stripe']['publishable_key'] = publishable_key
         jamla['payment_providers']['stripe']['secret_key'] = secret_key          
         # Overwrite jamla file with gocardless access_token                      
         fp = open(current_app.config['JAMLA_PATH'], 'w')                         
         yaml.safe_dump(jamla,fp , default_flow_style=False)                      
         session['stripe_publishable_key'] = publishable_key                      
         # Set stripe public key JS                                               
-        return redirect(url_for('views.dashboard'))                              
+        return redirect(url_for('admin.dashboard'))                              
     else:                                                                        
-        return render_template('connect_stripe_manually.html', form=form,        
+        return render_template('admin/connect_stripe_manually.html', form=form,        
                 jamla=jamla, stripe_connected=stripe_connected)
 
 @admin_theme.route('/connect/google_tag_manager/manually', methods=['GET', 'POST'])       
@@ -155,14 +155,13 @@ def connect_google_tag_manager_manually():
     jamlaApp.load(jamla=jamla)                                                   
     if form.validate_on_submit():                                                
         container_id = form.data['container_id']                                 
-        jamla['integrations']['google_tag_manager']['container_id'] =
-container_id
+        jamla['integrations']['google_tag_manager']['container_id'] = container_id
         jamla['integrations']['google_tag_manager']['active'] = True             
         # Overwrite jamla file with google tag manager container_id              
         fp = open(current_app.config['JAMLA_PATH'], 'w')                         
         yaml.safe_dump(jamla,fp , default_flow_style=False)                      
         session['google_tag_manager_container_id'] = container_id                
-        return redirect(url_for('views.dashboard'))                              
+        return redirect(url_for('admin.dashboard'))                              
     else:                                                                        
         return render_template('connect_google_tag_manager_manually.html',       
                                form=form, jamla=jamla)
@@ -182,9 +181,9 @@ def connect_tawk_manually():
         fp = open(current_app.config['JAMLA_PATH'], 'w')                         
         yaml.safe_dump(jamla,fp , default_flow_style=False)                      
         session['tawk_property_id'] = property_id                                
-        return redirect(url_for('views.dashboard'))                              
+        return redirect(url_for('admin.dashboard'))                              
     else:                                                                        
-        return render_template('connect_tawk_manually.html',                     
+        return render_template('admin/connect_tawk_manually.html',                     
                                form=form, jamla=jamla)
 
 @admin_theme.route('/jamla', methods=['GET'])                                             
