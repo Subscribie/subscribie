@@ -9,7 +9,20 @@
                                                                                  
 {% endblock hero %} 
                                                                                  
-{% block body %} 
+{% block body %}
+<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
+  <div class="container">                                                        
+    <nav class="breadcrumb" aria-label="breadcrumbs">                            
+      <ul>                                                                       
+        <li><a href="/">Shop</a></li>                                            
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
+        <li class="is-active"><a href="#" aria-current="page">
+            Manage Customers</a>
+        </li>                                                                    
+      </ul>                                                                      
+    </nav>                                                                       
+  </div>                                                                         
+</div> 
 {% endblock body %} 
 
 
