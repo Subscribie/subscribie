@@ -12,10 +12,6 @@ import yaml
 admin_theme = Blueprint('admin', __name__, template_folder='templates',
                         static_folder='static')
 
-@admin_theme.route('/testing')
-def show():
-    return render_template('admin/index.html')
-
 @admin_theme.route('/dashboard')                     
 @login_required                                                                  
 def dashboard():
