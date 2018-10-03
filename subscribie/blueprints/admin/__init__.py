@@ -252,7 +252,12 @@ def retry_payment(payment_id):
     )                                                                            
     r = gocclient.payments.retry(payment_id)                                     
                                                                                  
-    return "Payment (" + payment_id + " retried." + str(r) 
+    return "Payment (" + payment_id + " retried." + str(r)
+
+@admin_theme.route('/customers', methods=['GET'])
+def customers():
+    jamla = get_jamla()
+    return render_template('admin/customers.html', jamla=jamla)
 
 def getItem(container, i, default=None):                                         
     try:                                                                         
