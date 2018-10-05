@@ -119,7 +119,6 @@ def gocardless_oauth_complete():
 @login_required                                                                  
 def connect_stripe_manually():                                                   
     form = StripeConnectForm()
-    import pdb;pdb.set_trace()
     jamla = get_jamla()                                                          
     jamlaApp = Jamla()                                                           
     jamlaApp.load(jamla=jamla)                                                   
