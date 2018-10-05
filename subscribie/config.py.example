@@ -15,6 +15,7 @@ PENGUIN_URL="http://127.0.0.1:8088"
 REST_USER="foo"
 REST_PASSWORD="foo"
 EMAIL_HOST="email.example.com"
+EMAIL_LOGIN_FROM="hello@example.com"
 GOCARDLESS_CLIENT_ID=""
 GOCARDLESS_CLIENT_SECRET=""
 
