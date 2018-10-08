@@ -1,0 +1,28 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Connect Tawk Chat{% endblock %}                                
+                                                                                 
+{% block hero %}                                                                 
+                                                                                 
+<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+    My Customers
+</h1>                                                                        
+                                                                                 
+{% endblock hero %} 
+                                                                                 
+{% block body %}
+<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
+  <div class="container">                                                        
+    <nav class="breadcrumb" aria-label="breadcrumbs">                            
+      <ul>                                                                       
+        <li><a href="/">Shop</a></li>                                            
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
+        <li class="is-active"><a href="#" aria-current="page">
+            Manage Customers</a>
+        </li>                                                                    
+      </ul>                                                                      
+    </nav>                                                                       
+  </div>                                                                         
+</div> 
+{% endblock body %} 
+
+

@@ -12,10 +12,6 @@ import yaml
 admin_theme = Blueprint('admin', __name__, template_folder='templates',
                         static_folder='static')
 
-@admin_theme.route('/testing')
-def show():
-    return render_template('admin/index.html')
-
 @admin_theme.route('/dashboard')                     
 @login_required                                                                  
 def dashboard():
@@ -149,7 +145,6 @@ def gocardless_oauth_complete():
 @login_required                                                                  
 def connect_stripe_manually():                                                   
     form = StripeConnectForm()
-    import pdb;pdb.set_trace()
     jamla = get_jamla()                                                          
     jamlaApp = Jamla()                                                           
     jamlaApp.load(jamla=jamla)                                                   
@@ -282,7 +277,12 @@ def retry_payment(payment_id):
     )                                                                            
     r = gocclient.payments.retry(payment_id)                                     
                                                                                  
-    return "Payment (" + payment_id + " retried." + str(r) 
+    return "Payment (" + payment_id + " retried." + str(r)
+
+@admin_theme.route('/customers', methods=['GET'])
+def customers():
+    jamla = get_jamla()
+    return render_template('admin/customers.html', jamla=jamla)
 
 def getItem(container, i, default=None):                                         
     try:                                                                         

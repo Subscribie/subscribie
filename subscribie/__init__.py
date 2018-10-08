@@ -47,6 +47,14 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'subscribie.sqlite'),
     )
 
+    @app.before_request
+    def start_session():
+        try:
+            session['sid']
+        except KeyError:
+            print ''.join(["#"*10, 'Setting session id', "#"*10])
+            session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
+
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=False)
