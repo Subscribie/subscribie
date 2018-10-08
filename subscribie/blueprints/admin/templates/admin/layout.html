@@ -73,7 +73,23 @@
       </div>
     </section>
     <main class="main">
-      {% block body %}{% endblock %}
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<article class="message is-success">
+		  <div class="message-header">
+			<p>Success</p>
+		  </div>
+		  <div class="message-body">
+			<ul class=flashes>
+			{% for message in messages %}
+			  <li>{{ message }}</li>
+			{% endfor %}
+			</ul>
+		  </div>
+		</article>
+	  {% endif %}
+	{% endwith %}
+    {% block body %}{% endblock %}
     </main>
 
   </div>

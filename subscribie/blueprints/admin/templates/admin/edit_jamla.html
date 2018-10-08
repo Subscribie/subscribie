@@ -1,3 +1,15 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Dashboard {% endblock %}                                       
+                                                                                 
+{% block hero %}
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+        Edit Itmes
+    </h1>
+                                                                                 
+{% endblock hero %}                                                                   
+                                                                                 
+{% block body %}  
+
 {% from "_formhelpers.html" import render_field %}
 
   {% if form.errors %}                                                          
@@ -8,6 +20,7 @@
     </ul>                                                                        
   {% endif %} 
 
+<div class="section">
 <form method="post" action="#" enctype="multipart/form-data">
     {{ form.csrf_token }}
 <fieldset>
@@ -16,7 +29,7 @@
     {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
 </fieldset>
 
-<fieldset>
+<fieldset style="padding:5px">
 <legend>Items</legend>
     {% for item in jamla['items'] %}
     <fieldset>
@@ -63,8 +76,11 @@
                 {% set ns.count = ns.count + 1 %} 
 			{% endfor %}
         </dl>
-    </fieldset>
+    </fieldset><br />
     {% endfor %}
 </fieldset>
   <p><input type="submit" value="Save">
 </form>
+</div><!-- end .section -->
+
+{% endblock body %}
