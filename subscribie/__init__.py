@@ -37,7 +37,8 @@ from .forms import (StripWhitespaceForm, LoginForm, CustomerForm,
 from .Template import load_theme
 from blinker import signal
 from flask_cors import CORS
-from flask_uploads import configure_uploads, UploadSet, IMAGES
+from flask_uploads import configure_uploads, UploadSet, IMAGES,\
+    patch_request_class
 
 def create_app(test_config=None):
     # create and configure the app
@@ -71,7 +72,8 @@ def create_app(test_config=None):
     jamlaApp = Jamla()
     global jamla
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])                          
-    images = UploadSet('images', IMAGES)                                         
+    images = UploadSet('images', IMAGES)
+    patch_request_class(app, 2 * 1024 * 1024)
     configure_uploads(app, images)
 
     from . import db

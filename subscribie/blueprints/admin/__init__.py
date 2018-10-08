@@ -8,6 +8,8 @@ from subscribie import Jamla, session, render_template, \
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
 import yaml
+from flask_uploads import configure_uploads, UploadSet, IMAGES
+
 
 admin_theme = Blueprint('admin', __name__, template_folder='templates',
                         static_folder='static')
@@ -33,32 +35,33 @@ def dashboard():
 @admin_theme.route('/edit', methods=['GET', 'POST'])                                      
 @login_required                                                                  
 def edit_jamla():
-	form = ItemsForm()
-	jamla = get_jamla()
-	if form.validate_on_submit():
-		jamla['company']['name'] = request.form['company_name']
-		jamla['users'][0] = request.form['email']
-		# Loop items
-		for index in request.form.getlist('itemIndex', type=int):
-			# Get current values
-			# Update
-			jamla['items'][index]['title'] = getItem(form.title.data, index)
-			jamla['items'][index]['requirements']['subscription'] = bool(getItem(form.subscription.data, index))
-			jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
-			jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
-			jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
-			jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
-			# Primary icon image storage                                                          
-		f = getItem(form.image.data, index)                                      
-		if f:                                                                    
-			filename = images.save(f)
-			jamla['items'][index]['primary_icon'] = {'src': '/static/' + filename, 'type': ''} 
-
-		fp = open(current_app.config['JAMLA_PATH'], 'w')
-		yaml.safe_dump(jamla,fp , default_flow_style=False)
-		flash('Items updated.')
-		return redirect(url_for('admin.dashboard'))
-	return render_template('admin/edit_jamla.html', jamla=jamla, form=form)
+    form = ItemsForm()
+    jamla = get_jamla()
+    if form.validate_on_submit():
+        jamla['company']['name'] = request.form['company_name']
+        jamla['users'][0] = request.form['email']
+        # Loop items
+        for index in request.form.getlist('itemIndex', type=int):
+            # Get current values
+            # Update
+            jamla['items'][index]['title'] = getItem(form.title.data, index)
+            jamla['items'][index]['requirements']['subscription'] = bool(getItem(form.subscription.data, index))
+            jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
+            jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
+            jamla['items'][index]['sell_price'] = int(getItem(form.sell_price.data, index, default=0) * 100)
+            jamla['items'][index]['selling_points'] = getItem(form.selling_points.data, index, default='')
+            # Primary icon image storage
+            f = getItem(form.image.data, index)
+            if f:
+                images = UploadSet('images', IMAGES)
+                filename = images.save(f)
+                src = url_for('static', filename=filename)
+                jamla['items'][index]['primary_icon'] = {'src': src, 'type': ''}
+            fp = open(current_app.config['JAMLA_PATH'], 'w')
+            yaml.safe_dump(jamla,fp , default_flow_style=False)
+        flash('Item(s) updated.')
+        return redirect(url_for('admin.dashboard'))
+    return render_template('admin/edit_jamla.html', jamla=jamla, form=form)
 #    return render_template('formarraybasic/index.html')
 
 @admin_theme.route('/connect/gocardless/manually', methods=['GET', 'POST'])               
