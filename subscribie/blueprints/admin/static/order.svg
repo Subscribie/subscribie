@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg height="100px" viewBox="0 0 1057 342" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Box / Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Box-/-Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2" transform="translate(24.000000, 23.000000)">
+            <polygon id="Rectangle" fill="#D8D8D8" points="0 0 113 0 113 120 123 110 132 120 142 110 151 120 161 110 170 120 179 110 188 120 188 0 300 0 300 300 0 300"></polygon>
+            <rect id="Rectangle-2" fill="#FFFFFF" x="173" y="233" width="106" height="49"></rect>
+        </g>
+        <g id="Group-2" transform="translate(724.000000, 23.000000)">
+            <polygon id="Rectangle" fill="#D8D8D8" points="0 0 113 0 113 120 123 110 132 120 142 110 151 120 161 110 170 120 179 110 188 120 188 0 300 0 300 300 0 300"></polygon>
+            <rect id="Rectangle-2" fill="#FFFFFF" x="173" y="233" width="106" height="49"></rect>
+        </g>
+        <g id="Group" transform="translate(374.000000, 23.000000)">
+            <rect id="Rectangle-3" fill="#D8D8D8" x="108" y="0" width="87" height="125"></rect>
+            <polygon id="Rectangle" fill="#FFFFFF" points="0 0 113 0 113 120 123 110 132 120 142 110 151 120 161 110 170 120 179 110 188 120 188 0 300 0 300 300 0 300"></polygon>
+            <rect id="Rectangle-2" fill="#D8D8D8" x="173" y="233" width="106" height="49"></rect>
+        </g>
+    </g>
+</svg>

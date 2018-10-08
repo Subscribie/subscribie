@@ -23,7 +23,7 @@ def generate_login_token():
             send_login_url(form.data['email'])
             jamla = get_jamla()                                                          
             source = ' \
-                {% extends "layout.html" %} \
+                {% extends "admin/layout.html" %} \
                 {% block title %} Check your email {% endblock title %} \
                 {% block body %} \
                  <div class="container"> \
@@ -40,8 +40,8 @@ def generate_login_token():
 @bp.route('/login', methods=['GET'])                                             
 def login():                                                                     
     jamla = get_jamla()                                                          
-    form = LoginForm()                                                           
-    return render_template('login.html', form=form, jamla=jamla)
+    form = LoginForm()
+    return render_template('/admin/login.html', form=form, jamla=jamla)
 
 @bp.route('/login/<login_token>', methods=('GET', 'POST'))
 def do_login(login_token):
@@ -65,7 +65,7 @@ def do_login(login_token):
     db.commit()
                                                                                  
     email = user['email']                                                      
-    return redirect(url_for('views.dashboard'))
+    return redirect(url_for('admin.dashboard'))
 
 @bp.before_app_request
 def load_logged_in_user():

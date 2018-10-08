@@ -72,6 +72,8 @@ def create_app(test_config=None):
     from . import views
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
+    from blueprints.admin import admin_theme
+    app.register_blueprint(admin_theme, url_prefix='/admin')
     try:
         front_page = jamla['front_page']
     except:
