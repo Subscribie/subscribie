@@ -7,6 +7,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from subscribie.db import get_jamla, get_db
 from email.mime.text import MIMEText                                             
+from email.mime.multipart import MIMEMultipart
 from base64 import b64encode, urlsafe_b64encode                                  
 import smtplib
 import sqlite3
@@ -95,10 +96,23 @@ def generate_login_url(email):
 def send_login_url(email):                                                       
     login_url = generate_login_url(email)                                        
     # Send email with token link                                                    
-    msg = MIMEText(login_url)                                                    
+    msg = MIMEMultipart('alternative')                                                    
     msg['Subject'] = 'Magic login'                                               
     msg['From'] = current_app.config['EMAIL_LOGIN_FROM']
     msg['To'] = email                                                            
+    text = login_url
+    html = """\
+    <html>
+        <head></head>
+        <body>
+        <p>Login to your Subscribie account using the link below:</p>
+    """
+    html = ''.join([html, '<a href="', login_url, '">Login now</a>', 
+            '</body></html>'])
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+    msg.attach(part1)
+    msg.attach(part2)
     # Perform smtp send                                                             
     print "#"*80                                                                 
     print ''.join(["Sending Login Email to ", email, ':'])
