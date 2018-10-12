@@ -13,6 +13,7 @@ import smtplib
 import sqlite3
 import os
 from forms import LoginForm
+from flask_mail import Mail, Message
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -64,8 +65,6 @@ def do_login(login_token):
     new_login_token = urlsafe_b64encode(os.urandom(24))                          
     db.execute('UPDATE user SET login_token=? WHERE login_token=?', (new_login_token, login_token,))
     db.commit()
-                                                                                 
-    email = user['email']                                                      
     return redirect(url_for('admin.dashboard'))
 
 @bp.before_app_request
@@ -93,14 +92,8 @@ def generate_login_url(email):
     login_url = ''.join([request.host_url, 'auth/login/', login_token])               
     return login_url 
 
-def send_login_url(email):                                                       
-    login_url = generate_login_url(email)                                        
-    # Send email with token link                                                    
-    msg = MIMEMultipart('alternative')                                                    
-    msg['Subject'] = 'Magic login'                                               
-    msg['From'] = current_app.config['EMAIL_LOGIN_FROM']
-    msg['To'] = email                                                            
-    text = login_url
+def send_login_url(email):
+    login_url = generate_login_url(email)
     html = """\
     <html>
         <head></head>
@@ -109,23 +102,18 @@ def send_login_url(email):
     """
     html = ''.join([html, '<a href="', login_url, '">Login now</a>', 
             '</body></html>'])
-    part1 = MIMEText(text, 'plain')
-    part2 = MIMEText(html, 'html')
-    msg.attach(part1)
-    msg.attach(part2)
-    # Perform smtp send                                                             
     print "#"*80                                                                 
     print ''.join(["Sending Login Email to ", email, ':'])
     print login_url
     print "#"*80                                                                 
-    try:                                                                         
-        s = smtplib.SMTP(current_app.config['EMAIL_HOST'])                               
-        s.sendmail(current_app.config['EMAIL_LOGIN_FROM'], email, msg.as_string())                
-        s.quit()                                                                 
-    except Exception as e:                                                       
-        print e                                                                  
-        return ("Failed to generate login email.")
-
+    mail = Mail(current_app)
+    msg = Message("Subscribie Magic Login")
+    msg.sender = current_app.config['EMAIL_LOGIN_FROM']
+    msg.recipients=[email]
+    msg.body = login_url
+    msg.html = html
+    # Send email with token link                                                    
+    mail.send(msg)
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
