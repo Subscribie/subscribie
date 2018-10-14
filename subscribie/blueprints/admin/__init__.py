@@ -285,7 +285,7 @@ def retry_payment(payment_id):
 @admin_theme.route('/customers', methods=['GET'])
 def customers():
     jamla = get_jamla()
-    import SSOT
+    from SSOT import SSOT
     access_token = jamla['payment_providers']['gocardless']['access_token']
     target_gateways = ({'name': 'GoCardless', 'construct': access_token},)
     SSOT = SSOT(target_gateways)
