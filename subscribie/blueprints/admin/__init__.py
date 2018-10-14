@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash
+from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound
 from subscribie import Jamla, session, render_template, \
      request, redirect, gocardless_pro, \
@@ -285,7 +285,12 @@ def retry_payment(payment_id):
 @admin_theme.route('/customers', methods=['GET'])
 def customers():
     jamla = get_jamla()
-    return render_template('admin/customers.html', jamla=jamla)
+    import SSOT
+    access_token = jamla['payment_providers']['gocardless']['access_token']
+    target_gateways = ({'name': 'GoCardless', 'construct': access_token},)
+    SSOT = SSOT(target_gateways)
+    partners = SSOT.partners
+    return render_template('admin/customers.html', jamla=jamla,partners=partners)
 
 def getItem(container, i, default=None):                                         
     try:                                                                         

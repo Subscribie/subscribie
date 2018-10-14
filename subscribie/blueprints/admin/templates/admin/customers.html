@@ -22,7 +22,47 @@
       </ul>                                                                      
     </nav>                                                                       
   </div>                                                                         
-</div> 
+</div>
+
+<div class="section">
+	<div class="container">
+		<table class="table">
+		  <thead>
+			<tr>
+			  <th>Id</th>
+			  <th>Email</th>
+			  <th>Name</th>
+			  <th><abbr title="Address">Addr</abbr></th>
+			</tr>
+		  </thead>
+		  <tbody>
+			{% for partner in partners %}
+			<tr>
+			  <th><abbr title="{{ partner['uid'] }}">
+					{{ partner['uid']|truncate(9) }}
+				  </abbr>
+			  </th>
+			  <td>{{ partner['billing_email'] }}</td>
+			  <td>{{ partner['given_name'] }} {{ partner['family_name'] }}</td>
+			  <td>
+				  <address>
+					{{ partner['billing_street_number'] or '' }}<br />
+					{{ partner['billing_street'] }}<br />
+					{{ partner['billing_city'] }}<br />
+					{{ partner['billing_postal_code'] }}<br />
+					{{ partner['billing_state'] }}<br />
+					{{ partner['billing_state_code'] }}<br />
+					{{ partner['billing_country'] }}<br />
+					{{ partner['billing_country_code'] }}<br />
+				  </address>
+			  </td>
+			</tr>
+			{% endfor %}
+		  </tbody>
+		</table>
+	</div><!-- end .container -->
+</div><!-- end .section -->
+
 {% endblock body %} 
 
 
