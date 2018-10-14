@@ -112,7 +112,12 @@ def create_app(test_config=None):
     alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
     # Set custom modules path
-    sys.path.append(jamla['modules_path'])
+    if type(jamla['modules_path']) is str:
+        sys.path.append(jamla['modules_path'])
+    elif type(jamla['modules_path']) is list:
+        for path in jamla['modules_path']:
+            sys.path.append(path)
+        
     with app.app_context(): 
         load_theme(app)
 
