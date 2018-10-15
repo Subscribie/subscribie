@@ -70,7 +70,6 @@ def add_jamla_item():
     form = ItemsForm()
     jamla = get_jamla()
     if form.validate_on_submit():
-        import pdb;pdb.set_trace()
         draftItem = {}
         draftItem['requirements'] = {}
         draftItem['title'] = form.title.data[0]
