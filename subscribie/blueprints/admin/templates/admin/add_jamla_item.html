@@ -3,7 +3,7 @@
                                                                                  
 {% block hero %}
     <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
-        Edit Items
+        Add Item
     </h1>
                                                                                  
 {% endblock hero %}                                                                   
@@ -23,63 +23,47 @@
 <div class="section">
 <form method="post" action="#" enctype="multipart/form-data">
     {{ form.csrf_token }}
-<fieldset>
-<legend>Shop details</legend>
-    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}
-    {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
-</fieldset>
 
 <fieldset style="padding:5px">
-<legend>Items</legend>
-    {% for item in jamla['items'] %}
-    <fieldset>
-    <input type="hidden" name="itemIndex" value="{{ loop.index0 }}" />
+<legend>New Item</legend>
+    <div style="display:none">
+    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}       
+    {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
+    </div>
 	<dl>
       <dt><label>Title:</label></dt>
-      <dd><input name="title-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['title'] }}" /></dd>
+      <dd><input name="title-0" /></dd>
 
       <dt><label>Primary Icon:</label></dt>
-      <dd><input type="file" name="image-{{ loop.index0 }}" /></dd>
-      {% if jamla['items'][loop.index0]['primary_icon'] %}
-          <img src="{{ jamla['items'][loop.index0]['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>
-      {% endif %}
+      <dd><input type="file" name="image-0" /></dd>
 
 	  <dt><label>Requires Monthly Price:</label></dt>
-      <dd><input name="subscription-{{ loop.index0 }}" type="checkbox"
-          {% if
-            jamla['items'][loop.index0]['requirements']['subscription']|int %}
-            checked
-          {% endif %}
-          />
+      <dd><input name="subscription-0" type="checkbox" />
       </dd>
 
 	  <dt><label>Monthly Price:</label></dt>
-      <dd><input name="monthly_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['monthly_price'] / 100 }}" /></dd>
+      <dd><input name="monthly_price-0" placeholder="9.99" /></dd>
 
 	  <dt><label>Requires Up-front Price:</label></dt>
-      <dd><input name="instant_payment-{{ loop.index0 }}" type="checkbox"
-          {% if
-            jamla['items'][loop.index0]['requirements']['instant_payment']|int %}
-            checked
-          {% endif %}
-          />
+      <dd><input name="instant_payment-0" type="checkbox" />
       </dd>
 
 	  <dt><label>Up-front Price:</label></dt>
-      <dd><input name="sell_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['sell_price']/100 }}" /></dd>
+      <dd><input name="sell_price-0" placeholder="20.00" /></dd>
     </dl>
 
         <dl>
           <dt><legend>Selling Points:</legend></dt>
-            {% set ns = namespace(count=0) %}
-            {% set outer_loop = loop %}
-			{% for selling_point in jamla['items'][loop.index0]['selling_points'] %}
-				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point }}" /></dd>
-                {% set ns.count = ns.count + 1 %} 
-			{% endfor %}
+		  <dd>
+              <input name="selling_points-0-0" placeholder="Handmade" />
+          </dd>
+		  <dd>
+              <input name="selling_points-0-1" placeholder="Top quality" />
+          </dd>
+		  <dd>
+              <input name="selling_points-0-3" placeholder="Excellent support" />
+          </dd>
         </dl>
-    </fieldset><br />
-    {% endfor %}
 </fieldset>
   <p><input type="submit" value="Save">
 </form>

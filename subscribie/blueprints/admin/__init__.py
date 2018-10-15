@@ -64,6 +64,35 @@ def edit_jamla():
     return render_template('admin/edit_jamla.html', jamla=jamla, form=form)
 #    return render_template('formarraybasic/index.html')
 
+@admin_theme.route('/add', methods=['GET', 'POST'])                                      
+@login_required                                                                  
+def add_jamla_item():
+    form = ItemsForm()
+    jamla = get_jamla()
+    if form.validate_on_submit():
+        import pdb;pdb.set_trace()
+        draftItem = {}
+        draftItem['requirements'] = {}
+        draftItem['title'] = form.title.data[0]
+        draftItem['requirements']['subscription'] = bool(form.subscription.data[0])
+        draftItem['monthly_price'] = int(form.monthly_price.data[0]) * 100
+        draftItem['requirements']['instant_payment'] = bool(form.instant_payment.data[0])
+        draftItem['sell_price'] = int(form.sell_price.data[0]) * 100
+        draftItem['selling_points'] = form.selling_points.data[0]
+        # Primary icon image storage
+        f = form.image.data[0]
+        if f:
+            images = UploadSet('images', IMAGES)
+            filename = images.save(f)
+            src = url_for('static', filename=filename)
+            draftItem['primary_icon'] = {'src': src, 'type': ''}
+        jamla['items'].append(draftItem)
+        fp = open(current_app.config['JAMLA_PATH'], 'w')
+        yaml.safe_dump(jamla,fp , default_flow_style=False)
+        flash('Item added.')
+        return redirect(url_for('admin.dashboard'))
+    return render_template('admin/add_jamla_item.html', jamla=jamla, form=form)
+
 @admin_theme.route('/connect/gocardless/manually', methods=['GET', 'POST'])               
 @login_required                                                                  
 def connect_gocardless_manually():                                               
