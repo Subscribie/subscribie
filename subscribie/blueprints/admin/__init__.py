@@ -78,6 +78,8 @@ def add_jamla_item():
         draftItem['requirements']['instant_payment'] = bool(form.instant_payment.data[0])
         draftItem['sell_price'] = int(form.sell_price.data[0]) * 100
         draftItem['selling_points'] = form.selling_points.data[0]
+        # Create SKU
+        draftItem['sku'] = form.title.data[0].replace(' ','')
         # Primary icon image storage
         f = form.image.data[0]
         if f:
