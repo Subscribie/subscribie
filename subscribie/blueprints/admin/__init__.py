@@ -94,6 +94,32 @@ def add_jamla_item():
         return redirect(url_for('admin.dashboard'))
     return render_template('admin/add_jamla_item.html', jamla=jamla, form=form)
 
+@admin_theme.route('/delete', methods=['GET'])
+@login_required
+def delete_jamla_item():
+    jamla = get_jamla()
+    return render_template('admin/delete_jamla_item_choose.html', jamla=jamla)
+
+@admin_theme.route('/delete/<sku>', methods=['GET', 'POST'])
+@login_required
+def delete_item_by_sku(sku):
+    jamla = get_jamla()
+    jamlaApp = Jamla()
+    jamlaApp.load(jamla=get_jamla())
+    itemIndex = jamlaApp.sku_get_index(sku)
+    if 'confirm' in request.args:
+        confirm = False
+        return render_template('admin/delete_jamla_item_choose.html', 
+                                jamla=jamla, itemSKU=sku, confirm=False)
+    if itemIndex is not False:
+        # Perform removal
+        jamla['items'].pop(itemIndex)
+        fp = open(current_app.config['JAMLA_PATH'], 'w')                         
+        yaml.safe_dump(jamla,fp , default_flow_style=False)
+
+    flash("Item deleted.")
+    return render_template('admin/delete_jamla_item_choose.html', jamla=jamla)
+
 @admin_theme.route('/connect/gocardless/manually', methods=['GET', 'POST'])               
 @login_required                                                                  
 def connect_gocardless_manually():                                               
