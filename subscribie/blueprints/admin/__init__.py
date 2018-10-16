@@ -72,6 +72,7 @@ def add_jamla_item():
     if form.validate_on_submit():
         draftItem = {}
         draftItem['requirements'] = {}
+        draftItem['primary_icon'] = {'src': '', 'type': ''}
         draftItem['title'] = form.title.data[0]
         draftItem['requirements']['subscription'] = bool(form.subscription.data[0])
         draftItem['monthly_price'] = int(form.monthly_price.data[0]) * 100
