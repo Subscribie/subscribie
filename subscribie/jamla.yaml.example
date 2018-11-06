@@ -30,6 +30,9 @@ integrations:
     tawk:
         active: false
         property_id:
+    hotjar:
+        active: false
+        account_id:
 
 items:
     - sku: item1
