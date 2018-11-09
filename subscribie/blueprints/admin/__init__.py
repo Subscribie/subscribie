@@ -9,6 +9,7 @@ from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
+import os
 
 
 admin_theme = Blueprint('admin', __name__, template_folder='templates',
@@ -55,6 +56,10 @@ def edit_jamla():
             if f:
                 images = UploadSet('images', IMAGES)
                 filename = images.save(f)
+		# symlink to active theme static directory
+		img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
+		link = ''.join([current_app.config['STATIC_FOLDER'], filename])
+		os.symlink(img_src, link)	
                 src = url_for('static', filename=filename)
                 jamla['items'][index]['primary_icon'] = {'src': src, 'type': ''}
             fp = open(current_app.config['JAMLA_PATH'], 'w')
@@ -86,6 +91,10 @@ def add_jamla_item():
         if f:
             images = UploadSet('images', IMAGES)
             filename = images.save(f)
+	    # symlink to active theme static directory
+	    img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
+	    link = ''.join([current_app.config['STATIC_FOLDER'], filename])
+	    os.symlink(img_src, link)	
             src = url_for('static', filename=filename)
             draftItem['primary_icon'] = {'src': src, 'type': ''}
         jamla['items'].append(draftItem)
