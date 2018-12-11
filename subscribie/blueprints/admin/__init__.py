@@ -371,6 +371,29 @@ def customers():
             raise
     return render_template('admin/customers.html', jamla=jamla,partners=partners)
 
+@admin_theme.route('/transactions', methods=['GET'])
+def transactions():
+    jamla = get_jamla()
+    from SSOT import SSOT
+    access_token = jamla['payment_providers']['gocardless']['access_token']
+    target_gateways = ({'name': 'GoCardless', 'construct': access_token},)
+    try:
+        SSOT = SSOT(target_gateways)
+        transactions = SSOT.transactions
+    except gocardless_pro.errors.InvalidApiUsageError as e:
+        print e.type
+        print e.message
+        flash("Invalid GoCardless API token. Correct your GoCardless API key.")
+        return redirect(url_for('admin.connect_gocardless_manually'))
+    except ValueError as e:
+        print e.message
+        if e.message == "No access_token provided":
+            flash("You must connect your GoCardless account first.")
+            return redirect(url_for('admin.connect_gocardless_manually'))
+        else:
+            raise
+    return render_template('admin/transactions.html', jamla=jamla,transactions=transactions)
+
 def getItem(container, i, default=None):                                         
     try:                                                                         
         return container[i]                                                      
