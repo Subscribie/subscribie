@@ -24,6 +24,35 @@
 <div class="section">
   <div class="container">
 
+    <h2 class="title is-3">Checklist</h2>
+        <p class="subtitle is-5">
+            Make sure everything's in order. If tasks appear below, then
+            you'll need to complete them to get the most out of your shop.
+        </p>
+        <ul>
+            {% if gocardless_connected is sameas False %}
+            <li>
+            You must to connect GoCardless in order to start taking repeat payments.
+            <a class="button is-fullwidth is-warning" 
+                href="{{ url_for('admin.connect_gocardless_manually') }}">
+                Connect GoCardless
+            </a>
+            </li>
+            {% endif %}
+
+            {% if stripe_connected is sameas False %}
+            <li>
+            You must to connect Stripe in order to take one-off payments for your 
+            items (up-front costs).
+            <a class="button is-fullwidth is-warning" 
+                href="{{ url_for('admin.connect_stripe_manually') }}">
+                Connect Stripe
+            </a>
+            </li>
+            {% endif %}
+        </ul>
+    <br />
+
     <h2 class="title is-3">Manage Customers</h2>
         <p class="subtitle is-5">
             View &amp; manage your subscription customers.
