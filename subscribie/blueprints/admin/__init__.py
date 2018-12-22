@@ -45,7 +45,7 @@ def edit_jamla():
         for index in request.form.getlist('itemIndex', type=int):
             # Get current values
             # Update
-            jamla['items'][index]['title'] = getItem(form.title.data, index)
+            jamla['items'][index]['title'] = getItem(form.title.data,index,default='').strip()
             jamla['items'][index]['requirements']['subscription'] = bool(getItem(form.subscription.data, index))
             jamla['items'][index]['monthly_price'] = int(getItem(form.monthly_price.data, index, default=0) * 100)
             jamla['items'][index]['requirements']['instant_payment'] = bool(getItem(form.instant_payment.data, index))
@@ -78,7 +78,7 @@ def add_jamla_item():
         draftItem = {}
         draftItem['requirements'] = {}
         draftItem['primary_icon'] = {'src': '', 'type': ''}
-        draftItem['title'] = form.title.data[0]
+        draftItem['title'] = form.title.data[0].strip()
         draftItem['requirements']['subscription'] = bool(form.subscription.data[0])
         draftItem['monthly_price'] = int(form.monthly_price.data[0]) * 100
         draftItem['requirements']['instant_payment'] = bool(form.instant_payment.data[0])
