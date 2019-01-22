@@ -127,6 +127,15 @@ def establish_mandate():
     jamla = get_jamla()
     jamlaApp = Jamla()
     jamlaApp.load(jamla=jamla)
+
+    if jamlaApp.has_connected('gocardless') is False:
+        dashboard_url = url_for('admin.dashboard')
+        return '''<h1>Shop not set-up yet</h1>
+            The shop owner first needs to login to their
+            <a href="{}">dahboard</a>, and connect GoCardless to their shop.
+            Once this has been completed, you will be able to order.
+        '''.format(dashboard_url)
+
     #lookup the customer with sid and get their relevant details
     sid = session['sid']
     db = get_db()                                                                
