@@ -1,0 +1,235 @@
+{% extends "admin/layout.html" %}
+{% block title %} Dashboard {% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">Manage My Shop</h1>
+
+{% endblock %}
+
+{% block body %}
+
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <p>You're here: </p>
+        <li><a href="/">Shop</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Manage My Shop</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <h2 class="title is-3">Checklist</h2>
+        <p class="subtitle is-5">
+            Make sure everything's in order. If tasks appear below, then
+            you'll need to complete them to get the most out of your shop.
+        </p>
+        <ul>
+            {% if gocardless_connected is sameas False %}
+            <li>
+            You must to connect GoCardless in order to start taking repeat payments.
+            <a class="button is-fullwidth is-warning" 
+                href="{{ url_for('admin.connect_gocardless_manually') }}">
+                Connect GoCardless
+            </a>
+            </li>
+            {% endif %}
+
+            {% if stripe_connected is sameas False %}
+            <li>
+            You must to connect Stripe in order to take one-off payments for your 
+            items (up-front costs).
+            <a class="button is-fullwidth is-warning" 
+                href="{{ url_for('admin.connect_stripe_manually') }}">
+                Connect Stripe
+            </a>
+            </li>
+            {% endif %}
+        </ul>
+    <br />
+
+    <h2 class="title is-3">Manage Customers</h2>
+        <p class="subtitle is-5">
+            View &amp; manage your subscription customers.
+        </p>
+        <a class="button is-fullwidth is-success" 
+            href="{{ url_for('admin.customers') }}">
+            View Customers
+        </a>
+    <br />
+
+    <h2 class="title is-3">View Transactions</h2>
+        <p class="subtitle is-5">
+            View &amp; manage transactions.
+        </p>
+        <a class="button is-fullwidth is-success" 
+            href="{{ url_for('admin.transactions') }}">
+            View Transactions
+        </a>
+    <br />
+
+    <h2 class="title is-3">Manage Payment Gateways</h2>
+    <p class="subtitle is-5">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
+    <br />
+    <div class="columns" style="max-width:1000px;">
+      <div class="column">
+        <div class="box hover">
+          <img src="{{ url_for('admin.static', filename='stripe.svg') }}" 
+                style="width:50%; display:block; margin:auto">
+          <h3 class="title is-5">Stripe</h3>
+          <p>Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
+          <br />
+          <a class="button is-fullwidth
+          {% if stripe_connected  %}
+            is-success
+          {% else %}
+            is-info
+          {% endif %}
+          " href="{{ url_for('admin.connect_stripe_manually') }}">
+          {% if stripe_connected %}
+            Active! Click to reconnect Stripe
+          {% else %}
+            Connect to Stripe
+          {% endif %}
+          </a>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box hover">
+          <img src="
+           {{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}" 
+            style="width:50%; display:block; margin:2rem auto">
+          <h3 class="title is-5">GoCardless</h3>
+          <p>GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
+          <br />
+          <a class="button is-fullwidth
+          {% if gocardless_connected  %}
+            is-success
+          {% else %}
+            is-info
+          {% endif %}
+          " href="{{ url_for('admin.connect_gocardless_manually') }}">
+            {% if gocardless_connected  %}
+            Active! Click to reconnect GoCardless
+          {% else %}
+            Connect to GoCardless
+          {% endif %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="notification">
+      <article class="media">
+        <figure class="media-left">
+          <p class="image is-64x64">
+            <img src="{{ url_for('admin.static', filename='money.svg') }}">
+          </p>
+        </figure>
+        <div class="media-content">
+          <div class="content">
+            <p><strong>Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p><small>Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</small>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<!-- Social Integrations -->
+<div class="section">
+  <div class="container">
+    <h2 class="title is-3">Manage Social Integrations</h2>
+    <div class="columns" style="max-width:1000px;">
+      <div class="column">
+        <div class="box hover">
+          <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}" 
+              alt="Tawk logo" 
+              style="width:auto; display:block; margin:auto" />
+          <h3 class="title is-5">Tawk</h3>
+          <p>Chat with your potential customers live on your website!</p>
+          <br />
+          <a class="button is-fullwidth
+          {% if jamla['integrations']['tawk']['property_id'] %}
+            is-success
+          {% else %}
+            is-info
+          {% endif %}
+          " href="{{ url_for('admin.connect_tawk_manually') }}">
+            {% if jamla['integrations']['tawk']['property_id'] %}
+                Active! Click to reconnect Tawk
+            {% else %}
+               Connect to Tawk
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Tawk Integrations -->
+
+<!-- Analytics Integrations -->
+<div class="section">
+  <div class="container">
+    <h2 class="title is-3">Manage Analytics Integrations</h2>
+    <div class="columns" style="max-width:1000px;">
+      <div class="column">
+        <div class="box hover">
+          <img src="
+            {{ url_for('admin.static', filename='google_tag_manager.jpg') }}"
+              alt="Google Tag Manager logo" 
+              style="width:25%; display:block; margin:auto" />
+          <h3 class="title is-5">Google Tag Manager</h3>
+          <p>Track customer behaviour like the pros.
+             <a href="https://marketingplatform.google.com/about/tag-manager/"
+                target="_blank">
+             Learn about using Tag Manager</a>
+          </p>
+          <br />
+          <a class="button is-fullwidth
+          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+            is-success
+          {% else %}
+            is-info
+          {% endif %}
+          " href="{{ url_for('admin.connect_google_tag_manager_manually') }}">
+            {% if google_tag_manager_connected %}
+                Active! Click to reconnect Tag Manager
+            {% else %}
+               Connect to Google Tag Manager
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End analytics Integrations -->
+
+
+<div class="section">
+  <div class="container">
+
+    <h2 class="title is-3">Edit / Add Items</h2>
+        <a class="button is-fullwidth is-success" 
+            href="{{ url_for('admin.edit_jamla') }}">
+        Edit items
+        </a>
+        <br />
+        <a class="button is-fullwidth is-success" 
+            href="{{ url_for('admin.add_jamla_item') }}">
+        Add items
+        </a>
+        <br />
+        <a class="button is-fullwidth is-danger" 
+            href="{{ url_for('admin.delete_jamla_item') }}">
+        Delete items
+        </a>
+  </div>
+</div>
+
+{% endblock %}

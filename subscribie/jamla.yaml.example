@@ -27,6 +27,13 @@ integrations:
     google_tag_manager:                                                          
         active: false                                                            
         container_id:
+    tawk:
+        active: false
+        property_id:
+    hotjar:
+        active: false
+        account_id:
+
 items:
     - sku: item1
       title: Package 1

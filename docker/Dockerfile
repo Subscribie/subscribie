@@ -9,3 +9,4 @@ RUN subscribie migrate
 RUN pip install uwsgi
 
 CMD uwsgi --http :9090 --wsgi-file subscribie.wsgi
+

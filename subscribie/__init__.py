@@ -32,12 +32,13 @@ from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .jamla import Jamla
 from .forms import (StripWhitespaceForm, LoginForm, CustomerForm, 
-                    GocardlessConnectForm, StripeConnectForm, 
+                    GocardlessConnectForm, StripeConnectForm, TawkConnectForm,
                     GoogleTagManagerConnectForm, ItemsForm)
 from .Template import load_theme
 from blinker import signal
 from flask_cors import CORS
-from flask_uploads import configure_uploads, UploadSet, IMAGES
+from flask_uploads import configure_uploads, UploadSet, IMAGES,\
+    patch_request_class
 
 def create_app(test_config=None):
     # create and configure the app
@@ -46,6 +47,14 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'subscribie.sqlite'),
     )
+
+    @app.before_request
+    def start_session():
+        try:
+            session['sid']
+        except KeyError:
+            print ''.join(["#"*10, 'Setting session id', "#"*10])
+            session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -60,22 +69,29 @@ def create_app(test_config=None):
         pass
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-    jamlaApp = Jamla()                                                           
+    jamlaApp = Jamla()
+    global jamla
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])                          
-    images = UploadSet('images', IMAGES)                                         
+    images = UploadSet('images', IMAGES)
+    patch_request_class(app, 2 * 1024 * 1024)
     configure_uploads(app, images)
 
-    # a simple page that says hello!
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
     from . import db
     db.init_app(app)
     from . import auth
     from . import views
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
+    from blueprints.admin import admin_theme
+    app.register_blueprint(admin_theme, url_prefix='/admin')
+    try:
+        front_page = jamla['front_page']
+    except:
+        front_page = 'choose'
+    try:
+        app.add_url_rule('/', 'index', views.__getattribute__(front_page))
+    except AttributeError:
+        app.add_url_rule('/', 'index', views.__getattribute__('choose'))
 
     """The Subscribie object implements a flask application suited to subscription 
     based web applications and acts as the central object. Once it is created    
@@ -96,7 +112,12 @@ def create_app(test_config=None):
     alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
     # Set custom modules path
-    sys.path.append(jamla['modules_path'])
+    if type(jamla['modules_path']) is str:
+        sys.path.append(jamla['modules_path'])
+    elif type(jamla['modules_path']) is list:
+        for path in jamla['modules_path']:
+            sys.path.append(path)
+        
     with app.app_context(): 
         load_theme(app)
 

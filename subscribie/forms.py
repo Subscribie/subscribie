@@ -22,10 +22,10 @@ class ItemsForm(StripWhitespaceForm):
     title = FieldList(StringField('Title', [validators.DataRequired()]), min_entries=1)
     company_name = TextField('Company Name')                                     
     email = TextField('Email', [validators.Email(), validators.DataRequired()])  
-    instant_payment = FieldList(BooleanField('Up-Front Payment'), min_entries=1) 
-    subscription = FieldList(BooleanField('Subscription'), min_entries=1)        
-    sell_price = FieldList(FloatField('Up-front Price'), min_entries=1)              
-    monthly_price = FieldList(FloatField('Monthly Price'), min_entries=1)        
+    instant_payment = FieldList(BooleanField('Up-Front Payment', default=False), min_entries=1) 
+    subscription = FieldList(BooleanField('Subscription', default=False), min_entries=1)        
+    sell_price = FieldList(FloatField('Up-front Price', [validators.optional()]), min_entries=1)              
+    monthly_price = FieldList(FloatField('Monthly Price', [validators.optional()]), min_entries=1)        
     selling_points = FieldList(FieldList(StringField('Unique Selling Point', [validators.DataRequired()]), min_entries=3), min_entries=1)
     images = UploadSet('images', IMAGES)                                         
     image = FieldList(FileField(validators=[FileAllowed(images, 'Images only!')]), min_entries=1)
@@ -51,3 +51,6 @@ class StripeConnectForm(FlaskForm):
 
 class GoogleTagManagerConnectForm(FlaskForm):                                              
     container_id = StringField('container_id', validators = [DataRequired()])
+
+class TawkConnectForm(FlaskForm):                                              
+    property_id = StringField('property_id', validators = [DataRequired()])
