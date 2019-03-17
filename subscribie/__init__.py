@@ -132,7 +132,6 @@ def create_app(test_config=None):
     if 'pages' in jamla:
         for i,v in enumerate(jamla['pages']):
             page = jamla['pages'][i].popitem()
-            import pdb;pdb.set_trace()
             page_path = page[1]['path']
             template_file = page[1]['template_file']
             view_func_name = page[0]
