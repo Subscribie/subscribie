@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound
-from subscribie import Jamla, session, render_template, \
+from subscribie import logging, Jamla, session, render_template, \
      request, redirect, gocardless_pro, \
      GocardlessConnectForm, StripeConnectForm, current_app, \
      redirect, url_for, GoogleTagManagerConnectForm, ItemsForm,\
@@ -56,10 +56,10 @@ def edit_jamla():
             if f:
                 images = UploadSet('images', IMAGES)
                 filename = images.save(f)
-		# symlink to active theme static directory
-		img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
-		link = ''.join([current_app.config['STATIC_FOLDER'], filename])
-		os.symlink(img_src, link)	
+                # symlink to active theme static directory
+                img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
+                link = ''.join([current_app.config['STATIC_FOLDER'], filename])
+                os.symlink(img_src, link)	
                 src = url_for('static', filename=filename)
                 jamla['items'][index]['primary_icon'] = {'src': src, 'type': ''}
             fp = open(current_app.config['JAMLA_PATH'], 'w')
@@ -97,10 +97,10 @@ def add_jamla_item():
         if f:
             images = UploadSet('images', IMAGES)
             filename = images.save(f)
-	    # symlink to active theme static directory
-	    img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
-	    link = ''.join([current_app.config['STATIC_FOLDER'], filename])
-	    os.symlink(img_src, link)	
+            # symlink to active theme static directory
+            img_src = ''.join([current_app.config['UPLOADED_IMAGES_DEST'], filename])
+            link = ''.join([current_app.config['STATIC_FOLDER'], filename])
+            os.symlink(img_src, link)	
             src = url_for('static', filename=filename)
             draftItem['primary_icon'] = {'src': src, 'type': ''}
         jamla['items'].append(draftItem)
@@ -313,11 +313,9 @@ def push_payments():
         ##Loop each payment within payment response body                         
         response = payments.api_response.body                                    
         for payment in response['payments']:                                     
-            print payment                                                        
-            print payment['status']                                              
-            print "##"                                                           
-            # Push to Penguin                                                    
-            print "Creating transaction to penguin.."                            
+            logging.info(payment)
+            logging.info("The payment status is: %s", payment['status'])
+            logging.info("Creating transaction to penguin")
             title = "a transaction title"                                        
             try:                                                                 
                 payout_id = payment['links']['payout']                           
@@ -364,12 +362,12 @@ def customers():
         SSOT = SSOT(target_gateways)
         partners = SSOT.partners
     except gocardless_pro.errors.InvalidApiUsageError as e:
-        print e.type
-        print e.message
+        logging.error(e.type)
+        logging.error(e.message)
         flash("Invalid GoCardless API token. Correct your GoCardless API key.")
         return redirect(url_for('admin.connect_gocardless_manually'))
     except ValueError as e:
-        print e.message
+        logging.error(e.message)
         if e.message == "No access_token provided":
             flash("You must connect your GoCardless account first.")
             return redirect(url_for('admin.connect_gocardless_manually'))
@@ -387,12 +385,12 @@ def transactions():
         SSOT = SSOT(target_gateways)
         transactions = SSOT.transactions
     except gocardless_pro.errors.InvalidApiUsageError as e:
-        print e.type
-        print e.message
+        logging.error(e.type)
+        logging(e.message)
         flash("Invalid GoCardless API token. Correct your GoCardless API key.")
         return redirect(url_for('admin.connect_gocardless_manually'))
     except ValueError as e:
-        print e.message
+        logging.error(e.message)
         if e.message == "No access_token provided":
             flash("You must connect your GoCardless account first.")
             return redirect(url_for('admin.connect_gocardless_manually'))

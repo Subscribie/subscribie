@@ -36,7 +36,7 @@ def generate_login_token():
                 {% endblock body %} '
             return render_template_string(source, jamla=jamla)
         except Exception as e:                                                   
-            print e                                                              
+            print(e)
             return ("Failed to generate login email.")
 
 @bp.route('/login', methods=['GET'])                                             
@@ -102,10 +102,10 @@ def send_login_url(email):
     """
     html = ''.join([html, '<a href="', login_url, '">Login now</a>', 
             '</body></html>'])
-    print "#"*80                                                                 
-    print ''.join(["Sending Login Email to ", email, ':'])
-    print login_url
-    print "#"*80                                                                 
+    print("#"*80)
+    print("Generated login url: {}".format(login_url))
+    print("Sending login email to: {}".format(email))
+    print("#"*80)
     mail = Mail(current_app)
     msg = Message("Subscribie Magic Login")
     msg.sender = current_app.config['EMAIL_LOGIN_FROM']

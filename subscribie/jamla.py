@@ -11,6 +11,8 @@ class Jamla():
             for section in cfg:
                 print (section)
                 self.jamla = cfg
+                test = list(cfg)
+            import pdb;pdb.set_trace()
             return cfg
 
     def sku_exists(self, sku):
