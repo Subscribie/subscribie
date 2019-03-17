@@ -12,7 +12,7 @@ from base64 import b64encode, urlsafe_b64encode
 import smtplib
 import sqlite3
 import os
-from forms import LoginForm
+from .forms import LoginForm
 from flask_mail import Mail, Message
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
