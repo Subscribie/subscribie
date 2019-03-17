@@ -50,7 +50,7 @@ def store_customer():
         session['email'] = email
 
         # Store plan in session
-	jamlaApp = Jamla()
+        jamlaApp = Jamla()
         jamla = get_jamla()
         jamlaApp.load(jamla=jamla)
         if jamlaApp.sku_exists(request.args.get('plan')):
