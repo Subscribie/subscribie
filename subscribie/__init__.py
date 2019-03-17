@@ -53,8 +53,8 @@ def create_app(test_config=None):
         try:
             session['sid']
         except KeyError:
-            print ''.join(["#"*10, 'Setting session id', "#"*10])
             session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
+            print("Starting with sid {}".format(session['sid']))
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -149,7 +149,7 @@ def create_app(test_config=None):
     if 'modules' in jamla:
         try:
             for moduleName in jamla['modules']:
-                print "Importing module: " + moduleName
+                print("Importing module: {}".format(moduleName))
                 # Assume standard python module
                 __import__(moduleName)
                 # Register module as blueprint (if it is one)
@@ -167,5 +167,5 @@ def create_app(test_config=None):
                 except AttributeError:
                     pass
         except TypeError as e:
-            print e
+            print(e)
     return app
