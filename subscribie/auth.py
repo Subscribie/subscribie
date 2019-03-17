@@ -6,6 +6,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from subscribie.db import get_jamla, get_db
+from subscribie import logger
 from email.mime.text import MIMEText                                             
 from email.mime.multipart import MIMEMultipart
 from base64 import b64encode, urlsafe_b64encode                                  
@@ -21,7 +22,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def generate_login_token():                                                      
     form = LoginForm()                                                           
     if form.validate_on_submit():                                                
-        try:                                                                     
+        try:
             send_login_url(form.data['email'])
             jamla = get_jamla()                                                          
             source = ' \
@@ -81,11 +82,11 @@ def load_logged_in_user():
 def generate_login_url(email):
     db = get_db()
     result = db.execute('SELECT COUNT(*) FROM user WHERE email=?', (email,)
-                        ).fetchone()             
+                        ).fetchone()
     if result is False:                                                          
         return("Invalid valid user")                                             
     # Generate login token                                                       
-    login_token = urlsafe_b64encode(os.urandom(24))                              
+    login_token = urlsafe_b64encode(os.urandom(24)).decode('utf-8')
     # Insert login token into db                                                    
     db.execute(""" UPDATE user SET login_token= ? WHERE email= ? """,(login_token,email))
     db.commit()
