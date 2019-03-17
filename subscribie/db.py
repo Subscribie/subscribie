@@ -8,8 +8,8 @@ from flask.cli import with_appcontext
 
 def get_jamla():
     if 'jamla' not in g:
-	jamlaApp = Jamla()                                                           
-	g.jamla = jamlaApp.load(src=current_app.config['JAMLA_PATH'])
+	    jamlaApp = Jamla()                                                           
+	    g.jamla = jamlaApp.load(src=current_app.config['JAMLA_PATH'])
     return g.jamla
 
 
