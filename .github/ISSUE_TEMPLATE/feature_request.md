@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: ''
+labels: needs-user-story, needs-design, needs-qa
 assignees: ''
 
 ---
