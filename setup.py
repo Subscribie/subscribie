@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='subscribie',
-    version="0.0.4",
+    version="0.0.6",
     author="Karma Computing",
     author_email="subscribie@karmacomputing.co.uk",
     desciption="Recurring subscription management and billing",
@@ -20,7 +20,7 @@ setuptools.setup(
         'flask_login', 
         'flask_uploads',
         'flask_wtf',
-        'flask_mail',
+        'Flask-Mail>=0.9.1',
         'requests',
         'blinker',
         'oauth2client',
