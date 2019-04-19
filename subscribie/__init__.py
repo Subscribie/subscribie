@@ -160,6 +160,12 @@ def create_app(test_config=None):
         try:
             for module in jamla['modules']:
                 print("Importing module: {}".format(module['name']))
+                # First set any env variables the module requests:
+                if 'env' in module:
+                  for env in module['env']:
+                    print("Setting env name: {} with value: {}"
+                          .format(env['name'], str(env['value'])))
+                    os.environ[env['name']] = str(env['value'])
                 # Assume standard python module
                 try:
                   __import__(module['name'])
