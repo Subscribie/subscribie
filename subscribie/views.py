@@ -1,8 +1,9 @@
+from . import logger
 import os
 import yaml
 import datetime
 import sqlite3
-from signals import journey_complete
+from .signals import journey_complete
 from subscribie import Jamla, session, \
      CustomerForm, gocardless_pro, \
      current_app 
@@ -50,7 +51,7 @@ def store_customer():
         session['email'] = email
 
         # Store plan in session
-	jamlaApp = Jamla()
+        jamlaApp = Jamla()
         jamla = get_jamla()
         jamlaApp.load(jamla=jamla)
         if jamlaApp.sku_exists(request.args.get('plan')):
@@ -142,7 +143,7 @@ def establish_mandate():
     res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)
                      ).fetchone()
 
-    print res
+    logger.info("Person lookup: %s", res)
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
@@ -177,9 +178,9 @@ def on_complete_mandate():
     jamlaApp = Jamla()
     jamlaApp.load(jamla=jamla)
     redirect_flow_id = request.args.get('redirect_flow_id')
-    print("Recieved flow ID: {} ".format(redirect_flow_id))
+    logger.info("Recieved flow ID: %s ", redirect_flow_id)
 
-    print "Setting up client environment as: " + jamla['payment_providers']['gocardless']['environment']
+    logger.info("Setting up client environment as: %s", jamla['payment_providers']['gocardless']['environment'])
     gocclient = gocardless_pro.Client(
         access_token = jamlaApp.get_secret('gocardless', 'access_token'),
         environment = jamla['payment_providers']['gocardless']['environment']
@@ -190,10 +191,10 @@ def on_complete_mandate():
             params = {
                 "session_token": session['sid']
         })
-        print("Confirmation URL: {}".format(redirect_flow.confirmation_url))
+        logger.info("Confirmation URL: %s", redirect_flow.confirmation_url)
         # Save this mandate & customer ID for the next section.
-        print ("Mandate: {}".format(redirect_flow.links.mandate))
-        print ("Customer: {}".format(redirect_flow.links.customer))
+        logger.info("Mandate: %s", redirect_flow.links.mandate)
+        logger.info("Customer: %s", redirect_flow.links.customer)
         session['gocardless_mandate_id'] = redirect_flow.links.mandate
         session['gocardless_customer_id'] = redirect_flow.links.customer
         # Store customer
@@ -215,10 +216,10 @@ def on_complete_mandate():
         customerExistingLine = row[10]
         customerExistingNumber = row[11]
 
-        print "Creating subscription with amount: " + str(jamlaApp.sku_get_monthly_price(session['plan']))
-        print "Creating subscription with name: " + jamlaApp.sku_get_title(session['plan'])
-        print "Plan session is set to: " + str(session['plan'])
-        print "Mandate id is set to: " + session['gocardless_mandate_id']
+        logger.info("Creating subscription with amount: %s", str(jamlaApp.sku_get_monthly_price(session['plan'])))
+        logger.info("Creating subscription with name: %s", jamlaApp.sku_get_title(session['plan']))
+        logger.info("Plan session is set to: %s", str(session['plan']))
+        logger.info("Mandate id is set to: %s", session['gocardless_mandate_id'])
 
         # Create subscription
         gocclient.subscriptions.create(params={
@@ -234,7 +235,7 @@ def on_complete_mandate():
             }
         })
     except Exception as e:
-        print e
+        logger.error(e)
         if isinstance(e, gocardless_pro.errors.InvalidStateError):
             if e.error['type'] == 'invalid_state':
                 # Allow pass through if redirect flow already completed
@@ -250,12 +251,10 @@ def thankyou():
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session['email'])
     try:
-        print "##### The Mandate id is:" + str(session['gocardless_mandate_id'])
-        print "##### The GC Customer id is: " + str(session['gocardless_customer_id'])
+        logger.info("The Mandate id is: %s", str(session['gocardless_mandate_id']))
+        logger.info("The GC Customer id is: %s", str(session['gocardless_customer_id']))
     except KeyError:
-        print
-        print "##### No mandate for this transaction"
-        print " (OK as not all items require a direct debit mandate)"
-        print "#####"
+        logger.warning("No mandate for this transaction")
+        logger.warning("Maybe OK as not all items require a direct debit mandate")
     finally:
         return render_template('thankyou.html', jamla=jamla)

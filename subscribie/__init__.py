@@ -7,6 +7,13 @@
                                                                                  
     :copyright: (c) 2018 by Karma Computing Ltd
 """
+from os import path
+import logging
+import logging.config
+log_file_path = path.join(path.dirname(path.abspath(__file__)), 'logging.conf')
+logging.config.fileConfig(log_file_path)
+# Create logger
+logger = logging.getLogger('subscribie')
 import os
 from os import environ
 import sys
@@ -53,8 +60,8 @@ def create_app(test_config=None):
         try:
             session['sid']
         except KeyError:
-            print ''.join(["#"*10, 'Setting session id', "#"*10])
             session['sid'] = b64encode(os.urandom(10)).decode('utf-8')
+            print("Starting with sid {}".format(session['sid']))
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -82,7 +89,7 @@ def create_app(test_config=None):
     from . import views
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
-    from blueprints.admin import admin_theme
+    from .blueprints.admin import admin_theme
     app.register_blueprint(admin_theme, url_prefix='/admin')
     try:
         front_page = jamla['front_page']
@@ -124,9 +131,10 @@ def create_app(test_config=None):
     # Register yml pages as routes
     if 'pages' in jamla:
         for i,v in enumerate(jamla['pages']):
-            path = jamla['pages'][i][jamla['pages'][i].keys()[0]]['path']
-            template_file = jamla['pages'][i][jamla['pages'][i].keys()[0]]['template_file']
-            view_func_name = jamla['pages'][i].keys()[0]
+            page = jamla['pages'][i].popitem()
+            page_path = page[1]['path']
+            template_file = page[1]['template_file']
+            view_func_name = page[0]
             ##Generate view function
             generate_view_func = """def %s_view_func():
             return render_template('%s', jamla=jamla)""" % (view_func_name, template_file)
@@ -135,7 +143,7 @@ def create_app(test_config=None):
             possibles = globals().copy()
             possibles.update(locals())
             view_func = possibles.get(method_name)
-            app.add_url_rule("/" + path, view_func_name + '_view_func', view_func)
+            app.add_url_rule("/" + page_path, view_func_name + '_view_func', view_func)
 
     # Handling Errors Gracefully
     @app.errorhandler(404)
@@ -149,7 +157,7 @@ def create_app(test_config=None):
     if 'modules' in jamla:
         try:
             for moduleName in jamla['modules']:
-                print "Importing module: " + moduleName
+                print("Importing module: {}".format(moduleName))
                 # Assume standard python module
                 __import__(moduleName)
                 # Register module as blueprint (if it is one)
@@ -167,5 +175,5 @@ def create_app(test_config=None):
                 except AttributeError:
                     pass
         except TypeError as e:
-            print e
+            print(e)
     return app

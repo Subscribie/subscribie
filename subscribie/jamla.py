@@ -11,6 +11,7 @@ class Jamla():
             for section in cfg:
                 print (section)
                 self.jamla = cfg
+                test = list(cfg)
             return cfg
 
     def sku_exists(self, sku):
