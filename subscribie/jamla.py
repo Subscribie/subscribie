@@ -7,7 +7,7 @@ class Jamla():
             return jamla
         else:
             with open(src, 'r') as ymlfile:
-                cfg = yaml.load(ymlfile)
+                cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
             for section in cfg:
                 print (section)
                 self.jamla = cfg
