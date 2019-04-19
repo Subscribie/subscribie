@@ -27,7 +27,7 @@ An abstraction layer for managing variable recurring subscriptions and billing. 
 
 Keywords: subscriptions, payments, PS2, SEPA 
 
-# Quick install 
+# Quick install (for development)
 
 ```
 git clone https://github.com/Subscribie/subscribie.git
