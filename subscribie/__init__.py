@@ -156,22 +156,26 @@ def create_app(test_config=None):
     # Import any custom modules
     if 'modules' in jamla:
         try:
-            for moduleName in jamla['modules']:
-                print("Importing module: {}".format(moduleName))
+            for module in jamla['modules']:
+                print("Importing module: {}".format(module['name']))
                 # Assume standard python module
-                __import__(moduleName)
+                try:
+                  __import__(module['name'])
+                except ImportError:
+                  # Try to fetch the module if 'src' is present
+                  pass #TODO implement
                 # Register module as blueprint (if it is one)
                 try:
-                    importedModule = __import__(moduleName)
-                    if isinstance(getattr(importedModule, moduleName), Blueprint):
+                    importedModule = __import__(module['name'])
+                    if isinstance(getattr(importedModule, module['name']), Blueprint):
                         # Load any config the Blueprint declares
-                        blueprint = getattr(importedModule, moduleName)
+                        blueprint = getattr(importedModule, module['name'])
                         blueprintConfig = ''.join([blueprint.root_path,'/',
                                                    'config.py'])
                         app.config.from_pyfile(blueprintConfig, silent=True)
                         # Register the Blueprint
                         app.register_blueprint(getattr(importedModule,
-                                                       moduleName))
+                                                       module['name']))
                 except AttributeError:
                     pass
         except TypeError as e:
