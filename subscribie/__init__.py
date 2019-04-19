@@ -163,22 +163,6 @@ def create_app(test_config=None):
                 # Assume standard python module
                 try:
                   __import__(module['name'])
-                  # Try to fetch the module if 'src' is present
-                 
-                  # Register module as blueprint (if it is one)
-                  try:
-                      importedModule = __import__(module['name'])
-                      if isinstance(getattr(importedModule, module['name']), Blueprint):
-                          # Load any config the Blueprint declares
-                          blueprint = getattr(importedModule, module['name'])
-                          blueprintConfig = ''.join([blueprint.root_path,'/',
-                                                     'config.py'])
-                          app.config.from_pyfile(blueprintConfig, silent=True)
-                          # Register the Blueprint
-                          app.register_blueprint(getattr(importedModule,
-                                                         module['name']))
-                  except AttributeError:
-                      pass
                 except ImportError:
                   # Attempt to load module from src
                   #import pdb;pdb.set_trace()
@@ -193,7 +177,21 @@ def create_app(test_config=None):
                   try:
                     __import__(module['name'])
                   except ImportError:
-                    exit("Could not import module: {}".format(module['name']))
+                    print("Error: Could not import module: {}".format(module['name']))
+                # Register modules as blueprint (if it is one)
+                try:
+                    importedModule = __import__(module['name'])
+                    if isinstance(getattr(importedModule, module['name']), Blueprint):
+                        # Load any config the Blueprint declares
+                        blueprint = getattr(importedModule, module['name'])
+                        blueprintConfig = ''.join([blueprint.root_path,'/',
+                                                   'config.py'])
+                        app.config.from_pyfile(blueprintConfig, silent=True)
+                        # Register the Blueprint
+                        app.register_blueprint(getattr(importedModule,
+                                                       module['name']))
+                except (ImportError, AttributeError):
+                  print("Error: Could not import module as blueprint: {}".format(module['name']))
 
         except TypeError as e:
             print(e)
