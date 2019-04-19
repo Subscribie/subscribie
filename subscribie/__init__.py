@@ -28,6 +28,8 @@ import jinja2
 import flask
 import datetime
 from base64 import b64encode, urlsafe_b64encode
+import git
+import shutil
 try:
     import sendgrid
     from sendgrid.helpers.mail import *
@@ -161,23 +163,38 @@ def create_app(test_config=None):
                 # Assume standard python module
                 try:
                   __import__(module['name'])
-                except ImportError:
                   # Try to fetch the module if 'src' is present
-                  pass #TODO implement
-                # Register module as blueprint (if it is one)
-                try:
-                    importedModule = __import__(module['name'])
-                    if isinstance(getattr(importedModule, module['name']), Blueprint):
-                        # Load any config the Blueprint declares
-                        blueprint = getattr(importedModule, module['name'])
-                        blueprintConfig = ''.join([blueprint.root_path,'/',
-                                                   'config.py'])
-                        app.config.from_pyfile(blueprintConfig, silent=True)
-                        # Register the Blueprint
-                        app.register_blueprint(getattr(importedModule,
-                                                       module['name']))
-                except AttributeError:
+                 
+                  # Register module as blueprint (if it is one)
+                  try:
+                      importedModule = __import__(module['name'])
+                      if isinstance(getattr(importedModule, module['name']), Blueprint):
+                          # Load any config the Blueprint declares
+                          blueprint = getattr(importedModule, module['name'])
+                          blueprintConfig = ''.join([blueprint.root_path,'/',
+                                                     'config.py'])
+                          app.config.from_pyfile(blueprintConfig, silent=True)
+                          # Register the Blueprint
+                          app.register_blueprint(getattr(importedModule,
+                                                         module['name']))
+                  except AttributeError:
+                      pass
+                except ImportError:
+                  # Attempt to load module from src
+                  #import pdb;pdb.set_trace()
+                  dest = os.path.join(os.path.dirname(__file__),'modules/',
+                                      module['name'])
+                  os.makedirs(dest, exist_ok=True)
+                  try: 
+                    git.Repo.clone_from(module['src'], dest)
+                  except git.exc.GitCommandError:
                     pass
+                  # Now re-try import
+                  try:
+                    __import__(module['name'])
+                  except ImportError:
+                    exit("Could not import module: {}".format(module['name']))
+
         except TypeError as e:
             print(e)
     return app

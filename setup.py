@@ -27,6 +27,7 @@ setuptools.setup(
         'pyyaml',
         'stripe',
         'gocardless_pro',
+        'GitPython',
     ],
     entry_points='''
         [console_scripts]
