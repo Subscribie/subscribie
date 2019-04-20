@@ -28,6 +28,8 @@ import jinja2
 import flask
 import datetime
 from base64 import b64encode, urlsafe_b64encode
+import git
+import shutil
 try:
     import sendgrid
     from sendgrid.helpers.mail import *
@@ -156,24 +158,47 @@ def create_app(test_config=None):
     # Import any custom modules
     if 'modules' in jamla:
         try:
-            for moduleName in jamla['modules']:
-                print("Importing module: {}".format(moduleName))
+            for module in jamla['modules']:
+                print("Importing module: {}".format(module['name']))
+                # First set any env variables the module requests:
+                if 'env' in module:
+                  for env in module['env']:
+                    print("Setting env name: {} with value: {}"
+                          .format(env['name'], str(env['value'])))
+                    os.environ[env['name']] = str(env['value'])
                 # Assume standard python module
-                __import__(moduleName)
-                # Register module as blueprint (if it is one)
                 try:
-                    importedModule = __import__(moduleName)
-                    if isinstance(getattr(importedModule, moduleName), Blueprint):
+                  __import__(module['name'])
+                except ImportError:
+                  # Attempt to load module from src
+                  #import pdb;pdb.set_trace()
+                  dest = os.path.join(os.path.dirname(__file__),'modules/',
+                                      module['name'])
+                  os.makedirs(dest, exist_ok=True)
+                  try: 
+                    git.Repo.clone_from(module['src'], dest)
+                  except git.exc.GitCommandError:
+                    pass
+                  # Now re-try import
+                  try:
+                    __import__(module['name'])
+                  except ImportError:
+                    print("Error: Could not import module: {}".format(module['name']))
+                # Register modules as blueprint (if it is one)
+                try:
+                    importedModule = __import__(module['name'])
+                    if isinstance(getattr(importedModule, module['name']), Blueprint):
                         # Load any config the Blueprint declares
-                        blueprint = getattr(importedModule, moduleName)
+                        blueprint = getattr(importedModule, module['name'])
                         blueprintConfig = ''.join([blueprint.root_path,'/',
                                                    'config.py'])
                         app.config.from_pyfile(blueprintConfig, silent=True)
                         # Register the Blueprint
                         app.register_blueprint(getattr(importedModule,
-                                                       moduleName))
-                except AttributeError:
-                    pass
+                                                       module['name']))
+                except (ImportError, AttributeError):
+                  print("Error: Could not import module as blueprint: {}".format(module['name']))
+
         except TypeError as e:
             print(e)
     return app

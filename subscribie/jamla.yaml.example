@@ -129,3 +129,8 @@ pages:
         template_file: "demo.html"
 modules_path: ../../../modules
 modules:
+  #- name: my-module
+  #  src: http://github.com/example/module-name
+    #env:
+      - name: EXAMPLE
+        value: example_value 
