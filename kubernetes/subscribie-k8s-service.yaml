@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: subscribie-onboarding-svc
+spec:
+  selector:
+    subscribie: onboarding
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9090

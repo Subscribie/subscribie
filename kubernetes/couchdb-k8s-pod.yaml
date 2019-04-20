@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb-service
+spec:
+  selector:
+    subscribie: couchdb
+  type: ClusterIP # This is the default. Cluster only access.
+  ports:
+    - port: 5984
+      protocol: TCP
+      targetPort: couchdb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: couchdb-deployment
+  labels:
+    subscribie: couchdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      subscribie: couchdb
+  template:
+    metadata:
+      labels:
+        subscribie: couchdb
+    spec:
+      containers:
+      - name: couchdb
+        image: couchdb:2.3.1
+        imagePullPolicy: Always
+        env:
+        - name: COUCHDB_USER
+          value: admin
+        - name: COUCHDB_PASSWORD
+          value: password
+        volumeMounts:
+        - name: couchdb-volume
+          mountPath: /opt/couchdb/data
+        ports:
+          - containerPort: 5984
+            name: couchdb
+      volumes:
+        - name: couchdb-volume
+          persistentVolumeClaim:
+            claimName: couchdb-volume-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: couchdb-volume-claim
+spec:
+    accessModes:
+        - ReadWriteOnce
+    volumeMode: Filesystem
+    resources:
+        requests:
+            storage: 5Gi
