@@ -81,7 +81,7 @@ def generateManifest(docId):
 
 def deployManifest(manifest):
   config.load_kube_config()
-  deployment = manitest
+  deployment = manifest
   v1 = client.AppsV1Api()
   rsp = v1.create_namespaced_deployment(
           body=deployment, namespace="default")
@@ -93,8 +93,8 @@ resp = json.loads(req.text)
 try:
   # Get a (TODO non-deployed) document at random , it dosent matter.
   docRow = random.choice(resp['rows'])
-  manitest = generateManifest(docRow['id'])
-  response = deployManifest(manitest)
+  manifest = generateManifest(docRow['id'])
+  response = deployManifest(manifest)
 except IndexError:
   print("Do documents left to process")
 
@@ -103,7 +103,7 @@ except IndexError:
 
 
   
-# Submit manitest to kubernestes
+# Submit manifest to kubernestes
 
 # Verify deployment is OK
 '''
