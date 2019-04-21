@@ -177,6 +177,73 @@ def generateServiceManifest(docId):
   }
   return manifest
 
+def generateIngressManifest(docId):
+  '''
+    Generate Ingress manifest for a site
+    - assumes subscribie.shop subdomain (for now)
+    - The important mapping of service->pods is in "serviceName"
+      - The service name is siteName + '-service'
+    - This expects that cert-manager installed and working on your cluster
+    - This ASSUMES you've checked and validated your cert-manager with issuer
+      letsencrypt-staging manually first, rather than letsencrypt-prod
+  '''
+  doc = getDoc(docId)
+  siteName = formatSiteName(doc)
+  manifest = {
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": siteName + "-ingress",
+      "annotations": {
+        "kubernetes.io/ingress.class": "nginx",
+        "certmanager.k8s.io/issuer": "letsencrypt-prod",
+        "certmanager.k8s.io/acme-challenge-type": "http01"
+      }
+    },
+    "spec": {
+      "rules": [
+        {
+          "host": siteName + ".subscribie.shop",
+          "http": {
+            "paths": [
+              {
+                "path": "/",
+                "backend": {
+                  "serviceName": siteName + "-service",
+                  "servicePort": 80
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            siteName + ".subscribie.shop"
+          ],
+          "secretName": siteName + ".subscribie.shop-tls"
+        }
+      ]
+    }
+  }
+
+  return manifest
+
+
+def deployIngressManifest(manifest):
+  config.load_kube_config()
+  v1 = client.ExtensionsV1beta1Api()
+  try:
+    rsp = v1.create_namespaced_ingress(namespace="default", 
+              body=manifest)
+    return rsp
+  except kubernetes.client.rest.ApiException as inst:
+    errorBody = json.loads(inst.body)
+    if errorBody['code'] == 409: # Conflict
+      print("NoOp. Ingress already exists")
+    print(inst)
+
 def deployServiceManifest(manifest):
   config.load_kube_config()
   v1 = client.CoreV1Api()
@@ -249,6 +316,9 @@ def consumeSites():
           print("Deny. This site is already deployed")
           markDocCompleted(docRow['id'])
         print(inst)
+    # Generate Ingress & deploy Ingress
+    manifest = generateIngressManifest(docRow['id'])
+    deployIngressManifest(manifest)
         
   except IndexError:
     print("Do documents left to process")
