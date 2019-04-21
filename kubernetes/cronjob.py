@@ -69,7 +69,7 @@ def generateManifest(docId):
               }
             }, 
             'spec': {
-              'replicas': 2, 
+              'replicas': 1, 
               'selector': {
                 'matchLabels': {
        
@@ -90,7 +90,17 @@ def generateManifest(docId):
                   'env': [{
                     'name': 'EXAMPLE', 
                     'value': 'example_value'
+                  }],
+                  'volumeMounts': [{
+                    'name': siteName + '-static',
+                    'mountPath': '/subscribie/static'
                   }]
+                }],
+                'volumes': [{
+                  'name': siteName + '-static',
+                  'persistentVolumeClaim': {
+                    'claimName': siteName + '-static'
+                  }
                 }]
               }
             }
@@ -105,6 +115,31 @@ def generateManifest(docId):
       just give clients an object store.
   '''
 
+def generatePVCManifest(docId):
+  ''' Generate persistent volume claim manifest '''
+  # Generate manifest
+  doc = getDoc(docId)
+  siteName = re.sub(r'\W+', '', doc['company']['name']).lower()
+
+  manifest = {
+    "kind": "PersistentVolumeClaim", 
+    "apiVersion": "v1", 
+    "metadata": {
+      "name": siteName + '-static'
+    }, 
+    "spec": {
+      "accessModes": ["ReadWriteOnce"], 
+      "volumeMode": "Filesystem", 
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  }
+  return manifest
+
+
 def deployManifest(manifest):
   config.load_kube_config()
   deployment = manifest
@@ -112,6 +147,22 @@ def deployManifest(manifest):
   rsp = v1.create_namespaced_deployment(
           body=deployment, namespace="default")
   return rsp
+
+def deployPersistentVolumeClaim(manifest):
+  config.load_kube_config()
+  v1 = client.CoreV1Api()
+
+  try:
+    rsp = v1.create_namespaced_persistent_volume_claim(namespace="default", 
+              body=manifest)
+    return rsp
+  except kubernetes.client.rest.ApiException as inst:
+    errorBody = json.loads(inst.body)
+    if errorBody['code'] == 409: # Conflict
+      print("NoOp. PersistentVolume already exists")
+    print(inst)
+
+
 
 def markDocCompleted(docId):
   # Get doc + revision
@@ -129,6 +180,9 @@ def consumeSites():
     resp = json.loads(req.text)
     # Get a (TODO non-deployed) document at random , it dosent matter.
     docRow = random.choice(resp['rows'])
+    #Generate storage
+    pvcManifest = generatePVCManifest(docRow['id'])
+    deployPersistentVolumeClaim(pvcManifest)
     manifest = generateManifest(docRow['id'])
     if manifest:
       try:
