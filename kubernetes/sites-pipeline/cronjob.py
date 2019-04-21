@@ -45,6 +45,11 @@ def getDoc(docId):
   resp = json.loads(req.text)
   return resp
 
+def formatSiteName(doc):
+    siteName = re.sub(r'\W+', '', doc['company']['name']).lower()
+    return siteName
+  
+
 def generateManifest(docId):
   ''' Generate Kubernetes manifest yaml from CouchDB document
   the attached jamla document is to be injected into the
@@ -54,7 +59,7 @@ def generateManifest(docId):
   # Generate manifest
   doc = getDoc(docId)
   try:
-    siteName = re.sub(r'\W+', '', doc['company']['name']).lower()
+    siteName = formatSiteName(doc)
     deploymentName = siteName
     
     manifest = {
@@ -79,14 +84,19 @@ def generateManifest(docId):
               'metadata': {
                 'labels': {
                   'app': 'subscribie', 
-                  'subscribie': siteName}
+                  'subscribie': siteName,
+                  'sitename': siteName
+                }
               }, 
               'spec': {
                 'containers': [{
                   'name': 'subscribie', 
                   'image': 'subscribie/subscribie:v0.0.1', 
                   'imagePullPolicy': 'Always', 
-                  'ports': [{'containerPort': 9090}], 
+                  'ports': [{
+                            'name': 'subscribie-port', 
+                            'containerPort': 9090
+                  }], 
                   'env': [{
                     'name': 'EXAMPLE', 
                     'value': 'example_value'
@@ -119,7 +129,7 @@ def generatePVCManifest(docId):
   ''' Generate persistent volume claim manifest '''
   # Generate manifest
   doc = getDoc(docId)
-  siteName = re.sub(r'\W+', '', doc['company']['name']).lower()
+  siteName = formatSiteName(doc)
 
   manifest = {
     "kind": "PersistentVolumeClaim", 
@@ -139,6 +149,47 @@ def generatePVCManifest(docId):
   }
   return manifest
 
+def generateServiceManifest(docId):
+  ''' Generate service manifest'''
+  # Generate manifest
+  doc = getDoc(docId)
+  siteName = formatSiteName(doc)
+  manifest = {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": {
+      "name": siteName + "-service"
+    },
+    "spec": {
+      "selector": {
+        "sitename": siteName # Map service to specific subscribie site
+      },
+      "ports": [
+        {
+          "name": "http",
+          "protocol": "TCP",
+          "port": 80,
+          "targetPort": 'subscribie-port'
+        }
+      ],
+      "type": "ClusterIP"
+    }
+  }
+  return manifest
+
+def deployServiceManifest(manifest):
+  config.load_kube_config()
+  v1 = client.CoreV1Api()
+  try:
+    rsp = v1.create_namespaced_service(namespace="default", 
+              body=manifest)
+    return rsp
+  except kubernetes.client.rest.ApiException as inst:
+    errorBody = json.loads(inst.body)
+    if errorBody['code'] == 409: # Conflict
+      print("NoOp. Service already exists")
+    print(inst)
+  
 
 def deployManifest(manifest):
   config.load_kube_config()
@@ -182,7 +233,12 @@ def consumeSites():
     docRow = random.choice(resp['rows'])
     #Generate storage
     pvcManifest = generatePVCManifest(docRow['id'])
+    # Deploy storage
     deployPersistentVolumeClaim(pvcManifest)
+    # Generate service & deploy
+    manifest = generateServiceManifest(docRow['id'])
+    deployServiceManifest(manifest)
+    # Generate and deploy deployment
     manifest = generateManifest(docRow['id'])
     if manifest:
       try:
