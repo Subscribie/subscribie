@@ -3,23 +3,48 @@ import json
 import random
 import re
 import subprocess
+import kubernetes
 from kubernetes import client, config
 import yaml
 import tempfile
+from time import sleep
 
 
+HOST = "http://admin:password@127.0.0.1:5984/"
+DBNAME = "jamlas"
+COUCHDB = HOST + '/' + DBNAME
+WAITING_VIEW = COUCHDB + '/_design' + '/sites-queue' + '/_view' + '/waiting'
 
-
-HOST = "http://admin:password@127.0.0.1:5984/jamlas"
+def init():
+  # Create required database
+  req = requests.put(HOST + '/' + DBNAME)
+  # Create required views
+  # - waiting view
+  # - completed view
+  views = {
+      "views": {
+        "waiting": {
+          "map": "function (doc) {\n  if(doc.queue_state == \"deploy\") {\n  emit(doc._id, 1);\n  }\n}"
+        },
+        "completed": {
+          "map": "function (doc) {\n  if(doc.queue_state == \"completed\") {\n  emit(doc._id, 1);\n  }\n}"
+        }
+      },
+      "language": "javascript"
+  }
+  req = requests.put(COUCHDB + '/_design/sites-queue', json=views)
+  
+init() # Create required database and view(s)
 
 def getDoc(docId):
   ''' Return doc from Couchdb 
   docId: Document id
   returns: Complete doc (excluding attachments)
   '''
-  req = requests.get(HOST + '/' + docId)
+  req = requests.get(COUCHDB + '/' + docId)
   resp = json.loads(req.text)
   return resp
+
 def generateManifest(docId):
   ''' Generate Kubernetes manifest yaml from CouchDB document
   the attached jamla document is to be injected into the
@@ -74,6 +99,7 @@ def generateManifest(docId):
     return manifest
   except KeyError:
     print("Error could not parse site jamla. (KeyError)")
+    return False
   '''
     - storage? Ceph? No. Not ready for it. Possibly CouchDB, 
       just give clients an object store.
@@ -85,18 +111,41 @@ def deployManifest(manifest):
   v1 = client.AppsV1Api()
   rsp = v1.create_namespaced_deployment(
           body=deployment, namespace="default")
-  import pdb;pdb.set_trace()
   return rsp
 
-req = requests.get(HOST + '/_all_docs')
-resp = json.loads(req.text)
-try:
-  # Get a (TODO non-deployed) document at random , it dosent matter.
-  docRow = random.choice(resp['rows'])
-  manifest = generateManifest(docRow['id'])
-  response = deployManifest(manifest)
-except IndexError:
-  print("Do documents left to process")
+def markDocCompleted(docId):
+  # Get doc + revision
+  req = requests.get(COUCHDB + '/' + docId)
+  resp = json.loads(req.text)
+  rev = resp['_rev']
+  # Mark as completed
+  resp['queue_state'] = "completed"
+  # Put updated doc
+  req = requests.put(COUCHDB + '/' + docId, json=resp)
+
+def consumeSites():
+  try:
+    req = requests.get(WAITING_VIEW)
+    resp = json.loads(req.text)
+    # Get a (TODO non-deployed) document at random , it dosent matter.
+    docRow = random.choice(resp['rows'])
+    manifest = generateManifest(docRow['id'])
+    if manifest:
+      try:
+        deployManifest(manifest)
+      except kubernetes.client.rest.ApiException as inst:
+        errorBody = json.loads(inst.body)
+        if errorBody['code'] == 409: # Conflict
+          print("Deny. This site is already deployed")
+          markDocCompleted(docRow['id'])
+        print(inst)
+        
+  except IndexError:
+    print("Do documents left to process")
+  sleep(1)
+  consumeSites() # Keep checking
+
+consumeSites()
 
   
 
