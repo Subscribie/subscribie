@@ -10,6 +10,26 @@ import tempfile
 from time import sleep
 import os
 
+from kubernetes import client, config
+
+# it works only if this script is run by K8s as a POD
+def loadClusterConfig():
+  # Assume we're inside a kubernetes cluster
+  try:
+    config.load_incluster_config()
+  except kubernetes.config.config_exception.ConfigException:
+    # Assume localhost, Load config from localhost
+    config.load_kube_config()
+
+  v1 = client.CoreV1Api()
+  print("Listing pods with their IPs:")
+  ret = v1.list_pod_for_all_namespaces(watch=False)
+  for i in ret.items:
+      print("%s\t%s\t%s" %
+            (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
+
+loadClusterConfig()
+
 COUCHDB_USER = os.getenv("COUCHDB_USER", 'admin')
 COUCHDB_PASSWORD = os.getenv("COUCHDB_PASSWORD", 'password')
 HOST = "http://{}:{}@127.0.0.1:5984/".format(COUCHDB_USER, COUCHDB_PASSWORD)
@@ -234,7 +254,6 @@ def generateIngressManifest(docId):
 
 
 def deployIngressManifest(manifest):
-  config.load_kube_config()
   v1 = client.ExtensionsV1beta1Api()
   try:
     rsp = v1.create_namespaced_ingress(namespace="default", 
@@ -247,7 +266,6 @@ def deployIngressManifest(manifest):
     print(inst)
 
 def deployServiceManifest(manifest):
-  config.load_kube_config()
   v1 = client.CoreV1Api()
   try:
     rsp = v1.create_namespaced_service(namespace="default", 
@@ -261,7 +279,6 @@ def deployServiceManifest(manifest):
   
 
 def deployManifest(manifest):
-  config.load_kube_config()
   deployment = manifest
   v1 = client.AppsV1Api()
   rsp = v1.create_namespaced_deployment(
@@ -269,7 +286,6 @@ def deployManifest(manifest):
   return rsp
 
 def deployPersistentVolumeClaim(manifest):
-  config.load_kube_config()
   v1 = client.CoreV1Api()
 
   try:
