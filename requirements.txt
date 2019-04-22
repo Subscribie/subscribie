@@ -1,0 +1,14 @@
+subscribiecli
+Flask>=1,<2
+flask_cors
+flask_login
+flask_uploads
+flask_wtf
+Flask-Mail>=0.9.1
+requests
+blinker
+oauth2client
+pyyaml
+stripe
+gocardless_pro
+GitPython
