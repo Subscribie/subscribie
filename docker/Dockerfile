@@ -1,12 +1,16 @@
-FROM python:2.7-alpine
+FROM python:3.5.7-alpine3.9
+WORKDIR /usr/src/app
 RUN apk update && apk update && \
-    apk add --no-cache build-base libffi-dev openssl-dev bash git 
+    apk add --no-cache build-base libffi-dev openssl-dev bash git gcc
 RUN git clone https://github.com/Subscribie/subscribie.git
-RUN pip install subscribie
-WORKDIR /subscribie
+WORKDIR subscribie
+RUN pwd
+RUN ls -l
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install uwsgi 
+RUN pip install subscribiecli
 RUN subscribie init
 RUN subscribie migrate
-RUN pip install uwsgi
 
 CMD uwsgi --http :9090 --wsgi-file subscribie.wsgi
 
