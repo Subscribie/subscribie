@@ -32,7 +32,13 @@ loadClusterConfig()
 
 COUCHDB_USER = os.getenv("COUCHDB_USER", 'admin')
 COUCHDB_PASSWORD = os.getenv("COUCHDB_PASSWORD", 'password')
-HOST = "http://{}:{}@127.0.0.1:5984/".format(COUCHDB_USER, COUCHDB_PASSWORD)
+# If running within cluster, address couchdb by its service name
+if 'COUCH_DB_SERVICE_NAME' in os.environ:
+  HOST = ''.join(["http://{}:{}".format(COUCHDB_USER, COUCHDB_PASSWORD), "@",
+                os.getenv('COUCH_DB_SERVICE_NAME'), ":5984/"])
+else:
+  HOST = "http://{}:{}@127.0.0.1:5984/".format(COUCHDB_USER, COUCHDB_PASSWORD)
+
 DBNAME = "jamlas"
 COUCHDB = HOST + '/' + DBNAME
 WAITING_VIEW = COUCHDB + '/_design' + '/sites-queue' + '/_view' + '/waiting'
