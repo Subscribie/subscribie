@@ -132,5 +132,5 @@ modules:
   #- name: my-module
   #  src: http://github.com/example/module-name
     #env:
-      - name: EXAMPLE
-        value: example_value 
+    #  - name: EXAMPLE
+    #    value: example_value 
