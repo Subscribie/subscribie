@@ -30,11 +30,6 @@ import datetime
 from base64 import b64encode, urlsafe_b64encode
 import git
 import shutil
-try:
-    import sendgrid
-    from sendgrid.helpers.mail import *
-except Exception:
-    pass
 from flask import (Flask, render_template, session, redirect, url_for, escape, 
                    request, current_app, send_from_directory, jsonify, Blueprint)
 from oauth2client.client import OAuth2WebServerFlow
