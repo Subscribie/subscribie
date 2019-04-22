@@ -34,6 +34,7 @@ from flask import (Flask, render_template, session, redirect, url_for, escape,
                    request, current_app, send_from_directory, jsonify, Blueprint)
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
+from .bootstrap import bootstrap
 from .jamla import Jamla
 from .forms import (StripWhitespaceForm, LoginForm, CustomerForm, 
                     GocardlessConnectForm, StripeConnectForm, TawkConnectForm,
@@ -43,6 +44,8 @@ from blinker import signal
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES,\
     patch_request_class
+
+bootstrap()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -166,7 +169,6 @@ def create_app(test_config=None):
                   __import__(module['name'])
                 except ImportError:
                   # Attempt to load module from src
-                  #import pdb;pdb.set_trace()
                   dest = os.path.join(os.path.dirname(__file__),'modules/',
                                       module['name'])
                   os.makedirs(dest, exist_ok=True)
