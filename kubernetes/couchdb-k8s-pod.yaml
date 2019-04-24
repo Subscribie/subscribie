@@ -36,6 +36,8 @@ spec:
           value: admin
         - name: COUCHDB_PASSWORD
           value: password
+        - name: COUCHDB_DBNAME
+          value: jamlas
         volumeMounts:
         - name: couchdb-volume
           mountPath: /opt/couchdb/data
