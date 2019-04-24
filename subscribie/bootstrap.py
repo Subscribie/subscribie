@@ -69,6 +69,7 @@ def bootstrap():
     - continue running as normal
   '''
   if bootstrap_needed() and bootstrap_possible():
+    print("NOTICE: bootstrapping site")
     shopName = os.getenv("SUBSCRIBIE_SHOPNAME")
     # Fetch jamla from couchdb
     COUCHDB_CON = get_couchdb_con()
@@ -80,16 +81,20 @@ def bootstrap():
       with open('/subscribie/volume/jamla.yaml', 'w') as fp:
         fp.write(jamla)
       # Move themes to persistant volume
-      shutil.move('./themes', '/subscribie/volume/')
-      # Fetch and inject any static assets (uploaded images)
-      req = requests.get(COUCHDB_CON + '/' + shopName)
-      resp = req.json() 
-      if '_attachments' in resp:
-        attachments = resp['_attachments']
-        for key, value in attachments.items():
-          attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
-          with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
-            shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
+      dst = '/subscribie/volume/themes'
+      if os.path.exists(dst) is False:
+        shutil.move('./themes', dst)
+        # Fetch and inject any static assets (uploaded images)
+        req = requests.get(COUCHDB_CON + '/' + shopName)
+        resp = req.json() 
+        if '_attachments' in resp:
+          attachments = resp['_attachments']
+          for key, value in attachments.items():
+            attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
+            with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
+              shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
+      else:
+        print("NOTICE: {} already present so not overwriting".format(dst))
         
       # Update jamla path and template folder path
       subprocess.call("subscribie \
