@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscribie-deployment
+  labels:
+    subscribie: onboarding
+    subscribie: deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      subscribie: onboarding # match pods witch this label
+  template:
+    metadata:
+      labels:
+        app: subscribie
+        subscribie: onboarding
+    spec:
+      containers:
+      - name: subscribie
+        image: subscribie/subscribie:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9090
+        env:
+        - name: SUBSCRIBIE_FETCH_JAMLA # Subscribie bootstrap trigger
+          value: couchdb # Instruct Subscribie to bootstrap from couchdb
+        - name: SUBSCRIBIE_SHOPNAME # Used by couchdb to locate bootstrap jamla
+          value: subscribie-onboarding
+        - name: COUCH_DB_SERVICE_NAME
+          value: couchdb-service
+        - name: COUCHDB_USER
+          value: admin
+        - name: COUCHDB_PASSWORD
+          value: password
+        - name: COUCHDB_DBNAME
+          value: jamlas
+        volumeMounts:
+          - mountPath: '/subscribie/volume'
+            name: subscribie-volume
+      volumes:
+        - name: subscribie-volume
+          persistentVolumeClaim:
+            claimName: subscribie-onboarding-volume
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: subscribie-onboarding-volume
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources: 
+    requests:
+      storage: 1Gi
