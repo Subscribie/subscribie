@@ -2,6 +2,9 @@ import os
 import requests
 import json
 import yaml
+import subprocess
+import shutil
+from pathlib import Path
 
 def bootstrap_needed():
   if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is not None and \
@@ -61,22 +64,39 @@ def bootstrap():
     - Perform bootstrap
       - Inject Jamla manifest to /subscribie/volume/jamla.yaml
       - Update jamla path in config.py
-      - Inject static assets (images, if any, from couchdb attachements) 
+      - Inject static assets (images, if any, from couchdb attachments) 
     - Mark as bootstrapped
     - continue running as normal
   '''
   if bootstrap_needed() and bootstrap_possible():
+    shopName = os.getenv("SUBSCRIBIE_SHOPNAME")
     # Fetch jamla from couchdb
     COUCHDB_CON = get_couchdb_con()
-    req = requests.get(COUCHDB_CON + '/' + os.getenv("SUBSCRIBIE_SHOPNAME"))
+    req = requests.get(COUCHDB_CON + '/' + shopName)
     if req.status_code == 200:
       # Inject Jamla manifest
-      jamla = yaml.dump(json.loads(req.text))
+      jamla = yaml.dump(req.json())
       # Write jamla.yaml to PersistentVolume
       with open('/subscribie/volume/jamla.yaml', 'w') as fp:
         fp.write(jamla)
-      import pdb;pdb.set_trace()
-      pass
+      # Move themes to persistant volume
+      shutil.move('./themes', '/subscribie/volume/')
+      # Fetch and inject any static assets (uploaded images)
+      attachments = json.loads(requests.get(COUCHDB_CON + '/' + shopName).text)['_attachments']
+      for key, value in attachments.items():
+        attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
+        with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
+          shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
+        
+      # Update jamla path and template folder path
+      subprocess.call("subscribie \
+               setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
+               --TEMPLATE_FOLDER /subscribie/volume/themes/\
+               --STATIC_FOLDER /subscribie/volume/themes/theme-jesmond/static/",
+                      shell=True)
+      # Mark site as bootstrapped
+      path = Path('/subscribie/volume/bootstrap_complete')
+      path.touch(exist_ok=True)
     elif req.status_code == 404:
       print("Could not locate jamla manifest from couchdb")
       exit()
