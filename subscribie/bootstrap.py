@@ -82,11 +82,14 @@ def bootstrap():
       # Move themes to persistant volume
       shutil.move('./themes', '/subscribie/volume/')
       # Fetch and inject any static assets (uploaded images)
-      attachments = json.loads(requests.get(COUCHDB_CON + '/' + shopName).text)['_attachments']
-      for key, value in attachments.items():
-        attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
-        with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
-          shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
+      req = requests.get(COUCHDB_CON + '/' + shopName)
+      resp = req.json() 
+      if '_attachments' in resp:
+        attachments = resp['_attachments']
+        for key, value in attachments.items():
+          attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
+          with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
+            shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
         
       # Update jamla path and template folder path
       subprocess.call("subscribie \
