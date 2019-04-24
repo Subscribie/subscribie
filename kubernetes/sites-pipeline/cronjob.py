@@ -12,7 +12,6 @@ import os
 
 from kubernetes import client, config
 
-# it works only if this script is run by K8s as a POD
 def loadClusterConfig():
   # Assume we're inside a kubernetes cluster
   try:
