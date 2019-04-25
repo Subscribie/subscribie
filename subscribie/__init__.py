@@ -117,7 +117,8 @@ def create_app(test_config=None):
 
     # Set custom modules path
     if type(jamla['modules_path']) is str:
-        sys.path.append(jamla['modules_path'])
+      print("Setting module path to: {}".format(jamla['modules_path']))
+      sys.path.append(jamla['modules_path'])
     elif type(jamla['modules_path']) is list:
         for path in jamla['modules_path']:
             sys.path.append(path)
@@ -168,6 +169,7 @@ def create_app(test_config=None):
                   # Attempt to load module from src
                   dest = os.path.join(os.path.dirname(__file__),'modules/',
                                       module['name'])
+                  print("Cloning module into: {}".format(dest))
                   os.makedirs(dest, exist_ok=True)
                   try: 
                     git.Repo.clone_from(module['src'], dest)
