@@ -51,6 +51,11 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'subscribie.sqlite'),
     )
+    # Overide config using /subscribie/volume/config.py if present
+    # Only exists if inside kubernetes cluster
+    if os.path.exists("/subscribie/volume/config.py"):
+      print("Overiding config from /subscribie/volume/config.py")
+      app.config.from_pyfile('/subscribie/volume/config.py', silent=False)
 
     @app.before_request
     def start_session():
