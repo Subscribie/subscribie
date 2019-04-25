@@ -121,6 +121,7 @@ def create_app(test_config=None):
     alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
     # Set custom modules path
+    sys.path.append('/usr/src/app/subscribie/subscribie/modules')
     if type(jamla['modules_path']) is str:
       print("Setting module path to: {}".format(jamla['modules_path']))
       sys.path.append(jamla['modules_path'])
