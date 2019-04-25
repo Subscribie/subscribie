@@ -3,6 +3,7 @@ company:
     name: "My Company Ltd"
 theme: 
     name: jesmond
+    src: https://github.com/Subscribie/theme-jesmond.git
 payment_providers:
     paypal:
         sepa_direct_supported: No
