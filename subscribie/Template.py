@@ -6,6 +6,10 @@ import subprocess
 
 
 def load_theme(app):
+    print("load_theme()")
+    print("JAMLA_PATH is: {}".format(app.config['JAMLA_PATH']))
+    print("TEMPLATE_BASE_DIR is: {}".format(app.config['TEMPLATE_BASE_DIR']))
+    print("Theme name is: {}".format(jamla['theme']['name']))
     jamlaApp = Jamla()                                                               
     jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     try:
@@ -49,4 +53,5 @@ def load_theme(app):
     try:
       app.static_folder = static_folder
     except NameError:
+      print("Fallback to jesmon theme")
       app.static_folder = app.config['TEMPLATE_BASE_DIR'] + 'theme-jesmond/static/'
