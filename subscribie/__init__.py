@@ -167,7 +167,7 @@ def create_app(test_config=None):
                   __import__(module['name'])
                 except ImportError:
                   # Attempt to load module from src
-                  dest = os.path.join(jamla['modules_path'], module['name'])
+                  dest = jamla['modules_path'] + '/' + module['name'] + '/'
                   print("Cloning module into: {}".format(dest))
                   os.makedirs(dest, exist_ok=True)
                   try: 
