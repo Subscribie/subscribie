@@ -65,6 +65,7 @@ def bootstrap():
       - Inject Jamla manifest to /subscribie/volume/jamla.yaml
       - Update jamla path in config.py
       - Inject static assets (images, if any, from couchdb attachments) 
+    - Copy config.py to /subscribie/volume/config.py
     - Mark as bootstrapped
     - continue running as normal
   '''
@@ -102,6 +103,11 @@ def bootstrap():
                --TEMPLATE_FOLDER /subscribie/volume/themes/\
                --STATIC_FOLDER /subscribie/volume/themes/theme-jesmond/static/",
                       shell=True)
+      # Move config file to persistant volume
+      path = os.path.abspath(__file__ + '../../../instance')
+      print("Copying config.py to: {}".format(path))
+      shutil.copy(path + '/config.py', '/subscribie/volume/')
+        
       # Mark site as bootstrapped
       path = Path('/subscribie/volume/bootstrap_complete')
       path.touch(exist_ok=True)
