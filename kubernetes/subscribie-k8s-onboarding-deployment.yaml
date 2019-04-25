@@ -26,7 +26,7 @@ spec:
         - name: SUBSCRIBIE_FETCH_JAMLA # Subscribie bootstrap trigger
           value: couchdb # Instruct Subscribie to bootstrap from couchdb
         - name: SUBSCRIBIE_SHOPNAME # Used by couchdb to locate bootstrap jamla
-          value: subscribie-onboarding
+          value: Subscribie
         - name: COUCH_DB_SERVICE_NAME
           value: couchdb-service
         - name: COUCHDB_USER
