@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: subscribie-deployment
+  name: subscribie-onboarding-deployment
   labels:
     subscribie: onboarding
     subscribie: deployment
