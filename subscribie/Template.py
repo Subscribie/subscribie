@@ -6,12 +6,12 @@ import subprocess
 
 
 def load_theme(app):
+    jamlaApp = Jamla()                                                               
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     print("load_theme()")
     print("JAMLA_PATH is: {}".format(app.config['JAMLA_PATH']))
     print("TEMPLATE_BASE_DIR is: {}".format(app.config['TEMPLATE_BASE_DIR']))
     print("Theme name is: {}".format(jamla['theme']['name']))
-    jamlaApp = Jamla()                                                               
-    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     try:
         if os.path.exists(app.config['TEMPLATE_BASE_DIR'] + '/theme-' + jamla['theme']['name']):
           themepath = ''.join([app.config['TEMPLATE_BASE_DIR'], 

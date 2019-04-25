@@ -159,6 +159,7 @@ def create_app(test_config=None):
 
     # Import any custom modules
     if 'modules' in jamla:
+        print("sys.path contains: {}".format(sys.path))
         try:
             for module in jamla['modules']:
                 print("Importing module: {}".format(module['name']))
