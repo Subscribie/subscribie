@@ -42,7 +42,6 @@ from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES,\
     patch_request_class
 
-bootstrap()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -55,7 +54,12 @@ def create_app(test_config=None):
     # Only exists if inside kubernetes cluster
     if os.path.exists("/subscribie/volume/config.py"):
       print("Overiding config from /subscribie/volume/config.py")
-      app.config.from_pyfile('/subscribie/volume/config.py', silent=False)
+      app.config.from_pyfile('/subscribie/volume/config.py', silent=True)
+    else:
+      print("Falling back to default config.py")
+      app.config.from_pyfile('config.py', silent=False)
+
+    bootstrap(app)
 
     @app.before_request
     def start_session():

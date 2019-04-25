@@ -5,6 +5,7 @@ import yaml
 import subprocess
 import shutil
 from pathlib import Path
+from .jamla import Jamla
 
 def bootstrap_needed():
   if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is not None and \
@@ -48,7 +49,7 @@ def get_couchdb_con():
   COUCHDB = HOST + '/' + DBNAME
   return COUCHDB
 
-def bootstrap():
+def bootstrap(app):
   '''
   Bootstrap a subscribie site whereby the Jamla manifest
   is to be consumed from an external source e.g. a couchdb
@@ -70,6 +71,8 @@ def bootstrap():
     - continue running as normal
   '''
   if bootstrap_needed() and bootstrap_possible():
+    jamlaApp = Jamla()
+    jamla = jamlaApp.load(src=app.config['JAMLA_PATH'])
     print("NOTICE: bootstrapping site")
     shopName = os.getenv("SUBSCRIBIE_SHOPNAME")
     # Fetch jamla from couchdb
@@ -92,7 +95,9 @@ def bootstrap():
           attachments = resp['_attachments']
           for key, value in attachments.items():
             attachment = requests.get(COUCHDB_CON + '/' + shopName + '/' + key, stream=True)
-            with open('/subscribie/volume/themes/theme-jesmond/static/' + key, 'wb') as fp:
+            attachmentDst = '/subscribie/volume/themes/theme-{}/static/'\
+                            .format(jamla['theme']['name']) + key
+            with open(attachmentDst, 'wb') as fp:
               shutil.copyfileobj(attachment.raw, fp) # Store attachment in theme static folder
       else:
         print("NOTICE: {} already present so not overwriting".format(dst))
