@@ -1,4 +1,0 @@
-graft subscribie/static
-graft subscribie/themes
-global-exclude *.pyc
-global-exclude *.swp

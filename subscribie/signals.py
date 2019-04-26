@@ -10,5 +10,4 @@
 from blinker import signal
 
 # Hedgehog Core signals.  For usage examples grep the source code
-journey_complete = signal('journey-complete')
-
+journey_complete = signal("journey-complete")
