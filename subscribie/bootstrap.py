@@ -108,22 +108,30 @@ def bootstrap(app):
         print("NOTICE: {} already present so not overwriting".format(dst))
         
       # Update jamla path and template folder path
+      db_full_path = "/subscribie/volume/data.db"
       template_base_dir = "/subscribie/volume/themes/"
-      import pdb;pdb.set_trace()
       static_folder = "{template_base_dir}theme-{theme_name}/static/".format(
                           template_base_dir=template_base_dir, 
                           theme_name=jamla['theme']['name'])
       subprocess.call("subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
+               --DB_FULL_PATH {db_full_path}\
                --TEMPLATE_BASE_DIR {template_base_dir}\
                --STATIC_FOLDER {static_folder}".format(
+                  db_full_path=db_full_path,
                   template_base_dir=template_base_dir,
                   static_folder=static_folder),
                       shell=True)
       # Move config file to persistant volume
       path = os.path.abspath(__file__ + '../../../instance')
-      print("Copying config.py to: {}".format(path))
+      print("Copying config.py from: {}".format(path))
       shutil.copy(path + '/config.py', '/subscribie/volume/')
+
+      # Move database file to persistant volume
+      path = os.path.abspath(__file__ + '../../../')
+      print("Copying data.db from: {}".format(path))
+      shutil.copy(path + '/data.db', '/subscribie/volume/')
+      
         
       # Mark site as bootstrapped
       path = Path('/subscribie/volume/bootstrap_complete')
