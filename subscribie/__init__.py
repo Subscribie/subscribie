@@ -55,6 +55,9 @@ def create_app(test_config=None):
     if os.path.exists("/subscribie/volume/config.py"):
       print("Overiding config from /subscribie/volume/config.py")
       app.config.from_pyfile('/subscribie/volume/config.py', silent=True)
+      print("The config is now:")
+      for config in app.config:
+        print("{configName}:{configValue}".format(configName=config, configValue=app.config[config]))
     else:
       print("Falling back to default config.py")
       app.config.from_pyfile('config.py', silent=False)

@@ -10,8 +10,11 @@ from .jamla import Jamla
 def bootstrap_needed():
   if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is not None and \
     os.path.isfile('/subscribie/volume/bootstrap_complete') is False:
+    print("NOTICE: bootstrap requested")
     return True
   else:
+    print("NOTICE: bootstrap not possible because marked as complete,\
+          or `export SUBSCRIBIE_FETCH_JAMLA=True` not set")
     return False
 
 def bootstrap_possible():
@@ -82,8 +85,10 @@ def bootstrap(app):
       # Inject Jamla manifest
       jamla = yaml.dump(req.json())
       # Write jamla.yaml to PersistentVolume
-      with open('/subscribie/volume/jamla.yaml', 'w') as fp:
+      with open('/subscribie/volume/jamla.yaml', 'w+') as fp:
         fp.write(jamla)
+      # Parse jamla back to dict
+      jamla = yaml.load(jamla)
       # Move themes to persistant volume
       dst = '/subscribie/volume/themes'
       if os.path.exists(dst) is False:
@@ -103,10 +108,17 @@ def bootstrap(app):
         print("NOTICE: {} already present so not overwriting".format(dst))
         
       # Update jamla path and template folder path
+      template_base_dir = "/subscribie/volume/themes/"
+      import pdb;pdb.set_trace()
+      static_folder = "{template_base_dir}theme-{theme_name}/static/".format(
+                          template_base_dir=template_base_dir, 
+                          theme_name=jamla['theme']['name'])
       subprocess.call("subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
-               --TEMPLATE_FOLDER /subscribie/volume/themes/\
-               --STATIC_FOLDER /subscribie/volume/themes/theme-jesmond/static/",
+               --TEMPLATE_BASE_DIR {template_base_dir}\
+               --STATIC_FOLDER {static_folder}".format(
+                  template_base_dir=template_base_dir,
+                  static_folder=static_folder),
                       shell=True)
       # Move config file to persistant volume
       path = os.path.abspath(__file__ + '../../../instance')
