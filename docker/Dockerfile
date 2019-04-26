@@ -1,4 +1,4 @@
-FROM python:3.5.7-alpine3.9
+FROM python:3.6.8-alpine3.9
 WORKDIR /usr/src/app
 RUN apk update && apk update && \
     apk add --no-cache build-base libffi-dev openssl-dev bash git gcc
