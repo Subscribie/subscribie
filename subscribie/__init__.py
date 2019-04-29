@@ -59,11 +59,13 @@ from .Template import load_theme
 from blinker import signal
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
+import importlib
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    bootstrap(app)
     app.config.from_mapping(
         SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "subscribie.sqlite")
     )
@@ -82,8 +84,6 @@ def create_app(test_config=None):
     else:
         print("Falling back to default config.py")
         app.config.from_pyfile("config.py", silent=False)
-
-    bootstrap(app)
 
     @app.before_request
     def start_session():
@@ -146,7 +146,6 @@ def create_app(test_config=None):
     alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
     # Set custom modules path
-    sys.path.append("/usr/src/app/subscribie/subscribie/modules")
     if type(jamla["modules_path"]) is str:
         print("Setting module path to: {}".format(jamla["modules_path"]))
         sys.path.append(jamla["modules_path"])
@@ -189,56 +188,41 @@ def create_app(test_config=None):
     # Import any custom modules
     if "modules" in jamla:
         print("sys.path contains: {}".format(sys.path))
-        try:
-            for module in jamla["modules"]:
-                print("Importing module: {}".format(module["name"]))
-                # First set any env variables the module requests:
-                if "env" in module:
-                    for env in module["env"]:
-                        print(
-                            "Setting env name: {} with value: {}".format(
-                                env["name"], str(env["value"])
-                            )
-                        )
-                        os.environ[env["name"]] = str(env["value"])
-                # Assume standard python module
+        for module in jamla["modules"]:
+            # Assume standard python module
+            try:
+                print("Attempting to importing module: {}".format(module["name"]))
+                importlib.import_module(module["name"])
+            except ModuleNotFoundError:
+                # Attempt to load module from src
+                dest = "/" + jamla["modules_path"] + module["name"] + "/"
+                print("Cloning module into: {}".format(dest))
+                os.makedirs(dest, exist_ok=True)
                 try:
-                    __import__(module["name"])
-                except ImportError:
-                    # Attempt to load module from src
-                    dest = jamla["modules_path"] + "/" + module["name"] + "/"
-                    print("Cloning module into: {}".format(dest))
-                    os.makedirs(dest, exist_ok=True)
-                    try:
-                        git.Repo.clone_from(module["src"], dest)
-                    except git.exc.GitCommandError:
-                        pass
-                    # Now re-try import
-                    try:
-                        __import__(module["name"])
-                    except ImportError:
-                        print(
-                            "Error: Could not import module: {}".format(module["name"])
-                        )
-                # Register modules as blueprint (if it is one)
+                    git.Repo.clone_from(module["src"], dest)
+                except git.exc.GitCommandError:
+                    pass
+                # Now re-try import
                 try:
-                    importedModule = __import__(module["name"])
-                    if isinstance(getattr(importedModule, module["name"]), Blueprint):
-                        # Load any config the Blueprint declares
-                        blueprint = getattr(importedModule, module["name"])
-                        blueprintConfig = "".join(
-                            [blueprint.root_path, "/", "config.py"]
-                        )
-                        app.config.from_pyfile(blueprintConfig, silent=True)
-                        # Register the Blueprint
-                        app.register_blueprint(getattr(importedModule, module["name"]))
-                except (ImportError, AttributeError):
-                    print(
-                        "Error: Could not import module as blueprint: {}".format(
-                            module["name"]
-                        )
+                    importlib.invalidate_caches()
+                    importlib.import_module(module["name"])
+                except ModuleNotFoundError:
+                    print("Error: Could not import module: {}".format(module["name"]))
+            # Register modules as blueprint (if it is one)
+            try:
+                importedModule = importlib.import_module(module["name"])
+                if isinstance(getattr(importedModule, module["name"]), Blueprint):
+                    # Load any config the Blueprint declares
+                    blueprint = getattr(importedModule, module["name"])
+                    blueprintConfig = "".join([blueprint.root_path, "/", "config.py"])
+                    app.config.from_pyfile(blueprintConfig, silent=True)
+                    # Register the Blueprint
+                    app.register_blueprint(getattr(importedModule, module["name"]))
+                    print("Imported as flask Blueprint")
+            except (ModuleNotFoundError, AttributeError):
+                print(
+                    "Error: Could not import module as blueprint: {}".format(
+                        module["name"]
                     )
-
-        except TypeError as e:
-            print(e)
+                )
     return app

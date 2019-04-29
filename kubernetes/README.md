@@ -22,6 +22,22 @@ by generating a valid kubernetes deployment manifest for each site found in
 couchdb, and submitts the manifest to kubernetes cluster using 
 [https://github.com/kubernetes-client/python](python kubernetes client).
 
+In order to create pods, create the service account for it:
+
+```
+kubectl apply -f sites-pipeline/subscribie-k8s-service-account-cronpod.yaml
+```
+Add the following roles to the cronpod service account:
+```
+## Create pod reader role
+kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods
+#### Bind it to the cronpod service account
+kubectl create rolebinding cronpod-view \
+--role=pod-reader \
+--serviceaccount=default:cronpod \
+--namespace=default
+```
+
 The cronpod will also create the required couchdb database and views required.
 ```
 kubectl apply -f sites-pipeline/subscribie-k8s-cron-pod.yaml

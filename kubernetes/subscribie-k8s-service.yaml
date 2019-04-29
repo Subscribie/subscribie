@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     subscribie: onboarding
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - protocol: TCP
     port: 80

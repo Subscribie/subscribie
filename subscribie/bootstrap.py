@@ -5,7 +5,6 @@ import yaml
 import subprocess
 import shutil
 from pathlib import Path
-from .jamla import Jamla
 
 
 def bootstrap_needed():
@@ -94,8 +93,6 @@ def bootstrap(app):
     - continue running as normal
   """
     if bootstrap_needed() and bootstrap_possible():
-        jamlaApp = Jamla()
-        jamla = jamlaApp.load(src=app.config["JAMLA_PATH"])
         print("NOTICE: bootstrapping site")
         shopName = os.getenv("SUBSCRIBIE_SHOPNAME")
         # Fetch jamla from couchdb

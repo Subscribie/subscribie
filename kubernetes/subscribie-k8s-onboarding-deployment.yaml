@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: subscribie
-        image: subscribie/subscribie:latest
+        image: subscribie/subscribie
         imagePullPolicy: Never
         ports:
         - containerPort: 9090
@@ -35,6 +35,22 @@ spec:
           value: password
         - name: COUCHDB_DBNAME
           value: jamlas
+        - name: COUCHDB_ENABLED
+          value: "True"
+        - name: COUCHDB_SCHEME
+          value: "http://"
+        - name: COUCHDB_IP
+          value: couchdb-service
+        - name: COUCHDB_PORT
+          value: "5984"
+        - name: DISABLE_LEGACY_BUILD_METHOD
+          value: "True"
+        - name: BUILDER_SUB_AUTH_ID
+          value: na
+        - name: BUILDER_SUB_AUTH_PASSWORD
+          value: na
+        - name: BUILDER_DEPLOY_WEB_HOST
+          value: na
         volumeMounts:
           - mountPath: '/subscribie/volume'
             name: subscribie-volume
