@@ -60,6 +60,7 @@ from blinker import signal
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
 import importlib
+from importlib import reload
 
 
 def create_app(test_config=None):
@@ -204,7 +205,8 @@ def create_app(test_config=None):
                     pass
                 # Now re-try import
                 try:
-                    importlib.invalidate_caches()
+                    import site
+                    reload(site)
                     importlib.import_module(module["name"])
                 except ModuleNotFoundError:
                     print("Error: Could not import module: {}".format(module["name"]))
