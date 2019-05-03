@@ -195,7 +195,7 @@ def create_app(test_config=None):
                 importlib.import_module(module["name"])
             except ModuleNotFoundError:
                 # Attempt to load module from src
-                dest = "/" + jamla["modules_path"] + module["name"] + "/"
+                dest = jamla["modules_path"] + module["name"]
                 print("Cloning module into: {}".format(dest))
                 os.makedirs(dest, exist_ok=True)
                 try:
