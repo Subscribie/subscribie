@@ -9,7 +9,7 @@ spec:
   serviceAccountName: cronpod
   containers:
   - name: cronpod
-    image: subscribie/cronpod:v0.1
+    image: subscribie/cronpod:v0.3
     imagePullPolicy: Always
     command: ["python", "cronjob.py"]
     env:
