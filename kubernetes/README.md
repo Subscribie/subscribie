@@ -11,7 +11,6 @@ from a Subscribie site with the builder module installed.
 ### CouchDB
 ```
 kubectl apply -f couchdb-k8s-pod.yaml
-service/couchdb-service unchanged
 deployment.apps/couchdb-deployment created
 persistentvolumeclaim/couchdb-volume-claim created
 ```
@@ -54,9 +53,17 @@ Set `HOST` to the couchdb host with username and password:
 ```
 HOST=http://admin:password@127.0.0.1:5988/jamlas
 ```
+Patch users doc (not created automatically by docker image), fixes 
+`ensure_auth_ddoc_exists/` error and others.:
+```
+curl -X PUT http://admin:password@127.0.0.1:5988/_users
+curl -X PUT http://admin:password@127.0.0.1:5988/_replicator
+curl -X PUT http://admin:password@127.0.0.1:5988/_global_changes #optional
+```
 Submit the subscribie-onboarding site into couchdb:
 ```
 curl -X PUT $HOST/Subscribie -H "Content-Type: application/json" -d @jamla.json
+{"ok":true,"id":"Subscribie","rev":"1-cf07243a3fe7fcb65830d962b87be08a"}
 ```
 
 ### Subscribie Onboarding Deployment 
