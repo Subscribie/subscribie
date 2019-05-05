@@ -39,11 +39,11 @@ if "COUCH_DB_SERVICE_NAME" in os.environ:
             "http://{}:{}".format(COUCHDB_USER, COUCHDB_PASSWORD),
             "@",
             os.getenv("COUCH_DB_SERVICE_NAME"),
-            ":5984/",
+            ":5984",
         ]
     )
 else:
-    HOST = "http://{}:{}@127.0.0.1:5984/".format(COUCHDB_USER, COUCHDB_PASSWORD)
+    HOST = "http://{}:{}@127.0.0.1:5984".format(COUCHDB_USER, COUCHDB_PASSWORD)
 
 DBNAME = "jamlas"
 COUCHDB = HOST + "/" + DBNAME
@@ -131,7 +131,16 @@ def generateManifest(docId):
                                 "ports": [
                                     {"name": "subscribie-port", "containerPort": 9090}
                                 ],
-                                "env": [{"name": "EXAMPLE", "value": "example_value"}],
+                                "env": [
+                                        {"name": "EXAMPLE", "value": "example_value"},
+                                        {"name": "SUBSCRIBIE_SHOPNAME", "value": siteName},
+                                        {"name": "SUBSCRIBIE_FETCH_JAMLA", "value":"couchdb"},
+                                        {"name": "COUCH_DB_SERVICE_NAME", "value": "couchdb-service"},
+                                        {"name": "COUCHDB_USER", "value": "admin"},
+                                        {"name": "COUCHDB_PASSWORD", "value": "password"},
+                                        {"name": "COUCHDB_DBNAME", "value": "jamlas"},
+                                        {"name": "COUCHDB_PASSWORD", "value": "password"}
+                                ],
                                 "volumeMounts": [
                                     {
                                         "name": siteName + "-static",
