@@ -144,7 +144,7 @@ def generateManifest(docId):
                                 "volumeMounts": [
                                     {
                                         "name": siteName + "-static",
-                                        "mountPath": "/subscribie/static",
+                                        "mountPath": "/subscribie/volume",
                                     }
                                 ],
                             }
