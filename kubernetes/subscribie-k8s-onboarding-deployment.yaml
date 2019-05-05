@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
       - name: subscribie
-        image: subscribie/subscribie
-        imagePullPolicy: Never
+        image: subscribie/subscribie:v0.05
+        imagePullPolicy: Always
         ports:
         - containerPort: 9090
         env:
@@ -43,13 +43,13 @@ spec:
           value: couchdb-service
         - name: COUCHDB_PORT
           value: "5984"
-        - name: DISABLE_LEGACY_BUILD_METHOD
+        - name: DISABLE_LEGACY_BUILD_METHOD #Builder module env
           value: "True"
-        - name: BUILDER_SUB_AUTH_ID
+        - name: BUILDER_SUB_AUTH_ID # Builder module env
           value: na
-        - name: BUILDER_SUB_AUTH_PASSWORD
+        - name: BUILDER_SUB_AUTH_PASSWORD # Builder module env
           value: na
-        - name: BUILDER_DEPLOY_WEB_HOST
+        - name: BUILDER_DEPLOY_WEB_HOST # Builder module env
           value: na
         volumeMounts:
           - mountPath: '/subscribie/volume'
