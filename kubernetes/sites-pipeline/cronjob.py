@@ -126,7 +126,7 @@ def generateManifest(docId):
                         "containers": [
                             {
                                 "name": "subscribie",
-                                "image": "subscribie/subscribie:v0.0.1",
+                                "image": "subscribie/subscribie:v0.0.6",
                                 "imagePullPolicy": "Always",
                                 "ports": [
                                     {"name": "subscribie-port", "containerPort": 9090}
