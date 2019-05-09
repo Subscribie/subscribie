@@ -74,6 +74,10 @@ deployment.apps/subscribie-onboarding-deployment created
 persistentvolumeclaim/subscribie-onboarding-volume created
 
 ```
+Deploy the subscribie service:
+```
+kubectl apply -f subscribie-k8s-service.yaml
+```
 
 ### Verify Deployment
 View the pods:
