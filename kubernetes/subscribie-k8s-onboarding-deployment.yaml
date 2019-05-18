@@ -53,20 +53,12 @@ spec:
           value: na
         volumeMounts:
           - mountPath: '/subscribie/volume'
-            name: subscribie-volume
+            name: subscribie-onboarding-volume
       volumes:
-        - name: subscribie-volume
-          persistentVolumeClaim:
-            claimName: subscribie-onboarding-volume
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: subscribie-onboarding-volume
-spec:
-  accessModes: 
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources: 
-    requests:
-      storage: 1Gi
+        - name: subscribie-onboarding-volume
+          flexVolume:
+            driver: ceph.rook.io/rook
+            fsType: ceph
+            options:
+              fsName: subscribie-onboarding
+              clusterNamespace: rook-ceph

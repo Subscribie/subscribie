@@ -69,6 +69,7 @@ curl -X PUT $HOST/Subscribie -H "Content-Type: application/json" -d @jamla.json
 ### Subscribie Onboarding Deployment 
 This will ask kubernetes to deploy the subscribie-onboarding-deployment.
 ```
+kubectl apply -f subscribie-k8s-filesystem.yaml # ceph back storage 
 kubectl apply -f subscribie-k8s-onboarding-deployment.yaml
 deployment.apps/subscribie-onboarding-deployment created
 persistentvolumeclaim/subscribie-onboarding-volume created
