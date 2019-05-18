@@ -97,16 +97,11 @@ kubernetes                  ClusterIP      10.96.0.1       <none>        443/TCP
 subscribie-onboarding-svc   LoadBalancer   10.104.39.46    <pending>     80:32289/TCP   10h
 ```
 View the logs from the subscribie-onboarding pod:
+First get the name of the pod (with `kubectl get pods -l subscribie`)
+then: 
 ```
-kubectl logs -f subscribie-onboarding-deployment-5c7d777d7f-zlkxn
+kubectl logs -f subscribie-onboarding-deployment-<pod-id>
 ```
-If on minikube, you can view the subscribie-onboarding website in your browser:
-```
-minikube service subscribie-onboarding-svc
-```
-If you're on a real hosted kubernetes cluster (e.g. Google Cloud) just wait for 
-an IP to appear in-place of `<pending>`. 
-
 
 #### Debugging
 ##### Couchdb
