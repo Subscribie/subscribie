@@ -27,6 +27,15 @@ spec:
       labels:
         subscribie: couchdb
     spec:
+      affinity:
+        nodeAffinity: # Don't schedule onto preemptive nodes
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: preemptive
+                  operator: NotIn
+                  values:
+                  - "true"
       containers:
       - name: couchdb
         image: couchdb:2.3.1
