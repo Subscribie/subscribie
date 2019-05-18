@@ -74,11 +74,30 @@ kubectl apply -f subscribie-k8s-onboarding-deployment.yaml
 deployment.apps/subscribie-onboarding-deployment created
 persistentvolumeclaim/subscribie-onboarding-volume created
 
-```
-Deploy the subscribie service:
+### Deploy the subscribie service:
 ```
 kubectl apply -f subscribie-k8s-service.yaml
 ```
+### Expose onboarding website to ingress
+Once you have set-up cert-manager for tsl termination:
+( see for step-by-step see `from-scratch-empty-cluster.txt`)
+
+Deploy staging cert (self signed)
+```
+kubectl apply -f subscribie-k8s-onboarding-ingress.yaml
+```
+To verify the certificate:
+```
+kubectl describe certificate start-subscribie-co-uk-secret
+```
+To change the certificate into a production one, edit the ingress
+annotation `certmanager.k8s.io/issuer` from `letsencrypt-staging` to `prod`:
+```
+kubectl delete certificate start-subscribie-co-uk-secret # delete old cert
+kubectl edit ingress subscribie-onboarding-ingress # and change from `letsencrypt-staging` to `prod`
+```
+After editing the ingress annotation, you should be able to access the site 
+and see a valid tls certificate.
 
 ### Verify Deployment
 View the pods:

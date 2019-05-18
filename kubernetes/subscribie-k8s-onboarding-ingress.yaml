@@ -9,7 +9,7 @@ metadata:
 
 spec:
   rules:
-  - host: build.subscribie.co.uk
+  - host: start.subscribie.co.uk
     http:
       paths:
       - path: /
@@ -18,5 +18,5 @@ spec:
           servicePort: 80
   tls:
   - hosts:
-    - build.subscribie.co.uk
-    secretName: build-subscribie-co-uk-secret
+    - start.subscribie.co.uk
+    secretName: start-subscribie-co-uk-secret
