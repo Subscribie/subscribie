@@ -1,0 +1,361 @@
+# If using google kubernetes:
+gcloud container clusters get-credentials subscribie --region  us-central1
+
+# If using Digital Ocean:
+# - Then download the credentials file from the dashboard
+# then do `export KUBECONFIG=/path/to/file`
+
+# If google, Need to be cluster admin
+kubectl create clusterrolebinding cluster-admin-binding \
+  --clusterrole=cluster-admin \
+  --user=$(gcloud config get-value core/account)
+
+# Ceph storage cluster
+For storage/persistance layer on kubernetes, Subscribie uses Ceph. 
+For the cluster size, start with a standard 3 node cluster 3.75GB RAM, 
+100GB boot disk for each worker node. 
+The step by step for this is: 
+https://blog.karmacomputing.co.uk/scaling-kubernetes-readwritemany-ceph-deployments/
+
+# Subscribie cluser
+After the ceph cluster is up, create another node pool in the same cluster for 
+subscribie pods, you may create smaller nodes, and mark them as 
+preemptive nodes.
+
+## Setup Nginx ingress controller
+(source: https://docs.cert-manager.io/en/latest/tutorials/acme/quick-start/index.html#)
+
+Install helm then Setup tiller, then deploy nginx quickstart
+```
+kubectl create serviceaccount tiller --namespace=kube-system
+kubectl create clusterrolebinding tiller-admin --serviceaccount=kube-system:tiller --clusterrole=cluster-admin
+helm init --service-account=tiller
+helm repo update
+helm install stable/nginx-ingress --name quickstart
+```
+
+Verify:
+Get the external IP of your ingress
+The value for EXTERNAL-IP is the IP you should use for your DNS A records when configuring your web address records.
+```
+kubectl get svc
+NAME                                       TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+quickstart-nginx-ingress-controller        LoadBalancer   10.96.12.226   <pending>     80:31809/TCP,443:31917/TCP   26s
+quickstart-nginx-ingress-default-backend   ClusterIP      10.96.14.32    <none>        80/TCP                       26s
+```
+
+Increase the nginx ingress contoller deployment to > 1:
+Increase replicas to at least 2:
+```
+kubectl scale deployment.v1.apps/quickstart-nginx-ingress-controller --replicas=2
+```
+And same for the default backend:
+```
+kubectl edit deployment quickstart-nginx-ingress-default-backend
+```
+
+
+
+
+# Install Cert manager
+# Create a namespace to run cert-manager in
+kubectl create namespace cert-manager
+
+# Disable resource validation on the cert-manager namespace
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+
+# Install the CustomResourceDefinitions and cert-manager itself
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.8.0-beta.0/cert-manager.yaml
+
+# Verify Cert Manager
+```
+kubectl get pods --namespace cert-manager
+```
+```
+NAME                               READY   STATUS      RESTARTS   AGE
+cert-manager-5c6866597-zw7kh       1/1     Running     0          2m
+webhook-78fb756679-9bsmf           1/1     Running     0          2m
+webhook-ca-sync-1543708620-n82gj   0/1     Completed   0          1m
+```
+
+# Test certmanager with self-signed cert test:
+
+# Create a ClusterIssuer to test the webhook works okay
+
+Edit `commonName` to a subdomain you control, and set it's
+A record to that of the Loadbalancer.
+
+```
+cat <<EOF > test-resources.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager-test
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: test-selfsigned
+  namespace: cert-manager-test
+spec:
+  selfSigned: {}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: selfsigned-cert
+  namespace: cert-manager-test
+spec:
+  commonName: testingress.example.com
+  secretName: selfsigned-cert-tls
+  issuerRef:
+    name: test-selfsigned
+EOF
+```
+
+# Create the test resourcesA
+```
+kubectl apply -f test-resources.yaml
+```
+
+# Check the status of the newly created certificate
+# You may need to wait a few seconds before cert-manager processes the
+# certificate request
+```
+kubectl describe certificate -n cert-manager-test
+...
+Spec:
+  Common Name:  testingress.example.com
+  Issuer Ref:
+    Name:       test-selfsigned
+  Secret Name:  selfsigned-cert-tls
+Status:
+  Conditions:
+    Last Transition Time:  2019-01-29T17:34:30Z
+    Message:               Certificate is up to date and has not expired
+    Reason:                Ready
+    Status:                True
+    Type:                  Ready
+  Not After:               2019-04-29T17:34:29Z
+Events:
+  Type    Reason      Age   From          Message
+  ----    ------      ----  ----          -------
+  Normal  CertIssued  4s    cert-manager  Certificate issued successfully
+```
+Success means that if you visit, `https://testingress.example.com`, 
+you will get a certificate *not* secure message warning. This is expected,
+as certmanager has setup a self-signed certificate for testing. You will also
+see `default backend - 404` as the response body, as no ingress has been setup 
+for this route.
+
+# Clean up the test resources
+kubectl delete -f test-resources.yaml
+```
+
+## Set-up issuer
+
+```
+touch letsencrypt-staging.yaml
+```
+Change the email, then paste the following into letsencrypt-staging.yaml:
+```
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: user@example.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # Secret resource used to store the account's private key.
+      name: example-issuer-account-key
+    # Enable the HTTP01 challenge mechanism for this Issuer
+    http01: {}
+```
+Apply it:
+```
+kubectl apply -f letsencrypt-staging.yaml
+```
+Verify it:
+```
+kubectl describe issuer letsencrypt-staging
+  Acme:
+    Email:  fred@example.com
+    Http 01:
+    Private Key Secret Ref:
+      Name:  example-issuer-account-key
+    Server:  https://acme-staging-v02.api.letsencrypt.org/directory
+Status:
+  Acme:
+    Uri:  https://acme-staging-v02.api.letsencrypt.org/acme/acct/9182896
+  Conditions:
+    Last Transition Time:  2019-05-09T20:39:44Z
+    Message:               The ACME account was registered with the ACME server
+    Reason:                ACMEAccountRegistered
+    Status:                True
+    Type:                  Ready
+```
+
+Add the production issuer:
+```
+touch production-issuer.yaml
+```
+Change the email, then copy paste into production-issuer.yaml:
+
+```
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+ name: letsencrypt-prod
+spec:
+ acme:
+   # The ACME server URL
+   server: https://acme-v02.api.letsencrypt.org/directory
+   # Email address used for ACME registration
+   email: user@example.com
+   # Name of a secret used to store the ACME account private key
+   privateKeySecretRef:
+     name: letsencrypt-prod
+   # Enable the HTTP-01 challenge provider
+   http01: {}
+```
+Apply it:
+```
+kubectl apply -f production-issuer.yaml
+```
+Verify it:
+```
+kubectl describe issuer letsencrypt-prod
+```
+
+## Test certmanager can issue certificates for a domain
+
+In this example we deploy the application called `kuard` with a tls 
+certificate as an example, but you could deploy any web service you wish.
+
+Create a deployment:
+```
+touch kuard.yaml
+```
+Paste in:
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kuard
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kuard
+    spec:
+      containers:
+      - image: gcr.io/kuar-demo/kuard-amd64:1
+        imagePullPolicy: Always
+        name: kuard
+        ports:
+        - containerPort: 8080
+```
+Apply the deployment:
+```
+kubectl apply -f kuard.yaml
+```
+Create a service for this deployment:
+```
+touch service.yaml
+```
+Past in: 
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuard
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: kuard
+```
+Apply service
+```
+kubectl apply -f service.yaml
+```
+Verify service:
+```
+kubectl get service kuard
+NAME    TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+kuard   ClusterIP   10.96.2.224   <none>        80/TCP    59s
+```
+
+## Add an ingress for the test deployment
+
+To verfy that certs can be issued for deployments, we'll create an ingress 
+for the kuard deployment to demonstrate certificates being issued.
+
+Create ingress:
+```
+touch ingress.yaml
+```
+- Uncomment 'staging' then paste in:
+- Add a domain you own (change example.com)
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    certmanager.k8s.io/issuer: "letsencrypt-staging"
+    certmanager.k8s.io/acme-challenge-type: http01
+
+spec:
+  tls:
+  - hosts:
+    - example.example.com
+    secretName: quickstart-example-tls
+  rules:
+  - host: example.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kuard
+          servicePort: 80
+```
+Apply it:
+```
+kubectl apply -f ingress.yaml
+```
+
+After a short while, certmanager will have helped request and apply 
+a certificate for the kuard ingress. In addition, traffic to that host 
+gets directed to the deployed pods within the deployment. 
+By visiting `https://testingress.example.com` you should see the certificate 
+warning, but also your kuard application.
+
+You can see the certificate by:
+```
+kubectl get certificate
+kubectl describe certificate <name>
+``
+
+To switch to a production tls certificate, delete the old certificate, and
+edit the ingress annotatino to use the prod issuer from
+`letsencrypt-staging` to `letsencrypt-prod`:
+
+```
+kubectl delete certificate testingress-tls
+kubectl edit ingress kuard # change letsencrypt-staging to letsencrypt-prod
+```
+> Note: The production certificate won't be issued until the old one is deleted
+
+Now deploy Subscribie. follow
+
+https://github.com/Subscribie/subscribie/tree/master/kubernetes
