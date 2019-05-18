@@ -42,6 +42,19 @@ The cronpod will also create the required couchdb database and views required.
 kubectl apply -f sites-pipeline/subscribie-k8s-cron-pod.yaml
 ```
 
+### Configure RBAC for cronpod
+
+The cronpod needs permissions to put manifests to the kubernetes cluster
+(deployments, ceph storage etc) in a controlled way. 
+
+```
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-deployments-create.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-ingresses-create.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-persistentvolumeclaims-create.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-services-create.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-pods.list.yaml
+```
+
 #### Post the subscribie site into couchdb
 This will forward connections from your local machine into
 the couchdb instance runnin on kubernetes.
