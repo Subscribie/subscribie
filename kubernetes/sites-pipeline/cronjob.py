@@ -5,10 +5,13 @@ import re
 import subprocess
 import kubernetes
 from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 import yaml
 import tempfile
 from time import sleep
 import os
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 from kubernetes import client, config
 
@@ -50,6 +53,75 @@ COUCHDB = HOST + "/" + DBNAME
 WAITING_VIEW = COUCHDB + "/_design" + "/sites-queue" + "/_view" + "/waiting"
 
 
+# create an instance of the API class
+configuration = kubernetes.client.Configuration()
+api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
+group = 'ceph.rook.io' # str | the custom resource's group
+version = 'v1' # str | the custom resource's version
+plural = 'cephfilesystems' # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
+name = 'firstcephfs' # str | the custom object's name
+namespace = 'rook-ceph'
+
+try: 
+    api_response = api_instance.get_namespaced_custom_object(group, version, namespace, plural, name)
+    pp.pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CustomObjectsApi->get_cluster_custom_object: %s\n" % e)
+
+
+def generateCephFilesystemManifest(docId):
+    """ Generate persistent volume claim manifest """
+    # Generate manifest
+    doc = getDoc(docId)
+    siteName = formatSiteName(doc)
+
+    manifest = {
+      "apiVersion": "ceph.rook.io/v1",
+      "kind": "CephFilesystem",
+      "metadata": {
+        "name": "site-storage-" + siteName,
+        "namespace": "rook-ceph"
+      },
+      "spec": {
+        "metadataPool": {
+          "replicated": {
+            "size": 2
+          }
+        },
+        "dataPools": [
+          {
+            "replicated": {
+              "size": 2
+            }
+          }
+        ],
+        "metadataServer": {
+          "activeCount": 1,
+          "activeStandby": "true"
+        }
+      }
+    }
+    deployCephFilesystemManifest(manifest)
+    return manifest
+
+def deployCephFilesystemManifest(manifest):
+  api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
+  group = 'ceph.rook.io' # str | the custom resource's group
+  version = 'v1' # str | the custom resource's version
+  namespace = 'rook-ceph'
+  plural = 'cephfilesystems' # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
+  body = manifest # object | The JSON schema of the Resource to create.
+  pretty = 'true' # str | If 'true', then the output is pretty printed. (optional)
+
+  try: 
+      api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
+      pp.pprint(api_response)
+      import pdb;pdb.set_trace()
+  except ApiException as e:
+      print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
+
+import pdb;pdb.set_trace()
+
 def init():
     # Create required database
     req = requests.put(HOST + "/" + DBNAME)
@@ -70,7 +142,7 @@ def init():
     req = requests.put(COUCHDB + "/_design/sites-queue", json=views)
 
 
-init()  # Create required database and view(s)
+#init()  # Create required database and view(s)
 
 
 def getDoc(docId):
@@ -358,6 +430,10 @@ def consumeSites():
         print("Do documents left to process")
     sleep(1)
     consumeSites()  # Keep checking
+
+generateCephFilesystemManifest("test")
+
+
 
 
 consumeSites()
