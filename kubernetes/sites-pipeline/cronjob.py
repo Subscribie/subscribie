@@ -56,18 +56,6 @@ WAITING_VIEW = COUCHDB + "/_design" + "/sites-queue" + "/_view" + "/waiting"
 # create an instance of the API class
 configuration = kubernetes.client.Configuration()
 api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
-group = 'ceph.rook.io' # str | the custom resource's group
-version = 'v1' # str | the custom resource's version
-plural = 'cephfilesystems' # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
-name = 'firstcephfs' # str | the custom object's name
-namespace = 'rook-ceph'
-
-try: 
-    api_response = api_instance.get_namespaced_custom_object(group, version, namespace, plural, name)
-    pp.pprint(api_response)
-except ApiException as e:
-    print("Exception when calling CustomObjectsApi->get_cluster_custom_object: %s\n" % e)
-
 
 def generateCephFilesystemManifest(docId):
     """ Generate persistent volume claim manifest """
@@ -101,7 +89,6 @@ def generateCephFilesystemManifest(docId):
         }
       }
     }
-    deployCephFilesystemManifest(manifest)
     return manifest
 
 def deployCephFilesystemManifest(manifest):
@@ -116,11 +103,8 @@ def deployCephFilesystemManifest(manifest):
   try: 
       api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
       pp.pprint(api_response)
-      import pdb;pdb.set_trace()
   except ApiException as e:
       print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
-
-import pdb;pdb.set_trace()
 
 def init():
     # Create required database
@@ -142,7 +126,7 @@ def init():
     req = requests.put(COUCHDB + "/_design/sites-queue", json=views)
 
 
-#init()  # Create required database and view(s)
+init()  # Create required database and view(s)
 
 
 def getDoc(docId):
@@ -405,9 +389,9 @@ def consumeSites():
         # Get a (TODO non-deployed) document at random , it dosent matter.
         docRow = random.choice(resp["rows"])
         # Generate storage
-        pvcManifest = generatePVCManifest(docRow["id"])
+        fsManifest = generateCephFilesystemManifest(docRow["id"])
         # Deploy storage
-        deployPersistentVolumeClaim(pvcManifest)
+        deployCephFilesystemManifest(fsManifest)
         # Generate service & deploy
         manifest = generateServiceManifest(docRow["id"])
         deployServiceManifest(manifest)
@@ -430,11 +414,6 @@ def consumeSites():
         print("Do documents left to process")
     sleep(1)
     consumeSites()  # Keep checking
-
-generateCephFilesystemManifest("test")
-
-
-
 
 consumeSites()
 
