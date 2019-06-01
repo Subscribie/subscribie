@@ -85,7 +85,7 @@ def generateCephFilesystemManifest(docId):
         ],
         "metadataServer": {
           "activeCount": 1,
-          "activeStandby": "true"
+          "activeStandby": True  # True not "true" as operator does not validate
         }
       }
     }
