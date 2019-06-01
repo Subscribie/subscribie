@@ -208,9 +208,14 @@ def generateManifest(docId):
                         "volumes": [
                             {
                                 "name": siteName + "-static",
-                                "persistentVolumeClaim": {
-                                    "claimName": siteName + "-static"
-                                },
+                                "flexVolume": {
+                                  "driver": "ceph.rook.io/rook",
+                                  "fsType": "ceph",
+                                  "options": {
+                                    "fsName": "site-storage-" + siteName,
+                                    "clusterNamespace": "rook-ceph"
+                                  }
+                                }
                             }
                         ],
                     },
