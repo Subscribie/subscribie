@@ -146,10 +146,32 @@ def bootstrap(app):
             print("Copying data.db from: {}".format(path))
             shutil.copy(path + "/data.db", "/subscribie/volume/")
             db_full_path = "/subscribie/volume/data.db"
+
+            # Update jamla path and template folder path
             template_base_dir = "/subscribie/volume/themes/"
             static_folder = "{template_base_dir}theme-{theme_name}/static/".format(
                 template_base_dir=template_base_dir, theme_name=jamla["theme"]["name"]
             )
+
+            # Run subscribie_cli database migrations
+            subprocess.call('subscribie migrate --DB_FULL_PATH ' + db_full_path,
+                            shell=True)
+
+
+            # Inject user's (site owners) email address into the data.db
+            for email in jamla['users']:
+              #TODO use subscribie cli for injecting the user.
+              con = sqlite3.connect(db_full_path)
+              con.text_factory = str
+              cur = con.cursor()
+              now = datetime.datetime.now()
+              login_token = ''
+              cur.execute("INSERT INTO user (email, created_at, active, login_token) VALUES (?,?,?,?)",
+                         (email, now, 1, login_token,))
+              con.commit()
+              con.close()
+
+            # Set subscribie config for db path, template dir, static folder
             subprocess.call(
                 "subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
