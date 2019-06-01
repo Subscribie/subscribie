@@ -13,16 +13,14 @@ def bootstrap_needed():
     print("NOTICE: bootstrap requested")
     fail = False
     if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is None:
-      print("SUBSCRIBIE_FETCH_JAMLA is not set")
+      print("NOTICE: SUBSCRIBIE_FETCH_JAMLA is not set, refusing to bootstrap.")
       fail = True
     if os.path.isfile("/subscribie/volume/bootstrap_complete") is True:
       print("/subscribie/volume/bootstrap_complete already exists")
       fail = True
     if fail is True:
-      print(
-          "NOTICE: bootstrap not possible because marked as complete,\
-        or `export SUBSCRIBIE_FETCH_JAMLA=True` not set"
-      )
+      print("NOTICE: bootstrap not possible. Either already complete or \
+              SUBSCRIBIE_FETCH_JAMLA not set.")
       return False
     return True
 
