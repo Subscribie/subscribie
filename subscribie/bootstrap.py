@@ -80,22 +80,26 @@ def bootstrap(app):
     """
   Bootstrap a subscribie site whereby the Jamla manifest
   is to be consumed from an external source e.g. a couchdb
-  database. We assume a persistant volume is present at path
-  "/subscribie/volume" this is used to store the Jamla manifest
-  and also mark as bootstrap completed by dropping an empty file
-  'bootstrap_complete' in /subscribie/volume.
-
+  database. We assume a persistant volume is attatched at path
+  "/subscribie/volume" this is used to store:
+    - The Jamla manifest specific to this site
+    - The data.db sqlite3 database for the admin user
+    - To mark site a bootstrap completed by creating an empty file
+      'bootstrap_complete' in /subscribie/volume.
+  The bootstrap works as follows:
     - Work out if we need to bootstrap 
       - By checking for SUBSCRIBIE_FETCH_JAMLA environment var
       - and by checking if exists /subscribie/volume/bootstrap_complete
     - Fetch Jamla manifest from external source (assume couchdb)
-    - Perform bootstrap
+    - Perform bootstrap:
       - Inject Jamla manifest to /subscribie/volume/jamla.yaml
       - Update jamla path in config.py
       - Inject static assets (images, if any, from couchdb attachments) 
-    - Copy config.py to /subscribie/volume/config.py
-    - Mark as bootstrapped
-    - continue running as normal
+      - Copy config.py to /subscribie/volume/config.py
+      - Inject user's email address into data.db (email is in the jamla
+        manifest
+      - Mark as bootstrapped
+      - Continue running as normal
   """
     if bootstrap_needed() and bootstrap_possible():
         print("NOTICE: bootstrapping site")
