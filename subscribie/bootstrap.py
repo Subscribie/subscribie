@@ -141,7 +141,10 @@ def bootstrap(app):
             else:
                 print("NOTICE: {} already present so not overwriting".format(dst))
 
-            # Update jamla path and template folder path
+            # Move database file to persistant volume
+            path = os.path.abspath(__file__ + "../../../")
+            print("Copying data.db from: {}".format(path))
+            shutil.copy(path + "/data.db", "/subscribie/volume/")
             db_full_path = "/subscribie/volume/data.db"
             template_base_dir = "/subscribie/volume/themes/"
             static_folder = "{template_base_dir}theme-{theme_name}/static/".format(
@@ -163,11 +166,6 @@ def bootstrap(app):
             path = os.path.abspath(__file__ + "../../../instance")
             print("Copying config.py from: {}".format(path))
             shutil.copy(path + "/config.py", "/subscribie/volume/")
-
-            # Move database file to persistant volume
-            path = os.path.abspath(__file__ + "../../../")
-            print("Copying data.db from: {}".format(path))
-            shutil.copy(path + "/data.db", "/subscribie/volume/")
 
             # Mark site as bootstrapped
             path = Path("/subscribie/volume/bootstrap_complete")
