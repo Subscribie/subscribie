@@ -5,21 +5,26 @@ import yaml
 import subprocess
 import shutil
 from pathlib import Path
+import sqlite3
+import datetime
 
 
 def bootstrap_needed():
-    if (
-        os.getenv("SUBSCRIBIE_FETCH_JAMLA") is not None
-        and os.path.isfile("/subscribie/volume/bootstrap_complete") is False
-    ):
-        print("NOTICE: bootstrap requested")
-        return True
-    else:
-        print(
-            "NOTICE: bootstrap not possible because marked as complete,\
-          or `export SUBSCRIBIE_FETCH_JAMLA=True` not set"
-        )
-        return False
+    print("NOTICE: bootstrap requested")
+    fail = False
+    if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is None:
+      print("SUBSCRIBIE_FETCH_JAMLA is not set")
+      fail = True
+    if os.path.isfile("/subscribie/volume/bootstrap_complete") is True:
+      print("/subscribie/volume/bootstrap_complete already exists")
+      fail = True
+    if fail is True:
+      print(
+          "NOTICE: bootstrap not possible because marked as complete,\
+        or `export SUBSCRIBIE_FETCH_JAMLA=True` not set"
+      )
+      return False
+    return True
 
 
 def bootstrap_possible():
