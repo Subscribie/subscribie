@@ -37,9 +37,11 @@ kubectl create rolebinding cronpod-view \
 --namespace=default
 ```
 
-The cronpod will also create the required couchdb database and views required.
+The cronpod deployment will 
+- Constantly poll for new sites to be deployed by checking couchdb
+- It will also create the required couchdb database and views required if they're not present in couchdb already
 ```
-kubectl apply -f sites-pipeline/subscribie-k8s-cron-pod.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-cron-deployment.yaml
 ```
 
 ### Configure RBAC for cronpod
