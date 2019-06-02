@@ -5,10 +5,13 @@ import re
 import subprocess
 import kubernetes
 from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 import yaml
 import tempfile
 from time import sleep
 import os
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 from kubernetes import client, config
 
@@ -49,6 +52,59 @@ DBNAME = "jamlas"
 COUCHDB = HOST + "/" + DBNAME
 WAITING_VIEW = COUCHDB + "/_design" + "/sites-queue" + "/_view" + "/waiting"
 
+
+# create an instance of the API class
+configuration = kubernetes.client.Configuration()
+api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
+
+def generateCephFilesystemManifest(docId):
+    """ Generate persistent volume claim manifest """
+    # Generate manifest
+    doc = getDoc(docId)
+    siteName = formatSiteName(doc)
+
+    manifest = {
+      "apiVersion": "ceph.rook.io/v1",
+      "kind": "CephFilesystem",
+      "metadata": {
+        "name": "site-storage-" + siteName,
+        "namespace": "rook-ceph"
+      },
+      "spec": {
+        "metadataPool": {
+          "replicated": {
+            "size": 2
+          }
+        },
+        "dataPools": [
+          {
+            "replicated": {
+              "size": 2
+            }
+          }
+        ],
+        "metadataServer": {
+          "activeCount": 1,
+          "activeStandby": True  # True not "true" as operator does not validate
+        }
+      }
+    }
+    return manifest
+
+def deployCephFilesystemManifest(manifest):
+  api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
+  group = 'ceph.rook.io' # str | the custom resource's group
+  version = 'v1' # str | the custom resource's version
+  namespace = 'rook-ceph'
+  plural = 'cephfilesystems' # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
+  body = manifest # object | The JSON schema of the Resource to create.
+  pretty = 'true' # str | If 'true', then the output is pretty printed. (optional)
+
+  try: 
+      api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
+      pp.pprint(api_response)
+  except ApiException as e:
+      print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
 
 def init():
     # Create required database
@@ -152,9 +208,14 @@ def generateManifest(docId):
                         "volumes": [
                             {
                                 "name": siteName + "-static",
-                                "persistentVolumeClaim": {
-                                    "claimName": siteName + "-static"
-                                },
+                                "flexVolume": {
+                                  "driver": "ceph.rook.io/rook",
+                                  "fsType": "ceph",
+                                  "options": {
+                                    "fsName": "site-storage-" + siteName,
+                                    "clusterNamespace": "rook-ceph"
+                                  }
+                                }
                             }
                         ],
                     },
@@ -333,14 +394,20 @@ def consumeSites():
         # Get a (TODO non-deployed) document at random , it dosent matter.
         docRow = random.choice(resp["rows"])
         # Generate storage
-        pvcManifest = generatePVCManifest(docRow["id"])
+        fsManifest = generateCephFilesystemManifest(docRow["id"])
+        print("#"*45)
+        print(fsManifest)
         # Deploy storage
-        deployPersistentVolumeClaim(pvcManifest)
+        deployCephFilesystemManifest(fsManifest)
         # Generate service & deploy
         manifest = generateServiceManifest(docRow["id"])
+        print("#"*45)
+        print(manifest)
         deployServiceManifest(manifest)
         # Generate and deploy deployment
         manifest = generateManifest(docRow["id"])
+        print("#"*45)
+        print(manifest)
         if manifest:
             try:
                 deployManifest(manifest)
@@ -353,12 +420,13 @@ def consumeSites():
         # Generate Ingress & deploy Ingress
         manifest = generateIngressManifest(docRow["id"])
         deployIngressManifest(manifest)
+        print("#"*45)
+        print(manifest)
 
     except IndexError:
         print("Do documents left to process")
     sleep(1)
     consumeSites()  # Keep checking
-
 
 consumeSites()
 

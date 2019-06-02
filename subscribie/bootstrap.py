@@ -5,21 +5,26 @@ import yaml
 import subprocess
 import shutil
 from pathlib import Path
+import sqlite3
+import datetime
 
 
 def bootstrap_needed():
-    if (
-        os.getenv("SUBSCRIBIE_FETCH_JAMLA") is not None
-        and os.path.isfile("/subscribie/volume/bootstrap_complete") is False
-    ):
-        print("NOTICE: bootstrap requested")
-        return True
-    else:
-        print(
-            "NOTICE: bootstrap not possible because marked as complete,\
-          or `export SUBSCRIBIE_FETCH_JAMLA=True` not set"
-        )
-        return False
+    print("NOTICE: bootstrap requested")
+    fail = False
+    if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is None:
+      print("SUBSCRIBIE_FETCH_JAMLA is not set")
+      fail = True
+    if os.path.isfile("/subscribie/volume/bootstrap_complete") is True:
+      print("/subscribie/volume/bootstrap_complete already exists")
+      fail = True
+    if fail is True:
+      print(
+          "NOTICE: bootstrap not possible because marked as complete,\
+        or `export SUBSCRIBIE_FETCH_JAMLA=True` not set"
+      )
+      return False
+    return True
 
 
 def bootstrap_possible():
@@ -75,22 +80,26 @@ def bootstrap(app):
     """
   Bootstrap a subscribie site whereby the Jamla manifest
   is to be consumed from an external source e.g. a couchdb
-  database. We assume a persistant volume is present at path
-  "/subscribie/volume" this is used to store the Jamla manifest
-  and also mark as bootstrap completed by dropping an empty file
-  'bootstrap_complete' in /subscribie/volume.
-
+  database. We assume a persistant volume is attatched at path
+  "/subscribie/volume" this is used to store:
+    - The Jamla manifest specific to this site
+    - The data.db sqlite3 database for the admin user
+    - To mark site a bootstrap completed by creating an empty file
+      'bootstrap_complete' in /subscribie/volume.
+  The bootstrap works as follows:
     - Work out if we need to bootstrap 
       - By checking for SUBSCRIBIE_FETCH_JAMLA environment var
       - and by checking if exists /subscribie/volume/bootstrap_complete
     - Fetch Jamla manifest from external source (assume couchdb)
-    - Perform bootstrap
+    - Perform bootstrap:
       - Inject Jamla manifest to /subscribie/volume/jamla.yaml
       - Update jamla path in config.py
       - Inject static assets (images, if any, from couchdb attachments) 
-    - Copy config.py to /subscribie/volume/config.py
-    - Mark as bootstrapped
-    - continue running as normal
+      - Copy config.py to /subscribie/volume/config.py
+      - Inject user's email address into data.db (email is in the jamla
+        manifest
+      - Mark as bootstrapped
+      - Continue running as normal
   """
     if bootstrap_needed() and bootstrap_possible():
         print("NOTICE: bootstrapping site")
@@ -132,12 +141,37 @@ def bootstrap(app):
             else:
                 print("NOTICE: {} already present so not overwriting".format(dst))
 
-            # Update jamla path and template folder path
+            # Move database file to persistant volume
+            path = os.path.abspath(__file__ + "../../../")
+            print("Copying data.db from: {}".format(path))
+            shutil.copy(path + "/data.db", "/subscribie/volume/")
             db_full_path = "/subscribie/volume/data.db"
+
+            # Update jamla path and template folder path
             template_base_dir = "/subscribie/volume/themes/"
             static_folder = "{template_base_dir}theme-{theme_name}/static/".format(
                 template_base_dir=template_base_dir, theme_name=jamla["theme"]["name"]
             )
+
+            # Run subscribie_cli database migrations
+            subprocess.call('subscribie migrate --DB_FULL_PATH ' + db_full_path,
+                            shell=True)
+
+
+            # Inject user's (site owners) email address into the data.db
+            for email in jamla['users']:
+              #TODO use subscribie cli for injecting the user.
+              con = sqlite3.connect(db_full_path)
+              con.text_factory = str
+              cur = con.cursor()
+              now = datetime.datetime.now()
+              login_token = ''
+              cur.execute("INSERT INTO user (email, created_at, active, login_token) VALUES (?,?,?,?)",
+                         (email, now, 1, login_token,))
+              con.commit()
+              con.close()
+
+            # Set subscribie config for db path, template dir, static folder
             subprocess.call(
                 "subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
@@ -154,11 +188,6 @@ def bootstrap(app):
             path = os.path.abspath(__file__ + "../../../instance")
             print("Copying config.py from: {}".format(path))
             shutil.copy(path + "/config.py", "/subscribie/volume/")
-
-            # Move database file to persistant volume
-            path = os.path.abspath(__file__ + "../../../")
-            print("Copying data.db from: {}".format(path))
-            shutil.copy(path + "/data.db", "/subscribie/volume/")
 
             # Mark site as bootstrapped
             path = Path("/subscribie/volume/bootstrap_complete")
