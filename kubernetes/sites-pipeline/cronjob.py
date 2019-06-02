@@ -85,7 +85,7 @@ def generateCephFilesystemManifest(docId):
         ],
         "metadataServer": {
           "activeCount": 1,
-          "activeStandby": "true"
+          "activeStandby": True  # True not "true" as operator does not validate
         }
       }
     }
@@ -208,9 +208,14 @@ def generateManifest(docId):
                         "volumes": [
                             {
                                 "name": siteName + "-static",
-                                "persistentVolumeClaim": {
-                                    "claimName": siteName + "-static"
-                                },
+                                "flexVolume": {
+                                  "driver": "ceph.rook.io/rook",
+                                  "fsType": "ceph",
+                                  "options": {
+                                    "fsName": "site-storage-" + siteName,
+                                    "clusterNamespace": "rook-ceph"
+                                  }
+                                }
                             }
                         ],
                     },
@@ -390,13 +395,19 @@ def consumeSites():
         docRow = random.choice(resp["rows"])
         # Generate storage
         fsManifest = generateCephFilesystemManifest(docRow["id"])
+        print("#"*45)
+        print(fsManifest)
         # Deploy storage
         deployCephFilesystemManifest(fsManifest)
         # Generate service & deploy
         manifest = generateServiceManifest(docRow["id"])
+        print("#"*45)
+        print(manifest)
         deployServiceManifest(manifest)
         # Generate and deploy deployment
         manifest = generateManifest(docRow["id"])
+        print("#"*45)
+        print(manifest)
         if manifest:
             try:
                 deployManifest(manifest)
@@ -409,6 +420,8 @@ def consumeSites():
         # Generate Ingress & deploy Ingress
         manifest = generateIngressManifest(docRow["id"])
         deployIngressManifest(manifest)
+        print("#"*45)
+        print(manifest)
 
     except IndexError:
         print("Do documents left to process")
