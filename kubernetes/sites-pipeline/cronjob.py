@@ -168,7 +168,8 @@ def generateManifest(docId):
                 },
             },
             "spec": {
-                "replicas": 1,
+                "replicas": 2, # reduce disruption from preemptive node kills
+                # TODO use a PodDisruptionBudget issue #31
                 "selector": {"matchLabels": {"subscribie": siteName}},
                 "template": {
                     "metadata": {
