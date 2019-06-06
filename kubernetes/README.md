@@ -52,7 +52,7 @@ The cronpod needs permissions to put manifests to the kubernetes cluster
 ```
 kubectl apply -f sites-pipeline/subscribie-k8s-rbac-deployments-create.yaml
 kubectl apply -f sites-pipeline/subscribie-k8s-rbac-ingresses-create.yaml
-kubectl apply -f sites-pipeline/subscribie-k8s-rbac-persistentvolumeclaims-create.yaml
+kubectl apply -f sites-pipeline/subscribie-k8s-rbac-cephfilesystems-create-yaml
 kubectl apply -f sites-pipeline/subscribie-k8s-rbac-services-create.yaml
 kubectl apply -f sites-pipeline/subscribie-k8s-rbac-pods.list.yaml
 ```
