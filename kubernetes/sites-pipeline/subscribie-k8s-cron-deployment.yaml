@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscribie-cronpods
+  labels: 
+    subscribie: onboarding
+    subscribie: cronpod
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      subscribie: cronpod
+  template:
+    metadata:
+      name: cronpod
+      labels:
+        subscribie: onboarding
+        subscribie: cronpod
+    spec:
+      serviceAccountName: cronpod
+      containers:
+      - name: cronpod
+        image: subscribie/cronpod:v0.8
+        imagePullPolicy: Always
+        command: ["python", "cronjob.py"]
+        env:
+        - name: COUCH_DB_SERVICE_NAME 
+          value: couchdb-service 
