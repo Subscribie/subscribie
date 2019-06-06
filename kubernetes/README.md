@@ -88,7 +88,7 @@ kubectl apply -f subscribie-k8s-filesystem.yaml # ceph back storage
 kubectl apply -f subscribie-k8s-onboarding-deployment.yaml
 deployment.apps/subscribie-onboarding-deployment created
 persistentvolumeclaim/subscribie-onboarding-volume created
-
+```
 ### Deploy the subscribie service:
 ```
 kubectl apply -f subscribie-k8s-service.yaml
