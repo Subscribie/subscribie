@@ -196,7 +196,14 @@ def generateManifest(docId):
                                         {"name": "COUCHDB_USER", "value": "admin"},
                                         {"name": "COUCHDB_PASSWORD", "value": "password"},
                                         {"name": "COUCHDB_DBNAME", "value": "jamlas"},
-                                        {"name": "COUCHDB_PASSWORD", "value": "password"}
+                                        {"name": "COUCHDB_PASSWORD", "value": "password"},
+                                        {"name": "MAIL_DEFAULT_SENDER", "value": os.getenv("MAIL_DEFAULT_SENDER")},
+                                        {"name": "EMAIL_LOGIN_FROM", "value": os.getenv("EMAIL_LOGIN_FROM")},
+                                        {"name": "MAIL_SERVER", "value": os.getenv("MAIL_SERVER")},
+                                        {"name": "MAIL_PORT", "value": os.getenv("MAIL_PORT")},
+                                        {"name": "MAIL_USE_TLS", "value": os.getenv("MAIL_USE_TLS")},
+                                        {"name": "MAIL_USERNAME", "value": os.getenv("MAIL_USERNAME")},
+                                        {"name": "MAIL_PASSWORD", "value": os.getenv("MAIL_PASSWORD")}
                                 ],
                                 "volumeMounts": [
                                     {

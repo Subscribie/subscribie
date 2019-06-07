@@ -51,6 +51,20 @@ spec:
           value: na
         - name: BUILDER_DEPLOY_WEB_HOST # Builder module env
           value: na
+        - name: MAIL_DEFAULT_SENDER # Flask Mail default From when not provided
+          value: noreply@example.com 
+        - name: EMAIL_LOGIN_FROM # From email address on login emails
+          value: noreply@example.com
+        - name: MAIL_SERVER
+          value: mail.example.com
+        - name: MAIL_PORT
+          value: 25
+        - name: MAIL_USE_TLS
+          value: True
+        - name: MAIL_USERNAME
+          value: noreply@example.com
+        - name: MAIL_PASSWORD
+          value: secret
         volumeMounts:
           - mountPath: '/subscribie/volume'
             name: subscribie-onboarding-volume
