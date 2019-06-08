@@ -175,10 +175,24 @@ def bootstrap(app):
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
                --DB_FULL_PATH {db_full_path}\
                --TEMPLATE_BASE_DIR {template_base_dir}\
-               --STATIC_FOLDER {static_folder}".format(
+               --STATIC_FOLDER {static_folder}\
+               --MAIL_SERVER {mail_server}\
+               --MAIL_DEFAULT_SENDER {mail_default_sender}\
+               --EMAIL_LOGIN_FROM {email_login_from}\
+               --MAIL_PORT {mail_port}\
+               --MAIL_USE_TLS {mail_use_tls}\
+               --MAIL_USERNAME {mail_username}\
+               --MAIL_PASSWORD {mail_password}".format(
                     db_full_path=db_full_path,
                     template_base_dir=template_base_dir,
                     static_folder=static_folder,
+                    mail_server=os.getenv('MAIL_SERVER'),
+                    mail_default_sender=os.getenv('MAIL_DEFAULT_SENDER'),
+                    email_login_from=os.getenv('EMAIL_LOGIN_FROM'),
+                    mail_port=os.getenv('MAIL_PORT'),
+                    mail_use_tls=os.getenv('MAIL_USE_TLS'),
+                    mail_username=os.getenv('MAIL_USERNAME'),
+                    mail_password=os.getenv('MAIL_PASSWORD') 
                 ),
                 shell=True,
             )
