@@ -33,9 +33,9 @@ spec:
         - name: MAIL_SERVER
           value: mail.example.com
         - name: MAIL_PORT
-          value: 25
+          value: "25"
         - name: MAIL_USE_TLS
-          value: True
+          value: "True"
         - name: MAIL_USERNAME
           value: noreply@example.com
         - name: MAIL_PASSWORD
