@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: subscribie
-        image: subscribie/subscribie:v0.05
+        image: subscribie/subscribie:v0.08
         imagePullPolicy: Always
         ports:
         - containerPort: 9090
