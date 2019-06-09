@@ -149,7 +149,7 @@ def generateManifest(docId):
   the attached jamla document is to be injected into the
   subscribie container, along with any environment vars
   needed. """
-    pass
+    containerImageName = os.getenv('SUBSCRIBIE_IMAGE_NAME', 'subscribie/subscribie:latest')
     # Generate manifest
     doc = getDoc(docId)
     try:
@@ -183,7 +183,7 @@ def generateManifest(docId):
                         "containers": [
                             {
                                 "name": "subscribie",
-                                "image": "subscribie/subscribie:v0.09",
+                                "image": containerImageName,
                                 "imagePullPolicy": "IfNotPresent",
                                 "ports": [
                                     {"name": "subscribie-port", "containerPort": 9090}
