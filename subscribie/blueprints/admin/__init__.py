@@ -20,6 +20,7 @@ from subscribie import (
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
+from subscribie.symlink import symlink
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import os
@@ -92,7 +93,7 @@ def edit_jamla():
                     [current_app.config["UPLOADED_IMAGES_DEST"], filename]
                 )
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
-                os.symlink(img_src, link)
+                symlink(img_src, link, overwrite=True)
                 src = url_for("static", filename=filename)
                 jamla["items"][index]["primary_icon"] = {"src": src, "type": ""}
             fp = open(current_app.config["JAMLA_PATH"], "w")
