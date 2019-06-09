@@ -24,6 +24,8 @@ spec:
         imagePullPolicy: Always
         command: ["python", "cronjob.py"]
         env:
+        - name: SUBSCRIBIE_IMAGE_NAME # image which cronpod will deploy
+          value: subscribie/subscribie:v0.09
         - name: COUCH_DB_SERVICE_NAME 
           value: couchdb-service
         - name: MAIL_DEFAULT_SENDER # Flask Mail default From when not provided
