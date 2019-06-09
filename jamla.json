@@ -173,6 +173,7 @@
       ]
     }
   ],
+  "queue_state": "deploy",
   "pages": [
     {
       "privacy": {
