@@ -168,14 +168,15 @@ def bootstrap(app):
                          (email, now, 1, login_token,))
               con.commit()
               con.close()
-
             # Set subscribie config for db path, template dir, static folder
+            uploaded_images_dest="/subscribie/volume/static/"
             subprocess.call(
                 "subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
                --DB_FULL_PATH {db_full_path}\
                --TEMPLATE_BASE_DIR {template_base_dir}\
                --STATIC_FOLDER {static_folder}\
+               --UPLOADED_IMAGES_DEST {uploaded_images_dest}\
                --MAIL_SERVER {mail_server}\
                --MAIL_DEFAULT_SENDER {mail_default_sender}\
                --EMAIL_LOGIN_FROM {email_login_from}\
@@ -186,6 +187,7 @@ def bootstrap(app):
                     db_full_path=db_full_path,
                     template_base_dir=template_base_dir,
                     static_folder=static_folder,
+                    uploaded_images_dest=uploaded_images_dest,
                     mail_server=os.getenv('MAIL_SERVER'),
                     mail_default_sender=os.getenv('MAIL_DEFAULT_SENDER'),
                     email_login_from=os.getenv('EMAIL_LOGIN_FROM'),
@@ -200,6 +202,9 @@ def bootstrap(app):
             path = os.path.abspath(__file__ + "../../../instance")
             print("Copying config.py from: {}".format(path))
             shutil.copy(path + "/config.py", "/subscribie/volume/")
+
+            # Create uploaded_images_dest directory
+            os.makedirs(uploaded_images_dest, exist_ok=True)
 
             # Mark site as bootstrapped
             path = Path("/subscribie/volume/bootstrap_complete")
