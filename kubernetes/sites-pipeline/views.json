@@ -1,0 +1,11 @@
+{
+    "views": {
+        "waiting": {
+            "map": "function (doc) { if(doc.queue_state == \"deploy\") { emit(doc._id, 1); }}"
+        },
+        "completed": {
+            "map": "function (doc) { if(doc.queue_state == \"completed\") { emit(doc._id, 1); }}"
+        }
+    },
+    "language": "javascript"
+}
