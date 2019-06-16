@@ -25,6 +25,7 @@ docker rm -f couchdb
 ```
 git clone git@github.com:Subscribie/subscribie.git
 cd subscribie
+pip install -r requirements.txt
 mkdir modules # for modules
 virtualenv -p python3 venv
 . venv/bin/activate
