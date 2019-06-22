@@ -359,3 +359,62 @@ kubectl edit ingress kuard # change letsencrypt-staging to letsencrypt-prod
 Now deploy Subscribie. follow
 
 https://github.com/Subscribie/subscribie/tree/master/kubernetes
+
+# tls certificate for subscribie
+
+Objective: Automated certificate & reneqal for subscribie.co.uk
+
+Create HTTP-01 issuer using certmanager.
+
+Edit `subscribie-k8s-http-01-issuer-subscribie-domain.yaml` with a valid email
+address, then apply:
+
+- You must first edit `kubernetes/subscribie-k8s-http-01-issuer-subscribie-domain.yaml`
+with a valid email address
+
+```
+kubectl apply -f kubernetes/subscribie-k8s-http-01-issuer-subscribie-domain.yaml
+```
+
+Now create the certificate resource to obtain a certificate using the isser just created:
+
+```
+kubectl apply -f kubernetes/subscribie-k8s-http-01-certificate-subscribie-domain.yaml
+```
+
+Create an ingress for subscribie.co.uk:
+```
+kubectl apply -f kubernetes/subscribie-k8s-ingress.yaml
+```
+
+- Verify the tls certificate was successful. Visit subscribie.co.uk, you should see 
+an 'invalid certificate' error (this is good) it means a staging certificate was 
+successfully issued.
+
+Update to reference production issuer and ingress to production letsencrypt.
+If you've followed this from the begining, you may already have a production issuer 
+(called `letsencrypt-prod` , see `kubectl get issuers`). If not, edit 
+`letsencrypt-staging` to be production).
+
+Edit the certificate to reference production issuer: change `issuerRef->name` to 
+`letsencrypt-prod`
+
+```
+kubectl edit certificate subscribie-co-uk
+```
+
+Edit the ingress for subscribie: Change `metadata->annotations->certmanager.k8s.io/issuer` to
+`letsencrypt-prod`:
+
+```
+kubectl edit ingress subscribie-co-uk
+```
+After editing you should see:
+
+```
+kubectl describe ingress subscribie-co-uk
+  Normal  UPDATE             10s (x2 over 41m)    nginx-ingress-controller  Ingress default/subscribie-co-uk
+  Normal  UPDATE             10s (x2 over 41m)    nginx-ingress-controller  Ingress default/subscribie-co-uk
+  Normal  UpdateCertificate  10s (x2 over 2m47s)  cert-manager              Successfully updated Certificate "subscribie-co-uk-tls"
+```
+Verify:  Now when you visit https://subscribie.co.uk/ the certificate should be valid.
