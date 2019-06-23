@@ -24,6 +24,7 @@ from subscribie.symlink import symlink
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import os
+from pathlib import Path
 
 
 admin_theme = Blueprint(
@@ -99,6 +100,20 @@ def edit_jamla():
             fp = open(current_app.config["JAMLA_PATH"], "w")
             yaml.safe_dump(jamla, fp, default_flow_style=False)
         flash("Item(s) updated.")
+        # Trigger a reload by touching the wsgi file.
+        # Which file we need to touch depends on the wsgi config
+        # e.g. on uwsgi to set it to subscribie.wsgi on uwsgi we pass:
+        # uwsgi --http :9090 --workers 2 --wsgi-file subscribie.wsgi \
+        #  --touch-chain-reload subscribie.wsgi
+        # To uwsgi. The `--touch-chain-reload` option tells uwsgi to perform
+        # a graceful reload. "When triggered, it will restart one worker at 
+        # time, and the following worker is not reloaded until the previous one
+        # is ready to accept new requests. We must use more than one worker for
+        # this to work. See:
+        # https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#chain-reloading-lazy-apps
+        wsgiFile = os.path.abspath(''.join([os.getcwd(), '/subscribie.wsgi']))
+        p = Path(wsgiFile)
+        p.touch(exist_ok=True) # Triggers the graceful reload
         return redirect(url_for("admin.dashboard"))
     return render_template("admin/edit_jamla.html", jamla=jamla, form=form)
 
