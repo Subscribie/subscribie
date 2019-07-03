@@ -1,8 +1,11 @@
+import pytest
 import subscribie
 
 @pytest.fixture
 def app():
-  return subscribie.create_app()
+  return subscribie.create_app({
+    'TESTING': True
+  })
 
 @pytest.fixture
 def client(app):

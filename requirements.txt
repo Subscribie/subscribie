@@ -14,3 +14,4 @@ gocardless_pro
 GitPython
 pathlib
 reload
+pytest
