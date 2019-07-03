@@ -63,6 +63,7 @@ from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_cl
 import importlib
 from importlib import reload
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -84,11 +85,10 @@ def create_app(test_config=None):
             )
     else:
         try:
-          print("Falling back to default config.py")
-          app.config.from_pyfile("instance/config.py", silent=False)
+            print("Falling back to default config.py")
+            app.config.from_pyfile("instance/config.py", silent=False)
         except FileNotFoundError:
-          app.config.from_object(DefaultConfig)
-          
+            app.config.from_object(DefaultConfig)
 
     @app.before_request
     def start_session():
@@ -210,6 +210,7 @@ def create_app(test_config=None):
                 # Now re-try import
                 try:
                     import site
+
                     reload(site)
                     importlib.import_module(module["name"])
                 except ModuleNotFoundError:

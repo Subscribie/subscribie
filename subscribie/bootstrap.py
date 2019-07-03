@@ -13,15 +13,17 @@ def bootstrap_needed():
     print("NOTICE: bootstrap requested")
     fail = False
     if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is None:
-      print("NOTICE: SUBSCRIBIE_FETCH_JAMLA is not set, refusing to bootstrap.")
-      fail = True
+        print("NOTICE: SUBSCRIBIE_FETCH_JAMLA is not set, refusing to bootstrap.")
+        fail = True
     if os.path.isfile("/subscribie/volume/bootstrap_complete") is True:
-      print("/subscribie/volume/bootstrap_complete already exists")
-      fail = True
+        print("/subscribie/volume/bootstrap_complete already exists")
+        fail = True
     if fail is True:
-      print("NOTICE: bootstrap not possible. Either already complete or \
-              SUBSCRIBIE_FETCH_JAMLA not set.")
-      return False
+        print(
+            "NOTICE: bootstrap not possible. Either already complete or \
+              SUBSCRIBIE_FETCH_JAMLA not set."
+        )
+        return False
     return True
 
 
@@ -152,24 +154,26 @@ def bootstrap(app):
             )
 
             # Run subscribie_cli database migrations
-            subprocess.call('subscribie migrate --DB_FULL_PATH ' + db_full_path,
-                            shell=True)
-
+            subprocess.call(
+                "subscribie migrate --DB_FULL_PATH " + db_full_path, shell=True
+            )
 
             # Inject user's (site owners) email address into the data.db
-            for email in jamla['users']:
-              #TODO use subscribie cli for injecting the user.
-              con = sqlite3.connect(db_full_path)
-              con.text_factory = str
-              cur = con.cursor()
-              now = datetime.datetime.now()
-              login_token = ''
-              cur.execute("INSERT INTO user (email, created_at, active, login_token) VALUES (?,?,?,?)",
-                         (email, now, 1, login_token,))
-              con.commit()
-              con.close()
+            for email in jamla["users"]:
+                # TODO use subscribie cli for injecting the user.
+                con = sqlite3.connect(db_full_path)
+                con.text_factory = str
+                cur = con.cursor()
+                now = datetime.datetime.now()
+                login_token = ""
+                cur.execute(
+                    "INSERT INTO user (email, created_at, active, login_token) VALUES (?,?,?,?)",
+                    (email, now, 1, login_token),
+                )
+                con.commit()
+                con.close()
             # Set subscribie config for db path, template dir, static folder
-            uploaded_images_dest="/subscribie/volume/static/"
+            uploaded_images_dest = "/subscribie/volume/static/"
             subprocess.call(
                 "subscribie \
                setconfig --JAMLA_PATH /subscribie/volume/jamla.yaml \
@@ -188,13 +192,13 @@ def bootstrap(app):
                     template_base_dir=template_base_dir,
                     static_folder=static_folder,
                     uploaded_images_dest=uploaded_images_dest,
-                    mail_server=os.getenv('MAIL_SERVER'),
-                    mail_default_sender=os.getenv('MAIL_DEFAULT_SENDER'),
-                    email_login_from=os.getenv('EMAIL_LOGIN_FROM'),
-                    mail_port=os.getenv('MAIL_PORT'),
-                    mail_use_tls=os.getenv('MAIL_USE_TLS'),
-                    mail_username=os.getenv('MAIL_USERNAME'),
-                    mail_password=os.getenv('MAIL_PASSWORD') 
+                    mail_server=os.getenv("MAIL_SERVER"),
+                    mail_default_sender=os.getenv("MAIL_DEFAULT_SENDER"),
+                    email_login_from=os.getenv("EMAIL_LOGIN_FROM"),
+                    mail_port=os.getenv("MAIL_PORT"),
+                    mail_use_tls=os.getenv("MAIL_USE_TLS"),
+                    mail_username=os.getenv("MAIL_USERNAME"),
+                    mail_password=os.getenv("MAIL_PASSWORD"),
                 ),
                 shell=True,
             )

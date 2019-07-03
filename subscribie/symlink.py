@@ -1,12 +1,13 @@
 import os, tempfile
 
+
 def symlink(target, link_name, overwrite=False):
-    '''
+    """
     Create a symbolic link named link_name pointing to target.
     If link_name exists then FileExistsError is raised, unless overwrite=True.
     When trying to overwrite a directory, IsADirectoryError is raised.
     Credit: https://stackoverflow.com/a/55742015
-    '''
+    """
 
     if not overwrite:
         os.symlink(target, link_name)
@@ -32,7 +33,9 @@ def symlink(target, link_name, overwrite=False):
     try:
         # Pre-empt os.replace on a directory with a nicer message
         if os.path.isdir(link_name):
-            raise IsADirectoryError(f"Cannot symlink over existing directory: '{link_name}'")
+            raise IsADirectoryError(
+                f"Cannot symlink over existing directory: '{link_name}'"
+            )
         os.replace(temp_link_name, link_name)
     except:
         if os.path.islink(temp_link_name):
