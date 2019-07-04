@@ -42,7 +42,7 @@ flask run
 
 # Docs 
 
-http://docs.subscriptionwebsitebuilder.co.uk 
+https://subscribie.readthedocs.io
 
 # Demo
 
