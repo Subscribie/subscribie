@@ -50,8 +50,8 @@ https://subscriptionwebsitebuilder.co.uk
 
 # Where can I get more help, if I need it?
 
-Read through the [docs](http://docs.subscriptionwebsitebuilder.co.uk), especially
+Read through the [docs](https://subscribie.readthedocs.io), especially
 about the [Jamla
-file](http://docs.subscriptionwebsitebuilder.co.uk/jamla/jamla.html#jamla) 
+file](https://subscribie.readthedocs.io/en/latest/concepts/concepts.html) 
 and comment on the [issue
 queue](https://github.com/Subscribie/subscribie/issues)
