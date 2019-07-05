@@ -1,7 +1,7 @@
 FROM python:3.6.8-alpine3.9
 WORKDIR /usr/src/app
 RUN apk add --update --no-cache build-base libffi-dev openssl-dev bash git gcc sqlite
-RUN git clone https://github.com/Subscribie/subscribie.git
+COPY . /usr/src/app/subscribie/
 WORKDIR subscribie
 RUN pwd
 RUN ls -l
