@@ -28,18 +28,6 @@ An abstraction layer for managing variable recurring subscriptions and billing. 
 
 Keywords: subscriptions, payments, PS2, SEPA 
 
-# Quick install (for development)
-
-```
-git clone https://github.com/Subscribie/subscribie.git
-cd subscribie
-virtualenv venv
-source venv/bin/activate
-pip install -e .
-export FLASK_APP=subscribie
-flask run
-```
-
 # Docs 
 
 https://subscribie.readthedocs.io
@@ -55,3 +43,16 @@ about the [Jamla
 file](https://subscribie.readthedocs.io/en/latest/concepts/concepts.html) 
 and comment on the [issue
 queue](https://github.com/Subscribie/subscribie/issues)
+
+# Contributing (for development)
+
+```
+git clone https://github.com/Subscribie/subscribie.git
+cd subscribie
+virtualenv venv
+source venv/bin/activate
+pip install -e .
+export FLASK_APP=subscribie
+flask run
+```
+
