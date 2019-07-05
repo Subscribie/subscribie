@@ -10,6 +10,6 @@ RUN pip install uwsgi
 RUN pip install subscribiecli
 RUN subscribie init
 RUN subscribie migrate
-EXPOSE 9090
-CMD uwsgi --http :9090 --wsgi-file subscribie.wsgi
+EXPOSE 8080
+CMD uwsgi --http :8080 --wsgi-file subscribie.wsgi
 
