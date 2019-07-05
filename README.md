@@ -6,11 +6,11 @@
 
 Quickly build a subscription based website, taking variable monthly payments.
 
-- You have a subscription service to sell!
+- You have a subscription service to sell
 - Each of your packages have unique selling points (USPs)
 - Each have a different reoccurring price
 
-Use Subscribie to build your subscription model business & test your market!
+Use Subscribie to build your subscription model business & test your market.
 
 # Why is this project useful?                                                    
 
