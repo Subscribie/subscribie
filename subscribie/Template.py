@@ -51,34 +51,26 @@ def load_theme(app):
                 # Attempt to load theme from src
                 try:
                     print("NOTICE: Importing theme")
-                    dest = "".join(
-                        [
-                            app.config["TEMPLATE_BASE_DIR"],
-                            "theme-",
-                            jamla["theme"]["name"],
-                            "/",
-                        ]
+                    dest = p.joinpath(
+                        app.config["TEMPLATE_BASE_DIR"],
+                        "theme-" + jamla["theme"]["name"],
                     )
                     git.Repo.clone_from(jamla["theme"]["src"], dest)
                 except git.exc.GitCommandError:
                     raise
-                themepath = "".join(
-                    [
-                        app.config["TEMPLATE_BASE_DIR"],
-                        "theme-",
-                        jamla["theme"]["name"],
-                        "/",
-                        jamla["theme"]["name"],
-                    ]
+                themepath = p.joinpath(
+                    app.config["TEMPLATE_BASE_DIR"],
+                    "theme-" + jamla["theme"]["name"],
+                    jamla["theme"]["name"],
                 )
-                static_folder = dest + "/static"
+                static_folder = themepath.joinpath("../", "static").resolve()
                 # Update jamla path and template folder path
                 subprocess.call(
                     "subscribie \
                      setconfig \
                      --TEMPLATE_FOLDER {}\
                      --STATIC_FOLDER {}".format(
-                        str(themepath), static_folder
+                        str(themepath), str(static_folder)
                     ),
                     shell=True,
                 )
@@ -98,4 +90,6 @@ def load_theme(app):
         app.static_folder = static_folder
     except NameError:
         print("Fallback to jesmon theme")
-        app.static_folder = app.config["TEMPLATE_BASE_DIR"] + "theme-jesmond/static/"
+        app.static_folder = p.joinpath(
+            app.config["TEMPLATE_BASE_DIR"], "theme-jesmond/static/"
+        )
