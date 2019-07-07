@@ -11,5 +11,4 @@ RUN pip install subscribiecli
 RUN subscribie init
 RUN subscribie migrate
 EXPOSE 8080
-CMD uwsgi --http :8080 --wsgi-file subscribie.wsgi
-
+CMD uwsgi --http :8080 --workers 2 --wsgi-file subscribie.wsgi --touch-chain-reload subscribie.wsgi
