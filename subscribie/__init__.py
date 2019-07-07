@@ -88,6 +88,7 @@ def create_app(test_config=None):
             print("Falling back to default config.py")
             app.config.from_pyfile("instance/config.py", silent=False)
         except FileNotFoundError:
+            print("Could not find default config, loading from object")
             app.config.from_object(DefaultConfig)
 
     @app.before_request
