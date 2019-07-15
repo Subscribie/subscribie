@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
       - name: subscribie
-        image: subscribie/subscribie:v0.08
+        image: subscribie/subscribie:v0.13
         imagePullPolicy: Always
         ports:
-        - containerPort: 9090
+        - containerPort: 8080
         env:
         - name: SUBSCRIBIE_FETCH_JAMLA # Subscribie bootstrap trigger
           value: couchdb # Instruct Subscribie to bootstrap from couchdb

@@ -186,7 +186,7 @@ def generateManifest(docId):
                                 "image": containerImageName,
                                 "imagePullPolicy": "IfNotPresent",
                                 "ports": [
-                                    {"name": "subscribie-port", "containerPort": 9090}
+                                    {"name": "subscribie-port", "containerPort": 8080}
                                 ],
                                 "env": [
                                         {"name": "EXAMPLE", "value": "example_value"},
