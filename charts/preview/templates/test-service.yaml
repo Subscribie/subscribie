@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-service
+spec:
+  type: ExternalName
+  # Target service DNS name
+  externalName: example.com 
+  ports:
+  - port: 1234
