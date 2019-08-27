@@ -62,6 +62,7 @@ from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
 import importlib
 from importlib import reload
+import urllib
 
 
 def create_app(test_config=None):
@@ -96,7 +97,7 @@ def create_app(test_config=None):
         try:
             session["sid"]
         except KeyError:
-            session["sid"] = b64encode(os.urandom(10)).decode("utf-8")
+            session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             print("Starting with sid {}".format(session["sid"]))
 
     # ensure the instance folder exists
