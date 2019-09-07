@@ -10,7 +10,7 @@ import datetime
 
 
 def bootstrap_needed():
-    print("NOTICE: bootstrap requested")
+    print("NOTICE: checking if bootstrap needed")
     fail = False
     if os.getenv("SUBSCRIBIE_FETCH_JAMLA") is None:
         print("NOTICE: SUBSCRIBIE_FETCH_JAMLA is not set, refusing to bootstrap.")
