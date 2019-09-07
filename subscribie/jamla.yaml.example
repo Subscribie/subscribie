@@ -130,6 +130,8 @@ pages:
         template_file: "demo.html"
 modules_path: ../../../modules
 modules: []
+  - name: module-seo-page-title
+    src: https://github.com/Subscribie/module-seo-page-title.git
   #- name: my-module
   #  src: http://github.com/example/module-name
     #env:
