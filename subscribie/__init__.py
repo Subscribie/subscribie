@@ -88,8 +88,9 @@ def create_app(test_config=None):
             )
     else:
         try:
-            print("Falling back to default config.py within instance folder")
+            print("Loading config from config.py within instance folder")
             app.config.from_pyfile("config.py", silent=False)
+            print("Succesful. Loaded config.py from within instance folder")
         except FileNotFoundError:
             print("Could not find default config, loading from default object")
             app.config.from_object(DefaultConfig)
