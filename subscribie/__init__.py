@@ -63,6 +63,8 @@ from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_cl
 import importlib
 from importlib import reload
 import urllib
+from pathlib import Path
+import subprocess
 
 
 def create_app(test_config=None):
@@ -228,10 +230,23 @@ def create_app(test_config=None):
                     # Register the Blueprint
                     app.register_blueprint(getattr(importedModule, module["name"]))
                     print("Imported as flask Blueprint")
+                    # Run Blueprint migrations if any
+                    modulePath = Path(importedModule.__file__).parents[0]
+                    moduleMigrationsPath = Path(modulePath, 'migrations')
+                    if moduleMigrationsPath.is_dir():
+                      # Run migrations
+                      for migration in moduleMigrationsPath.iterdir():
+                        print("Running module migration {}".format(migration))
+                        # Run subscribie_cli database migrations
+                        db_full_path = app.config['DB_FULL_PATH']
+                        subprocess.call("python " + str(migration) + ' -up -db ' + db_full_path, shell=True)
+
             except (ModuleNotFoundError, AttributeError):
                 print(
                     "Error: Could not import module as blueprint: {}".format(
                         module["name"]
                     )
                 )
+    else:
+        print("No modules element on jamla. Not loading any modules")
     return app
