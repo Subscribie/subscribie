@@ -206,9 +206,9 @@ def create_app(test_config=None):
             except ModuleNotFoundError:
                 # Attempt to load module from src 
                   #TODO dont blindly use first path as modules directory
-                dest = jamla["modules_path"][0] + module["name"]
+                dest = Path(jamla["modules_path"][0], module["name"])
                 print("Cloning module into: {}".format(dest))
-                os.makedirs(dest, exist_ok=True)
+                os.makedirs(str(dest), exist_ok=True)
                 try:
                     git.Repo.clone_from(module["src"], dest)
                 except git.exc.GitCommandError:
