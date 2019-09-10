@@ -210,6 +210,28 @@
 </div>
 <!-- End analytics Integrations -->
 
+<!-- Loaded modules and links to their index pages -->
+<div class="section">
+  <div class="container">
+    <div class="columns" style="max-width:1000px;">
+
+      {% for moduleName in loadedModules %}
+        {% if loadedModules[moduleName]['links']|length != 0 %}
+        <div class="column">
+          <div class="box hover">
+              <h4 class="title is-4">{{ loadedModules[moduleName]['friendly-name'] }}</h4>
+              {% for link in loadedModules[moduleName]['links'] %}
+                <a class="button is-fullwidth is-info" href="{{ url_for(link) }}">Manage</a>
+              {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor  %}
+    </div>
+  </div>
+</div>
+<!-- End Loaded modules and links to their index pages -->
+
 
 <!-- SEO Titles module -->
 <div class="section">
