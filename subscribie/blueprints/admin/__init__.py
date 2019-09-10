@@ -38,6 +38,45 @@ def dashboard():
     jamla = get_jamla()
     jamlaApp = Jamla()
     jamlaApp.load(jamla=jamla)
+  
+    def getModuleLinks():
+      """Get module names and links
+      Of the loaded modules, return a list indexed
+      by the module (bluepint) name (useful for `url_for`),
+      and all the links that module publishes.
+      The return structure is:
+
+      modules['module-name']['links'] = [link1, link2 ...]
+      modules['module-name']['friendly-name'] = "Module name"
+      """
+      def blacklistedSystemModulesFilter(rule):
+        """Filter out system modules"""
+        # Filter out system blueprints
+        if '_uploads' in rule or 'auth' in rule or 'views' in rule\
+           or 'admin' in rule:
+          return True
+        return False
+      
+      # Get all blueprintNames, excluding system ones
+      blueprintNames = []
+      for key in current_app.blueprints.keys():
+        if blacklistedSystemModulesFilter(key) is False:
+          blueprintNames.append(current_app.blueprints[key].name)
+
+      # Build dict of modules by name (blueprintNames) and links
+      modules = {}
+      for blueprintName in blueprintNames:
+        modules[blueprintName] = {'links': []}
+        friendly_name = blueprintName.replace('_',' ').capitalize()
+        modules[blueprintName]['friendly-name'] = friendly_name
+        # Add matching Rules (routes) which map to loaded Blueprint
+        rules = current_app.url_map.iter_rules() # All Rules
+        for rule in rules:
+          if blueprintName in rule.endpoint and \
+            rule.rule == '/' + blueprintName + '/index':
+            modules[blueprintName]['links'].append(rule.endpoint)
+      return modules 
+        
     if jamlaApp.has_connected("gocardless"):
         gocardless_connected = True
     else:
@@ -51,6 +90,7 @@ def dashboard():
         jamla=jamla,
         gocardless_connected=gocardless_connected,
         stripe_connected=stripe_connected,
+        loadedModules=getModuleLinks()
     )
 
 
