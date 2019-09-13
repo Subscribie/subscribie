@@ -440,7 +440,44 @@ def retry_payment(payment_id):
     return "Payment (" + payment_id + " retried." + str(r)
 
 
+@admin_theme.route("/ssot/refresh/<resource>", methods=["GET"])
+@login_required
+def refresh_ssot(resource):
+  """Refresh SSOT to fetch newest customers (aka partners) and transactions
+  resource is either "customers" or "transactions"
+  """
+  jamla = get_jamla()
+  from SSOT import SSOT
+
+  access_token = jamla["payment_providers"]["gocardless"]["access_token"]
+  target_gateways = ({"name": "GoCardless", "construct": access_token},)
+  try:
+      SSOT = SSOT(target_gateways, refresh=True)
+      partners = SSOT.partners
+  except gocardless_pro.errors.InvalidApiUsageError as e:
+      logging.error(e.type)
+      logging.error(e.message)
+      flash("Invalid GoCardless API token. Correct your GoCardless API key.")
+      return redirect(url_for("admin.connect_gocardless_manually"))
+  except ValueError as e:
+      logging.error(e.message)
+      if e.message == "No access_token provided":
+          flash("You must connect your GoCardless account first.")
+          return redirect(url_for("admin.connect_gocardless_manually"))
+      else:
+          raise
+  if resource == "customers":
+    flash("Customers refreshed")
+    return redirect(url_for('admin.customers'))
+  if resource == "transactions":
+    flash("Customers refreshed")
+    return redirect(url_for('admin.transactions'))
+  # Fallback
+  flask("Refreshed customers & transactions")
+  return redirect(url_for('admin.dashboard'))
+
 @admin_theme.route("/customers", methods=["GET"])
+@login_required
 def customers():
     jamla = get_jamla()
     from SSOT import SSOT
@@ -466,6 +503,7 @@ def customers():
 
 
 @admin_theme.route("/transactions", methods=["GET"])
+@login_required
 def transactions():
     jamla = get_jamla()
     from SSOT import SSOT
