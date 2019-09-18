@@ -12,5 +12,11 @@ pipeline {
 pip install .'''
       }
     }
+    stage('Test') {
+      steps {
+        sh '''. ./venv/bin/activate
+pytest'''
+      }
+    }
   }
 }
