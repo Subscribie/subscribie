@@ -16,5 +16,10 @@ pipeline {
         }
       }
     }
+    stage('Pip install requirements') {
+      steps {
+        sh 'pip install -r requirements.txt'
+      }
+    }
   }
 }
