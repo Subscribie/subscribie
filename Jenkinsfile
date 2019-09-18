@@ -8,7 +8,7 @@ pipeline {
             sh 'ls -l'
           }
         }
-        stage('Create & Activate Virtualenv') {
+        stage('Create Virtualenv environment') {
           steps {
             sh 'virtualenv -p python3 venv'
           }
