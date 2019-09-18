@@ -10,6 +10,10 @@ pipeline {
       steps {
         sh '''. ./venv/bin/activate
 pip install .'''
+        sh '''. ./venv/bin/activate
+subscribie init
+subscribie migrate
+'''
       }
     }
     stage('Test') {
