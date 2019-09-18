@@ -2,8 +2,18 @@ pipeline {
   agent any
   stages {
     stage('ls dir') {
-      steps {
-        sh 'ls -l'
+      parallel {
+        stage('ls dir') {
+          steps {
+            sh 'ls -l'
+          }
+        }
+        stage('Create & Activate Virtualenv') {
+          steps {
+            sh '''virtualenv -p python3 venv
+. ./venv/bin/activate'''
+          }
+        }
       }
     }
   }
