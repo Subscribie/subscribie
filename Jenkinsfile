@@ -10,15 +10,15 @@ pipeline {
         }
         stage('Create & Activate Virtualenv') {
           steps {
-            sh '''virtualenv -p python3 venv
-. ./venv/bin/activate'''
+            sh 'virtualenv -p python3 venv'
           }
         }
       }
     }
     stage('Pip install requirements') {
       steps {
-        sh 'pip install -r requirements.txt'
+        sh '''. ./venv/bin/activate
+pip install -r requirements.txt'''
       }
     }
   }
