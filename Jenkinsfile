@@ -22,5 +22,10 @@ subscribie migrate
 pytest'''
       }
     }
+    stage('Deploy') {
+      steps {
+        input 'Proceed'
+      }
+    }
   }
 }
