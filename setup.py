@@ -28,7 +28,8 @@ setuptools.setup(
         'stripe',
         'gocardless_pro',
         'GitPython',
-        'pytest'
+        'pytest',
+        'dingdb==0.0.2'
     ],
     entry_points='''
         [console_scripts]
