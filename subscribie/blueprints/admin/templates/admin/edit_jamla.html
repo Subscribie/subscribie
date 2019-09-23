@@ -69,6 +69,15 @@
       <dd><input name="sell_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['sell_price']/100 }}" /></dd>
     </dl>
 
+	  <dt><label>Require note from customer: <em>For example, for personalisation</em></label></dt>
+      <dd><input name="note_to_seller_required-{{ loop.index0 }}" type="checkbox"
+            {% if
+              jamla['items'][loop.index0]['requirements']['note_to_seller_required']|int %}
+              checked
+            {% endif %}
+          />
+      </dd>
+
         <dl>
           <dt><legend>Selling Points:</legend></dt>
             {% set ns = namespace(count=0) %}

@@ -7,6 +7,8 @@ from .signals import journey_complete
 from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
 from subscribie.db import get_jamla, get_db
 import stripe
+from dingdb import dingdb
+from uuid import uuid4
 
 from flask import Blueprint, redirect, render_template, request, session, url_for
 
@@ -77,7 +79,9 @@ def store_customer():
             ),
         )
         db.commit()
-
+        # Store note to seller in session if there is one
+        note_to_seller = form.data["note_to_seller"]
+        session["note_to_seller"] = note_to_seller
         if jamlaApp.requires_instantpayment(session["package"]):
             return redirect(
                 url_for(
@@ -287,6 +291,10 @@ def on_complete_mandate():
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     jamla = get_jamla()
+    # Store note to seller if in session
+    if bool(session["note_to_seller"]):
+      tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
+      tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
     try:

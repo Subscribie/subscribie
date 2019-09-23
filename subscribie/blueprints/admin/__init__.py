@@ -23,10 +23,11 @@ from subscribie.db import get_jamla, get_db
 from subscribie.symlink import symlink
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
-import os
+import os, sys
 from pathlib import Path
 from .getLoadedModules import getLoadedModules
-
+from dingdb import dingdb
+import subprocess
 
 admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -80,6 +81,9 @@ def edit_jamla():
             )
             jamla["items"][index]["requirements"]["instant_payment"] = bool(
                 getItem(form.instant_payment.data, index)
+            )
+            jamla["items"][index]["requirements"]["note_to_seller_required"] = bool(
+                getItem(form.note_to_seller_required.data, index)
             )
             jamla["items"][index]["sell_price"] = int(
                 getItem(form.sell_price.data, index, default=0) * 100
@@ -528,6 +532,22 @@ def transactions():
     return render_template(
         "admin/transactions.html", jamla=jamla, transactions=transactions
     )
+@admin_theme.route("/order-notes", methods=["GET"])
+@login_required
+def order_notes():
+  """Notes to seller given during subscription creation"""
+  # Migrate dingdb as needed
+  dingMigrations = Path(sys.prefix, 'dingdb', 'migrations')
+  for migration in dingMigrations.iterdir():
+    if migration.is_file():
+      subprocess.call(
+        "python {} -up -db {}".format(migration, current_app.config["DB_FULL_PATH"])
+      , shell=True)
+    
+  tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
+  orderNotes = tdb.getDingsByType('orderNote')
+  jamla = get_jamla()
+  return render_template("admin/order-notes.html", jamla=jamla, orderNotes=orderNotes)
 
 
 def getItem(container, i, default=None):

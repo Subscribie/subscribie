@@ -8,7 +8,7 @@ from wtforms import (
     BooleanField,
     TextField,
 )
-from wtforms.validators import DataRequired, Email as EmailValid
+from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask_uploads import UploadSet, IMAGES
 
@@ -36,6 +36,7 @@ class ItemsForm(StripWhitespaceForm):
         BooleanField("Up-Front Payment", default=False), min_entries=1
     )
     subscription = FieldList(BooleanField("Subscription", default=False), min_entries=1)
+    note_to_seller_required = FieldList(BooleanField("Require note from customer", default=False), min_entries=1)
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )
@@ -67,6 +68,7 @@ class CustomerForm(FlaskForm):
     address_line_one = StringField("address_line_one", validators=[DataRequired()])
     city = StringField("city", validators=[DataRequired()])
     postcode = StringField("postcode", validators=[DataRequired()])
+    note_to_seller = StringField("note_to_seller", validators=[Optional()])
 
 
 class GocardlessConnectForm(FlaskForm):
