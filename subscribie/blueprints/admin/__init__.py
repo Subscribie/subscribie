@@ -65,6 +65,7 @@ def edit_jamla():
     jamla = get_jamla()
     if form.validate_on_submit():
         jamla["company"]["name"] = request.form["company_name"]
+        jamla["company"]["slogan"] = request.form["slogan"]
         jamla["users"][0] = request.form["email"]
         # Loop items
         for index in request.form.getlist("itemIndex", type=int):

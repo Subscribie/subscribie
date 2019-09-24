@@ -31,6 +31,7 @@ def strip_whitespace(value):
 class ItemsForm(StripWhitespaceForm):
     title = FieldList(StringField("Title", [validators.DataRequired()]), min_entries=1)
     company_name = TextField("Company Name")
+    slogan = TextField("Slogan")
     email = TextField("Email", [validators.Email(), validators.DataRequired()])
     instant_payment = FieldList(
         BooleanField("Up-Front Payment", default=False), min_entries=1
