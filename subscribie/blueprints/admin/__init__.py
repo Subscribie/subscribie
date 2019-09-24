@@ -140,6 +140,7 @@ def add_jamla_item():
         draftItem["primary_icon"] = {"src": "", "type": ""}
         draftItem["title"] = form.title.data[0].strip()
         draftItem["requirements"]["subscription"] = bool(form.subscription.data[0])
+        draftItem["requirements"]["note_to_seller_required"] = bool(form.note_to_seller_required.data[0])
         if form.monthly_price.data[0] is None:
             draftItem["monthly_price"] = False
         else:
