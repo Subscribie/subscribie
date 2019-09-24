@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Orders {% endblock %}                                
+                                                                                 
+{% block hero %}                                                                 
+                                                                                 
+<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+    Order Notes
+</h1>
+
+                                                                                 
+{% endblock hero %} 
+                                                                                 
+{% block body %}
+<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
+  <div class="container">                                                        
+    <nav class="breadcrumb" aria-label="breadcrumbs">                            
+      <ul>                                                                       
+        <li><a href="/">Shop</a></li>                                            
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
+        <li class="is-active"><a href="#" aria-current="page">
+            Order Notes</a>
+        </li>                                                                    
+      </ul>                                                                      
+    </nav>                                                                       
+  </div>                                                                         
+</div>
+
+<div class="section">
+  <div class="container">
+  <h2 class="title is-2">Notes to seller upon subscription creation</h2>
+
+  <p> Understand that notes are only taken
+  at the <em>start</em> of a subscription. It is your responsibility to manage
+  on-going client relationships after an order, for example, why not use the
+  free online chat integration (called Tawk) to give realtime online support 
+  to your customers? Or, let them know a support contact email address.
+  </p>
+		<table class="table">
+		  <thead>
+			<tr>
+			  <th>Customer Email Address</th>
+			  <th>Note</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			{% for key in orderNotes %}
+			<tr>
+			  <td>{{ orderNotes[key]['data']['email'] }}</td>
+			  <td>{{ orderNotes[key]['data']['note'] }}</td>
+			</tr>
+			{% endfor %}
+		  </tbody>
+		</table>
+	</div><!-- end .container -->
+</div><!-- end .section -->
+
+{% endblock body %} 
+
+
