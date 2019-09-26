@@ -113,6 +113,7 @@ def generate_login_url(email):
     )
     db.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
+    print("One-time login url: {}".format(login_url))
     return login_url
 
 
