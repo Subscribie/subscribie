@@ -1,0 +1,48 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Dashboard {% endblock %}                                       
+                                                                                 
+{% block hero %}
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+        Cancel all GoCardless mandates for {{ email }}
+    </h1>
+                                                                                 
+{% endblock hero %}                                                                   
+                                                                                 
+{% block body %}
+
+                                                                                 
+<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
+  <div class="container">                                                        
+    <nav class="breadcrumb" aria-label="breadcrumbs">                            
+      <ul>                                                                       
+        <p>You're here: </p>                                                     
+        <li><a href="/">Shop</a></li>                                            
+        <li><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+        <li class="is-active"><a href="#" aria-current="page">                   
+            Cancel Mandates</a>                                                
+        </li>                                                                    
+      </ul>                                                                      
+    </nav>                                                                       
+  </div>                                                                         
+</div>
+
+<div class="section">
+
+      <h1 class="title">Are you sure?</h1>
+      <p>You cannot undo this action once you choose.</p>
+      <p>It will cancel any existing GoCardless subscriptions and payments you
+        have arranged with this email address.</p>
+
+      <br />
+      <a href="{{ url_for('admin.cancel_mandates', email=email, confirm=1) }}" 
+          class="button is-danger">
+          Yes
+      </a>
+      <br /><br />
+      <a href="{{ url_for('admin.customers', cancel=1)}}" 
+          class="button is-success">
+          No
+      </a>
+</div><!-- end .section -->
+
+{% endblock body %}
