@@ -522,6 +522,31 @@ def refresh_ssot(resource):
   flask("Refreshed customers & transactions")
   return redirect(url_for('admin.dashboard'))
 
+def get_transactions():
+  """Return tuple list of transactions from SSOT"""
+  jamla = get_jamla()
+  from SSOT import SSOT
+
+  access_token = jamla["payment_providers"]["gocardless"]["access_token"]
+  target_gateways = ({"name": "GoCardless", "construct": access_token},)
+  try:
+      SSOT = SSOT(target_gateways)
+      transactions = SSOT.transactions
+  except gocardless_pro.errors.InvalidApiUsageError as e:
+      logging.error(e.type)
+      logging.error(e.message)
+      flash("Invalid GoCardless API token. Correct your GoCardless API key.")
+      return redirect(url_for("admin.connect_gocardless_manually"))
+  except ValueError as e:
+      logging.error(e.message)
+      if e.message == "No access_token provided":
+          flash("You must connect your GoCardless account first.")
+          return redirect(url_for("admin.connect_gocardless_manually"))
+      else:
+          raise
+  return transactions
+  
+
 @admin_theme.context_processor
 def utility_gocardless_check_user_active():
   def is_active_gocardless(email):
