@@ -33,6 +33,46 @@ admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
 )
 
+@admin_theme.route("/cancel/mandates/<email>")
+@login_required
+def cancel_mandates(email):
+  """Cancel all mandates associated with a given email"""
+  jamla = get_jamla()
+  if "confirm" in request.args:
+    # Get all mandates associated with <email>
+    # Then cancel them
+    transactions = get_transactions()
+    partner_madates = []
+    for transaction in transactions:
+      # Match email to mandates
+      if transaction.mandate['links']['customer']['email'] == email \
+      and transaction.mandate['status'] == 'active':
+        partner_madates.append(transaction.mandate)
+    
+    if len(partner_madates) > 0:
+      gocclient = gocardless_pro.Client(
+          access_token=jamla["payment_providers"]["gocardless"]["access_token"],
+          environment=jamla["payment_providers"]["gocardless"]["environment"],
+      )
+      for mandate in partner_madates: # Cancel each mandate for given email
+        removed = False
+        try:
+          req = gocclient.mandates.cancel(mandate['id'])
+          flash("Mandate canceled for {}".format(email))
+          flash("The mandate ID was: {}".format(mandate['id']))
+          removed = True
+        except gocardless_pro.errors.InvalidStateError:
+          removed = True
+          flash("Mandate already canceled for {}".format(email))
+          flash("The mandate ID was: {}".format(mandate['id']))
+
+        if removed:
+          # Remove from local mandates list
+          refresh_ssot(resource='customers')
+          
+      return redirect(url_for("admin.customers"))
+  return render_template("admin/cancel_mandates_confirm.html", email=email,
+                        jamla=jamla)
 
 @admin_theme.route("/dashboard")
 @login_required
@@ -481,6 +521,22 @@ def refresh_ssot(resource):
   # Fallback
   flask("Refreshed customers & transactions")
   return redirect(url_for('admin.dashboard'))
+
+@admin_theme.context_processor
+def utility_gocardless_check_user_active():
+  def is_active_gocardless(email):
+    # Locate mandate IDs which contain customer email,
+    # and cancel them.
+    transactions = get_transactions()
+    partner_madates = []
+    for transaction in transactions:
+      # Match email to mandate
+      if transaction.mandate['links']['customer']['email'] == email \
+      and transaction.mandate['status'] == 'active':
+        partner_madates.append(transaction.mandate)
+        return True
+    return False
+  return dict(is_active_gocardless=is_active_gocardless)
 
 @admin_theme.route("/customers", methods=["GET"])
 @login_required
