@@ -29,7 +29,8 @@ setuptools.setup(
         'gocardless_pro',
         'GitPython',
         'pytest',
-        'dingdb==0.0.2'
+        'dingdb==0.0.2',
+        'tinycss'
     ],
     entry_points='''
         [console_scripts]
