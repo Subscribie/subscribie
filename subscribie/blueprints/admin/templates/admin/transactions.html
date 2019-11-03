@@ -52,7 +52,7 @@
 			{% for transaction in transactions %}
 			<tr>
 			  <td>{{ transaction['date'] }}</td>
-			  <td>{{ transaction['amount'] }}</td>
+			  <td>{{ transaction['amount']|currencyFormat }}</td>
 			  <td>{{ transaction['reference'] }}</td>
 			  <td>{{ transaction['description'] }}</td>
 			  <td>{{ transaction['currency'] }}</td>
