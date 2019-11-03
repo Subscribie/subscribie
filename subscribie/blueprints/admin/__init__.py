@@ -33,6 +33,11 @@ admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
 )
 
+@admin_theme.app_template_filter()
+def currencyFormat(value):
+  value = float(value)/100
+  return "£{:,.2f}".format(value)
+
 @admin_theme.route("/cancel/mandates/<email>")
 @login_required
 def cancel_mandates(email):
