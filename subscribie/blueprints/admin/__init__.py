@@ -352,8 +352,8 @@ def connect_stripe_manually():
     else:
         stripe_connected = False
     if form.validate_on_submit():
-        publishable_key = form.data["publishable_key"]
-        secret_key = form.data["secret_key"]
+        publishable_key = form.data["publishable_key"].strip()
+        secret_key = form.data["secret_key"].strip()
         jamla["payment_providers"]["stripe"]["publishable_key"] = publishable_key
         jamla["payment_providers"]["stripe"]["secret_key"] = secret_key
         # Overwrite jamla file with gocardless access_token
