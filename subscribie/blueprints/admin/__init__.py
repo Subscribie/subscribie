@@ -122,9 +122,12 @@ def edit_jamla():
             jamla["items"][index]["requirements"]["subscription"] = bool(
                 getItem(form.subscription.data, index)
             )
-            jamla["items"][index]["monthly_price"] = int(
-                getItem(form.monthly_price.data, index, default=0) * 100
-            )
+            if getItem(form.monthly_price.data, index, default=0) is None:
+                monthly_price = 0.00
+            else:
+                monthly_price = getItem(form.monthly_price.data, index, default=0) * 100
+            jamla["items"][index]["monthly_price"] = monthly_price
+
             jamla["items"][index]["requirements"]["instant_payment"] = bool(
                 getItem(form.instant_payment.data, index)
             )
