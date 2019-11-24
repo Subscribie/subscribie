@@ -134,9 +134,12 @@ def edit_jamla():
             jamla["items"][index]["requirements"]["note_to_seller_required"] = bool(
                 getItem(form.note_to_seller_required.data, index)
             )
-            jamla["items"][index]["sell_price"] = int(
-                getItem(form.sell_price.data, index, default=0) * 100
-            )
+            if getItem(form.sell_price.data, index, default=0) is None:
+                sell_price = 0.00
+            else:
+                sell_price = getItem(form.sell_price.data, index, default=0) * 100
+            jamla["items"][index]["sell_price"] = sell_price
+
             jamla["items"][index]["selling_points"] = getItem(
                 form.selling_points.data, index, default=""
             )
