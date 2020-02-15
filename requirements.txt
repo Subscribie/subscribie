@@ -1,4 +1,5 @@
 subscribiecli
+Werkzeug==0.16.1
 Flask>=1,<2
 flask_cors
 flask_login
