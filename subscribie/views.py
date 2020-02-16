@@ -292,7 +292,7 @@ def on_complete_mandate():
 def thankyou():
     jamla = get_jamla()
     # Store note to seller if in session
-    if bool(session["note_to_seller"]):
+    if session.get('note_to_seller', False) is not False:
       tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
       tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
     # Send journey_complete signal
