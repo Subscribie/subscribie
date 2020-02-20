@@ -81,7 +81,7 @@ def load_theme(app):
         themepath = p.joinpath(
             app.config["TEMPLATE_BASE_DIR"], "theme-jesmond", "jesmond"
         )
-
+    app.config["THEME_PATH"] = themepath
     my_loader = jinja2.ChoiceLoader(
         [jinja2.FileSystemLoader(str(themepath)), app.jinja_loader]
     )
