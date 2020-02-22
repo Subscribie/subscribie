@@ -27,7 +27,6 @@ def index():
 
 @bp.route("/reload")
 def reload_app():
-    return request.host
     """Reload app
     when running as a uwsgi vassal, a touch is performed
     on the app's .ini file to trigger a graceful reload of 
