@@ -9,16 +9,38 @@ from subscribie.db import get_jamla, get_db
 import stripe
 from dingdb import dingdb
 from uuid import uuid4
+from pathlib import Path
 
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
+
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+        request.referrer or \
+        url_for('index')
 
 def index():
     jamla = get_jamla()
     return render_template("index.html", jamla=jamla)
 
+@bp.route("/reload")
+def reload_app():
+    return request.host
+    """Reload app
+    when running as a uwsgi vassal, a touch is performed
+    on the app's .ini file to trigger a graceful reload of 
+    the app"""
+    path = os.path.abspath(__file__ + "../../../../")
+    # .ini file is named <hostname>.ini
+    vassalFilePath = Path(path , request.host + '.ini')
+    # Perform reload by touching file
+    print("Reloading by touching ini file at {}".format(vassalFilePath))
+    vassalFilePath.touch(exist_ok=True)
+    flash("Reload triggered")
+    return redirect(redirect_url())
+    
 
 @bp.route("/choose")
 def choose():
