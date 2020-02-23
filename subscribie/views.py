@@ -44,7 +44,7 @@ def reload_app():
 @bp.route("/choose")
 def choose():
     jamla = get_jamla()
-    return render_template("choose.html", jamla=jamla)
+    return render_template("choose.html", jamla=jamla, pages=jamla['pages'])
 
 
 @bp.route("/new_customer", methods=["GET"])
@@ -53,7 +53,8 @@ def new_customer():
     package = request.args.get("plan", "not set")
     session["package"] = package
     form = CustomerForm()
-    return render_template("new_customer.html", jamla=jamla, form=form, package=package)
+    return render_template("new_customer.html", jamla=jamla, form=form, package=package,
+                         pages=jamla['pages'])
 
 
 @bp.route("/new_customer", methods=["POST"])
@@ -143,6 +144,7 @@ def up_front(sid, package, fname):
         monthly_cost=monthly_cost,
         sid=sid,
         stripe_pub_key=stripe_pub_key,
+        pages=jamla['pages']
     )
 
 
@@ -325,4 +327,4 @@ def thankyou():
         logger.warning("No mandate for this transaction")
         logger.warning("Maybe OK as not all items require a direct debit mandate")
     finally:
-        return render_template("thankyou.html", jamla=jamla)
+        return render_template("thankyou.html", jamla=jamla, pages=jamla['pages'])
