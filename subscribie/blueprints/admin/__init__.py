@@ -581,7 +581,9 @@ def customers():
     from SSOT import SSOT
 
     access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-    target_gateways = ({"name": "GoCardless", "construct": access_token},)
+    stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
+    target_gateways = ({"name": "GoCardless", "construct": access_token},
+                       {"name": "Stripe", "construct": stripe_token})
     try:
         SSOT = SSOT(target_gateways)
         partners = SSOT.partners

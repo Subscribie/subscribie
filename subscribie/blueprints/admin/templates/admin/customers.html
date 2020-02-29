@@ -36,6 +36,7 @@
 			  <th>Name</th>
 			  <th><abbr title="Address">Addr</abbr></th>
         <th>Actions</th>
+        <th>Source</th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -67,6 +68,7 @@
           </a>
           {% endif %}
         </td>
+        <td>{{ partner['source_gateway'] }}</td>
 			</tr>
 			{% endfor %}
 		  </tbody>
