@@ -116,7 +116,12 @@ def store_customer():
                 )
             )
         if jamlaApp.requires_subscription(session["package"]):
-            return redirect(url_for("views.establish_mandate"))
+            # Check if in iframe
+            if form.data["is_iframe"] == "True":
+                insideIframe = True
+            else:
+                insideIframe = False
+            return redirect(url_for("views.establish_mandate", inside_iframe=insideIframe))
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
     else:
         return "Oops, there was an error processing that form, please go back and try again."
@@ -229,7 +234,17 @@ def establish_mandate():
     # "confirm" the dedirect flow later
     print("ID: {} ".format(redirect_flow.id))
     print("URL: {} ".format(redirect_flow.redirect_url))
-    return redirect(redirect_flow.redirect_url)
+
+    # Check if we're inside an iframe, if yes redirect to pop-up
+    # Issue https://github.com/Subscribie/subscribie/issues/128
+    if request.args.get('inside_iframe', 'False') == "True":
+        inside_iframe = True
+        return render_template("iframe_new_window_redirect.html", 
+                                redirect_url=redirect_flow.redirect_url,
+                                jamla=jamla)
+        return '<a href="{}" target="_blank">Continue</a>'.format(redirect_flow.redirect_url)
+    else:
+        return redirect(redirect_flow.redirect_url)
 
 
 @bp.route("/complete_mandate", methods=["GET"])
