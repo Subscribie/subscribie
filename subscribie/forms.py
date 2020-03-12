@@ -7,6 +7,7 @@ from wtforms import (
     validators,
     BooleanField,
     TextField,
+    HiddenField,
 )
 from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed, FileRequired
@@ -70,6 +71,7 @@ class CustomerForm(FlaskForm):
     city = StringField("city", validators=[DataRequired()])
     postcode = StringField("postcode", validators=[DataRequired()])
     note_to_seller = StringField("note_to_seller", validators=[Optional()])
+    is_iframe = HiddenField("is_iframe")
 
 
 class GocardlessConnectForm(FlaskForm):
