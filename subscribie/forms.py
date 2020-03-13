@@ -8,6 +8,7 @@ from wtforms import (
     BooleanField,
     TextField,
     HiddenField,
+    TextAreaField,
 )
 from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed, FileRequired
@@ -39,6 +40,8 @@ class ItemsForm(StripWhitespaceForm):
     )
     subscription = FieldList(BooleanField("Subscription", default=False), min_entries=1)
     note_to_seller_required = FieldList(BooleanField("Require note from customer", default=False), min_entries=1)
+    # Allow seller to say what additional information they need
+    note_to_buyer_message = FieldList(TextAreaField(u'Note to buyer', [validators.optional(), validators.length(max=500)]))
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )

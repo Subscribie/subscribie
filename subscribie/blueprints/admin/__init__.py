@@ -134,6 +134,11 @@ def edit_jamla():
             jamla["items"][index]["requirements"]["note_to_seller_required"] = bool(
                 getItem(form.note_to_seller_required.data, index)
             )
+
+            jamla["items"][index]["requirements"]["note_to_buyer_message"] = str(getItem(
+                form.note_to_buyer_message, index, default=""
+            ).data)
+
             if getItem(form.sell_price.data, index, default=0) is None:
                 sell_price = 0.00
             else:
@@ -192,6 +197,8 @@ def add_jamla_item():
         draftItem["title"] = form.title.data[0].strip()
         draftItem["requirements"]["subscription"] = bool(form.subscription.data[0])
         draftItem["requirements"]["note_to_seller_required"] = bool(form.note_to_seller_required.data[0])
+        draftItem["requirements"]["note_to_buyer_message"] = str(form.note_to_buyer_message.data[0])
+
         if form.monthly_price.data[0] is None:
             draftItem["monthly_price"] = False
         else:
