@@ -78,6 +78,12 @@
             {% endif %}
           />
       </dd>
+      <dd>
+          <p>Message shown to buyer. e.g. "Please provide alternative contact number"</p>
+          <textarea name="note_to_buyer_message-{{ loop.index0 }}">{{ 
+            jamla['items'][loop.index0]['requirements']['note_to_buyer_message'] }} 
+          </textarea>
+      </dd>
 
         <dl>
           <dt><legend>Selling Points:</legend></dt>
