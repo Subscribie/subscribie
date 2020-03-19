@@ -586,11 +586,20 @@ def utility_gocardless_check_user_active():
 def customers():
     jamla = get_jamla()
     from SSOT import SSOT
+    
+    jamlaApp = Jamla()
+    jamlaApp.load(jamla=jamla)
 
-    access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-    stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
-    target_gateways = ({"name": "GoCardless", "construct": access_token},
-                       {"name": "Stripe", "construct": stripe_token})
+    target_gateways = ()
+
+    if jamlaApp.has_connected("gocardless"):
+        access_token = jamla["payment_providers"]["gocardless"]["access_token"]
+        target_gateways = target_gateways + ({"name": "GoCardless", "construct": access_token},)
+
+    if jamlaApp.has_connected("stripe"):
+        stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
+        target_gateways = target_gateways + ({"name": "Stripe", "construct": stripe_token},)
+
     try:
         SSOT = SSOT(target_gateways)
         partners = SSOT.partners
