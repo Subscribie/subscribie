@@ -42,6 +42,7 @@ class ItemsForm(StripWhitespaceForm):
     note_to_seller_required = FieldList(BooleanField("Require note from customer", default=False), min_entries=1)
     # Allow seller to say what additional information they need
     note_to_buyer_message = FieldList(TextAreaField(u'Note to buyer', [validators.optional(), validators.length(max=500)]))
+    days_before_first_charge = FieldList(StringField("Days before first charge"))
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )

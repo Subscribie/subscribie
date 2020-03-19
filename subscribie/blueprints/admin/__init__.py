@@ -139,6 +139,13 @@ def edit_jamla():
                 form.note_to_buyer_message, index, default=""
             ).data)
 
+            try:
+                days_before_first_charge = int(form.days_before_first_charge[index].data)
+            except ValueError:
+                days_before_first_charge = 0
+
+            jamla["items"][index]["days_before_first_charge"] = days_before_first_charge
+
             if getItem(form.sell_price.data, index, default=0) is None:
                 sell_price = 0.00
             else:
@@ -198,6 +205,12 @@ def add_jamla_item():
         draftItem["requirements"]["subscription"] = bool(form.subscription.data[0])
         draftItem["requirements"]["note_to_seller_required"] = bool(form.note_to_seller_required.data[0])
         draftItem["requirements"]["note_to_buyer_message"] = str(form.note_to_buyer_message.data[0])
+        try:
+            days_before_first_charge = int(form.days_before_first_charge.data[0])
+        except ValueError:
+            days_before_first_charge = 0
+
+        draftItem["days_before_first_charge"] = days_before_first_charge
 
         if form.monthly_price.data[0] is None:
             draftItem["monthly_price"] = False
