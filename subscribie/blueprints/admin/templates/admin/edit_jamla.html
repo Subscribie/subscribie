@@ -57,6 +57,9 @@
 	  <dt><label>Monthly Price:</label></dt>
       <dd><input name="monthly_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['monthly_price'] / 100 }}" /></dd>
 
+    <dt><label>Cooling off period (days before first charge)</label></dt>
+      <dd><input name="days_before_first_charge-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['days_before_first_charge'] }}" type="number" /></dd>
+
 	  <dt><label>Requires Up-front Price:</label></dt>
       <dd><input name="instant_payment-{{ loop.index0 }}" type="checkbox"
           {% if
