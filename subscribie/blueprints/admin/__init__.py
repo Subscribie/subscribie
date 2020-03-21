@@ -514,7 +514,13 @@ def refresh_ssot(resource):
   from SSOT import SSOT
 
   access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-  target_gateways = ({"name": "GoCardless", "construct": access_token},)
+  gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
+  target_gateways = ({"name": "GoCardless", 
+                                      "construct": {
+                                        "access_token":access_token,
+                                        "environment": gc_environment
+                                        }
+                                    },)
   try:
       SSOT = SSOT(target_gateways, refresh=True)
       partners = SSOT.partners
@@ -546,7 +552,13 @@ def get_transactions():
   from SSOT import SSOT
 
   access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-  target_gateways = ({"name": "GoCardless", "construct": access_token},)
+  gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
+  target_gateways = ({"name": "GoCardless", 
+                                      "construct": {
+                                        "access_token":access_token,
+                                        "environment": gc_environment
+                                        }
+                                    },)
   try:
       SSOT = SSOT(target_gateways)
       transactions = SSOT.transactions
@@ -594,7 +606,13 @@ def customers():
 
     if jamlaApp.has_connected("gocardless"):
         access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-        target_gateways = target_gateways + ({"name": "GoCardless", "construct": access_token},)
+        gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
+        target_gateways = target_gateways + ({"name": "GoCardless", 
+                                              "construct": {
+                                                "access_token":access_token,
+                                                "environment": gc_environment
+                                                }
+                                            },)
 
     if jamlaApp.has_connected("stripe"):
         stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
