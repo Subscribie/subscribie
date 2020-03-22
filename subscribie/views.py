@@ -2,6 +2,7 @@ from . import logger
 import os
 import yaml
 import datetime
+from datetime import date
 import sqlite3
 from .signals import journey_complete
 from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
@@ -303,15 +304,30 @@ def on_complete_mandate():
         logger.info("Plan session is set to: %s", str(session["plan"]))
         logger.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
 
+        # If days_before_first_charge is set, apply start_date adjustment
+        itemIndex = jamlaApp.sku_get_index(session['plan'])
+        try:
+            days_before_first_charge = jamla['items'][itemIndex]['days_before_first_charge']
+            if days_before_first_charge == 0 or days_before_first_charge == '':
+                start_date = None
+            else:
+                today = date.today()
+                enddate = today + datetime.timedelta(days=int(days_before_first_charge))
+                start_date = enddate.strftime('%Y-%m-%d')
+        except KeyError:
+            start_date = None
+
         # Create subscription
+        print("Creating subscription")
         gocclient.subscriptions.create(
             params={
-                "amount": jamlaApp.sku_get_monthly_price(session["plan"]),
+                "amount": int(jamlaApp.sku_get_monthly_price(session["plan"])),
                 "currency": "GBP",
                 "name": jamlaApp.sku_get_title(session["plan"]),
                 "interval_unit": "monthly",
                 "metadata": {"sku": session["plan"]},
                 "links": {"mandate": session["gocardless_mandate_id"]},
+                "start_date" : start_date
             }
         )
     except Exception as e:
