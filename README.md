@@ -50,6 +50,7 @@ You need to install:
 
 - python3 (must be python version 3 or greater) https://www.python.org/downloads/
 - virtualenv https://virtualenv.pypa.io/en/latest/installation.html
+- pip (https://pip.pypa.io/en/stable/installing/)
 
 ```
 git clone https://github.com/Subscribie/subscribie.git
