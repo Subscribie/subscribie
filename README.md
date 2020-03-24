@@ -46,10 +46,15 @@ queue](https://github.com/Subscribie/subscribie/issues)
 
 # Contributing (for development)
 
+You need to install:
+
+- python3 (must be python version 3 or greater) https://www.python.org/downloads/
+- virtualenv https://virtualenv.pypa.io/en/latest/installation.html
+
 ```
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
-virtualenv venv
+virtualenv venv 
 source venv/bin/activate
 pip install -e .
 export FLASK_APP=subscribie
