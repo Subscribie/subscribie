@@ -52,13 +52,8 @@ You need to install:
 - virtualenv https://virtualenv.pypa.io/en/latest/installation.html
 - pip (https://pip.pypa.io/en/stable/installing/)
 
-```
-git clone https://github.com/Subscribie/subscribie.git
-cd subscribie
-virtualenv venv 
-source venv/bin/activate
-pip install -e .
-export FLASK_APP=subscribie
-flask run
-```
+Then follow the following steps:
 
+- https://subscribie.readthedocs.io/en/latest/tasks/tools/install-subscribiecli.html
+
+- https://subscribie.readthedocs.io/en/latest/tasks/run-subscribie-locally.html
