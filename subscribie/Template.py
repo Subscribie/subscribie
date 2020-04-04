@@ -87,7 +87,7 @@ def load_theme(app):
     )
     app.jinja_loader = my_loader
     try:
-        app.static_folder = static_folder
+        app.static_folder = str(static_folder)
     except NameError:
         print("Fallback to jesmon theme")
         app.static_folder = p.joinpath(
