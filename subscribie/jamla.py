@@ -104,3 +104,14 @@ class Jamla:
                     return app.config["GOCARDLESS_TOKEN"]
                 except Exception:
                     pass
+    def filter_archived_items(self, jamla):
+        """Filter archived items"""
+        items = []                                                                   
+        for item in jamla['items']:                                                  
+            try:                                                                     
+                if item['archived'] is not True:                                     
+                    items.append(item)                                               
+            except KeyError:                                                         
+                items.append(item) # if key is absent, assume not archived
+        jamla['items'] = items
+        return jamla
