@@ -28,6 +28,7 @@ from pathlib import Path
 from .getLoadedModules import getLoadedModules
 from dingdb import dingdb
 import subprocess
+import uuid
 
 admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -199,6 +200,7 @@ def add_jamla_item():
     jamla = get_jamla()
     if form.validate_on_submit():
         draftItem = {}
+        draftItem["uuid"] = str(uuid.uuid4())
         draftItem["requirements"] = {}
         draftItem["primary_icon"] = {"src": "", "type": ""}
         draftItem["title"] = form.title.data[0].strip()
