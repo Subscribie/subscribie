@@ -109,6 +109,9 @@ def dashboard():
 def edit_jamla():
     form = ItemsForm()
     jamla = get_jamla()
+    # Filter archived items                                                      
+    jamlaApp = Jamla()
+    jamla = jamlaApp.filter_archived_items(jamla)
     if form.validate_on_submit():
         jamla["company"]["name"] = request.form["company_name"]
         jamla["company"]["slogan"] = request.form["slogan"]
@@ -251,13 +254,21 @@ def add_jamla_item():
 @login_required
 def delete_jamla_item():
     jamla = get_jamla()
+    # Filter archived items                                                      
+    jamlaApp = Jamla()
+    jamla = jamlaApp.filter_archived_items(jamla)
     return render_template("admin/delete_jamla_item_choose.html", jamla=jamla)
 
 
 @admin_theme.route("/delete/<sku>", methods=["GET", "POST"])
 @login_required
 def delete_item_by_sku(sku):
+    """Archive (dont actually delete) an item"""
     jamla = get_jamla()
+    # Filter archived items                                                      
+    jamlaApp = Jamla()
+    jamla = jamlaApp.filter_archived_items(jamla)
+
     jamlaApp = Jamla()
     jamlaApp.load(jamla=get_jamla())
     itemIndex = jamlaApp.sku_get_index(sku)
@@ -271,7 +282,7 @@ def delete_item_by_sku(sku):
         )
     if itemIndex is not False:
         # Perform removal
-        jamla["items"].pop(itemIndex)
+        jamla["items"][itemIndex]['archived'] = True
         fp = open(current_app.config["JAMLA_PATH"], "w")
         yaml.safe_dump(jamla, fp, default_flow_style=False)
 

@@ -45,6 +45,10 @@ def reload_app():
 @bp.route("/choose")
 def choose():
     jamla = get_jamla()
+    # Filter archived items
+    jamlaApp = Jamla()
+    jamla = jamlaApp.filter_archived_items(jamla)
+
     return render_template("choose.html", jamla=jamla, pages=jamla['pages'])
 
 
