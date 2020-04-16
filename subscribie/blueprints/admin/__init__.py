@@ -107,6 +107,16 @@ def dashboard():
 @admin_theme.route("/edit", methods=["GET", "POST"])
 @login_required
 def edit_jamla():
+    """Update jamla items
+    
+    Note sku items are immutable, when a change is made to an item, its old
+    item is archived and a new sku item is created with a new uuid. This is to
+    protect data integriry and make sure plan history is retained, via its uuid.
+    If a user needs to change a subscription, they should change to a different
+    plan with a different uuid.
+
+    """
+
     form = ItemsForm()
     jamla = get_jamla()
     # Filter archived items                                                      
@@ -118,28 +128,41 @@ def edit_jamla():
         jamla["users"][0] = request.form["email"]
         # Loop items
         for index in request.form.getlist("itemIndex", type=int):
-            # Get current values
-            # Update
-            jamla["items"][index]["title"] = getItem(
+
+            # Archive existing item then create new sku item
+            # (remember, edit edits create new items because
+            # skus are immutable)
+
+            jamla["items"][index]["archived"] = True # Archive item
+
+            # Build new sku
+            draftItem = {}
+            draftItem["uuid"] = str(uuid.uuid4())
+            draftItem["sku"] = jamla["items"][index]["sku"]
+            draftItem["requirements"] = {}
+            # Preserve primary icon if exists
+            draftItem["primary_icon"] = jamla["items"][index]["primary_icon"]
+
+            draftItem["title"] = getItem(
                 form.title.data, index, default=""
             ).strip()
-            jamla["items"][index]["requirements"]["subscription"] = bool(
+            draftItem["requirements"]["subscription"] = bool(
                 getItem(form.subscription.data, index)
             )
             if getItem(form.monthly_price.data, index, default=0) is None:
                 monthly_price = 0.00
             else:
                 monthly_price = getItem(form.monthly_price.data, index, default=0) * 100
-            jamla["items"][index]["monthly_price"] = monthly_price
+            draftItem["monthly_price"] = monthly_price
 
-            jamla["items"][index]["requirements"]["instant_payment"] = bool(
+            draftItem["requirements"]["instant_payment"] = bool(
                 getItem(form.instant_payment.data, index)
             )
-            jamla["items"][index]["requirements"]["note_to_seller_required"] = bool(
+            draftItem["requirements"]["note_to_seller_required"] = bool(
                 getItem(form.note_to_seller_required.data, index)
             )
 
-            jamla["items"][index]["requirements"]["note_to_buyer_message"] = str(getItem(
+            draftItem["requirements"]["note_to_buyer_message"] = str(getItem(
                 form.note_to_buyer_message, index, default=""
             ).data)
 
@@ -148,15 +171,15 @@ def edit_jamla():
             except ValueError:
                 days_before_first_charge = 0
 
-            jamla["items"][index]["days_before_first_charge"] = days_before_first_charge
+            draftItem["days_before_first_charge"] = days_before_first_charge
 
             if getItem(form.sell_price.data, index, default=0) is None:
                 sell_price = 0.00
             else:
                 sell_price = getItem(form.sell_price.data, index, default=0) * 100
-            jamla["items"][index]["sell_price"] = sell_price
+            draftItem["sell_price"] = sell_price
 
-            jamla["items"][index]["selling_points"] = getItem(
+            draftItem["selling_points"] = getItem(
                 form.selling_points.data, index, default=""
             )
             # Primary icon image storage
@@ -171,7 +194,9 @@ def edit_jamla():
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
                 symlink(img_src, link, overwrite=True)
                 src = url_for("static", filename=filename)
-                jamla["items"][index]["primary_icon"] = {"src": src, "type": ""}
+                draftItem["primary_icon"] = {"src": src, "type": ""}
+            # Add new sku to items
+            jamla["items"].append(draftItem)
             fp = open(current_app.config["JAMLA_PATH"], "w")
             yaml.safe_dump(jamla, fp, default_flow_style=False)
         flash("Item(s) updated.")
