@@ -118,8 +118,6 @@ def create_app(test_config=None):
     configure_uploads(app, images)
 
     from . import db
-
-    db.init_app(app)
     from . import auth
     from . import views
 
