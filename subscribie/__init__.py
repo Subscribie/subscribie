@@ -117,9 +117,6 @@ def create_app(test_config=None):
     patch_request_class(app, 2 * 1024 * 1024)
     configure_uploads(app, images)
 
-    from . import db
-
-    db.init_app(app)
     from . import auth
     from . import views
 
