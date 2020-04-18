@@ -24,6 +24,7 @@ import sqlite3
 import os
 from .forms import LoginForm
 from flask_mail import Mail, Message
+from .models import database, User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -101,17 +102,14 @@ def load_logged_in_user():
 
 
 def generate_login_url(email):
-    db = get_db()
-    result = db.execute("SELECT COUNT(*) FROM user WHERE email=?", (email,)).fetchone()
-    if result is False:
+    user = User.query.filter_by(email=email).first()
+    if user is None:
         return "Invalid valid user"
     # Generate login token
     login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
     # Insert login token into db
-    db.execute(
-        """ UPDATE user SET login_token= ? WHERE email= ? """, (login_token, email)
-    )
-    db.commit()
+    user.login_token = login_token
+    database.session.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
     print("One-time login url: {}".format(login_url))
     return login_url
