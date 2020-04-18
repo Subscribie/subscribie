@@ -64,26 +64,18 @@ def login():
 def do_login(login_token):
     if len(login_token) < 10:
         return "Invalid token"
-    # Try to get email from login_token
-    db = get_db()
-    error = None
-    user = db.execute(
-        "SELECT email FROM user WHERE login_token=?", (login_token,)
-    ).fetchone()
+    # Try to get user from login_token
+    user = User.query.filter_by(login_token=login_token).first()
     if user is None:
-        error = "Incorrect login token"
+        return "Invalid valid user"
 
-    if error is None:
-        session.clear()
-        session["user_id"] = user["email"]
-
-    # Invaldate previous token
+    session.clear()
+    session["user_id"] = user.email
+    
+    # Invalidate previous token
     new_login_token = urlsafe_b64encode(os.urandom(24))
-    db.execute(
-        "UPDATE user SET login_token=? WHERE login_token=?",
-        (new_login_token, login_token),
-    )
-    db.commit()
+    user.login_token = new_login_token
+    database.session.commit()
     return redirect(url_for("admin.dashboard"))
 
 
