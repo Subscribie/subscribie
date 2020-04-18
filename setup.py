@@ -30,7 +30,9 @@ setuptools.setup(
         'GitPython',
         'pytest',
         'dingdb==0.0.2',
-        'tinycss'
+        'tinycss',
+        'flask_sqlalchemy',
+        'flask_migrate'
     ],
     entry_points='''
         [console_scripts]
