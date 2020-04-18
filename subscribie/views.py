@@ -14,6 +14,8 @@ from pathlib import Path
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
+from .models import database, User, Person
+
 bp = Blueprint("views", __name__, url_prefix=None)
 
 
@@ -73,7 +75,6 @@ def store_customer():
         postcode = form.data["postcode"]
         email = form.data["email"]
         mobile = form.data["mobile"]
-        now = datetime.datetime.now()
         # Store customer in session
         sid = session["sid"]
         # Store email in session
@@ -86,26 +87,11 @@ def store_customer():
         if jamlaApp.sku_exists(request.args.get("plan")):
             wants = request.args.get("plan")
             session["plan"] = wants
-        db = get_db()
-        db.execute(
-            "INSERT INTO person VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                sid,
-                now,
-                given_name,
-                family_name,
-                address_line_one,
-                city,
-                postcode,
-                email,
-                mobile,
-                wants,
-                "null",
-                "null",
-                False,
-            ),
-        )
-        db.commit()
+        person = Person(sid=sid, given_name=given_name, family_name=family_name,
+                        address_line1=address_line_one, city=city,
+                        postal_code=postcode, email=email, mobile=mobile)
+        database.session.add(person)
+        database.session.commit()
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
