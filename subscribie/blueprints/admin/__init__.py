@@ -138,7 +138,6 @@ def edit_jamla():
             # Build new sku
             draftItem = {}
             draftItem["uuid"] = str(uuid.uuid4())
-            draftItem["sku"] = jamla["items"][index]["sku"]
             draftItem["requirements"] = {}
             # Preserve primary icon if exists
             draftItem["primary_icon"] = jamla["items"][index]["primary_icon"]
@@ -146,6 +145,9 @@ def edit_jamla():
             draftItem["title"] = getItem(
                 form.title.data, index, default=""
             ).strip()
+
+            draftItem["sku"] = draftItem["title"].replace(" ", "").strip()
+
             draftItem["requirements"]["subscription"] = bool(
                 getItem(form.subscription.data, index)
             )
@@ -255,7 +257,7 @@ def add_jamla_item():
             draftItem["sell_price"] = float(form.sell_price.data[0]) * 100
         draftItem["selling_points"] = form.selling_points.data[0]
         # Create SKU
-        draftItem["sku"] = form.title.data[0].replace(" ", "")
+        draftItem["sku"] = form.title.data[0].replace(" ", "").strip()
         # Primary icon image storage
         f = form.image.data[0]
         if f:

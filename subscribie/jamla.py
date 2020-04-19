@@ -17,7 +17,7 @@ class Jamla:
 
     def sku_exists(self, sku):
         for item in self.jamla["items"]:
-            if item["sku"] == str(sku):
+            if item["sku"].strip() == str(sku.strip()):
                 return True
         return False
 
