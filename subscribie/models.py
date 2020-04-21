@@ -3,7 +3,8 @@ from datetime import datetime
 
 class User(database.Model):
     __tablename__ = 'user'
-    email = database.Column(database.String(255), primary_key=True)
+    id = database.Column(database.Integer(), primary_key=True)
+    email = database.Column(database.String())
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     active = database.Column(database.String)
     login_token = database.Column(database.String)
@@ -13,7 +14,8 @@ class User(database.Model):
 
 class Person(database.Model):
     __tablename__ = 'person'
-    sid = database.Column(database.String(), primary_key=True)
+    id = database.Column(database.Integer(), primary_key=True)
+    sid = database.Column(database.String())
     ts = database.Column(database.DateTime, default=datetime.utcnow)
     given_name = database.Column(database.String())
     family_name = database.Column(database.String())
