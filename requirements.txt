@@ -5,6 +5,7 @@ flask_cors
 flask_login
 flask_uploads
 flask_wtf
+wtforms[email]
 Flask-Mail>=0.9.1
 requests
 blinker
