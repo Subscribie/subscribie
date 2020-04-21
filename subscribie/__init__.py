@@ -65,6 +65,10 @@ from importlib import reload
 import urllib
 from pathlib import Path
 import subprocess
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+database = SQLAlchemy()
 
 
 def create_app(test_config=None):
@@ -95,6 +99,14 @@ def create_app(test_config=None):
             print("Could not find default config, loading from default object")
             app.config.from_object(DefaultConfig)
 
+    db_uri = "sqlite:///" + app.config["DB_FULL_PATH"] # Must be full path
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False             
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    database.init_app(app)
+    with app.app_context():
+        database.create_all()
+    migrate = Migrate(app, database)
+
     @app.before_request
     def start_session():
         try:
@@ -118,8 +130,6 @@ def create_app(test_config=None):
     configure_uploads(app, images)
 
     from . import db
-
-    db.init_app(app)
     from . import auth
     from . import views
 
@@ -152,8 +162,6 @@ def create_app(test_config=None):
     """
     # the signals
     from .signals import journey_complete
-
-    alphanum = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXYZ0123456789"
 
     # Set custom modules path
     if type(jamla["modules_path"]) is str:
