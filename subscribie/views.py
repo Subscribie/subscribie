@@ -14,7 +14,7 @@ from pathlib import Path
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
-from .models import database, User, Person
+from .models import database, User, Person, Subscription
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -84,7 +84,7 @@ def store_customer():
         jamlaApp = Jamla()
         jamla = get_jamla()
         jamlaApp.load(jamla=jamla)
-        if jamlaApp.sku_exists(request.args.get("plan")):
+        if jamlaApp.sku_uuid_exists(request.args.get("plan")):
             wants = request.args.get("plan")
             session["plan"] = wants
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
@@ -271,18 +271,6 @@ def on_complete_mandate():
         customer = redirect_flow.links.customer
         flow = redirect_flow_id
 
-        con = sqlite3.connect(current_app.config["DB_FULL_PATH"])
-        cur = con.cursor()
-        cur.execute("SELECT * FROM person WHERE sid = ?", (sid,))
-        row = cur.fetchone()
-        customerName = row[2] + " " + row[3]
-        customerAddress = row[4] + ", " + row[5] + ", " + row[6]
-        customerEmail = row[7]
-        customerPhone = row[8]
-        chosenPackage = row[9]
-        customerExistingLine = row[10]
-        customerExistingNumber = row[11]
-
         logger.info(
             "Creating subscription with amount: %s",
             str(jamlaApp.sku_get_monthly_price(session["plan"])),
@@ -309,17 +297,30 @@ def on_complete_mandate():
 
         # Create subscription
         print("Creating subscription")
-        gocclient.subscriptions.create(
+        # Store Subscription against Person locally
+        person = database.session.query(Person).filter_by(email=session['email']).first()
+        subscription = Subscription(sku_uuid=session['package'], person=person)
+        database.session.add(subscription)
+        database.session.commit()
+
+        # Submit to GoCardless as subscription
+        gc_subscription = gocclient.subscriptions.create(
             params={
                 "amount": int(jamlaApp.sku_get_monthly_price(session["plan"])),
                 "currency": "GBP",
                 "name": jamlaApp.sku_get_title(session["plan"]),
                 "interval_unit": "monthly",
-                "metadata": {"sku": session["plan"]},
+                "metadata": {"subscribie_subscription_uuid": subscription.uuid},
                 "links": {"mandate": session["gocardless_mandate_id"]},
                 "start_date" : start_date
             }
         )
+        # Store GoCardless subscription id
+        subscription.gocardless_subscription_id = gc_subscription.id
+        database.session.add(subscription)
+        database.session.commit()
+
+
     except Exception as e:
         logger.error(e)
         if isinstance(e, gocardless_pro.errors.InvalidStateError):
