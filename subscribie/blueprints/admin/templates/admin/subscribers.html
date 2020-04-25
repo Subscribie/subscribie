@@ -41,7 +41,7 @@
           {% for subscription in person.subscriptions %}
             <li>
               <b>Title:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }} <br />
-              <b>ID:</b> {{ subscription.sku_uuid }} <br />
+              <b>ID:</b> {{ subscription.uuid }} <br />
               <b>Date started: </b> {{ subscription.created_at.strftime('%Y-%m-%d') }} <br />
               <b>GoCardless Subscription id:</b> {{ subscription.gocardless_subscription_id }} <br />
               <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
