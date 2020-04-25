@@ -35,21 +35,48 @@
 		  <tbody>
 			{% for person in people %}
 			<tr>
-        <td><b>Name:</b> {{ person.given_name }}<br />
+        <td>
+          <b>Name:</b> {{ person.given_name }} {{ person.family_name }}<br />
+          <b>Creation date:</b> 
+            {% if person.created_at %} 
+              {{ person.created_at.strftime('%Y-%m-%d') }}
+            {% endif %}
+          <br />
+          <b>Email:</b> {{ person.email }}<br />
+          <b>Phone:</b> {{ person.phone }}<br />
+          <b>Address:</b><br />
+            <address>
+              {{ person.address_line1 }}<br />
+              {{ person.city }} <br />
+              {{ person.postal_code }} <br />
+            </address>
           <b>Subscriptions:</b>  <br />
-          <ul>
-          {% for subscription in person.subscriptions %}
-            <li>
-              <b>Title:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }} <br />
-              <b>ID:</b> {{ subscription.uuid }} <br />
-              <b>Date started: </b> {{ subscription.created_at.strftime('%Y-%m-%d') }} <br />
-              <b>GoCardless Subscription id:</b> {{ subscription.gocardless_subscription_id }} <br />
-              <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
-              <b>Sell price:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }} <br />
-            </li>
-            <hr />
-          {% endfor %}
-          </ul>
+          <div style="border: 2px solid grey">
+          {% if person.subscriptions %}
+            <ol>
+            {% for subscription in person.subscriptions %}
+              <li>
+                <b>Title:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }} <br />
+                <b>ID:</b> {{ subscription.uuid }} <br />
+                <b>Date started: </b> {{ subscription.created_at.strftime('%Y-%m-%d') }} <br />
+                <b>GoCardless Subscription id:</b> 
+                {% if subscription.gocardless_subscription_id %}
+                <a href="https://manage.gocardless.com/subscriptions/{{ subscription.gocardless_subscription_id }}"
+                  target="_blank" title="View subscription in GoCardless dashboard">
+                  {{ subscription.gocardless_subscription_id }}</a>
+                {% else %}
+                  None
+                {% endif %}
+                <br />
+                <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
+                <b>Sell price:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }} <br />
+              </li><br />
+            {% endfor %}
+            {% else %}
+              None
+            {% endif %}
+            </ol>
+          </div>
         </td>
 			</tr>
 			{% endfor %}

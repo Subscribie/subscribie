@@ -30,6 +30,7 @@ from .getLoadedModules import getLoadedModules
 from dingdb import dingdb
 import subprocess
 import uuid
+from sqlalchemy import asc, desc
 
 admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -660,7 +661,7 @@ def utility_jamla():
 @admin_theme.route("/subscribers")
 @login_required
 def subscribers():
-    people = database.session.query(Person).all()
+    people = database.session.query(Person).order_by(desc(Person.created_at)).all()
     jamla = get_jamla()
 
     return render_template(

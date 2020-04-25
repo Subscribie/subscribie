@@ -18,6 +18,7 @@ class User(database.Model):
 class Person(database.Model):
     __tablename__ = 'person'
     id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=str(uuid4()))
     sid = database.Column(database.String())
     ts = database.Column(database.DateTime, default=datetime.utcnow)
