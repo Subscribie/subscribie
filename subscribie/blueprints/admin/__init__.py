@@ -17,7 +17,7 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription
+    database, User, Person
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
