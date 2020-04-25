@@ -17,6 +17,7 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
+    database, User, Person, Subscription
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
@@ -646,6 +647,26 @@ def utility_gocardless_check_user_active():
     return False
   return dict(is_active_gocardless=is_active_gocardless)
 
+@admin_theme.context_processor
+def utility_jamla():
+    def show(sku_uuid):
+        jamla = get_jamla()
+        jamlaApp = Jamla()
+        jamlaApp.load(jamla=jamla)
+        item = jamlaApp.sku_get_by_uuid(sku_uuid)
+        return item
+    return dict(jamla_get=show)
+
+@admin_theme.route("/subscribers")
+@login_required
+def subscribers():
+    people = database.session.query(Person).all()
+    jamla = get_jamla()
+
+    return render_template(
+            'admin/subscribers.html', people=people,
+            jamla=jamla
+            )
 @admin_theme.route("/customers", methods=["GET"])
 @login_required
 def customers():

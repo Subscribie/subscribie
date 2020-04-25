@@ -22,6 +22,13 @@ class Jamla:
                 return True
         return False
 
+    def sku_get_by_uuid(self, uuid):
+        for item in self.jamla["items"]:
+            if item["uuid"].strip() == str(uuid.strip()):
+                return item
+        return False
+
+
     def sku_uuid_exists(self, sku):
         for item in self.jamla["items"]:
             if item["uuid"].strip() == str(sku.strip()):
