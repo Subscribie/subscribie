@@ -10,6 +10,12 @@
 {% endblock hero %} 
                                                                                  
 {% block body %}
+<style>
+td b {
+    line-height: 36px;
+}
+</style>
+
 <div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
   <div class="container">                                                        
     <nav class="breadcrumb" aria-label="breadcrumbs">                            
@@ -51,11 +57,11 @@
               {{ person.postal_code }} <br />
             </address>
           <b>Subscriptions:</b>  <br />
-          <div style="border: 2px solid grey">
           {% if person.subscriptions %}
             <ol>
             {% for subscription in person.subscriptions %}
               <li>
+                <div style="border: 2px solid grey;padding: 20px">
                 <b>Title:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }} <br />
                 <b>ID:</b> {{ subscription.uuid }} <br />
                 <b>Date started: </b> {{ subscription.created_at.strftime('%Y-%m-%d') }} <br />
@@ -70,13 +76,13 @@
                 <br />
                 <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
                 <b>Sell price:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }} <br />
+                </div>
               </li><br />
             {% endfor %}
             {% else %}
               None
             {% endif %}
             </ol>
-          </div>
         </td>
 			</tr>
 			{% endfor %}
