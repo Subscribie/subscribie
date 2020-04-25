@@ -741,14 +741,6 @@ def transactions():
 @login_required
 def order_notes():
   """Notes to seller given during subscription creation"""
-  # Migrate dingdb as needed
-  dingMigrations = Path(sys.prefix, 'dingdb', 'migrations')
-  for migration in dingMigrations.iterdir():
-    if migration.is_file():
-      subprocess.call(
-        "python {} -up -db {}".format(migration, current_app.config["DB_FULL_PATH"])
-      , shell=True)
-    
   tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
   orderNotes = tdb.getDingsByType('orderNote')
   jamla = get_jamla()
