@@ -37,16 +37,14 @@ def upgrade():
     sa.Column('mobile', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-
-    if 'person' not in tables:
-        op.create_table('user',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('email', sa.String(), nullable=True),
-        sa.Column('created_at', sa.DateTime(), nullable=True),
-        sa.Column('active', sa.String(), nullable=True),
-        sa.Column('login_token', sa.String(), nullable=True),
-        sa.PrimaryKeyConstraint('id')
-        )
+    op.create_table('user',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('email', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('active', sa.String(), nullable=True),
+    sa.Column('login_token', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
