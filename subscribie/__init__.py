@@ -105,8 +105,6 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False             
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     database.init_app(app)
-    with app.app_context():
-        database.create_all()
     migrate = Migrate(app, database)
 
     @app.before_request
