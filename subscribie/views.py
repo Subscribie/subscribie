@@ -57,8 +57,12 @@ def choose():
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
     jamla = get_jamla()
+    jamlaApp = Jamla()
+    jamlaApp.load(jamla=jamla)
+    jamla = jamlaApp.filter_archived_items(jamla)
     package = request.args.get("plan", "not set")
     session["package"] = package
+    session["item"] = jamlaApp.sku_get_by_uuid(package)
     form = CustomerForm()
     return render_template("new_customer.html", jamla=jamla, form=form, package=package,
                          pages=jamla['pages'])
@@ -133,7 +137,7 @@ def up_front(sid, package, fname):
     return render_template(
         "up_front_payment.html",
         jamla=jamla,
-        package=package,
+        item=session['item'],
         fname=fname,
         selling_points=selling_points,
         upfront_cost=upfront_cost,
