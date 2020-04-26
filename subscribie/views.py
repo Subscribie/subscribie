@@ -65,6 +65,7 @@ def new_customer():
     session["item"] = jamlaApp.sku_get_by_uuid(package)
     form = CustomerForm()
     return render_template("new_customer.html", jamla=jamla, form=form, package=package,
+                         item=session["item"],
                          pages=jamla['pages'])
 
 
