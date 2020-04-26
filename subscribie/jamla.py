@@ -30,7 +30,8 @@ class Jamla:
 
 
     def sku_uuid_exists(self, sku):
-        for item in self.jamla["items"]:
+        items = self.filter_archived_items(self.jamla["items"])
+        for item in items:
             if item["uuid"].strip() == str(sku.strip()):
                 return True
         return False
