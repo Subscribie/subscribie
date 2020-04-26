@@ -16,8 +16,23 @@ class Jamla:
             return cfg
 
     def sku_exists(self, sku):
-        for item in self.jamla["items"]:
+        jamla = self.filter_archived_items(self.jamla)
+        for item in jamla["items"]:
             if item["sku"].strip() == str(sku.strip()):
+                return True
+        return False
+
+    def sku_get_by_uuid(self, uuid):
+        for item in self.jamla["items"]:
+            if item["uuid"].strip() == str(uuid.strip()):
+                return item
+        return False
+
+
+    def sku_uuid_exists(self, sku):
+        jamla = self.filter_archived_items(self.jamla)
+        for item in jamla["items"]:
+            if item["uuid"].strip() == str(sku.strip()):
                 return True
         return False
 
