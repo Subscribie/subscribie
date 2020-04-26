@@ -23,8 +23,7 @@ class Jamla:
         return False
 
     def sku_get_by_uuid(self, uuid):
-        items = self.filter_archived_items(self.jamla["items"])
-        for item in items:
+        for item in self.jamla["items"]:
             if item["uuid"].strip() == str(uuid.strip()):
                 return item
         return False
