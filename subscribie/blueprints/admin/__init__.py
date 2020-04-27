@@ -41,6 +41,40 @@ def currencyFormat(value):
   value = float(value)/100
   return "£{:,.2f}".format(value)
 
+@admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/pause")
+@login_required
+def pause_gocardless_subscription(subscription_id):
+    """Pause a GoCardless subscription"""
+    jamla = get_jamla()
+    gocclient = gocardless_pro.Client(
+      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
+          environment=jamla["payment_providers"]["gocardless"]["environment"],
+    )
+
+    try:
+        req = gocclient.subscriptions.pause(subscription_id)
+    except gocardless_pro.errors.InvalidStateError as e:
+        return jsonify(error=e.message)
+
+    return jsonify(message="Subscription paused", subscription_id=subscription_id)
+
+@admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/resume")
+@login_required
+def resume_gocardless_subscription(subscription_id):
+    """Resume a GoCardless subscription"""
+    jamla = get_jamla()
+    gocclient = gocardless_pro.Client(
+      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
+          environment=jamla["payment_providers"]["gocardless"]["environment"],
+    )
+
+    try:
+        req = gocclient.subscriptions.resume(subscription_id)
+    except gocardless_pro.errors.InvalidStateError as e:
+        return jsonify(error=e.message)
+
+    return jsonify(message="Subscription resumed", subscription_id=subscription_id)
+
 @admin_theme.route("/cancel/mandates/<email>")
 @login_required
 def cancel_mandates(email):
