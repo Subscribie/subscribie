@@ -81,6 +81,10 @@ td b {
                       <a href="{{ url_for("admin.pause_gocardless_subscription",
                         subscription_id=subscription.gocardless_subscription_id) }}">
                        Pause
+                      </a> | 
+                      <a href="{{ url_for("admin.resume_gocardless_subscription",
+                        subscription_id=subscription.gocardless_subscription_id) }}">
+                       Resume
                       </a>
                     {% endif %}
                 </div>
