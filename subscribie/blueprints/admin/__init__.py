@@ -695,7 +695,9 @@ def utility_jamla():
 @admin_theme.route("/subscribers")
 @login_required
 def subscribers():
-    people = database.session.query(Person).order_by(desc(Person.created_at)).all()
+    page = request.args.get('page', 1, type=int)
+
+    people = database.session.query(Person).order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
     jamla = get_jamla()
 
     return render_template(

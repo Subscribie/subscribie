@@ -32,6 +32,32 @@ td b {
 
 <div class="section">
 	<div class="container">
+
+    <nav class="pagination" role="navigation" aria-label="pagination">
+      {% if people.has_prev %}
+        <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+      {% endif %}
+      {% if people.has_next %}
+        <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+      {% endif %}
+    <ul class="pagination-list">
+    {% for page_num in people.iter_pages() %}
+      <li>
+      {% if page_num %}
+        {% if people.page == page_num %}
+          <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+        {% else %}
+          <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+    </nav>
+
 		<table class="table">
 		  <thead>
 			<tr>
@@ -39,7 +65,7 @@ td b {
 			</tr>
 		  </thead>
 		  <tbody>
-			{% for person in people %}
+			{% for person in people.items %}
 			<tr>
         <td>
           <b>Name:</b> {{ person.given_name }} {{ person.family_name }}<br />
@@ -99,6 +125,31 @@ td b {
 			{% endfor %}
 		  </tbody>
 		</table>
+
+    <nav class="pagination" role="navigation" aria-label="pagination">
+      {% if people.has_prev %}
+        <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+      {% endif %}
+      {% if people.has_next %}
+        <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+      {% endif %}
+    <ul class="pagination-list">
+    {% for page_num in people.iter_pages() %}
+      <li>
+      {% if page_num %}
+        {% if people.page == page_num %}
+          <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+        {% else %}
+          <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+    </nav>
 	</div><!-- end .container -->
 </div><!-- end .section -->
 
