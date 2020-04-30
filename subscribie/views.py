@@ -16,6 +16,8 @@ from flask import Blueprint, redirect, render_template, request, session, url_fo
 
 from .models import database, User, Person, Subscription
 
+from flask_mail import Mail, Message
+
 bp = Blueprint("views", __name__, url_prefix=None)
 
 
@@ -341,12 +343,37 @@ def on_complete_mandate():
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     jamla = get_jamla()
+
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False:
       tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
       tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
+    # Send welcome email
+    html = """
+    <html>
+        <head></head>
+        <body>
+        <h1>Subscription Confirmation</h1>
+        <p>This email confirms that your subscription with {company}
+           is now setup.</p>
+        <p>If you have any questions, please respond to this email.</p>
+    """.format(company=jamla["company"]["name"])
+
+    try:
+        mail = Mail(current_app)
+        msg = Message()
+        msg.subject = jamla["company"]["name"] + " " + "Subscription Confirmation"
+        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+        msg.recipients = [session["email"]]
+        msg.reply_to = User.query.first().email
+        msg.html = html                                                              
+        mail.send(msg)
+    except Exception as e:
+        print(e)
+        logger.warning("Failed to send welcome email")
+
     try:
         logger.info("The Mandate id is: %s", str(session["gocardless_mandate_id"]))
         logger.info("The GC Customer id is: %s", str(session["gocardless_customer_id"]))
