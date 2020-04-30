@@ -683,21 +683,8 @@ def utility_gocardless_check_user_active():
   return dict(is_active_gocardless=is_active_gocardless)
 
 
-def is_empty(string):
-    return False if string and str(string).strip() else True
-
-
-def format_subscription_status(status: str) -> str:
-    if is_empty(status):
-        return status
-
-    return status.capitalize().replace("_", " ")
-
-
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
-    if is_empty(gocardless_subscription_id):
-        return status_on_error
 
     jamla = get_jamla()
     client = gocardless_pro.Client(
@@ -716,7 +703,7 @@ def get_subscription_status(gocardless_subscription_id) -> str:
 @admin_theme.context_processor
 def subscription_status():
     def formatted_status(gocardless_subscription_id):
-        return format_subscription_status(get_subscription_status(gocardless_subscription_id))
+        return get_subscription_status(gocardless_subscription_id).capitalize().replace("_", " ")
     return dict(subscription_status=formatted_status)
 
 
