@@ -682,6 +682,36 @@ def utility_gocardless_check_user_active():
     return False
   return dict(is_active_gocardless=is_active_gocardless)
 
+
+def is_empty(string):
+    return False if string and str(string).strip() else True
+
+
+def is_subscription_active(gocardless_subscription_id):
+    if is_empty(gocardless_subscription_id):
+        return False
+
+    jamla = get_jamla()
+    client = gocardless_pro.Client(
+        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
+        environment=jamla["payment_providers"]["gocardless"]["environment"],
+    )
+
+    try:
+        response = client.subscriptions.get(gocardless_subscription_id)
+        return hasattr(response, "status") and response.status == "active"
+    except Exception as e:
+        logging.error(e)
+        return False
+
+
+@admin_theme.context_processor
+def is_subscription_active_to_string():
+    def to_string(gocardless_subscription_id):
+        return "Active" if is_subscription_active(gocardless_subscription_id) else "Inactive"
+    return dict(is_subscription_active_to_string=to_string)
+
+
 @admin_theme.context_processor
 def utility_jamla():
     def show(sku_uuid):
