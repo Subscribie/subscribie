@@ -37,6 +37,7 @@ integrations:
 
 items:
     - sku: item1
+      uuid: 0cd8866f-2bda-46c6-8dbe-78e14a9e332c
       title: Package 1
       sell_price: 599
       monthly_price: 999
@@ -66,6 +67,7 @@ items:
                 type: image/png
 
     - sku: item2
+      uuid: b5f00718-1592-4c36-a457-e9c3cb6fc752
       title: Package 2
       sell_price: 899
       monthly_price: 1599
@@ -94,6 +96,7 @@ items:
                 size: 192x192
                 type: image/png
     - sku: item3
+      uuid: eb019954-04f6-4f84-ac95-e7b37eb2573c
       title: Package 3
       sell_price: 0.00
       monthly_price: 25.99
