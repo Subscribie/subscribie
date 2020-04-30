@@ -102,7 +102,7 @@ td b {
                 <br />
                 <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
                 <b>Sell price:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }} <br />
-                <b>Status:</b> {{is_subscription_active_to_string(subscription.gocardless_subscription_id)}}<br />
+                <b>Status:</b> {{subscription_status(subscription.gocardless_subscription_id)}}<br />
                 <b>Actions:</b> 
                     {% if subscription.gocardless_subscription_id %}
                       <a href="{{ url_for("admin.pause_gocardless_subscription",

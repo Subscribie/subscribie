@@ -687,9 +687,17 @@ def is_empty(string):
     return False if string and str(string).strip() else True
 
 
-def is_subscription_active(gocardless_subscription_id):
+def format_subscription_status(status: str) -> str:
+    if is_empty(status):
+        return status
+
+    return status.capitalize().replace("_", " ")
+
+
+def get_subscription_status(gocardless_subscription_id) -> str:
+    status_on_error = "Unknown"
     if is_empty(gocardless_subscription_id):
-        return False
+        return status_on_error
 
     jamla = get_jamla()
     client = gocardless_pro.Client(
@@ -699,17 +707,17 @@ def is_subscription_active(gocardless_subscription_id):
 
     try:
         response = client.subscriptions.get(gocardless_subscription_id)
-        return hasattr(response, "status") and response.status == "active"
+        return response.status if hasattr(response, "status") else status_on_error
     except Exception as e:
         logging.error(e)
-        return False
+        return status_on_error
 
 
 @admin_theme.context_processor
-def is_subscription_active_to_string():
-    def to_string(gocardless_subscription_id):
-        return "Active" if is_subscription_active(gocardless_subscription_id) else "Inactive"
-    return dict(is_subscription_active_to_string=to_string)
+def subscription_status():
+    def formatted_status(gocardless_subscription_id):
+        return format_subscription_status(get_subscription_status(gocardless_subscription_id))
+    return dict(subscription_status=formatted_status)
 
 
 @admin_theme.context_processor
