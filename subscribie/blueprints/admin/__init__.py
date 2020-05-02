@@ -56,6 +56,10 @@ def pause_gocardless_subscription(subscription_id):
     except gocardless_pro.errors.InvalidStateError as e:
         return jsonify(error=e.message)
 
+    flash("Subscription paused")
+
+    if 'goback' in request.args:
+        return redirect(request.referrer)
     return jsonify(message="Subscription paused", subscription_id=subscription_id)
 
 @admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/resume")
@@ -72,6 +76,11 @@ def resume_gocardless_subscription(subscription_id):
         req = gocclient.subscriptions.resume(subscription_id)
     except gocardless_pro.errors.InvalidStateError as e:
         return jsonify(error=e.message)
+
+    flash("Subscription resumed")
+
+    if 'goback' in request.args:
+        return redirect(request.referrer)
 
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
 
