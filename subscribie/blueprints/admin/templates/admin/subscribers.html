@@ -105,14 +105,20 @@ td b {
                 <b>Status:</b> {{subscription_status(subscription.gocardless_subscription_id)}}<br />
                 <b>Actions:</b> 
                     {% if subscription.gocardless_subscription_id %}
+                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
                       <a href="{{ url_for("admin.pause_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id) }}">
+                        subscription_id=subscription.gocardless_subscription_id,
+                        goback=1) }}">
                        Pause
                       </a> | 
+                      {% endif %}
+                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
                       <a href="{{ url_for("admin.resume_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id) }}">
+                        subscription_id=subscription.gocardless_subscription_id,
+                        goback=1) }}">
                        Resume
                       </a>
+                      {% endif %}
                     {% endif %}
                 </div>
               </li><br />
