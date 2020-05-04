@@ -358,7 +358,6 @@ def thankyou():
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
                     company_name=jamla["company"]["name"]) 
-
     try:
         mail = Mail(current_app)
         msg = Message()
@@ -366,7 +365,7 @@ def thankyou():
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email
-        msg.html = html
+        msg.html = html                                                              
         mail.send(msg)
     except Exception as e:
         print(e)
