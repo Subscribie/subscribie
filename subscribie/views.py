@@ -11,6 +11,7 @@ import stripe
 from dingdb import dingdb
 from uuid import uuid4
 from pathlib import Path
+from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
@@ -350,16 +351,13 @@ def thankyou():
       tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
-    # Send welcome email
-    html = """
-    <html>
-        <head></head>
-        <body>
-        <h1>Subscription Confirmation</h1>
-        <p>This email confirms that your subscription with {company}
-           is now setup.</p>
-        <p>If you have any questions, please respond to this email.</p>
-    """.format(company=jamla["company"]["name"])
+    # Load welcome email from template folder and render & send
+    welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
+
+    with open(welcome_template) as file_:                                   
+      template = Template(file_.read())                                            
+      html = template.render(first_name='John', 
+                    company_name=jamla["company"]["name"]) 
 
     try:
         mail = Mail(current_app)
@@ -368,7 +366,7 @@ def thankyou():
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email
-        msg.html = html                                                              
+        msg.html = html
         mail.send(msg)
     except Exception as e:
         print(e)
