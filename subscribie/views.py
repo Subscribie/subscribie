@@ -323,6 +323,11 @@ def on_complete_mandate():
                 "start_date" : start_date
             }
         )
+        # Get first charge date & store in session
+        first_charge_date = gc_subscription.upcoming_payments[0]['charge_date']
+        first_charge_amount = gc_subscription.upcoming_payments[0]['amount']
+        session['first_charge_date'] = str(datetime.datetime.strptime(first_charge_date, '%Y-%m-%d').strftime('%d/%m/%Y'))
+        session['first_charge_amount'] = first_charge_amount
         # Store GoCardless subscription id
         subscription.gocardless_subscription_id = gc_subscription.id
         database.session.add(subscription)
@@ -354,10 +359,15 @@ def thankyou():
     # Load welcome email from template folder and render & send
     welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
 
+    first_charge_date = session.get('first_charge_date', 'unknown')
+    first_charge_amount = session.get('first_charge_amount', 'unknown')
+
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
-                    company_name=jamla["company"]["name"]) 
+                    company_name=jamla["company"]["name"],
+                    first_charge_date=first_charge_date,
+                    first_charge_amount=first_charge_amount) 
 
     try:
         mail = Mail(current_app)
