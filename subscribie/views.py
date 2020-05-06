@@ -359,7 +359,6 @@ def thankyou():
     # Load welcome email from template folder and render & send
     welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
 
-<<<<<<< HEAD
     first_charge_date = session.get('first_charge_date', 'unknown')
     first_charge_amount = session.get('first_charge_amount', 'unknown')
 
