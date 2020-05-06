@@ -359,6 +359,7 @@ def thankyou():
     # Load welcome email from template folder and render & send
     welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
 
+<<<<<<< HEAD
     first_charge_date = session.get('first_charge_date', 'unknown')
     first_charge_amount = session.get('first_charge_amount', 'unknown')
 
@@ -376,7 +377,7 @@ def thankyou():
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email
-        msg.html = html
+        msg.html = html                                                              
         mail.send(msg)
     except Exception as e:
         print(e)
