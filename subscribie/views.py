@@ -11,10 +11,13 @@ import stripe
 from dingdb import dingdb
 from uuid import uuid4
 from pathlib import Path
+from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from .models import database, User, Person, Subscription
+
+from flask_mail import Mail, Message
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -320,6 +323,11 @@ def on_complete_mandate():
                 "start_date" : start_date
             }
         )
+        # Get first charge date & store in session
+        first_charge_date = gc_subscription.upcoming_payments[0]['charge_date']
+        first_charge_amount = gc_subscription.upcoming_payments[0]['amount']
+        session['first_charge_date'] = str(datetime.datetime.strptime(first_charge_date, '%Y-%m-%d').strftime('%d/%m/%Y'))
+        session['first_charge_amount'] = first_charge_amount
         # Store GoCardless subscription id
         subscription.gocardless_subscription_id = gc_subscription.id
         database.session.add(subscription)
@@ -341,12 +349,39 @@ def on_complete_mandate():
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     jamla = get_jamla()
+
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False:
       tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
       tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
+    # Load welcome email from template folder and render & send
+    welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
+
+    first_charge_date = session.get('first_charge_date', 'unknown')
+    first_charge_amount = session.get('first_charge_amount', 'unknown')
+
+    with open(welcome_template) as file_:                                   
+      template = Template(file_.read())                                            
+      html = template.render(first_name='John', 
+                    company_name=jamla["company"]["name"],
+                    first_charge_date=first_charge_date,
+                    first_charge_amount=first_charge_amount) 
+
+    try:
+        mail = Mail(current_app)
+        msg = Message()
+        msg.subject = jamla["company"]["name"] + " " + "Subscription Confirmation"
+        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+        msg.recipients = [session["email"]]
+        msg.reply_to = User.query.first().email
+        msg.html = html
+        mail.send(msg)
+    except Exception as e:
+        print(e)
+        logger.warning("Failed to send welcome email")
+
     try:
         logger.info("The Mandate id is: %s", str(session["gocardless_mandate_id"]))
         logger.info("The GC Customer id is: %s", str(session["gocardless_customer_id"]))
