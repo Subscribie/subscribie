@@ -45,8 +45,20 @@ td b {
         <td>
           <b>Status:</b> {{ payment.status }} <br />
           <b>Amount:</b> {{ payment.amount|default(0)|currencyFormat}} <br />
-          <b>Subscription:</b> {{ payment.links['subscription'] }} <br />
-          <b>Charge date:</b> {{ payment.charge_date }} <br />
+          <b>Subscription Ref:</b> {{ payment.links['subscription'] }} <br />
+          {% if get_subscription_from_gocardless_subscription_id(payment.links['subscription']) != none  %}
+            <b>Subscription Detail:</b> <br />
+            <b>Created at:</b> {{ get_subscription_from_gocardless_subscription_id(payment.links['subscription']).created_at.strftime('%d/%m/%Y') }} <br />
+            <b>Title: </b>
+              {{ jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['title'] }}
+              <ul>
+              {% for selling_point in jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['selling_points'] %}
+                <li>{{ selling_point }}</li>
+              {% endfor %}
+              </ul>
+          {% endif %}
+          <br />
+          <b>Charge date:</b> {{ datetime.strptime(payment.charge_date, '%Y-%m-%d').strftime("%d/%m/%Y") }} <br />
         </td>
 			</tr>
 			{% endfor %}

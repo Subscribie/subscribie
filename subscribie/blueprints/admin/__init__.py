@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, abort, flash, json
-from jinja2 import TemplateNotFound
+from jinja2 import TemplateNotFound, Markup
 from subscribie import (
     logging,
     Jamla,
@@ -17,7 +17,7 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person
+    database, User, Person, Subscription
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
@@ -31,6 +31,7 @@ from dingdb import dingdb
 import subprocess
 import uuid
 from sqlalchemy import asc, desc
+from datetime import datetime
 
 admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -691,6 +692,26 @@ def utility_gocardless_check_user_active():
     return False
   return dict(is_active_gocardless=is_active_gocardless)
 
+@admin_theme.context_processor
+def utility_gocardless_get_sku_uuid_from_gocardless_subscription_id():
+  def get_sku_uuid_from_gocardless_subscription_id(subscription_id):
+      """Get sku uuid from GoCardless subscription id"""
+      try:
+          subscription = Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
+          sku_uuid = subscription.sku_uuid 
+      except AttributeError:
+          return None
+      return sku_uuid
+
+  return dict(get_sku_uuid_from_gocardless_subscription_id=get_sku_uuid_from_gocardless_subscription_id)
+
+@admin_theme.context_processor
+def utility_get_subscription_from_gocardless_subscription_id():
+    """Return sqlalchemy Subscription object"""
+    def get_subscription_from_gocardless_subscription_id(subscription_id):
+        return Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
+    return dict(get_subscription_from_gocardless_subscription_id=get_subscription_from_gocardless_subscription_id)
+
 
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
@@ -722,7 +743,10 @@ def utility_jamla():
         jamla = get_jamla()
         jamlaApp = Jamla()
         jamlaApp.load(jamla=jamla)
-        item = jamlaApp.sku_get_by_uuid(sku_uuid)
+        try:
+            item = jamlaApp.sku_get_by_uuid(sku_uuid)
+        except Exception:
+            return None
         return item
     return dict(jamla_get=show)
 
@@ -752,7 +776,8 @@ def upcoming_payments():
 
     return render_template(
             'admin/upcoming_payments.html', payments=payments,
-            jamla=jamla
+            jamla=jamla,
+            datetime=datetime
             )
 
 @admin_theme.route("/customers", methods=["GET"])
