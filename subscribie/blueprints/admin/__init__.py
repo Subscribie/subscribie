@@ -738,6 +738,23 @@ def subscribers():
             'admin/subscribers.html', people=people,
             jamla=jamla
             )
+
+@admin_theme.route("/upcoming-payments")
+@login_required
+def upcoming_payments():
+    jamla = get_jamla()
+    client = gocardless_pro.Client(
+        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
+        environment=jamla["payment_providers"]["gocardless"]["environment"],
+    )
+
+    payments = client.payments.list().records
+
+    return render_template(
+            'admin/upcoming_payments.html', payments=payments,
+            jamla=jamla
+            )
+
 @admin_theme.route("/customers", methods=["GET"])
 @login_required
 def customers():
