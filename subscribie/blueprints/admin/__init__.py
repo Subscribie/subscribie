@@ -709,6 +709,8 @@ def utility_gocardless_get_sku_uuid_from_gocardless_subscription_id():
 def utility_get_subscription_from_gocardless_subscription_id():
     """Return sqlalchemy Subscription object"""
     def get_subscription_from_gocardless_subscription_id(subscription_id):
+        if subscription_id is None:
+            return None
         return Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
     return dict(get_subscription_from_gocardless_subscription_id=get_subscription_from_gocardless_subscription_id)
 
