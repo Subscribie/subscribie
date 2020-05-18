@@ -47,8 +47,21 @@ td b {
           <b>Amount:</b> {{ payment.amount|default(0)|currencyFormat}} <br />
           <b>Subscription Ref:</b> {{ payment.links['subscription'] }} <br />
           {% if get_subscription_from_gocardless_subscription_id(payment.links['subscription']) != none  %}
+            {% set subscription = get_subscription_from_gocardless_subscription_id(payment.links['subscription']) %}
             <b>Subscription Detail:</b> <br />
-            <b>Created at:</b> {{ get_subscription_from_gocardless_subscription_id(payment.links['subscription']).created_at.strftime('%d/%m/%Y') }} <br />
+            <div>
+                <b>Customer:</b><br />
+                <b>Name: </b> {{ subscription.person.given_name }} {{ subscription.person.family_name }} <br />
+                <b>Email: </b> {{ subscription.person.email }}<br />
+                <b>Phone: </b> {{ subscription.person.mobile}}<br />
+                <b>Address:</b><br />
+                <address>
+                  {{ subscription.person.address_line1 }}<br />
+                  {{ subscription.person.city }}
+                  {{ subscription.person.postal_code }}
+                </address>
+            </div>
+            <b>Created at:</b> {{ subscription.created_at.strftime('%d/%m/%Y') }} <br />
             <b>Title: </b>
               {{ jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['title'] }}
               <ul>
