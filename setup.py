@@ -29,7 +29,6 @@ setuptools.setup(
         'gocardless_pro',
         'GitPython',
         'pytest',
-        'dingdb==0.0.2',
         'tinycss',
         'flask_sqlalchemy',
         'flask_migrate'
