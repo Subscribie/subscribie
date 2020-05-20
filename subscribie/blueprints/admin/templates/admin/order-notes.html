@@ -40,13 +40,19 @@
 			<tr>
 			  <th>Customer Email Address</th>
 			  <th>Note</th>
+        <th>Created at</th>
 			</tr>
 		  </thead>
 		  <tbody>
-			{% for key in orderNotes %}
+			{% for subscription in subscriptions %}
 			<tr>
-			  <td>{{ orderNotes[key]['data']['email'] }}</td>
-			  <td>{{ orderNotes[key]['data']['note'] }}</td>
+			  <td>{{ subscription.person.email }}</td>
+			  <td>
+           {% if subscription.note[0] %}
+             {{ subscription.note[0].note }}
+           {% endif %}
+        </td>
+        <td>{{ subscription.created_at }}</td>
 			</tr>
 			{% endfor %}
 		  </tbody>

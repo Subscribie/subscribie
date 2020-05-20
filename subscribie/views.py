@@ -8,14 +8,13 @@ from .signals import journey_complete
 from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
 from subscribie.db import get_jamla, get_db
 import stripe
-from dingdb import dingdb
 from uuid import uuid4
 from pathlib import Path
 from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
-from .models import database, User, Person, Subscription
+from .models import database, User, Person, Subscription, SubscriptionNote
 
 from flask_mail import Mail, Message
 
@@ -310,6 +309,8 @@ def on_complete_mandate():
         subscription = Subscription(sku_uuid=session['package'], person=person)
         database.session.add(subscription)
         database.session.commit()
+        # Add subscription id to session
+        session["subscription_id"] = subscription.id
 
         # Submit to GoCardless as subscription
         gc_subscription = gocclient.subscriptions.create(
@@ -352,8 +353,10 @@ def thankyou():
 
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False:
-      tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
-      tdb.putDing(str(uuid4()), 'orderNote', 'orderNote', data=[{'key':'email', 'value': session["email"]}, {'key':'note', 'value':session["note_to_seller"]}])
+      note = SubscriptionNote(note=session["note_to_seller"],
+                             subscription_id=session["subscription_id"])
+      database.session.add(note)
+      database.session.commit()
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
     # Load welcome email from template folder and render & send
