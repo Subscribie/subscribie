@@ -17,7 +17,7 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription
+    database, User, Person, Subscription, SubscriptionNote
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
@@ -27,7 +27,6 @@ from flask_uploads import configure_uploads, UploadSet, IMAGES
 import os, sys
 from pathlib import Path
 from .getLoadedModules import getLoadedModules
-from dingdb import dingdb
 import subprocess
 import uuid
 from sqlalchemy import asc, desc
@@ -855,10 +854,10 @@ def transactions():
 @login_required
 def order_notes():
   """Notes to seller given during subscription creation"""
-  tdb = dingdb(database=current_app.config["DB_FULL_PATH"])
-  orderNotes = tdb.getDingsByType('orderNote')
+  subscriptions = Subscription.query.order_by(desc('created_at')).all()
   jamla = get_jamla()
-  return render_template("admin/order-notes.html", jamla=jamla, orderNotes=orderNotes)
+  return render_template("admin/order-notes.html", jamla=jamla, 
+                         subscriptions=subscriptions)
 
 
 def getItem(container, i, default=None):
