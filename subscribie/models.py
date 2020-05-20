@@ -42,7 +42,16 @@ class Subscription(database.Model):
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
     person = relationship("Person", back_populates="subscriptions")
+    note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+class SubscriptionNote(database.Model):
+    __tablename__ = 'subscription_note'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    note = database.Column(database.String())
+    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription = relationship("Subscription", back_populates="note")
 
 class Ding(database.Model):
     """For dingdb"""
@@ -68,3 +77,5 @@ class Data(database.Model):
     version_id = database.Column(database.String())
     key = database.Column(database.String())
     value = database.Column(database.String())
+
+
