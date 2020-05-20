@@ -53,29 +53,3 @@ class SubscriptionNote(database.Model):
     subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
     subscription = relationship("Subscription", back_populates="note")
 
-class Ding(database.Model):
-    """For dingdb"""
-    __tablename__ = 'ding'
-    id = database.Column(database.Integer(), primary_key=True)
-    name = database.Column(database.String())
-    kind_id = database.Column(database.String())
-
-class Version(database.Model):
-    """For dingdb"""
-    __tablename__ = 'version'
-    id = database.Column(database.Integer(), primary_key=True)
-    ding_id = database.Column(database.String())
-    creator = database.Column(database.String())
-    creation_date = database.Column(database.String())
-    comment = database.Column(database.String())
-
-class Data(database.Model):
-    """For dingdb"""
-    __tablename__ = 'data'
-    id = database.Column(database.Integer(), primary_key=True)
-    ding_id = database.Column(database.String())
-    version_id = database.Column(database.String())
-    key = database.Column(database.String())
-    value = database.Column(database.String())
-
-
