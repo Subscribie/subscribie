@@ -59,8 +59,8 @@ class Jamla:
         price = self.jamla["items"][self.sku_get_index(sku)]["monthly_price"]
         return price
 
-    def sku_get_upfront_cost(self, sku):
-        sell_price = self.jamla["items"][self.sku_get_index(sku)]["sell_price"]
+    def sku_get_upfront_cost(self, sku_uuid):
+        sell_price = self.sku_get_by_uuid(sku_uuid)["sell_price"]
         return sell_price
 
     def get_primary_icons(self, jamla=None):
