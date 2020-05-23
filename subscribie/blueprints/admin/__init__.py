@@ -17,7 +17,7 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription, SubscriptionNote
+    database, User, Person, Subscription, SubscriptionNote, Company
 )
 from subscribie.auth import login_required
 from subscribie.db import get_jamla, get_db
@@ -168,8 +168,10 @@ def edit_jamla():
     jamlaApp = Jamla()
     jamla = jamlaApp.filter_archived_items(jamla)
     if form.validate_on_submit():
-        jamla["company"]["name"] = request.form["company_name"]
-        jamla["company"]["slogan"] = request.form["slogan"]
+        company = Company.query.first()
+        company.name  = request.form["company_name"]
+        company.slogan = request.form["slogan"]
+        database.session.commit()
         jamla["users"][0] = request.form["email"]
         # Loop items
         for index in request.form.getlist("itemIndex", type=int):
@@ -537,7 +539,7 @@ def fetch_jamla():
     jamla["payment_providers"] = None
     resp = dict(
         items=jamla["items"],
-        company=jamla["company"],
+        company=company,
         name="fred",
         email="me@example.com",
     )

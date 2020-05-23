@@ -53,3 +53,10 @@ class SubscriptionNote(database.Model):
     subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
     subscription = relationship("Subscription", back_populates="note")
 
+class Company(database.Model):
+    __tablename__ = 'company'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    name = database.Column(database.String())
+    slogan = database.Column(database.String())
+

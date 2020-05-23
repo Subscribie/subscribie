@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang=en>
 <head>
-<title>{% block title %}{% endblock %} | {{ jamla['company']['name'] }}</title>
+<title>{% block title %}{% endblock %} | {{ company['name'] }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
@@ -52,10 +52,10 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          {% if jamla['company']['logo'] %}
-            <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+          {% if company['logo'] %}
+            <img src="/static/{{ company['logo'] }}" alt="{{ company['name'] }}">
           {% else %}
-            {{ jamla['company']['name'] }}
+            {{ company['name'] }}
           {% endif %}
         </a>
       </div>
@@ -98,7 +98,7 @@
     <div class="container">
       <div class="content has-text-centered">
         <p>
-          By <a href="/">{{ jamla['company']['name'] }}</a>.
+          By <a href="/">{{ company['name'] }}</a>.
           <br />
         </p>
         <small>Made possible with <a href="https://subscriptionwebsitebuilder.co.uk"

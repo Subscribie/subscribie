@@ -14,12 +14,17 @@ from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
-from .models import database, User, Person, Subscription, SubscriptionNote
+from .models import ( database, User, Person, Subscription, SubscriptionNote,
+                    Company)
 
 from flask_mail import Mail, Message
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
+@bp.app_context_processor
+def inject_template_globals():
+    company = Company.query.first()
+    return dict(company=company)
 
 def redirect_url(default='index'):
     return request.args.get('next') or \
@@ -52,8 +57,8 @@ def choose():
     # Filter archived items
     jamlaApp = Jamla()
     jamla = jamlaApp.filter_archived_items(jamla)
-
-    return render_template("choose.html", jamla=jamla, pages=jamla['pages'])
+    return render_template("choose.html", jamla=jamla, 
+                            pages=jamla['pages'])
 
 
 @bp.route("/new_customer", methods=["GET"])
@@ -213,7 +218,7 @@ def establish_mandate():
     )
 
     planName = jamlaApp.sku_get_by_uuid(session["package"])["title"]
-    description = " ".join([jamla["company"]["name"], planName])[0:100]
+    description = " ".join([company["name"], planName])[0:100]
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
@@ -369,14 +374,14 @@ def thankyou():
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
-                    company_name=jamla["company"]["name"],
+                    company_name=company["name"],
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
 
     try:
         mail = Mail(current_app)
         msg = Message()
-        msg.subject = jamla["company"]["name"] + " " + "Subscription Confirmation"
+        msg.subject = company["name"] + " " + "Subscription Confirmation"
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email

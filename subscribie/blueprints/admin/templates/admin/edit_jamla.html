@@ -25,8 +25,8 @@
     {{ form.csrf_token }}
 <fieldset>
 <legend>Shop details</legend>
-    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}
-    {{ render_field(form.slogan, value=jamla['company']['slogan'] ) }}
+    {{ render_field(form.company_name, value=company['name'] ) }}
+    {{ render_field(form.slogan, value=company['slogan'] ) }}
     {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
 </fieldset>
 
