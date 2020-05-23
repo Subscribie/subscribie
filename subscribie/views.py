@@ -194,6 +194,7 @@ def establish_mandate():
     jamla = get_jamla()
     jamlaApp = Jamla()
     jamlaApp.load(jamla=jamla)
+    company = Company.query.first()
 
     if jamlaApp.has_connected("gocardless") is False:
         dashboard_url = url_for("admin.dashboard")
@@ -218,7 +219,7 @@ def establish_mandate():
     )
 
     planName = jamlaApp.sku_get_by_uuid(session["package"])["title"]
-    description = " ".join([company["name"], planName])[0:100]
+    description = " ".join([company.name, planName])[0:100]
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
@@ -356,6 +357,7 @@ def on_complete_mandate():
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     jamla = get_jamla()
+    company = Company.query.first()
 
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False:
@@ -374,7 +376,7 @@ def thankyou():
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
-                    company_name=company["name"],
+                    company_name=company.name,
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
 
