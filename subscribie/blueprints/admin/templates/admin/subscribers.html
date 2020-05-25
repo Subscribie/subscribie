@@ -10,11 +10,12 @@
 {% endblock hero %} 
                                                                                  
 {% block body %}
-<style>
+
+<!-- <style>
 td b {
     line-height: 36px;
 }
-</style>
+</style> -->
 
 <div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
   <div class="container">                                                        
@@ -29,6 +30,98 @@ td b {
     </nav>                                                                       
   </div>                                                                         
 </div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="tabs is-toggle">
+        <ul>
+          <li class="is-active"><a href="#">All</a></li>
+          <li><a href="#">Active</a></li>
+          <li><a href="#">Paused</a></li>
+          <li><a href="#">None</a></li>
+        </ul>
+
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input" type="text" placeholder="Custumer name">
+          </div>
+          <div class="control">
+            <a class="button is-info">
+              Search
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <table class="table is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Contacts</th>
+            <th>Address</th>
+            <th>Subscription</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2020-05-23</td>
+            <td></td>
+            <td>Lareina Gay Jemima Kidd</td>
+            <td><strong>Email: </strong><a href="mailto:nojedij@mailinator.net">nojedij@mailinator.net</a><br>
+                <strong>Phone: </strong><a href="tel:+"></a><br></td>
+            <td></td>
+            <td><div class="content">
+              <ol type="1">
+                <li><div class="card">
+                  <ul class="is-unstyled-li">
+                    <li><strong>Title: </strong></li>
+                    <li><strong>ID: </strong></li>
+                    <li><strong>Date started: </strong></li>
+                    <li><strong>GoCardless Subscription id: </strong></li>
+                    <li><strong>Price monthly: </strong></li>
+                    <li><strong>Sell price: </strong></li>
+                    <li><strong>Status: </strong></li>
+                    <li><strong>Actions: </strong></li>
+                  </ul>
+                </div></li>
+              </ol></div></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav class="pagination" role="navigation" aria-label="pagination">
+        {% if people.has_prev %}
+          <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+        {% endif %}
+        {% if people.has_next %}
+          <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+        {% endif %}
+      <ul class="pagination-list">
+      {% for page_num in people.iter_pages() %}
+        <li>
+        {% if page_num %}
+          {% if people.page == page_num %}
+            <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+          {% else %}
+            <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+  
+          {% endif %}
+        {% else %}
+          ...
+        {% endif %}
+        </li>
+      {% endfor %}
+      </ul>
+      </nav>
+    </div> <!-- end .container -->
+  </div><!-- end .section -->
+</main>
 
 <div class="section">
 	<div class="container">
