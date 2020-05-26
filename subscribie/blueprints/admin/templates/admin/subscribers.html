@@ -59,39 +59,78 @@ td b {
         <thead>
           <tr>
             <th>Date</th>
-            <th>Status</th>
+            <!-- <th>Status</th> -->
             <th>Name</th>
             <th>Contacts</th>
             <th>Address</th>
             <th>Subscription</th>
-            <th>Actions</th>
+            <!-- <th>Actions</th> -->
           </tr>
         </thead>
         <tbody>
+        {% for person in people.items %}
           <tr>
-            <td>2020-05-23</td>
-            <td></td>
-            <td>Lareina Gay Jemima Kidd</td>
-            <td><strong>Email: </strong><a href="mailto:nojedij@mailinator.net">nojedij@mailinator.net</a><br>
-                <strong>Phone: </strong><a href="tel:+"></a><br></td>
-            <td></td>
-            <td><div class="content">
-              <ol type="1">
+            <td>{% if person.created_at %} 
+              {{ person.created_at.strftime('%Y-%m-%d') }}
+            {% endif %}</td>
+            <!-- <td>{% for subscription in person.subscriptions %}{{subscription_status(subscription.gocardless_subscription_id)}}{% endfor %}</td> -->
+            <td>{{ person.given_name }} {{ person.family_name }}</td>
+            <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
+                <strong>Phone: </strong><a href="tel:{{ person.phone }}">{{ person.phone }}</a><br></td>
+            <td><address>
+              {{ person.address_line1 }}<br />
+              {{ person.city }} <br />
+              {{ person.postal_code }} <br />
+            </address></td>
+            <td>
+              {% if person.subscriptions %}
+              <div class="content">
+              <ul class="is-unstyled-li">
+                {% for subscription in person.subscriptions %}
                 <li><div class="card">
                   <ul class="is-unstyled-li">
-                    <li><strong>Title: </strong></li>
-                    <li><strong>ID: </strong></li>
-                    <li><strong>Date started: </strong></li>
-                    <li><strong>GoCardless Subscription id: </strong></li>
-                    <li><strong>Price monthly: </strong></li>
-                    <li><strong>Sell price: </strong></li>
-                    <li><strong>Status: </strong></li>
-                    <li><strong>Actions: </strong></li>
+                    <li><strong>Title: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }}</li>
+                    <li><strong>ID: </strong>{{ subscription.uuid }}</li>
+                    <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
+                    <li><strong>GoCardless Subscription id: </strong>
+                      {% if subscription.gocardless_subscription_id %}
+                      <a href="https://manage.gocardless.com/subscriptions/{{ subscription.gocardless_subscription_id }}"
+                        target="_blank" title="View subscription in GoCardless dashboard">
+                        {{ subscription.gocardless_subscription_id }}</a>
+                      {% else %}
+                        None
+                      {% endif %}</li>
+                    <li><strong>Price monthly: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }}</li>
+                    <li><strong>Sell price: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }}</li>
+                    <li><strong>Status: </strong>{{subscription_status(subscription.gocardless_subscription_id)}}</li>
+                    <li><strong>Actions: </strong>
+                      {% if subscription.gocardless_subscription_id %}
+                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
+                      <a href="{{ url_for("admin.pause_gocardless_subscription",
+                        subscription_id=subscription.gocardless_subscription_id,
+                        goback=1) }}">
+                       Pause
+                      </a> | 
+                      {% endif %}
+                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
+                      <a href="{{ url_for("admin.resume_gocardless_subscription",
+                        subscription_id=subscription.gocardless_subscription_id,
+                        goback=1) }}">
+                       Resume
+                      </a>
+                      {% endif %}
+                    {% endif %}</li>
                   </ul>
                 </div></li>
-              </ol></div></td>
-            <td></td>
+                {% endfor %}
+                {% else %}
+                  None
+              </ul></div>
+              {% endif %}
+            </td>
+            <!-- <td></td> --> <!-- Actions cell -->
           </tr>
+        {% endfor %}
         </tbody>
       </table>
 
@@ -123,136 +162,4 @@ td b {
   </div><!-- end .section -->
 </main>
 
-<div class="section">
-	<div class="container">
-
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      {% if people.has_prev %}
-        <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
-      {% endif %}
-      {% if people.has_next %}
-        <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
-      {% endif %}
-    <ul class="pagination-list">
-    {% for page_num in people.iter_pages() %}
-      <li>
-      {% if page_num %}
-        {% if people.page == page_num %}
-          <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
-        {% else %}
-          <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
-
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-      </li>
-    {% endfor %}
-    </ul>
-    </nav>
-
-		<table class="table">
-		  <thead>
-			<tr>
-			  <th>Subscribers</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			{% for person in people.items %}
-			<tr>
-        <td>
-          <b>Name:</b> {{ person.given_name }} {{ person.family_name }}<br />
-          <b>Creation date:</b> 
-            {% if person.created_at %} 
-              {{ person.created_at.strftime('%Y-%m-%d') }}
-            {% endif %}
-          <br />
-          <b>Email:</b> {{ person.email }}<br />
-          <b>Phone:</b> {{ person.phone }}<br />
-          <b>Address:</b><br />
-            <address>
-              {{ person.address_line1 }}<br />
-              {{ person.city }} <br />
-              {{ person.postal_code }} <br />
-            </address>
-          <b>Subscriptions:</b>  <br />
-          {% if person.subscriptions %}
-            <ol>
-            {% for subscription in person.subscriptions %}
-              <li>
-                <div style="border: 2px solid grey;padding: 20px">
-                <b>Title:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }} <br />
-                <b>ID:</b> {{ subscription.uuid }} <br />
-                <b>Date started: </b> {{ subscription.created_at.strftime('%Y-%m-%d') }} <br />
-                <b>GoCardless Subscription id:</b> 
-                {% if subscription.gocardless_subscription_id %}
-                <a href="https://manage.gocardless.com/subscriptions/{{ subscription.gocardless_subscription_id }}"
-                  target="_blank" title="View subscription in GoCardless dashboard">
-                  {{ subscription.gocardless_subscription_id }}</a>
-                {% else %}
-                  None
-                {% endif %}
-                <br />
-                <b>Price monthly:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }} <br />
-                <b>Sell price:</b> {{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }} <br />
-                <b>Status:</b> {{subscription_status(subscription.gocardless_subscription_id)}}<br />
-                <b>Actions:</b> 
-                    {% if subscription.gocardless_subscription_id %}
-                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
-                      <a href="{{ url_for("admin.pause_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id,
-                        goback=1) }}">
-                       Pause
-                      </a> | 
-                      {% endif %}
-                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
-                      <a href="{{ url_for("admin.resume_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id,
-                        goback=1) }}">
-                       Resume
-                      </a>
-                      {% endif %}
-                    {% endif %}
-                </div>
-              </li><br />
-            {% endfor %}
-            {% else %}
-              None
-            {% endif %}
-            </ol>
-        </td>
-			</tr>
-			{% endfor %}
-		  </tbody>
-		</table>
-
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      {% if people.has_prev %}
-        <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
-      {% endif %}
-      {% if people.has_next %}
-        <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
-      {% endif %}
-    <ul class="pagination-list">
-    {% for page_num in people.iter_pages() %}
-      <li>
-      {% if page_num %}
-        {% if people.page == page_num %}
-          <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
-        {% else %}
-          <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
-
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-      </li>
-    {% endfor %}
-    </ul>
-    </nav>
-	</div><!-- end .container -->
-</div><!-- end .section -->
-
 {% endblock body %} 
-
-
