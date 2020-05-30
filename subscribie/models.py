@@ -102,3 +102,13 @@ class Integrations(database.Model):
     tawk_active = database.Column(database.Boolean())
     tawk_property_id = database.Column(database.String())
 
+class PaymentProvider(database.Model):
+    __tablename__ = 'payment_provider'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    gocardless_active = database.Column(database.Boolean())
+    gocardless_access_token = database.Column(database.String())
+    gocardless_environment = database.Column(database.String())
+    stripe_active = database.Column(database.Boolean())
+    stripe_publishable_key = database.Column(database.String())
+    stripe_secret_key = database.Column(database.String())
