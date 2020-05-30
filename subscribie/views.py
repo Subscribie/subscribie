@@ -58,7 +58,9 @@ def choose():
     # Filter archived items
     jamlaApp = Jamla()
     jamla = jamlaApp.filter_archived_items(jamla)
-    return render_template("choose.html", jamla=jamla, 
+    items = Item.query.all()
+    return render_template("choose.html",
+                            items=items,
                             pages=jamla['pages'])
 
 
