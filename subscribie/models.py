@@ -60,3 +60,37 @@ class Company(database.Model):
     name = database.Column(database.String())
     slogan = database.Column(database.String())
 
+class Item(database.Model):
+    __tablename__ = 'item'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    archived = database.Column(database.Boolean(), default=False)
+    uuid = database.Column(database.String(), default=str(uuid4()))
+    title = database.Column(database.String())
+    monthly_price = database.Column(database.Integer())
+    sell_price = database.Column(database.Integer())
+    days_before_first_charge = database.Column(database.Integer())
+    primary_icon = database.Column(database.String())
+    requirements = relationship("ItemRequirements", back_populates="item")
+    selling_points = relationship("ItemSellingPoints", back_populates="item")
+
+class ItemRequirements(database.Model):
+    __tablename__ = 'item_requirements'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    item_id = database.Column(database.Integer(), ForeignKey('item.id'))
+    item = relationship("Item", back_populates="requirements")
+    instant_payment = database.Column(database.Boolean(), default=False)
+    subscription = database.Column(database.Boolean(), default=False)
+    note_to_seller_required = database.Column(database.Boolean(), default=False)
+    note_to_buyer_message = database.Column(database.String())
+
+class ItemSellingPoints(database.Model):
+    __tablename__ = 'item_selling_points'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    point = database.Column(database.String())
+    item_id = database.Column(database.Integer(), ForeignKey('item.id'))
+    item = relationship("Item", back_populates="selling_points")
+
+
