@@ -93,7 +93,7 @@ class ItemSellingPoints(database.Model):
     item_id = database.Column(database.Integer(), ForeignKey('item.id'))
     item = relationship("Item", back_populates="selling_points")
 
-class Integrations(database.Model):
+class Integration(database.Model):
     __tablename__ = 'integration'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
