@@ -33,13 +33,13 @@
       <div class="column">
         <h2 class="title is-3">Connect Google Tag Manager to your shop</h2>
         <div class="notification 
-          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+          {% if integration.google_tag_manager_container_id %}
 		is-success
 	  {% else %}
 		is-light
 	  {% endif %}">
           <p><b>Status: </b>
-          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+          {% if integration.google_tag_manager_container_id %}
            Google Tag Manager is already connected!
 	  {% else %}Google Tag Manager isn't yet configured, use the form below.
           {% endif %}
@@ -66,7 +66,7 @@
               </div>
             </div>
             <button type="submit" class="button is-fullwidth is-info">
-            {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+            {% if integration.google_tag_manager_container_id %}
             Reconnect
 	    {% else %}
             Connect

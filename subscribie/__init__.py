@@ -70,7 +70,7 @@ from flask_migrate import Migrate
 database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
-                    Page, Module, PaymentProvider)
+                    Page, Module, PaymentProvider, Integration, Item)
 
 
 def create_app(test_config=None):

@@ -62,11 +62,10 @@ td b {
                 </address>
             </div>
             <b>Created at:</b> {{ subscription.created_at.strftime('%d/%m/%Y') }} <br />
-            <b>Title: </b>
-              {{ jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['title'] }}
+            <b>Title: </b> {{ subscription.item.title }}
               <ul>
-              {% for selling_point in jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['selling_points'] %}
-                <li>{{ selling_point }}</li>
+              {% for selling_point in subscription.item.selling_points %}
+                <li>{{ selling_point.point }}</li>
               {% endfor %}
               </ul>
           {% endif %}

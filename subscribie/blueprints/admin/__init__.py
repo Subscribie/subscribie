@@ -16,7 +16,8 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription, SubscriptionNote, Company
+    database, User, Person, Subscription, SubscriptionNote, Company,
+    Integration, PaymentProvider
 )
 from subscribie.auth import login_required
 from subscribie.db import get_db
@@ -44,10 +45,10 @@ def currencyFormat(value):
 @login_required
 def pause_gocardless_subscription(subscription_id):
     """Pause a GoCardless subscription"""
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
-      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-          environment=jamla["payment_providers"]["gocardless"]["environment"],
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
     )
 
     try:
@@ -127,23 +128,21 @@ def cancel_mandates(email):
 @admin_theme.route("/dashboard")
 @login_required
 def dashboard():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-        
-    if jamlaApp.has_connected("gocardless"):
+    integration = Integration.query.first()
+    payment_provider = PaymentProvider.query.first()        
+    if payment_provider.gocardless_active:
         gocardless_connected = True
     else:
         gocardless_connected = False
-    if jamlaApp.has_connected("stripe"):
+    if payment_provider.stripe_active:
         stripe_connected = True
     else:
         stripe_connected = False
     return render_template(
         "admin/dashboard.html",
-        jamla=jamla,
         gocardless_connected=gocardless_connected,
         stripe_connected=stripe_connected,
+        integration=integration,
         loadedModules=getLoadedModules()
     )
 
@@ -366,34 +365,29 @@ def delete_item_by_sku(sku):
 @admin_theme.route("/connect/gocardless/manually", methods=["GET", "POST"])
 @login_required
 def connect_gocardless_manually():
+    payment_provider = PaymentProvider.query.first()        
     form = GocardlessConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    if jamlaApp.has_connected("gocardless"):
+    if payment_provider.gocardless_active:
         gocardless_connected = True
     else:
         gocardless_connected = False
     if form.validate_on_submit():
         access_token = form.data["access_token"]
-        jamla["payment_providers"]["gocardless"]["access_token"] = access_token
+        payment_provider.gocardless_access_token = access_token
         # Check if live or test api key was given
         if "live" in access_token:
-            jamla["payment_providers"]["gocardless"]["environment"] = "live"
+            payment_provider.gocardless_environment = "live"
         else:
-            jamla["payment_providers"]["gocardless"]["environment"] = "sandbox"
+            payment_provider.gocardless_environment = "sandbox"
+        
+        payment_provider.gocardless_active = True
+        database.session.commit() # save changes
 
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        # Overwrite jamla file with gocardless access_token
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        # Set users current session to store access_token for instant access
-        session["gocardless_access_token"] = access_token
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
             "admin/connect_gocardless_manually.html",
             form=form,
-            jamla=jamla,
             gocardless_connected=gocardless_connected,
         )
 
@@ -456,29 +450,24 @@ def gocardless_oauth_complete():
 @login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    if jamlaApp.has_connected("stripe"):
+    payment_provider = PaymentProvider.query.first()        
+
+    if payment_provider.stripe_active:
         stripe_connected = True
     else:
         stripe_connected = False
     if form.validate_on_submit():
         publishable_key = form.data["publishable_key"].strip()
         secret_key = form.data["secret_key"].strip()
-        jamla["payment_providers"]["stripe"]["publishable_key"] = publishable_key
-        jamla["payment_providers"]["stripe"]["secret_key"] = secret_key
-        # Overwrite jamla file with gocardless access_token
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["stripe_publishable_key"] = publishable_key
-        # Set stripe public key JS
+        payment_provider.stripe_publishable_key = publishable_key
+        payment_provider.stripe_secret_key = secret_key
+        payment_provider.stripe_active = True
+        database.session.commit() # Save changes
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
             "admin/connect_stripe_manually.html",
             form=form,
-            jamla=jamla,
             stripe_connected=stripe_connected,
         )
 
@@ -486,44 +475,35 @@ def connect_stripe_manually():
 @admin_theme.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])
 @login_required
 def connect_google_tag_manager_manually():
+    integration = Integration.query.first()
     form = GoogleTagManagerConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
     if form.validate_on_submit():
         container_id = form.data["container_id"]
-        jamla["integrations"]["google_tag_manager"]["container_id"] = container_id
-        jamla["integrations"]["google_tag_manager"]["active"] = True
-        # Overwrite jamla file with google tag manager container_id
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["google_tag_manager_container_id"] = container_id
+        integration.google_tag_manager_container_id = container_id
+        integration.google_tag_manager_active = True
+        database.session.commit()
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
-            "connect_google_tag_manager_manually.html", form=form, jamla=jamla
+            "admin/connect_google_tag_manager_manually.html", form=form,
+            integration=integration
         )
 
 
 @admin_theme.route("/connect/tawk/manually", methods=["GET", "POST"])
 @login_required
 def connect_tawk_manually():
+    integration = Integration.query.first()
     form = TawkConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
     if form.validate_on_submit():
         property_id = form.data["property_id"]
-        jamla["integrations"]["tawk"]["property_id"] = property_id
-        jamla["integrations"]["tawk"]["active"] = True
-        # Overwrite jamla file with google tag manager container_id
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["tawk_property_id"] = property_id
+        integration.tawk_property_id = property_id
+        integration.tawk_active = True
+        database.session.commit()
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
-            "admin/connect_tawk_manually.html", form=form, jamla=jamla
+            "admin/connect_tawk_manually.html", form=form, integration=integration
         )
 
 
@@ -717,11 +697,10 @@ def utility_get_subscription_from_gocardless_subscription_id():
 
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
-
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
-        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token = payment_provider.gocardless_access_token,
+        environment= payment_provider.gocardless_environment
     )
 
     try:
@@ -758,44 +737,38 @@ def subscribers():
     page = request.args.get('page', 1, type=int)
 
     people = database.session.query(Person).order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
-    jamla = get_jamla()
 
     return render_template(
-            'admin/subscribers.html', people=people,
-            jamla=jamla
+            'admin/subscribers.html', people=people
             )
 
 @admin_theme.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
-        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token=payment_provider.gocardless_access_token,
+        environment=payment_provider.gocardless_environment,
     )
 
     payments = client.payments.list().records
 
     return render_template(
             'admin/upcoming_payments.html', payments=payments,
-            jamla=jamla,
             datetime=datetime
             )
 
 @admin_theme.route("/customers", methods=["GET"])
 @login_required
 def customers():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     from SSOT import SSOT
     
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-
     target_gateways = ()
 
-    if jamlaApp.has_connected("gocardless"):
-        access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-        gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
+    if payment_provider.gocardless_active:
+        access_token = payment_provider.gocardless_access_token,
+        gc_environment = payment_provider.gocardless_environment,
         target_gateways = target_gateways + ({"name": "GoCardless", 
                                               "construct": {
                                                 "access_token":access_token,
@@ -803,8 +776,8 @@ def customers():
                                                 }
                                             },)
 
-    if jamlaApp.has_connected("stripe"):
-        stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
+    if payment_provider.stripe_active:
+        stripe_token = payment_provider.stripe_secret_key
         target_gateways = target_gateways + ({"name": "Stripe", "construct": stripe_token},)
 
     try:
@@ -822,16 +795,16 @@ def customers():
             return redirect(url_for("admin.connect_gocardless_manually"))
         else:
             raise
-    return render_template("admin/customers.html", jamla=jamla, partners=partners)
+    return render_template("admin/customers.html", partners=partners)
 
 
 @admin_theme.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     from SSOT import SSOT
 
-    access_token = jamla["payment_providers"]["gocardless"]["access_token"]
+    access_token = payment_provider.gocardless_access_token,
     target_gateways = ({"name": "GoCardless", "construct": access_token},)
     try:
         SSOT = SSOT(target_gateways)
@@ -849,15 +822,14 @@ def transactions():
         else:
             raise
     return render_template(
-        "admin/transactions.html", jamla=jamla, transactions=transactions
+        "admin/transactions.html", transactions=transactions
     )
 @admin_theme.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
   """Notes to seller given during subscription creation"""
   subscriptions = Subscription.query.order_by(desc('created_at')).all()
-  jamla = get_jamla()
-  return render_template("admin/order-notes.html", jamla=jamla, 
+  return render_template("admin/order-notes.html", 
                          subscriptions=subscriptions)
 
 

@@ -41,6 +41,7 @@ class Subscription(database.Model):
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
+    item = relationship("Item", uselist=False, primaryjoin="foreign(Item.uuid)==Subscription.sku_uuid")
     person = relationship("Person", back_populates="subscriptions")
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
