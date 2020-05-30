@@ -6,7 +6,7 @@ from datetime import date
 import sqlite3
 from .signals import journey_complete
 from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
-from subscribie.db import get_jamla, get_db
+from subscribie.db import get_db
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -33,8 +33,7 @@ def redirect_url(default='index'):
         url_for('index')
 
 def index():
-    jamla = get_jamla()
-    return render_template("index.html", jamla=jamla)
+    return render_template("index.html")
 
 @bp.route("/reload")
 def reload_app():
@@ -54,14 +53,9 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    jamla = get_jamla()
-    # Filter archived items
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
     items = Item.query.all()
     return render_template("choose.html",
-                            items=items,
-                            pages=jamla['pages'])
+                            items=items)
 
 
 @bp.route("/new_customer", methods=["GET"])
@@ -77,6 +71,7 @@ def new_customer():
 
 @bp.route("/new_customer", methods=["POST"])
 def store_customer():
+    item = Item.query.filter_by(uuid=session["item"]).first()
     form = CustomerForm()
     if form.validate():
         given_name = form.data["given_name"]
@@ -92,9 +87,6 @@ def store_customer():
         session["email"] = email
 
         # Store plan in session
-        jamlaApp = Jamla()
-        jamla = get_jamla()
-        jamlaApp.load(jamla=jamla)
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
                         postal_code=postcode, email=email, mobile=mobile)
@@ -103,7 +95,7 @@ def store_customer():
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
-        if jamlaApp.requires_instantpayment(session["package"]):
+        if item.requirements[0].instant_payment:
             return redirect(
                 url_for(
                     "views.up_front",
@@ -113,7 +105,7 @@ def store_customer():
                     fname=given_name,
                 )
             )
-        if jamlaApp.requires_subscription(session["package"]):
+        if item.requirements[0].subscription:
             # Check if in iframe
             if form.data["is_iframe"] == "True":
                 insideIframe = True
@@ -336,7 +328,6 @@ def on_complete_mandate():
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
-    jamla = get_jamla()
     company = Company.query.first()
 
     # Store note to seller if in session
@@ -380,4 +371,4 @@ def thankyou():
         logger.warning("No mandate for this transaction")
         logger.warning("Maybe OK as not all items require a direct debit mandate")
     finally:
-        return render_template("thankyou.html", jamla=jamla, pages=jamla['pages'])
+        return render_template("thankyou.html")
