@@ -93,4 +93,12 @@ class ItemSellingPoints(database.Model):
     item_id = database.Column(database.Integer(), ForeignKey('item.id'))
     item = relationship("Item", back_populates="selling_points")
 
+class Integrations(database.Model):
+    __tablename__ = 'integration'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    google_tag_manager_active = database.Column(database.Boolean())
+    google_tag_manager_container_id = database.Column(database.String())
+    tawk_active = database.Column(database.Boolean())
+    tawk_property_id = database.Column(database.String())
 
