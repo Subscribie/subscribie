@@ -112,3 +112,12 @@ class PaymentProvider(database.Model):
     stripe_active = database.Column(database.Boolean())
     stripe_publishable_key = database.Column(database.String())
     stripe_secret_key = database.Column(database.String())
+
+class Page(database.Model):
+    __tablename__ = 'page'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    page_name = database.Column(database.String())
+    path = database.Column(database.String())
+    template_file = database.Column(database.String())
+
