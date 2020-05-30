@@ -197,9 +197,9 @@ def edit_jamla():
                 getItem(form.subscription.data, index)
             )
             if getItem(form.monthly_price.data, index, default=0) is None:
-                monthly_price = 0.00
+                monthly_price = 0
             else:
-                monthly_price = getItem(form.monthly_price.data, index, default=0) * 100
+                monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
             draftItem["monthly_price"] = monthly_price
 
             draftItem["requirements"]["instant_payment"] = bool(
@@ -221,9 +221,9 @@ def edit_jamla():
             draftItem["days_before_first_charge"] = days_before_first_charge
 
             if getItem(form.sell_price.data, index, default=0) is None:
-                sell_price = 0.00
+                sell_price = 0
             else:
-                sell_price = getItem(form.sell_price.data, index, default=0) * 100
+                sell_price = int(getItem(form.sell_price.data, index, default=0) * 100)
             draftItem["sell_price"] = sell_price
 
             draftItem["selling_points"] = getItem(
@@ -292,14 +292,14 @@ def add_jamla_item():
         if form.monthly_price.data[0] is None:
             draftItem["monthly_price"] = False
         else:
-            draftItem["monthly_price"] = float(form.monthly_price.data[0]) * 100
+            draftItem["monthly_price"] = int(form.monthly_price.data[0]) * 100
         draftItem["requirements"]["instant_payment"] = bool(
             form.instant_payment.data[0]
         )
         if form.sell_price.data[0] is None:
             draftItem["sell_price"] = False
         else:
-            draftItem["sell_price"] = float(form.sell_price.data[0]) * 100
+            draftItem["sell_price"] = int(form.sell_price.data[0]) * 100
         draftItem["selling_points"] = form.selling_points.data[0]
         # Create SKU
         draftItem["sku"] = form.title.data[0].replace(" ", "").strip()
