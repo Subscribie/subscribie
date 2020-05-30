@@ -121,3 +121,9 @@ class Page(database.Model):
     path = database.Column(database.String())
     template_file = database.Column(database.String())
 
+class Module(database.Model):
+    __tablename__ = 'module'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    name = database.Column(database.String())
+    src = database.Column(database.String())
