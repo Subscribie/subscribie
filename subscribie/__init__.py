@@ -45,7 +45,6 @@ from flask import (
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
 from .bootstrap import bootstrap
-from .jamla import Jamla
 from .forms import (
     StripWhitespaceForm,
     LoginForm,
@@ -70,7 +69,8 @@ from flask_migrate import Migrate
 
 database = SQLAlchemy()
 
-from .models import User, Person, Subscription, SubscriptionNote, Company
+from .models import (User, Person, Subscription, SubscriptionNote, Company, 
+                    Page, Module, PaymentProvider)
 
 
 def create_app(test_config=None):
@@ -122,9 +122,6 @@ def create_app(test_config=None):
         pass
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-    jamlaApp = Jamla()
-    global jamla
-    jamla = jamlaApp.load(src=app.config["JAMLA_PATH"])
     images = UploadSet("images", IMAGES)
     patch_request_class(app, 2 * 1024 * 1024)
     configure_uploads(app, images)
@@ -138,14 +135,7 @@ def create_app(test_config=None):
     from .blueprints.admin import admin_theme
 
     app.register_blueprint(admin_theme, url_prefix="/admin")
-    try:
-        front_page = jamla["front_page"]
-    except:
-        front_page = "choose"
-    try:
-        app.add_url_rule("/", "index", views.__getattribute__(front_page))
-    except AttributeError:
-        app.add_url_rule("/", "index", views.__getattribute__("choose"))
+    app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     """The Subscribie object implements a flask application suited to subscription 
     based web applications and acts as the central object. Once it is created    
@@ -164,26 +154,20 @@ def create_app(test_config=None):
     from .signals import journey_complete
 
     # Set custom modules path
-    if type(jamla["modules_path"]) is str:
-        print("Setting module path to: {}".format(jamla["modules_path"]))
-        sys.path.append(jamla["modules_path"])
-    elif type(jamla["modules_path"]) is list:
-        for path in jamla["modules_path"]:
-            sys.path.append(path)
+    sys.path.append(app.config["MODULES_PATH"])
 
     with app.app_context():
         load_theme(app)
 
-    # Register yml pages as routes
-    if "pages" in jamla:
-        for i, v in enumerate(jamla["pages"]):
-            page = jamla["pages"][i].popitem()
-            page_path = page[1]["path"]
-            template_file = page[1]["template_file"]
-            view_func_name = page[0]
+        # Register yml pages as routes
+        pages = Page.query.all()
+        for page in pages:
+            page_path = page.path
+            template_file = page.template_file
+            view_func_name = page.page_name
             ##Generate view function
             generate_view_func = """def %s_view_func():
-            return render_template('%s', jamla=jamla)""" % (
+            return render_template('%s')""" % (
                 view_func_name,
                 template_file,
             )
@@ -194,31 +178,21 @@ def create_app(test_config=None):
             view_func = possibles.get(method_name)
             app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
 
-    # Handling Errors Gracefully
-    @app.errorhandler(404)
-    def page_not_found(e):
-        return render_template("errors/404.html"), 404
-
-    @app.errorhandler(500)
-    def page_not_found(e):
-        return render_template("errors/500.html"), 500
-
-    # Import any custom modules
-    if "modules" in jamla:
+        # Import any custom modules
+        modules = Module.query.all()
         print("sys.path contains: {}".format(sys.path))
-        for module in jamla["modules"]:
+        for module in modules:
             # Assume standard python module
             try:
-                print("Attempting to importing module: {}".format(module["name"]))
-                importlib.import_module(module["name"])
+                print("Attempting to importing module: {}".format(module.name))
+                importlib.import_module(module.name)
             except ModuleNotFoundError:
                 # Attempt to load module from src 
-                  #TODO dont blindly use first path as modules directory
-                dest = Path(jamla["modules_path"][0], module["name"])
+                dest = Path(app.config["MODULES_PATH"], module.name)
                 print("Cloning module into: {}".format(dest))
                 os.makedirs(str(dest), exist_ok=True)
                 try:
-                    git.Repo.clone_from(module["src"], dest)
+                    git.Repo.clone_from(module.src, dest)
                 except git.exc.GitCommandError:
                     pass
                 # Now re-try import
@@ -226,19 +200,19 @@ def create_app(test_config=None):
                     import site
 
                     reload(site)
-                    importlib.import_module(module["name"])
+                    importlib.import_module(module.name)
                 except ModuleNotFoundError:
-                    print("Error: Could not import module: {}".format(module["name"]))
+                    print("Error: Could not import module: {}".format(module.name))
             # Register modules as blueprint (if it is one)
             try:
-                importedModule = importlib.import_module(module["name"])
-                if isinstance(getattr(importedModule, module["name"]), Blueprint):
+                importedModule = importlib.import_module(module.name)
+                if isinstance(getattr(importedModule, module.name), Blueprint):
                     # Load any config the Blueprint declares
-                    blueprint = getattr(importedModule, module["name"])
+                    blueprint = getattr(importedModule, module.name)
                     blueprintConfig = "".join([blueprint.root_path, "/", "config.py"])
                     app.config.from_pyfile(blueprintConfig, silent=True)
                     # Register the Blueprint
-                    app.register_blueprint(getattr(importedModule, module["name"]))
+                    app.register_blueprint(getattr(importedModule, module.name))
                     print("Imported as flask Blueprint")
                     # Run Blueprint migrations if any
                     modulePath = Path(importedModule.__file__).parents[0]
@@ -257,6 +231,14 @@ def create_app(test_config=None):
                         module["name"]
                     )
                 )
-    else:
-        print("No modules element on jamla. Not loading any modules")
+
+    # Handling Errors Gracefully
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template("errors/404.html"), 404
+
+    @app.errorhandler(500)
+    def page_not_found(e):
+        return render_template("errors/500.html"), 500
+
     return app

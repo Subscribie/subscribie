@@ -5,7 +5,7 @@ import datetime
 from datetime import date
 import sqlite3
 from .signals import journey_complete
-from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
+from subscribie import session, CustomerForm, gocardless_pro, current_app
 from subscribie.db import get_db
 import stripe
 from uuid import uuid4

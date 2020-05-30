@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound, Markup
 from subscribie import (
     logging,
-    Jamla,
     session,
     render_template,
     request,
@@ -20,7 +19,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company
 )
 from subscribie.auth import login_required
-from subscribie.db import get_jamla, get_db
+from subscribie.db import get_db
 from subscribie.symlink import symlink
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
