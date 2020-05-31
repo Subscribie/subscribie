@@ -136,18 +136,9 @@ def create_app(test_config=None):
     app.register_blueprint(admin_theme, url_prefix="/admin")
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
-    """The Subscribie object implements a flask application suited to subscription 
-    based web applications and acts as the central object. Once it is created    
-    it will act as a central registry for default views, application workflow,   
-    the URL rules, and much more. Note most of the application must be defined   
-    in Jamla format, a yaml based application markup.                            
-                                                                                 
-    Usually you create a :class:`Subscribie` instance in your main module or          
-    in the :file:`__init__.py` file of your package like this::                  
-                                                                                 
-        from subscribie import Subscribie 
-        app = Subscribie(__name__)                                                 
-                                                                                 
+    """
+    Subscribie implements a flask application suited to subscription 
+    based web applications.
     """
     # the signals
     from .signals import journey_complete
