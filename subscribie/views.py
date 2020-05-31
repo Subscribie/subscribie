@@ -53,7 +53,7 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    items = Item.query.all()
+    items = Item.query.filter_by(archived=0).all()
     return render_template("choose.html",
                             items=items)
 

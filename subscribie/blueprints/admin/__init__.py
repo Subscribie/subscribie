@@ -17,7 +17,7 @@ from subscribie import (
     jsonify,
     TawkConnectForm,
     database, User, Person, Subscription, SubscriptionNote, Company,
-    Integration, PaymentProvider
+    Integration, PaymentProvider, Item, ItemRequirements, ItemSellingPoints
 )
 from subscribie.auth import login_required
 from subscribie.db import get_db
@@ -66,10 +66,10 @@ def pause_gocardless_subscription(subscription_id):
 @login_required
 def resume_gocardless_subscription(subscription_id):
     """Resume a GoCardless subscription"""
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
-      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-          environment=jamla["payment_providers"]["gocardless"]["environment"],
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
     )
 
     try:
@@ -152,8 +152,8 @@ def dashboard():
 def edit_jamla():
     """Update jamla items
     
-    Note sku items are immutable, when a change is made to an item, its old
-    item is archived and a new sku item is created with a new uuid. This is to
+    Note items are immutable, when a change is made to an item, its old
+    item is archived and a new item is created with a new uuid. This is to
     protect data integriry and make sure plan history is retained, via its uuid.
     If a user needs to change a subscription, they should change to a different
     plan with a different uuid.
@@ -161,55 +161,50 @@ def edit_jamla():
     """
 
     form = ItemsForm()
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
+    items = Item.query.filter_by(archived=0).all()
     if form.validate_on_submit():
         company = Company.query.first()
         company.name  = request.form["company_name"]
         company.slogan = request.form["slogan"]
-        database.session.commit()
-        jamla["users"][0] = request.form["email"]
         # Loop items
         for index in request.form.getlist("itemIndex", type=int):
 
-            # Archive existing item then create new sku item
-            # (remember, edit edits create new items because
-            # skus are immutable)
+            # Archive existing item then create new item
+            # (remember, edits create new items because
+            # items are immutable)
+            item = Item.query.filter_by(uuid=form.uuid.data[index]).first()
+            item.archived = True
 
-            jamla["items"][index]["archived"] = True # Archive item
+            # Build new item
+            draftItem = Item()
+            database.session.add(draftItem)
+            item_requirements = ItemRequirements()
 
-            # Build new sku
-            draftItem = {}
-            draftItem["uuid"] = str(uuid.uuid4())
-            draftItem["requirements"] = {}
+            draftItem.uuid = str(uuid.uuid4())
+            draftItem.requirements.append(item_requirements)
             # Preserve primary icon if exists
-            draftItem["primary_icon"] = jamla["items"][index]["primary_icon"]
+            draftItem.primary_icon = item.primary_icon
 
-            draftItem["title"] = getItem(
+            draftItem.title = getItem(
                 form.title.data, index, default=""
             ).strip()
 
-            draftItem["sku"] = draftItem["title"].replace(" ", "").strip()
-
-            draftItem["requirements"]["subscription"] = bool(
+            item_requirements.subscription = bool(
                 getItem(form.subscription.data, index)
             )
             if getItem(form.monthly_price.data, index, default=0) is None:
-                monthly_price = 0.00
+                monthly_price = 0
             else:
                 monthly_price = getItem(form.monthly_price.data, index, default=0) * 100
-            draftItem["monthly_price"] = monthly_price
+            draftItem.monthly_price = monthly_price
 
-            draftItem["requirements"]["instant_payment"] = bool(
+            item_requirements.instant_payment = bool(
                 getItem(form.instant_payment.data, index)
             )
-            draftItem["requirements"]["note_to_seller_required"] = bool(
+            item_requirements.note_to_seller_required = bool(
                 getItem(form.note_to_seller_required.data, index)
             )
-
-            draftItem["requirements"]["note_to_buyer_message"] = str(getItem(
+            item_requirements.note_to_buyer_message = str(getItem(
                 form.note_to_buyer_message, index, default=""
             ).data)
 
@@ -218,17 +213,21 @@ def edit_jamla():
             except ValueError:
                 days_before_first_charge = 0
 
-            draftItem["days_before_first_charge"] = days_before_first_charge
+            draftItem.days_before_first_charge = days_before_first_charge
 
             if getItem(form.sell_price.data, index, default=0) is None:
-                sell_price = 0.00
+                sell_price = 0
             else:
                 sell_price = getItem(form.sell_price.data, index, default=0) * 100
-            draftItem["sell_price"] = sell_price
 
-            draftItem["selling_points"] = getItem(
+            draftItem.sell_price = sell_price
+
+            points = getItem(
                 form.selling_points.data, index, default=""
             )
+            for point in points:
+                draftItem.selling_points.append(ItemSellingPoints(point=point))
+
             # Primary icon image storage
             f = getItem(form.image.data, index)
             if f:
@@ -241,68 +240,53 @@ def edit_jamla():
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
                 symlink(img_src, link, overwrite=True)
                 src = url_for("static", filename=filename)
-                draftItem["primary_icon"] = {"src": src, "type": ""}
-            # Add new sku to items
-            jamla["items"].append(draftItem)
-            fp = open(current_app.config["JAMLA_PATH"], "w")
-            yaml.safe_dump(jamla, fp, default_flow_style=False)
+                draftItem.primary_icon = src
+        database.session.commit() # Save
         flash("Item(s) updated.")
-        # Trigger a reload by touching the wsgi file.
-        # Which file we need to touch depends on the wsgi config
-        # e.g. on uwsgi to set it to subscribie.wsgi on uwsgi we pass:
-        # uwsgi --http :9090 --workers 2 --wsgi-file subscribie.wsgi \
-        #  --touch-chain-reload subscribie.wsgi
-        # To uwsgi. The `--touch-chain-reload` option tells uwsgi to perform
-        # a graceful reload. "When triggered, it will restart one worker at 
-        # time, and the following worker is not reloaded until the previous one
-        # is ready to accept new requests. We must use more than one worker for
-        # this to work. See:
-        # https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#chain-reloading-lazy-apps
-        wsgiFile = os.path.abspath(''.join([os.getcwd(), '/subscribie.wsgi']))
-        p = Path(wsgiFile)
-        p.touch(exist_ok=True) # Triggers the graceful reload
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/edit_jamla.html", jamla=jamla, form=form)
+    return render_template("admin/edit_jamla.html", items=items, form=form)
 
-
-#    return render_template('formarraybasic/index.html')
 
 
 @admin_theme.route("/add", methods=["GET", "POST"])
 @login_required
 def add_jamla_item():
     form = ItemsForm()
-    jamla = get_jamla()
     if form.validate_on_submit():
-        draftItem = {}
-        draftItem["uuid"] = str(uuid.uuid4())
-        draftItem["requirements"] = {}
-        draftItem["primary_icon"] = {"src": "", "type": ""}
-        draftItem["title"] = form.title.data[0].strip()
-        draftItem["requirements"]["subscription"] = bool(form.subscription.data[0])
-        draftItem["requirements"]["note_to_seller_required"] = bool(form.note_to_seller_required.data[0])
-        draftItem["requirements"]["note_to_buyer_message"] = str(form.note_to_buyer_message.data[0])
+        draftItem = Item()
+        database.session.add(draftItem)
+        item_requirements = ItemRequirements()
+        draftItem.requirements.append(item_requirements)
+
+        draftItem.uuid = str(uuid.uuid4())
+        draftItem.title = form.title.data[0].strip()
+        item_requirements.subscription = bool(form.subscription.data[0])
+        item_requirements.note_to_seller_required = bool(form.note_to_seller_required.data[0])
+        item_requirements.note_to_buyer_message = str(form.note_to_buyer_message.data[0])
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
         except ValueError:
             days_before_first_charge = 0
 
-        draftItem["days_before_first_charge"] = days_before_first_charge
+        draftItem.days_before_first_charge = days_before_first_charge
 
         if form.monthly_price.data[0] is None:
-            draftItem["monthly_price"] = False
+            draftItem.monthly_price = 0
         else:
-            draftItem["monthly_price"] = float(form.monthly_price.data[0]) * 100
-        draftItem["requirements"]["instant_payment"] = bool(
+            draftItem.monthly_price = int(form.monthly_price.data[0]) * 100
+        item_requirements.instant_payment = bool(
             form.instant_payment.data[0]
         )
         if form.sell_price.data[0] is None:
-            draftItem["sell_price"] = False
+            draftItem.sell_price = 0
         else:
-            draftItem["sell_price"] = float(form.sell_price.data[0]) * 100
-        draftItem["selling_points"] = form.selling_points.data[0]
-        # Create SKU
-        draftItem["sku"] = form.title.data[0].replace(" ", "").strip()
+            draftItem.sell_price = int(form.sell_price.data[0]) * 100
+
+        points = form.selling_points.data[0]
+
+        for point in points:
+            draftItem.selling_points.append(ItemSellingPoints(point=point))
+
         # Primary icon image storage
         f = form.image.data[0]
         if f:
@@ -313,53 +297,41 @@ def add_jamla_item():
             link = "".join([current_app.config["STATIC_FOLDER"], filename])
             os.symlink(img_src, link)
             src = url_for("static", filename=filename)
-            draftItem["primary_icon"] = {"src": src, "type": ""}
-        jamla["items"].append(draftItem)
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
+            draftItem.primary_icon = src
+        database.session.commit()
         flash("Item added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_jamla_item.html", jamla=jamla, form=form)
+    return render_template("admin/add_jamla_item.html", form=form)
 
 
 @admin_theme.route("/delete", methods=["GET"])
 @login_required
 def delete_jamla_item():
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
-    return render_template("admin/delete_jamla_item_choose.html", jamla=jamla)
+    items = Item.query.filter_by(archived=0).all()
+    return render_template("admin/delete_jamla_item_choose.html", items=items)
 
 
-@admin_theme.route("/delete/<sku>", methods=["GET", "POST"])
+@admin_theme.route("/delete/<uuid>", methods=["GET", "POST"])
 @login_required
-def delete_item_by_sku(sku):
+def delete_item_by_uuid(uuid):
     """Archive (dont actually delete) an item"""
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
+    item = Item.query.filter_by(uuid=uuid).first()
 
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=get_jamla())
-    itemIndex = jamlaApp.sku_get_index(sku)
     if "confirm" in request.args:
         confirm = False
         return render_template(
             "admin/delete_jamla_item_choose.html",
-            jamla=jamla,
-            itemSKU=sku,
             confirm=False,
+            item=item
         )
-    if itemIndex is not False:
-        # Perform removal
-        jamla["items"][itemIndex]['archived'] = True
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
+    if uuid is not False:
+        # Perform archive
+        item.archived = True
+        database.session.commit()
 
     flash("Item deleted.")
-    return render_template("admin/delete_jamla_item_choose.html", jamla=jamla)
+    items = Item.query.filter_by(archived=0).all()
+    return render_template("admin/delete_jamla_item_choose.html", items=items)
 
 
 @admin_theme.route("/connect/gocardless/manually", methods=["GET", "POST"])
