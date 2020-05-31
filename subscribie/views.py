@@ -343,7 +343,6 @@ def thankyou():
 
     first_charge_date = session.get('first_charge_date', 'unknown')
     first_charge_amount = session.get('first_charge_amount', 'unknown')
-
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
@@ -354,7 +353,7 @@ def thankyou():
     try:
         mail = Mail(current_app)
         msg = Message()
-        msg.subject = company["name"] + " " + "Subscription Confirmation"
+        msg.subject = company.name + " " + "Subscription Confirmation"
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email
