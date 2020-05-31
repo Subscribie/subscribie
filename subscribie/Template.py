@@ -59,7 +59,7 @@ def load_theme(app):
                     app.config["THEME_NAME"],
                 )
                 static_folder = themepath.joinpath("../", "static").resolve()
-                # Update jamla path and template folder path
+                # Update theme path and template folder path
                 subprocess.call(
                     "subscribie \
                      setconfig \

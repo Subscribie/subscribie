@@ -44,7 +44,6 @@ from flask import (
 )
 from oauth2client.client import OAuth2WebServerFlow
 import yaml
-from .bootstrap import bootstrap
 from .forms import (
     StripWhitespaceForm,
     LoginForm,
@@ -77,7 +76,6 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    bootstrap(app)
     app.config.from_mapping(
         SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "subscribie.sqlite")
     )
