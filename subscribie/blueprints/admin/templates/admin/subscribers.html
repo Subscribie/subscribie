@@ -11,12 +11,6 @@
                                                                                  
 {% block body %}
 
-<!-- <style>
-td b {
-    line-height: 36px;
-}
-</style> -->
-
 <div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
   <div class="container">                                                        
     <nav class="breadcrumb" aria-label="breadcrumbs">                            
@@ -35,36 +29,14 @@ td b {
   <div class="section">
     <div class="container">
 
-      <div class="tabs is-toggle">
-        <ul>
-          <li class="is-active"><a href="#">All</a></li>
-          <li><a href="#">Active</a></li>
-          <li><a href="#">Paused</a></li>
-          <li><a href="#">None</a></li>
-        </ul>
-
-        <div class="field has-addons">
-          <div class="control">
-            <input class="input" type="text" placeholder="Custumer name">
-          </div>
-          <div class="control">
-            <a class="button is-info">
-              Search
-            </a>
-          </div>
-        </div>
-      </div>
-
       <table class="table is-hoverable is-fullwidth">
         <thead>
           <tr>
             <th>Date</th>
-            <!-- <th>Status</th> -->
             <th>Name</th>
             <th>Contacts</th>
             <th>Address</th>
             <th>Subscription</th>
-            <!-- <th>Actions</th> -->
           </tr>
         </thead>
         <tbody>
@@ -73,7 +45,6 @@ td b {
             <td>{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
             {% endif %}</td>
-            <!-- <td>{% for subscription in person.subscriptions %}{{subscription_status(subscription.gocardless_subscription_id)}}{% endfor %}</td> -->
             <td>{{ person.given_name }} {{ person.family_name }}</td>
             <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
                 <strong>Phone: </strong><a href="tel:{{ person.phone }}">{{ person.phone }}</a><br></td>
@@ -128,7 +99,6 @@ td b {
               </ul></div>
               {% endif %}
             </td>
-            <!-- <td></td> --> <!-- Actions cell -->
           </tr>
         {% endfor %}
         </tbody>
