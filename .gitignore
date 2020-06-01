@@ -16,8 +16,7 @@ subscribie.egg-info/*
 build/*
 dist/*
 
-data.db
-subscribie/data.db
+*/data.db
 yamla.yaml
 module_seo_page_title/
 themes/theme-jesmond/
