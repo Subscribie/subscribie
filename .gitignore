@@ -15,8 +15,6 @@ Subscribie.egg-info*
 subscribie.egg-info/*
 build/*
 dist/*
-
-data.db
 data.db
 jamla.yaml
 module_seo_page_title/
