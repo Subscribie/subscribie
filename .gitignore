@@ -17,7 +17,11 @@ build/*
 dist/*
 
 data.db
-*/data.db
+data.db
 jamla.yaml
 module_seo_page_title/
 themes/
+subscribie/data.db
+yamla.yaml
+module_seo_page_title/
+themes/theme-jesmond/
