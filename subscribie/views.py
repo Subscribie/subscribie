@@ -25,7 +25,8 @@ bp = Blueprint("views", __name__, url_prefix=None)
 def inject_template_globals():
     company = Company.query.first()
     integration = Integration.query.first()
-    return dict(company=company, integration=integration)
+    items = Item.query.filter_by(archived=0)
+    return dict(company=company, integration=integration, items=items)
 
 def redirect_url(default='index'):
     return request.args.get('next') or \
