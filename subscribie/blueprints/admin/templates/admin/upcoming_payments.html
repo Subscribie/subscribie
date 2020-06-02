@@ -1,4 +1,71 @@
-{% extends "admin/layout.html" %}                                                
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body>
+    <table class="table is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Contacts</th>
+          <th>Address</th>
+          <th>Subscription</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>22/05/2020</td>
+          <td>pending_sybmission</td>
+          <td>£468.00</td>
+          <td>Harriet Cardenas</td>
+          <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
+              <strong>Phone: </strong><a href="tel:{{ person.phone }}">{{ person.phone }}</a><br></td>
+          <td><address>
+                {{ person.address_line1 }}<br />
+                {{ person.city }} <br />
+                {{ person.postal_code }} <br />
+              </address></td>
+          <td>
+            <div class="content">
+              <ul class="is-unstyled-li">
+                <li>
+                  <div class="card">
+                  <ul class="is-unstyled-li">
+                    <li><strong>Title: </strong>Coffee Deluxe</li>
+                    <li><strong>Description:</strong>
+                      <ul>
+                        <li>Quality Coffee</li>
+                        <li>6 Servings a mounth</li>
+                        <li>Decaf</li>
+                      </ul>
+                    </li>
+                    <li><strong>ID: </strong>SB000290FVKTH3</li>
+                    <li><strong>Date started: </strong>17/05/2020</li>
+                  </ul>
+                  </div>
+                </li>  
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html> -->
+
+
+<!-- ---------------------------------------------------- -->
+
+
+{% extends "admin/layout.html" %}                                              
 {% block title %} Upcoming Payments{% endblock %}                                
                                                                                  
 {% block hero %}                                                                 
@@ -81,5 +148,4 @@ td b {
 </div><!-- end .section -->
 
 {% endblock body %} 
-
 
