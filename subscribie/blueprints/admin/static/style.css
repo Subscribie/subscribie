@@ -11596,10 +11596,3 @@ h3{
     letter-spacing: -0.1rem;
 
 }
-
-/* ------------------------------------------------- */
-.content ul.is-unstyled-li {
-  list-style: none;
-  margin: .5em;
-  padding: 0;
-}
