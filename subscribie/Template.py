@@ -65,7 +65,7 @@ def load_theme(app):
                      setconfig \
                      --TEMPLATE_FOLDER {}\
                      --STATIC_FOLDER {}".format(
-                        str(themepath), str(static_folder)
+                        str(themepath), str(static_folder + "/")
                     ),
                     shell=True,
                 )
