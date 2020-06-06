@@ -27,7 +27,8 @@
 <fieldset style="padding:5px">
 <legend>New Item</legend>
     <div style="display:none">
-    {{ render_field(form.company_name, value=company.name ) }}       
+    {{ render_field(form.company_name, value=company.name ) }}
+    <input name="email" type="hidden" value='email@example.com' />
     </div>
 	<dl>
       <dt><label>Title:</label></dt>
