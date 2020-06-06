@@ -27,7 +27,7 @@
 <legend>Shop details</legend>
     {{ render_field(form.company_name, value=company['name'] ) }}
     {{ render_field(form.slogan, value=company['slogan'] ) }}
-    {{ render_field(form.email, type="email", value='') }}
+    <input name="email" type="hidden" value='email@example.com' />
 </fieldset>
 
 <fieldset style="padding:5px">
