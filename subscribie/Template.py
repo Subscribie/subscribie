@@ -58,7 +58,7 @@ def load_theme(app):
                     "theme-" + app.config["THEME_NAME"],
                     app.config["THEME_NAME"],
                 )
-                static_folder = themepath.joinpath("../", "static/").resolve()
+                static_folder = themepath.joinpath("../", "static").resolve()
                 # Update theme path and template folder path
                 subprocess.call(
                     "subscribie \
