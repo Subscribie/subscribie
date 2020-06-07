@@ -123,11 +123,11 @@ def up_front(sid, fname):
     item = Item.query.filter_by(uuid=session["item"]).first()
     payment_provider = PaymentProvider.query.first()
     stripe_pub_key = payment_provider.stripe_publishable_key
-
+    company = Company.query.first()
     return render_template(
         "up_front_payment.html",
+        company=company,
         item=item,
-        selling_points=item.selling_points,
         fname=fname,
         sid=sid,
         stripe_pub_key=stripe_pub_key

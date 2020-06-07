@@ -1,4 +1,4 @@
-{% extends "admin/layout.html" %}                                                
+{% extends "admin/layout.html" %}                                              
 {% block title %} Upcoming Payments{% endblock %}                                
                                                                                  
 {% block hero %}                                                                 
@@ -26,59 +26,77 @@ td b {
             Upcoming Payments</a>
         </li>                                                                    
       </ul>                                                                      
-    </nav>                                                                       
+    </nav>
   </div>                                                                         
 </div>
 
 <div class="section">
-	<div class="container">
+  <div class="container">
 
-		<table class="table">
-		  <thead>
-			<tr>
-			  <th>Payments</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			{% for payment in payments %}
-			<tr>
-        <td>
-          <b>Status:</b> {{ payment.status }} <br />
-          <b>Amount:</b> {{ payment.amount|default(0)|currencyFormat}} <br />
-          <b>Subscription Ref:</b> {{ payment.links['subscription'] }} <br />
+    <table class="table is-hoverable is-fullwidth">
+
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Contacts</th>
+          <th>Address</th>
+          <th>Subscription</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for payment in payments %}
+        <tr>
+          <td>{{ datetime.strptime(payment.charge_date, '%Y-%m-%d').strftime("%d/%m/%Y") }}</td>
+          <td>{{ payment.status }}</td>
+          <td>{{ payment.amount|default(0)|currencyFormat}}</td>
           {% if get_subscription_from_gocardless_subscription_id(payment.links['subscription']) != none  %}
-            {% set subscription = get_subscription_from_gocardless_subscription_id(payment.links['subscription']) %}
-            <b>Subscription Detail:</b> <br />
-            <div>
-                <b>Customer:</b><br />
-                <b>Name: </b> {{ subscription.person.given_name }} {{ subscription.person.family_name }} <br />
-                <b>Email: </b> {{ subscription.person.email }}<br />
-                <b>Phone: </b> {{ subscription.person.mobile}}<br />
-                <b>Address:</b><br />
-                <address>
-                  {{ subscription.person.address_line1 }}<br />
-                  {{ subscription.person.city }}
-                  {{ subscription.person.postal_code }}
-                </address>
-            </div>
-            <b>Created at:</b> {{ subscription.created_at.strftime('%d/%m/%Y') }} <br />
-            <b>Title: </b> {{ subscription.item.title }}
-              <ul>
-              {% for selling_point in subscription.item.selling_points %}
-                <li>{{ selling_point.point }}</li>
-              {% endfor %}
+          {% set subscription = get_subscription_from_gocardless_subscription_id(payment.links['subscription']) %}
+          <td>{{ subscription.person.given_name }} {{ subscription.person.family_name }}</td>
+          <td>
+            <strong>Email: </strong><a href="mailto:{{ subscription.person.email }}">{{ subscription.person.email }}</a><br>
+            <strong>Phone: </strong><a href="tel:{{ subscription.person.mobile}}">{{ subscription.person.mobile}}</a><br>
+          </td>
+          <td><address>
+              {{ subscription.person.address_line1 }}<br />
+              {{ subscription.person.city }}
+              {{ subscription.person.postal_code }}
+          </address></td>
+          <td>
+            <div class="content">
+              <ul class="is-unstyled-li">
+                <li>
+                  <div class="card">
+                    <ul class="is-unstyled-li">
+                      <li><strong>Title: </strong>{{ subscription.item.title }}</li>
+                      <li><strong>Description:</strong>
+                        <ul>
+                          {% for selling_point in subscription.item.selling_points %}
+                            <li>{{ selling_point }}</li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                      <li><strong>ID: </strong>{{ payment.links['subscription'] }}</li>
+                      <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
+                    </ul>
+                  </div>
+                </li>  
               </ul>
+            </div>
+          </td>
+          {% else %}
+          <td colspan="4"></td>
           {% endif %}
-          <br />
-          <b>Charge date:</b> {{ datetime.strptime(payment.charge_date, '%Y-%m-%d').strftime("%d/%m/%Y") }} <br />
-        </td>
-			</tr>
-			{% endfor %}
-		  </tbody>
-		</table>
-	</div><!-- end .container -->
+        </tr>
+      {% endfor %}
+      </tbody>
+      
+    </table>
+  </div><!-- end .container -->
 </div><!-- end .section -->
 
 {% endblock body %} 
-
 

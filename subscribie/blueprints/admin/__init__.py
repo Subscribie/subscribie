@@ -195,8 +195,8 @@ def edit():
             if getItem(form.monthly_price.data, index, default=0) is None:
                 monthly_price = 0
             else:
-                monthly_price = getItem(form.monthly_price.data, index, default=0) * 100
-            draftItem.monthly_price = monthly_price
+                monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
+            draftItem["monthly_price"] = monthly_price
 
             item_requirements.instant_payment = bool(
                 getItem(form.instant_payment.data, index)
@@ -218,7 +218,12 @@ def edit():
             if getItem(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
             else:
+<<<<<<< HEAD
                 sell_price = getItem(form.sell_price.data, index, default=0) * 100
+=======
+                sell_price = int(getItem(form.sell_price.data, index, default=0) * 100)
+            draftItem["sell_price"] = sell_price
+>>>>>>> master
 
             draftItem.sell_price = sell_price
 
@@ -273,13 +278,19 @@ def add_item():
         if form.monthly_price.data[0] is None:
             draftItem.monthly_price = 0
         else:
+<<<<<<< HEAD
             draftItem.monthly_price = int(form.monthly_price.data[0]) * 100
         item_requirements.instant_payment = bool(
+=======
+            draftItem["monthly_price"] = int(form.monthly_price.data[0]) * 100
+        draftItem["requirements"]["instant_payment"] = bool(
+>>>>>>> master
             form.instant_payment.data[0]
         )
         if form.sell_price.data[0] is None:
             draftItem.sell_price = 0
         else:
+<<<<<<< HEAD
             draftItem.sell_price = int(form.sell_price.data[0]) * 100
 
         points = form.selling_points.data[0]
@@ -287,6 +298,12 @@ def add_item():
         for point in points:
             draftItem.selling_points.append(ItemSellingPoints(point=point))
 
+=======
+            draftItem["sell_price"] = int(form.sell_price.data[0]) * 100
+        draftItem["selling_points"] = form.selling_points.data[0]
+        # Create SKU
+        draftItem["sku"] = form.title.data[0].replace(" ", "").strip()
+>>>>>>> master
         # Primary icon image storage
         f = form.image.data[0]
         if f:
