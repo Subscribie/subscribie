@@ -332,7 +332,8 @@ def thankyou():
     company = Company.query.first()
 
     # Store note to seller if in session
-    if session.get('note_to_seller', False) is not False:
+    if session.get('note_to_seller', False) is not False and \
+      session.get('subscription_id', False) != False:
       note = SubscriptionNote(note=session["note_to_seller"],
                              subscription_id=session["subscription_id"])
       database.session.add(note)
