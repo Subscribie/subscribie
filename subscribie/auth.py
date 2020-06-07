@@ -88,7 +88,7 @@ def load_logged_in_user():
 
 
 def generate_login_url(email):
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email.lower()).first()
     if user is None:
         return "Invalid valid user"
     # Generate login token
