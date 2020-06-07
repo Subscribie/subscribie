@@ -71,10 +71,10 @@ td b {
                 <li>
                   <div class="card">
                     <ul class="is-unstyled-li">
-                      <li><strong>Title: </strong>{{ jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['title'] }}</li>
+                      <li><strong>Title: </strong>{{ subscription.item.title }}</li>
                       <li><strong>Description:</strong>
                         <ul>
-                          {% for selling_point in jamla_get(get_sku_uuid_from_gocardless_subscription_id(payment.links['subscription']))['selling_points'] %}
+                          {% for selling_point in subscription.item.selling_points %}
                             <li>{{ selling_point }}</li>
                           {% endfor %}
                         </ul>

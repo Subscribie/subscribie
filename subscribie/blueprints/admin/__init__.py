@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound, Markup
 from subscribie import (
     logging,
-    Jamla,
     session,
     render_template,
     request,
@@ -17,10 +16,11 @@ from subscribie import (
     ItemsForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription, SubscriptionNote
+    database, User, Person, Subscription, SubscriptionNote, Company,
+    Integration, PaymentProvider, Item, ItemRequirements, ItemSellingPoints
 )
 from subscribie.auth import login_required
-from subscribie.db import get_jamla, get_db
+from subscribie.db import get_db
 from subscribie.symlink import symlink
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
@@ -45,10 +45,10 @@ def currencyFormat(value):
 @login_required
 def pause_gocardless_subscription(subscription_id):
     """Pause a GoCardless subscription"""
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
-      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-          environment=jamla["payment_providers"]["gocardless"]["environment"],
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
     )
 
     try:
@@ -66,10 +66,10 @@ def pause_gocardless_subscription(subscription_id):
 @login_required
 def resume_gocardless_subscription(subscription_id):
     """Resume a GoCardless subscription"""
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
-      access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-          environment=jamla["payment_providers"]["gocardless"]["environment"],
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
     )
 
     try:
@@ -88,7 +88,6 @@ def resume_gocardless_subscription(subscription_id):
 @login_required
 def cancel_mandates(email):
   """Cancel all mandates associated with a given email"""
-  jamla = get_jamla()
   if "confirm" in request.args:
     # Get all mandates associated with <email>
     # Then cancel them
@@ -101,10 +100,12 @@ def cancel_mandates(email):
         partner_madates.append(transaction.mandate)
     
     if len(partner_madates) > 0:
+      payment_provider = PaymentProvider.query.first()        
       gocclient = gocardless_pro.Client(
-          access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-          environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token=payment_provider.gocardless_access_token,
+        environment=payment_provider.gocardless_environment,
       )
+
       for mandate in partner_madates: # Cancel each mandate for given email
         removed = False
         try:
@@ -122,40 +123,37 @@ def cancel_mandates(email):
           refresh_ssot(resource='customers')
           
       return redirect(url_for("admin.customers"))
-  return render_template("admin/cancel_mandates_confirm.html", email=email,
-                        jamla=jamla)
+  return render_template("admin/cancel_mandates_confirm.html", email=email)
 
 @admin_theme.route("/dashboard")
 @login_required
 def dashboard():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-        
-    if jamlaApp.has_connected("gocardless"):
+    integration = Integration.query.first()
+    payment_provider = PaymentProvider.query.first()        
+    if payment_provider.gocardless_active:
         gocardless_connected = True
     else:
         gocardless_connected = False
-    if jamlaApp.has_connected("stripe"):
+    if payment_provider.stripe_active:
         stripe_connected = True
     else:
         stripe_connected = False
     return render_template(
         "admin/dashboard.html",
-        jamla=jamla,
         gocardless_connected=gocardless_connected,
         stripe_connected=stripe_connected,
+        integration=integration,
         loadedModules=getLoadedModules()
     )
 
 
 @admin_theme.route("/edit", methods=["GET", "POST"])
 @login_required
-def edit_jamla():
-    """Update jamla items
+def edit():
+    """Edit items
     
-    Note sku items are immutable, when a change is made to an item, its old
-    item is archived and a new sku item is created with a new uuid. This is to
+    Note items are immutable, when a change is made to an item, its old
+    item is archived and a new item is created with a new uuid. This is to
     protect data integriry and make sure plan history is retained, via its uuid.
     If a user needs to change a subscription, they should change to a different
     plan with a different uuid.
@@ -163,37 +161,35 @@ def edit_jamla():
     """
 
     form = ItemsForm()
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
+    items = Item.query.filter_by(archived=0).all()
     if form.validate_on_submit():
-        jamla["company"]["name"] = request.form["company_name"]
-        jamla["company"]["slogan"] = request.form["slogan"]
-        jamla["users"][0] = request.form["email"]
+        company = Company.query.first()
+        company.name  = request.form["company_name"]
+        company.slogan = request.form["slogan"]
         # Loop items
         for index in request.form.getlist("itemIndex", type=int):
 
-            # Archive existing item then create new sku item
-            # (remember, edit edits create new items because
-            # skus are immutable)
+            # Archive existing item then create new item
+            # (remember, edits create new items because
+            # items are immutable)
+            item = Item.query.filter_by(uuid=form.uuid.data[index]).first()
+            item.archived = True
 
-            jamla["items"][index]["archived"] = True # Archive item
+            # Build new item
+            draftItem = Item()
+            database.session.add(draftItem)
+            item_requirements = ItemRequirements()
 
-            # Build new sku
-            draftItem = {}
-            draftItem["uuid"] = str(uuid.uuid4())
-            draftItem["requirements"] = {}
+            draftItem.uuid = str(uuid.uuid4())
+            draftItem.requirements.append(item_requirements)
             # Preserve primary icon if exists
-            draftItem["primary_icon"] = jamla["items"][index]["primary_icon"]
+            draftItem.primary_icon = item.primary_icon
 
-            draftItem["title"] = getItem(
+            draftItem.title = getItem(
                 form.title.data, index, default=""
             ).strip()
 
-            draftItem["sku"] = draftItem["title"].replace(" ", "").strip()
-
-            draftItem["requirements"]["subscription"] = bool(
+            item_requirements.subscription = bool(
                 getItem(form.subscription.data, index)
             )
             if getItem(form.monthly_price.data, index, default=0) is None:
@@ -202,14 +198,13 @@ def edit_jamla():
                 monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
             draftItem["monthly_price"] = monthly_price
 
-            draftItem["requirements"]["instant_payment"] = bool(
+            item_requirements.instant_payment = bool(
                 getItem(form.instant_payment.data, index)
             )
-            draftItem["requirements"]["note_to_seller_required"] = bool(
+            item_requirements.note_to_seller_required = bool(
                 getItem(form.note_to_seller_required.data, index)
             )
-
-            draftItem["requirements"]["note_to_buyer_message"] = str(getItem(
+            item_requirements.note_to_buyer_message = str(getItem(
                 form.note_to_buyer_message, index, default=""
             ).data)
 
@@ -218,7 +213,7 @@ def edit_jamla():
             except ValueError:
                 days_before_first_charge = 0
 
-            draftItem["days_before_first_charge"] = days_before_first_charge
+            draftItem.days_before_first_charge = days_before_first_charge
 
             if getItem(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
@@ -226,9 +221,14 @@ def edit_jamla():
                 sell_price = int(getItem(form.sell_price.data, index, default=0) * 100)
             draftItem["sell_price"] = sell_price
 
-            draftItem["selling_points"] = getItem(
+            draftItem.sell_price = sell_price
+
+            points = getItem(
                 form.selling_points.data, index, default=""
             )
+            for point in points:
+                draftItem.selling_points.append(ItemSellingPoints(point=point))
+
             # Primary icon image storage
             f = getItem(form.image.data, index)
             if f:
@@ -241,68 +241,53 @@ def edit_jamla():
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
                 symlink(img_src, link, overwrite=True)
                 src = url_for("static", filename=filename)
-                draftItem["primary_icon"] = {"src": src, "type": ""}
-            # Add new sku to items
-            jamla["items"].append(draftItem)
-            fp = open(current_app.config["JAMLA_PATH"], "w")
-            yaml.safe_dump(jamla, fp, default_flow_style=False)
+                draftItem.primary_icon = src
+        database.session.commit() # Save
         flash("Item(s) updated.")
-        # Trigger a reload by touching the wsgi file.
-        # Which file we need to touch depends on the wsgi config
-        # e.g. on uwsgi to set it to subscribie.wsgi on uwsgi we pass:
-        # uwsgi --http :9090 --workers 2 --wsgi-file subscribie.wsgi \
-        #  --touch-chain-reload subscribie.wsgi
-        # To uwsgi. The `--touch-chain-reload` option tells uwsgi to perform
-        # a graceful reload. "When triggered, it will restart one worker at 
-        # time, and the following worker is not reloaded until the previous one
-        # is ready to accept new requests. We must use more than one worker for
-        # this to work. See:
-        # https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#chain-reloading-lazy-apps
-        wsgiFile = os.path.abspath(''.join([os.getcwd(), '/subscribie.wsgi']))
-        p = Path(wsgiFile)
-        p.touch(exist_ok=True) # Triggers the graceful reload
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/edit_jamla.html", jamla=jamla, form=form)
+    return render_template("admin/edit.html", items=items, form=form)
 
-
-#    return render_template('formarraybasic/index.html')
 
 
 @admin_theme.route("/add", methods=["GET", "POST"])
 @login_required
-def add_jamla_item():
+def add_item():
     form = ItemsForm()
-    jamla = get_jamla()
     if form.validate_on_submit():
-        draftItem = {}
-        draftItem["uuid"] = str(uuid.uuid4())
-        draftItem["requirements"] = {}
-        draftItem["primary_icon"] = {"src": "", "type": ""}
-        draftItem["title"] = form.title.data[0].strip()
-        draftItem["requirements"]["subscription"] = bool(form.subscription.data[0])
-        draftItem["requirements"]["note_to_seller_required"] = bool(form.note_to_seller_required.data[0])
-        draftItem["requirements"]["note_to_buyer_message"] = str(form.note_to_buyer_message.data[0])
+        draftItem = Item()
+        database.session.add(draftItem)
+        item_requirements = ItemRequirements()
+        draftItem.requirements.append(item_requirements)
+
+        draftItem.uuid = str(uuid.uuid4())
+        draftItem.title = form.title.data[0].strip()
+        item_requirements.subscription = bool(form.subscription.data[0])
+        item_requirements.note_to_seller_required = bool(form.note_to_seller_required.data[0])
+        item_requirements.note_to_buyer_message = str(form.note_to_buyer_message.data[0])
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
         except ValueError:
             days_before_first_charge = 0
 
-        draftItem["days_before_first_charge"] = days_before_first_charge
+        draftItem.days_before_first_charge = days_before_first_charge
 
         if form.monthly_price.data[0] is None:
-            draftItem["monthly_price"] = False
+            draftItem.monthly_price = 0
         else:
-            draftItem["monthly_price"] = int(form.monthly_price.data[0]) * 100
-        draftItem["requirements"]["instant_payment"] = bool(
+            draftItem.monthly_price = int(form.monthly_price.data[0]) * 100
+        item_requirements.instant_payment = bool(
             form.instant_payment.data[0]
         )
         if form.sell_price.data[0] is None:
-            draftItem["sell_price"] = False
+            draftItem.sell_price = 0
         else:
-            draftItem["sell_price"] = int(form.sell_price.data[0]) * 100
-        draftItem["selling_points"] = form.selling_points.data[0]
-        # Create SKU
-        draftItem["sku"] = form.title.data[0].replace(" ", "").strip()
+            draftItem.sell_price = int(form.sell_price.data[0]) * 100
+
+        points = form.selling_points.data[0]
+
+        for point in points:
+            draftItem.selling_points.append(ItemSellingPoints(point=point))
+
         # Primary icon image storage
         f = form.image.data[0]
         if f:
@@ -313,86 +298,69 @@ def add_jamla_item():
             link = "".join([current_app.config["STATIC_FOLDER"], filename])
             os.symlink(img_src, link)
             src = url_for("static", filename=filename)
-            draftItem["primary_icon"] = {"src": src, "type": ""}
-        jamla["items"].append(draftItem)
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
+            draftItem.primary_icon = src
+        database.session.commit()
         flash("Item added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_jamla_item.html", jamla=jamla, form=form)
+    return render_template("admin/add_item.html", form=form)
 
 
 @admin_theme.route("/delete", methods=["GET"])
 @login_required
-def delete_jamla_item():
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
-    return render_template("admin/delete_jamla_item_choose.html", jamla=jamla)
+def delete_item():
+    items = Item.query.filter_by(archived=0).all()
+    return render_template("admin/delete_item_choose.html", items=items)
 
 
-@admin_theme.route("/delete/<sku>", methods=["GET", "POST"])
+@admin_theme.route("/delete/<uuid>", methods=["GET", "POST"])
 @login_required
-def delete_item_by_sku(sku):
+def delete_item_by_uuid(uuid):
     """Archive (dont actually delete) an item"""
-    jamla = get_jamla()
-    # Filter archived items                                                      
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
+    item = Item.query.filter_by(uuid=uuid).first()
 
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=get_jamla())
-    itemIndex = jamlaApp.sku_get_index(sku)
     if "confirm" in request.args:
         confirm = False
         return render_template(
-            "admin/delete_jamla_item_choose.html",
-            jamla=jamla,
-            itemSKU=sku,
+            "admin/delete_item_choose.html",
             confirm=False,
+            item=item
         )
-    if itemIndex is not False:
-        # Perform removal
-        jamla["items"][itemIndex]['archived'] = True
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
+    if uuid is not False:
+        # Perform archive
+        item.archived = True
+        database.session.commit()
 
     flash("Item deleted.")
-    return render_template("admin/delete_jamla_item_choose.html", jamla=jamla)
+    items = Item.query.filter_by(archived=0).all()
+    return render_template("admin/delete_item_choose.html", items=items)
 
 
 @admin_theme.route("/connect/gocardless/manually", methods=["GET", "POST"])
 @login_required
 def connect_gocardless_manually():
+    payment_provider = PaymentProvider.query.first()        
     form = GocardlessConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    if jamlaApp.has_connected("gocardless"):
+    if payment_provider.gocardless_active:
         gocardless_connected = True
     else:
         gocardless_connected = False
     if form.validate_on_submit():
         access_token = form.data["access_token"]
-        jamla["payment_providers"]["gocardless"]["access_token"] = access_token
+        payment_provider.gocardless_access_token = access_token
         # Check if live or test api key was given
         if "live" in access_token:
-            jamla["payment_providers"]["gocardless"]["environment"] = "live"
+            payment_provider.gocardless_environment = "live"
         else:
-            jamla["payment_providers"]["gocardless"]["environment"] = "sandbox"
+            payment_provider.gocardless_environment = "sandbox"
+        
+        payment_provider.gocardless_active = True
+        database.session.commit() # save changes
 
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        # Overwrite jamla file with gocardless access_token
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        # Set users current session to store access_token for instant access
-        session["gocardless_access_token"] = access_token
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
             "admin/connect_gocardless_manually.html",
             form=form,
-            jamla=jamla,
             gocardless_connected=gocardless_connected,
         )
 
@@ -419,65 +387,28 @@ def connect_gocardless_start():
     return flask.redirect(authorize_url, code=302)
 
 
-@admin_theme.route("/connect/gocardless/oauth/complete", methods=["GET"])
-@login_required
-def gocardless_oauth_complete():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    flow = OAuth2WebServerFlow(
-        client_id=current_app.config["GOCARDLESS_CLIENT_ID"],
-        client_secret=current_app.config["GOCARDLESS_CLIENT_SECRET"],
-        scope="read_write",
-        # You'll need to use exactly the same redirect URI as in the last
-        # step
-        redirect_uri="http://127.0.0.1:5000/connect/gocardless/oauth/complete",
-        auth_uri="https://connect-sandbox.gocardless.com/oauth/authorize",
-        token_uri="https://connect-sandbox.gocardless.com/oauth/access_token",
-        initial_view="signup",
-    )
-    access_token = flow.step2_exchange(request.args.get("code"))
-
-    jamla["payment_providers"]["gocardless"]["access_token"] = access_token.access_token
-    fp = open(current_app.config["JAMLA_PATH"], "w")
-    # Overwrite jamla file with gocardless access_token
-    yaml.safe_dump(jamla, fp, default_flow_style=False)
-    # Set users current session to store access_token for instant access
-    session["gocardless_access_token"] = access_token.access_token
-    session["gocardless_organisation_id"] = access_token.token_response[
-        "organisation_id"
-    ]
-
-    return redirect(url_for("admin.dashboard"))
-
-
 @admin_theme.route("/connect/stripe/manually", methods=["GET", "POST"])
 @login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    if jamlaApp.has_connected("stripe"):
+    payment_provider = PaymentProvider.query.first()        
+
+    if payment_provider.stripe_active:
         stripe_connected = True
     else:
         stripe_connected = False
     if form.validate_on_submit():
         publishable_key = form.data["publishable_key"].strip()
         secret_key = form.data["secret_key"].strip()
-        jamla["payment_providers"]["stripe"]["publishable_key"] = publishable_key
-        jamla["payment_providers"]["stripe"]["secret_key"] = secret_key
-        # Overwrite jamla file with gocardless access_token
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["stripe_publishable_key"] = publishable_key
-        # Set stripe public key JS
+        payment_provider.stripe_publishable_key = publishable_key
+        payment_provider.stripe_secret_key = secret_key
+        payment_provider.stripe_active = True
+        database.session.commit() # Save changes
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
             "admin/connect_stripe_manually.html",
             form=form,
-            jamla=jamla,
             stripe_connected=stripe_connected,
         )
 
@@ -485,117 +416,44 @@ def connect_stripe_manually():
 @admin_theme.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])
 @login_required
 def connect_google_tag_manager_manually():
+    integration = Integration.query.first()
     form = GoogleTagManagerConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
     if form.validate_on_submit():
         container_id = form.data["container_id"]
-        jamla["integrations"]["google_tag_manager"]["container_id"] = container_id
-        jamla["integrations"]["google_tag_manager"]["active"] = True
-        # Overwrite jamla file with google tag manager container_id
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["google_tag_manager_container_id"] = container_id
+        integration.google_tag_manager_container_id = container_id
+        integration.google_tag_manager_active = True
+        database.session.commit()
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
-            "connect_google_tag_manager_manually.html", form=form, jamla=jamla
+            "admin/connect_google_tag_manager_manually.html", form=form,
+            integration=integration
         )
 
 
 @admin_theme.route("/connect/tawk/manually", methods=["GET", "POST"])
 @login_required
 def connect_tawk_manually():
+    integration = Integration.query.first()
     form = TawkConnectForm()
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
     if form.validate_on_submit():
         property_id = form.data["property_id"]
-        jamla["integrations"]["tawk"]["property_id"] = property_id
-        jamla["integrations"]["tawk"]["active"] = True
-        # Overwrite jamla file with google tag manager container_id
-        fp = open(current_app.config["JAMLA_PATH"], "w")
-        yaml.safe_dump(jamla, fp, default_flow_style=False)
-        session["tawk_property_id"] = property_id
+        integration.tawk_property_id = property_id
+        integration.tawk_active = True
+        database.session.commit()
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
-            "admin/connect_tawk_manually.html", form=form, jamla=jamla
+            "admin/connect_tawk_manually.html", form=form, integration=integration
         )
-
-
-@admin_theme.route("/jamla", methods=["GET"])
-@admin_theme.route("/api/jamla", methods=["GET"])
-@login_required
-def fetch_jamla():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    # Strip out private values TODO don't store them here, move to .env?
-    jamla["payment_providers"] = None
-    resp = dict(
-        items=jamla["items"],
-        company=jamla["company"],
-        name="fred",
-        email="me@example.com",
-    )
-    return jsonify(resp)
-
-
-@admin_theme.route("/push-payments", methods=["GET"])
-def push_payments():
-    """                                                                          
-    Push payments to Penguin.                                                    
-    Assume a gocardless endpoint for now.                                        
-    """
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    gocclient = gocardless_pro.Client(
-        access_token=get_secret("gocardless", "access_token"),
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
-    )
-    # Loop customers
-    for payments in gocclient.payments.list().records:
-        ##Loop each payment within payment response body
-        response = payments.api_response.body
-        for payment in response["payments"]:
-            logging.info(payment)
-            logging.info("The payment status is: %s", payment["status"])
-            logging.info("Creating transaction to penguin")
-            title = "a transaction title"
-            try:
-                payout_id = payment["links"]["payout"]
-            except:
-                payout_id = None
-            fields = {
-                "title": title,
-                "field_gocardless_payment_id": payment["id"],
-                "field_gocardless_payout_id": payout_id,
-                "field_gocardless_amount": payment["amount"],
-                "field_gocardless_payment_status": payment["status"],
-                "field_mandate_id": payment["links"]["mandate"],
-                "field_gocardless_subscription_id": payment["links"]["subscription"],
-                "field_gocardless_amount_refunded": payment["amount_refunded"],
-                "field_gocardless_charge_date": payment["charge_date"],
-                "field_gocardless_created_at": payment["created_at"],
-                "field_gocardless_creditor_id": payment["links"]["creditor"],
-            }
-            Rest.post(entity="transaction", fields=fields)
-
-    return "Payments have been pushed"
 
 
 @admin_theme.route("/retry-payment/<payment_id>", methods=["GET"])
 def retry_payment(payment_id):
-    jamla = get_jamla()
-    jamlaapp = jamla()
-    jamlaapp.load(jamla=jamla)
+    payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
-        access_token=get_secret("gocardless", "access_token"),
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
     )
     r = gocclient.payments.retry(payment_id)
 
@@ -608,11 +466,10 @@ def refresh_ssot(resource):
   """Refresh SSOT to fetch newest customers (aka partners) and transactions
   resource is either "customers" or "transactions"
   """
-  jamla = get_jamla()
-  from SSOT import SSOT
+  payment_provider = PaymentProvider.query.first()
+  access_token = payment_provider.gocardless_access_token
+  gc_environment = payment_provider.gocardless_environment
 
-  access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-  gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
   target_gateways = ({"name": "GoCardless", 
                                       "construct": {
                                         "access_token":access_token,
@@ -646,11 +503,11 @@ def refresh_ssot(resource):
 
 def get_transactions():
   """Return tuple list of transactions from SSOT"""
-  jamla = get_jamla()
   from SSOT import SSOT
+  payment_provider = PaymentProvider.query.first()
+  access_token = payment_provider.gocardless_access_token
+  gc_environment = payment_provider.gocardless_environment
 
-  access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-  gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
   target_gateways = ({"name": "GoCardless", 
                                       "construct": {
                                         "access_token":access_token,
@@ -716,11 +573,10 @@ def utility_get_subscription_from_gocardless_subscription_id():
 
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
-
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
-        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token = payment_provider.gocardless_access_token,
+        environment= payment_provider.gocardless_environment
     )
 
     try:
@@ -738,63 +594,44 @@ def subscription_status():
     return dict(subscription_status=formatted_status)
 
 
-@admin_theme.context_processor
-def utility_jamla():
-    def show(sku_uuid):
-        jamla = get_jamla()
-        jamlaApp = Jamla()
-        jamlaApp.load(jamla=jamla)
-        try:
-            item = jamlaApp.sku_get_by_uuid(sku_uuid)
-        except Exception:
-            return None
-        return item
-    return dict(jamla_get=show)
-
 @admin_theme.route("/subscribers")
 @login_required
 def subscribers():
     page = request.args.get('page', 1, type=int)
 
     people = database.session.query(Person).order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
-    jamla = get_jamla()
 
     return render_template(
-            'admin/subscribers.html', people=people,
-            jamla=jamla
+            'admin/subscribers.html', people=people
             )
 
 @admin_theme.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
-        access_token=jamla["payment_providers"]["gocardless"]["access_token"],
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token=payment_provider.gocardless_access_token,
+        environment=payment_provider.gocardless_environment,
     )
 
     payments = client.payments.list().records
 
     return render_template(
             'admin/upcoming_payments.html', payments=payments,
-            jamla=jamla,
             datetime=datetime
             )
 
 @admin_theme.route("/customers", methods=["GET"])
 @login_required
 def customers():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     from SSOT import SSOT
     
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-
     target_gateways = ()
 
-    if jamlaApp.has_connected("gocardless"):
-        access_token = jamla["payment_providers"]["gocardless"]["access_token"]
-        gc_environment = jamla["payment_providers"]["gocardless"]["environment"]
+    if payment_provider.gocardless_active:
+        access_token = payment_provider.gocardless_access_token,
+        gc_environment = payment_provider.gocardless_environment,
         target_gateways = target_gateways + ({"name": "GoCardless", 
                                               "construct": {
                                                 "access_token":access_token,
@@ -802,8 +639,8 @@ def customers():
                                                 }
                                             },)
 
-    if jamlaApp.has_connected("stripe"):
-        stripe_token = jamla["payment_providers"]["stripe"]["secret_key"]
+    if payment_provider.stripe_active:
+        stripe_token = payment_provider.stripe_secret_key
         target_gateways = target_gateways + ({"name": "Stripe", "construct": stripe_token},)
 
     try:
@@ -821,16 +658,16 @@ def customers():
             return redirect(url_for("admin.connect_gocardless_manually"))
         else:
             raise
-    return render_template("admin/customers.html", jamla=jamla, partners=partners)
+    return render_template("admin/customers.html", partners=partners)
 
 
 @admin_theme.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-    jamla = get_jamla()
+    payment_provider = PaymentProvider.query.first()        
     from SSOT import SSOT
 
-    access_token = jamla["payment_providers"]["gocardless"]["access_token"]
+    access_token = payment_provider.gocardless_access_token,
     target_gateways = ({"name": "GoCardless", "construct": access_token},)
     try:
         SSOT = SSOT(target_gateways)
@@ -848,15 +685,14 @@ def transactions():
         else:
             raise
     return render_template(
-        "admin/transactions.html", jamla=jamla, transactions=transactions
+        "admin/transactions.html", transactions=transactions
     )
 @admin_theme.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
   """Notes to seller given during subscription creation"""
   subscriptions = Subscription.query.order_by(desc('created_at')).all()
-  jamla = get_jamla()
-  return render_template("admin/order-notes.html", jamla=jamla, 
+  return render_template("admin/order-notes.html", 
                          subscriptions=subscriptions)
 
 

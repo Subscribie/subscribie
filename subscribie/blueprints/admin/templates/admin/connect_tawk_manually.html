@@ -33,13 +33,13 @@
       <div class="column">
         <h2 class="title is-3">Connect Tawk Chat to your shop</h2>
         <div class="notification 
-          {% if jamla['integrations']['tawk']['property_id'] %}
+          {% if integration.tawk_property_id %}
 		is-success
 	  {% else %}
 		is-light
 	  {% endif %}">
           <p><b>Status: </b>
-          {% if jamla['integrations']['tawk']['property_id'] %}
+          {% if integration.tawk_property_id %}
            Tawk Chat is already connected!
 	  {% else %}Tawk Chat isn't yet configured, use the form below.
           {% endif %}
@@ -73,7 +73,7 @@
               </div>
             </div>
             <button type="submit" class="button is-fullwidth is-info">
-            {% if jamla['integrations']['tawk']['property_id'] %}
+            {% if integration.tawk_property_id %}
             Reconnect
 	    {% else %}
             Connect

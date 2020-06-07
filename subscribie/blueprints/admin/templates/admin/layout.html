@@ -1,44 +1,44 @@
 <!doctype html>
 <html lang=en>
 <head>
-<title>{% block title %}{% endblock %} | {{ jamla['company']['name'] }}</title>
+<title>{% block title %}{% endblock %} | {{ company['name'] }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 
-{% if jamla['integrations']['google_tag_manager']['container_id'] 
-   and jamla['integrations']['google_tag_manager']['active']
-%}
-    <!-- Google Tag Manager -->
-    <script>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+{% if integration.google_tag_manager_container_id                                
+   and integration.google_tag_manager_active                                     
+%}                                                                               
+    <!-- Google Tag Manager -->                                                  
+    <script>                                                                     
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':                   
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],    
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=        
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer',
-    '{{ jamla['integrations']['google_tag_manager']['container_id'] }}');
-    </script>
-    <!-- End Google Tag Manager --> 
+    })(window,document,'script','dataLayer',                                     
+    '{{ integration.google_tag_manager_container_id }}');                        
+    </script>                                                                    
+    <!-- End Google Tag Manager -->                                              
 {% endif %}
 
-{% if jamla['integrations']['tawk']['property_id'] 
-   and jamla['integrations']['tawk']['active']
-%}
-    <!-- Tawk Chat -->
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-        var
+{% if integration.tawk_property_id                                               
+   and integration.tawk_active                                                   
+%}                                                                               
+    <!-- Tawk Chat -->                                                           
+    <script type="text/javascript">                                              
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();                    
+        (function(){                                                             
+        var                                                                      
         s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/{{ jamla['integrations']['tawk']['property_id'] }}/default';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-        })();
-        </script>
-    <!-- End Tawk Chat -->
+        s1.async=true;                                                           
+        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
+        s1.charset='UTF-8';                                                      
+        s1.setAttribute('crossorigin','*');                                      
+        s0.parentNode.insertBefore(s1,s0);                                       
+        })();                                                                    
+        </script>                                                                
+    <!-- End Tawk Chat -->                                                       
 {% endif %}
 
 <meta name="theme-color" content="#1e88e5">
@@ -52,10 +52,10 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          {% if jamla['company']['logo'] %}
-            <img src="/static/{{ jamla['company']['logo'] }}" alt="{{ jamla['company']['name'] }}">
+          {% if company['logo'] %}
+            <img src="/static/{{ company['logo'] }}" alt="{{ company['name'] }}">
           {% else %}
-            {{ jamla['company']['name'] }}
+            {{ company['name'] }}
           {% endif %}
         </a>
       </div>
@@ -98,7 +98,7 @@
     <div class="container">
       <div class="content has-text-centered">
         <p>
-          By <a href="/">{{ jamla['company']['name'] }}</a>.
+          By <a href="/">{{ company['name'] }}</a>.
           <br />
         </p>
         <small>Made possible with <a href="https://subscriptionwebsitebuilder.co.uk"

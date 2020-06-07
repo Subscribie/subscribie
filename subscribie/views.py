@@ -5,8 +5,8 @@ import datetime
 from datetime import date
 import sqlite3
 from .signals import journey_complete
-from subscribie import Jamla, session, CustomerForm, gocardless_pro, current_app
-from subscribie.db import get_jamla, get_db
+from subscribie import session, CustomerForm, gocardless_pro, current_app
+from subscribie.db import get_db
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -14,12 +14,19 @@ from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
-from .models import database, User, Person, Subscription, SubscriptionNote
+from .models import ( database, User, Person, Subscription, SubscriptionNote,
+                    Company, Item, Integration, PaymentProvider)
 
 from flask_mail import Mail, Message
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
+@bp.app_context_processor
+def inject_template_globals():
+    company = Company.query.first()
+    integration = Integration.query.first()
+    items = Item.query.filter_by(archived=0)
+    return dict(company=company, integration=integration, items=items)
 
 def redirect_url(default='index'):
     return request.args.get('next') or \
@@ -27,8 +34,7 @@ def redirect_url(default='index'):
         url_for('index')
 
 def index():
-    jamla = get_jamla()
-    return render_template("index.html", jamla=jamla)
+    return render_template("index.html")
 
 @bp.route("/reload")
 def reload_app():
@@ -48,31 +54,25 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    jamla = get_jamla()
-    # Filter archived items
-    jamlaApp = Jamla()
-    jamla = jamlaApp.filter_archived_items(jamla)
-
-    return render_template("choose.html", jamla=jamla, pages=jamla['pages'])
+    items = Item.query.filter_by(archived=0).all()
+    return render_template("choose.html",
+                            items=items)
 
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    jamla = jamlaApp.filter_archived_items(jamla)
     package = request.args.get("plan", "not set")
     session["package"] = package
-    session["item"] = jamlaApp.sku_get_by_uuid(package)
+    item = Item.query.filter_by(uuid=request.args.get('plan')).first()
+    session["item"] = item.uuid
     form = CustomerForm()
-    return render_template("new_customer.html", jamla=jamla, form=form, package=package,
-                         item=session["item"],
-                         pages=jamla['pages'])
+    return render_template("new_customer.html", form=form, package=package,
+                         item=item)
 
 
 @bp.route("/new_customer", methods=["POST"])
 def store_customer():
+    item = Item.query.filter_by(uuid=session["item"]).first()
     form = CustomerForm()
     if form.validate():
         given_name = form.data["given_name"]
@@ -88,12 +88,6 @@ def store_customer():
         session["email"] = email
 
         # Store plan in session
-        jamlaApp = Jamla()
-        jamla = get_jamla()
-        jamlaApp.load(jamla=jamla)
-        if jamlaApp.sku_uuid_exists(request.args.get("plan")):
-            wants = request.args.get("plan")
-            session["plan"] = wants
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
                         postal_code=postcode, email=email, mobile=mobile)
@@ -102,18 +96,17 @@ def store_customer():
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
-        if jamlaApp.requires_instantpayment(session["package"]):
+        if item.requirements[0].instant_payment:
             return redirect(
                 url_for(
                     "views.up_front",
                     _scheme="https",
                     _external=True,
                     sid=sid,
-                    package=wants,
                     fname=given_name,
                 )
             )
-        if jamlaApp.requires_subscription(session["package"]):
+        if item.requirements[0].subscription:
             # Check if in iframe
             if form.data["is_iframe"] == "True":
                 insideIframe = True
@@ -125,47 +118,37 @@ def store_customer():
         return "Oops, there was an error processing that form, please go back and try again."
 
 
-@bp.route("/up_front/<sid>/<package>/<fname>", methods=["GET"])
-def up_front(sid, package, fname):
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
-    selling_points = jamlaApp.get_selling_points(package)
-    upfront_cost = jamlaApp.sku_get_upfront_cost(package)
-    monthly_cost = jamlaApp.sku_get_monthly_price(package)
-    stripe_pub_key = jamla["payment_providers"]["stripe"]["publishable_key"]
-    session["upfront_cost"] = upfront_cost
-    session["monthly_cost"] = monthly_cost
-
+@bp.route("/up_front/<sid>/<fname>", methods=["GET"])
+def up_front(sid, fname):
+    item = Item.query.filter_by(uuid=session["item"]).first()
+    payment_provider = PaymentProvider.query.first()
+    stripe_pub_key = payment_provider.stripe_publishable_key
+    company = Company.query.first()
     return render_template(
         "up_front_payment.html",
-        jamla=jamla,
-        item=session['item'],
+        company=company,
+        item=item,
         fname=fname,
-        selling_points=selling_points,
-        upfront_cost=upfront_cost,
-        monthly_cost=monthly_cost,
         sid=sid,
-        stripe_pub_key=stripe_pub_key,
-        pages=jamla['pages']
+        stripe_pub_key=stripe_pub_key
     )
 
 
 @bp.route("/up_front", methods=["POST"])
 def charge_up_front():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
+    item = Item.query.filter_by(uuid=session["item"]).first()
     charge = {}
-    charge["amount"] = session["upfront_cost"]
+    charge["amount"] = item.sell_price
     charge["currency"] = "GBP"
 
     sid = session["sid"]
+    payment_provider = PaymentProvider.query.first()
+    stripe_secret_key = payment_provider.stripe_secret_key
 
     db = get_db()
     res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)).fetchone()
     try:
-        stripe.api_key = jamla["payment_providers"]["stripe"]["secret_key"]
+        stripe.api_key = stripe_secret_key
         customer = stripe.Customer.create(
             email=res["email"], source=request.form["stripeToken"]
         )
@@ -178,7 +161,7 @@ def charge_up_front():
         )
     except stripe.error.AuthenticationError as e:
         return str(e)
-    if jamlaApp.requires_subscription(session["package"]):
+    if item.requirements[0].subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
@@ -186,11 +169,11 @@ def charge_up_front():
 
 @bp.route("/establish_mandate", methods=["GET"])
 def establish_mandate():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
+    company = Company.query.first()
+    item = Item.query.filter_by(uuid=session["item"]).first()
+    payment_provider = PaymentProvider.query.first()
 
-    if jamlaApp.has_connected("gocardless") is False:
+    if payment_provider.gocardless_active is False:
         dashboard_url = url_for("admin.dashboard")
         return """<h1>Shop not set-up yet</h1>
             The shop owner first needs to login to their
@@ -208,12 +191,11 @@ def establish_mandate():
     logger.info("Person lookup: %s", res)
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
-        access_token=jamlaApp.get_secret("gocardless", "access_token"),
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token=payment_provider.gocardless_access_token,
+        environment=payment_provider.gocardless_environment,
     )
 
-    planName = jamlaApp.sku_get_by_uuid(session["package"])["title"]
-    description = " ".join([jamla["company"]["name"], planName])[0:100]
+    description = " ".join([company.name, item.title])[0:100]
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
@@ -239,8 +221,7 @@ def establish_mandate():
     if request.args.get('inside_iframe', 'False') == "True":
         inside_iframe = True
         return render_template("iframe_new_window_redirect.html", 
-                                redirect_url=redirect_flow.redirect_url,
-                                jamla=jamla)
+                                redirect_url=redirect_flow.redirect_url)
         return '<a href="{}" target="_blank">Continue</a>'.format(redirect_flow.redirect_url)
     else:
         return redirect(redirect_flow.redirect_url)
@@ -248,19 +229,18 @@ def establish_mandate():
 
 @bp.route("/complete_mandate", methods=["GET"])
 def on_complete_mandate():
-    jamla = get_jamla()
-    jamlaApp = Jamla()
-    jamlaApp.load(jamla=jamla)
+    item = Item.query.filter_by(uuid=session["item"]).first()
+    payment_provider = PaymentProvider.query.first()
     redirect_flow_id = request.args.get("redirect_flow_id")
     logger.info("Recieved flow ID: %s ", redirect_flow_id)
 
     logger.info(
         "Setting up client environment as: %s",
-        jamla["payment_providers"]["gocardless"]["environment"],
+        payment_provider.gocardless_environment,
     )
     gocclient = gocardless_pro.Client(
-        access_token=jamlaApp.get_secret("gocardless", "access_token"),
-        environment=jamla["payment_providers"]["gocardless"]["environment"],
+        access_token=payment_provider.gocardless_access_token,
+        environment=payment_provider.gocardless_environment,
     )
     try:
         redirect_flow = gocclient.redirect_flows.complete(
@@ -281,19 +261,18 @@ def on_complete_mandate():
 
         logger.info(
             "Creating subscription with amount: %s",
-            str(jamlaApp.sku_get_monthly_price(session["plan"])),
+            str(item.monthly_price),
         )
         logger.info(
             "Creating subscription with name: %s",
-            jamlaApp.sku_get_title(session["plan"]),
+            item.title,
         )
-        logger.info("Plan session is set to: %s", str(session["plan"]))
+        logger.info("Item session is set to: %s", str(session["item"]))
         logger.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
 
         # If days_before_first_charge is set, apply start_date adjustment
-        itemIndex = jamlaApp.sku_get_index(session['plan'])
         try:
-            days_before_first_charge = jamla['items'][itemIndex]['days_before_first_charge']
+            days_before_first_charge = item.days_before_first_charge
             if days_before_first_charge == 0 or days_before_first_charge == '':
                 start_date = None
             else:
@@ -316,9 +295,9 @@ def on_complete_mandate():
         # Submit to GoCardless as subscription
         gc_subscription = gocclient.subscriptions.create(
             params={
-                "amount": int(jamlaApp.sku_get_monthly_price(session["plan"])),
+                "amount": item.monthly_price,
                 "currency": "GBP",
-                "name": jamlaApp.sku_get_title(session["plan"]),
+                "name": item.title,
                 "interval_unit": "monthly",
                 "metadata": {"subscribie_subscription_uuid": subscription.uuid},
                 "links": {"mandate": session["gocardless_mandate_id"]},
@@ -350,10 +329,11 @@ def on_complete_mandate():
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
-    jamla = get_jamla()
+    company = Company.query.first()
 
     # Store note to seller if in session
-    if session.get('note_to_seller', False) is not False:
+    if session.get('note_to_seller', False) is not False and \
+      session.get('subscription_id', False) != False:
       note = SubscriptionNote(note=session["note_to_seller"],
                              subscription_id=session["subscription_id"])
       database.session.add(note)
@@ -365,18 +345,17 @@ def thankyou():
 
     first_charge_date = session.get('first_charge_date', 'unknown')
     first_charge_amount = session.get('first_charge_amount', 'unknown')
-
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
       html = template.render(first_name='John', 
-                    company_name=jamla["company"]["name"],
+                    company_name=company.name,
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
 
     try:
         mail = Mail(current_app)
         msg = Message()
-        msg.subject = jamla["company"]["name"] + " " + "Subscription Confirmation"
+        msg.subject = company.name + " " + "Subscription Confirmation"
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
         msg.reply_to = User.query.first().email
@@ -393,4 +372,4 @@ def thankyou():
         logger.warning("No mandate for this transaction")
         logger.warning("Maybe OK as not all items require a direct debit mandate")
     finally:
-        return render_template("thankyou.html", jamla=jamla, pages=jamla['pages'])
+        return render_template("thankyou.html")

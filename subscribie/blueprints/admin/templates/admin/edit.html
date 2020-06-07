@@ -25,66 +25,63 @@
     {{ form.csrf_token }}
 <fieldset>
 <legend>Shop details</legend>
-    {{ render_field(form.company_name, value=jamla['company']['name'] ) }}
-    {{ render_field(form.slogan, value=jamla['company']['slogan'] ) }}
-    {{ render_field(form.email, type="email", value=jamla['users'][0]) }}
+    {{ render_field(form.company_name, value=company['name'] ) }}
+    {{ render_field(form.slogan, value=company['slogan'] ) }}
+    <input name="email" type="hidden" value='email@example.com' />
 </fieldset>
 
 <fieldset style="padding:5px">
 <legend>Items</legend>
-    {% for item in jamla['items'] %}
+    {% for item in items %}
     <fieldset>
     <input type="hidden" name="itemIndex" value="{{ loop.index0 }}" />
+    <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ item.uuid }}" />
 	<dl>
       <dt><label>Title:</label></dt>
-      <dd><input name="title-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['title'] }}" /></dd>
+      <dd><input name="title-{{ loop.index0 }}" value="{{ item.title }}" /></dd>
 
       <dt><label>Primary Icon:</label></dt>
       <dd><input type="file" name="image-{{ loop.index0 }}" /></dd>
-      {% if jamla['items'][loop.index0]['primary_icon'] %}
-          <img src="{{ jamla['items'][loop.index0]['primary_icon']['src'] }}" style="width:50%;display:block; margin:auto"/>
+      {% if item.primary_icon %}
+          <img src="{{ item.primary_icon }}" style="width:50%;display:block; margin:auto"/>
       {% endif %}
 
 	  <dt><label>Requires Monthly Price:</label></dt>
       <dd><input name="subscription-{{ loop.index0 }}" type="checkbox"
-          {% if
-            jamla['items'][loop.index0]['requirements']['subscription']|int %}
+          {% if item.requirements[0].subscription  %}
             checked
           {% endif %}
           />
       </dd>
 
 	  <dt><label>Monthly Price:</label></dt>
-      <dd><input name="monthly_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['monthly_price'] / 100 }}" /></dd>
+      <dd><input name="monthly_price-{{ loop.index0 }}" value="{{ item.monthly_price / 100 }}" /></dd>
 
     <dt><label>Cooling off period (days before first charge)</label></dt>
-      <dd><input name="days_before_first_charge-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['days_before_first_charge'] }}" type="number" /></dd>
+      <dd><input name="days_before_first_charge-{{ loop.index0 }}" value="{{ item.days_before_first_charge }}" type="number" /></dd>
 
 	  <dt><label>Requires Up-front Price:</label></dt>
       <dd><input name="instant_payment-{{ loop.index0 }}" type="checkbox"
-          {% if
-            jamla['items'][loop.index0]['requirements']['instant_payment']|int %}
+          {% if item.requirements[0].instant_payment  %}
             checked
           {% endif %}
           />
       </dd>
 
 	  <dt><label>Up-front Price:</label></dt>
-      <dd><input name="sell_price-{{ loop.index0 }}" value="{{ jamla['items'][loop.index0]['sell_price']/100 }}" /></dd>
+      <dd><input name="sell_price-{{ loop.index0 }}" value="{{ item.sell_price/100 }}" /></dd>
     </dl>
 
 	  <dt><label>Require note from customer: <em>For example, for personalisation</em></label></dt>
       <dd><input name="note_to_seller_required-{{ loop.index0 }}" type="checkbox"
-            {% if
-              jamla['items'][loop.index0]['requirements']['note_to_seller_required']|int %}
+            {% if item.requirements[0].note_to_seller_required %}
               checked
             {% endif %}
           />
       </dd>
       <dd>
           <p>Message shown to buyer. e.g. "Please provide alternative contact number"</p>
-          <textarea name="note_to_buyer_message-{{ loop.index0 }}">{{ 
-            jamla['items'][loop.index0]['requirements']['note_to_buyer_message'] }} 
+          <textarea name="note_to_buyer_message-{{ loop.index0 }}">{{ item.requirements[0].note_to_buyer_message }} 
           </textarea>
       </dd>
 
@@ -92,8 +89,8 @@
           <dt><legend>Selling Points:</legend></dt>
             {% set ns = namespace(count=0) %}
             {% set outer_loop = loop %}
-			{% for selling_point in jamla['items'][loop.index0]['selling_points'] %}
-				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point }}" /></dd>
+			{% for selling_point in item.selling_points %}
+				<dd><input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" /></dd>
                 {% set ns.count = ns.count + 1 %} 
 			{% endfor %}
         </dl>

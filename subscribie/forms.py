@@ -31,13 +31,14 @@ def strip_whitespace(value):
 
 
 class ItemsForm(StripWhitespaceForm):
+    email = TextField("Email", [validators.Email(), validators.DataRequired()])
     title = FieldList(StringField("Title", [validators.DataRequired()]), min_entries=1)
     company_name = TextField("Company Name")
     slogan = TextField("Slogan")
-    email = TextField("Email", [validators.Email(), validators.DataRequired()])
     instant_payment = FieldList(
         BooleanField("Up-Front Payment", default=False), min_entries=1
     )
+    uuid = FieldList(StringField(), min_entries=1)
     subscription = FieldList(BooleanField("Subscription", default=False), min_entries=1)
     note_to_seller_required = FieldList(BooleanField("Require note from customer", default=False), min_entries=1)
     # Allow seller to say what additional information they need

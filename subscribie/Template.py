@@ -1,4 +1,3 @@
-from .jamla import Jamla
 import jinja2
 import os
 import git
@@ -29,48 +28,44 @@ def load_theme(app):
       - /tmp/themes/themeTwo/static (for static assets such as images, css)
       - /tmp/themes/themeOne/themeTwo (for template files, such as layout.html)
     """
-    jamlaApp = Jamla()
-    jamla = jamlaApp.load(src=app.config["JAMLA_PATH"])
     p = Path()
     print("load_theme()")
-    print("JAMLA_PATH is: {}".format(app.config["JAMLA_PATH"]))
     print("TEMPLATE_BASE_DIR is: {}".format(app.config["TEMPLATE_BASE_DIR"]))
-    print("Theme name is: {}".format(jamla["theme"]["name"]))
     try:
         if p.joinpath(
-            app.config["TEMPLATE_BASE_DIR"], "theme-" + jamla["theme"]["name"]
+            app.config["TEMPLATE_BASE_DIR"], "theme-" + app.config["THEME_NAME"]
         ).exists():
             themepath = p.joinpath(
                 app.config["TEMPLATE_BASE_DIR"],
-                "theme-" + jamla["theme"]["name"],
-                jamla["theme"]["name"],
+                "theme-" + app.config["THEME_NAME"],
+                app.config["THEME_NAME"],
             )
             static_folder = themepath.joinpath("../", "static").resolve()
         else:
-            if "src" in jamla["theme"]:
+            if app.config["THEME_SRC"]:
                 # Attempt to load theme from src
                 try:
                     print("NOTICE: Importing theme")
                     dest = p.joinpath(
                         app.config["TEMPLATE_BASE_DIR"],
-                        "theme-" + jamla["theme"]["name"],
+                        "theme-" + app.config["THEME_NAME"],
                     )
-                    git.Repo.clone_from(jamla["theme"]["src"], dest)
+                    git.Repo.clone_from(app.config["THEME_SRC"], dest)
                 except git.exc.GitCommandError:
                     raise
                 themepath = p.joinpath(
                     app.config["TEMPLATE_BASE_DIR"],
-                    "theme-" + jamla["theme"]["name"],
-                    jamla["theme"]["name"],
+                    "theme-" + app.config["THEME_NAME"],
+                    app.config["THEME_NAME"],
                 )
                 static_folder = themepath.joinpath("../", "static").resolve()
-                # Update jamla path and template folder path
+                # Update theme path and template folder path
                 subprocess.call(
                     "subscribie \
                      setconfig \
                      --TEMPLATE_FOLDER {}\
                      --STATIC_FOLDER {}".format(
-                        str(themepath), str(static_folder)
+                        str(themepath), str(static_folder) + "/"
                     ),
                     shell=True,
                 )

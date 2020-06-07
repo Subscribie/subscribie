@@ -4,7 +4,6 @@ class DefaultConfig(object):
     ENV = "development"
     SECRET_KEY = "random string. e.g. echo -e 'from os import urandom\\nprint urandom(25)' | python"
     DB_FULL_PATH = "./data.db"
-    JAMLA_PATH = "./jamla.yaml"
     TEMPLATE_BASE_DIR = str(path.cwd().joinpath('themes'))
     TEMPLATE_FOLDER = "./themes/"
     STATIC_FOLDER = "./static/"

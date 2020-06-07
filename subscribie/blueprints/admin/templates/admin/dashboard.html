@@ -184,13 +184,13 @@
           <p>Chat with your potential customers live on your website!</p>
           <br />
           <a class="button is-fullwidth
-          {% if jamla['integrations']['tawk']['property_id'] %}
+          {% if integration.tawk_property_id %}
             is-success
           {% else %}
             is-info
           {% endif %}
           " href="{{ url_for('admin.connect_tawk_manually') }}">
-            {% if jamla['integrations']['tawk']['property_id'] %}
+            {% if integration.tawk_property_id %}
                 Active! Click to reconnect Tawk
             {% else %}
                Connect to Tawk
@@ -222,7 +222,7 @@
           </p>
           <br />
           <a class="button is-fullwidth
-          {% if jamla['integrations']['google_tag_manager']['container_id'] %}
+          {% if integration.google_tag_manager_container_id %}
             is-success
           {% else %}
             is-info
@@ -294,17 +294,17 @@
 
     <h2 class="title is-3">Edit / Add Items</h2>
         <a class="button is-fullwidth is-success" 
-            href="{{ url_for('admin.edit_jamla') }}">
+            href="{{ url_for('admin.edit') }}">
         Edit items
         </a>
         <br />
         <a class="button is-fullwidth is-success" 
-            href="{{ url_for('admin.add_jamla_item') }}">
+            href="{{ url_for('admin.add_item') }}">
         Add items
         </a>
         <br />
         <a class="button is-fullwidth is-danger" 
-            href="{{ url_for('admin.delete_jamla_item') }}">
+            href="{{ url_for('admin.delete_item') }}">
         Delete items
         </a>
   </div>

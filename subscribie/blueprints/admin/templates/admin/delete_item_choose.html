@@ -30,12 +30,12 @@
 
     {% if confirm is sameas false %}
         <h1 class="title">Are you sure?</h1>
-        <a href="{{ url_for('admin.delete_item_by_sku', sku=itemSKU) }}" 
+        <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid) }}" 
             class="button is-danger">
             Yes
         </a>
         <br /><br />
-        <a href="{{ url_for('admin.delete_jamla_item', cancel=1)}}" 
+        <a href="{{ url_for('admin.delete_item', cancel=1)}}" 
             class="button is-success">
             No
         </a>
@@ -45,11 +45,11 @@
                 <th>Name</th>
                 <th>Delete</th>
             </thead>
-        {% for item in jamla['items'] %}
+        {% for item in items %}
             <tr>
-                <td>{{ item['title'] }}</td>
+                <td>{{ item.title }}</td>
                 <td>
-                    <a href="{{ url_for('admin.delete_item_by_sku', sku=item['sku'],
+                    <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid,
     confirm=1) }}" 
                         class="button is-danger">Delete</a>
                 </td>

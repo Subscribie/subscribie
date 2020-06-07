@@ -14,7 +14,7 @@ from flask import (
     render_template_string,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from subscribie.db import get_jamla, get_db
+from subscribie.db import get_db
 from subscribie import logger
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -35,7 +35,6 @@ def generate_login_token():
     if form.validate_on_submit():
         try:
             send_login_url(form.data["email"])
-            jamla = get_jamla()
             source = ' \
                 {% extends "admin/layout.html" %} \
                 {% block title %} Check your email {% endblock title %} \
@@ -46,7 +45,7 @@ def generate_login_token():
                   <p class="lead">We\'ve just sent you a login link.</p> \
                  </div> \
                 {% endblock body %} '
-            return render_template_string(source, jamla=jamla)
+            return render_template_string(source)
         except Exception as e:
             logger.error(e)
             logger.error("Failed to generate login email.")
@@ -55,9 +54,8 @@ def generate_login_token():
 
 @bp.route("/login", methods=["GET"])
 def login():
-    jamla = get_jamla()
     form = LoginForm()
-    return render_template("/admin/login.html", form=form, jamla=jamla)
+    return render_template("/admin/login.html", form=form)
 
 
 @bp.route("/login/<login_token>", methods=("GET", "POST"))

@@ -59,7 +59,7 @@
                 {% for subscription in person.subscriptions %}
                 <li><div class="card">
                   <ul class="is-unstyled-li">
-                    <li><strong>Title: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['title'] }}</li>
+                    <li><strong>Title: </strong>{{ subscription.item.title }}</li>
                     <li><strong>ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
                     <li><strong>GoCardless Subscription id: </strong>
@@ -70,26 +70,26 @@
                       {% else %}
                         None
                       {% endif %}</li>
-                    <li><strong>Price monthly: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['monthly_price']|default(0)|currencyFormat }}</li>
-                    <li><strong>Sell price: </strong>{{ jamla_get(sku_uuid=subscription.sku_uuid)['sell_price']|default(0)|currencyFormat }}</li>
+                    <li><strong>Price monthly: </strong>{{ subscription.item.monthly_price|default(0)|currencyFormat }}</li>
+                    <li><strong>Sell price: </strong>{{ subscription.item.sell_price|default(0)|currencyFormat }}</li>
                     <li><strong>Status: </strong>{{subscription_status(subscription.gocardless_subscription_id)}}</li>
                     <li><strong>Actions: </strong>
                       {% if subscription.gocardless_subscription_id %}
-                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
-                      <a href="{{ url_for("admin.pause_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id,
-                        goback=1) }}">
-                       Pause
-                      </a> | 
-                      {% endif %}
-                      {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
-                      <a href="{{ url_for("admin.resume_gocardless_subscription",
-                        subscription_id=subscription.gocardless_subscription_id,
-                        goback=1) }}">
-                       Resume
-                      </a>
-                      {% endif %}
-                    {% endif %}</li>
+                        {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
+                        <a href="{{ url_for("admin.pause_gocardless_subscription",
+                          subscription_id=subscription.gocardless_subscription_id,
+                          goback=1) }}">
+                         Pause
+                        </a> | 
+                        {% endif %}
+                        {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
+                        <a href="{{ url_for("admin.resume_gocardless_subscription",
+                          subscription_id=subscription.gocardless_subscription_id,
+                          goback=1) }}">
+                         Resume
+                        </a>
+                        {% endif %}
+                      {% endif %}</li>
                   </ul>
                 </div></li>
                 {% endfor %}
