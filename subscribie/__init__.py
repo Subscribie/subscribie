@@ -104,6 +104,7 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     if test_config is not None:
         app.config["SQLALCHEMY_DATABASE_URI"] = test_config["SQLALCHEMY_DATABASE_URI"]
+        app.config["WTF_CSRF_ENABLED"] = False
     else:
         app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 
