@@ -1,17 +1,14 @@
 import pytest
 import subscribie
+from subscribie.models import User
 
-@pytest.fixture
-def app():
-  return subscribie.create_app({
-    'TESTING': True
-  })
-
-@pytest.fixture
-def client(app):
-  client = app.test_client()
-  return client
-
-def test_homepage(client):
+def test_homepage(session, client):
   req = client.get("/")
   assert req.status_code == 200
+
+def test_user_model(session):
+    user = User()
+    user.email = "test@example.com"
+    session.add(user)
+    session.commit()
+    assert user.id > 0
