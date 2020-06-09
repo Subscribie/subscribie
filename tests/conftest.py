@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 
 from subscribie import create_app
 from subscribie import database as _db
+from subscribie.models import User
 
 
 TESTDB = 'test_project.db'
@@ -81,3 +82,10 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
+@pytest.fixture(scope='function')
+def with_shop_owner(db, session):
+    user = User()                                                                
+    user.email = "admin@example.com"                                              
+    session.add(user)                                                            
+    session.commit()
