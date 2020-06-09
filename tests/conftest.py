@@ -41,9 +41,8 @@ def client(app):
 
 def apply_migrations(app):
     """Applies all alembic migrations."""
-    db = SQLAlchemy()                                                                
-    db.init_app(app)                                                                 
-    Migrate(app, db)
+    _db.init_app(app)                                                                 
+    Migrate(app, _db)
     upgrade('./migrations')
 
 @pytest.fixture(scope='session')
