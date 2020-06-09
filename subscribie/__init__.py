@@ -101,8 +101,11 @@ def create_app(test_config=None):
             app.config.from_object(DefaultConfig)
 
     db_uri = "sqlite:///" + app.config["DB_FULL_PATH"] # Must be full path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False             
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    if test_config is not None:
+        app.config["SQLALCHEMY_DATABASE_URI"] = test_config["SQLALCHEMY_DATABASE_URI"]
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     database.init_app(app)
     migrate = Migrate(app, database)
 
