@@ -64,7 +64,7 @@ import urllib
 from pathlib import Path
 import subprocess
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 
 database = SQLAlchemy()
 
@@ -106,8 +106,6 @@ def create_app(test_config=None):
         app.config["SQLALCHEMY_DATABASE_URI"] = test_config["SQLALCHEMY_DATABASE_URI"]
     else:
         app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-    database.init_app(app)
-    migrate = Migrate(app, database)
 
     @app.before_request
     def start_session():
@@ -150,6 +148,12 @@ def create_app(test_config=None):
     sys.path.append(app.config["MODULES_PATH"])
 
     with app.app_context():
+
+        # Migrate database
+        database.init_app(app)
+        migrate = Migrate(app, database)
+        upgrade('./migrations')
+
         load_theme(app)
 
         # Register yml pages as routes
@@ -158,7 +162,7 @@ def create_app(test_config=None):
             page_path = page.path
             template_file = page.template_file
             view_func_name = page.page_name
-            ##Generate view function
+            # Generate view function
             generate_view_func = """def %s_view_func():
             return render_template('%s')""" % (
                 view_func_name,
