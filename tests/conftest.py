@@ -3,7 +3,7 @@ import pytest
 
 from flask_migrate import upgrade                                                
 from flask_sqlalchemy import SQLAlchemy                                          
-from flask_migrate import Migrate 
+from flask_migrate import Migrate
 
 from subscribie import create_app
 from subscribie import database as _db
@@ -85,7 +85,8 @@ def session(db, request):
 
 @pytest.fixture(scope='function')
 def with_shop_owner(db, session):
-    user = User()                                                                
-    user.email = "admin@example.com"                                              
-    session.add(user)                                                            
+    user = User()
+    user.email = "admin@example.com"
+    session.add(user)
     session.commit()
+
