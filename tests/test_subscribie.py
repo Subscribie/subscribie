@@ -11,13 +11,17 @@ def user_set(app, user):
     with appcontext_pushed.connected_to(handler, app):
         yield
 
-def test_user_can_login(session, app, client, with_shop_owner):
+def test_user_can_login(session, app, client, admin_session):
+    user = User.query.filter_by(email='admin@example.com').first()
+    with user_set(app, user):
+        req = client.get("/admin/dashboard", follow_redirects=True)
 
+
+@pytest.fixture(scope='function')
+def admin_session(client, with_shop_owner):
     user = User.query.filter_by(email='admin@example.com').first()
     with client.session_transaction() as sess:
         sess['user_id'] = 'admin@example.com'
-    with user_set(app, user):
-        req = client.get("/admin/dashboard", follow_redirects=True)
 
 
 def test_homepage(session, client):
