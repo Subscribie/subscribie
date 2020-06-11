@@ -11,7 +11,7 @@ def user_set(app, user):
     with appcontext_pushed.connected_to(handler, app):
         yield
 
-def test_user_can_login(session, app, client, admin_session):
+def test_admin_can_view_dashboard(session, app, client, admin_session):
     user = User.query.filter_by(email='admin@example.com').first()
     with user_set(app, user):
         req = client.get("/admin/dashboard", follow_redirects=True)
