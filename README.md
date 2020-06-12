@@ -49,7 +49,7 @@ queue](https://github.com/Subscribie/subscribie/issues)
 How to run tests
 
 ```
-# Clone subscribie
+git clone https://github.com/Subscribie/subscribie.git # Clone subscribie
 cd subscribie
 virtualenv -p python3 venv # Create virtual env
 . venv/bin/activate # Activate the virtualenv
