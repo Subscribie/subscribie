@@ -44,6 +44,23 @@ file](https://subscribie.readthedocs.io/en/latest/concepts/concepts.html)
 and comment on the [issue
 queue](https://github.com/Subscribie/subscribie/issues)
 
+# Testing
+
+How to run tests
+
+```
+# Clone subscribie
+cd subscribie
+virtualenv -p python3 venv # Create virtual env
+. venv/bin/activate # Activate the virtualenv
+pip install -r requirements.txt # Install requirements
+
+export FLASK_APP=subscribie # Export flask app
+export FLASK_DEBUG=True # Enable debug mode
+pytest # Run the tests
+```
+
+
 # Contributing (for development)
 
 You need to install:
