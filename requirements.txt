@@ -20,3 +20,4 @@ pytest
 tinycss
 flask_sqlalchemy
 flask_migrate
+python-dotenv==0.13.0
