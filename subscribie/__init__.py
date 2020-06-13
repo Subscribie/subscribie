@@ -7,9 +7,9 @@
                                                                                  
     :copyright: (c) 2018 by Karma Computing Ltd
 """
-from .default_config import DefaultConfig
 from os import path
 import logging
+from dotenv import load_dotenv
 
 # Create logger
 logger = logging
@@ -74,39 +74,16 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
 
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "subscribie.sqlite")
+    load_dotenv()
+    app.config.update(
+     os.environ
     )
-    # Overide config using /subscribie/volume/config.py if present
-    # Only exists if inside kubernetes cluster
-    if os.path.exists("/subscribie/volume/config.py"):
-        print("Overiding config from /subscribie/volume/config.py")
-        app.config.from_pyfile("/subscribie/volume/config.py", silent=True)
-        print("The config is now:")
-        for config in app.config:
-            print(
-                "{configName}:{configValue}".format(
-                    configName=config, configValue=app.config[config]
-                )
-            )
-    else:
-        try:
-            print("Loading config from config.py within instance folder")
-            app.config.from_pyfile("config.py", silent=False)
-            print("Succesful. Loaded config.py from within instance folder")
-        except FileNotFoundError:
-            print("Could not find default config, loading from default object")
-            app.config.from_object(DefaultConfig)
 
-    db_uri = "sqlite:///" + app.config["DB_FULL_PATH"] # Must be full path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     if test_config is not None:
-        app.config["SQLALCHEMY_DATABASE_URI"] = test_config["SQLALCHEMY_DATABASE_URI"]
-        app.config["WTF_CSRF_ENABLED"] = False
-    else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+        app.config.update(
+            test_config
+        )
 
     @app.before_request
     def start_session():
@@ -115,12 +92,6 @@ def create_app(test_config=None):
         except KeyError:
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             print("Starting with sid {}".format(session["sid"]))
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     images = UploadSet("images", IMAGES)
@@ -138,10 +109,6 @@ def create_app(test_config=None):
     app.register_blueprint(admin_theme, url_prefix="/admin")
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
-    """
-    Subscribie implements a flask application suited to subscription 
-    based web applications.
-    """
     # the signals
     from .signals import journey_complete
 

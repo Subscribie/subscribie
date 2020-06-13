@@ -31,7 +31,8 @@ setuptools.setup(
         'pytest',
         'tinycss',
         'flask_sqlalchemy',
-        'flask_migrate'
+        'flask_migrate',
+        'python-dotenv==0.13.0'
     ],
     entry_points='''
         [console_scripts]
