@@ -30,7 +30,8 @@ def load_theme(app):
     """
     p = Path()
     print("load_theme()")
-    print("TEMPLATE_BASE_DIR is: {}".format(app.config["TEMPLATE_BASE_DIR"]))
+    template_base_dir = os.path.realpath(app.config["TEMPLATE_BASE_DIR"])
+    print(f"TEMPLATE_BASE_DIR is: {template_base_dir}")
     try:
         if p.joinpath(
             app.config["TEMPLATE_BASE_DIR"], "theme-" + app.config["THEME_NAME"]
@@ -50,6 +51,7 @@ def load_theme(app):
                         app.config["TEMPLATE_BASE_DIR"],
                         "theme-" + app.config["THEME_NAME"],
                     )
+                    print(f"Cloning theme into: {dest}")
                     git.Repo.clone_from(app.config["THEME_SRC"], dest)
                 except git.exc.GitCommandError:
                     raise
@@ -84,7 +86,7 @@ def load_theme(app):
     try:
         app.static_folder = str(static_folder)
     except NameError:
-        print("Fallback to jesmon theme")
+        print("Fallback to jesmond theme")
         app.static_folder = p.joinpath(
             app.config["TEMPLATE_BASE_DIR"], "theme-jesmond/static/"
         )
