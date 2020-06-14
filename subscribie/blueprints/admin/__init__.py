@@ -196,7 +196,7 @@ def edit():
                 monthly_price = 0
             else:
                 monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
-            draftItem["monthly_price"] = monthly_price
+            draftItem.monthly_price = monthly_price
 
             item_requirements.instant_payment = bool(
                 getItem(form.instant_payment.data, index)
@@ -219,7 +219,6 @@ def edit():
                 sell_price = 0
             else:
                 sell_price = int(getItem(form.sell_price.data, index, default=0) * 100)
-            draftItem["sell_price"] = sell_price
 
             draftItem.sell_price = sell_price
 
