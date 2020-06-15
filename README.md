@@ -28,37 +28,6 @@ An abstraction layer for managing variable recurring subscriptions and billing. 
 
 Keywords: subscriptions, payments, PS2, SEPA 
 
-# Docs 
-
-https://subscribie.readthedocs.io
-
-# Demo
-
-https://subscriptionwebsitebuilder.co.uk
-
-# Where can I get more help, if I need it?
-
-Read through the [docs](https://subscribie.readthedocs.io), especially
-about the [Jamla
-file](https://subscribie.readthedocs.io/en/latest/concepts/concepts.html) 
-and comment on the [issue
-queue](https://github.com/Subscribie/subscribie/issues)
-
-# Testing
-
-How to run tests
-
-```
-git clone https://github.com/Subscribie/subscribie.git # Clone subscribie
-cd subscribie
-virtualenv -p python3 venv # Create virtual env
-. venv/bin/activate # Activate the virtualenv
-pip install -r requirements.txt # Install requirements
-
-export FLASK_APP=subscribie # Export flask app
-export FLASK_DEBUG=True # Enable debug mode
-pytest # Run the tests
-```
 # Quickstart
 
 ```
@@ -74,6 +43,17 @@ flask run # Run the app
 ```
 Now visit http://127.0.0.1:5000
 
-# Docs
 
-https://subscribie.readthedocs.io/en/latest/
+# Docs 
+
+https://subscribie.readthedocs.io
+
+# Demo
+
+https://subscriptionwebsitebuilder.co.uk
+
+# Where can I get more help, if I need it?
+
+Read through the [docs](https://subscribie.readthedocs.io)
+Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
+
