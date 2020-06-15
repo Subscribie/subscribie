@@ -52,6 +52,15 @@ https://subscribie.readthedocs.io
 
 https://subscriptionwebsitebuilder.co.uk
 
+# Tests
+
+To run tests:
+
+```
+. venv/bin/activate # activate virtualenv
+python -m pytest # run pytest
+```
+
 # Where can I get more help, if I need it?
 
 Read through the [docs](https://subscribie.readthedocs.io)
