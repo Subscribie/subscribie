@@ -59,18 +59,21 @@ export FLASK_APP=subscribie # Export flask app
 export FLASK_DEBUG=True # Enable debug mode
 pytest # Run the tests
 ```
+# Quickstart
 
+```
+git clone https://github.com/Subscribie/subscribie.git
+cd subscribie
+cp .env.example .env # Copy default .env settings (look at it)
+virtualenv -p python3 venv # Create a python3.x virtualenv
+. venv/bin/activate # Activate the virtualenv
+pip install -r requirements.txt # Install requirements
+export FLASK_APP=subscribie
+export FLASK_DEBUG=1
+flask run # Run the app
+```
+Now visit http://127.0.0.1:5000
 
-# Contributing (for development)
+# Docs
 
-You need to install:
-
-- python3 (must be python version 3 or greater) https://www.python.org/downloads/
-- virtualenv https://virtualenv.pypa.io/en/latest/installation.html
-- pip (https://pip.pypa.io/en/stable/installing/)
-
-Then follow the following steps:
-
-- https://subscribie.readthedocs.io/en/latest/tasks/tools/install-subscribiecli.html
-
-- https://subscribie.readthedocs.io/en/latest/tasks/run-subscribie-locally.html
+https://subscribie.readthedocs.io/en/latest/
