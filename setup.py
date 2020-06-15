@@ -14,7 +14,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires=[
-        'subscribiecli',
         'Flask>=1,<2',
         'flask_cors',
         'flask_login', 
