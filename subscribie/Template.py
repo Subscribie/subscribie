@@ -61,16 +61,6 @@ def load_theme(app):
                     app.config["THEME_NAME"],
                 )
                 static_folder = themepath.joinpath("../", "static").resolve()
-                # Update theme path and template folder path
-                subprocess.call(
-                    "subscribie \
-                     setconfig \
-                     --TEMPLATE_FOLDER {}\
-                     --STATIC_FOLDER {}".format(
-                        str(themepath), str(static_folder) + "/"
-                    ),
-                    shell=True,
-                )
     except Exception as e:
         print("Falling back to default theme")
         print(e)
