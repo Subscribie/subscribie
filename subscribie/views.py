@@ -86,6 +86,7 @@ def store_customer():
         sid = session["sid"]
         # Store email in session
         session["email"] = email
+        session["given_name"] = given_name
 
         # Store plan in session
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
@@ -343,11 +344,11 @@ def thankyou():
     # Load welcome email from template folder and render & send
     welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
 
-    first_charge_date = session.get('first_charge_date', 'unknown')
-    first_charge_amount = session.get('first_charge_amount', 'unknown')
+    first_charge_date = session.get('first_charge_date', None)
+    first_charge_amount = session.get('first_charge_amount', None)
     with open(welcome_template) as file_:                                   
       template = Template(file_.read())                                            
-      html = template.render(first_name='John', 
+      html = template.render(first_name=session.get('given_name', None), 
                     company_name=company.name,
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
