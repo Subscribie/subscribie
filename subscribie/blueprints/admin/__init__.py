@@ -129,7 +129,12 @@ def cancel_mandates(email):
 @login_required
 def dashboard():
     integration = Integration.query.first()
-    payment_provider = PaymentProvider.query.first()        
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider is None:
+        # If payment provider table is not seeded, seed it now with blank values.
+        payment_provider = PaymentProvider()
+        database.session.add(payment_provider)
+        database.session.commit()
     if payment_provider.gocardless_active:
         gocardless_connected = True
     else:
