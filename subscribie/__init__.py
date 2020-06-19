@@ -72,6 +72,13 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
                     Page, Module, PaymentProvider, Integration, Item,
                     ItemRequirements, ItemSellingPoints)
 
+def seed_db():                                                                 
+    # Add module_seo_page_title                                                  
+    module_seo = Module()                                                        
+    module_seo.name = 'module_seo_page_title'                                    
+    module_seo.src = 'https://github.com/Subscribie/module-seo-page-title.git'   
+    database.session.add(module_seo)                                                   
+    database.session.commit()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -79,11 +86,6 @@ def create_app(test_config=None):
     app.config.update(
      os.environ
     )
-
-    if test_config is not None:
-        app.config.update(
-            test_config
-        )
 
     @app.before_request
     def start_session():
@@ -117,10 +119,17 @@ def create_app(test_config=None):
 
     with app.app_context():
 
+
         # Migrate database
         database.init_app(app)
         migrate = Migrate(app, database)
         upgrade('./migrations')
+
+        if test_config is not None:
+            seed_db()
+            app.config.update(
+                test_config
+            )
 
         load_theme(app)
 
