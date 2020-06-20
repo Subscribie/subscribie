@@ -612,17 +612,36 @@ def subscribers():
 @admin_theme.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
+
+    previous_page_cursor = request.args.get('previous', None)
+    next_page_cursor = request.args.get('next', None)
+
     payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
         access_token=payment_provider.gocardless_access_token,
         environment=payment_provider.gocardless_environment,
     )
 
+    # Get latest payments
     payments = client.payments.list().records
+    try:
+        latest_payment_id = payments[-1].id
+        
+        if next_page_cursor:
+            payments = client.payments.list(params={"after": next_page_cursor}).records
+
+        next_page_cursor = payments[-1].id
+
+        previous_payments = client.payments.list(params={"before": next_page_cursor}).records
+        previous_page_cursor = previous_payments[-1].id
+    except IndexError:
+        payments = [] # No payments yet 
 
     return render_template(
             'admin/upcoming_payments.html', payments=payments,
-            datetime=datetime
+            datetime=datetime,
+            next_page_cursor=next_page_cursor,
+            previous_page_cursor=previous_page_cursor
             )
 
 @admin_theme.route("/customers", methods=["GET"])
