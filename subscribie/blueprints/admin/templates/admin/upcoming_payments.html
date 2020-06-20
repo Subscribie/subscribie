@@ -75,7 +75,7 @@ td b {
                       <li><strong>Description:</strong>
                         <ul>
                           {% for selling_point in subscription.item.selling_points %}
-                            <li>{{ selling_point }}</li>
+                            <li>{{ selling_point.point }}</li>
                           {% endfor %}
                         </ul>
                       </li>
