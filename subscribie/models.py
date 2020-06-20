@@ -46,6 +46,7 @@ class Subscription(database.Model):
     person = relationship("Person", back_populates="subscriptions")
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    transactions = relationship("Transaction", back_populates="subscription")
 
 class SubscriptionNote(database.Model):
     __tablename__ = 'subscription_note'
@@ -143,4 +144,6 @@ class Transaction(database.Model):
     external_src = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
     person = relationship("Person", back_populates="transactions")
+    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription = relationship("Subscription", back_populates="transactions")
 
