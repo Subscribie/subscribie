@@ -15,7 +15,7 @@ from jinja2 import Template
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Item, Integration, PaymentProvider)
+                    Company, Item, Integration, PaymentProvider, Transaction)
 
 from flask_mail import Mail, Message
 
@@ -94,6 +94,7 @@ def store_customer():
                         postal_code=postcode, email=email, mobile=mobile)
         database.session.add(person)
         database.session.commit()
+        session["person_id"] = person.id
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
@@ -146,12 +147,12 @@ def charge_up_front():
     payment_provider = PaymentProvider.query.first()
     stripe_secret_key = payment_provider.stripe_secret_key
 
-    db = get_db()
-    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)).fetchone()
+    # Get person from session
+    person = Person.query.get(session["person_id"])
     try:
         stripe.api_key = stripe_secret_key
         customer = stripe.Customer.create(
-            email=res["email"], source=request.form["stripeToken"]
+            email=person.email, source=request.form["stripeToken"]
         )
 
         charge = stripe.Charge.create(
@@ -160,6 +161,14 @@ def charge_up_front():
             currency=charge["currency"],
             description="Subscribie",
         )
+        transaction = Transaction()
+        transaction.amount = charge["amount"]
+        transaction.external_id = charge.id
+        transaction.external_src = "stripe"
+        transaction.person = person
+        database.session.add(transaction)
+        database.session.commit()
+
     except stripe.error.AuthenticationError as e:
         return str(e)
     if item.requirements[0].subscription:
