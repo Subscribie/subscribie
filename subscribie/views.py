@@ -6,7 +6,6 @@ from datetime import date
 import sqlite3
 from .signals import journey_complete
 from subscribie import session, CustomerForm, gocardless_pro, current_app
-from subscribie.db import get_db
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -193,12 +192,9 @@ def establish_mandate():
             dashboard_url
         )
 
-    # lookup the customer with sid and get their relevant details
-    sid = session["sid"]
-    db = get_db()
-    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)).fetchone()
+    # Get person from session
+    person = Person.query.get(session["person_id"])
 
-    logger.info("Person lookup: %s", res)
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
         access_token=payment_provider.gocardless_access_token,
@@ -209,15 +205,15 @@ def establish_mandate():
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
-            "session_token": sid,
+            "session_token": person.sid,
             "success_redirect_url": current_app.config["SUCCESS_REDIRECT_URL"],
             "prefilled_customer": {
-                "given_name": res["given_name"],
-                "family_name": res["family_name"],
-                "address_line1": res["address_line1"],
-                "city": res["city"],
-                "postal_code": res["postal_code"],
-                "email": res["email"],
+                "given_name": person.given_name,
+                "family_name": person.family_name,
+                "address_line1": person.address_line1,
+                "city": person.city,
+                "postal_code": person.postal_code,
+                "email": person.email,
             },
         }
     )
