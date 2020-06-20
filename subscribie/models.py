@@ -30,6 +30,7 @@ class Person(database.Model):
     email = database.Column(database.String())
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
+    transactions = relationship("Transaction", back_populates="person")
 
     def __repr__(self):
         return '<Person {}>'.format(self.given_name)
@@ -128,3 +129,18 @@ class Module(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     src = database.Column(database.String())
+
+class Transaction(database.Model):
+    __tablename__ = 'transactions'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=str(uuid4()))
+    amount = database.Column(database.Integer())
+    comment = database.Column(database.Text())
+    # External id e.g. Stripe or GoCardless id
+    external_id = database.Column(database.String())
+    # Source of transaction e.g. Stripe or GoCardless
+    external_src = database.Column(database.String())
+    person_id = database.Column(database.Integer(), ForeignKey('person.id'))
+    person = relationship("Person", back_populates="transactions")
+
