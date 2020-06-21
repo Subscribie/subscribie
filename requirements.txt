@@ -2,7 +2,7 @@ Werkzeug==0.16.1
 Flask>=1,<2
 flask_cors
 flask_login
-flask_uploads
+git+git://github.com/maxcountryman/flask-uploads/archive/f66d7dc93e684fa0a3a4350a38e41ae00483a796.zip#egg=Flask-Uploads-0.2.2.dev@41b95ec#egg=flask_uploads
 flask_wtf
 wtforms[email]
 Flask-Mail>=0.9.1
