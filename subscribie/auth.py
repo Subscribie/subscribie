@@ -28,28 +28,6 @@ from .models import database, User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-@bp.route("/password-login", methods=["GET", "POST"])
-def login_with_password():
-    form = PasswordLoginForm()
-    if request.method == "GET":
-        return render_template("/admin/password-login.html", form=form)
-
-    if form.validate_on_submit():
-        email = form.data['email']
-        password = form.data['password']
-        user = User.query.filter_by(email=email).first()
-        if user is None:
-            return "User not found"
-
-        if check_password_login(email, password):
-            session.clear()
-            session["user_id"] = user.email
-            return redirect(url_for("admin.dashboard"))
-        else:
-            session.clear()
-            return "Invalid login"
-    else:
-        return form.errors
 
 def check_password_login(email, password):
     user = User.query.filter_by(email=email).first()
@@ -60,10 +38,29 @@ def check_password_login(email, password):
 
 @bp.route("/login", methods=["POST"])
 def generate_login_token():
-    form = LoginForm()
-    if form.validate_on_submit():
+    magic_login_form = LoginForm()
+    password_login_form = PasswordLoginForm()
+
+    if password_login_form.validate_on_submit():
+        email = password_login_form.data['email']
+        password = password_login_form.data['password']
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            flash("User not found with that email")
+            return redirect(url_for("auth.login"))
+
+        if check_password_login(email, password):
+            session.clear()
+            session["user_id"] = user.email
+            return redirect(url_for("admin.dashboard"))
+        else:
+            session.clear()
+            flash("Invalid password")
+            return redirect(url_for("auth.login"))
+
+    if magic_login_form.validate_on_submit():
         try:
-            send_login_url(form.data["email"])
+            send_login_url(magic_login_form.data["email"])
             source = ' \
                 {% extends "admin/layout.html" %} \
                 {% block title %} Check your email {% endblock title %} \
