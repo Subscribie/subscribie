@@ -66,6 +66,10 @@ class ItemsForm(StripWhitespaceForm):
 class LoginForm(FlaskForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
 
+class PasswordLoginForm(FlaskForm):
+    email = StringField("email", validators=[DataRequired(), EmailValid()])
+    password = StringField("password", validators=[DataRequired()])
+
 
 class CustomerForm(FlaskForm):
     given_name = StringField("given_name", validators=[DataRequired()])

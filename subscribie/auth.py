@@ -22,11 +22,40 @@ from base64 import b64encode, urlsafe_b64encode
 import smtplib
 import sqlite3
 import os
-from .forms import LoginForm
+from .forms import LoginForm, PasswordLoginForm
 from flask_mail import Mail, Message
 from .models import database, User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+@bp.route("/password-login", methods=["GET", "POST"])
+def login_with_password():
+    form = PasswordLoginForm()
+    if request.method == "GET":
+        return render_template("/admin/password-login.html", form=form)
+
+    if form.validate_on_submit():
+        email = form.data['email']
+        password = form.data['password']
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            return "User not found"
+
+        if check_password_login(email, password):
+            session.clear()
+            session["user_id"] = user.email
+            return redirect(url_for("admin.dashboard"))
+        else:
+            session.clear()
+            return "Invalid login"
+    else:
+        return form.errors
+
+def check_password_login(email, password):
+    user = User.query.filter_by(email=email).first()
+    if user.check_password(password):
+        return True
+    return False
 
 
 @bp.route("/login", methods=["POST"])

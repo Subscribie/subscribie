@@ -3,14 +3,22 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
 from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(database.Model):
     __tablename__ = 'user'
     id = database.Column(database.Integer(), primary_key=True)
     email = database.Column(database.String())
+    password = database.Column(database.String())
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     active = database.Column(database.String)
     login_token = database.Column(database.String)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
