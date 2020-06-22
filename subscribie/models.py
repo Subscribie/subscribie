@@ -5,6 +5,9 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 
+def uuid_string():
+    return str(uuid4())
+
 class User(database.Model):
     __tablename__ = 'user'
     id = database.Column(database.Integer(), primary_key=True)
@@ -27,7 +30,7 @@ class Person(database.Model):
     __tablename__ = 'person'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     sid = database.Column(database.String())
     ts = database.Column(database.DateTime, default=datetime.utcnow)
     given_name = database.Column(database.String())
@@ -46,7 +49,7 @@ class Person(database.Model):
 class Subscription(database.Model):
     __tablename__ = 'subscription'
     id = database.Column(database.Integer(), primary_key=True)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
@@ -76,7 +79,7 @@ class Item(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     archived = database.Column(database.Boolean(), default=False)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
     monthly_price = database.Column(database.Integer())
     sell_price = database.Column(database.Integer())
@@ -143,7 +146,7 @@ class Transaction(database.Model):
     __tablename__ = 'transactions'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     amount = database.Column(database.Integer())
     comment = database.Column(database.Text())
     # External id e.g. Stripe or GoCardless id
