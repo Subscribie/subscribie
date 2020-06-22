@@ -157,4 +157,6 @@ class Transaction(database.Model):
     person = relationship("Person", back_populates="transactions")
     subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
     subscription = relationship("Subscription", back_populates="transactions")
+    payment_status = database.Column(database.String())
+    fulfillment_state = database.Column(database.String())
 
