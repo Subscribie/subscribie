@@ -69,7 +69,7 @@ td b {
             <form action="{{ url_for('admin.update_payment_fulfillment', gocardless_payment_id=payment.id) }}" method="GET">
               <select name="state">
                 {% set fulfillment_state = get_transaction_fulfillment_state(payment.id) %}
-                <option>-</option>
+                <option value="">-</option>
                 <option value="complete"
                   {% if fulfillment_state == "complete" %}
                   selected
