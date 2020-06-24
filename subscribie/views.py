@@ -14,7 +14,8 @@ from jinja2 import Template
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Item, Integration, PaymentProvider, Transaction)
+                    Company, Item, Integration, PaymentProvider, Transaction,
+                    Page)
 
 from flask_mail import Mail, Message
 
@@ -25,7 +26,9 @@ def inject_template_globals():
     company = Company.query.first()
     integration = Integration.query.first()
     items = Item.query.filter_by(archived=0)
-    return dict(company=company, integration=integration, items=items)
+    pages = Page.query.all()
+    return dict(company=company, integration=integration, items=items,
+                pages=pages)
 
 def redirect_url(default='index'):
     return request.args.get('next') or \
