@@ -60,9 +60,31 @@ def choose():
     return render_template("choose.html",
                             items=items)
 
+def redirect_to_payment_step(item, inside_iframe=False):
+    """Depending on items payment requirement, redirect to collection page
+     accordingly"""
+    if item.requirements[0].instant_payment:
+        return redirect(
+            url_for(
+                "views.up_front",
+                _scheme="https",
+                _external=True,
+                sid=session["sid"],
+                fname=session["given_name"],
+            )
+        )
+    if item.requirements[0].subscription:
+        return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
+    return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
+    item = Item.query.filter_by(uuid=request.args['plan']).first()
+    # If already entered sign-up information, take to payment step
+    if session.get("person_id", None):
+        return redirect_to_payment_step(item)
+
+
     package = request.args.get("plan", "not set")
     session["package"] = package
     item = Item.query.filter_by(uuid=request.args.get('plan')).first()
@@ -90,7 +112,16 @@ def store_customer():
         session["email"] = email
         session["given_name"] = given_name
 
-        # Store plan in session
+        # Store person info in session for form pre-population
+        session['given_name'] = given_name
+        session['family_name'] = family_name
+        session['address_line_one'] = address_line_one
+        session['city'] = city
+        session['postcode'] = postcode
+        session['email'] = email
+        session['mobile'] = mobile
+
+        # Store person
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
                         postal_code=postcode, email=email, mobile=mobile)
@@ -100,24 +131,12 @@ def store_customer():
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
-        if item.requirements[0].instant_payment:
-            return redirect(
-                url_for(
-                    "views.up_front",
-                    _scheme="https",
-                    _external=True,
-                    sid=sid,
-                    fname=given_name,
-                )
-            )
-        if item.requirements[0].subscription:
-            # Check if in iframe
-            if form.data["is_iframe"] == "True":
-                insideIframe = True
-            else:
-                insideIframe = False
-            return redirect(url_for("views.establish_mandate", inside_iframe=insideIframe))
-        return redirect(url_for("views.thankyou", _scheme="https", _external=True))
+
+        if form.data["is_iframe"] == "True":
+            inside_iframe = True
+        else:
+            inside_iframe = False
+        return redirect_to_payment_step(item, inside_iframe=inside_iframe)
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
