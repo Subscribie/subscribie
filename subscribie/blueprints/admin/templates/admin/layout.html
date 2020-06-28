@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='custom_style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 
 {% if integration.google_tag_manager_container_id                                
@@ -48,10 +50,10 @@
 
 <body>
 
-  <nav class="navbar is-info kcBlue">
+  <nav class="jumbotron jumbotron-fluid text-light kcBlue">
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+        <a class="navbar-item text-light h2" href="/">
           {% if company['logo'] %}
             <img src="/static/{{ company['logo'] }}" alt="{{ company['name'] }}">
           {% else %}
@@ -63,7 +65,7 @@
   </nav>
 
   <div class="site-content">
-    {% block top %}
+    <!-- {% block top %}
     {% endblock top %}
     <section class="hero kcBlue">
       <div class="hero-body">
@@ -71,7 +73,7 @@
             {% block hero %}{% endblock %}
         </div>
       </div>
-    </section>
+    </section> -->
     <main class="main">
 	{% with messages = get_flashed_messages() %}
 	  {% if messages %}
@@ -94,22 +96,15 @@
 
   </div>
 
-  <footer class="footer" style="padding: 3rem 1.5rem 3rem;">
-    <div class="container">
-      <div class="content has-text-centered">
-        <p>
-          By <a href="/">{{ company['name'] }}</a>.
-          <br />
-        </p>
-        <small>Made possible with <a href="https://subscriptionwebsitebuilder.co.uk"
-                title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</small>
-        <br />
-        <a href="{{ url_for('auth.login') }}">Login</a>
-        <br />
-        <a href="#" class="button is-small">Scroll back to top</a>
-      </div>
-    </div>
+  <footer class="container-fluid bg-light text-center py-5" >
+    <p> By <a href="/">{{ company['name'] }}</a>. </p>
+    <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <br />
+    <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
   </footer>
+
+  
 
 
 </body>

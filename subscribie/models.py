@@ -3,14 +3,25 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
 from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
+
+def uuid_string():
+    return str(uuid4())
 
 class User(database.Model):
     __tablename__ = 'user'
     id = database.Column(database.Integer(), primary_key=True)
     email = database.Column(database.String())
+    password = database.Column(database.String())
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     active = database.Column(database.String)
     login_token = database.Column(database.String)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
@@ -19,7 +30,7 @@ class Person(database.Model):
     __tablename__ = 'person'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     sid = database.Column(database.String())
     ts = database.Column(database.DateTime, default=datetime.utcnow)
     given_name = database.Column(database.String())
@@ -30,6 +41,7 @@ class Person(database.Model):
     email = database.Column(database.String())
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
+    transactions = relationship("Transaction", back_populates="person")
 
     def __repr__(self):
         return '<Person {}>'.format(self.given_name)
@@ -37,7 +49,7 @@ class Person(database.Model):
 class Subscription(database.Model):
     __tablename__ = 'subscription'
     id = database.Column(database.Integer(), primary_key=True)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
@@ -45,6 +57,7 @@ class Subscription(database.Model):
     person = relationship("Person", back_populates="subscriptions")
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    transactions = relationship("Transaction", back_populates="subscription")
 
 class SubscriptionNote(database.Model):
     __tablename__ = 'subscription_note'
@@ -66,7 +79,7 @@ class Item(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     archived = database.Column(database.Boolean(), default=False)
-    uuid = database.Column(database.String(), default=str(uuid4()))
+    uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
     monthly_price = database.Column(database.Integer())
     sell_price = database.Column(database.Integer())
@@ -128,3 +141,22 @@ class Module(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     src = database.Column(database.String())
+
+class Transaction(database.Model):
+    __tablename__ = 'transactions'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    amount = database.Column(database.Integer())
+    comment = database.Column(database.Text())
+    # External id e.g. Stripe or GoCardless id
+    external_id = database.Column(database.String())
+    # Source of transaction e.g. Stripe or GoCardless
+    external_src = database.Column(database.String())
+    person_id = database.Column(database.Integer(), ForeignKey('person.id'))
+    person = relationship("Person", back_populates="transactions")
+    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription = relationship("Subscription", back_populates="transactions")
+    payment_status = database.Column(database.String())
+    fulfillment_state = database.Column(database.String())
+

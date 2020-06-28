@@ -6,9 +6,8 @@ install:
 	virtualenv -p python3.6 venv
 	. venv/bin/activate
 	pip install .
-	subscribie init
-	subscribie migrate
-	pytest
+	cp .env.example .env
+	python -m pytest
 
 clean:
 	rm -rf venv

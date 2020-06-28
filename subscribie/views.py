@@ -6,7 +6,6 @@ from datetime import date
 import sqlite3
 from .signals import journey_complete
 from subscribie import session, CustomerForm, gocardless_pro, current_app
-from subscribie.db import get_db
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -15,7 +14,8 @@ from jinja2 import Template
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Item, Integration, PaymentProvider)
+                    Company, Item, Integration, PaymentProvider, Transaction,
+                    Page)
 
 from flask_mail import Mail, Message
 
@@ -26,7 +26,9 @@ def inject_template_globals():
     company = Company.query.first()
     integration = Integration.query.first()
     items = Item.query.filter_by(archived=0)
-    return dict(company=company, integration=integration, items=items)
+    pages = Page.query.all()
+    return dict(company=company, integration=integration, items=items,
+                pages=pages)
 
 def redirect_url(default='index'):
     return request.args.get('next') or \
@@ -58,9 +60,31 @@ def choose():
     return render_template("choose.html",
                             items=items)
 
+def redirect_to_payment_step(item, inside_iframe=False):
+    """Depending on items payment requirement, redirect to collection page
+     accordingly"""
+    if item.requirements[0].instant_payment:
+        return redirect(
+            url_for(
+                "views.up_front",
+                _scheme="https",
+                _external=True,
+                sid=session["sid"],
+                fname=session["given_name"],
+            )
+        )
+    if item.requirements[0].subscription:
+        return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
+    return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
+    item = Item.query.filter_by(uuid=request.args['plan']).first()
+    # If already entered sign-up information, take to payment step
+    if session.get("person_id", None):
+        return redirect_to_payment_step(item)
+
+
     package = request.args.get("plan", "not set")
     session["package"] = package
     item = Item.query.filter_by(uuid=request.args.get('plan')).first()
@@ -88,33 +112,31 @@ def store_customer():
         session["email"] = email
         session["given_name"] = given_name
 
-        # Store plan in session
+        # Store person info in session for form pre-population
+        session['given_name'] = given_name
+        session['family_name'] = family_name
+        session['address_line_one'] = address_line_one
+        session['city'] = city
+        session['postcode'] = postcode
+        session['email'] = email
+        session['mobile'] = mobile
+
+        # Store person
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
                         postal_code=postcode, email=email, mobile=mobile)
         database.session.add(person)
         database.session.commit()
+        session["person_id"] = person.id
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
         session["note_to_seller"] = note_to_seller
-        if item.requirements[0].instant_payment:
-            return redirect(
-                url_for(
-                    "views.up_front",
-                    _scheme="https",
-                    _external=True,
-                    sid=sid,
-                    fname=given_name,
-                )
-            )
-        if item.requirements[0].subscription:
-            # Check if in iframe
-            if form.data["is_iframe"] == "True":
-                insideIframe = True
-            else:
-                insideIframe = False
-            return redirect(url_for("views.establish_mandate", inside_iframe=insideIframe))
-        return redirect(url_for("views.thankyou", _scheme="https", _external=True))
+
+        if form.data["is_iframe"] == "True":
+            inside_iframe = True
+        else:
+            inside_iframe = False
+        return redirect_to_payment_step(item, inside_iframe=inside_iframe)
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
@@ -146,12 +168,12 @@ def charge_up_front():
     payment_provider = PaymentProvider.query.first()
     stripe_secret_key = payment_provider.stripe_secret_key
 
-    db = get_db()
-    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)).fetchone()
+    # Get person from session
+    person = Person.query.get(session["person_id"])
     try:
         stripe.api_key = stripe_secret_key
         customer = stripe.Customer.create(
-            email=res["email"], source=request.form["stripeToken"]
+            email=person.email, source=request.form["stripeToken"]
         )
 
         charge = stripe.Charge.create(
@@ -160,6 +182,14 @@ def charge_up_front():
             currency=charge["currency"],
             description="Subscribie",
         )
+        transaction = Transaction()
+        transaction.amount = charge["amount"]
+        transaction.external_id = charge.id
+        transaction.external_src = "stripe"
+        transaction.person = person
+        database.session.add(transaction)
+        database.session.commit()
+
     except stripe.error.AuthenticationError as e:
         return str(e)
     if item.requirements[0].subscription:
@@ -184,12 +214,9 @@ def establish_mandate():
             dashboard_url
         )
 
-    # lookup the customer with sid and get their relevant details
-    sid = session["sid"]
-    db = get_db()
-    res = db.execute("SELECT * FROM person p WHERE p.sid = ?", (sid,)).fetchone()
+    # Get person from session
+    person = Person.query.get(session["person_id"])
 
-    logger.info("Person lookup: %s", res)
     # validate that hasInstantPaid is true for the customer
     gocclient = gocardless_pro.Client(
         access_token=payment_provider.gocardless_access_token,
@@ -200,15 +227,15 @@ def establish_mandate():
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
-            "session_token": sid,
+            "session_token": person.sid,
             "success_redirect_url": current_app.config["SUCCESS_REDIRECT_URL"],
             "prefilled_customer": {
-                "given_name": res["given_name"],
-                "family_name": res["family_name"],
-                "address_line1": res["address_line1"],
-                "city": res["city"],
-                "postal_code": res["postal_code"],
-                "email": res["email"],
+                "given_name": person.given_name,
+                "family_name": person.family_name,
+                "address_line1": person.address_line1,
+                "city": person.city,
+                "postal_code": person.postal_code,
+                "email": person.email,
             },
         }
     )

@@ -33,11 +33,18 @@ td b {
 <div class="section">
   <div class="container">
 
+    <a href="{{ url_for('admin.upcoming_payments', previous=previous_page_cursor) }}"
+      class="pagination-previous">Previous</a>
+    <a href="{{ url_for('admin.upcoming_payments', next=next_page_cursor) }}"
+      class="pagination-next">Next</a>
+
     <table class="table is-hoverable is-fullwidth">
 
       <thead>
         <tr>
+          <th>Fulfillment State</th>
           <th>Date</th>
+          <th>GoCardless ID</th>
           <th>Status</th>
           <th>Amount</th>
           <th>Name</th>
@@ -48,9 +55,34 @@ td b {
       </thead>
 
       <tbody>
+      {% if payments|length == 0 %}
+        <tr>
+          <td colspan="8">
+             No upcoming payments yet. You can do it!
+          </td>
+        </td>
+      {% endif %}
+
       {% for payment in payments %}
         <tr>
+          <td>
+            <form action="{{ url_for('admin.update_payment_fulfillment', gocardless_payment_id=payment.id) }}" method="GET">
+              <select name="state">
+                {% set fulfillment_state = get_transaction_fulfillment_state(payment.id) %}
+                <option value="">-</option>
+                <option value="complete"
+                  {% if fulfillment_state == "complete" %}
+                  selected
+                  {% endif %}>
+                  Complete
+                </option>
+              </select>
+              <input type="hidden" name="gocardless_id" value="{{ payment.id }}" />
+              <input type="submit" value="Update" />
+            </form>
+          </td>
           <td>{{ datetime.strptime(payment.charge_date, '%Y-%m-%d').strftime("%d/%m/%Y") }}</td>
+          <td>{{ payment.id }}</td>
           <td>{{ payment.status }}</td>
           <td>{{ payment.amount|default(0)|currencyFormat}}</td>
           {% if get_subscription_from_gocardless_subscription_id(payment.links['subscription']) != none  %}
@@ -75,7 +107,7 @@ td b {
                       <li><strong>Description:</strong>
                         <ul>
                           {% for selling_point in subscription.item.selling_points %}
-                            <li>{{ selling_point }}</li>
+                            <li>{{ selling_point.point }}</li>
                           {% endfor %}
                         </ul>
                       </li>

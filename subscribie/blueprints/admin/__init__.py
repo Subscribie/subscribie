@@ -31,6 +31,7 @@ import subprocess
 import uuid
 from sqlalchemy import asc, desc
 from datetime import datetime
+from subscribie.models import Transaction
 
 admin_theme = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -40,6 +41,68 @@ admin_theme = Blueprint(
 def currencyFormat(value):
   value = float(value)/100
   return "£{:,.2f}".format(value)
+
+
+def store_gocardless_transaction(gocardless_payment_id):
+    """Store GoCardless payment in transactions table"""
+    payment_provider = PaymentProvider.query.first()
+    gocclient = gocardless_pro.Client(
+      access_token=payment_provider.gocardless_access_token,
+          environment=payment_provider.gocardless_environment,
+    )
+    payment = gocclient.payments.get(gocardless_payment_id)
+
+    # Check if there's an existing payment record in transactions table
+    transaction = Transaction.query.filter_by(external_id=gocardless_payment_id).first()
+    if transaction is None:
+        # No existing transaction found, so fetch payment info from GoCardless
+        # Store as transaction
+        transaction = Transaction()
+        transaction.amount = payment.amount
+        transaction.payment_status = payment.status
+        transaction.comment = str(payment.metadata)
+        transaction.external_id = gocardless_payment_id
+        transaction.external_src = "gocardless"
+        # Find related subscription if exists
+        if payment.links.subscription:
+            subscription_id = payment.links.subscription
+            subscription = Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
+            if subscription is not None:
+                transaction.subscription = subscription
+            try:
+                transaction.person = subscription.person
+            except AttributeError: # A transaction may not have a person
+                pass
+
+    # Update payment_status to gocardless latest status
+    transaction.payment_status = payment.status
+
+    database.session.add(transaction)
+    database.session.commit() # Save/update transaction in transactions table
+    return transaction
+
+
+@admin_theme.route("payments/update/<gocardless_payment_id>")
+@login_required
+def update_payment_fulfillment(gocardless_payment_id):
+    """Update payment fulfillment stage"""
+
+    transaction = Transaction.query.filter_by(external_id=gocardless_payment_id).first()
+    if transaction is None:
+        transaction = store_gocardless_transaction(gocardless_payment_id)
+
+    # Update transactions fulfillment_state to the value specified
+    fulfillment_state = request.args.get('state', '')
+    # Check a valid fulfillment_state is passed (only one or empty at the moment)
+    if fulfillment_state == '' or fulfillment_state == 'complete':
+        transaction.fulfillment_state = fulfillment_state
+        flash("Fulfillment state updated")
+
+    database.session.add(transaction)
+    database.session.commit() # Save/update transaction in transactions table
+
+    # Go back to previous page
+    return redirect(request.referrer)
 
 @admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/pause")
 @login_required
@@ -574,6 +637,17 @@ def utility_get_subscription_from_gocardless_subscription_id():
         return Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
     return dict(get_subscription_from_gocardless_subscription_id=get_subscription_from_gocardless_subscription_id)
 
+@admin_theme.context_processor
+def utility_get_transaction_fulfillment_state():
+    """return fulfullment_state of transaction"""
+    def get_transaction_fulfillment_state(external_id):
+        transaction = Transaction.query.filter_by(external_id=external_id).first()
+        if transaction:
+            return transaction.fulfillment_state
+        else:
+            return None
+    return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
+
 
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
@@ -612,17 +686,46 @@ def subscribers():
 @admin_theme.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
+
+    previous_page_cursor = request.args.get('previous', None)
+    next_page_cursor = request.args.get('next', None)
+
     payment_provider = PaymentProvider.query.first()        
     client = gocardless_pro.Client(
         access_token=payment_provider.gocardless_access_token,
         environment=payment_provider.gocardless_environment,
     )
 
-    payments = client.payments.list().records
+    # Get latest payments
+    payments = client.payments.list(params={"limit":10}).records
+
+    # Paginate
+    try:
+        latest_payment_id = payments[-1].id
+        
+        if next_page_cursor:
+            payments = client.payments.list(params={"after": next_page_cursor,
+                                                    "limit": 10}
+                    ).records
+
+        next_page_cursor = payments[-1].id
+
+        previous_payments = client.payments.list(params={"before": next_page_cursor,
+                                                    "limit": 10}
+                ).records
+        previous_page_cursor = previous_payments[-1].id
+    except IndexError:
+        payments = [] # No payments yet 
+
+    # Store / Update transactions table
+    for payment in payments:
+        store_gocardless_transaction(payment.id)
 
     return render_template(
             'admin/upcoming_payments.html', payments=payments,
-            datetime=datetime
+            datetime=datetime,
+            next_page_cursor=next_page_cursor,
+            previous_page_cursor=previous_page_cursor
             )
 
 @admin_theme.route("/customers", methods=["GET"])
