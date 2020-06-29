@@ -94,27 +94,29 @@
         <ul class="pagination justify-content-start">
           <li class="page-item">
             {% if people.has_prev %}
-              <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+              <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
             {% endif %}</li>
 
           {% for page_num in people.iter_pages() %}
-            <li class="page-item">
             {% if page_num %}
               {% if people.page == page_num %}
-                <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+                <li class="page-item active">
+                  <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+                </li>
               {% else %}
-                <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+                <li class="page-item ">
+                  <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+                </li>
       
               {% endif %}
             {% else %}
               ...
             {% endif %}
-            </li>
           {% endfor %}
         
           <li class="page-item">
             {% if people.has_next %}
-              <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+              <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
             {% endif %}</li>
         </ul>
       </nav>
