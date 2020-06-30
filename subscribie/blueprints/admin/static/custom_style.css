@@ -8,4 +8,9 @@
   .section {
     padding: 0;
   }
+
+  .table {
+    display: inline-block;
+    overflow-x: scroll;
+  }
 }
