@@ -27,7 +27,7 @@ VALUES
 ( 2, datetime(), "High Quality", 1),
 ( 3, datetime(), "Smooth", 1),
 ( 4, datetime(), "Pack of 5", 2),
-( 5, datetime(), "Luxuary soaps", 2),
+( 5, datetime(), "Luxury soaps", 2),
 ( 6, datetime(), "Assorted scents", 2);
 
 
