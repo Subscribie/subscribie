@@ -1,34 +1,22 @@
 {% extends "admin/layout.html" %}                                                
 {% block title %} Subscribers {% endblock %}                                
                                                                                  
-{% block hero %}                                                                 
-                                                                                 
-<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
-    My Subscribers
-</h1>                                                                        
-                                                                                 
-{% endblock hero %} 
-                                                                                 
 {% block body %}
 
-<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
-  <div class="container">                                                        
-    <nav class="breadcrumb" aria-label="breadcrumbs">                            
-      <ul>                                                                       
-        <li><a href="/">Shop</a></li>                                            
-        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
-        <li class="is-active"><a href="#" aria-current="page">
-            Subscribers</a>
-        </li>                                                                    
-      </ul>                                                                      
-    </nav>                                                                       
-  </div>                                                                         
+<h2 class="text-center text-dark mb-3">My Subscribers</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Subscribers</li>
+  </ul>
 </div>
 
 <main>
   <div class="section">
     <div class="container">
-      <table class="table is-hoverable is-fullwidth">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>Date</th>
@@ -54,11 +42,10 @@
             </address></td>
             <td>
               {% if person.subscriptions %}
-              <div class="content">
-              <ul class="is-unstyled-li">
+              <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
                 <li><div class="card">
-                  <ul class="is-unstyled-li">
+                  <ul class="list-unstyled px-2">
                     <li><strong>Title: </strong>{{ subscription.item.title }}</li>
                     <li><strong>ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
@@ -95,7 +82,7 @@
                 {% endfor %}
                 {% else %}
                   None
-              </ul></div>
+              </ul>
               {% endif %}
             </td>
           </tr>
@@ -103,29 +90,35 @@
         </tbody>
       </table>
 
-      <nav class="pagination" role="navigation" aria-label="pagination">
-        {% if people.has_prev %}
-          <a class="pagination-previous" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
-        {% endif %}
-        {% if people.has_next %}
-          <a class="pagination-next" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
-        {% endif %}
-      <ul class="pagination-list">
-      {% for page_num in people.iter_pages() %}
-        <li>
-        {% if page_num %}
-          {% if people.page == page_num %}
-            <a class="pagination-link is-current" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
-          {% else %}
-            <a class="pagination-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
-  
-          {% endif %}
-        {% else %}
-          ...
-        {% endif %}
-        </li>
-      {% endfor %}
-      </ul>
+      <nav role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-start">
+          <li class="page-item">
+            {% if people.has_prev %}
+              <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+            {% endif %}</li>
+
+          {% for page_num in people.iter_pages() %}
+            {% if page_num %}
+              {% if people.page == page_num %}
+                <li class="page-item active">
+                  <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+                </li>
+              {% else %}
+                <li class="page-item ">
+                  <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+                </li>
+      
+              {% endif %}
+            {% else %}
+              ...
+            {% endif %}
+          {% endfor %}
+        
+          <li class="page-item">
+            {% if people.has_next %}
+              <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+            {% endif %}</li>
+        </ul>
       </nav>
     </div> <!-- end .container -->
   </div><!-- end .section -->

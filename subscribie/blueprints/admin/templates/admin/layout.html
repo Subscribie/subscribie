@@ -74,24 +74,21 @@
         </div>
       </div>
     </section> -->
-    <main class="main">
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<article class="message is-success">
-		  <div class="message-header">
-			<p>Success</p>
-		  </div>
-		  <div class="message-body">
-			<ul class=flashes>
-			{% for message in messages %}
-			  <li>{{ message }}</li>
-			{% endfor %}
-			</ul>
-		  </div>
-		</article>
-	  {% endif %}
-	{% endwith %}
-    {% block body %}{% endblock %}
+    <main>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="card alert-success my-3 mx-3 px-3 py-2" role="alert">
+            <h4 class="alert-heading">Success</h4>
+            <hr>
+            <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block body %}{% endblock %}
     </main>
 
   </div>
@@ -104,9 +101,7 @@
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
   </footer>
 
-  
-
-
+  <script src="{{ url_for('admin.static', filename='js/app.js') }}"></script>
 </body>
 
 <script type="application/javascript">

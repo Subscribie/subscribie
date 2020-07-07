@@ -1,64 +1,57 @@
 {% extends "admin/layout.html" %}                                                
 {% block title %} Orders {% endblock %}                                
                                                                                  
-{% block hero %}                                                                 
-                                                                                 
-<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
-    Order Notes
-</h1>
-
-                                                                                 
-{% endblock hero %} 
-                                                                                 
 {% block body %}
-<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
-  <div class="container">                                                        
-    <nav class="breadcrumb" aria-label="breadcrumbs">                            
-      <ul>                                                                       
-        <li><a href="/">Shop</a></li>                                            
-        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
-        <li class="is-active"><a href="#" aria-current="page">
-            Order Notes</a>
-        </li>                                                                    
-      </ul>                                                                      
-    </nav>                                                                       
-  </div>                                                                         
+
+<h2 class="text-center text-dark mb-3">Order Notes</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Order Notes</li>
+  </ul>
 </div>
 
-<div class="section">
-  <div class="container">
-  <h2 class="title is-2">Notes to seller upon subscription creation</h2>
+<main>
+  <div class="section">
+    <div class="container">
 
-  <p> Understand that notes are only taken
-  at the <em>start</em> of a subscription. It is your responsibility to manage
-  on-going client relationships after an order, for example, why not use the
-  free online chat integration (called Tawk) to give realtime online support 
-  to your customers? Or, let them know a support contact email address.
-  </p>
-		<table class="table">
-		  <thead>
-			<tr>
-			  <th>Customer Email Address</th>
-			  <th>Note</th>
-        <th>Created at</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			{% for subscription in subscriptions %}
-			<tr>
-			  <td>{{ subscription.person.email }}</td>
-			  <td>
-           {% if subscription.note[0] %}
-             {{ subscription.note[0].note }}
-           {% endif %}
-        </td>
-        <td>{{ subscription.created_at }}</td>
-			</tr>
-			{% endfor %}
-		  </tbody>
-		</table>
-	</div><!-- end .container -->
-</div><!-- end .section -->
+      <div class="alert alert-secondary" role="alert">
+        <h3 class="alert-heading">Notes to seller upon subscription creation</h3>
+        <p> Understand that notes are only taken
+          at the <strong>start</strong> of a subscription. It is your responsibility to manage
+          on-going client relationships after an order, for example, why not use the
+          free online chat integration (called Tawk) to give realtime online support 
+          to your customers? Or, let them know a support contact email address.
+        </p>
+      </div>
+    
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th>Customer Email Address</th>
+          <th>Note</th>
+          <th>Created at</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subscription in subscriptions %}
+        <tr>
+          <td>{{ subscription.person.email }}</td>
+          <td>
+             {% if subscription.note[0] %}
+               {{ subscription.note[0].note }}
+             {% endif %}
+          </td>
+          <td>{{ subscription.created_at }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div><!-- end .container -->
+  </div><!-- end .section -->
+</main>
 
 {% endblock body %} 
 

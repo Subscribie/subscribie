@@ -65,6 +65,7 @@ from pathlib import Path
 import subprocess
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, upgrade
+import click
 
 database = SQLAlchemy()
 
@@ -214,5 +215,15 @@ def create_app(test_config=None):
     @app.errorhandler(500)
     def page_not_found(e):
         return render_template("errors/500.html"), 500
+
+    @app.cli.command()
+    def initdb():
+        """Initialize the database."""
+        click.echo('Init the db')
+        with open("seed.sql") as fp:
+            con = sqlite3.connect(app.config["DB_FULL_PATH"])
+            cur = con.cursor()
+            cur.executescript(fp.read())
+            con.close()
 
     return app

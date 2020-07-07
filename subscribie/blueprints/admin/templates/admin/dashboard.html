@@ -12,263 +12,265 @@
   </ul>
 </div>
 
-<div class="section">
-  <div class="container">
+<div class="container">
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Checklist</h3>
-        <p class="card-subtitle mb-3 text-muted">
-            Make sure everything's in order. If tasks appear below, then
-            you'll need to complete them to get the most out of your shop.
-        </p>
-        <ul>
-            {% if gocardless_connected is sameas False %}
-            <li>
-            You must to connect GoCardless in order to start taking repeat payments.
-            <a class="btn btn-warning" 
-                href="{{ url_for('admin.connect_gocardless_manually') }}">
-                Connect GoCardless
-            </a>
-            </li>
-            {% endif %}
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Checklist</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          Make sure everything's in order. If tasks appear below, then
+          you'll need to complete them to get the most out of your shop.
+      </p>
+      <ul>
+          {% if gocardless_connected is sameas False %}
+          <li>
+          You must to connect GoCardless in order to start taking repeat payments.
+          <a class="btn btn-warning" 
+              href="{{ url_for('admin.connect_gocardless_manually') }}">
+              Connect GoCardless
+          </a>
+          </li>
+          {% endif %}
 
-            {% if stripe_connected is sameas False %}
-            <li>
-            You must to connect Stripe in order to take one-off payments for your 
-            items (up-front costs).
-            <a class="btn btn-warning" 
-                href="{{ url_for('admin.connect_stripe_manually') }}">
-                Connect Stripe
-            </a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
+          {% if stripe_connected is sameas False %}
+          <li>
+          You must to connect Stripe in order to take one-off payments for your 
+          items (up-front costs).
+          <a class="btn btn-warning" 
+              href="{{ url_for('admin.connect_stripe_manually') }}">
+              Connect Stripe
+          </a>
+          </li>
+          {% endif %}
+      </ul>
+  </div>
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Order Notes</h3>
-        <p class="card-subtitle mb-3 text-muted">
-            View (optional) notes customers may give you when starting their 
-            subscription.
-        </p>
-        <a class="btn btn-success" 
-            href="{{ url_for('admin.order_notes') }}">
-            View Notes
-        </a>
-    </div>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Order Notes</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View (optional) notes customers may give you when starting their 
+          subscription.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.order_notes') }}">
+          View Notes
+      </a>
+  </div>
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Subscribers</h3>
-        <p class="card-subtitle mb-3 text-muted">
-            View your subscribers.
-        </p>
-        <a class="btn btn-success" 
-            href="{{ url_for('admin.subscribers') }}">
-            View Subscribers
-        </a>
-    </div>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Subscribers</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View your subscribers.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.subscribers') }}">
+          View Subscribers
+      </a>
+  </div>
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Upcoming Payments</h3>
-        <p class="card-subtitle mb-3 text-muted">
-            View upcoming payments from your subscribers.
-        </p>
-        <a class="btn btn-success" 
-            href="{{ url_for('admin.upcoming_payments') }}">
-            View Upcoming Payments 
-        </a>
-    </div>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Upcoming Payments</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View upcoming payments from your subscribers.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.upcoming_payments') }}">
+          View Upcoming Payments 
+      </a>
+  </div>
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Manage Payment Gateways</h3>
-      <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Manage Payment Gateways</h3>
+    <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
 
-      <div class="container">
-        <div class="row justify-content-around">
+    <div class="container">
+      <div class="row justify-content-around">
 
-          <div class="card col-5 my-3 shadow-sm" >
-            <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
-                 class="card-img-top" 
-                 alt="..." 
-                 style="width:50%; display:block; margin:auto">
-            <div class="card-body">
-              <h5 class="card-title">Stripe</h5>
-              <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
-              <a href="{{ url_for('admin.connect_stripe_manually') }}" 
-                 class="btn btn-block
-                  {% if stripe_connected  %}
-                    btn-success
-                  {% else %}
-                    btn-info
-                  {% endif %}">
-                {% if stripe_connected %}
-                  Active! Click to reconnect Stripe
+        <div class="card col-lg my-3 mx-1 shadow-sm" >
+          <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
+                class="card-img-top" 
+                alt="..." 
+                style="width:50%; display:block; margin:auto">
+          <div class="card-body">
+            <h5 class="card-title">Stripe</h5>
+            <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
+            <a href="{{ url_for('admin.connect_stripe_manually') }}" 
+                class="btn btn-block
+                {% if stripe_connected  %}
+                  btn-success
                 {% else %}
-                  Connect to Stripe
-                {% endif %}
-              </a>
-            </div>
-          </div> <!--end card-->
-
-          <div class="card col-5 my-3 shadow-sm" >
-            <img src="{{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}"  
-                 class="card-img-top" 
-                 alt="..." 
-                 style="width:60%; display:block; margin:2.2rem auto">
-            <div class="card-body">
-              <h5 class="card-title">GoCardless</h5>
-              <p class="card-text">GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
-              <a href="{{ url_for('admin.connect_gocardless_manually') }}" 
-                 class="btn btn-block 
-                  {% if gocardless_connected  %}
-                    btn-success
-                  {% else %}
-                    btn-info
-                  {% endif %}">
-                {% if gocardless_connected  %}
-                  Active! Click to reconnect GoCardless
-                {% else %}
-                  Connect to GoCardless
-                {% endif %}
-              </a>
-            </div>
-          </div> <!--end card-->
-
-        </div>
-      </div> <!--end container for cards-->
-
-      <div class="alert alert-secondary mt-3">
-        <div class="media">
-          <img src="{{ url_for('admin.static', filename='money.svg') }}" 
-               class="align-self-center mr-3" 
-               alt="..." 
-               style="width: 64px">
-          <div class="media-body">
-            <p class="mt-3"><strong>Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p>
-            <p>Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</p>
+                  btn-info
+                {% endif %}">
+              {% if stripe_connected %}
+                Active! Click to reconnect Stripe
+              {% else %}
+                Connect to Stripe
+              {% endif %}
+            </a>
           </div>
+        </div> <!--end card-->
+
+        <div class="card col-lg my-3 mx-1 shadow-sm" >
+          <img src="{{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}"  
+                class="card-img-top" 
+                alt="..." 
+                style="width:60%; display:block; margin:2.2rem auto">
+          <div class="card-body">
+            <h5 class="card-title">GoCardless</h5>
+            <p class="card-text">GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
+            <a href="{{ url_for('admin.connect_gocardless_manually') }}" 
+                class="btn btn-block 
+                {% if gocardless_connected  %}
+                  btn-success
+                {% else %}
+                  btn-info
+                {% endif %}">
+              {% if gocardless_connected  %}
+                Active! Click to reconnect GoCardless
+              {% else %}
+                Connect to GoCardless
+              {% endif %}
+            </a>
+          </div>
+        </div> <!--end card-->
+
+      </div>
+    </div> <!--end container for cards-->
+
+    <div class="alert alert-secondary mt-3">
+      <div class="media">
+        <img src="{{ url_for('admin.static', filename='money.svg') }}" 
+              class="align-self-center mr-3" 
+              alt="..." 
+              style="width: 64px">
+        <div class="media-body">
+          <p class="mt-3"><strong>Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p>
+          <p>Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</p>
         </div>
       </div>
-
     </div>
+
+  </div>
 
 <!-- Social Integrations -->
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Manage Social Integrations</h3>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Manage Social Integrations</h3>
 
-      <div class="card col-8 my-3 shadow-sm mx-auto" >
-        <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
-             class="card-img-top" 
-             alt="Tawk logo" 
-             style="width:auto; display:block; margin:1rem auto 0 auto">
-        <div class="card-body">
-          <h5 class="card-title">Tawk</h5>
-          <p class="card-text">Chat with your potential customers live on your website!</p>
-          <a href="{{ url_for('admin.connect_tawk_manually') }}"
-             class="btn btn-block
-              {% if integration.tawk_property_id %}
-                btn-success
-              {% else %}
-                btn-info
-              {% endif %}">
-              {% if integration.tawk_property_id %}
-                  Active! Click to reconnect Tawk
-              {% else %}
-                Connect to Tawk
-              {% endif %}
-          </a>
-        </div>
-      </div> <!--end card-->
-    </div>
+    <div class="card col-lg my-3 shadow-sm" >
+      <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
+            class="card-img-top" 
+            alt="Tawk logo" 
+            style="width:auto; display:block; margin:1rem auto 0 auto">
+      <div class="card-body">
+        <h5 class="card-title">Tawk</h5>
+        <p class="card-text">Chat with your potential customers live on your website!</p>
+        <a href="{{ url_for('admin.connect_tawk_manually') }}"
+            class="btn btn-block
+            {% if integration.tawk_property_id %}
+              btn-success
+            {% else %}
+              btn-info
+            {% endif %}">
+            {% if integration.tawk_property_id %}
+                Active! Click to reconnect Tawk
+            {% else %}
+              Connect to Tawk
+            {% endif %}
+        </a>
+      </div>
+    </div> <!--end card-->
+  </div>
 <!-- End Tawk Integrations -->
 
 <!-- Analytics Integrations -->
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Manage Analytics Integrations</h3>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Manage Analytics Integrations</h3>
 
-      <div class="card col-8 my-3 shadow-sm mx-auto" >
-        <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
-             class="card-img-top" 
-             alt="Google Tag Manager logo"  
-             style="width:25%; display:block; margin:1rem auto 0 auto">
-        <div class="card-body">
-          <h5 class="card-title">Google Tag Manager</h5>
-          <p class="card-text">Track customer behaviour like the pros.
-            <a href="https://marketingplatform.google.com/about/tag-manager/"
-               target="_blank">
-            Learn about using Tag Manager</a>
-          </p>
-          <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
-             class="btn btn-block
-              {% if integration.google_tag_manager_container_id %}
-                btn-success
-              {% else %}
-                btn-info
-              {% endif %}">
-              {% if google_tag_manager_connected %}
-                  Active! Click to reconnect Tag Manager
-              {% else %}
-                Connect to Google Tag Manager
-              {% endif %}
-          </a>
-        </div>
-      </div> <!--end card-->
-    </div>
+    <div class="card col-lg my-3 shadow-sm" >
+      <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
+            class="card-img-top" 
+            alt="Google Tag Manager logo"  
+            style="width:25%; display:block; margin:1rem auto 0 auto">
+      <div class="card-body">
+        <h5 class="card-title">Google Tag Manager</h5>
+        <p class="card-text">Track customer behaviour like the pros.
+          <a href="https://marketingplatform.google.com/about/tag-manager/"
+              target="_blank">
+          Learn about using Tag Manager</a>
+        </p>
+        <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
+            class="btn btn-block
+            {% if integration.google_tag_manager_container_id %}
+              btn-success
+            {% else %}
+              btn-info
+            {% endif %}">
+            {% if google_tag_manager_connected %}
+                Active! Click to reconnect Tag Manager
+            {% else %}
+              Connect to Google Tag Manager
+            {% endif %}
+        </a>
+      </div>
+    </div> <!--end card-->
+  </div>
 <!-- End analytics Integrations -->
 
 <!-- Loaded modules and links to their index pages -->
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Modules</h3>
-        <p class="card-subtitle mb-3 text-muted">
-          List of enabled modules. For example, the iFrame embed module allows you to
-          embed your Subscription website into another website if you have an existing
-          website you want to keep using, but use Subscribie for your subscriptions.
-        </p>
-        
-        <div class="container">
-          {% for moduleName in loadedModules %}
-            {% if loadedModules[moduleName]['links']|length != 0 %}
-              <div class="card col-8 my-3 shadow-sm mx-auto">
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Modules</h3>
+
+      <p class="card-subtitle mb-3 text-muted">
+        List of enabled modules. For example, the iFrame embed module allows you to
+        embed your Subscription website into another website if you have an existing
+        website you want to keep using, but use Subscribie for your subscriptions.
+      </p>
+      
+      <div class="container">
+        {% for moduleName in loadedModules %}
+          {% if loadedModules[moduleName]['links']|length != 0 %}
+            <div class="card col-lg my-3 shadow-sm">
+              <div class="card-body">
                 <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
-                  {% for link in loadedModules[moduleName]['links'] %}
-                    <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
-                  {% endfor %}
+                {% for link in loadedModules[moduleName]['links'] %}
+                  <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
+                {% endfor %}
               </div>
-            {% endif %}
-          {% endfor  %}
-        </div>
-    </div>
+            </div>
+          {% endif %}
+        {% endfor  %}
+      </div>
+  </div>
 <!-- End Loaded modules and links to their index pages -->
 
 
 <!-- SEO Titles module -->
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">SEO Titles</h3>
-        <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
-        <a class="btn btn-success" 
-           href="#">
-        List pages
-        </a>
-    </div>
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">SEO Titles</h3>
+      <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
+      <a class="btn btn-success" 
+          href="{{ url_for('seo_page_title.list_pages') }}"> 
+      List pages
+      </a>
+  </div>
 <!-- end SEO Titles module -->
 
-    <div class="card px-3 py-3 my-3">
-      <h3 class="card-title">Edit / Add Items</h3>
-        <a class="btn btn-success mb-3" 
-           href="{{ url_for('admin.edit') }}">
-          Edit items
-        </a>
-        <a class="btn btn-success mb-3" 
-           href="{{ url_for('admin.add_item') }}">
-          Add items
-        </a>
-        <a class="btn btn-danger" 
-           href="{{ url_for('admin.delete_item') }}">
-          Delete items
-        </a>
-    </div>
-
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Edit / Add Items</h3>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.edit') }}">
+        Edit items
+      </a>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.add_item') }}">
+        Add items
+      </a>
+      <a class="btn btn-danger" 
+          href="{{ url_for('admin.delete_item') }}">
+        Delete items
+      </a>
   </div>
+
 </div>
+
 
 {% endblock %}
