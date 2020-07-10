@@ -29,6 +29,7 @@
       </div>                                                        
     </div>                                                                    
       {% endif %} 
+
     <div class="container">
 
       <div class="card mx-auto col-md-6">
@@ -41,25 +42,25 @@
           </div>
 
           <div class="form-group">
-            <label for="title-0" class="col-form-label">Product name</label>
+            <label for="title-0" class="col-form-label font-weight-bolder">Product name</label>
             <input name="title-0" id="title-0" class="form-control">
           </div>
 
           <fieldset class="form-group">
-              <legend class="col-form-label">Product selling points</legend>
-                <div>
-                  <input name="selling_points-0-0"  class="form-control mb-2 col-md">
-                </div>
-                <div>
-                  <input name="selling_points-0-1"  class="form-control mb-2 col-md">
-                </div>
-                <div>
-                  <input name="selling_points-0-3"  class="form-control mb-2 col-md">
-                </div>
+            <legend class="col-form-label font-weight-bolder">Product selling points</legend>
+              <div>
+                <input name="selling_points-0-0"  class="form-control mb-2 col-md">
+              </div>
+              <div>
+                <input name="selling_points-0-1"  class="form-control mb-2 col-md">
+              </div>
+              <div>
+                <input name="selling_points-0-3"  class="form-control mb-2 col-md">
+              </div>
           </fieldset>
 
           <div class="form-group">
-            <label for="image-0" class="col-form-label">Product image</label>
+            <label for="image-0" class="col-form-label font-weight-bolder">Product image</label>
             <input type="file" name="image-0" id="image-0" class="form-control-file">
           </div>
           
@@ -69,13 +70,13 @@
             <div class="form-group">
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="subscription-0" id="subscription-0" checked>
-                <label class="form-check-label" for="subscription-0">Billed monthly</label>
+                <label class="form-check-label font-weight-bolder" for="subscription-0">Billed monthly</label>
               </div>
             </div>
 
-            <div id="price">
+            <div class="extra_fields">
               <div class="form-group">
-                <label for="monthly_price-0" class="col-form-label">Monthly Price:</label>
+                <label for="monthly_price-0" class="col-form-label font-weight-bolder">Monthly Price</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
@@ -85,7 +86,7 @@
               </div>
 
               <div class="form-group">
-                <label for="days_before_first_charge-0">Days before the first charge</label>
+                <label for="days_before_first_charge-0" class="col-form-label font-weight-bolder">Days before the first charge</label>
                 <input id="days_before_first_charge-0" name="days_before_first_charge-0" type="number" value="0" class="form-control" >
                 <small class="form-text text-muted">
                   "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
@@ -99,11 +100,11 @@
           <fieldset>
             <div class="form-group form-check">
               <input type="checkbox" class="form-check-input" name="instant_payment-0" id="instant_payment-0" >
-              <label class="form-check-label" for="instant_payment-0">Add upfront charge</label>
+              <label class="form-check-label font-weight-bolder" for="instant_payment-0">Add upfront charge</label>
             </div>
 
-            <div class="form-group" id="upfront_price" style="display:none">
-              <label for="sell_price-0" class="col-form-label">Upfront price</label>
+            <div class="form-group extra_fields" id="upfront_price" >
+              <label for="sell_price-0" class="col-form-label font-weight-bolder">Upfront price</label>
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text">£</span>
@@ -119,27 +120,26 @@
             <div class="form-group ">
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="note_to_seller_required-0" id="note_to_seller_required-0">
-                <label class="form-check-label" for="note_to_seller_required-0">Require customer note</label>
+                <label class="form-check-label font-weight-bolder" for="note_to_seller_required-0">Require customer note</label>
               </div>
               <small class="form-text text-muted">
                 Useful for product personalisation, customisation or variations
               </small>
             </div>
             
-            <div class="form-group" id="message" style="display:none">
-              <label for="note_to_buyer_message-0" class="col-form-label">Message for the customer</label>
+            <div class="form-group extra_fields" id="message" >
+              <label for="note_to_buyer_message-0" class="col-form-label font-weight-bolder">Message for the customer</label>
               <textarea class="form-control" id="note_to_buyer_message-0" name="note_to_buyer_message-0" rows="3"></textarea>
               <small class="form-text text-muted">
                 This message will be shown during checkout to the customer
               </small>
             </div>
           </fieldset>
-
-          <hr>
-
-          <button type="submit" class="btn btn-primary btn-block mb-3 ">Save</button>
+        
         </form>
       </div>
+
+      <button type="submit" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
     </div>
   </div><!-- end .section -->
 </main>
