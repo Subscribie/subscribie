@@ -1,62 +1,58 @@
 {% extends "admin/layout.html" %}                                                
-{% block title %} Dashboard {% endblock %}                                       
-                                                                                 
-{% block hero %}
-    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
-        Delete Items
-    </h1>
-                                                                                 
-{% endblock hero %}                                                                   
+{% block title %} Dashboard {% endblock %}                                                                
                                                                                  
 {% block body %}
 
-                                                                                 
-<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
-  <div class="container">                                                        
-    <nav class="breadcrumb" aria-label="breadcrumbs">                            
-      <ul>                                                                       
-        <p>You're here: </p>                                                     
-        <li><a href="/">Shop</a></li>                                            
-        <li><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-        <li class="is-active"><a href="#" aria-current="page">                   
-            Delete items</a>                                                
-        </li>                                                                    
-      </ul>                                                                      
-    </nav>                                                                       
-  </div>                                                                         
-</div>
+<h2 class="text-center text-dark mb-3">Delete Items</h2>
 
-<div class="section">
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Delete items</li>
+  </ul>
+</div>                                                                              
 
-    {% if confirm is sameas false %}
-        <h1 class="title">Are you sure?</h1>
-        <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid) }}" 
-            class="button is-danger">
-            Yes
-        </a>
-        <br /><br />
-        <a href="{{ url_for('admin.delete_item', cancel=1)}}" 
-            class="button is-success">
-            No
-        </a>
-    {% else %}
-        <table>
-            <thead>
-                <th>Name</th>
-                <th>Delete</th>
-            </thead>
-        {% for item in items %}
-            <tr>
-                <td>{{ item.title }}</td>
-                <td>
-                    <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid,
-    confirm=1) }}" 
-                        class="button is-danger">Delete</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
-    {% endif %}
-</div><!-- end .section -->
-
+<main>
+    <div class="section">
+        <div class="container">
+        {% if confirm is sameas false %}
+            <div class="card col-md-6 mx-auto my-3 py-3">
+                <h3 class="card-title mx-auto">Are you sure?</h3>
+                <div class="mx-auto">
+                    <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid) }}" 
+                        class="btn btn-danger mx-3 px-5" role="button">
+                        Yes
+                    </a>
+                    <a href="{{ url_for('admin.delete_item', cancel=1)}}" 
+                        class="btn btn-success mx-3 px-5" role="button">
+                        No
+                    </a>
+                </div>
+            </div>
+        {% else %}
+        
+            <table class="table table-hover col-sm-8 mx-auto">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.delete_item_by_uuid', uuid=item.uuid, confirm=1) }}" 
+                                class="btn btn-danger col-md-6 btn-block">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}    
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    </div><!-- end .section -->
+</main>
 {% endblock body %}
