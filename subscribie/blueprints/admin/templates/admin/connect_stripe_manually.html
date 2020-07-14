@@ -20,7 +20,15 @@
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col-md-7">
           <h2>Connect Stripe to your shop</h2>
-          <div class="alert {% if stripe_connected %}alert-success{% else %}alert-light{% endif %}"><p><strong>Status: </strong>{% if stripe_connected %}Stripe is already connected!{% else %}Stripe isn't yet configured, use the form below.{% endif %}</p></div>
+          <div class="alert {% if stripe_connected %}alert-success{% else %}alert-light{% endif %}">
+            <p><strong>Status: </strong>
+              {% if stripe_connected %}
+                Stripe is already connected!
+              {% else %}
+                Stripe isn't yet configured, use the form below.
+              {% endif %}
+            </p>
+          </div>
           <p>To start taking one-off payments, please connect your Stripe account by copy &amp; pasting your Stripe API keys into the boxes below. You need to enter both your publishable and secret key.</p>
           
           <form action="" method="POST" action="/">
