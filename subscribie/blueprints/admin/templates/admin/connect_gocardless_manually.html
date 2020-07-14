@@ -1,80 +1,75 @@
 {% extends "admin/layout.html" %}
 {% block title %} Connect GoCardless Manually {% endblock %}
 
-{% block hero %}
-
-    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">Manage My Shop</h1>
-
-{% endblock %}
-
 {% block body %}
 
-<div style="padding: 1rem 1.5rem 0 1.5rem;">
-  <div class="container">
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <p>You're here: </p>
-        <li><a href="/">Shop</a></li>
-        <li><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Connect GoCardless</a></li>
-      </ul>
-    </nav>
-  </div>
+<h2 class="text-center text-dark mb-3">Manage My Shop</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Connect GoCardless</li>
+  </ul>
 </div>
 
-<div class="section">
-  <div class="container">
+<main>
+  <div class="section">
+    <div class="container">
 
-    <div class="columns">
-      <div class="column">
-        <h2 class="title is-3">Connect GoCardless to your shop</h2>
-        <div class="notification {% if gocardless_connected %}is-success{% else %}is-light{% endif %}"><p><b>Status: </b>{% if gocardless_connected %}GoCardless is already connected!{% else %}GoCardless isn't yet configured, use the form below.{% endif %}</p></div>
-        <p>To start taking reoccuring payments, you'll need to connect your GoCardless account. This allows you to take payments from a customer's bank account using Direct Debit.</p>
-        <br />
-        <form class="form" action="" method="POST" action="/">
-
-            {{ form.csrf_token }}
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Access Token:</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input class="input"  id="access_token" name="access_token" type="password" placeholder="***" />
-                  </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Connect GoCardless to your shop</h2>
+          <div class="alert {% if gocardless_connected %}alert-success{% else %}alert-light{% endif %}"><p><strong>Status: </strong>{% if gocardless_connected %}GoCardless is already connected!{% else %}GoCardless isn't yet configured, use the form below.{% endif %}</p></div>
+          <p>To start taking reoccuring payments, you'll need to connect your GoCardless account. This allows you to take payments from a customer's bank account using Direct Debit.</p>
+          
+          <form action="" method="POST" action="/">
+              {{ form.csrf_token }}
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="access_token">Access Token:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="password" name="access_token" id="access_token" placeholder="***">
                 </div>
               </div>
-            </div><br />
-            <button type="submit" class="button is-fullwidth is-info">{% if gocardless_connected %}Reconnect{% else %}Connect{% endif %} GoCardless</button>
-        </form>
-      </div>
-      <div class="is-divider-vertical"></div>
-      <div class="column is-one-third" style="padding:0;">
-        <img src="/static/gocardless-blue-rgb_2018.svg" style="max-height:100px; margin-bottom:1.5rem">
-        <h3 class="title is-5">Need some help?</h3>
-        <p>In order to link GoCardless, you must already have a GoCardless 
-            account. If you do not yet have an account,
-            <a href="https://manage.gocardless.com/signup" target="_blank">
-            click here</a> to create one.<br /><br />Once logged in, on the left 
-            menu, click "Developers", then at the top right, click "Create". 
-            Then, "Access Token". Give the token a name that you'll recognise, 
-            such as 'Subscriby', click "Read / Write Access" then finally click 
-            "Create Access Token". Make sure you copy this code straight away, 
-            as you won't be able to see it again without having to create a new 
-            key.
-        </p>
-        <br />
-        <h3 class="title is-5">GoCardless Charges</h3>
-        <p>Whilst we at Subscribie do not charge per transaction, GoCardless
-            does.<br /> Their rates and more information can be found at: 
-            <a href="https://gocardless.com/pricing/" target="_blank">
-            https://gocardless.com/pricing/</a>
-        </p>
-      </div>
-    </div>
 
-  </div>
-</div>
+              <button type="submit" class="btn btn-primary btn-block mb-3">{% if gocardless_connected %}Reconnect{% else %}Connect{% endif %} GoCardless</button>
+          </form>
+        </div>
 
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+            <img src="/static/gocardless-blue-rgb_2018.svg" 
+                 class="card-img-top mt-4 mb-3" 
+                 alt="..." 
+                 style="width:60%; display:block; margin:auto">
+            <div class="card-body">
+              <h4 class="card-title">Need some help?</h4>
+              <p>In order to link GoCardless, you must already have a GoCardless 
+                  account. If you do not yet have an account,
+                  <a href="https://manage.gocardless.com/signup" target="_blank">
+                  click here</a> to create one.</p>
+              <p>
+                Once logged in, on the left 
+                menu, click "Developers", then at the top right, click "Create". 
+                Then, "Access Token". Give the token a name that you'll recognise, 
+                such as 'Subscriby', click "Read / Write Access" then finally click 
+                "Create Access Token". Make sure you copy this code straight away, 
+                as you won't be able to see it again without having to create a new 
+                key.
+              </p>
+              <h4 class="card-title">GoCardless Charges</h4>
+              <p> Whilst we at Subscribie do not charge per transaction, GoCardless
+                does.</p> 
+              <p>Their rates and more information can be found at: 
+                  <a href="https://gocardless.com/pricing/" target="_blank">
+                  https://gocardless.com/pricing/</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
 {% endblock %}
