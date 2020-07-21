@@ -219,26 +219,24 @@
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Modules</h3>
 
-      <p class="card-subtitle mb-3 text-muted">
-        List of enabled modules. For example, the iFrame embed module allows you to
-        embed your Subscription website into another website if you have an existing
-        website you want to keep using, but use Subscribie for your subscriptions.
-      </p>
-      
-      <div class="container">
-        {% for moduleName in loadedModules %}
-          {% if loadedModules[moduleName]['links']|length != 0 %}
-            <div class="card col-lg my-3 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
-                {% for link in loadedModules[moduleName]['links'] %}
-                  <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-        {% endfor  %}
-      </div>
+    <p class="card-subtitle mb-3 text-muted">
+      List of enabled modules. For example, the iFrame embed module allows you to
+      embed your Subscription website into another website if you have an existing
+      website you want to keep using, but use Subscribie for your subscriptions.
+    </p>
+    
+    {% for moduleName in loadedModules %}
+      {% if loadedModules[moduleName]['links']|length != 0 %}
+        <div class="card col-lg my-3 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
+            {% for link in loadedModules[moduleName]['links'] %}
+              <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor  %}
   </div>
 <!-- End Loaded modules and links to their index pages -->
 
