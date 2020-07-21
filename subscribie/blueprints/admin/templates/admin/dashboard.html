@@ -231,7 +231,7 @@
           <div class="card-body">
             <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
             {% for link in loadedModules[moduleName]['links'] %}
-              <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
+              <a class="btn btn-block btn-success" href="{{ url_for(link) }}">Manage</a>
             {% endfor %}
           </div>
         </div>
