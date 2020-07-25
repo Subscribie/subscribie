@@ -1,4 +1,4 @@
-const check_input = document.querySelectorAll('.form-check-input');
+const check_input = document.querySelectorAll('.toggle');
 const extra_fields = document.querySelectorAll('.extra_fields');
 
 check_input.forEach((input, i) => {
