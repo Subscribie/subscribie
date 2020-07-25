@@ -32,8 +32,9 @@
       {% endif %} 
 
     <div class="container">
+    <form method="post" action="#" enctype="multipart/form-data">
 
-      <div class="card mx-auto col-md-6 mb-3">
+	<div class="card mx-auto col-md-6 mb-3">
         
         <fieldset>
           <legend>Shop details</legend>
@@ -46,14 +47,16 @@
           <input name="email" type="hidden" value='email@example.com'>
         </fieldset>
 
-      </div>
+    </div>
 
       <div class="container">
         <div class="row">
+
         {% for item in items %}
-        
+
+          <input type="hidden" name="itemIndex" value="{{ loop.index0 }}" />
+          <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ item.uuid }}" />
           <div class="card col-lg-5 mb-3 mx-auto">
-            <form method="post" action="#" enctype="multipart/form-data">
               {{ form.csrf_token }}
 
               <div class="form-group">
@@ -162,14 +165,14 @@
                 </div>
               </fieldset>
 
-            </form>
+            
           </div>
             {% endfor %}
         </div>
+        <button type="submit" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
+        
       </div>
-
-      <button type="submit" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
-
+      </form>
     </div>
   </div><!-- end .section -->
 </main>
