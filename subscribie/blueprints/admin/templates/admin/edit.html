@@ -89,7 +89,7 @@
               <fieldset>
                 <div class="form-group">
                   <div class="form-check">
-                    <input type="checkbox" class="form-check-input billedMonthlyChecked" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" 
+                    <input type="checkbox" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" 
                       {% if item.requirements[0].subscription  %}
                         checked
                       {% endif %}>
@@ -122,7 +122,7 @@
 
               <fieldset>
                 <div class="form-group form-check">
-                  <input type="checkbox" class="form-check-input" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" 
+                  <input type="checkbox" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" 
                     {% if item.requirements[0].instant_payment  %}
                       checked
                     {% endif %}>
@@ -145,7 +145,7 @@
               <fieldset>
                 <div class="form-group ">
                   <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}"
+                    <input type="checkbox" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}"
                       {% if item.requirements[0].note_to_seller_required %}
                         checked
                       {% endif %}>
