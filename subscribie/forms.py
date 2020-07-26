@@ -36,19 +36,22 @@ class ItemsForm(StripWhitespaceForm):
     company_name = TextField("Company Name")
     slogan = TextField("Slogan")
     instant_payment = FieldList(
-        BooleanField("Up-Front Payment", default=False), min_entries=1
+        TextField("Up-Front Payment", default=False), min_entries=1
     )
     uuid = FieldList(StringField(), min_entries=1)
-    subscription = FieldList(BooleanField("Subscription", default=False), min_entries=1)
-    note_to_seller_required = FieldList(BooleanField("Require note from customer", default=False), min_entries=1)
+    subscription = FieldList(TextField("Subscription", default=False), min_entries=1)
+    note_to_seller_required = FieldList(TextField("Require note from customer", default=False), min_entries=1)
     # Allow seller to say what additional information they need
     note_to_buyer_message = FieldList(TextAreaField(u'Note to buyer', [validators.optional(), validators.length(max=500)]))
     days_before_first_charge = FieldList(StringField("Days before first charge"))
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )
-    monthly_price = FieldList(
-        FloatField("Monthly Price", [validators.optional()]), min_entries=1
+    interval_amount = FieldList(
+        FloatField("Reccuring Amount", [validators.optional()]), min_entries=1
+    )
+    interval_unit = FieldList(
+        StringField("Interval Unit", [validators.optional()]), min_entries=1
     )
     selling_points = FieldList(
         FieldList(

@@ -69,19 +69,30 @@
           <fieldset>
             <div class="form-group">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input toggle" name="subscription-0" id="subscription-0" checked>
-                <label class="form-check-label font-weight-bolder" for="subscription-0">Billed monthly</label>
+                <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-0" id="subscription-0">
+                <label class="form-check-label font-weight-bolder" for="subscription-0">Recurring Charge?</label>
               </div>
             </div>
 
             <div class="extra_fields">
               <div class="form-group">
-                <label for="monthly_price-0" class="col-form-label font-weight-bolder">Monthly Price</label>
+                <label for="interval_amount-0" class="col-form-label font-weight-bolder">Recurring Amount</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
-                  <input name="monthly_price-0" id="monthly_price-0" class="form-control" type="number" step="0.01">
+                  <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="interval_unit-0" class="col-form-label font-weight-bolder">Interval Unit</label>
+                <div class="input-group">
+                  <select name="interval_unit-0" id="interval_unit-0" class="form-control">
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
                 </div>
               </div>
 
@@ -99,7 +110,7 @@
 
           <fieldset>
             <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input toggle" name="instant_payment-0" id="instant_payment-0" >
+              <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-0" id="instant_payment-0" >
               <label class="form-check-label font-weight-bolder" for="instant_payment-0">Add upfront charge</label>
             </div>
 
@@ -119,7 +130,7 @@
           <fieldset>
             <div class="form-group ">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
+                <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
                 <label class="form-check-label font-weight-bolder" for="note_to_seller_required-0">Require customer note</label>
               </div>
               <small class="form-text text-muted">

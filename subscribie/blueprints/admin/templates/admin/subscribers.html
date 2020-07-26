@@ -57,7 +57,7 @@
                       {% else %}
                         None
                       {% endif %}</li>
-                    <li><strong>Price monthly: </strong>{{ subscription.item.monthly_price|default(0)|currencyFormat }}</li>
+                    <li><strong>Price ({{ subscription.item.interval_unit }}): </strong>{{ subscription.item.interval_amount |default(0)|currencyFormat }}</li>
                     <li><strong>Sell price: </strong>{{ subscription.item.sell_price|default(0)|currencyFormat }}</li>
                     <li><strong>Status: </strong>{{subscription_status(subscription.gocardless_subscription_id)}}</li>
                     <li><strong>Actions: </strong>
