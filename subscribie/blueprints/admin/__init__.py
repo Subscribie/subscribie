@@ -249,7 +249,7 @@ def edit():
             item_requirements = ItemRequirements()
 
             draftItem.uuid = str(uuid.uuid4())
-            draftItem.requirements.append(item_requirements)
+            draftItem.requirements = item_requirements
             # Preserve primary icon if exists
             draftItem.primary_icon = item.primary_icon
 
@@ -257,21 +257,31 @@ def edit():
                 form.title.data, index, default=""
             ).strip()
 
-            item_requirements.subscription = bool(
-                getItem(form.subscription.data, index)
-            )
-            if getItem(form.monthly_price.data, index, default=0) is None:
-                monthly_price = 0
+            if getItem(form.subscription.data, index) == 'yes':
+                item_requirements.subscription = True
             else:
-                monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
-            draftItem.monthly_price = monthly_price
+                item_requirements.subscription = False
 
-            item_requirements.instant_payment = bool(
-                getItem(form.instant_payment.data, index)
-            )
-            item_requirements.note_to_seller_required = bool(
-                getItem(form.note_to_seller_required.data, index)
-            )
+            interval_unit = form.interval_unit.data[0].strip()
+            if 'monthly' in interval_unit or 'yearly' in interval_unit or \
+               'weekly' in interval_unit:
+                   draftItem.interval_unit = interval_unit
+
+            if getItem(form.interval_amount.data, index, default=0) is None:
+                interval_amount = 0
+            else:
+                interval_amount = int(getItem(form.interval_amount.data, index, default=0) * 100)
+            draftItem.interval_amount = interval_amount
+            if getItem(form.instant_payment.data, index) == 'yes':
+                item_requirements.instant_payment = True
+            else:
+                item_requirements.instant_payment = False
+
+            if getItem(form.note_to_seller_required.data, index) == 'yes':
+                item_requirements.note_to_seller_required = True
+            else:
+                item_requirements.note_to_seller_required = False
+
             item_requirements.note_to_buyer_message = str(getItem(
                 form.note_to_buyer_message, index, default=""
             ).data)
@@ -324,12 +334,24 @@ def add_item():
         draftItem = Item()
         database.session.add(draftItem)
         item_requirements = ItemRequirements()
-        draftItem.requirements.append(item_requirements)
+        draftItem.requirements = item_requirements
 
         draftItem.uuid = str(uuid.uuid4())
         draftItem.title = form.title.data[0].strip()
-        item_requirements.subscription = bool(form.subscription.data[0])
-        item_requirements.note_to_seller_required = bool(form.note_to_seller_required.data[0])
+        interval_unit = form.interval_unit.data[0].strip()
+        if 'monthly' in interval_unit or 'yearly' in interval_unit or \
+           'weekly' in interval_unit:
+               draftItem.interval_unit = interval_unit
+
+        if form.subscription.data[0] == 'yes':
+            item_requirements.subscription = True
+        else:
+            item_requirements.subscription = False
+        if form.note_to_seller_required.data[0] == 'yes':
+            item_requirements.note_to_seller_required = True
+        else:
+            item_requirements.note_to_seller_required = False
+
         item_requirements.note_to_buyer_message = str(form.note_to_buyer_message.data[0])
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
@@ -338,13 +360,16 @@ def add_item():
 
         draftItem.days_before_first_charge = days_before_first_charge
 
-        if form.monthly_price.data[0] is None:
-            draftItem.monthly_price = 0
+        if form.interval_amount.data[0] is None:
+            draftItem.interval_amount = 0
         else:
-            draftItem.monthly_price = int(form.monthly_price.data[0]) * 100
-        item_requirements.instant_payment = bool(
-            form.instant_payment.data[0]
-        )
+            draftItem.interval_amount = int(form.interval_amount.data[0]) * 100
+
+        if form.instant_payment.data[0] == 'yes':
+            item_requirements.instant_payment = True
+        else:
+            item_requirements.instant_payment = False
+
         if form.sell_price.data[0] is None:
             draftItem.sell_price = 0
         else:

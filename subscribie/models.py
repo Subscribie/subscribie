@@ -81,11 +81,13 @@ class Item(database.Model):
     archived = database.Column(database.Boolean(), default=False)
     uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
+    interval_unit = database.Column(database.String()) # Charge interval
+    interval_amount = database.Column(database.Integer(), default=0) # Charge amount each interval
     monthly_price = database.Column(database.Integer())
-    sell_price = database.Column(database.Integer())
+    sell_price = database.Column(database.Integer()) # Upfront price
     days_before_first_charge = database.Column(database.Integer())
     primary_icon = database.Column(database.String())
-    requirements = relationship("ItemRequirements", back_populates="item")
+    requirements = relationship("ItemRequirements", uselist=False, back_populates="item")
     selling_points = relationship("ItemSellingPoints", back_populates="item")
 
 class ItemRequirements(database.Model):

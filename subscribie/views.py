@@ -63,7 +63,7 @@ def choose():
 def redirect_to_payment_step(item, inside_iframe=False):
     """Depending on items payment requirement, redirect to collection page
      accordingly"""
-    if item.requirements[0].instant_payment:
+    if item.requirements.instant_payment:
         return redirect(
             url_for(
                 "views.up_front",
@@ -73,7 +73,7 @@ def redirect_to_payment_step(item, inside_iframe=False):
                 fname=session["given_name"],
             )
         )
-    if item.requirements[0].subscription:
+    if item.requirements.subscription:
         return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
     return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
@@ -192,7 +192,7 @@ def charge_up_front():
 
     except stripe.error.AuthenticationError as e:
         return str(e)
-    if item.requirements[0].subscription:
+    if item.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
@@ -320,13 +320,27 @@ def on_complete_mandate():
         # Add subscription id to session
         session["subscription_id"] = subscription.id
 
+        # Get interval_unit
+        if item.interval_unit is None:
+            # Default to monthly interval if interval_unit not set
+            interval_unit = "monthly"
+        else:
+            interval_unit = item.interval_unit
+
+        # Get interval_amount
+        if item.interval_amount is None:
+            # Default to monthly amount if interval_amount is not set
+            interval_amount = item.monthly_price
+        else:
+            interval_amount = item.interval_amount
+
         # Submit to GoCardless as subscription
         gc_subscription = gocclient.subscriptions.create(
             params={
-                "amount": item.monthly_price,
+                "amount": interval_amount,
                 "currency": "GBP",
                 "name": item.title,
-                "interval_unit": "monthly",
+                "interval_unit": interval_unit,
                 "metadata": {"subscribie_subscription_uuid": subscription.uuid},
                 "links": {"mandate": session["gocardless_mandate_id"]},
                 "start_date" : start_date
