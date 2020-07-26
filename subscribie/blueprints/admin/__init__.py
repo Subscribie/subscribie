@@ -262,7 +262,9 @@ def edit():
             else:
                 item_requirements.subscription = False
 
-            interval_unit = form.interval_unit.data[0].strip()
+            interval_unit = getItem(
+                    form.interval_unit.data, index, default=""
+            )
             if 'monthly' in interval_unit or 'yearly' in interval_unit or \
                'weekly' in interval_unit:
                    draftItem.interval_unit = interval_unit
