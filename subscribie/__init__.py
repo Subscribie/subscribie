@@ -47,6 +47,7 @@ import yaml
 from .forms import (
     StripWhitespaceForm,
     LoginForm,
+    PasswordLoginForm,
     CustomerForm,
     GocardlessConnectForm,
     StripeConnectForm,
@@ -111,8 +112,11 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
     from .blueprints.admin import admin_theme
+    from .blueprints.subscriber import subscriber
 
     app.register_blueprint(admin_theme, url_prefix="/admin")
+    app.register_blueprint(subscriber)
+
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     # the signals

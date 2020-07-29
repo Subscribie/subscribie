@@ -1,0 +1,29 @@
+{% extends "admin/layout.html" %}
+{% block title %} Account - {{ company.name }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">{{ company.name }}</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Account</li>
+  </ul>
+</div>
+
+<div class="container">
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Your subscriptions</h3>
+
+    <p>View, edit, pause or cancel any subscription</p>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('subscriber.subscriptions') }}">
+        Manage Subscriptions
+      </a>
+  </div>
+
+</div>
+
+
+{% endblock %}

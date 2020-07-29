@@ -1,0 +1,21 @@
+{% extends "admin/layout.html" %}
+{% block title %} Login {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark">Customer Login</h2>
+
+    <div class="card" style="max-width:800px; margin:3rem auto;">
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('subscriber.login') }}">
+          {{ form.csrf_token }}
+          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" required>
+          <input id="password" class="form-control form-control-lg mt-4" name="password" type="password" placeholder="Password" required>
+          <button type="submit" class="btn btn-success btn-lg btn-block my-3">
+          <span>Sign In</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+{% endblock body %}

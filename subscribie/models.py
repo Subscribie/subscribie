@@ -39,9 +39,16 @@ class Person(database.Model):
     city = database.Column(database.String())
     postal_code = database.Column(database.String())
     email = database.Column(database.String())
+    password = database.Column(database.String()) # Hash of password
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return '<Person {}>'.format(self.given_name)
