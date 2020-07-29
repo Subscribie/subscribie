@@ -104,3 +104,6 @@ class TawkConnectForm(FlaskForm):
 
 class ChangePasswordForm(FlaskForm):
     password = StringField("password", validators=[DataRequired()])
+    
+class ChangeEmailForm(FlaskForm):
+    email = StringField("password", validators=[DataRequired(), EmailValid()])
