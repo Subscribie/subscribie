@@ -107,3 +107,7 @@ class ChangePasswordForm(FlaskForm):
     
 class ChangeEmailForm(FlaskForm):
     email = StringField("password", validators=[DataRequired(), EmailValid()])
+
+class AddShopAdminForm(FlaskForm):
+    email = StringField("password", validators=[DataRequired(), EmailValid()])
+    password = StringField("password", validators=[DataRequired()])

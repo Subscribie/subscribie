@@ -12,6 +12,7 @@ from subscribie import (
     StripeConnectForm,
     ChangePasswordForm,
     ChangeEmailForm,
+    AddShopAdminForm,
     current_app,
     redirect,
     url_for,
@@ -881,6 +882,31 @@ def change_email():
       return redirect(url_for('admin.change_email'))
   else:
       return render_template("admin/change_email.html", form=form)
+
+@admin_theme.route("/add-shop-admin", methods=["GET", "POST"])
+@login_required
+def add_shop_admin():
+  """Add another shop admin"""
+  form = AddShopAdminForm()
+  if request.method == "POST":
+
+      if form.validate_on_submit():
+          # Check user dosent already exist
+          email = request.form["email"]
+          if User.query.filter_by(email=email).first() is not None:
+              return f"Error, admin with email ({email}) already exists."
+
+          user = User()
+          user.email = email
+          user.set_password(request.form["password"])
+          database.session.add(user)
+          database.session.commit()
+          flash(f"A new shop admin with email {email} has been added")
+      else:
+          return "Invalid add shop admin form submission"
+      return redirect(url_for('admin.add_shop_admin'))
+  else:
+      return render_template("admin/add_shop_admin.html", form=form)
 
 
 def getItem(container, i, default=None):

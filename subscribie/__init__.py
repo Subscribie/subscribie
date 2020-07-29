@@ -55,6 +55,7 @@ from .forms import (
     ItemsForm,
     ChangePasswordForm,
     ChangeEmailForm,
+    AddShopAdminForm,
 )
 from .Template import load_theme
 from blinker import signal
