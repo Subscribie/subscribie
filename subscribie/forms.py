@@ -101,3 +101,6 @@ class GoogleTagManagerConnectForm(FlaskForm):
 
 class TawkConnectForm(FlaskForm):
     property_id = StringField("property_id", validators=[DataRequired()])
+
+class ChangePasswordForm(FlaskForm):
+    password = StringField("password", validators=[DataRequired()])

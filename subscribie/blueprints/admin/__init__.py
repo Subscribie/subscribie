@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound, Markup
 from subscribie import (
+    database,
     logging,
     session,
     render_template,
@@ -9,6 +10,7 @@ from subscribie import (
     gocardless_pro,
     GocardlessConnectForm,
     StripeConnectForm,
+    ChangePasswordForm,
     current_app,
     redirect,
     url_for,
@@ -828,6 +830,30 @@ def order_notes():
   subscriptions = Subscription.query.order_by(desc('created_at')).all()
   return render_template("admin/order-notes.html", 
                          subscriptions=subscriptions)
+
+@admin_theme.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+  """Change password of existing user"""
+  form = ChangePasswordForm()
+  if request.method == "POST":
+      email = session.get('user_id', None)
+      if email is None:
+          return "Email not found in session"
+
+      if form.validate_on_submit():
+          user = User.query.filter_by(email=email).first()
+          if user is None:
+              return "User not found with that email"
+          else:
+              user.set_password(request.form["password"])
+              database.session.commit()
+          flash("Password has been updated")
+      else:
+          return "Invalid password form submission"
+      return redirect(url_for('admin.change_password'))
+  else:
+      return render_template("admin/change_password.html", form=form)
 
 
 def getItem(container, i, default=None):

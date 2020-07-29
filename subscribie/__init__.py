@@ -53,6 +53,7 @@ from .forms import (
     TawkConnectForm,
     GoogleTagManagerConnectForm,
     ItemsForm,
+    ChangePasswordForm,
 )
 from .Template import load_theme
 from blinker import signal
