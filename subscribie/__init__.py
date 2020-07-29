@@ -54,6 +54,7 @@ from .forms import (
     GoogleTagManagerConnectForm,
     ItemsForm,
     ChangePasswordForm,
+    ChangeEmailForm,
 )
 from .Template import load_theme
 from blinker import signal

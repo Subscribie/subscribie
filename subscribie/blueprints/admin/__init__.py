@@ -11,6 +11,7 @@ from subscribie import (
     GocardlessConnectForm,
     StripeConnectForm,
     ChangePasswordForm,
+    ChangeEmailForm,
     current_app,
     redirect,
     url_for,
@@ -854,6 +855,32 @@ def change_password():
       return redirect(url_for('admin.change_password'))
   else:
       return render_template("admin/change_password.html", form=form)
+
+
+@admin_theme.route("/change-email", methods=["GET", "POST"])
+@login_required
+def change_email():
+  """Change email of existing user"""
+  form = ChangeEmailForm()
+  if request.method == "POST":
+      email = session.get('user_id', None)
+      if email is None:
+          return "Email not found in session"
+
+      if form.validate_on_submit():
+          user = User.query.filter_by(email=email).first()
+          if user is None:
+              return "User not found with that email"
+          else:
+              new_email = request.form["email"]
+              user.email = new_email
+              database.session.commit()
+          flash(f"Email has been updated to {new_email}. Please re-login")
+      else:
+          return "Invalid email form submission"
+      return redirect(url_for('admin.change_email'))
+  else:
+      return render_template("admin/change_email.html", form=form)
 
 
 def getItem(container, i, default=None):
