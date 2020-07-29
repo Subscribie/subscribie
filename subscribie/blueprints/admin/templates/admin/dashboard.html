@@ -60,17 +60,6 @@
       </a>
   </div>
 
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Order Notes</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View (optional) notes customers may give you when starting their 
-          subscription.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.order_notes') }}">
-          View Notes
-      </a>
-  </div>
 
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Subscribers</h3>
@@ -91,6 +80,18 @@
       <a class="btn btn-success" 
           href="{{ url_for('admin.upcoming_payments') }}">
           View Upcoming Payments 
+      </a>
+  </div>
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Order Notes</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View (optional) notes customers may give you when starting their 
+          subscription.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.order_notes') }}">
+          View Notes
       </a>
   </div>
 
