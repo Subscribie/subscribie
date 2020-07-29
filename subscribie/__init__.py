@@ -203,7 +203,7 @@ def create_app(test_config=None):
             except (ModuleNotFoundError, AttributeError):
                 print(
                     "Error: Could not import module as blueprint: {}".format(
-                        module["name"]
+                        module.name
                     )
                 )
 
