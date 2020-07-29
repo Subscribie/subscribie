@@ -73,6 +73,12 @@ class PasswordLoginForm(FlaskForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
     password = StringField("password", validators=[DataRequired()])
 
+class SubscriberForgotPasswordForm(FlaskForm):
+    email = StringField("email", validators=[DataRequired(), EmailValid()])
+
+class SubscriberResetPasswordForm(FlaskForm):
+    token = StringField("token", validators=[DataRequired()])
+    password = StringField("password", validators=[DataRequired()])
 
 class CustomerForm(FlaskForm):
     given_name = StringField("given_name", validators=[DataRequired()])

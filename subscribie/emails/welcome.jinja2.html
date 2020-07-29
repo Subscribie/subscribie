@@ -2,11 +2,13 @@
 
 <p>Welcome to {{ company_name or '' }}.</p>
 
-<p>Most companies have a really long welcome email. Good news is we're not like most companies!</p>
-
-<p>Your first payment is set up for: {{ first_charge_date or 'tbc' }}, 
+<p>Your first payment is set up for: {{ first_charge_date or 'To be confirmed' }}, 
 amount: &pound;{{ first_charge_amount|int / 100 or 'tbc' }}</p>
 
 <p>Each payment will be on the same day each month.</p>
+
+<p>You can login to manage your subscription at:
+    <a href="{{ subscriber_login_url }}">My account</a>
+</p>
 
 <p>Once again welcome to {{ company_name }}.</p>
