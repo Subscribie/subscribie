@@ -40,6 +40,7 @@ class Person(database.Model):
     postal_code = database.Column(database.String())
     email = database.Column(database.String())
     password = database.Column(database.String()) # Hash of password
+    password_reset_string = database.Column(database.String())
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")

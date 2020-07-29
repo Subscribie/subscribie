@@ -12,6 +12,7 @@ from pathlib import Path
 from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
+import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Item, Integration, PaymentProvider, Transaction,
@@ -37,6 +38,11 @@ def redirect_url(default='index'):
 
 def index():
     return render_template("index.html")
+
+@bp.route("/play")
+def play():
+    import pdb;pdb.set_trace()
+    pass
 
 @bp.route("/reload")
 def reload_app():
@@ -121,10 +127,11 @@ def store_customer():
         session['email'] = email
         session['mobile'] = mobile
 
-        # Store person
+        # Store person, with randomly generated password
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
-                        postal_code=postcode, email=email, mobile=mobile)
+                        postal_code=postcode, email=email, mobile=mobile,
+                        password=str(os.urandom(16)))
         database.session.add(person)
         database.session.commit()
         session["person_id"] = person.id
@@ -391,6 +398,7 @@ def thankyou():
       template = Template(file_.read())                                            
       html = template.render(first_name=session.get('given_name', None), 
                     company_name=company.name,
+                    subscriber_login_url='https://' + flask.request.host + '/account/login',
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
 
