@@ -39,10 +39,6 @@ def redirect_url(default='index'):
 def index():
     return render_template("index.html")
 
-@bp.route("/play")
-def play():
-    import pdb;pdb.set_trace()
-    pass
 
 @bp.route("/reload")
 def reload_app():
