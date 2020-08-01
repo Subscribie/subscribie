@@ -16,6 +16,7 @@ class User(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     active = database.Column(database.String)
     login_token = database.Column(database.String)
+    password_reset_string = database.Column(database.String())
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
