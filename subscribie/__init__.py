@@ -130,6 +130,7 @@ def create_app(test_config=None):
     with app.app_context():
 
         database.init_app(app)
+        migrate = Migrate(app, database)
 
         if test_config is not None:
             seed_db()
