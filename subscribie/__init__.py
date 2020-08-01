@@ -102,45 +102,9 @@ def create_app(test_config=None):
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             print("Starting with sid {}".format(session["sid"]))
 
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-    images = UploadSet("images", IMAGES)
-    patch_request_class(app, 2 * 1024 * 1024)
-    configure_uploads(app, images)
-
-    from . import db
-    from . import auth
-    from . import views
-
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(views.bp)
-    from .blueprints.admin import admin_theme
-    from .blueprints.subscriber import subscriber
-
-    app.register_blueprint(admin_theme, url_prefix="/admin")
-    app.register_blueprint(subscriber)
-
-    app.add_url_rule("/", "index", views.__getattribute__("choose"))
-
-    # the signals
-    from .signals import journey_complete
-
-    # Set custom modules path
-    sys.path.append(app.config["MODULES_PATH"])
-
-    with app.app_context():
-
-        database.init_app(app)
-        migrate = Migrate(app, database)
-
-        if test_config is not None:
-            seed_db()
-            app.config.update(
-                test_config
-            )
-
-        load_theme(app)
-
-        # Register yml pages as routes
+    @app.before_first_request
+    def register_custom_page_routes():
+        """Register custom pages as routes"""
         pages = Page.query.all()
         for page in pages:
             page_path = page.path
@@ -159,7 +123,11 @@ def create_app(test_config=None):
             view_func = possibles.get(method_name)
             app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
 
-        # Import any custom modules
+    @app.before_first_request
+    def register_modules():
+        """Import any custom modules"""
+        # Set custom modules path
+        sys.path.append(app.config["MODULES_PATH"])
         modules = Module.query.all()
         print("sys.path contains: {}".format(sys.path))
         for module in modules:
@@ -212,6 +180,43 @@ def create_app(test_config=None):
                         module.name
                     )
                 )
+
+
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    images = UploadSet("images", IMAGES)
+    patch_request_class(app, 2 * 1024 * 1024)
+    configure_uploads(app, images)
+
+    from . import db
+    from . import auth
+    from . import views
+
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(views.bp)
+    from .blueprints.admin import admin_theme
+    from .blueprints.subscriber import subscriber
+
+    app.register_blueprint(admin_theme, url_prefix="/admin")
+    app.register_blueprint(subscriber)
+
+    app.add_url_rule("/", "index", views.__getattribute__("choose"))
+
+    # the signals
+    from .signals import journey_complete
+
+
+    with app.app_context():
+
+        database.init_app(app)
+        migrate = Migrate(app, database)
+
+        if test_config is not None:
+            seed_db()
+            app.config.update(
+                test_config
+            )
+
+        load_theme(app)
 
     # Handling Errors Gracefully
     @app.errorhandler(404)
