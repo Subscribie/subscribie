@@ -40,6 +40,10 @@ jobs:
         cp .env.example .env
     - name: Migrate database using flask db upgrade
       run: |
+        pwd
+        ls -l
+        export FLASK_APP=subscribie
+        export FLASK_DEBUG=1
         flask db upgrade
     - name: Test with pytest
       run: |
