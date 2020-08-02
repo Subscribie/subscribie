@@ -82,7 +82,7 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
                     ItemRequirements, ItemSellingPoints)
 
 def seed_db():                                                                 
-    # Add module_seo_page_title                                                  
+    # Add module_seo_page_title    
     module_seo = Module()                                                        
     module_seo.name = 'module_seo_page_title'                                    
     module_seo.src = 'https://github.com/Subscribie/module-seo-page-title.git'   
