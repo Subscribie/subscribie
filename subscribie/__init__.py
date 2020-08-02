@@ -100,6 +100,12 @@ def create_app(test_config=None):
      os.environ
     )
 
+    if test_config is not None:
+        import pdb;pdb.set_trace()
+        app.config.update(
+            test_config
+        )
+
     @app.before_request
     def start_session():
         try:
@@ -205,12 +211,6 @@ def create_app(test_config=None):
 
         database.init_app(app)
         migrate = Migrate(app, database)
-
-        if test_config is not None:
-            seed_db()
-            app.config.update(
-                test_config
-            )
 
         load_theme(app)
 
