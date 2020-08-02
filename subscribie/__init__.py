@@ -101,7 +101,6 @@ def create_app(test_config=None):
     )
 
     if test_config is not None:
-        import pdb;pdb.set_trace()
         app.config.update(
             test_config
         )
