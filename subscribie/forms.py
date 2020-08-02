@@ -80,6 +80,14 @@ class SubscriberResetPasswordForm(FlaskForm):
     token = StringField("token", validators=[DataRequired()])
     password = StringField("password", validators=[DataRequired()])
 
+class ForgotPasswordForm(FlaskForm):
+    email = StringField("email", validators=[DataRequired(), EmailValid()])
+    
+class ForgotPasswordResetPasswordForm(FlaskForm):
+    token = StringField("token", validators=[DataRequired()])
+    password = StringField("password", validators=[DataRequired()])
+
+
 class CustomerForm(FlaskForm):
     given_name = StringField("given_name", validators=[DataRequired()])
     family_name = StringField("family_name", validators=[DataRequired()])

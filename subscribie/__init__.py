@@ -59,6 +59,8 @@ from .forms import (
     AddShopAdminForm,
     SubscriberForgotPasswordForm,
     SubscriberResetPasswordForm,
+    ForgotPasswordForm,
+    ForgotPasswordResetPasswordForm
 )
 from .Template import load_theme
 from blinker import signal
