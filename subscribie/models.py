@@ -170,3 +170,7 @@ class Transaction(database.Model):
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
 
+class SeoPageTitle(database.Model):
+    __tablename__ = 'module_seo_page_title'
+    path = database.Column(database.String(), primary_key=True)
+    title = database.Column(database.String())

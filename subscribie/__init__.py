@@ -84,8 +84,12 @@ def seed_db():
     module_seo = Module()                                                        
     module_seo.name = 'module_seo_page_title'                                    
     module_seo.src = 'https://github.com/Subscribie/module-seo-page-title.git'   
-    database.session.add(module_seo)                                                   
+    database.session.add(module_seo)
+    module_pages = Module()
+    module_pages.name = 'module_pages'
+    module_pages.src = 'https://github.com/Subscribie/module-pages.git'                                                   
     database.session.commit()
+
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -162,17 +166,7 @@ def create_app(test_config=None):
                     app.config.from_pyfile(blueprintConfig, silent=True)
                     # Register the Blueprint
                     app.register_blueprint(getattr(importedModule, module.name))
-                    print("Imported as flask Blueprint")
-                    # Run Blueprint migrations if any
-                    modulePath = Path(importedModule.__file__).parents[0]
-                    moduleMigrationsPath = Path(modulePath, 'migrations')
-                    if moduleMigrationsPath.is_dir():
-                      # Run migrations
-                      for migration in moduleMigrationsPath.iterdir():
-                        print("Running module migration {}".format(migration))
-                        # Run subscribie_cli database migrations
-                        db_full_path = app.config['DB_FULL_PATH']
-                        subprocess.call("python " + str(migration) + ' -up -db ' + db_full_path, shell=True)
+                    print(f"Imported {module.name} as flask Blueprint")
 
             except (ModuleNotFoundError, AttributeError):
                 print(
