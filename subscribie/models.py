@@ -62,7 +62,7 @@ class Subscription(database.Model):
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey('person.id'))
-    item = relationship("Item", uselist=False, primaryjoin="foreign(Item.uuid)==Subscription.sku_uuid")
+    plan = relationship("Plan", uselist=False, primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid")
     person = relationship("Person", back_populates="subscriptions")
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
@@ -96,27 +96,27 @@ class Plan(database.Model):
     sell_price = database.Column(database.Integer()) # Upfront price
     days_before_first_charge = database.Column(database.Integer())
     primary_icon = database.Column(database.String())
-    requirements = relationship("ItemRequirements", uselist=False, back_populates="item")
-    selling_points = relationship("ItemSellingPoints", back_populates="item")
+    requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
+    selling_points = relationship("PlanSellingPoints", back_populates="plan")
 
-class ItemRequirements(database.Model):
-    __tablename__ = 'item_requirements'
+class PlanRequirements(database.Model):
+    __tablename__ = 'plan_requirements'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    item_id = database.Column(database.Integer(), ForeignKey('item.id'))
-    item = relationship("Item", back_populates="requirements")
+    plan_id = database.Column(database.Integer(), ForeignKey('plan.id'))
+    plan = relationship("Plan", back_populates="requirements")
     instant_payment = database.Column(database.Boolean(), default=False)
     subscription = database.Column(database.Boolean(), default=False)
     note_to_seller_required = database.Column(database.Boolean(), default=False)
     note_to_buyer_message = database.Column(database.String())
 
-class ItemSellingPoints(database.Model):
-    __tablename__ = 'item_selling_points'
+class PlanSellingPoints(database.Model):
+    __tablename__ = 'plan_selling_points'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     point = database.Column(database.String())
-    item_id = database.Column(database.Integer(), ForeignKey('item.id'))
-    item = relationship("Item", back_populates="selling_points")
+    plan_id = database.Column(database.Integer(), ForeignKey('plan.id'))
+    plan = relationship("Plan", back_populates="selling_points")
 
 class Integration(database.Model):
     __tablename__ = 'integration'

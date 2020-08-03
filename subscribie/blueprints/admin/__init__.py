@@ -21,7 +21,7 @@ from subscribie import (
     jsonify,
     TawkConnectForm,
     database, User, Person, Subscription, SubscriptionNote, Company,
-    Integration, PaymentProvider, Item, ItemRequirements, ItemSellingPoints
+    Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
 from subscribie.auth import login_required
 from subscribie.db import get_db

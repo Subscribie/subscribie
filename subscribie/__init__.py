@@ -78,8 +78,8 @@ import click
 database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
-                    Page, Module, PaymentProvider, Integration, Item,
-                    ItemRequirements, ItemSellingPoints)
+                    Page, Module, PaymentProvider, Integration, Plan,
+                    PlanRequirements, PlanSellingPoints)
 
 def seed_db():                                                                 
     # Add module_seo_page_title    
