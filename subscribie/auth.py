@@ -169,6 +169,7 @@ def forgot_password():
         email_template = str(Path(current_app.root_path + '/emails/user-reset-password.jinja2.html'))
         company = Company.query.first()
         password_reset_url='https://' + flask.request.host + '/auth/password-reset?token=' + token
+        print(f"password_reset_url: {password_reset_url}")
 
         with open(email_template) as file_:                                   
             template = Template(file_.read())     
