@@ -15,7 +15,7 @@ from flask import Blueprint, redirect, render_template, request, session, url_fo
 import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Item, Integration, PaymentProvider, Transaction,
+                    Company, Plan, Integration, PaymentProvider, Transaction,
                     Page)
 
 from flask_mail import Mail, Message
@@ -26,7 +26,7 @@ bp = Blueprint("views", __name__, url_prefix=None)
 def inject_template_globals():
     company = Company.query.first()
     integration = Integration.query.first()
-    items = Item.query.filter_by(archived=0)
+    items = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     return dict(company=company, integration=integration, items=items,
                 pages=pages)
@@ -58,7 +58,7 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    items = Item.query.filter_by(archived=0).all()
+    items = Plan.query.filter_by(archived=0).all()
     return render_template("choose.html",
                             items=items)
 
@@ -81,7 +81,7 @@ def redirect_to_payment_step(item, inside_iframe=False):
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
-    item = Item.query.filter_by(uuid=request.args['plan']).first()
+    item = Plan.query.filter_by(uuid=request.args['plan']).first()
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
         return redirect_to_payment_step(item)
@@ -89,7 +89,7 @@ def new_customer():
 
     package = request.args.get("plan", "not set")
     session["package"] = package
-    item = Item.query.filter_by(uuid=request.args.get('plan')).first()
+    item = Plan.query.filter_by(uuid=request.args.get('plan')).first()
     session["item"] = item.uuid
     form = CustomerForm()
     return render_template("new_customer.html", form=form, package=package,
@@ -98,7 +98,7 @@ def new_customer():
 
 @bp.route("/new_customer", methods=["POST"])
 def store_customer():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    item = Plan.query.filter_by(uuid=session["item"]).first()
     form = CustomerForm()
     if form.validate():
         given_name = form.data["given_name"]
@@ -146,7 +146,7 @@ def store_customer():
 
 @bp.route("/up_front/<sid>/<fname>", methods=["GET"])
 def up_front(sid, fname):
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    item = Plan.query.filter_by(uuid=session["item"]).first()
     payment_provider = PaymentProvider.query.first()
     stripe_pub_key = payment_provider.stripe_publishable_key
     company = Company.query.first()
@@ -162,7 +162,7 @@ def up_front(sid, fname):
 
 @bp.route("/up_front", methods=["POST"])
 def charge_up_front():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    item = Plan.query.filter_by(uuid=session["item"]).first()
     charge = {}
     charge["amount"] = item.sell_price
     charge["currency"] = "GBP"
@@ -204,7 +204,7 @@ def charge_up_front():
 @bp.route("/establish_mandate", methods=["GET"])
 def establish_mandate():
     company = Company.query.first()
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    item = Plan.query.filter_by(uuid=session["item"]).first()
     payment_provider = PaymentProvider.query.first()
 
     if payment_provider.gocardless_active is False:
@@ -260,7 +260,7 @@ def establish_mandate():
 
 @bp.route("/complete_mandate", methods=["GET"])
 def on_complete_mandate():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    item = Plan.query.filter_by(uuid=session["item"]).first()
     payment_provider = PaymentProvider.query.first()
     redirect_flow_id = request.args.get("redirect_flow_id")
     logger.info("Recieved flow ID: %s ", redirect_flow_id)
@@ -298,7 +298,7 @@ def on_complete_mandate():
             "Creating subscription with name: %s",
             item.title,
         )
-        logger.info("Item session is set to: %s", str(session["item"]))
+        logger.info("Plan session is set to: %s", str(session["item"]))
         logger.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
 
         # If days_before_first_charge is set, apply start_date adjustment
