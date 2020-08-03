@@ -34,7 +34,7 @@
           {% if stripe_connected is sameas False %}
           <li>
           You must to connect Stripe in order to take one-off payments for your 
-          items (up-front costs).
+          plans (up-front costs).
           <a class="btn btn-warning" 
               href="{{ url_for('admin.connect_stripe_manually') }}">
               Connect Stripe
@@ -45,18 +45,18 @@
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Edit / Add Items</h3>
+    <h3 class="card-title">Edit / Add Plans</h3>
       <a class="btn btn-success mb-3" 
           href="{{ url_for('admin.edit') }}">
-        Edit items
+        Edit plans
       </a>
       <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.add_item') }}">
-        Add items
+          href="{{ url_for('admin.add_plan') }}">
+        Add plan
       </a>
       <a class="btn btn-danger" 
-          href="{{ url_for('admin.delete_item') }}">
-        Delete items
+          href="{{ url_for('admin.delete_plan') }}">
+        Delete plans
       </a>
   </div>
 

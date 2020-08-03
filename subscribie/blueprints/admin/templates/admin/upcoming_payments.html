@@ -83,10 +83,10 @@
                   <li>
                     <div class="card">
                       <ul class="is-unstyled-li">
-                        <li><strong>Title: </strong>{{ subscription.item.title }}</li>
+                        <li><strong>Plan: </strong>{{ subscription.plan.title }}</li>
                         <li><strong>Description:</strong>
                           <ul>
-                            {% for selling_point in subscription.item.selling_points %}
+                            {% for selling_point in subscription.plan.selling_points %}
                               <li>{{ selling_point.point }}</li>
                             {% endfor %}
                           </ul>

@@ -3,13 +3,13 @@
                                                                                  
 {% block body %}  
 
-<h2 class="text-center text-dark mb-3">Edit Items</h2>
+<h2 class="text-center text-dark mb-3">Edit Plans</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Edit Items</li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Plans</li>
   </ul>
 </div>
 
@@ -32,7 +32,7 @@
       {% endif %} 
 
     <div class="container">
-    <form method="post" action="#" enctype="multipart/form-data" id="itemsForm">
+    <form method="post" action="#" enctype="multipart/form-data" id="plansForm">
 
 	<div class="card mx-auto col-md-6 mb-3">
         
@@ -52,23 +52,23 @@
       <div class="container">
         <div class="row">
 
-        {% for item in items %}
+        {% for plan in plans %}
 
-          <input type="hidden" name="itemIndex" value="{{ loop.index0 }}" />
-          <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ item.uuid }}" />
+          <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
+          <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
           <div class="card col-lg-5 mb-3 mx-auto">
               {{ form.csrf_token }}
 
               <div class="form-group">
                 <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product name</label>
-                <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ item.title }}" class="form-control">
+                <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control">
               </div>
 
               <fieldset class="form-group">
                 <legend class="col-form-label font-weight-bolder">Product selling points</legend>
                 {% set ns = namespace(count=0) %}
                 {% set outer_loop = loop %}
-                  {% for selling_point in item.selling_points %}
+                  {% for selling_point in plan.selling_points %}
                     <div>
                       <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md">
                               {% set ns.count = ns.count + 1 %}
@@ -79,8 +79,8 @@
               <div class="form-group">
                 <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
                 <input type="file" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
-                {% if item.primary_icon %}
-                  <img src="{{ item.primary_icon }}" style="width:50%;display:block; margin:auto">
+                {% if plan.primary_icon %}
+                  <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
                 {% endif %}
               </div>
 
@@ -91,7 +91,7 @@
                   <div class="form-check">
                     <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
                     <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" 
-                      {% if item.requirements.subscription  %}
+                      {% if plan.requirements.subscription  %}
                         checked
                       {% endif %}>
                     <label class="form-check-label font-weight-bolder" for="subscription-{{ loop.index0 }}">Recurring Charge?</label>
@@ -106,8 +106,8 @@
                         <span class="input-group-text">£</span>
                       </div>
                       <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}"
-                        {% if item.interval_amount %}
-                        value="{{ item.interval_amount/ 100 }}" 
+                        {% if plan.interval_amount %}
+                        value="{{ plan.interval_amount/ 100 }}" 
                         {% endif %}
                         class="form-control" type="number" step="0.01">
                     </div>
@@ -116,16 +116,16 @@
                   <label for="interval_unit-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Interval Unit</label>
                   <div class="input-group">                                        
                     <select name="interval_unit-{{ loop.index0 }}" id="interval_unit-{{ loop.index0 }}" class="form-control">
-                      <option value="monthly" {% if item.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>                     
-                      <option value="weekly" {% if item.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>                       
-                      <option value="yearly" {% if item.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>                       
+                      <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>                     
+                      <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>                       
+                      <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>                       
                     </select>                                                      
                   </div>                                                           
                 </div>
       
                   <div class="form-group">
                     <label for="days_before_first_charge-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Days before the first charge</label>
-                    <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ item.days_before_first_charge }}" class="form-control" >
+                    <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ plan.days_before_first_charge }}" class="form-control" >
                     <small class="form-text text-muted">
                       "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
                     </small>
@@ -139,7 +139,7 @@
                 <div class="form-group form-check">
                   <input type="hidden" class="instant_payment-check" data-id="{{ loop.index0 }}" name="instant_payment-{{ loop.index0 }}" value="no">
                   <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" 
-                    {% if item.requirements.instant_payment  %}
+                    {% if plan.requirements.instant_payment  %}
                       checked
                     {% endif %}>
                   <label class="form-check-label font-weight-bolder" for="instant_payment-{{ loop.index0 }}">Add upfront charge</label>
@@ -151,7 +151,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">£</span>
                     </div>
-                    <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" value="{{ item.sell_price/100 }}" id="sell_price-{{ loop.index0 }}" class="form-control">
+                    <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" value="{{ plan.sell_price/100 }}" id="sell_price-{{ loop.index0 }}" class="form-control">
                   </div>
                 </div>
               </fieldset>
@@ -163,7 +163,7 @@
                   <div class="form-check">
                     <input type="hidden" class="note_to_seller_required-check" data-id="{{ loop.index0 }}" name="note_to_seller_required-{{ loop.index0 }}" value="no">
                     <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}"
-                      {% if item.requirements.note_to_seller_required %}
+                      {% if plan.requirements.note_to_seller_required %}
                         checked
                       {% endif %}>
                     <label class="form-check-label font-weight-bolder" for="note_to_seller_required-{{ loop.index0 }}">Require customer note</label>
@@ -175,7 +175,7 @@
 
                 <div class="form-group extra_fields" id="message">
                   <label for="note_to_buyer_message-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Message for the customer</label>
-                  <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}">{{ item.requirements.note_to_buyer_message }} </textarea>
+                  <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}">{{ plan.requirements.note_to_buyer_message }} </textarea>
                   <small class="form-text text-muted">
                     This message will be shown during checkout to the customer
                   </small>
@@ -195,7 +195,7 @@
 </main>
 
   <script>
-  function handleItemsForm(e) {
+  function handlePlansForm(e) {
     // Remove hidden subscription inputs if subscription is checked
     elms = document.querySelectorAll('.subscription-check');
     for (i=0;i<elms.length;i++) {
@@ -224,8 +224,8 @@
       }
     }
   }
-  form = document.getElementById('itemsForm');
-  form.addEventListener('submit', handleItemsForm);
+  form = document.getElementById('plansForm');
+  form.addEventListener('submit', handlePlansForm);
   </script>
 
 {% endblock body %}
