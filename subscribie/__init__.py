@@ -53,7 +53,7 @@ from .forms import (
     StripeConnectForm,
     TawkConnectForm,
     GoogleTagManagerConnectForm,
-    ItemsForm,
+    PlansForm,
     ChangePasswordForm,
     ChangeEmailForm,
     AddShopAdminForm,

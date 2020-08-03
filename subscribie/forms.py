@@ -30,7 +30,7 @@ def strip_whitespace(value):
     return value
 
 
-class ItemsForm(StripWhitespaceForm):
+class PlansForm(StripWhitespaceForm):
     email = TextField("Email", [validators.Email(), validators.DataRequired()])
     title = FieldList(StringField("Title", [validators.DataRequired()]), min_entries=1)
     company_name = TextField("Company Name")
