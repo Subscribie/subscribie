@@ -83,8 +83,8 @@ class Company(database.Model):
     name = database.Column(database.String())
     slogan = database.Column(database.String())
 
-class Item(database.Model):
-    __tablename__ = 'item'
+class Plan(database.Model):
+    __tablename__ = 'plan'
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     archived = database.Column(database.Boolean(), default=False)
