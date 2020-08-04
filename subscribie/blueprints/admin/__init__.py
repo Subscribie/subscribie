@@ -18,9 +18,10 @@ from subscribie import (
     url_for,
     GoogleTagManagerConnectForm,
     PlansForm,
+    ItemForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription, SubscriptionNote, Company,
+    database, User, Person, Subscription, SubscriptionNote, Company, Item,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
 from subscribie.auth import login_required
@@ -37,11 +38,11 @@ from sqlalchemy import asc, desc
 from datetime import datetime
 from subscribie.models import Transaction
 
-admin_theme = Blueprint(
+admin = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
 )
 
-@admin_theme.app_template_filter()
+@admin.app_template_filter()
 def currencyFormat(value):
   value = float(value)/100
   return "£{:,.2f}".format(value)
@@ -86,7 +87,7 @@ def store_gocardless_transaction(gocardless_payment_id):
     return transaction
 
 
-@admin_theme.route("payments/update/<gocardless_payment_id>")
+@admin.route("payments/update/<gocardless_payment_id>")
 @login_required
 def update_payment_fulfillment(gocardless_payment_id):
     """Update payment fulfillment stage"""
@@ -108,7 +109,7 @@ def update_payment_fulfillment(gocardless_payment_id):
     # Go back to previous page
     return redirect(request.referrer)
 
-@admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/pause")
+@admin.route("/gocardless/subscriptions/<subscription_id>/actions/pause")
 @login_required
 def pause_gocardless_subscription(subscription_id):
     """Pause a GoCardless subscription"""
@@ -129,7 +130,7 @@ def pause_gocardless_subscription(subscription_id):
         return redirect(request.referrer)
     return jsonify(message="Subscription paused", subscription_id=subscription_id)
 
-@admin_theme.route("/gocardless/subscriptions/<subscription_id>/actions/resume")
+@admin.route("/gocardless/subscriptions/<subscription_id>/actions/resume")
 @login_required
 def resume_gocardless_subscription(subscription_id):
     """Resume a GoCardless subscription"""
@@ -151,7 +152,7 @@ def resume_gocardless_subscription(subscription_id):
 
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
 
-@admin_theme.route("/cancel/mandates/<email>")
+@admin.route("/cancel/mandates/<email>")
 @login_required
 def cancel_mandates(email):
   """Cancel all mandates associated with a given email"""
@@ -192,7 +193,7 @@ def cancel_mandates(email):
       return redirect(url_for("admin.customers"))
   return render_template("admin/cancel_mandates_confirm.html", email=email)
 
-@admin_theme.route("/dashboard")
+@admin.route("/dashboard")
 @login_required
 def dashboard():
     integration = Integration.query.first()
@@ -219,7 +220,7 @@ def dashboard():
     )
 
 
-@admin_theme.route("/edit", methods=["GET", "POST"])
+@admin.route("/edit", methods=["GET", "POST"])
 @login_required
 def edit():
     """Edit plans
@@ -331,8 +332,52 @@ def edit():
     return render_template("admin/edit.html", plans=plans, form=form)
 
 
+@admin.route("/add-item", methods=["GET", "POST"])
+@login_required
+def add_item():
+    form = ItemForm()
+    if form.validate_on_submit():
+        item = Item()
+        item.title = request.form['title']
+        item.description = request.form['description']
+        database.session.add(item)
+        database.session.commit()
+        flash("Added new item")
+        return redirect(url_for('admin.list_items'))
+    
+    return render_template("admin/item/add_item.html", form=form)
 
-@admin_theme.route("/add", methods=["GET", "POST"])
+@admin.route("/list-items", methods=["GET", "POST"])
+@login_required
+def list_items():
+    items = Item.query.all()
+    return render_template("admin/item/list_items.html", items=items)
+
+@admin.route("/edit-item/<id>", methods=["GET"])
+@login_required
+def edit_item(id):
+    item = Item.query.get(id)
+    return render_template("admin/item/edit_item.html", item=item)
+
+@admin.route("/delete-item/<id>", methods=["GET"])
+@login_required
+def delete_item(id):
+    if "confirm" in request.args:
+        items = Item.query.all()
+        confirm = False
+        return render_template(
+            "admin/item/list_items.html",
+            items=items,
+            item=Item.query.get(id),
+            confirm=False,
+        )
+    item = Item.query.get(id)
+    database.session.delete(item)
+    database.session.commit()
+    flash("Item deleted")
+    return redirect(url_for('admin.list_items'))
+
+@admin.route("/add", methods=["GET", "POST"])
 @login_required
 def add_plan():
     form = PlansForm()
@@ -403,14 +448,14 @@ def add_plan():
     return render_template("admin/add_plan.html", form=form)
 
 
-@admin_theme.route("/delete", methods=["GET"])
+@admin.route("/delete", methods=["GET"])
 @login_required
 def delete_plan():
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
-@admin_theme.route("/delete/<uuid>", methods=["GET", "POST"])
+@admin.route("/delete/<uuid>", methods=["GET", "POST"])
 @login_required
 def delete_plan_by_uuid(uuid):
     """Archive (dont actually delete) an plan"""
@@ -433,7 +478,7 @@ def delete_plan_by_uuid(uuid):
     return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
-@admin_theme.route("/connect/gocardless/manually", methods=["GET", "POST"])
+@admin.route("/connect/gocardless/manually", methods=["GET", "POST"])
 @login_required
 def connect_gocardless_manually():
     payment_provider = PaymentProvider.query.first()        
@@ -463,7 +508,7 @@ def connect_gocardless_manually():
         )
 
 
-@admin_theme.route("/connect/gocardless", methods=["GET"])
+@admin.route("/connect/gocardless", methods=["GET"])
 @login_required
 def connect_gocardless_start():
     flow = OAuth2WebServerFlow(
@@ -485,7 +530,7 @@ def connect_gocardless_start():
     return flask.redirect(authorize_url, code=302)
 
 
-@admin_theme.route("/connect/stripe/manually", methods=["GET", "POST"])
+@admin.route("/connect/stripe/manually", methods=["GET", "POST"])
 @login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
@@ -511,7 +556,7 @@ def connect_stripe_manually():
         )
 
 
-@admin_theme.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])
+@admin.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])
 @login_required
 def connect_google_tag_manager_manually():
     integration = Integration.query.first()
@@ -529,7 +574,7 @@ def connect_google_tag_manager_manually():
         )
 
 
-@admin_theme.route("/connect/tawk/manually", methods=["GET", "POST"])
+@admin.route("/connect/tawk/manually", methods=["GET", "POST"])
 @login_required
 def connect_tawk_manually():
     integration = Integration.query.first()
@@ -546,7 +591,7 @@ def connect_tawk_manually():
         )
 
 
-@admin_theme.route("/retry-payment/<payment_id>", methods=["GET"])
+@admin.route("/retry-payment/<payment_id>", methods=["GET"])
 def retry_payment(payment_id):
     payment_provider = PaymentProvider.query.first()        
     gocclient = gocardless_pro.Client(
@@ -558,7 +603,7 @@ def retry_payment(payment_id):
     return "Payment (" + payment_id + " retried." + str(r)
 
 
-@admin_theme.route("/ssot/refresh/<resource>", methods=["GET"])
+@admin.route("/ssot/refresh/<resource>", methods=["GET"])
 @login_required
 def refresh_ssot(resource):
   """Refresh SSOT to fetch newest customers (aka partners) and transactions
@@ -630,7 +675,7 @@ def get_transactions():
   return transactions
   
 
-@admin_theme.context_processor
+@admin.context_processor
 def utility_gocardless_check_user_active():
   def is_active_gocardless(email):
     # Locate mandate IDs which contain customer email,
@@ -646,7 +691,7 @@ def utility_gocardless_check_user_active():
     return False
   return dict(is_active_gocardless=is_active_gocardless)
 
-@admin_theme.context_processor
+@admin.context_processor
 def utility_gocardless_get_sku_uuid_from_gocardless_subscription_id():
   def get_sku_uuid_from_gocardless_subscription_id(subscription_id):
       """Get sku uuid from GoCardless subscription id"""
@@ -659,7 +704,7 @@ def utility_gocardless_get_sku_uuid_from_gocardless_subscription_id():
 
   return dict(get_sku_uuid_from_gocardless_subscription_id=get_sku_uuid_from_gocardless_subscription_id)
 
-@admin_theme.context_processor
+@admin.context_processor
 def utility_get_subscription_from_gocardless_subscription_id():
     """Return sqlalchemy Subscription object"""
     def get_subscription_from_gocardless_subscription_id(subscription_id):
@@ -668,7 +713,7 @@ def utility_get_subscription_from_gocardless_subscription_id():
         return Subscription.query.filter_by(gocardless_subscription_id=subscription_id).first()
     return dict(get_subscription_from_gocardless_subscription_id=get_subscription_from_gocardless_subscription_id)
 
-@admin_theme.context_processor
+@admin.context_processor
 def utility_get_transaction_fulfillment_state():
     """return fulfullment_state of transaction"""
     def get_transaction_fulfillment_state(external_id):
@@ -696,14 +741,14 @@ def get_subscription_status(gocardless_subscription_id) -> str:
         return status_on_error
 
 
-@admin_theme.context_processor
+@admin.context_processor
 def subscription_status():
     def formatted_status(gocardless_subscription_id):
         return get_subscription_status(gocardless_subscription_id).capitalize().replace("_", " ")
     return dict(subscription_status=formatted_status)
 
 
-@admin_theme.route("/subscribers")
+@admin.route("/subscribers")
 @login_required
 def subscribers():
     page = request.args.get('page', 1, type=int)
@@ -714,7 +759,7 @@ def subscribers():
             'admin/subscribers.html', people=people
             )
 
-@admin_theme.route("/upcoming-payments")
+@admin.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
 
@@ -759,7 +804,7 @@ def upcoming_payments():
             previous_page_cursor=previous_page_cursor
             )
 
-@admin_theme.route("/customers", methods=["GET"])
+@admin.route("/customers", methods=["GET"])
 @login_required
 def customers():
     payment_provider = PaymentProvider.query.first()        
@@ -799,7 +844,7 @@ def customers():
     return render_template("admin/customers.html", partners=partners)
 
 
-@admin_theme.route("/transactions", methods=["GET"])
+@admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
     payment_provider = PaymentProvider.query.first()        
@@ -825,7 +870,7 @@ def transactions():
     return render_template(
         "admin/transactions.html", transactions=transactions
     )
-@admin_theme.route("/order-notes", methods=["GET"])
+@admin.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
   """Notes to seller given during subscription creation"""
@@ -833,7 +878,7 @@ def order_notes():
   return render_template("admin/order-notes.html", 
                          subscriptions=subscriptions)
 
-@admin_theme.route("/change-password", methods=["GET", "POST"])
+@admin.route("/change-password", methods=["GET", "POST"])
 @login_required
 def change_password():
   """Change password of existing user"""
@@ -858,7 +903,7 @@ def change_password():
       return render_template("admin/change_password.html", form=form)
 
 
-@admin_theme.route("/change-email", methods=["GET", "POST"])
+@admin.route("/change-email", methods=["GET", "POST"])
 @login_required
 def change_email():
   """Change email of existing user"""
@@ -883,7 +928,7 @@ def change_email():
   else:
       return render_template("admin/change_email.html", form=form)
 
-@admin_theme.route("/add-shop-admin", methods=["GET", "POST"])
+@admin.route("/add-shop-admin", methods=["GET", "POST"])
 @login_required
 def add_shop_admin():
   """Add another shop admin"""

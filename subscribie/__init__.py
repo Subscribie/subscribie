@@ -60,7 +60,8 @@ from .forms import (
     SubscriberForgotPasswordForm,
     SubscriberResetPasswordForm,
     ForgotPasswordForm,
-    ForgotPasswordResetPasswordForm
+    ForgotPasswordResetPasswordForm,
+    ItemForm
 )
 from .Template import load_theme
 from blinker import signal
@@ -79,7 +80,7 @@ database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
                     Page, Module, PaymentProvider, Integration, Plan,
-                    PlanRequirements, PlanSellingPoints)
+                    PlanRequirements, PlanSellingPoints, Item)
 
 def seed_db():                                                                 
     # Add module_seo_page_title    
@@ -199,10 +200,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
-    from .blueprints.admin import admin_theme
+    from .blueprints.admin import admin
     from .blueprints.subscriber import subscriber
 
-    app.register_blueprint(admin_theme, url_prefix="/admin")
+    app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(subscriber)
 
     app.add_url_rule("/", "index", views.__getattribute__("choose"))

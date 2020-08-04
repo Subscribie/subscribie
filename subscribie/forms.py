@@ -65,6 +65,10 @@ class PlansForm(StripWhitespaceForm):
         FileField(validators=[FileAllowed(images, "Images only!")]), min_entries=1
     )
 
+class ItemForm(FlaskForm):
+    title = StringField("title", validators=[DataRequired()])
+    description = StringField("description", validators=[DataRequired()])
+
 
 class LoginForm(FlaskForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
