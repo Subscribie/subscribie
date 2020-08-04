@@ -132,7 +132,12 @@ def create_app(test_config=None):
             possibles = globals().copy()
             possibles.update(locals())
             view_func = possibles.get(method_name)
-            app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
+            print(f"Attempting to add rule for page_path: {page_path}, view_func_name: {view_func_name}, view_func: {view_func}")
+            for rule in app.url_map.iter_rules():
+                if rule.rule == "/" + page_path:
+                    print(f"Refusing to overwrite existing url rule for {page_path}")
+                else:
+                    app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
 
     @app.before_first_request
     def register_modules():
