@@ -175,3 +175,10 @@ class SeoPageTitle(database.Model):
     __tablename__ = 'module_seo_page_title'
     path = database.Column(database.String(), primary_key=True)
     title = database.Column(database.String())
+
+class Item(database.Model):
+    __tablename__ = 'item'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    description = database.Column(database.Text())
