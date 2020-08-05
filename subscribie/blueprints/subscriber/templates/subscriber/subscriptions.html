@@ -1,0 +1,37 @@
+{% extends "admin/layout.html" %}
+{% block title %} Subscriptions - {{ company.name }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Subscriptions</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('subscriber.account') }}">My Account</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Subscriptions</li>
+  </ul>
+</div>
+
+<div class="container">
+
+    <h3 class="card-title">Your Subscriptions</h3>
+    {% for subscription in g.subscriber.subscriptions %}
+      <div class="card px-3 py-3 my-3">
+        <h4>{{ subscription.item.title }}</h4>
+        <ul>
+          <li><strong>Created at:</strong> {{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
+          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.item.interval_amount/100) }} / {{ subscription.item.interval_unit }}</li>
+        </ul>
+
+        <h5>Details</h5>
+        <ul>
+        {% for selling_point in subscription.item.selling_points  %}
+          <li>{{ selling_point.point }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

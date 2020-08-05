@@ -22,9 +22,13 @@ from base64 import b64encode, urlsafe_b64encode
 import smtplib
 import sqlite3
 import os
-from .forms import LoginForm, PasswordLoginForm
+from .forms import LoginForm, PasswordLoginForm, ForgotPasswordForm, ForgotPasswordResetPasswordForm
 from flask_mail import Mail, Message
-from .models import database, User
+from .models import database, User, Company
+import binascii
+from pathlib import Path
+import flask
+from jinja2 import Template
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -146,6 +150,71 @@ def send_login_url(email):
     msg.html = html
     # Send email with token link
     mail.send(msg)
+
+
+@bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        email = form.data['email']
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            flash("User not found with that email")
+            return redirect(url_for("auth.forgot_password"))
+        # Generate password reset token
+        token = binascii.hexlify(os.urandom(32)).decode()
+        user.password_reset_string = token
+        database.session.commit()
+
+        email_template = str(Path(current_app.root_path + '/emails/user-reset-password.jinja2.html'))
+        company = Company.query.first()
+        password_reset_url='https://' + flask.request.host + '/auth/password-reset?token=' + token
+        print(f"password_reset_url: {password_reset_url}")
+
+        with open(email_template) as file_:                                   
+            template = Template(file_.read())     
+            html = template.render(password_reset_url=password_reset_url,
+                                    company=company) 
+
+            try:
+                mail = Mail(current_app)
+                msg = Message()
+                msg.subject = company.name + " " + "Password Reset"
+                msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+                msg.recipients = [email]
+                msg.html = html
+                mail.send(msg)
+            except Exception as e:
+                print(e)
+                print("Failed to send user password reset email")
+            flash("We've sent you an email with a password reset link, please check your spam/junk folder too")
+
+    return render_template('admin/forgot_password.html', form=form)
+
+
+@bp.route("/password-reset", methods=["GET", "POST"])
+def password_reset():
+    "Perform password reset from email link, verify token"
+    form = ForgotPasswordResetPasswordForm()
+
+    if form.validate_on_submit():
+        if User.query.filter_by(password_reset_string=form.data['token']).first() == None:
+            return "Invalid reset token"
+        
+        user = User.query.filter_by(password_reset_string=form.data['token']).first()
+        user.set_password(form.data['password'])
+        database.session.commit()
+        flash("Your password has been reset")
+        return redirect(url_for('auth.login'))
+
+    if request.args.get("token", None) is None or \
+       len(request.args["token"]) != 64 or \
+       User.query.filter_by(password_reset_string=request.args["token"]).first() == None:
+       return "Invalid reset link. Please try generating a new reset link."
+
+    return render_template('/admin/reset_password.html',
+                        token=request.args["token"],
+                        form=form)
 
 
 def login_required(view):

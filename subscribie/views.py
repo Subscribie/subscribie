@@ -12,9 +12,10 @@ from pathlib import Path
 from jinja2 import Template
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, flash
+import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Item, Integration, PaymentProvider, Transaction,
+                    Company, Plan, Integration, PaymentProvider, Transaction,
                     Page)
 
 from flask_mail import Mail, Message
@@ -25,9 +26,9 @@ bp = Blueprint("views", __name__, url_prefix=None)
 def inject_template_globals():
     company = Company.query.first()
     integration = Integration.query.first()
-    items = Item.query.filter_by(archived=0)
+    plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    return dict(company=company, integration=integration, items=items,
+    return dict(company=company, integration=integration, plans=plans,
                 pages=pages)
 
 def redirect_url(default='index'):
@@ -37,6 +38,7 @@ def redirect_url(default='index'):
 
 def index():
     return render_template("index.html")
+
 
 @bp.route("/reload")
 def reload_app():
@@ -56,14 +58,14 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    items = Item.query.filter_by(archived=0).all()
+    plans = Plan.query.filter_by(archived=0).all()
     return render_template("choose.html",
-                            items=items)
+                            plans=plans)
 
-def redirect_to_payment_step(item, inside_iframe=False):
-    """Depending on items payment requirement, redirect to collection page
+def redirect_to_payment_step(plan, inside_iframe=False):
+    """Depending on plans payment requirement, redirect to collection page
      accordingly"""
-    if item.requirements[0].instant_payment:
+    if plan.requirements.instant_payment:
         return redirect(
             url_for(
                 "views.up_front",
@@ -73,30 +75,30 @@ def redirect_to_payment_step(item, inside_iframe=False):
                 fname=session["given_name"],
             )
         )
-    if item.requirements[0].subscription:
+    if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
     return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
-    item = Item.query.filter_by(uuid=request.args['plan']).first()
+    plan = Plan.query.filter_by(uuid=request.args['plan']).first()
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
-        return redirect_to_payment_step(item)
+        return redirect_to_payment_step(plan)
 
 
     package = request.args.get("plan", "not set")
     session["package"] = package
-    item = Item.query.filter_by(uuid=request.args.get('plan')).first()
-    session["item"] = item.uuid
+    plan = Plan.query.filter_by(uuid=request.args.get('plan')).first()
+    session["plan"] = plan.uuid
     form = CustomerForm()
     return render_template("new_customer.html", form=form, package=package,
-                         item=item)
+                         plan=plan)
 
 
 @bp.route("/new_customer", methods=["POST"])
 def store_customer():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     form = CustomerForm()
     if form.validate():
         given_name = form.data["given_name"]
@@ -121,10 +123,11 @@ def store_customer():
         session['email'] = email
         session['mobile'] = mobile
 
-        # Store person
+        # Store person, with randomly generated password
         person = Person(sid=sid, given_name=given_name, family_name=family_name,
                         address_line1=address_line_one, city=city,
-                        postal_code=postcode, email=email, mobile=mobile)
+                        postal_code=postcode, email=email, mobile=mobile,
+                        password=str(os.urandom(16)))
         database.session.add(person)
         database.session.commit()
         session["person_id"] = person.id
@@ -136,21 +139,21 @@ def store_customer():
             inside_iframe = True
         else:
             inside_iframe = False
-        return redirect_to_payment_step(item, inside_iframe=inside_iframe)
+        return redirect_to_payment_step(plan, inside_iframe=inside_iframe)
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
 
 @bp.route("/up_front/<sid>/<fname>", methods=["GET"])
 def up_front(sid, fname):
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
     stripe_pub_key = payment_provider.stripe_publishable_key
     company = Company.query.first()
     return render_template(
         "up_front_payment.html",
         company=company,
-        item=item,
+        plan=plan,
         fname=fname,
         sid=sid,
         stripe_pub_key=stripe_pub_key
@@ -159,9 +162,9 @@ def up_front(sid, fname):
 
 @bp.route("/up_front", methods=["POST"])
 def charge_up_front():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     charge = {}
-    charge["amount"] = item.sell_price
+    charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
 
     sid = session["sid"]
@@ -192,7 +195,7 @@ def charge_up_front():
 
     except stripe.error.AuthenticationError as e:
         return str(e)
-    if item.requirements[0].subscription:
+    if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
@@ -201,7 +204,7 @@ def charge_up_front():
 @bp.route("/establish_mandate", methods=["GET"])
 def establish_mandate():
     company = Company.query.first()
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
 
     if payment_provider.gocardless_active is False:
@@ -223,7 +226,7 @@ def establish_mandate():
         environment=payment_provider.gocardless_environment,
     )
 
-    description = " ".join([company.name, item.title])[0:100]
+    description = " ".join([company.name, plan.title])[0:100]
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
@@ -257,7 +260,7 @@ def establish_mandate():
 
 @bp.route("/complete_mandate", methods=["GET"])
 def on_complete_mandate():
-    item = Item.query.filter_by(uuid=session["item"]).first()
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
     redirect_flow_id = request.args.get("redirect_flow_id")
     logger.info("Recieved flow ID: %s ", redirect_flow_id)
@@ -289,18 +292,18 @@ def on_complete_mandate():
 
         logger.info(
             "Creating subscription with amount: %s",
-            str(item.monthly_price),
+            str(plan.monthly_price),
         )
         logger.info(
             "Creating subscription with name: %s",
-            item.title,
+            plan.title,
         )
-        logger.info("Item session is set to: %s", str(session["item"]))
+        logger.info("Plan session is set to: %s", str(session["plan"]))
         logger.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
 
         # If days_before_first_charge is set, apply start_date adjustment
         try:
-            days_before_first_charge = item.days_before_first_charge
+            days_before_first_charge = plan.days_before_first_charge
             if days_before_first_charge == 0 or days_before_first_charge == '':
                 start_date = None
             else:
@@ -320,13 +323,27 @@ def on_complete_mandate():
         # Add subscription id to session
         session["subscription_id"] = subscription.id
 
+        # Get interval_unit
+        if plan.interval_unit is None:
+            # Default to monthly interval if interval_unit not set
+            interval_unit = "monthly"
+        else:
+            interval_unit = plan.interval_unit
+
+        # Get interval_amount
+        if plan.interval_amount is None:
+            # Default to monthly amount if interval_amount is not set
+            interval_amount = plan.monthly_price
+        else:
+            interval_amount = plan.interval_amount
+
         # Submit to GoCardless as subscription
         gc_subscription = gocclient.subscriptions.create(
             params={
-                "amount": item.monthly_price,
+                "amount": interval_amount,
                 "currency": "GBP",
-                "name": item.title,
-                "interval_unit": "monthly",
+                "name": plan.title,
+                "interval_unit": interval_unit,
                 "metadata": {"subscribie_subscription_uuid": subscription.uuid},
                 "links": {"mandate": session["gocardless_mandate_id"]},
                 "start_date" : start_date
@@ -377,6 +394,7 @@ def thankyou():
       template = Template(file_.read())                                            
       html = template.render(first_name=session.get('given_name', None), 
                     company_name=company.name,
+                    subscriber_login_url='https://' + flask.request.host + '/account/login',
                     first_charge_date=first_charge_date,
                     first_charge_amount=first_charge_amount) 
 
@@ -398,6 +416,6 @@ def thankyou():
         logger.info("The GC Customer id is: %s", str(session["gocardless_customer_id"]))
     except KeyError:
         logger.warning("No mandate for this transaction")
-        logger.warning("Maybe OK as not all items require a direct debit mandate")
+        logger.warning("Maybe OK as not all plans require a direct debit mandate")
     finally:
         return render_template("thankyou.html")

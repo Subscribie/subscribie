@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, abort, flash, json
 from jinja2 import TemplateNotFound, Markup
 from subscribie import (
+    database,
     logging,
     session,
     render_template,
@@ -9,15 +10,18 @@ from subscribie import (
     gocardless_pro,
     GocardlessConnectForm,
     StripeConnectForm,
+    ChangePasswordForm,
+    ChangeEmailForm,
+    AddShopAdminForm,
     current_app,
     redirect,
     url_for,
     GoogleTagManagerConnectForm,
-    ItemsForm,
+    PlansForm,
     jsonify,
     TawkConnectForm,
     database, User, Person, Subscription, SubscriptionNote, Company,
-    Integration, PaymentProvider, Item, ItemRequirements, ItemSellingPoints
+    Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
 from subscribie.auth import login_required
 from subscribie.db import get_db
@@ -218,61 +222,73 @@ def dashboard():
 @admin_theme.route("/edit", methods=["GET", "POST"])
 @login_required
 def edit():
-    """Edit items
+    """Edit plans
     
-    Note items are immutable, when a change is made to an item, its old
-    item is archived and a new item is created with a new uuid. This is to
+    Note plans are immutable, when a change is made to plan, its old
+    plan is archived and a new plan is created with a new uuid. This is to
     protect data integriry and make sure plan history is retained, via its uuid.
     If a user needs to change a subscription, they should change to a different
     plan with a different uuid.
 
     """
 
-    form = ItemsForm()
-    items = Item.query.filter_by(archived=0).all()
+    form = PlansForm()
+    plans = Plan.query.filter_by(archived=0).all()
     if form.validate_on_submit():
         company = Company.query.first()
         company.name  = request.form["company_name"]
         company.slogan = request.form["slogan"]
-        # Loop items
-        for index in request.form.getlist("itemIndex", type=int):
+        # Loop plans
+        for index in request.form.getlist("planIndex", type=int):
 
-            # Archive existing item then create new item
-            # (remember, edits create new items because
-            # items are immutable)
-            item = Item.query.filter_by(uuid=form.uuid.data[index]).first()
-            item.archived = True
+            # Archive existing plan then create new plan
+            # (remember, edits create new plans because
+            # plans are immutable)
+            plan = Plan.query.filter_by(uuid=form.uuid.data[index]).first()
+            plan.archived = True
 
-            # Build new item
-            draftItem = Item()
-            database.session.add(draftItem)
-            item_requirements = ItemRequirements()
+            # Build new plan
+            draftPlan = Plan()
+            database.session.add(draftPlan)
+            plan_requirements = PlanRequirements()
 
-            draftItem.uuid = str(uuid.uuid4())
-            draftItem.requirements.append(item_requirements)
+            draftPlan.uuid = str(uuid.uuid4())
+            draftPlan.requirements = plan_requirements
             # Preserve primary icon if exists
-            draftItem.primary_icon = item.primary_icon
+            draftPlan.primary_icon = plan.primary_icon
 
-            draftItem.title = getItem(
+            draftPlan.title = getPlan(
                 form.title.data, index, default=""
             ).strip()
 
-            item_requirements.subscription = bool(
-                getItem(form.subscription.data, index)
-            )
-            if getItem(form.monthly_price.data, index, default=0) is None:
-                monthly_price = 0
+            if getPlan(form.subscription.data, index) == 'yes':
+                plan_requirements.subscription = True
             else:
-                monthly_price = int(getItem(form.monthly_price.data, index, default=0) * 100)
-            draftItem.monthly_price = monthly_price
+                plan_requirements.subscription = False
 
-            item_requirements.instant_payment = bool(
-                getItem(form.instant_payment.data, index)
+            interval_unit = getPlan(
+                    form.interval_unit.data, index, default=""
             )
-            item_requirements.note_to_seller_required = bool(
-                getItem(form.note_to_seller_required.data, index)
-            )
-            item_requirements.note_to_buyer_message = str(getItem(
+            if 'monthly' in interval_unit or 'yearly' in interval_unit or \
+               'weekly' in interval_unit:
+                   draftPlan.interval_unit = interval_unit
+
+            if getPlan(form.interval_amount.data, index, default=0) is None:
+                interval_amount = 0
+            else:
+                interval_amount = int(getPlan(form.interval_amount.data, index, default=0) * 100)
+            draftPlan.interval_amount = interval_amount
+            if getPlan(form.instant_payment.data, index) == 'yes':
+                plan_requirements.instant_payment = True
+            else:
+                plan_requirements.instant_payment = False
+
+            if getPlan(form.note_to_seller_required.data, index) == 'yes':
+                plan_requirements.note_to_seller_required = True
+            else:
+                plan_requirements.note_to_seller_required = False
+
+            plan_requirements.note_to_buyer_message = str(getPlan(
                 form.note_to_buyer_message, index, default=""
             ).data)
 
@@ -281,23 +297,23 @@ def edit():
             except ValueError:
                 days_before_first_charge = 0
 
-            draftItem.days_before_first_charge = days_before_first_charge
+            draftPlan.days_before_first_charge = days_before_first_charge
 
-            if getItem(form.sell_price.data, index, default=0) is None:
+            if getPlan(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
             else:
-                sell_price = int(getItem(form.sell_price.data, index, default=0) * 100)
+                sell_price = int(getPlan(form.sell_price.data, index, default=0) * 100)
 
-            draftItem.sell_price = sell_price
+            draftPlan.sell_price = sell_price
 
-            points = getItem(
+            points = getPlan(
                 form.selling_points.data, index, default=""
             )
             for point in points:
-                draftItem.selling_points.append(ItemSellingPoints(point=point))
+                draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
             # Primary icon image storage
-            f = getItem(form.image.data, index)
+            f = getPlan(form.image.data, index)
             if f:
                 images = UploadSet("images", IMAGES)
                 filename = images.save(f)
@@ -308,52 +324,67 @@ def edit():
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
                 symlink(img_src, link, overwrite=True)
                 src = url_for("static", filename=filename)
-                draftItem.primary_icon = src
+                draftPlan.primary_icon = src
         database.session.commit() # Save
-        flash("Item(s) updated.")
+        flash("Plan(s) updated.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/edit.html", items=items, form=form)
+    return render_template("admin/edit.html", plans=plans, form=form)
 
 
 
 @admin_theme.route("/add", methods=["GET", "POST"])
 @login_required
-def add_item():
-    form = ItemsForm()
+def add_plan():
+    form = PlansForm()
     if form.validate_on_submit():
-        draftItem = Item()
-        database.session.add(draftItem)
-        item_requirements = ItemRequirements()
-        draftItem.requirements.append(item_requirements)
+        draftPlan = Plan()
+        database.session.add(draftPlan)
+        plan_requirements = PlanRequirements()
+        draftPlan.requirements = plan_requirements
 
-        draftItem.uuid = str(uuid.uuid4())
-        draftItem.title = form.title.data[0].strip()
-        item_requirements.subscription = bool(form.subscription.data[0])
-        item_requirements.note_to_seller_required = bool(form.note_to_seller_required.data[0])
-        item_requirements.note_to_buyer_message = str(form.note_to_buyer_message.data[0])
+        draftPlan.uuid = str(uuid.uuid4())
+        draftPlan.title = form.title.data[0].strip()
+        interval_unit = form.interval_unit.data[0].strip()
+        if 'monthly' in interval_unit or 'yearly' in interval_unit or \
+           'weekly' in interval_unit:
+               draftPlan.interval_unit = interval_unit
+
+        if form.subscription.data[0] == 'yes':
+            plan_requirements.subscription = True
+        else:
+            plan_requirements.subscription = False
+        if form.note_to_seller_required.data[0] == 'yes':
+            plan_requirements.note_to_seller_required = True
+        else:
+            plan_requirements.note_to_seller_required = False
+
+        plan_requirements.note_to_buyer_message = str(form.note_to_buyer_message.data[0])
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
         except ValueError:
             days_before_first_charge = 0
 
-        draftItem.days_before_first_charge = days_before_first_charge
+        draftPlan.days_before_first_charge = days_before_first_charge
 
-        if form.monthly_price.data[0] is None:
-            draftItem.monthly_price = 0
+        if form.interval_amount.data[0] is None:
+            draftPlan.interval_amount = 0
         else:
-            draftItem.monthly_price = int(form.monthly_price.data[0]) * 100
-        item_requirements.instant_payment = bool(
-            form.instant_payment.data[0]
-        )
+            draftPlan.interval_amount = int(form.interval_amount.data[0]) * 100
+
+        if form.instant_payment.data[0] == 'yes':
+            plan_requirements.instant_payment = True
+        else:
+            plan_requirements.instant_payment = False
+
         if form.sell_price.data[0] is None:
-            draftItem.sell_price = 0
+            draftPlan.sell_price = 0
         else:
-            draftItem.sell_price = int(form.sell_price.data[0]) * 100
+            draftPlan.sell_price = int(form.sell_price.data[0]) * 100
 
         points = form.selling_points.data[0]
 
         for point in points:
-            draftItem.selling_points.append(ItemSellingPoints(point=point))
+            draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
         # Primary icon image storage
         f = form.image.data[0]
@@ -365,41 +396,41 @@ def add_item():
             link = "".join([current_app.config["STATIC_FOLDER"], filename])
             os.symlink(img_src, link)
             src = url_for("static", filename=filename)
-            draftItem.primary_icon = src
+            draftPlan.primary_icon = src
         database.session.commit()
-        flash("Item added.")
+        flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_item.html", form=form)
+    return render_template("admin/add_plan.html", form=form)
 
 
 @admin_theme.route("/delete", methods=["GET"])
 @login_required
-def delete_item():
-    items = Item.query.filter_by(archived=0).all()
-    return render_template("admin/delete_item_choose.html", items=items)
+def delete_plan():
+    plans = Plan.query.filter_by(archived=0).all()
+    return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
 @admin_theme.route("/delete/<uuid>", methods=["GET", "POST"])
 @login_required
-def delete_item_by_uuid(uuid):
-    """Archive (dont actually delete) an item"""
-    item = Item.query.filter_by(uuid=uuid).first()
+def delete_plan_by_uuid(uuid):
+    """Archive (dont actually delete) an plan"""
+    plan = Plan.query.filter_by(uuid=uuid).first()
 
     if "confirm" in request.args:
         confirm = False
         return render_template(
-            "admin/delete_item_choose.html",
+            "admin/delete_plan_choose.html",
             confirm=False,
-            item=item
+            plan=plan
         )
     if uuid is not False:
         # Perform archive
-        item.archived = True
+        plan.archived = True
         database.session.commit()
 
-    flash("Item deleted.")
-    items = Item.query.filter_by(archived=0).all()
-    return render_template("admin/delete_item_choose.html", items=items)
+    flash("Plan deleted.")
+    plans = Plan.query.filter_by(archived=0).all()
+    return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
 @admin_theme.route("/connect/gocardless/manually", methods=["GET", "POST"])
@@ -802,8 +833,83 @@ def order_notes():
   return render_template("admin/order-notes.html", 
                          subscriptions=subscriptions)
 
+@admin_theme.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+  """Change password of existing user"""
+  form = ChangePasswordForm()
+  if request.method == "POST":
+      email = session.get('user_id', None)
+      if email is None:
+          return "Email not found in session"
 
-def getItem(container, i, default=None):
+      if form.validate_on_submit():
+          user = User.query.filter_by(email=email).first()
+          if user is None:
+              return "User not found with that email"
+          else:
+              user.set_password(request.form["password"])
+              database.session.commit()
+          flash("Password has been updated")
+      else:
+          return "Invalid password form submission"
+      return redirect(url_for('admin.change_password'))
+  else:
+      return render_template("admin/change_password.html", form=form)
+
+
+@admin_theme.route("/change-email", methods=["GET", "POST"])
+@login_required
+def change_email():
+  """Change email of existing user"""
+  form = ChangeEmailForm()
+  if request.method == "POST":
+      email = session.get('user_id', None)
+      if email is None:
+          return "Email not found in session"
+
+      if form.validate_on_submit():
+          user = User.query.filter_by(email=email).first()
+          if user is None:
+              return "User not found with that email"
+          else:
+              new_email = request.form["email"]
+              user.email = new_email
+              database.session.commit()
+          flash(f"Email has been updated to {new_email}. Please re-login")
+      else:
+          return "Invalid email form submission"
+      return redirect(url_for('admin.change_email'))
+  else:
+      return render_template("admin/change_email.html", form=form)
+
+@admin_theme.route("/add-shop-admin", methods=["GET", "POST"])
+@login_required
+def add_shop_admin():
+  """Add another shop admin"""
+  form = AddShopAdminForm()
+  if request.method == "POST":
+
+      if form.validate_on_submit():
+          # Check user dosent already exist
+          email = request.form["email"]
+          if User.query.filter_by(email=email).first() is not None:
+              return f"Error, admin with email ({email}) already exists."
+
+          user = User()
+          user.email = email
+          user.set_password(request.form["password"])
+          database.session.add(user)
+          database.session.commit()
+          flash(f"A new shop admin with email {email} has been added")
+      else:
+          return "Invalid add shop admin form submission"
+      return redirect(url_for('admin.add_shop_admin'))
+  else:
+      return render_template("admin/add_shop_admin.html", form=form)
+
+
+def getPlan(container, i, default=None):
     try:
         return container[i]
     except IndexError:

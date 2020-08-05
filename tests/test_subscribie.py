@@ -39,6 +39,13 @@ def test_magic_login_submission_as_shop_owner(session, client, with_shop_owner):
     req = client.post("/auth/login", data=dict(email='admin@example.com'))
     assert b"We've just sent you a login link." in req.data
 
+def test_shop_owner_forgot_password_submission(session, client, with_shop_owner):
+    """Test if forgot password form submission works for shop owner"""
+    req = client.post('/auth/forgot-password',
+                    follow_redirects=True,
+                    data=dict(email='admin@example.com'))
+    assert b"We&#39;ve sent you an email with a password reset link, please check your spam/junk folder too" in req.data
+
 
 def test_user_model(session):
     user = User()

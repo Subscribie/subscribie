@@ -9,7 +9,7 @@
     padding: 0;
   }
 
-  .table {
+  .table-scroll {
     display: inline-block;
     overflow-x: scroll;
   }

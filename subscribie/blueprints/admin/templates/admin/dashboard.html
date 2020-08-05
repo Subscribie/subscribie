@@ -34,7 +34,7 @@
           {% if stripe_connected is sameas False %}
           <li>
           You must to connect Stripe in order to take one-off payments for your 
-          items (up-front costs).
+          plans (up-front costs).
           <a class="btn btn-warning" 
               href="{{ url_for('admin.connect_stripe_manually') }}">
               Connect Stripe
@@ -45,16 +45,21 @@
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Order Notes</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View (optional) notes customers may give you when starting their 
-          subscription.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.order_notes') }}">
-          View Notes
+    <h3 class="card-title">Edit / Add Plans</h3>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.edit') }}">
+        Edit plans
+      </a>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.add_plan') }}">
+        Add plan
+      </a>
+      <a class="btn btn-danger" 
+          href="{{ url_for('admin.delete_plan') }}">
+        Delete plans
       </a>
   </div>
+
 
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Subscribers</h3>
@@ -75,6 +80,18 @@
       <a class="btn btn-success" 
           href="{{ url_for('admin.upcoming_payments') }}">
           View Upcoming Payments 
+      </a>
+  </div>
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Order Notes</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View (optional) notes customers may give you when starting their 
+          subscription.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.order_notes') }}">
+          View Notes
       </a>
   </div>
 
@@ -219,26 +236,24 @@
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Modules</h3>
 
-      <p class="card-subtitle mb-3 text-muted">
-        List of enabled modules. For example, the iFrame embed module allows you to
-        embed your Subscription website into another website if you have an existing
-        website you want to keep using, but use Subscribie for your subscriptions.
-      </p>
-      
-      <div class="container">
-        {% for moduleName in loadedModules %}
-          {% if loadedModules[moduleName]['links']|length != 0 %}
-            <div class="card col-lg my-3 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
-                {% for link in loadedModules[moduleName]['links'] %}
-                  <a class="btn btn-block btn-info" href="{{ url_for(link) }}">Manage</a>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-        {% endfor  %}
-      </div>
+    <p class="card-subtitle mb-3 text-muted">
+      List of enabled modules. For example, the iFrame embed module allows you to
+      embed your Subscription website into another website if you have an existing
+      website you want to keep using, but use Subscribie for your subscriptions.
+    </p>
+    
+    {% for moduleName in loadedModules %}
+      {% if loadedModules[moduleName]['links']|length != 0 %}
+        <div class="card col-lg my-3 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
+            {% for link in loadedModules[moduleName]['links'] %}
+              <a class="btn btn-block btn-success" href="{{ url_for(link) }}">Manage</a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor  %}
   </div>
 <!-- End Loaded modules and links to their index pages -->
 
@@ -255,18 +270,22 @@
 <!-- end SEO Titles module -->
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Edit / Add Items</h3>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.edit') }}">
-        Edit items
+    <h3 class="card-title">Change Password &amp; Email address</h3>
+      <a class="btn btn-warning mb-3" 
+          href="{{ url_for('admin.change_password') }}">
+        Change my password
       </a>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.add_item') }}">
-        Add items
+      <a class="btn btn-warning mb-3" 
+          href="{{ url_for('admin.change_email') }}">
+        Change my email address
       </a>
-      <a class="btn btn-danger" 
-          href="{{ url_for('admin.delete_item') }}">
-        Delete items
+  </div>
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">User Management</h3>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.add_shop_admin') }}">
+        Add Shop Admin
       </a>
   </div>
 

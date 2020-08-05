@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Shop Admin</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add Shop Admin</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Add Another Shop Admin</h2>
+          <p>Add someone else to manage your shop.</p>
+          <p>This will allow them to login an manage your shop too.</p>
+          
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="email">Email:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="email" name="email" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="password">Password:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="password" name="password" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+        <div class="col-md-5">
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

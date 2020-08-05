@@ -47,12 +47,20 @@ import yaml
 from .forms import (
     StripWhitespaceForm,
     LoginForm,
+    PasswordLoginForm,
     CustomerForm,
     GocardlessConnectForm,
     StripeConnectForm,
     TawkConnectForm,
     GoogleTagManagerConnectForm,
-    ItemsForm,
+    PlansForm,
+    ChangePasswordForm,
+    ChangeEmailForm,
+    AddShopAdminForm,
+    SubscriberForgotPasswordForm,
+    SubscriberResetPasswordForm,
+    ForgotPasswordForm,
+    ForgotPasswordResetPasswordForm
 )
 from .Template import load_theme
 from blinker import signal
@@ -70,16 +78,20 @@ import click
 database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
-                    Page, Module, PaymentProvider, Integration, Item,
-                    ItemRequirements, ItemSellingPoints)
+                    Page, Module, PaymentProvider, Integration, Plan,
+                    PlanRequirements, PlanSellingPoints)
 
 def seed_db():                                                                 
-    # Add module_seo_page_title                                                  
+    # Add module_seo_page_title    
     module_seo = Module()                                                        
     module_seo.name = 'module_seo_page_title'                                    
     module_seo.src = 'https://github.com/Subscribie/module-seo-page-title.git'   
-    database.session.add(module_seo)                                                   
+    database.session.add(module_seo)
+    module_pages = Module()
+    module_pages.name = 'module_pages'
+    module_pages.src = 'https://github.com/Subscribie/module-pages.git'                                                   
     database.session.commit()
+
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -87,6 +99,11 @@ def create_app(test_config=None):
     app.config.update(
      os.environ
     )
+
+    if test_config is not None:
+        app.config.update(
+            test_config
+        )
 
     @app.before_request
     def start_session():
@@ -96,45 +113,9 @@ def create_app(test_config=None):
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             print("Starting with sid {}".format(session["sid"]))
 
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-    images = UploadSet("images", IMAGES)
-    patch_request_class(app, 2 * 1024 * 1024)
-    configure_uploads(app, images)
-
-    from . import db
-    from . import auth
-    from . import views
-
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(views.bp)
-    from .blueprints.admin import admin_theme
-
-    app.register_blueprint(admin_theme, url_prefix="/admin")
-    app.add_url_rule("/", "index", views.__getattribute__("choose"))
-
-    # the signals
-    from .signals import journey_complete
-
-    # Set custom modules path
-    sys.path.append(app.config["MODULES_PATH"])
-
-    with app.app_context():
-
-
-        # Migrate database
-        database.init_app(app)
-        migrate = Migrate(app, database)
-        upgrade('./migrations')
-
-        if test_config is not None:
-            seed_db()
-            app.config.update(
-                test_config
-            )
-
-        load_theme(app)
-
-        # Register yml pages as routes
+    @app.before_first_request
+    def register_custom_page_routes():
+        """Register custom pages as routes"""
         pages = Page.query.all()
         for page in pages:
             page_path = page.path
@@ -151,9 +132,18 @@ def create_app(test_config=None):
             possibles = globals().copy()
             possibles.update(locals())
             view_func = possibles.get(method_name)
-            app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
+            print(f"Attempting to add rule for page_path: {page_path}, view_func_name: {view_func_name}, view_func: {view_func}")
+            for rule in app.url_map.iter_rules():
+                if rule.rule == "/" + page_path:
+                    print(f"Refusing to overwrite existing url rule for {page_path}")
+                else:
+                    app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
 
-        # Import any custom modules
+    @app.before_first_request
+    def register_modules():
+        """Import any custom modules"""
+        # Set custom modules path
+        sys.path.append(app.config["MODULES_PATH"])
         modules = Module.query.all()
         print("sys.path contains: {}".format(sys.path))
         for module in modules:
@@ -188,24 +178,45 @@ def create_app(test_config=None):
                     app.config.from_pyfile(blueprintConfig, silent=True)
                     # Register the Blueprint
                     app.register_blueprint(getattr(importedModule, module.name))
-                    print("Imported as flask Blueprint")
-                    # Run Blueprint migrations if any
-                    modulePath = Path(importedModule.__file__).parents[0]
-                    moduleMigrationsPath = Path(modulePath, 'migrations')
-                    if moduleMigrationsPath.is_dir():
-                      # Run migrations
-                      for migration in moduleMigrationsPath.iterdir():
-                        print("Running module migration {}".format(migration))
-                        # Run subscribie_cli database migrations
-                        db_full_path = app.config['DB_FULL_PATH']
-                        subprocess.call("python " + str(migration) + ' -up -db ' + db_full_path, shell=True)
+                    print(f"Imported {module.name} as flask Blueprint")
 
             except (ModuleNotFoundError, AttributeError):
                 print(
                     "Error: Could not import module as blueprint: {}".format(
-                        module["name"]
+                        module.name
                     )
                 )
+
+
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    images = UploadSet("images", IMAGES)
+    patch_request_class(app, 2 * 1024 * 1024)
+    configure_uploads(app, images)
+
+    from . import db
+    from . import auth
+    from . import views
+
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(views.bp)
+    from .blueprints.admin import admin_theme
+    from .blueprints.subscriber import subscriber
+
+    app.register_blueprint(admin_theme, url_prefix="/admin")
+    app.register_blueprint(subscriber)
+
+    app.add_url_rule("/", "index", views.__getattribute__("choose"))
+
+    # the signals
+    from .signals import journey_complete
+
+
+    with app.app_context():
+
+        database.init_app(app)
+        migrate = Migrate(app, database)
+
+        load_theme(app)
 
     # Handling Errors Gracefully
     @app.errorhandler(404)

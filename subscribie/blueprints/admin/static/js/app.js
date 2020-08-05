@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const instant_payment = document.getElementById("instant_payment-0");
 const upfront_price = document.getElementById("upfront_price");
 const note_to_seller_required = document.getElementById("note_to_seller_required-0");
@@ -28,3 +29,23 @@ note_to_seller_required.addEventListener('click', () => {
     message.style.display = 'none';
   }
 });
+=======
+const check_input = document.querySelectorAll('.toggle');
+const extra_fields = document.querySelectorAll('.extra_fields');
+
+check_input.forEach((input, i) => {
+  function showExtraFields() {
+    if (input.checked == true) {
+      extra_fields.item(i).style.display = 'block';
+    } else {
+      extra_fields.item(i).style.display = 'none';
+    }
+  }
+
+  showExtraFields(); //show or don't show extra fields when page load
+
+  input.addEventListener('click', () => {
+    showExtraFields(); //show or don't show extra fields when checkbox checked or unchecked
+  });
+});
+>>>>>>> upstream/master

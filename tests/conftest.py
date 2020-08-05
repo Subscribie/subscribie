@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from subscribie import create_app
 from subscribie import database as _db
 from subscribie.models import User
+from subscribie import seed_db
 
 
 TESTDB = 'test_project.db'
@@ -21,7 +22,8 @@ def app(request):
     settings_override = {
         'TESTING': True,
         'WTF_CSRF_ENABLED': False,
-        'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI
+        'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI,
+        'DB_FULL_PATH': TESTDB_PATH
     }
     app = create_app(settings_override)
 
@@ -46,6 +48,7 @@ def apply_migrations(app):
     _db.init_app(app)                                                                 
     Migrate(app, _db)
     upgrade('./migrations')
+    seed_db()
 
 @pytest.fixture(scope='session')
 def db(app, request):

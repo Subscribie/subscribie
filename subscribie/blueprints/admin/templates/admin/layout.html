@@ -77,8 +77,8 @@
     <main>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
-          <div class="card alert-success my-3 mx-3 px-3 py-2" role="alert">
-            <h4 class="alert-heading">Success</h4>
+          <div class="card alert-primary my-3 mx-3 px-3 py-2" role="alert">
+            <h4 class="alert-heading">Notification</h4>
             <hr>
             <ul>
               {% for message in messages %}
@@ -104,32 +104,4 @@
   <script src="{{ url_for('admin.static', filename='js/app.js') }}"></script>
 </body>
 
-<script type="application/javascript">
-    jQuery(document).ready(function ($) {
-      $('.modal-button').click(function() {
-        console.log("Modal Opened");
-        var target = $(this).data('target');
-        $('html').addClass('is-clipped');
-        $('#' + target).addClass('is-active');
-      });
-      $('.modal-background, .modal-close').click(function() {
-        $('html').removeClass('is-clipped');
-        $('.modal').removeClass('is-active');
-      });
-      $('.modal-card-head .delete').click(function() {
-        $('html').removeClass('is-clipped');
-        $('.modal').removeClass('is-active');
-      });
-      $('.modal-card-body #close').click(function() {
-        $('html').removeClass('is-clipped');
-        $('.modal').removeClass('is-active');
-      });
-      $(document).on('keyup',function(e) {
-        if (e.keyCode == 27) {
-          $('html').removeClass('is-clipped');
-          $('.modal').removeClass('is-active');
-        }
-      });
-    });
-  </script>
 </html>
