@@ -83,6 +83,11 @@ class Company(database.Model):
     name = database.Column(database.String())
     slogan = database.Column(database.String())
 
+association_table_plan_choice_group = database.Table('plan_choice_group',
+    database.Column('choice_group_id', database.Integer, ForeignKey('choice_group.id')),
+    database.Column('plan_id', database.Integer, ForeignKey('plan.id'))
+)
+
 class Plan(database.Model):
     __tablename__ = 'plan'
     id = database.Column(database.Integer(), primary_key=True)
@@ -98,6 +103,7 @@ class Plan(database.Model):
     primary_icon = database.Column(database.String())
     requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
     selling_points = relationship("PlanSellingPoints", back_populates="plan")
+    choice_groups = relationship("ChoiceGroup", secondary=association_table_plan_choice_group, backref=database.backref('plans', lazy='dynamic'))
 
 class PlanRequirements(database.Model):
     __tablename__ = 'plan_requirements'
@@ -175,6 +181,7 @@ class SeoPageTitle(database.Model):
     __tablename__ = 'module_seo_page_title'
     path = database.Column(database.String(), primary_key=True)
     title = database.Column(database.String())
+    
 
 class Item(database.Model):
     __tablename__ = 'item'
@@ -182,3 +189,20 @@ class Item(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     title = database.Column(database.String())
     description = database.Column(database.Text())
+
+class ChoiceGroup(database.Model):
+    __tablename__ = 'choice_group'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    options = relationship("Option", back_populates="choice_group")
+
+class Option(database.Model):
+    __tablename__ = 'option'
+    id = database.Column(database.Integer(), primary_key=True)
+    choice_group_id = database.Column(database.Integer(), ForeignKey('choice_group.id'))
+    choice_group = relationship("ChoiceGroup", back_populates="options")
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    description = database.Column(database.Text())
+    primary_icon = database.Column(database.String())

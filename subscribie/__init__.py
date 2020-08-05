@@ -61,7 +61,8 @@ from .forms import (
     SubscriberResetPasswordForm,
     ForgotPasswordForm,
     ForgotPasswordResetPasswordForm,
-    ItemForm
+    ItemForm,
+    ChoiceGroupForm
 )
 from .Template import load_theme
 from blinker import signal
@@ -80,7 +81,8 @@ database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
                     Page, Module, PaymentProvider, Integration, Plan,
-                    PlanRequirements, PlanSellingPoints, Item)
+                    PlanRequirements, PlanSellingPoints, Item,
+                    ChoiceGroup, Option)
 
 def seed_db():                                                                 
     # Add module_seo_page_title    

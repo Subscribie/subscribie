@@ -3,14 +3,14 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Edit Item</h2>
+<h2 class="text-center text-dark mb-3">Edit Choice Group</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_items') }}">Items</a></li> 
-    <li class="breadcrumb-item active" aria-current="page">Edit Item</li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li> 
+    <li class="breadcrumb-item active" aria-current="page">Edit Choice Group</li>
   </ul>
 </div>
 
@@ -18,23 +18,23 @@
   <div class="section">
     <div class="container">
 
-      <h3>Edit Item</h3>
-      <p class="card-subtitle mb-3 text-muted">Edit the item below.</p>
+      <h3>Edit Choice Group</h3>
+      <p class="card-subtitle mb-3 text-muted">Edit the Choice Group below.</p>
 
       <hr>
 
       <form action="#" method="POST">
         <div class="form-group row py-md-3">
-          <label for="item-title" class="col-sm-2 col-form-label">Item Title:</label>
+          <label for="title" class="col-sm-2 col-form-label">Choice Group Title:</label>
           <div class="col-sm-10">
-            <input name="title" id=item-title" type="text" value="{{ item.title }}" autofocus class="form-control">
+            <input name="title" id="title" type="text" value="{{ choice_group.title }}" autofocus class="form-control">
           </div>
         </div>
         
         <div class="form-group pb-md-3">
-          <label for="description">Item description:</label>
-          <textarea name="description" id="page-body" cols="80" rows="50">
-            {{ item.description }}
+          <label for="description">Choice Group description:</label>
+          <textarea name="description" id="page-body" cols="80" rows="50" required>
+            {{ choice_group.description }}
           </textarea>
         </div>
 

@@ -1,0 +1,80 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Choice Group</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete Choice Group</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Add / Edit / Delete Choice Group</h3>
+        <p class="card-subtitle text-muted">Select a choice group to edit.</p>
+
+        <a href="{{ url_for('admin.add_choice_group') }}" class="btn btn-success">
+          Add Choice Group
+        </a>  
+
+        {% if confirm is sameas false %}
+          <div class="card mx-auto my-3 py-3">
+            <h3 class="card-title mx-auto">Are you sure?</h3>
+            <div class="mx-auto">
+              <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id) }}" 
+                  class="btn btn-danger mx-3 px-5" role="button">
+                  Yes
+              </a>
+              <a href="{{ url_for('admin.list_choice_groups', cancel=1) }}" 
+                  class="btn btn-success mx-3 px-5" role="button">
+                  No
+              </a>
+            </div>
+          </div>
+        {% else %}
+            <div class="list-group list-group-flush col-md-6 py-3">
+              <table>
+                <thead>
+                  <th>Title</th>
+                  <th></th>
+                  <th></th>
+                </thead>
+              {% for choice_group in choice_groups %}
+                <tr>
+                  <td>
+                      {{ choice_group.title }}
+
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.edit_choice_group', id=choice_group.id) }}" 
+                    class="btn btn-success mx-3 px-5" role="button">
+                    Edit
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id, confirm=0) }}" 
+                    class="btn btn-danger mx-3 px-5" role="button">
+                    Delete
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </table>
+            </div>
+        {% endif %}
+      </div>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

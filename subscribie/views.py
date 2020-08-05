@@ -16,7 +16,7 @@ import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page)
+                    Page, Option, ChoiceGroup)
 
 from flask_mail import Mail, Message
 
