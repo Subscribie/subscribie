@@ -73,6 +73,10 @@ class ChoiceGroupForm(FlaskForm):
     title = StringField("title", validators=[DataRequired()])
     description = StringField("description", validators=[DataRequired()])
 
+class OptionForm(FlaskForm):
+    title = StringField("title", validators=[DataRequired()])
+    description = StringField("description", validators=[DataRequired()])
+
 class LoginForm(FlaskForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
 
