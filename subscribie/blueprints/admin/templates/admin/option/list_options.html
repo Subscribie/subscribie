@@ -3,14 +3,15 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Choice Group</h2>
+<h2 class="text-center text-dark mb-3">Option</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li>   
-    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete Choice Group</li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li>
+    <li class="breadcrumb-item"><a href="">Options</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete Option</li>
   </ul>
 </div>
       
@@ -19,22 +20,22 @@
     <div class="container">
 
       <div class="col-md-7">
-        <h3>Add / Edit / Delete Choice Group</h3>
-        <p class="card-subtitle text-muted">Select a choice group to edit.</p>
+        <h3>Add / Edit / Delete Option</h3>
+        <p class="card-subtitle text-muted">Select a option to edit.</p>
 
-        <a href="{{ url_for('admin.add_choice_group') }}" class="btn btn-success">
-          Add Choice Group
+        <a href="{{ url_for('admin.add_option', choice_group_id=choice_group.id) }}" class="btn btn-success">
+          Add Option
         </a>  
 
         {% if confirm is sameas false %}
           <div class="card mx-auto my-3 py-3">
             <h3 class="card-title mx-auto">Are you sure?</h3>
             <div class="mx-auto">
-              <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id) }}" 
+              <a href="{{ url_for('admin.delete_option', option_id=option.id, choice_group_id=choice_group.id) }}" 
                   class="btn btn-danger mx-3 px-5" role="button">
                   Yes
               </a>
-              <a href="{{ url_for('admin.list_choice_groups', cancel=1) }}" 
+              <a href="{{ url_for('admin.list_options', choice_group_id=choice_group.id, cancel=1) }}" 
                   class="btn btn-success mx-3 px-5" role="button">
                   No
               </a>
@@ -49,26 +50,20 @@
                   <th></th>
                   <th></th>
                 </thead>
-              {% for choice_group in choice_groups %}
+              {% for option in choice_group.options %}
                 <tr>
                   <td>
-                      {{ choice_group.title }}
+                      {{ option.title }}
 
                   </td>
                   <td>
-                    <a href="{{ url_for('admin.edit_choice_group', id=choice_group.id) }}" 
+                    <a href="{{ url_for('admin.edit_option', id=option.id) }}" 
                     class="btn btn-success mx-3 px-5" role="button">
                     Edit
                     </a>
                   </td>
                   <td>
-                    <a href="{{ url_for('admin.list_options', choice_group_id=choice_group.id) }}" 
-                    class="btn btn-success mx-3 px-5" role="button">
-                    Options
-                    </a>
-                  </td>
-                  <td>
-                    <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id, confirm=0) }}" 
+                    <a href="{{ url_for('admin.delete_option', option_id=option.id, choice_group_id=choice_group.id, confirm=0) }}" 
                     class="btn btn-danger mx-3 px-5" role="button">
                     Delete
                     </a>
