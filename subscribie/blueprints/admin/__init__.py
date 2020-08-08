@@ -262,6 +262,9 @@ def edit():
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
 
+            # Preserve choice_groups
+            draftPlan.choice_groups = plan.choice_groups
+
             draftPlan.title = getPlan(
                 form.title.data, index, default=""
             ).strip()
