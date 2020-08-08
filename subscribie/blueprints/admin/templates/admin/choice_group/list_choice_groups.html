@@ -48,6 +48,7 @@
                   <th></th>
                   <th></th>
                   <th></th>
+                  <th></th>
                 </thead>
               {% for choice_group in choice_groups %}
                 <tr>
@@ -65,6 +66,12 @@
                     <a href="{{ url_for('admin.list_options', choice_group_id=choice_group.id) }}" 
                     class="btn btn-success mx-3 px-5" role="button">
                     Options
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.choice_group_assign_plan', choice_group_id=choice_group.id) }}" 
+                    class="btn btn-success mx-3 px-5" style="display: inline-block" role="button">
+                    Assign Plan
                     </a>
                   </td>
                   <td>
