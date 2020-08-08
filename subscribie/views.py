@@ -82,6 +82,14 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
     plan = Plan.query.filter_by(uuid=request.args['plan']).first()
+
+    # Fetch selected options, if present
+    chosen_options = []
+    if session.get('chosen_option_ids', None):
+        for option_id in session['chosen_option_ids']:
+            option = Option.query.get(option_id)
+            chosen_options.append(option)
+
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
         return redirect_to_payment_step(plan)
@@ -93,7 +101,8 @@ def new_customer():
     session["plan"] = plan.uuid
     form = CustomerForm()
     return render_template("new_customer.html", form=form, package=package,
-                         plan=plan)
+                         plan=plan,
+                         chosen_options=chosen_options)
 
 
 @bp.route("/new_customer", methods=["POST"])
@@ -142,6 +151,22 @@ def store_customer():
         return redirect_to_payment_step(plan, inside_iframe=inside_iframe)
     else:
         return "Oops, there was an error processing that form, please go back and try again."
+
+@bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
+def set_options(plan_uuid):
+    plan = Plan.query.filter_by(uuid=plan_uuid).first()
+
+    if request.method == "POST":
+        # Store chosen options in session
+        session['chosen_option_ids'] = []
+        for choice_group_id in request.form.keys():
+            for option_id in request.form.getlist(choice_group_id):
+                session['chosen_option_ids'].append(option_id)
+
+
+        return redirect(url_for('views.new_customer', plan=plan_uuid))
+
+    return render_template("set_options.html", plan=plan)
 
 
 @bp.route("/up_front/<sid>/<fname>", methods=["GET"])

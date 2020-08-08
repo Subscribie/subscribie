@@ -2,7 +2,7 @@ from . import admin
 from subscribie import database
 from subscribie.auth import login_required
 from subscribie.forms import ChoiceGroupForm
-from subscribie.models import ChoiceGroup
+from subscribie.models import ChoiceGroup, Plan
 from flask import (request, render_template, url_for, flash, redirect
 )
 
@@ -37,6 +37,33 @@ def edit_choice_group(id):
         database.session.commit()
         flash("Choice group updated")
     return render_template("admin/choice_group/edit_choice_group.html", choice_group=choice_group)
+
+@admin.route("/choice-group/<choice_group_id>/assign-plan", methods=["GET", "POST"])
+@login_required
+def choice_group_assign_plan(choice_group_id):
+    choice_group = ChoiceGroup.query.get(choice_group_id)
+    plans = Plan.query.filter_by(archived=0)
+
+    if request.method == "POST":
+        # Remove choice group if not selected
+        for plan in plans:
+            if choice_group in plan.choice_groups:
+                plan.choice_groups.remove(choice_group)
+
+        for plan_id in request.form.getlist("assign"):
+            plan = Plan.query.get(plan_id)
+            plan.choice_groups.append(choice_group)
+        
+        database.session.commit()
+        flash("Choice group has been added to selected plan(s)")
+        return redirect(url_for('admin.list_choice_groups'))
+        
+        
+
+    return render_template("admin/choice_group/choice_group_assign_plan.html",
+                            choice_group=choice_group,
+                            plans=plans)
+
 
 @admin.route("/delete-choice-group/<id>", methods=["GET"])
 @login_required

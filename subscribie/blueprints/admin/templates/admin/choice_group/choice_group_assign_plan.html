@@ -1,0 +1,45 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Choice Group - Assign Plan</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete Choice Group</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Assign Choice Group <em>{{ choice_group.title }}</em> To Plan(s)</h3>
+        <p class="card-subtitle text-muted">Check which plan you want to assign the choice group to.</p>
+        <p>Doing so will make the options available to your customer when chosing a plan.</p>
+
+        <form action="" method="POST">
+        {% for plan in plans %}
+
+          <input type="checkbox" name="assign" value="{{ plan.id }}" id="{{ plan.id }}"
+            {% if choice_group in plan.choice_groups %}
+              checked
+            {% endif %}
+          />
+          <label for="{{ plan.id }}">{{ plan.title }}</label>
+        {% endfor %}
+
+        <input type="submit" class="btn btn-success" value="Save" />
+        </form>
+      </div>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}
