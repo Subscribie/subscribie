@@ -26,59 +26,65 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
-  <a href="{{ url_for('admin.refresh_ssot', resource='transactions') }}" 
-     class="button is-warning" title="Please be patient">Refresh Transactions List</a>
 		<table class="table">
 		  <thead>
 			<tr>
-			  <th>Date</th>
-			  <th>Amount</th>
-			  <th>Ref</th>
-              <th><abbr title="Description">Des</abbr></th>
-              <th>Currency</th>
-              <th>Mandate</th>
-              <th>Payout</th>
-              <th>Creditor</th>
-              <th>created_at</th>
-              <th>charge_date</th>
-              <th>customer_bank_account</th>
-              <th>customer</th>
-              <th>source_gateway</th>
-              <th>source_type</th>
-              <th>source_id</th>
+        <th>Date</th>
+        <th>Payment id</th>
+        <th>Amount</th>
+        <th>Source</th>
+        <th>Subscriber</th>
+        <th>Subscription</th>
 			</tr>
 		  </thead>
 		  <tbody>
-			{% for transaction in transactions %}
+			{% for transaction in transactions.items %}
 			<tr>
-			  <td>{{ transaction['date'] }}</td>
-			  <td>{{ transaction['amount']|currencyFormat }}</td>
-			  <td>{{ transaction['reference'] }}</td>
-			  <td>{{ transaction['description'] }}</td>
-			  <td>{{ transaction['currency'] }}</td>
-			  <td><a href="" title="{{ transaction['mandate'] }}">
-                    View mandate</a>
-              </td>
-			  <td>
-                    {% if transaction['payout'] %}
-                        <a href="" title="{{ transaction['payout'] }}">
-                        View payout</a>
-                    {% else %}
-                        None
-                    {% endif %}
-              </td>
-			  <td>{{ transaction['creditor'] }}</td>
-			  <td>{{ transaction['created_at'] }}</td>
-			  <td>{{ transaction['charge_date'] }}</td>
-			  <td>{{ transaction['customer_bank_account'] }}</td>
-			  <td>{{ transaction['customer'] }}</td>
-			  <td>{{ transaction['source_gateway'] }}</td>
-			  <td>{{ transaction['source_type'] }}</td>
-			  <td>{{ transaction['source_id'] }}</td>
+        <td>{{ transaction.created_at }}</td>
+        <td>{{ transaction.external_id }}ZZ</td>
+        <td>&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
+        <td>{{ transaction.external_src }}</td>
+        <td>{{ transaction.person.given_name }}</td>
+        <td> {% if transaction.subscription.plan %}
+               {{ transaction.subscription.plan.title}}
+             {% endif %}
+        </td>
 			</tr>
 			{% endfor %}
 		  </tbody>
-		</table>
+    </table>
+
+    <nav role="navigation" aria-label="pagination">
+      <ul class="pagination justify-content-start">
+        <li class="page-item">
+          {% if transactions.has_prev %}
+            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1) }}">Previous</a>
+          {% endif %}</li>
+
+        {% for page_num in transactions.iter_pages() %}
+          {% if page_num %}
+            {% if transactions.page == page_num %}
+              <li class="page-item active">
+                <a class="page-link" href="{{ url_for('admin.transactions', page=page_num) }}"><b>{{ page_num }}</b></a>
+              </li>
+            {% else %}
+              <li class="page-item ">
+                <a class="page-link" href="{{ url_for('admin.transactions', page=page_num) }}">{{ page_num }}</a>
+              </li>
+    
+            {% endif %}
+          {% else %}
+            ...
+          {% endif %}
+        {% endfor %}
+      
+        <li class="page-item">
+          {% if transactions.has_next %}
+            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1) }}">Next page</a>
+          {% endif %}</li>
+      </ul>
+    </nav>
+
 	</div><!-- end .container -->
 </div><!-- end .section -->
 
