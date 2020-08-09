@@ -861,29 +861,14 @@ def customers():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-    payment_provider = PaymentProvider.query.first()        
-    from SSOT import SSOT
 
-    access_token = payment_provider.gocardless_access_token,
-    target_gateways = ({"name": "GoCardless", "construct": access_token},)
-    try:
-        SSOT = SSOT(target_gateways)
-        transactions = SSOT.transactions
-    except gocardless_pro.errors.InvalidApiUsageError as e:
-        logging.error(e.type)
-        logging(e.message)
-        flash("Invalid GoCardless API token. Correct your GoCardless API key.")
-        return redirect(url_for("admin.connect_gocardless_manually"))
-    except ValueError as e:
-        logging.error(e.message)
-        if e.message == "No access_token provided":
-            flash("You must connect your GoCardless account first.")
-            return redirect(url_for("admin.connect_gocardless_manually"))
-        else:
-            raise
+    page = request.args.get('page', 1, type=int)
+    transactions = database.session.query(Transaction).order_by(desc(Transaction.created_at)).paginate(page=page, per_page=10)
+    
     return render_template(
         "admin/transactions.html", transactions=transactions
     )
+
 @admin.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
