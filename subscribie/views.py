@@ -16,9 +16,11 @@ import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page, Option, ChoiceGroup)
+                    Page, Option, ChosenOption)
 
 from flask_mail import Mail, Message
+from sqlalchemy.sql.expression import func
+from typing import Optional
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -88,8 +90,13 @@ def new_customer():
     if session.get('chosen_option_ids', None):
         for option_id in session['chosen_option_ids']:
             option = Option.query.get(option_id)
-            chosen_options.append(option)
-
+            # We will store as ChosenOption because option may change after the order has processed
+            # This preserves integrity of the actual chosen options
+            chosen_option = ChosenOption()
+            chosen_option.option_title = option.title
+            chosen_option.choice_group_title = option.choice_group.title
+            chosen_options.append(chosen_option)
+    
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
         return redirect_to_payment_step(plan)
@@ -223,6 +230,9 @@ def charge_up_front():
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
+        # Create subscription model to store any chosen choices even though this
+        # is a one-off payment. 
+        create_subscription(transaction = transaction) 
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 
@@ -338,15 +348,7 @@ def on_complete_mandate():
         except KeyError:
             start_date = None
 
-        # Create subscription
-        print("Creating subscription")
-        # Store Subscription against Person locally
-        person = database.session.query(Person).filter_by(email=session['email']).first()
-        subscription = Subscription(sku_uuid=session['package'], person=person)
-        database.session.add(subscription)
-        database.session.commit()
-        # Add subscription id to session
-        session["subscription_id"] = subscription.id
+        create_subscription()
 
         # Get interval_unit
         if plan.interval_unit is None:
@@ -396,6 +398,38 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
+def create_subscription(transaction: Optional[Transaction] = None):
+    '''Create subscription model
+    Note: A subscription model is also created if a plan only has
+    one up_front payment (no recuring subscription). This allows
+    the storing of chosen options againt their plan choice.'''
+    print("Creating subscription")
+    # Store Subscription against Person locally
+    person = database.session.query(Person).filter_by(email=session['email']).first()
+    subscription = Subscription(sku_uuid=session['package'], person=person)
+
+    # Assign transaction if set
+    if transaction:
+        subscription.transactions.append(transaction)
+
+    # Add chosen options (if any)
+    chosen_options = []
+    if session.get('chosen_option_ids', None):
+        for option_id in session['chosen_option_ids']:
+            option = Option.query.get(option_id)
+            # We will store as ChosenOption because option may change after the order has processed
+            # This preserves integrity of the actual chosen options
+            chosen_option = ChosenOption()
+            chosen_option.option_title = option.title
+            chosen_option.choice_group_title = option.choice_group.title
+            chosen_option.choice_group_id = option.choice_group.id # Used for grouping latest choice
+            chosen_options.append(chosen_option)    
+    subscription.chosen_options = chosen_options
+
+    database.session.add(subscription)
+    database.session.commit()
+    # Add subscription id to session
+    session["subscription_id"] = subscription.id
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
