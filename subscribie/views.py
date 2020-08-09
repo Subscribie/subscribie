@@ -225,6 +225,11 @@ def charge_up_front():
         database.session.add(transaction)
         database.session.commit()
 
+        if session.get('transactions', None):
+            session['transactions'].append(transaction.id)
+        else:
+            session['transactions'] = [transaction.id]
+
     except stripe.error.AuthenticationError as e:
         return str(e)
     if plan.requirements.subscription:
@@ -232,7 +237,7 @@ def charge_up_front():
     else:
         # Create subscription model to store any chosen choices even though this
         # is a one-off payment. 
-        create_subscription(transaction = transaction) 
+        create_subscription() 
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 
@@ -398,7 +403,7 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
-def create_subscription(transaction: Optional[Transaction] = None):
+def create_subscription():
     '''Create subscription model
     Note: A subscription model is also created if a plan only has
     one up_front payment (no recuring subscription). This allows
@@ -407,10 +412,6 @@ def create_subscription(transaction: Optional[Transaction] = None):
     # Store Subscription against Person locally
     person = database.session.query(Person).filter_by(email=session['email']).first()
     subscription = Subscription(sku_uuid=session['package'], person=person)
-
-    # Assign transaction if set
-    if transaction:
-        subscription.transactions.append(transaction)
 
     # Add chosen options (if any)
     chosen_options = []
@@ -441,7 +442,16 @@ def thankyou():
       note = SubscriptionNote(note=session["note_to_seller"],
                              subscription_id=session["subscription_id"])
       database.session.add(note)
-      database.session.commit()
+
+    # Store any transactions against subscriptions
+    if session.get('subscription_id', None):
+        subscription = Subscription.query.get(session.get('subscription_id'))
+        if session.get('transactions', None):
+            for transaction_id in session['transactions']:
+                transaction = Transaction.query.get(transaction_id)
+                subscription.transactions.append(transaction)
+
+    database.session.commit()
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
     # Load welcome email from template folder and render & send

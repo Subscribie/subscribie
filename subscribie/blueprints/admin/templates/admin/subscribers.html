@@ -47,6 +47,18 @@
                 <li><div class="card">
                   <ul class="list-unstyled px-2">
                     <li><strong>Title: </strong>{{ subscription.plan.title }}</li>
+                    {% if subscription.chosen_options %}
+                    <li>
+                        <details open>
+                          <summary><strong>Chosen Options</strong></summary>
+                          <ul>
+                          {% for choice in subscription.chosen_options %}
+                             <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                          {% endfor %}
+                          </ul>
+                        </details>
+                    </li>
+                    {% endif %}
                     <li><strong>ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
                     <li><strong>GoCardless Subscription id: </strong>
