@@ -1,0 +1,75 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Subscriber: {{ person.given_name }}</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.subscribers') }}">Subscribers</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> {{ person.given_name }}</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="container">
+      <div class="row">
+        <div class="card col-md-4" style="width: 18rem;">
+          <div class="card-body">
+            <h3 class="card-title">{{ person.given_name }} {{ person.family_name }}</h3>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{ person.email }}</li>
+            <li class="list-group-item">{{ person.mobile }}</li>
+            <li class="list-group-item"><strong>Address</strong>
+              <address>
+                {{ person.address_line1  }} <br />
+                {{ person.city }} <br />
+                {{ person.postal_code }}
+              </address>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-1"></div>
+
+        <div class="card col-md-7" style="width: 18rem;">
+          <div class="card-body">
+            <h3>Subscriptions</h3>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for subscription in person.subscriptions %}
+              <li class="list-group-item">
+                <strong>{{ subscription.plan.title }}</strong><br />
+                <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
+                <strong>Interval Unit:</strong> {{ subscription.plan.interval_unit|capitalize }} <br />
+                <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
+                {% if subscription.chosen_options %}
+                <strong>Choices:</strong>
+                  
+                  {% for chosen_option in subscription.chosen_options %}
+                    <details open>
+                      <summary>
+                        {{ chosen_option.choice_group_title }}:
+                      </summary>
+                      {{ chosen_option.option_title }}
+                    </details>
+                  {% endfor %}
+
+                {% endif %}
+
+                <a href="" title="View transactions">View Transactions</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+  </div><!--end container-->
+
+</main>
+
+{% endblock body %}

@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey
 from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
+from dateutil.relativedelta import relativedelta
 
 def uuid_string():
     return str(uuid4())
@@ -68,6 +69,22 @@ class Subscription(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
+
+    def next_date(self):
+        """Return the next delivery date of this subscription
+        Based on the created_at date, divided by number of intervals since
+        + days remaining.
+        """
+        from datetime import date
+        from dateutil import rrule
+        if self.plan.interval_unit == 'yearly':
+            next_date = list(rrule.rrule(rrule.YEARLY, interval=1, until=date.today() + relativedelta(years=+2), dtstart=self.created_at))[-1]
+        elif self.plan.interval_unit == 'weekly':
+            next_date = list(rrule.rrule(rrule.WEEKLY, interval=1, until=date.today() + relativedelta(weeks=+2), dtstart=self.created_at))[-1]
+        else:
+            next_date = list(rrule.rrule(rrule.MONTHLY, interval=1, until=date.today() + relativedelta(months=+2), dtstart=self.created_at))[-1]
+
+        return next_date
 
 class SubscriptionNote(database.Model):
     __tablename__ = 'subscription_note'

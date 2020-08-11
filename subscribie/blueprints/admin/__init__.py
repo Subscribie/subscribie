@@ -45,6 +45,7 @@ admin = Blueprint(
 
 from .choice_group import list_choice_groups
 from .option import list_options
+from .subscriber import show_subscriber
 
 @admin.app_template_filter()
 def currencyFormat(value):
