@@ -18,32 +18,27 @@
   <div class="section">
     <div class="container">
 
-      <div class="row row-cols-1 row-cols-md-2">
-        <div class="col-md-7">
-          <h2>Add Option</h2>
-          <p>Options are part of choice groups.</p>
-          
-          <form action="" method="POST" action="/">
-            {{ form.csrf_token }}
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="title">Title:</label>
-              <div class="col-sm-9">
-                <input class="form-control" type="title" name="title" required>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="description">Description:</label>
-              <div class="col-sm-9">
-                <textarea class="form-control" name="description" required></textarea>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
-          </form>
-        </div>
+      <h3>Add Option</h3>
+      <p class="card-subtitle text-muted mb-3">Options are part of choice groups.</p>
 
-        <div class="col-md-5">
+      <hr>
+      
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        {{ form.csrf_token }}
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label" for="title">Title:</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="title" name="title" required>
+          </div>
         </div>
-      </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label" for="description">Description:</label>
+          <div class="col-sm-9">
+            <textarea class="form-control" name="description" required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+      </form>
 
     </div> <!-- end container-->
   </div> <!-- end section-->
