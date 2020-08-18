@@ -254,6 +254,28 @@ def create_app(test_config=None):
         - Check if x days before their subscription.next_date
         - If yes, sent them an email alert
         """
+        def alert_subscriber_update_choices(subscriber: Person):
+            email_template = str(Path(current_app.root_path + '/emails/update-choices.jinja2.html'))
+            # App context needed for dynamic request.host (app.config["SERVER_NAME"] not set)
+            with app.test_request_context('/'):
+                update_options_url ='https://' + flask.request.host + url_for('subscriber.login')
+                company = Company.query.first()
+                with open(email_template) as file_:
+                    template = Template(file_.read())
+                    html = template.render(update_options_url=update_options_url,
+                                            company=company)
+                    try:
+                        mail = Mail(current_app)
+                        msg = Message()
+                        msg.subject = company.name + " " + "Update Options"
+                        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+                        msg.recipients = [person.email]
+                        msg.html = html
+                        mail.send(msg)
+                    except Exception as e:
+                        print(e)
+                        print("Failed to send update choices email")
+                        
         people = Person.query.all()
 
         for person in people:
@@ -264,27 +286,7 @@ def create_app(test_config=None):
                     days_until = subscription.next_date().date() - today
                     if days_until.days == 8:
                         print(f"Sending alert for subscriber '{person.id}' on plan: {subscription.plan.title}")
+                        alert_subscriber_update_choices(person)
 
-        email_template = str(Path(current_app.root_path + '/emails/update-choices.jinja2.html'))
 
-
-        # App context needed for dynamic request.host (app.config["SERVER_NAME"] not set)
-        with app.test_request_context('/'):
-            update_options_url ='https://' + flask.request.host + url_for('subscriber.login')
-            company = Company.query.first()
-            with open(email_template) as file_:
-                template = Template(file_.read())
-                html = template.render(update_options_url=update_options_url,
-                                        company=company)
-                try:
-                    mail = Mail(current_app)
-                    msg = Message()
-                    msg.subject = company.name + " " + "Update Options"
-                    msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-                    msg.recipients = ["chris@karmacomputing.co.uk"]
-                    msg.html = html
-                    mail.send(msg)
-                except Exception as e:
-                    print(e)
-                    print("Failed to send update choices email")
     return app
