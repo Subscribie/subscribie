@@ -353,7 +353,7 @@ def on_complete_mandate():
         except KeyError:
             start_date = None
 
-        create_subscription()
+        subscription = create_subscription()
 
         # Get interval_unit
         if plan.interval_unit is None:
@@ -403,7 +403,7 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
-def create_subscription():
+def create_subscription() -> Subscription:
     '''Create subscription model
     Note: A subscription model is also created if a plan only has
     one up_front payment (no recuring subscription). This allows
@@ -431,6 +431,7 @@ def create_subscription():
     database.session.commit()
     # Add subscription id to session
     session["subscription_id"] = subscription.id
+    return subscription
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
