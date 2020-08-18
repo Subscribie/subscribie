@@ -86,6 +86,8 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
                     PlanRequirements, PlanSellingPoints, Item,
                     ChoiceGroup, Option)
 
+from .blueprints.admin import get_subscription_status
+
 def seed_db():                                                                 
     # Add module_seo_page_title    
     module_seo = Module()                                                        
@@ -244,8 +246,27 @@ def create_app(test_config=None):
 
     @app.cli.command()
     def alert_subscribers_make_choice():
-        """Alert qualifying subscribers to set their choices"""
+        """Alert qualifying subscribers to set their choices
+
+        For all people (aka Subscribers)
+
+        - Loop over their *active* subscriptions
+        - Check if x days before their subscription.next_date
+        - If yes, sent them an email alert
+        """
+        people = Person.query.all()
+
+        for person in people:
+            for subscription in person.subscriptions:
+                if get_subscription_status(subscription.gocardless_subscription_id) == "active":
+                    # Check if x days until next subscription due, make configurable
+                    today = datetime.date.today()
+                    days_until = subscription.next_date().date() - today
+                    if days_until.days == 8:
+                        print(f"Sending alert for subscriber '{person.id}' on plan: {subscription.plan.title}")
+
         email_template = str(Path(current_app.root_path + '/emails/update-choices.jinja2.html'))
+
 
         # App context needed for dynamic request.host (app.config["SERVER_NAME"] not set)
         with app.test_request_context('/'):
