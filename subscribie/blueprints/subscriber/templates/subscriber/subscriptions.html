@@ -17,15 +17,15 @@
     <h3 class="card-title">Your Subscriptions</h3>
     {% for subscription in g.subscriber.subscriptions %}
       <div class="card px-3 py-3 my-3">
-        <h4>{{ subscription.item.title }}</h4>
+        <h4>{{ subscription.plan.title }}</h4>
         <ul>
           <li><strong>Created at:</strong> {{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
-          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.item.interval_amount/100) }} / {{ subscription.item.interval_unit }}</li>
+          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.plan.interval_amount/100) }} / {{ subscription.plan.interval_unit }}</li>
         </ul>
 
         <h5>Details</h5>
         <ul>
-        {% for selling_point in subscription.item.selling_points  %}
+        {% for selling_point in subscription.plan.selling_points  %}
           <li>{{ selling_point.point }}</li>
         {% endfor %}
         </ul>
