@@ -76,6 +76,8 @@ import subprocess
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, upgrade
 import click
+from jinja2 import Template
+from flask_mail import Mail, Message
 
 database = SQLAlchemy()
 
@@ -240,4 +242,28 @@ def create_app(test_config=None):
             cur.executescript(fp.read())
             con.close()
 
+    @app.cli.command()
+    def alert_subscribers_make_choice():
+        """Alert qualifying subscribers to set their choices"""
+        email_template = str(Path(current_app.root_path + '/emails/update-choices.jinja2.html'))
+
+        # App context needed for dynamic request.host (app.config["SERVER_NAME"] not set)
+        with app.test_request_context('/'):
+            update_options_url ='https://' + flask.request.host + url_for('subscriber.login')
+            company = Company.query.first()
+            with open(email_template) as file_:
+                template = Template(file_.read())
+                html = template.render(update_options_url=update_options_url,
+                                        company=company)
+                try:
+                    mail = Mail(current_app)
+                    msg = Message()
+                    msg.subject = company.name + " " + "Update Options"
+                    msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+                    msg.recipients = ["chris@karmacomputing.co.uk"]
+                    msg.html = html
+                    mail.send(msg)
+                except Exception as e:
+                    print(e)
+                    print("Failed to send update choices email")
     return app
