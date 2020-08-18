@@ -8,7 +8,7 @@ from flask import (
     session, g, current_app, request
 )
 from subscribie import PasswordLoginForm, SubscriberForgotPasswordForm, SubscriberResetPasswordForm
-from subscribie.models import database, Person, Company
+from subscribie.models import Subscription, database, Person, Company, Option, ChosenOption
 from flask_mail import Mail, Message
 from jinja2 import Template
 
@@ -136,3 +136,35 @@ def account():
 def subscriptions():
     "A subscribers subscriptions"
     return render_template('subscriber/subscriptions.html')
+
+@subscriber.route('/account/subscriptions/update-choices/<subscription_id>', methods=["GET", "POST"])
+@subscriber_login_required
+def update_subscription_choices(subscription_id):
+    """Subscriber can update their subscription choices"""
+    # Get plan from subscription
+    subscription = Subscription.query.get(subscription_id)
+    plan = subscription.plan
+    if request.method == "POST":
+        chosen_option_ids = []
+        for choice_group_id in request.form.keys():
+            for option_id in request.form.getlist(choice_group_id):
+                chosen_option_ids.append(option_id)
+        # Update chosen choices
+        chosen_options = []
+        for option_id in chosen_option_ids:
+            option = Option.query.get(option_id)
+            # We will store as ChosenOption because option may change after the order has processed
+            # This preserves integrity of the actual chosen options
+            chosen_option = ChosenOption()
+            chosen_option.option_title = option.title
+            chosen_option.choice_group_title = option.choice_group.title
+            chosen_option.choice_group_id = option.choice_group.id # Used for grouping latest choice
+            chosen_options.append(chosen_option)
+        subscription.chosen_options = chosen_options
+
+        database.session.add(subscription)
+        database.session.commit()
+        flash("Your choices have been saved.")
+        return redirect(url_for('subscriber.subscriptions'))
+    else:
+        return render_template('subscriber/update_choices.html', plan=plan)

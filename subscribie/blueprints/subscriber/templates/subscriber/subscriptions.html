@@ -20,8 +20,27 @@
         <h4>{{ subscription.plan.title }}</h4>
         <ul>
           <li><strong>Created at:</strong> {{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
-          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.plan.interval_amount/100) }} / {{ subscription.plan.interval_unit }}</li>
+          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.plan.interval_amount/100) }}</li>
+          <li><strong>Interval Unit:</strong> {{ subscription.plan.interval_unit|capitalize }}</li>
+          <li><strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} </li>
         </ul>
+        {% if subscription.chosen_options %}
+        <strong>Chosen Options:</strong>
+
+          {% for chosen_option in subscription.chosen_options %}
+            <details open>
+              <summary>
+                {{ chosen_option.choice_group_title }}:
+              </summary>
+              {{ chosen_option.option_title }}
+            </details>
+          {% endfor %}
+
+          <a href="{{ url_for('subscriber.update_subscription_choices', subscription_id=subscription.id) }}" class="btn btn-success">
+            Update Choices
+          </a>
+        {% endif %}
+
 
         <h5>Details</h5>
         <ul>
