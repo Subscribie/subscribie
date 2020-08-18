@@ -1,0 +1,35 @@
+{% extends "admin/layout.html" %}
+{% block title %} Update Choices - {{ company.name }} {% endblock %}
+
+{% block body %}
+
+<div class="section">
+  <div class="container">
+
+      <h3 class="title is-4 has-text-centered is-size-4-mobile">Choose your options</h2>
+      
+      <p>Your <em>{{ plan.title }}</em> plan has the following options</p>
+
+      <form action="" method="POST">
+
+      {% for choice_group in plan.choice_groups %}
+      <details open>
+        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options) choose one:</summary>
+        <ul>
+          {% for option in choice_group.options %}
+          <li>
+            <input type="radio" name="{{ choice_group.id }}" id="{{ option.id }}" value="{{ option.id }}" />
+            <label for="{{ option.id }}">{{ option.title }}</label>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endfor %}
+
+      <input type="submit" class="btn btn-success"  value="Save" />
+      </form>
+
+  </div>
+</div>
+
+{% endblock %}
