@@ -29,8 +29,57 @@ import binascii
 from pathlib import Path
 import flask
 from jinja2 import Template
+from flask import jsonify, current_app
+import jwt
+from functools import wraps
+from py_auth_header_parser import parse_auth_header
+import datetime
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+def token_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        auth_header = parse_auth_header(request.headers['Authorization'])
+        # Validate & decode jwt
+        secret = current_app.config['SECRET_KEY']
+        public_key = open(current_app.config['PUBLIC_KEY']).read()
+        try:
+            jwt.decode(auth_header['access_token'], public_key, algorithms=['RS256'])
+        except jwt.exceptions.InvalidSignatureError:
+            return jsonify({'msg': 'InvalidSignatureError'})
+        except jwt.exceptions.ExpiredSignatureError:
+            return jsonify({'msg': 'ExpiredSignatureError'})
+        except jwt.exceptions.InvalidAlgorithmError:
+            return jsonify({'msg': 'InvalidAlgorithmError'})
+        return f(*args, **kwds)
+    return wrapper
+
+@bp.route("/jwt-login", methods=["GET", "POST"])
+def jwt_login():
+    import pdb;pdb.set_trace()
+
+    if 'Authorization' in request.headers:
+        email = request.authorization.username
+    elif request.method == "POST" and request.content_type is not None and \
+        'application/json' in request.content_type.lower():
+        email = request.email
+
+    user = User.query.filter_by(email=username).first()
+    if user is not None:
+        secret = current_app.config['SECRET_KEY']
+        private_key = open(current_app.config['PRIVATE_KEY']).read()
+        jwt_payload = jwt.encode({
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+            'user_id': user.id
+            }, private_key, algorithm='RS256')
+        return jsonify({'token': jwt_payload.decode('utf-8')})
+    return jsonify({'msg': 'Bad credentials'})
+
+@bp.route("/protected")
+@token_required
+def protected():
+    return "hello"
 
 
 def check_password_login(email, password):
