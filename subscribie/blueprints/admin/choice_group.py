@@ -13,7 +13,6 @@ def add_choice_group():
     if form.validate_on_submit():
         choice_group = ChoiceGroup()
         choice_group.title = request.form['title']
-        choice_group.description = request.form['description']
         database.session.add(choice_group)
         database.session.commit()
         flash("Added new choice group")
@@ -33,7 +32,6 @@ def edit_choice_group(id):
     choice_group = ChoiceGroup.query.get(id)
     if request.method == 'POST':
         choice_group.title = request.form['title']
-        choice_group.description = request.form['description']
         database.session.commit()
         flash("Choice group updated")
     return render_template("admin/choice_group/edit_choice_group.html", choice_group=choice_group)
