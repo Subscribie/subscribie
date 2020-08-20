@@ -15,7 +15,6 @@ def add_option(choice_group_id):
     if form.validate_on_submit():
         option = Option()
         option.title = request.form['title']
-        option.description = request.form['description']
         choice_group.options.append(option)
         database.session.commit()
         flash("Added new option")
@@ -36,7 +35,6 @@ def edit_option(id):
     option = Option.query.get(id)
     if request.method == 'POST':
         option.title = request.form['title']
-        option.description = request.form['description']
         database.session.commit()
         flash("Choice option updated")
     return render_template("admin/option/edit_option.html", option=option)
