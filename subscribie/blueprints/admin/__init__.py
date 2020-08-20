@@ -18,10 +18,9 @@ from subscribie import (
     url_for,
     GoogleTagManagerConnectForm,
     PlansForm,
-    ItemForm,
     jsonify,
     TawkConnectForm,
-    database, User, Person, Subscription, SubscriptionNote, Company, Item,
+    database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
 from subscribie.auth import login_required
@@ -338,58 +337,6 @@ def edit():
         flash("Plan(s) updated.")
         return redirect(url_for("admin.dashboard"))
     return render_template("admin/edit.html", plans=plans, form=form)
-
-
-@admin.route("/add-item", methods=["GET", "POST"])
-@login_required
-def add_item():
-    form = ItemForm()
-    if form.validate_on_submit():
-        item = Item()
-        item.title = request.form['title']
-        item.description = request.form['description']
-        database.session.add(item)
-        database.session.commit()
-        flash("Added new item")
-        return redirect(url_for('admin.list_items'))
-    
-    return render_template("admin/item/add_item.html", form=form)
-
-@admin.route("/list-items", methods=["GET", "POST"])
-@login_required
-def list_items():
-    items = Item.query.all()
-    return render_template("admin/item/list_items.html", items=items)
-
-@admin.route("/edit-item/<id>", methods=["GET", "POST"])
-@login_required
-def edit_item(id):
-    item = Item.query.get(id)
-    form = ItemForm()
-    if request.method == 'POST':
-        item.title = request.form['title']
-        item.description = request.form['description']
-        database.session.commit()
-        flash("Item updated")
-    return render_template("admin/item/edit_item.html", item=item)
-
-@admin.route("/delete-item/<id>", methods=["GET"])
-@login_required
-def delete_item(id):
-    if "confirm" in request.args:
-        items = Item.query.all()
-        confirm = False
-        return render_template(
-            "admin/item/list_items.html",
-            items=items,
-            item=Item.query.get(id),
-            confirm=False,
-        )
-    item = Item.query.get(id)
-    database.session.delete(item)
-    database.session.commit()
-    flash("Item deleted")
-    return redirect(url_for('admin.list_items'))
 
 
 @admin.route("/add", methods=["GET", "POST"])

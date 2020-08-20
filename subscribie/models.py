@@ -201,13 +201,6 @@ class SeoPageTitle(database.Model):
     title = database.Column(database.String())
     
 
-class Item(database.Model):
-    __tablename__ = 'item'
-    id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    title = database.Column(database.String())
-    description = database.Column(database.Text())
-
 class ChoiceGroup(database.Model):
     __tablename__ = 'choice_group'
     id = database.Column(database.Integer(), primary_key=True)

@@ -61,7 +61,6 @@ from .forms import (
     SubscriberResetPasswordForm,
     ForgotPasswordForm,
     ForgotPasswordResetPasswordForm,
-    ItemForm,
     ChoiceGroupForm
 )
 from .Template import load_theme
@@ -83,7 +82,7 @@ database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
                     Page, Module, PaymentProvider, Integration, Plan,
-                    PlanRequirements, PlanSellingPoints, Item,
+                    PlanRequirements, PlanSellingPoints,
                     ChoiceGroup, Option)
 
 from .blueprints.admin import get_subscription_status
