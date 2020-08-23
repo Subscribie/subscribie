@@ -1,7 +1,9 @@
 """plan_requirements_fk_plan
+
 Revision ID: d0475c520f1e
 Revises: ddff11d33adb
-Create Date: 2020-08-03 16:29:55.218843
+Create Date: 2020-08-03 16:29:55.218843A
+
 """
 from alembic import op
 import sqlalchemy as sa
@@ -18,6 +20,11 @@ depends_on = None
 def upgrade():
     # Create and drop empty item table to satisfy dangling foriegn key           
     # references                                                                 
+    op.create_table(
+        'item',
+        Column('id', INTEGER, primary_key=True),
+    )
+
 
     naming_convention = {
     "fk":
