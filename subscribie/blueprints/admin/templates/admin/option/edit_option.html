@@ -1,0 +1,63 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Edit Choice Group</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Choice Groups</a></li> 
+    <li class="breadcrumb-item active" aria-current="page">Edit Option</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Edit Choice Group</h3>
+      <p class="card-subtitle mb-3 text-muted">Edit the Option below.</p>
+
+      <hr>
+
+      <form action="#" method="POST">
+        <div class="form-group row py-md-3">
+          <label for="title" class="col-sm-2 col-form-label">Option Title:</label>
+          <div class="col-sm-10">
+            <input name="title" id="title" type="text" value="{{ option.title }}" autofocus class="form-control">
+          </div>
+        </div>
+
+        <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+      </form>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+  </head>
+  <body>
+    <div id="summernote"></div>
+    <script>
+      $('#page-body').summernote({
+        placeholder: 'Start typing...',
+        tabsize: 2,
+        height: 240,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+      });
+    </script>
+
+{% endblock body %}

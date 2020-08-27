@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey
 from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
+from dateutil.relativedelta import relativedelta
 
 def uuid_string():
     return str(uuid4())
@@ -67,6 +68,23 @@ class Subscription(database.Model):
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
+    chosen_options = relationship("ChosenOption", back_populates="subscription")
+
+    def next_date(self):
+        """Return the next delivery date of this subscription
+        Based on the created_at date, divided by number of intervals since
+        + days remaining.
+        """
+        from datetime import date
+        from dateutil import rrule
+        if self.plan.interval_unit == 'yearly':
+            next_date = list(rrule.rrule(rrule.YEARLY, interval=1, until=date.today() + relativedelta(years=+2), dtstart=self.created_at))[-1]
+        elif self.plan.interval_unit == 'weekly':
+            next_date = list(rrule.rrule(rrule.WEEKLY, interval=1, until=date.today() + relativedelta(weeks=+2), dtstart=self.created_at))[-1]
+        else:
+            next_date = list(rrule.rrule(rrule.MONTHLY, interval=1, until=date.today() + relativedelta(months=+2), dtstart=self.created_at))[-1]
+
+        return next_date
 
 class SubscriptionNote(database.Model):
     __tablename__ = 'subscription_note'
@@ -83,6 +101,11 @@ class Company(database.Model):
     name = database.Column(database.String())
     slogan = database.Column(database.String())
 
+association_table_plan_choice_group = database.Table('plan_choice_group',
+    database.Column('choice_group_id', database.Integer, ForeignKey('choice_group.id')),
+    database.Column('plan_id', database.Integer, ForeignKey('plan.id'))
+)
+
 class Plan(database.Model):
     __tablename__ = 'plan'
     id = database.Column(database.Integer(), primary_key=True)
@@ -98,6 +121,7 @@ class Plan(database.Model):
     primary_icon = database.Column(database.String())
     requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
     selling_points = relationship("PlanSellingPoints", back_populates="plan")
+    choice_groups = relationship("ChoiceGroup", secondary=association_table_plan_choice_group, backref=database.backref('plans', lazy='dynamic'))
 
 class PlanRequirements(database.Model):
     __tablename__ = 'plan_requirements'
@@ -175,3 +199,32 @@ class SeoPageTitle(database.Model):
     __tablename__ = 'module_seo_page_title'
     path = database.Column(database.String(), primary_key=True)
     title = database.Column(database.String())
+    
+
+class ChoiceGroup(database.Model):
+    __tablename__ = 'choice_group'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    options = relationship("Option", back_populates="choice_group")
+
+class Option(database.Model):
+    __tablename__ = 'option'
+    id = database.Column(database.Integer(), primary_key=True)
+    choice_group_id = database.Column(database.Integer(), ForeignKey('choice_group.id'))
+    choice_group = relationship("ChoiceGroup", back_populates="options")
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    description = database.Column(database.Text())
+    primary_icon = database.Column(database.String())
+
+
+class ChosenOption(database.Model):
+    __tablename__ = 'chosen_option'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    choice_group_id = database.Column(database.Integer())
+    choice_group_title = database.Column(database.String())
+    option_title = database.Column(database.String())
+    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription = relationship("Subscription", back_populates="chosen_options")

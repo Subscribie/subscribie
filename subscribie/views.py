@@ -16,9 +16,11 @@ import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page)
+                    Page, Option, ChosenOption)
 
 from flask_mail import Mail, Message
+from sqlalchemy.sql.expression import func
+from typing import Optional
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -82,6 +84,19 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
     plan = Plan.query.filter_by(uuid=request.args['plan']).first()
+
+    # Fetch selected options, if present
+    chosen_options = []
+    if session.get('chosen_option_ids', None):
+        for option_id in session['chosen_option_ids']:
+            option = Option.query.get(option_id)
+            # We will store as ChosenOption because option may change after the order has processed
+            # This preserves integrity of the actual chosen options
+            chosen_option = ChosenOption()
+            chosen_option.option_title = option.title
+            chosen_option.choice_group_title = option.choice_group.title
+            chosen_options.append(chosen_option)
+    
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
         return redirect_to_payment_step(plan)
@@ -93,7 +108,8 @@ def new_customer():
     session["plan"] = plan.uuid
     form = CustomerForm()
     return render_template("new_customer.html", form=form, package=package,
-                         plan=plan)
+                         plan=plan,
+                         chosen_options=chosen_options)
 
 
 @bp.route("/new_customer", methods=["POST"])
@@ -142,6 +158,22 @@ def store_customer():
         return redirect_to_payment_step(plan, inside_iframe=inside_iframe)
     else:
         return "Oops, there was an error processing that form, please go back and try again."
+
+@bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
+def set_options(plan_uuid):
+    plan = Plan.query.filter_by(uuid=plan_uuid).first()
+
+    if request.method == "POST":
+        # Store chosen options in session
+        session['chosen_option_ids'] = []
+        for choice_group_id in request.form.keys():
+            for option_id in request.form.getlist(choice_group_id):
+                session['chosen_option_ids'].append(option_id)
+
+
+        return redirect(url_for('views.new_customer', plan=plan_uuid))
+
+    return render_template("set_options.html", plan=plan)
 
 
 @bp.route("/up_front/<sid>/<fname>", methods=["GET"])
@@ -193,11 +225,19 @@ def charge_up_front():
         database.session.add(transaction)
         database.session.commit()
 
+        if session.get('transactions', None):
+            session['transactions'].append(transaction.id)
+        else:
+            session['transactions'] = [transaction.id]
+
     except stripe.error.AuthenticationError as e:
         return str(e)
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
+        # Create subscription model to store any chosen choices even though this
+        # is a one-off payment. 
+        create_subscription() 
         return redirect(url_for("views.thankyou", _scheme="https", _external=True))
 
 
@@ -313,15 +353,7 @@ def on_complete_mandate():
         except KeyError:
             start_date = None
 
-        # Create subscription
-        print("Creating subscription")
-        # Store Subscription against Person locally
-        person = database.session.query(Person).filter_by(email=session['email']).first()
-        subscription = Subscription(sku_uuid=session['package'], person=person)
-        database.session.add(subscription)
-        database.session.commit()
-        # Add subscription id to session
-        session["subscription_id"] = subscription.id
+        subscription = create_subscription()
 
         # Get interval_unit
         if plan.interval_unit is None:
@@ -371,6 +403,35 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
+def create_subscription() -> Subscription:
+    '''Create subscription model
+    Note: A subscription model is also created if a plan only has
+    one up_front payment (no recuring subscription). This allows
+    the storing of chosen options againt their plan choice.'''
+    print("Creating subscription")
+    # Store Subscription against Person locally
+    person = database.session.query(Person).filter_by(email=session['email']).first()
+    subscription = Subscription(sku_uuid=session['package'], person=person)
+
+    # Add chosen options (if any)
+    chosen_options = []
+    if session.get('chosen_option_ids', None):
+        for option_id in session['chosen_option_ids']:
+            option = Option.query.get(option_id)
+            # We will store as ChosenOption because option may change after the order has processed
+            # This preserves integrity of the actual chosen options
+            chosen_option = ChosenOption()
+            chosen_option.option_title = option.title
+            chosen_option.choice_group_title = option.choice_group.title
+            chosen_option.choice_group_id = option.choice_group.id # Used for grouping latest choice
+            chosen_options.append(chosen_option)    
+    subscription.chosen_options = chosen_options
+
+    database.session.add(subscription)
+    database.session.commit()
+    # Add subscription id to session
+    session["subscription_id"] = subscription.id
+    return subscription
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
@@ -382,7 +443,16 @@ def thankyou():
       note = SubscriptionNote(note=session["note_to_seller"],
                              subscription_id=session["subscription_id"])
       database.session.add(note)
-      database.session.commit()
+
+    # Store any transactions against subscriptions
+    if session.get('subscription_id', None):
+        subscription = Subscription.query.get(session.get('subscription_id'))
+        if session.get('transactions', None):
+            for transaction_id in session['transactions']:
+                transaction = Transaction.query.get(transaction_id)
+                subscription.transactions.append(transaction)
+
+    database.session.commit()
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
     # Load welcome email from template folder and render & send

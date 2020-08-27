@@ -62,6 +62,19 @@
 
 
   <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Choice Groups</h3>
+    <p>
+      Create choice groups. Offer a choice between a selection 
+      of products. E.g. Shampoo A or Shampoo B.  
+    </p>
+      <a class="btn btn-success mb-3" 
+          href="{{ url_for('admin.list_choice_groups') }}">
+        Add / Edit / Delete Choice Groups
+      </a>
+  </div>
+
+
+  <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Subscribers</h3>
       <p class="card-subtitle mb-3 text-muted">
           View your subscribers.
@@ -80,6 +93,17 @@
       <a class="btn btn-success" 
           href="{{ url_for('admin.upcoming_payments') }}">
           View Upcoming Payments 
+      </a>
+  </div>
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">All Transactions</h3>
+      <p class="card-subtitle mb-3 text-muted">
+          View all transactions.
+      </p>
+      <a class="btn btn-success" 
+          href="{{ url_for('admin.transactions') }}">
+          View Transactions 
       </a>
   </div>
 

@@ -32,7 +32,7 @@
             <td>{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
             {% endif %}</td>
-            <td>{{ person.given_name }} {{ person.family_name }}</td>
+            <td><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
             <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
                 <strong>Phone: </strong><a href="tel:{{ person.phone }}">{{ person.phone }}</a><br></td>
             <td><address>
@@ -47,6 +47,18 @@
                 <li><div class="card">
                   <ul class="list-unstyled px-2">
                     <li><strong>Title: </strong>{{ subscription.plan.title }}</li>
+                    {% if subscription.chosen_options %}
+                    <li>
+                        <details open>
+                          <summary><strong>Chosen Options</strong></summary>
+                          <ul>
+                          {% for choice in subscription.chosen_options %}
+                             <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                          {% endfor %}
+                          </ul>
+                        </details>
+                    </li>
+                    {% endif %}
                     <li><strong>ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
                     <li><strong>GoCardless Subscription id: </strong>

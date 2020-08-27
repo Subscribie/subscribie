@@ -15,4 +15,3 @@ check_input.forEach((input, i) => {
   input.addEventListener('click', () => {
     showExtraFields(); //show or don't show extra fields when checkbox checked or unchecked
   });
-});

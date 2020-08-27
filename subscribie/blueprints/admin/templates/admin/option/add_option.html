@@ -1,0 +1,43 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Option</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="">Options</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add Option</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Add Option</h3>
+      <p class="card-subtitle text-muted mb-3">Options are part of choice groups.</p>
+
+      <hr>
+      
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        {{ form.csrf_token }}
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label" for="title">Title:</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="title" name="title" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

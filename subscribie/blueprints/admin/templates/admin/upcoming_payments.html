@@ -91,6 +91,18 @@
                             {% endfor %}
                           </ul>
                         </li>
+                        {% if subscription.chosen_options %}
+                        <li>
+                            <details open>
+                              <summary><strong>Chosen Options</strong></summary>
+                              <ul>
+                              {% for choice in subscription.chosen_options %}
+                                 <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                              {% endfor %}
+                              </ul>
+                            </details>
+                        </li>
+                        {% endif %}
                         <li><strong>ID: </strong>{{ payment.links['subscription'] }}</li>
                         <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
                       </ul>

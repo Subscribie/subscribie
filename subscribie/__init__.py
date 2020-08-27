@@ -60,7 +60,8 @@ from .forms import (
     SubscriberForgotPasswordForm,
     SubscriberResetPasswordForm,
     ForgotPasswordForm,
-    ForgotPasswordResetPasswordForm
+    ForgotPasswordResetPasswordForm,
+    ChoiceGroupForm
 )
 from .Template import load_theme
 from blinker import signal
@@ -74,12 +75,17 @@ import subprocess
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, upgrade
 import click
+from jinja2 import Template
+from flask_mail import Mail, Message
 
 database = SQLAlchemy()
 
 from .models import (User, Person, Subscription, SubscriptionNote, Company, 
                     Page, Module, PaymentProvider, Integration, Plan,
-                    PlanRequirements, PlanSellingPoints)
+                    PlanRequirements, PlanSellingPoints,
+                    ChoiceGroup, Option)
+
+from .blueprints.admin import get_subscription_status
 
 def seed_db():                                                                 
     # Add module_seo_page_title    
@@ -199,10 +205,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
-    from .blueprints.admin import admin_theme
+    from .blueprints.admin import admin
     from .blueprints.subscriber import subscriber
 
-    app.register_blueprint(admin_theme, url_prefix="/admin")
+    app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(subscriber)
 
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
@@ -236,5 +242,50 @@ def create_app(test_config=None):
             cur = con.cursor()
             cur.executescript(fp.read())
             con.close()
+
+    @app.cli.command()
+    def alert_subscribers_make_choice():
+        """Alert qualifying subscribers to set their choices
+
+        For all people (aka Subscribers)
+
+        - Loop over their *active* subscriptions
+        - Check if x days before their subscription.next_date
+        - If yes, sent them an email alert
+        """
+        def alert_subscriber_update_choices(subscriber: Person):
+            email_template = str(Path(current_app.root_path + '/emails/update-choices.jinja2.html'))
+            # App context needed for dynamic request.host (app.config["SERVER_NAME"] not set)
+            with app.test_request_context('/'):
+                update_options_url ='https://' + flask.request.host + url_for('subscriber.login')
+                company = Company.query.first()
+                with open(email_template) as file_:
+                    template = Template(file_.read())
+                    html = template.render(update_options_url=update_options_url,
+                                            company=company)
+                    try:
+                        mail = Mail(current_app)
+                        msg = Message()
+                        msg.subject = company.name + " " + "Update Options"
+                        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+                        msg.recipients = [person.email]
+                        msg.html = html
+                        mail.send(msg)
+                    except Exception as e:
+                        print(e)
+                        print("Failed to send update choices email")
+                        
+        people = Person.query.all()
+
+        for person in people:
+            for subscription in person.subscriptions:
+                if get_subscription_status(subscription.gocardless_subscription_id) == "active":
+                    # Check if x days until next subscription due, make configurable
+                    today = datetime.date.today()
+                    days_until = subscription.next_date().date() - today
+                    if days_until.days == 8:
+                        print(f"Sending alert for subscriber '{person.id}' on plan: {subscription.plan.title}")
+                        alert_subscriber_update_choices(person)
+
 
     return app
