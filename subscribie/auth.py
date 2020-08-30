@@ -40,34 +40,45 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 def token_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
+        # Skip token_required is user is cookie authenticated
+        if g.user is not None:
+            return f(*args, **kwds)
+        if 'Authorization' not in request.headers:
+            resp = jsonify({'msg': "Not authenticated"})
+            resp.headers.set('www-authenticate',  'Bearer')
+
+            return resp, 401
+
         auth_header = parse_auth_header(request.headers['Authorization'])
         # Validate & decode jwt
-        secret = current_app.config['SECRET_KEY']
         public_key = open(current_app.config['PUBLIC_KEY']).read()
         try:
             jwt.decode(auth_header['access_token'], public_key, algorithms=['RS256'])
         except jwt.exceptions.InvalidSignatureError:
-            return jsonify({'msg': 'InvalidSignatureError'})
+            return jsonify({'msg': 'InvalidSignatureError'}), 401
         except jwt.exceptions.ExpiredSignatureError:
-            return jsonify({'msg': 'ExpiredSignatureError'})
+            return jsonify({'msg': 'ExpiredSignatureError'}), 401
         except jwt.exceptions.InvalidAlgorithmError:
-            return jsonify({'msg': 'InvalidAlgorithmError'})
+            return jsonify({'msg': 'InvalidAlgorithmError'}), 401
         return f(*args, **kwds)
     return wrapper
 
 @bp.route("/jwt-login", methods=["GET", "POST"])
 def jwt_login():
-    import pdb;pdb.set_trace()
 
     if 'Authorization' in request.headers:
         email = request.authorization.username
-    elif request.method == "POST" and request.content_type is not None and \
-        'application/json' in request.content_type.lower():
-        email = request.email
+        password = request.authorization.password
+    elif request.method == "POST": # Oauth style login from form POST
+        email = request.form.get("username", "")
+        password = request.form.get("password", "")
 
-    user = User.query.filter_by(email=username).first()
+    user = User.query.filter_by(email=email).first()
     if user is not None:
-        secret = current_app.config['SECRET_KEY']
+        # Check password
+        if not user.check_password(password):
+            return jsonify({'msg': 'Bad credentials'}), 401
+
         private_key = open(current_app.config['PRIVATE_KEY']).read()
         jwt_payload = jwt.encode({
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
@@ -79,7 +90,7 @@ def jwt_login():
 @bp.route("/protected")
 @token_required
 def protected():
-    return "hello"
+    return jsonify("hello")
 
 
 def check_password_login(email, password):
