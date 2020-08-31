@@ -202,9 +202,11 @@ def create_app(test_config=None):
     from . import db
     from . import auth
     from . import views
+    from . import api
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(views.bp)
+    app.register_blueprint(api.api)
     from .blueprints.admin import admin
     from .blueprints.subscriber import subscriber
 
