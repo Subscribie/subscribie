@@ -5,6 +5,7 @@ from sqlalchemy.orm import Query
 
 class OrmBase(BaseModel):
     # Common properties across orm models
+    # Credit: https://github.com/samuelcolvin/pydantic/issues/1334#issuecomment-679207580
     id: int
 
     @validator("*", pre=True)
@@ -26,6 +27,12 @@ class PlanRequirements(OrmBase):
     note_to_seller_required: bool
     note_to_buyer_message: str
 
+class PlanSellingPoint(OrmBase):
+    id: int
+    created_at: datetime
+    point: str
+    plan_id: int
+
 class Plan(OrmBase):
     id: int
     created_at: datetime
@@ -38,6 +45,7 @@ class Plan(OrmBase):
     days_before_first_charge: int
     primary_icon: Optional[str]
     requirements: PlanRequirements
+    selling_points: List[PlanSellingPoint]
 
     class Config:
         orm_mode = True
