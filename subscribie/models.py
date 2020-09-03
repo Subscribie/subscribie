@@ -228,3 +228,11 @@ class ChosenOption(database.Model):
     option_title = database.Column(database.String())
     subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
     subscription = relationship("Subscription", back_populates="chosen_options")
+
+class ModuleStyle(database.Model):
+    """For custom css style injection"""
+    __tablename__ = 'module_style'
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    css = database.Column(database.String())
+
