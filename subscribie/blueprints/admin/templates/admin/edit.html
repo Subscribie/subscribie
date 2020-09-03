@@ -32,7 +32,7 @@
       {% endif %} 
 
     <div class="container">
-    <form method="post" action="#" enctype="multipart/form-data" id="plansForm">
+    <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
 
 	<div class="card mx-auto col-md-6 mb-3">
         
@@ -61,7 +61,10 @@
 
               <div class="form-group">
                 <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product name</label>
-                <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control">
+                <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
+							<div class="invalid-feedback">
+								Plan name is required.
+							</div>
               </div>
 
               <fieldset class="form-group">
@@ -70,8 +73,11 @@
                 {% set outer_loop = loop %}
                   {% for selling_point in plan.selling_points %}
                     <div>
-                      <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md">
-                              {% set ns.count = ns.count + 1 %}
+                      <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md" required>
+                      {% set ns.count = ns.count + 1 %}
+											<div class="invalid-feedback">
+												Please provide a selling point {{ ns.count }}
+											</div>
                     </div> 
                   {% endfor %}
               </fieldset>
