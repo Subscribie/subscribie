@@ -44,18 +44,30 @@
           <div class="form-group">
             <label for="title-0" class="col-form-label font-weight-bolder">Plan name</label>
             <input name="title-0" id="title-0" class="form-control" required>
+						<div class="invalid-feedback">
+							Plan name is required.
+						</div>
           </div>
 
           <fieldset class="form-group">
             <legend class="col-form-label font-weight-bolder">Plan selling points</legend>
               <div>
                 <input name="selling_points-0-0"  class="form-control mb-2 col-md" required>
+								<div class="invalid-feedback">
+									Please provide a selling point.
+								</div>
               </div>
               <div>
                 <input name="selling_points-0-1"  class="form-control mb-2 col-md" required>
+								<div class="invalid-feedback">
+									Please provide a seccond selling point.
+								</div>
               </div>
               <div>
                 <input name="selling_points-0-3"  class="form-control mb-2 col-md" required>
+								<div class="invalid-feedback">
+									Please provide a third selling point.
+								</div>
               </div>
           </fieldset>
 

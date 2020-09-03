@@ -62,6 +62,9 @@
               <div class="form-group">
                 <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product name</label>
                 <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
+							<div class="invalid-feedback">
+								Plan name is required.
+							</div>
               </div>
 
               <fieldset class="form-group">
@@ -71,7 +74,10 @@
                   {% for selling_point in plan.selling_points %}
                     <div>
                       <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md" required>
-                              {% set ns.count = ns.count + 1 %}
+                      {% set ns.count = ns.count + 1 %}
+											<div class="invalid-feedback">
+												Please provide a selling point {{ ns.count }}
+											</div>
                     </div> 
                   {% endfor %}
               </fieldset>
