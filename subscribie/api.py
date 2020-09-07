@@ -4,6 +4,7 @@ from .models import (Plan, PlanRequirements, PlanSellingPoints)
 from typing import List
 import pydantic
 from subscribie import schemas, database
+from subscribie.auth import token_required
 import json
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -23,6 +24,7 @@ def get_plan(plan_id):
     return jsonify(res)
 
 @api.route('/plan', methods=["POST"])
+@token_required
 def create_plan():
     """
     Example post request:
