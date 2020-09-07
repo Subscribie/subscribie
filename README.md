@@ -48,8 +48,11 @@ Now visit http://127.0.0.1:5000
 
 https://subscribie.readthedocs.io
 
-# JWT auth
-First authenticate, which will give you a token.
+# API based authentication with jwt token
+
+Provide the username & password in a POST request, and a jwt token is returned for 
+use in further requests. 
+
 Oauth style login:
 
 ```
@@ -58,7 +61,7 @@ curl -v -d "username=me@example.com" -d "password=password" http://127.0.0.1:500
 Http Basic auth login:
 
 ```
-curl -v --user "fred" http://127.0.0.1:5000/auth/jwt-login
+curl -v --user "fred:password" http://127.0.0.1:5000/auth/jwt-login
 ```
 
 Then use the bearer token in a request to a protect path.
