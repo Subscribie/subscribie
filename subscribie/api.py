@@ -23,6 +23,20 @@ def get_plan(plan_id):
     res = json.loads(schemas.Plan.from_orm(plan).json())
     return jsonify(res)
 
+@api.route('/plan/<int:plan_id>', methods=["DELETE"])
+def delete_plan(plan_id):
+    plan = Plan.query.get(plan_id)
+    # Return 404 if already deleted (archived)
+    if plan is None or plan.archived:
+        resp = {'msg': f'Plan {plan_id} not found'}
+        return jsonify(resp), 404
+    else:
+        plan.archived = 1
+        database.session.commit()
+
+    res = json.loads(schemas.Plan.from_orm(plan).json())
+    return jsonify(res), 200
+
 @api.route('/plan', methods=["POST"])
 @token_required
 def create_plan():
