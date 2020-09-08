@@ -1,1 +1,1 @@
-from .schemas import Plan, PlanCreate, PlanRequirementsCreate
+from .schemas import Plan, PlanCreate, PlanRequirementsCreate, PlanUpdate
