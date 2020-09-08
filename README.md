@@ -53,12 +53,14 @@ https://subscribie.readthedocs.io
 Provide the username & password in a POST request, and a jwt token is returned for 
 use in further requests. 
 
-Oauth style login:
+# API Basics
+
+## Oauth style login:
 
 ```
 curl -v -d "username=me@example.com" -d "password=password" http://127.0.0.1:5000/auth/jwt-login
 ```
-Http Basic auth login:
+## Http Basic auth login:
 
 ```
 curl -v --user "fred:password" http://127.0.0.1:5000/auth/jwt-login
@@ -69,6 +71,58 @@ e.g.
 ```
 curl -v -H "Authorization: Bearer <token>" http://127.0.0.1:5000/auth/protected
 ```
+
+## Create Plan 
+
+Example POST request:
+```
+    curl -v -H "Content-Type: application/json" 
+    -H "Authorization: Bearer <token>" -d '
+    {
+      "interval_unit": "monthly",
+      "interval_amount": "599",
+      "sell_price": 0,
+      "title": "My title",
+      "requirements": {
+        "instant_payment": false,
+        "subscription": true,
+        "note_to_seller_required": false
+      },
+      "selling_points": [
+        {"point":"Quality"}
+      ]
+    }' http://127.0.0.1:5000/api/plan
+```
+
+## Update Plan
+
+Example PUT request:
+```
+    curl -v -H 'Content-Type: application/json' -X PUT 
+    -d '
+    {
+      "title":"Coffee", 
+      "interval_unit": "monthly", 
+      "selling_points": [
+        {"point":"Quality"}, 
+        {"point": "Unique blend"}
+      ], 
+      "interval_amount":888, 
+      "requirements": {
+        "instant_payment": false, 
+        "subscription": true, 
+        "note_to_seller_required": false}
+    }' 
+    http://127.0.0.1:5000/api/plan/229
+```
+
+## Delete Plan
+
+Example DELETE request:
+```
+curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
+```
+
 # Demo
 
 https://subscriptionwebsitebuilder.co.uk
