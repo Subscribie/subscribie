@@ -1,4 +1,5 @@
 from pydantic import BaseModel, validator
+from enum import Enum
 from datetime import datetime
 from typing import List, Optional
 from sqlalchemy.orm import Query
@@ -48,18 +49,27 @@ class PlanSellingPoint(PlanSellingPointBase):
 class PlanSellingPointCreate(PlanSellingPointBase):
     pass
 
+class IntervalUnitEnum(str, Enum):
+    weekly = 'weekly'
+    monthly = 'monthly'
+    yearly = 'yearly'
+
 class PlanBase(OrmBase):
-    archived: bool = False
+    title: Optional[str] = None
+    requirements: Optional[PlanRequirementsBase] = None
+    selling_points: Optional[List[PlanSellingPointBase]] = []
+    archived: Optional[bool] = False
     uuid: str = str(uuid.uuid4())
-    created_at: datetime = datetime.utcnow()
     title: str
-    interval_unit: str = 'monthly'
-    interval_amount: int
+    interval_unit: Optional[IntervalUnitEnum] = 'monthly'
+    interval_amount: Optional[int] = None
     sell_price: Optional[int] = 0
-    days_before_first_charge: int = 0
-    primary_icon: Optional[str]
-    requirements: PlanRequirementsBase
-    selling_points: List[PlanSellingPointBase]
+    days_before_first_charge: Optional[int] = 0
+    primary_icon: Optional[str] = ''
+
+class PlanInDBBase(PlanBase):
+    created_at: datetime = datetime.utcnow()
+
 
 class Plan(PlanBase):
     id: int
@@ -67,6 +77,10 @@ class Plan(PlanBase):
     class Config:
         orm_mode = True
 
+class PlanUpdate(PlanBase):
+    pass
+
 
 class PlanCreate(PlanBase):
-    pass
+    title: str
+    created_at: datetime = datetime.utcnow()

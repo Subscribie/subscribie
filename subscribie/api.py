@@ -37,12 +37,76 @@ def delete_plan(plan_id):
     res = json.loads(schemas.Plan.from_orm(plan).json())
     return jsonify(res), 200
 
+@api.route('/plan/<int:plan_id>', methods=["PUT"])
+@token_required
+def update_plan(plan_id):
+    """Update a plan
+    Example PUT request:
+
+    curl -v -H 'Content-Type: application/json' -X PUT 
+    -d '
+    {
+      "title":"Coffee", 
+      "interval_unit": "monthly", 
+      "selling_points": [
+        {"point":"Quality"}, 
+        {"point": "Unique blend"}
+      ], 
+      "interval_amount":888, 
+      "requirements": {
+        "instant_payment": false, 
+        "subscription": true, 
+        "note_to_seller_required": false}
+    }' 
+    http://127.0.0.1:5000/api/plan/229
+    """
+    plan = Plan.query.get(plan_id)
+    if plan is None:
+        resp = {'msg': f'Plan {plan_id} not found'}
+        return jsonify(resp), 404
+
+    # Perform update
+    try:
+        plan_in = schemas.PlanUpdate(**request.json).dict(exclude_unset=True)
+    except pydantic.error_wrappers.ValidationError as e:
+        resp = Response(e.json())
+        resp.status_code = 422
+        return resp
+
+    for field in plan_in:
+        print(field)
+        if field == "selling_points":
+            selling_points = []
+            for selling_point in plan_in[field]:
+                selling_points.append(PlanSellingPoints(point=selling_point['point']))
+            plan.selling_points = [] # Clear old selling points
+            plan.selling_points = selling_points # Overwrite selling points with new values
+            continue
+        if field == 'requirements':
+            plan_requirements = PlanRequirements()
+            for key in plan_in[field]:
+                setattr(plan_requirements, key, plan_in[field][key])
+            plan.requirements = plan_requirements
+            continue
+
+        else:
+            setattr(plan, field, plan_in[field])
+
+    database.session.commit()
+
+    resp = Response(schemas.Plan.from_orm(plan).json())
+    resp.headers['Content-Type'] = 'Application/json'
+
+    return resp, 201
+
+
 @api.route('/plan', methods=["POST"])
 @token_required
 def create_plan():
     """
     Example post request:
-    curl -v -H "Content-Type: application/json" -d '
+    curl -v -H "Content-Type: application/json" 
+    -H "Authorization: Bearer <token>" -d '
     {
       "interval_unit": "monthly",
       "interval_amount": "599",
