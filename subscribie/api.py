@@ -24,7 +24,11 @@ def get_plan(plan_id):
     return jsonify(res)
 
 @api.route('/plan/<int:plan_id>', methods=["DELETE"])
+@token_required
 def delete_plan(plan_id):
+    """Delete a plan
+    curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
+    """
     plan = Plan.query.get(plan_id)
     # Return 404 if already deleted (archived)
     if plan is None or plan.archived:
@@ -43,7 +47,8 @@ def update_plan(plan_id):
     """Update a plan
     Example PUT request:
 
-    curl -v -H 'Content-Type: application/json' -X PUT 
+    curl -v -H 'Content-Type: application/json' -H "Authorization: Bearer <token>" 
+    -X PUT 
     -d '
     {
       "title":"Coffee", 
