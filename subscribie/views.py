@@ -60,7 +60,7 @@ def reload_app():
 
 @bp.route("/choose")
 def choose():
-    plans = Plan.query.filter_by(archived=0).all()
+    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     return render_template("choose.html",
                             plans=plans)
 

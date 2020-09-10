@@ -9,6 +9,7 @@ from wtforms import (
     TextField,
     HiddenField,
     TextAreaField,
+    IntegerField,
 )
 from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed, FileRequired
@@ -64,6 +65,7 @@ class PlansForm(StripWhitespaceForm):
     image = FieldList(
         FileField(validators=[FileAllowed(images, "Images only!")]), min_entries=1
     )
+    position = FieldList(IntegerField("Position", [validators.optional()], default=0))
 
 
 class ChoiceGroupForm(FlaskForm):

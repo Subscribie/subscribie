@@ -11,7 +11,7 @@ api = Blueprint("api", __name__, url_prefix="/api")
 
 @api.route('/plans')
 def get_plans():
-    plans = Plan.query.filter_by(archived=0).all()
+    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     res = []
     for plan in plans:
        res.append(json.loads(schemas.Plan.from_orm(plan).json()))
