@@ -56,7 +56,7 @@ class PlansForm(StripWhitespaceForm):
     selling_points = FieldList(
         FieldList(
             StringField("Unique Selling Point", [validators.DataRequired()]),
-            min_entries=3,
+            min_entries=1,
         ),
         min_entries=1,
     )
