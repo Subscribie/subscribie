@@ -122,6 +122,7 @@ class Plan(database.Model):
     requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
     selling_points = relationship("PlanSellingPoints", back_populates="plan")
     choice_groups = relationship("ChoiceGroup", secondary=association_table_plan_choice_group, backref=database.backref('plans', lazy='dynamic'))
+    position = database.Column(database.Integer(), default=0)
 
 class PlanRequirements(database.Model):
     __tablename__ = 'plan_requirements'
