@@ -238,7 +238,7 @@ def edit():
     """
 
     form = PlansForm()
-    plans = Plan.query.filter_by(archived=0).all()
+    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     if form.validate_on_submit():
         company = Company.query.first()
         company.name  = request.form["company_name"]
@@ -268,6 +268,10 @@ def edit():
             draftPlan.title = getPlan(
                 form.title.data, index, default=""
             ).strip()
+
+            draftPlan.position = getPlan(
+                form.position.data, index
+            )
 
             if getPlan(form.subscription.data, index) == 'yes':
                 plan_requirements.subscription = True
@@ -351,6 +355,7 @@ def add_plan():
 
         draftPlan.uuid = str(uuid.uuid4())
         draftPlan.title = form.title.data[0].strip()
+        draftPlan.position = request.form.get('position-0', 0)
         interval_unit = form.interval_unit.data[0].strip()
         if 'monthly' in interval_unit or 'yearly' in interval_unit or \
            'weekly' in interval_unit:
@@ -404,6 +409,7 @@ def add_plan():
             os.symlink(img_src, link)
             src = url_for("static", filename=filename)
             draftPlan.primary_icon = src
+
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
@@ -413,7 +419,7 @@ def add_plan():
 @admin.route("/delete", methods=["GET"])
 @login_required
 def delete_plan():
-    plans = Plan.query.filter_by(archived=0).all()
+    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
