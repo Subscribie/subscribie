@@ -97,6 +97,9 @@
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
     <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
     <a href="{{ url_for('auth.login') }}">Login</a>
+    {% if g.user %}
+      <a class="nav-link" href="/auth/logout">Logout</a>
+    {% endif %}
     <br />
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
   </footer>
