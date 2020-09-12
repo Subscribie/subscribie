@@ -1,0 +1,58 @@
+{% extends "admin/layout.html" %}
+{% block title %} Upload logo{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Manage My Shop</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Upload logo</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Upload logo</h2>
+          <p>Optionally upload a shop logo. This will be displayed in the header of your shop.</p>
+          
+          <form action="" method="POST" action="/" enctype="multipart/form-data">
+              {{ form.csrf_token }}
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="logo">Upload logo</label>
+                <div class="col-sm-9">
+                  <input class="form-control-file" type="file" name="image" id="logo">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+	    {% if company.logo_src is not sameas None %}
+		  <img src="{{ company.logo_src }}"
+		 class="card-img-top mt-4 mb-3" 
+		 alt="Company logo"
+		 style="width:60%; display:block; margin:auto" />
+	    {% endif %}
+            <div class="card-body">
+              <h4 class="card-title">Image upload</h4>
+	      <p>Make sure your file is a small file size before uploading.</p>
+	      <p>Then select and upload your logo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+{% endblock %}
