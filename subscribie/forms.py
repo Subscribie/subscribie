@@ -133,3 +133,7 @@ class ChangeEmailForm(FlaskForm):
 class AddShopAdminForm(FlaskForm):
     email = StringField("password", validators=[DataRequired(), EmailValid()])
     password = StringField("password", validators=[DataRequired()])
+
+class UploadLogoForm(StripWhitespaceForm):
+    images = UploadSet("images", IMAGES)
+    image = FileField(validators=[FileAllowed(images, "Images only!")])

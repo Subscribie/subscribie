@@ -23,6 +23,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
+from subscribie.forms import UploadLogoForm
 from subscribie.auth import login_required
 from subscribie.db import get_db
 from subscribie.symlink import symlink
@@ -905,6 +906,33 @@ def add_shop_admin():
       return redirect(url_for('admin.add_shop_admin'))
   else:
       return render_template("admin/add_shop_admin.html", form=form)
+
+@admin.route("/upload-logo", methods=["GET", "POST"])
+@login_required
+def upload_logo():
+    """Upload shop logo"""
+    form = UploadLogoForm()
+    company = Company.query.first()
+
+    if form.validate_on_submit():
+        images = UploadSet("images", IMAGES)
+        f = form.image.data
+        if f is None:
+            flash("File required")
+        else:
+            filename = images.save(f)
+            # symlink to active theme static directory
+            img_src = "".join(
+                [current_app.config["UPLOADED_IMAGES_DEST"], filename]
+            )
+            link = "".join([current_app.config["STATIC_FOLDER"], filename])
+            symlink(img_src, link, overwrite=True)
+            src = url_for("static", filename=filename)
+            company.logo_src = src
+            database.session.commit()
+            flash("Logo has been uploaded")
+
+    return render_template("admin/upload_logo.html", form=form, company=company)
 
 
 def getPlan(container, i, default=None):
