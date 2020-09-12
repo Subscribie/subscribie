@@ -100,6 +100,7 @@ class Company(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     slogan = database.Column(database.String())
+    logo_src = database.Column(database.String())
 
 association_table_plan_choice_group = database.Table('plan_choice_group',
     database.Column('choice_group_id', database.Integer, ForeignKey('choice_group.id')),
