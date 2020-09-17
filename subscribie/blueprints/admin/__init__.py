@@ -944,10 +944,11 @@ def edit_welcome_email():
     default_template = open(Path(current_app.root_path + '/emails/welcome.jinja2.html')).read()
     custom_template = EmailTemplate.query.first()
 
+    if custom_template is None: # First time creating custom template
+        custom_template = EmailTemplate()
+        database.session.add(custom_template)
+
     if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
-        if custom_template is None: # First time creating custom template
-            custom_template = EmailTemplate()
-            database.session.add(custom_template)
 
         new_custom_template = form.template.data
         # Validate template syntax
