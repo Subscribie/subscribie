@@ -141,3 +141,6 @@ class UploadLogoForm(StripWhitespaceForm):
 class WelcomeEmailTemplateForm(StripWhitespaceForm):
     template = StringField("template")
     use_custom_welcome_email = BooleanField([validators.Email(), validators.DataRequired()])
+
+class SetReplyToEmailForm(StripWhitespaceForm):
+    email = StringField("email", validators=[DataRequired(), EmailValid()])

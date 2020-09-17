@@ -244,3 +244,9 @@ class EmailTemplate(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     custom_welcome_email_template = database.Column(database.String())
     use_custom_welcome_email = database.Column(database.Boolean(), default=False)
+
+class Setting(database.Model):
+    """Settings"""
+    __tablename__ = "setting"
+    id = database.Column(database.Integer(), primary_key=True)
+    reply_to_email_address = database.Column(database.String())

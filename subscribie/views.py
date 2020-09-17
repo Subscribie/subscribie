@@ -16,7 +16,7 @@ import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page, Option, ChosenOption, EmailTemplate)
+                    Page, Option, ChosenOption, EmailTemplate, Setting)
 
 from flask_mail import Mail, Message
 from sqlalchemy.sql.expression import func
@@ -483,7 +483,11 @@ def thankyou():
         msg.subject = company.name + " " + "Subscription Confirmation"
         msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
         msg.recipients = [session["email"]]
-        msg.reply_to = User.query.first().email
+        setting = Setting.query.first()
+        if setting is not None:
+            msg.reply_to = setting.reply_to_email_address
+        else:
+            msg.reply_to = User.query.first().email # Fallback to first shop admin email
         msg.html = html
         mail.send(msg)
     except Exception as e:
