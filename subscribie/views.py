@@ -16,7 +16,7 @@ import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
                     Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page, Option, ChosenOption)
+                    Page, Option, ChosenOption, EmailTemplate)
 
 from flask_mail import Mail, Message
 from sqlalchemy.sql.expression import func
@@ -455,18 +455,27 @@ def thankyou():
     database.session.commit()
     # Send journey_complete signal
     journey_complete.send(current_app._get_current_object(), email=session["email"])
-    # Load welcome email from template folder and render & send
-    welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
+
+    #Send welcome email (either default template of custom, if active)
+    custom_template = EmailTemplate.query.first()
+    if custom_template is not None and custom_template.use_custom_welcome_email is True:
+        # Load custom welcome email
+        template = custom_template.custom_welcome_email_template
+    else:
+        # Load default welcome email from template folder 
+        welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
+        fp = open(welcome_template)
+        template = fp.read()
+        fp.close()
 
     first_charge_date = session.get('first_charge_date', None)
     first_charge_amount = session.get('first_charge_amount', None)
-    with open(welcome_template) as file_:                                   
-      template = Template(file_.read())                                            
-      html = template.render(first_name=session.get('given_name', None), 
-                    company_name=company.name,
-                    subscriber_login_url='https://' + flask.request.host + '/account/login',
-                    first_charge_date=first_charge_date,
-                    first_charge_amount=first_charge_amount) 
+    jinja_template = Template(template)
+    html = jinja_template.render(first_name=session.get('given_name', None), 
+                company_name=company.name,
+                subscriber_login_url='https://' + flask.request.host + '/account/login',
+                first_charge_date=first_charge_date,
+                first_charge_amount=first_charge_amount) 
 
     try:
         mail = Mail(current_app)
