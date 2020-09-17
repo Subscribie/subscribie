@@ -315,7 +315,7 @@
           href="{{ url_for('admin.change_password') }}">
         Change my password
       </a>
-      <a class="btn btn-warning mb-3" 
+      <a class="btn btn-warning mb-3"
           href="{{ url_for('admin.change_email') }}">
         Change my email address
       </a>
@@ -330,7 +330,19 @@
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Email Templates</h3>
+    <h2 class="card-title">Email</h2>
+
+    <h3 class="card-title">Settings</h3>
+      <p class="card-subtitle mb-3 text-muted">
+      Emails are sent from a 'noreply' email address. If you like,
+      you can set a repl-to email address so that your subscribers may reply
+      to emails, such as their welcome email.
+      </p>
+      <a class="btn btn-success mb-3"
+          href="{{ url_for('admin.set_reply_to_email') }}">
+          Set reply-to email address
+      </a>
+    <h3 class="card-title">Templates</h3>
       <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
       to a plan.</p>
       <a class="btn btn-success mb-3" 

@@ -1,0 +1,57 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Set reply-to email</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Set repliy-to email</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Set reply-to email address</h2>
+          <p>Set a reply-to email so that customers may reply to emails sent by your shop.</p>
+	      <p>Emails (such as the welcome email, which is sent when subscribers sign up) are sent from a 'noreply' 
+          email addres, but you can set a reply-to email address which makes it possible for 
+          your subscribers to reply to these emails.
+          </p>
+          <p>
+          Need a professional email address? Just let us know.
+          </p>
+
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              <label for="email">Your email address:</label>
+              <input type="email" name="email" class="form-control" id="email" 
+                     aria-describedby="emailHelp" placeholder="Enter email" 
+                     {% if current_email %}
+                     value="{{ current_email }}"
+                     {% endif %}
+                     required>
+                <small id="emailHelp" class="form-text text-muted">This is the email address subscribers will send to when they press 'reply' to 
+                on email emails sent by your shop, such as their welcome email.</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

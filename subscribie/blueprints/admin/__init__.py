@@ -24,7 +24,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
-from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm
+from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm
 from subscribie.auth import login_required
 from subscribie.db import get_db
 from subscribie.symlink import symlink
@@ -37,7 +37,7 @@ import subprocess
 import uuid
 from sqlalchemy import asc, desc
 from datetime import datetime
-from subscribie.models import ChoiceGroup, Transaction, EmailTemplate
+from subscribie.models import ChoiceGroup, Transaction, EmailTemplate, Setting
 
 
 admin = Blueprint(
@@ -975,6 +975,26 @@ def edit_welcome_email():
                           custom_template=custom_template.custom_welcome_email_template,
                           use_custom_welcome_email=custom_template.use_custom_welcome_email,
                           company=company)
+
+@admin.route("/set-reply-to-email", methods=["GET", "POST"])
+@login_required
+def set_reply_to_email():
+    """Set reply-to email"""
+    form = SetReplyToEmailForm()
+    setting = Setting.query.first()
+    if setting is None:
+        setting = Setting()
+        database.session.add(setting)
+
+    current_email = setting.reply_to_email_address
+
+    if form.validate_on_submit():
+        email = form.email.data
+        setting.reply_to_email_address = email
+        database.session.commit()
+        flash(f"Reply-to email address set to: {email}")
+    return render_template("admin/settings/set_reply_to_email.html", form=form,
+                          current_email=current_email)
 
 
 def getPlan(container, i, default=None):
