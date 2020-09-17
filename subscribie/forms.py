@@ -137,3 +137,7 @@ class AddShopAdminForm(FlaskForm):
 class UploadLogoForm(StripWhitespaceForm):
     images = UploadSet("images", IMAGES)
     image = FileField(validators=[FileAllowed(images, "Images only!")])
+
+class WelcomeEmailTemplateForm(StripWhitespaceForm):
+    template = StringField("template")
+    use_custom_welcome_email = BooleanField([validators.Email(), validators.DataRequired()])

@@ -238,3 +238,9 @@ class ModuleStyle(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     css = database.Column(database.String())
 
+class EmailTemplate(database.Model):
+    """Custom email templates"""
+    __tablename__ = 'email_template'
+    id = database.Column(database.Integer(), primary_key=True)
+    custom_welcome_email_template = database.Column(database.String())
+    use_custom_welcome_email = database.Column(database.Boolean(), default=False)
