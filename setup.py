@@ -35,7 +35,8 @@ setuptools.setup(
         'python-dotenv==0.13.0',
         'click==7.1.2',
         'pyjwt[crypto]',
-        'py-auth-header-parser==1.0.2'
+        'py-auth-header-parser==1.0.2',
+        'pydantic==1.6.1'
     ],
     entry_points='''
         [console_scripts]
