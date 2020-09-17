@@ -964,7 +964,8 @@ def edit_welcome_email():
 
     else:
         custom_template.use_custom_welcome_email = False
-        flash("Using default template for welcome email")
+        if request.method == "POST":
+            flash("Using default template for welcome email")
 
     database.session.commit()
 
