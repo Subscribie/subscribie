@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, abort, flash, json
-from jinja2 import TemplateNotFound, Markup
+import jinja2
+from jinja2 import TemplateNotFound, Markup, Environment
 from subscribie import (
     database,
     logging,
@@ -23,7 +24,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
-from subscribie.forms import UploadLogoForm
+from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm
 from subscribie.auth import login_required
 from subscribie.db import get_db
 from subscribie.symlink import symlink
@@ -36,7 +37,7 @@ import subprocess
 import uuid
 from sqlalchemy import asc, desc
 from datetime import datetime
-from subscribie.models import ChoiceGroup, Transaction
+from subscribie.models import ChoiceGroup, Transaction, EmailTemplate
 
 
 admin = Blueprint(
@@ -933,6 +934,45 @@ def upload_logo():
             flash("Logo has been uploaded")
 
     return render_template("admin/upload_logo.html", form=form, company=company)
+
+@admin.route("/welcome-email-edit", methods=["GET", "POST"])
+@login_required
+def edit_welcome_email():
+    """Edit welcome email template"""
+    company = Company.query.first()
+    form = WelcomeEmailTemplateForm()
+    default_template = open(Path(current_app.root_path + '/emails/welcome.jinja2.html')).read()
+    custom_template = EmailTemplate.query.first()
+
+    if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
+        if custom_template is None: # First time creating custom template
+            custom_template = EmailTemplate()
+            database.session.add(custom_template)
+
+        new_custom_template = form.template.data
+        # Validate template syntax
+        env = Environment()
+        try:
+            env.parse(new_custom_template)
+            # Store the validated template
+            custom_template.custom_welcome_email_template = new_custom_template
+            custom_template.use_custom_welcome_email = True
+            flash("Email template has been saved.")
+            flash("Using custom template for welcome email")
+        except jinja2.exceptions.TemplateSyntaxError as e:
+            form.template.errors.append(e)
+
+    else:
+        custom_template.use_custom_welcome_email = False
+        flash("Using default template for welcome email")
+
+    database.session.commit()
+
+    return render_template("admin/email/edit_customer_sign_up_email.html", form=form, 
+                          default_template=default_template,
+                          custom_template=custom_template.custom_welcome_email_template,
+                          use_custom_welcome_email=custom_template.use_custom_welcome_email,
+                          company=company)
 
 
 def getPlan(container, i, default=None):

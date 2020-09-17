@@ -1,0 +1,98 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Customer Sign-up email</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Customer sign-up confirmation email</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Customer sign-up confirmation email</h2>
+          <p>Here you can alter the default email customers recieve when they sign-up to a plan.</p>
+
+	  <h3>Default template</h3>
+
+	  {% if form.errors %}
+	  <div class="alert alert-danger" role="alert">
+	    <ul>
+	      <li>There was an error in the email template</li>
+	      {% for error in form.errors['template'] %}
+	      <li>{{ error }}</li>
+	      {% endfor %}
+	    </ul>
+	  </ul>
+	  </div>
+	  {% endif %}
+
+	  <p>Below is the default template. If you make an error, you can always revert back to 
+	  using the default templage below.
+	  </p>
+
+	  <textarea cols="80" rows="15" disabled>{{ default_template }}</textarea>
+          
+	  <br />
+
+	  <h3>Your Welcome email</h3>
+	    <div class="alert alert-info" role="alert">
+		    Note: Your site is currently using {%if use_custom_welcome_email %} your custom {% else %} the default {% endif %} template.
+	    </div>
+	  <p>Use the template above to help.</p>
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+
+	    <div class="form-check">
+	      <input class="form-check-input" type="radio" name="use_custom_welcome_email" id="no" value="" required>
+	      <label class="form-check-label" for="no">
+	        Use the default template (above)
+	      </label>
+	    </div>
+	    <div class="form-check">
+	      <input class="form-check-input" type="radio" name="use_custom_welcome_email" id="yes" value="Yes" required>
+	      <label class="form-check-label" for="yes">
+	        Use my template below
+	      </label>
+	    </div>
+	    <br />
+	    <p>Enter your own customised email template below:</p>
+
+	    <textarea cols="80" rows="15" name="template" placeholder="{{ default_template }}">{% if custom_template %} {{ custom_template }} {% endif %}</textarea>
+
+	    <p>You can include the name of your customer by using the "<em>{% raw %} {{ first_name }} {% endraw %}</em>"
+	       variable.
+	    </p>
+
+	  <p>The variables you can use are:</p>
+
+	  <ul>
+	    <li>{% raw %} {{ company_name }} {% endraw %}</li>
+	    <li>{% raw %} {{ first_charge_date }} {% endraw %}</li>
+	    <li>{% raw %} {{ first_charge_amount }} {% endraw %}</li>
+	    <li>{% raw %} {{ subscriber_login_url }} {% endraw %}</li>
+	  </ul>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+        <div class="col-md-5">
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
