@@ -41,7 +41,7 @@
 			{% for transaction in transactions.items %}
 			<tr>
         <td>{{ transaction.created_at }}</td>
-        <td>{{ transaction.external_id }}ZZ</td>
+        <td>{{ transaction.external_id }}</td>
         <td>&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
         <td>
