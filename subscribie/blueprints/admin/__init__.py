@@ -548,7 +548,7 @@ def connect_stripe_manually():
             webhook_url = url_for('views.stripe_webhook',_external=True)
 
             # Only proceed if webhook_endpoint_id is not already set
-            if payment_provider.stripe_webhook_endpoint_id is None:
+            if payment_provider.stripe_webhook_endpoint_id is None and '127.0.0.1' not in request.host:
                 try:
                     stripe.api_key = secret_key
                     webhook_endpoint = stripe.WebhookEndpoint.create(
