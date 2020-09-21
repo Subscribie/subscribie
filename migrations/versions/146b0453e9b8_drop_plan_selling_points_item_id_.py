@@ -32,7 +32,7 @@ def upgrade():
     }                                                                            
     with op.batch_alter_table("plan_selling_points", naming_convention=naming_convention) as batch_op:
         batch_op.alter_column("item_id", new_column_name="plan_id")
-        batch_op.drop_constraint('fk_plan_selling_points_item_id_item', type_='foreignkey')
+        #batch_op.drop_constraint('fk_plan_selling_points_item_id_item', type_='foreignkey')
         batch_op.create_foreign_key('fk_plan', 'plan', ['plan_id'], ['id'])
 
     op.drop_table("item")
