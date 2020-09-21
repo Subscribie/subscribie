@@ -31,7 +31,8 @@ def upgrade():
     "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     }
     with op.batch_alter_table("plan_requirements", naming_convention=naming_convention) as batch_op:
-        batch_op.drop_constraint('fk_plan_requirements_plan_id_item', type_='foreignkey')
+        pass
+        #batch_op.drop_constraint('fk_plan_requirements_plan_id_item', type_='foreignkey')
 
     op.drop_table("item")
 
