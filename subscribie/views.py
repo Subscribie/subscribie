@@ -11,7 +11,7 @@ from uuid import uuid4
 from pathlib import Path
 from jinja2 import Template
 
-from flask import Blueprint, redirect, render_template, request, session, url_for, flash
+from flask import Blueprint, redirect, render_template, request, session, url_for, flash, jsonify
 import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
@@ -72,9 +72,7 @@ def redirect_to_payment_step(plan, inside_iframe=False):
             url_for(
                 "views.up_front",
                 _scheme="https",
-                _external=True,
-                sid=session["sid"],
-                fname=session["given_name"],
+                _external=True
             )
         )
     if plan.requirements.subscription:
@@ -176,62 +174,107 @@ def set_options(plan_uuid):
     return render_template("set_options.html", plan=plan)
 
 
-@bp.route("/up_front/<sid>/<fname>", methods=["GET"])
-def up_front(sid, fname):
+@bp.route("/up_front", methods=["GET"])
+def up_front():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
     stripe_pub_key = payment_provider.stripe_publishable_key
     company = Company.query.first()
+    stripe_create_checkout_session_url = url_for('views.stripe_create_checkout_session')
     return render_template(
         "up_front_payment.html",
         company=company,
         plan=plan,
-        fname=fname,
-        sid=sid,
-        stripe_pub_key=stripe_pub_key
+        fname=session["given_name"],
+        stripe_pub_key=stripe_pub_key,
+        stripe_create_checkout_session_url=stripe_create_checkout_session_url
     )
 
 
-@bp.route("/up_front", methods=["POST"])
-def charge_up_front():
+@bp.route("/stripe_webhook", methods=["POST"])
+def stripe_webhook():
+	payment_provider = PaymentProvider.query.first()
+	if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
+		endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
+		if endpoint_secret is None:
+			return "Could not fetch endpoint_secret from app config", 500
+	else:
+		endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
+		if endpoint_secret is None:
+			return "Could not fetch stripe_webhook_endpoint_secret from db", 500
+
+	payload = request.data
+	sig_header = request.headers.get("Stripe-Signature", None)
+	event = None
+	try:
+		event = stripe.Webhook.construct_event(
+			payload, sig_header, endpoint_secret
+		)
+	except ValueError as e:
+		return e, 400
+	except stripe.error.SignatureVerificationError as e:
+		return "Stripe ignatureVerificationError", 400
+
+	# Handle the checkout.session.completed event
+	if event['type'] == 'checkout.session.completed':
+		session = event['data']['object']
+		print("#"*100)
+		print(session)
+		print("#"*100)
+		plan_uuid = session['metadata']['plan_uuid']
+		person_uuid = session['metadata']['person_uuid']
+		plan = Plan.query.filter_by(uuid=plan_uuid).first()
+		person = Person.query.filter_by(uuid=person_uuid).first()
+
+		# Store the transaction
+		transaction = Transaction()
+		transaction.amount = session["amount_total"]
+		transaction.external_id = session.id
+		transaction.external_src = "stripe"
+		transaction.person = person
+		database.session.add(transaction)
+		database.session.commit()
+
+	return "OK", 200
+
+@bp.route("/stripe-create-checkout-session", methods=["POST"])
+def stripe_create_checkout_session():
+    payment_provider = PaymentProvider.query.first()
+
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
+    person = Person.query.get(session["person_id"])
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
-
-    sid = session["sid"]
-    payment_provider = PaymentProvider.query.first()
     stripe_secret_key = payment_provider.stripe_secret_key
+    stripe.api_key = stripe_secret_key
+    stripe_session = stripe.checkout.Session.create(
+        payment_method_types = ["card"],
+        line_items=[{
+            'price_data': {
+                'currency': charge['currency'],
+                'product_data': {
+                    'name': plan.title,
+                },
+                'unit_amount': charge['amount']
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        metadata={"person_uuid": person.uuid, "plan_uuid": session["plan"]},
+        customer_email = person.email,
+        success_url = url_for('views.instant_payment_complete', _external=True, plan=plan.uuid),
+        # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
+        cancel_url = url_for('views.up_front', _external=True)
+    )
+    return jsonify(id=stripe_session.id)
 
-    # Get person from session
-    person = Person.query.get(session["person_id"])
-    try:
-        stripe.api_key = stripe_secret_key
-        customer = stripe.Customer.create(
-            email=person.email, source=request.form["stripeToken"]
-        )
 
-        charge = stripe.Charge.create(
-            customer=customer.id,
-            amount=charge["amount"],
-            currency=charge["currency"],
-            description="Subscribie",
-        )
-        transaction = Transaction()
-        transaction.amount = charge["amount"]
-        transaction.external_id = charge.id
-        transaction.external_src = "stripe"
-        transaction.person = person
-        database.session.add(transaction)
-        database.session.commit()
+@bp.route("/instant_payment_complete", methods=["GET"])
+def instant_payment_complete():
 
-        if session.get('transactions', None):
-            session['transactions'].append(transaction.id)
-        else:
-            session['transactions'] = [transaction.id]
-
-    except stripe.error.AuthenticationError as e:
-        return str(e)
+    plan_uuid = request.args.get('plan')
+    plan = Plan.query.filter_by(uuid=plan_uuid).first()
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
