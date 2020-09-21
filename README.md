@@ -53,6 +53,19 @@ https://subscribie.readthedocs.io
 Provide the username & password in a POST request, and a jwt token is returned for 
 use in further requests. 
 
+# Testing Stripe webhooks locally
+
+1. Install stripe cli https://stripe.com/docs/stripe-cli#install
+2. Run stripe cli
+3. Copy the webhook secret "Ready! Your webhook signing secret is whsec_abc123.."
+3. In your `.env` file set `STRIPE_WEBHOOK_ENDPOINT_SECRET` to the webhook secret
+
+```
+stripe listen --forward-to 127.0.0.1:5000/stripe_webhook
+```
+
+This will allow you to see/process webhook requests locally using test api keys.
+
 # API Basics
 
 ## Oauth style login:

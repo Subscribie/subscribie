@@ -38,6 +38,7 @@ import uuid
 from sqlalchemy import asc, desc
 from datetime import datetime
 from subscribie.models import ChoiceGroup, Transaction, EmailTemplate, Setting
+import stripe
 
 
 admin = Blueprint(
@@ -504,25 +505,74 @@ def connect_gocardless_start():
 @login_required
 def connect_stripe_manually():
     form = StripeConnectForm()
-    payment_provider = PaymentProvider.query.first()        
+    payment_provider = PaymentProvider.query.first()
+    keys_valid = True
 
-    if payment_provider.stripe_active:
-        stripe_connected = True
-    else:
-        stripe_connected = False
     if form.validate_on_submit():
         publishable_key = form.data["publishable_key"].strip()
         secret_key = form.data["secret_key"].strip()
         payment_provider.stripe_publishable_key = publishable_key
         payment_provider.stripe_secret_key = secret_key
         payment_provider.stripe_active = True
+
+        # Validate that stripe sectet key is valid
+        try:
+            stripe.api_key = secret_key
+            stripe.Balance.retrieve() # Simple api call to verify api key is correct
+        except stripe.error.AuthenticationError:
+            flash("Error: Stripe secret key is invalid. Please check and try again")
+            payment_provider.stripe_active = False
+            keys_valid = False
+
+        # Validate that stripe public key is valid:
+        #
+        # In live mode, account tokens can only be created with your application’s
+        # publishable key. In test mode, account tokens can be created with your
+        # secret key or publishable key.
+        try:
+            stripe.api_key = publishable_key
+            stripe.Token.create()
+        except stripe.error.AuthenticationError:
+            flash("Error: Stripe publishable key is invalid")
+            payment_provider.stripe_active = False
+            keys_valid = False
+        except stripe.error.InvalidRequestError:
+            # Ignore because Token.create() is invalid on purpose, we're only validating the api key
+            pass
+
+        # Setup Stripe webhook endpoint if it dosent already exist
+        if keys_valid is False:
+            database.session.commit()
+            return redirect(url_for('admin.connect_stripe_manually'))
+        else:
+            webhook_url = url_for('views.stripe_webhook',_external=True)
+
+            # Only proceed if webhook_endpoint_id is not already set
+            if payment_provider.stripe_webhook_endpoint_id is None:
+                try:
+                    stripe.api_key = secret_key
+                    webhook_endpoint = stripe.WebhookEndpoint.create(
+                      url = webhook_url,
+                      enabled_events=[
+                        "*",
+                      ],
+                      description = "Subscribie webhook endpoint",
+                    )
+                    # Store the webhook secret & webhook id
+                    payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
+                    payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
+                except stripe.error.InvalidRequestError:
+                    flash("Error: Unable to create stripe webhook")
+                    payment_provider.stripe_active = False
+
         database.session.commit() # Save changes
-        return redirect(url_for("admin.dashboard"))
+
+        return redirect(url_for("admin.connect_stripe_manually"))
     else:
         return render_template(
             "admin/connect_stripe_manually.html",
             form=form,
-            stripe_connected=stripe_connected,
+            stripe_connected=payment_provider.stripe_active,
         )
 
 

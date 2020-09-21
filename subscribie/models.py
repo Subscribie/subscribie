@@ -163,6 +163,8 @@ class PaymentProvider(database.Model):
     stripe_active = database.Column(database.Boolean())
     stripe_publishable_key = database.Column(database.String())
     stripe_secret_key = database.Column(database.String())
+    stripe_webhook_endpoint_secret = database.Column(database.String())
+    stripe_webhook_endpoint_id = database.Column(database.String())
 
 class Page(database.Model):
     __tablename__ = 'page'
