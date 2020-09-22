@@ -1076,6 +1076,7 @@ def list_files():
     return render_template("admin/uploads/list_files.html", files=files)
 
 @admin.route('/uploads/<uuid>')
+@login_required
 def download_file(uuid):
     theFile = File.query.filter_by(uuid=uuid).first()
     if theFile is not None:
