@@ -140,13 +140,16 @@ def store_customer():
         session['email'] = email
         session['mobile'] = mobile
 
-        # Store person, with randomly generated password
-        person = Person(sid=sid, given_name=given_name, family_name=family_name,
-                        address_line1=address_line_one, city=city,
-                        postal_code=postcode, email=email, mobile=mobile,
-                        password=str(os.urandom(16)))
-        database.session.add(person)
-        database.session.commit()
+        # Don't store person if already exists
+        person = Person.query.filter_by(email=email).first()
+        if person is None:
+            # Store person, with randomly generated password
+            person = Person(sid=sid, given_name=given_name, family_name=family_name,
+                            address_line1=address_line_one, city=city,
+                            postal_code=postcode, email=email, mobile=mobile,
+                            password=str(os.urandom(16)))
+            database.session.add(person)
+            database.session.commit()
         session["person_id"] = person.id
         # Store note to seller in session if there is one
         note_to_seller = form.data["note_to_seller"]
@@ -196,49 +199,49 @@ def up_front():
 
 @bp.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
-	payment_provider = PaymentProvider.query.first()
-	if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
-		endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
-		if endpoint_secret is None:
-			return "Could not fetch endpoint_secret from app config", 500
-	else:
-		endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
-		if endpoint_secret is None:
-			return "Could not fetch stripe_webhook_endpoint_secret from db", 500
+    payment_provider = PaymentProvider.query.first()
+    if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
+        endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
+        if endpoint_secret is None:
+            return "Could not fetch endpoint_secret from app config", 500
+    else:
+        endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
+        if endpoint_secret is None:
+            return "Could not fetch stripe_webhook_endpoint_secret from db", 500
 
-	payload = request.data
-	sig_header = request.headers.get("Stripe-Signature", None)
-	event = None
-	try:
-		event = stripe.Webhook.construct_event(
-			payload, sig_header, endpoint_secret
-		)
-	except ValueError as e:
-		return e, 400
-	except stripe.error.SignatureVerificationError as e:
-		return "Stripe ignatureVerificationError", 400
+    payload = request.data
+    sig_header = request.headers.get("Stripe-Signature", None)
+    event = None
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        return e, 400
+    except stripe.error.SignatureVerificationError as e:
+        return "Stripe ignatureVerificationError", 400
 
-	# Handle the checkout.session.completed event
-	if event['type'] == 'checkout.session.completed':
-		session = event['data']['object']
-		print("#"*100)
-		print(session)
-		print("#"*100)
-		plan_uuid = session['metadata']['plan_uuid']
-		person_uuid = session['metadata']['person_uuid']
-		plan = Plan.query.filter_by(uuid=plan_uuid).first()
-		person = Person.query.filter_by(uuid=person_uuid).first()
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        print("#"*100)
+        print(session)
+        print("#"*100)
+        plan_uuid = session['metadata']['plan_uuid']
+        person_uuid = session['metadata']['person_uuid']
+        plan = Plan.query.filter_by(uuid=plan_uuid).first()
+        person = Person.query.filter_by(uuid=person_uuid).first()
 
-		# Store the transaction
-		transaction = Transaction()
-		transaction.amount = session["amount_total"]
-		transaction.external_id = session.id
-		transaction.external_src = "stripe"
-		transaction.person = person
-		database.session.add(transaction)
-		database.session.commit()
+        # Store the transaction
+        transaction = Transaction()
+        transaction.amount = session["amount_total"]
+        transaction.external_id = session.id
+        transaction.external_src = "stripe"
+        transaction.person = person
+        database.session.add(transaction)
+        database.session.commit()
 
-	return "OK", 200
+    return "OK", 200
 
 @bp.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
