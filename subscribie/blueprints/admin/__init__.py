@@ -25,7 +25,7 @@ from subscribie import (
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
 from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm, UploadFilesForm
-from subscribie.auth import login_required
+from subscribie.auth import login_required, protected_download
 from subscribie.db import get_db
 from subscribie.symlink import symlink
 import yaml
@@ -1052,7 +1052,12 @@ def set_reply_to_email():
 def upload_files():
     """Upload files to shop"""
     form = UploadFilesForm()
-    allowed= ["image/png"]
+    allowed= ["image/png", "image/gif", "image/jpg", "image/jpeg", 
+             "audio/mpeg", "video/mpeg", "audio/ogg", "video/ogg", 
+             "application/ogg", "application/pdf", "application/vnd.ms-powerpoint",
+             "application/vnd.ms-excel", "application/msword", 
+             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+             "application/vnd.openxmlformats-officedocument.presentationml.presentation"]
     if form.validate_on_submit():
         for upload in request.files.getlist('upload'):
             # Check filetype
@@ -1076,7 +1081,7 @@ def list_files():
     return render_template("admin/uploads/list_files.html", files=files)
 
 @admin.route('/uploads/<uuid>')
-@login_required
+@protected_download
 def download_file(uuid):
     theFile = File.query.filter_by(uuid=uuid).first()
     if theFile is not None:

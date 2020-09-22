@@ -287,6 +287,17 @@ def login_required(view):
 
     return wrapped_view
 
+def protected_download(view):
+    """Only allow authenticated users to download (Shop owners or subscribers)"""
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is not None or g.subscriber is not None:
+            return view(**kwargs)
+        else:
+            return "Access denied", 401
+
+    return wrapped_view
+
 
 @bp.route("/logout")
 def logout():

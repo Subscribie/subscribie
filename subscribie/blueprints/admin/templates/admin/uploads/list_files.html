@@ -3,13 +3,13 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">List files</h2>
+<h2 class="text-center text-dark mb-3">Uploaded files</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Your uploaded files</li>
+    <li class="breadcrumb-item active" aria-current="page">Uploaded files</li>
   </ul>
 </div>
 
@@ -17,7 +17,8 @@
   <div class="section">
     <div class="container">
 
-          <h2>Your Files</h2>
+          <h2>Uploaded Files</h2>
+          <p>Files listed here will be available to your subscribers when they login.</p>
     <style>
     th {
         padding: 5px;
