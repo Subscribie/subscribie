@@ -3,17 +3,17 @@ from wtforms import (
     StringField,
     FloatField,
     FieldList,
-    FileField,
     validators,
     BooleanField,
     TextField,
     HiddenField,
     TextAreaField,
     IntegerField,
+    MultipleFileField
 )
 from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from flask_uploads import UploadSet, IMAGES
+from flask_uploads import UploadSet, IMAGES, TEXT, DOCUMENTS
 
 
 class StripWhitespaceForm(FlaskForm):
@@ -144,3 +144,6 @@ class WelcomeEmailTemplateForm(StripWhitespaceForm):
 
 class SetReplyToEmailForm(StripWhitespaceForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
+
+class UploadFilesForm(FlaskForm):
+    upload = MultipleFileField("Files")

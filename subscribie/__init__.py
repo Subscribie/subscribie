@@ -111,6 +111,10 @@ def create_app(test_config=None):
             test_config
         )
 
+    if not os.path.exists(app.config["UPLOADED_FILES_DEST"]):
+        print("Creating UPLOADED_FILES_DEST directory" + app.config["UPLOADED_FILES_DEST"])
+        os.makedirs(app.config["UPLOADED_FILES_DEST"])
+
     @app.before_request
     def start_session():
         try:
@@ -230,6 +234,10 @@ def create_app(test_config=None):
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template("errors/404.html"), 404
+
+    @app.errorhandler(413)
+    def request_entity_too_large(error):
+        return 'File Too Large', 413
 
     @app.errorhandler(500)
     def page_not_found(e):
