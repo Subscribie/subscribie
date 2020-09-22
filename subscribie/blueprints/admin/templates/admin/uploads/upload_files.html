@@ -1,0 +1,44 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Upload files to your shop</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Upload files</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Upload files to your shop</h2>
+
+          <form action="" method="POST" enctype="multipart/form-data" action="/">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                <div class="custom-file">
+                  <input type="file" name="upload" class="custom-file-input" id="files" multiple required> 
+                  <label class="custom-file-label" for="files">Choose file(s)</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

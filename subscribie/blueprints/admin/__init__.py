@@ -24,7 +24,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
 )
-from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm
+from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm, UploadFilesForm
 from subscribie.auth import login_required
 from subscribie.db import get_db
 from subscribie.symlink import symlink
@@ -39,6 +39,7 @@ from sqlalchemy import asc, desc
 from datetime import datetime
 from subscribie.models import ChoiceGroup, Transaction, EmailTemplate, Setting
 import stripe
+from werkzeug.utils import secure_filename
 
 
 admin = Blueprint(
@@ -1046,6 +1047,20 @@ def set_reply_to_email():
     return render_template("admin/settings/set_reply_to_email.html", form=form,
                           current_email=current_email)
 
+@admin.route("/upload-files", methods=["GET", "POST"])
+@login_required
+def upload_files():
+    """Upload files to shop"""
+    form = UploadFilesForm()
+    allowed= ["image/png"]
+    if form.validate_on_submit():
+        for upload in request.files.getlist('upload'):
+            # Check filetype
+            if upload.content_type in allowed:
+                filename = secure_filename(upload.filename)
+                upload.save(dst=current_app.config["UPLOADED_FILES_DEST"] + "/" + filename)
+                flash(f"Uploaded {filename}")
+    return render_template("admin/uploads/upload_files.html", form=form)
 
 def getPlan(container, i, default=None):
     try:
