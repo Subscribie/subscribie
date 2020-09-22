@@ -44,310 +44,412 @@
       </ul>
   </div>
 
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Edit / Add Plans</h3>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.edit') }}">
-        Edit plans
-      </a>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.add_plan') }}">
-        Add plan
-      </a>
-      <a class="btn btn-danger" 
-          href="{{ url_for('admin.delete_plan') }}">
-        Delete plans
-      </a>
-  </div>
 
+    <div class="accordion" id="accordionExample">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Edit / Add Plans
+            </button>
+          </h5>
+        </div>
 
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">My Subscribers</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View your subscribers.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.subscribers') }}">
-          View Subscribers
-      </a>
-  </div>
-
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Upcoming Payments</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View upcoming payments from your subscribers.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.upcoming_payments') }}">
-          View Upcoming Payments 
-      </a>
-  </div>
-
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Manage Payment Gateways</h3>
-    <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
-
-    <div class="container">
-      <div class="row justify-content-around">
-
-        <div class="card col-lg my-3 mx-1 shadow-sm" >
-          <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
-                class="card-img-top" 
-                alt="..." 
-                style="width:50%; display:block; margin:auto">
-          <div class="card-body">
-            <h5 class="card-title">Stripe</h5>
-            <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
-            <a href="{{ url_for('admin.connect_stripe_manually') }}" 
-                class="btn btn-block
-                {% if stripe_connected  %}
-                  btn-success
-                {% else %}
-                  btn-info
-                {% endif %}">
-              {% if stripe_connected %}
-                Active! Click to reconnect Stripe
-              {% else %}
-                Connect to Stripe
-              {% endif %}
-            </a>
-          </div>
-        </div> <!--end card-->
-
-        <div class="card col-lg my-3 mx-1 shadow-sm" >
-          <img src="{{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}"  
-                class="card-img-top" 
-                alt="..." 
-                style="width:60%; display:block; margin:2.2rem auto">
-          <div class="card-body">
-            <h5 class="card-title">GoCardless</h5>
-            <p class="card-text">GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
-            <a href="{{ url_for('admin.connect_gocardless_manually') }}" 
-                class="btn btn-block 
-                {% if gocardless_connected  %}
-                  btn-success
-                {% else %}
-                  btn-info
-                {% endif %}">
-              {% if gocardless_connected  %}
-                Active! Click to reconnect GoCardless
-              {% else %}
-                Connect to GoCardless
-              {% endif %}
-            </a>
-          </div>
-        </div> <!--end card-->
-
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+              <div class="card px-3 py-3 my-3">
+                  <a class="btn btn-success mb-3" 
+                      href="{{ url_for('admin.edit') }}">
+                    Edit plans
+                  </a>
+                  <a class="btn btn-success mb-3" 
+                      href="{{ url_for('admin.add_plan') }}">
+                    Add plan
+                  </a>
+                  <a class="btn btn-danger" 
+                      href="{{ url_for('admin.delete_plan') }}">
+                    Delete plans
+                  </a>
+              </div>
+        </div>
       </div>
-    </div> <!--end container for cards-->
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+             My Subscribers 
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+              <div class="card px-3 py-3 my-3">
+                  <p class="card-subtitle mb-3 text-muted">
+                      View your subscribers.
+                  </p>
+                  <a class="btn btn-success" 
+                      href="{{ url_for('admin.subscribers') }}">
+                      View Subscribers
+                  </a>
+              </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingThree">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Upcoming Payments
+            </button>
+          </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+              <div class="card px-3 py-3 my-3">
+                  <p class="card-subtitle mb-3 text-muted">
+                      View upcoming payments from your subscribers.
+                  </p>
+                  <a class="btn btn-success" 
+                      href="{{ url_for('admin.upcoming_payments') }}">
+                      View Upcoming Payments 
+                  </a>
+              </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingFour">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+             Manage Payment Gateways
+            </button>
+          </h5>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour">
+          <div class="card px-3 py-3 my-3">
+            <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
 
-    <div class="alert alert-secondary mt-3">
-      <div class="media">
-        <img src="{{ url_for('admin.static', filename='money.svg') }}" 
-              class="align-self-center mr-3" 
-              alt="..." 
-              style="width: 64px">
-        <div class="media-body">
-          <p class="mt-3"><strong>Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p>
-          <p>Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</p>
+            <div class="container">
+              <div class="row justify-content-around">
+
+                <div class="card col-lg my-3 mx-1 shadow-sm" >
+                  <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
+                        class="card-img-top" 
+                        alt="..." 
+                        style="width:50%; display:block; margin:auto">
+                  <div class="card-body">
+                    <h5 class="card-title">Stripe</h5>
+                    <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
+                    <a href="{{ url_for('admin.connect_stripe_manually') }}" 
+                        class="btn btn-block
+                        {% if stripe_connected  %}
+                          btn-success
+                        {% else %}
+                          btn-info
+                        {% endif %}">
+                      {% if stripe_connected %}
+                        Active! Click to reconnect Stripe
+                      {% else %}
+                        Connect to Stripe
+                      {% endif %}
+                    </a>
+                  </div>
+                </div> <!--end card-->
+
+                <div class="card col-lg my-3 mx-1 shadow-sm" >
+                  <img src="{{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}"  
+                        class="card-img-top" 
+                        alt="..." 
+                        style="width:60%; display:block; margin:2.2rem auto">
+                  <div class="card-body">
+                    <h5 class="card-title">GoCardless</h5>
+                    <p class="card-text">GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
+                    <a href="{{ url_for('admin.connect_gocardless_manually') }}" 
+                        class="btn btn-block 
+                        {% if gocardless_connected  %}
+                          btn-success
+                        {% else %}
+                          btn-info
+                        {% endif %}">
+                      {% if gocardless_connected  %}
+                        Active! Click to reconnect GoCardless
+                      {% else %}
+                        Connect to GoCardless
+                      {% endif %}
+                    </a>
+                  </div>
+                </div> <!--end card-->
+
+              </div>
+            </div> <!--end container for cards-->
+
+            <div class="alert alert-secondary mt-3">
+              <div class="media">
+                <img src="{{ url_for('admin.static', filename='money.svg') }}" 
+                      class="align-self-center mr-3" 
+                      alt="..." 
+                      style="width: 64px">
+                <div class="media-body">
+                  <p class="mt-3"><strong>Unlike most subscription website services, Subscribie doesn't take a cut of each purchase!</strong></p>
+                  <p>Payment providers however will charge a small fee, to find out the fees, click on the payment provider above and click 'Charges and Fees'.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingFive">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+              Choice Groups
+            </button>
+          </h5>
+        </div>
+        <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
+          <div class="card px-3 py-3 my-3">
+            <p>
+              Create choice groups. Offer a choice between a selection 
+              of products. E.g. Shampoo A or Shampoo B.  
+            </p>
+              <a class="btn btn-success mb-3" 
+                  href="{{ url_for('admin.list_choice_groups') }}">
+                Add / Edit / Delete Choice Groups
+              </a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingSix">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+              All Transactions 
+            </button>
+          </h5>
+        </div>
+        <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
+
+          <div class="card px-3 py-3 my-3">
+              <p class="card-subtitle mb-3 text-muted">
+                  View all transactions.
+              </p>
+              <a class="btn btn-success" 
+                  href="{{ url_for('admin.transactions') }}">
+                  View Transactions 
+              </a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingSeven">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+              Order Notes
+            </button>
+          </h5>
+        </div>
+        <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven">
+          <div class="card px-3 py-3 my-3">
+              <p class="card-subtitle mb-3 text-muted">
+                  View (optional) notes customers may give you when starting their 
+                  subscription.
+              </p>
+              <a class="btn btn-success" 
+                  href="{{ url_for('admin.order_notes') }}">
+                  View Notes
+              </a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingEight">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+              Upload logo
+            </button>
+          </h5>
+        </div>
+        <div id="collapseEight" class="collapse" aria-labelledby="headingEight">
+            <div class="card col-lg my-3 shadow-sm" >
+              <div class="card-body">
+                <p class="card-text">Upload your logo (optional) which is displayed in your shop header<p>
+                <a href="{{ url_for('admin.upload_logo') }}"
+               class="btn btn-block btn-success">Upload Logo
+                </a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingNine">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+              Integrations (Online Chat &amp; Analytics)
+          </h5>
+        </div>
+        <div id="collapseNine" class="collapse" aria-labelledby="headingNine">
+          <!-- Social Integrations -->
+          <div class="card px-3 py-3 my-3">
+
+            <div class="card col-lg my-3 shadow-sm" >
+              <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
+                    class="card-img-top" 
+                    alt="Tawk logo" 
+                    style="width:auto; display:block; margin:1rem auto 0 auto">
+              <div class="card-body">
+                <h5 class="card-title">Tawk Online Chat</h5>
+                <p class="card-text">Chat with your potential customers live on your website</p>
+                <a href="{{ url_for('admin.connect_tawk_manually') }}"
+                    class="btn btn-block
+                    {% if integration.tawk_property_id %}
+                      btn-success
+                    {% else %}
+                      btn-info
+                    {% endif %}">
+                    {% if integration.tawk_property_id %}
+                        Active! Click to reconnect Tawk
+                    {% else %}
+                      Connect to Tawk
+                    {% endif %}
+                </a>
+              </div>
+            </div> <!--end card-->
+          </div>
+          <!-- End Tawk Integrations -->
+
+          <!-- Analytics Integrations -->
+          <div class="card px-3 py-3 my-3">
+            <div class="card col-lg my-3 shadow-sm" >
+              <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
+                    class="card-img-top" 
+                    alt="Google Tag Manager logo"  
+                    style="width:25%; display:block; margin:1rem auto 0 auto">
+              <div class="card-body">
+                <h5 class="card-title">Google Tag Manager</h5>
+                <p class="card-text">Track customer behaviour like the pros.
+                  <a href="https://marketingplatform.google.com/about/tag-manager/"
+                      target="_blank">
+                  Learn about using Tag Manager</a>
+                </p>
+                <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
+                    class="btn btn-block
+                    {% if integration.google_tag_manager_container_id %}
+                      btn-success
+                    {% else %}
+                      btn-info
+                    {% endif %}">
+                    {% if google_tag_manager_connected %}
+                        Active! Click to reconnect Tag Manager
+                    {% else %}
+                      Connect to Google Tag Manager
+                    {% endif %}
+                </a>
+              </div>
+            </div> <!--end card-->
+          </div>
+          <!-- End analytics Integrations -->
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingTen">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+              Modules
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTen" class="collapse" aria-labelledby="headingTen">
+          <!-- Loaded modules and links to their index pages -->
+          <div class="card px-3 py-3 my-3">
+
+            <p class="card-subtitle mb-3 text-muted">
+              List of enabled modules. For example, the iFrame embed module allows you to
+              embed your Subscription website into another website if you have an existing
+              website you want to keep using, but use Subscribie for your subscriptions.
+            </p>
+            
+            {% for moduleName in loadedModules %}
+              {% if loadedModules[moduleName]['links']|length != 0 %}
+                <div class="card col-lg my-3 shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
+                    {% for link in loadedModules[moduleName]['links'] %}
+                      <a class="btn btn-block btn-success" href="{{ url_for(link) }}">Manage</a>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor  %}
+          <!-- SEO Titles module -->
+              <div class="card col-lg my-3 shadow-sm">
+                 <div class="card-body">
+                    <h5 class="card-title">SEO Titles</h5>
+                    <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
+                    <a class="btn btn-block btn-success" 
+                      href="{{ url_for('seo_page_title.list_pages') }}"> 
+                    List pages
+                    </a>
+                 </div>
+              </div>
+              <!-- end SEO Titles module -->
+          </div>
+          <!-- End Loaded modules and links to their index pages -->
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingEleven">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+              Users & Passwords
+            </button>
+          </h5>
+        </div>
+        <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven">
+          <div class="card px-3 py-3 my-3">
+              <a class="btn btn-success mb-3" 
+                  href="{{ url_for('admin.add_shop_admin') }}">
+                Add Shop Admin
+              </a>
+              <a class="btn btn-warning mb-3" 
+                  href="{{ url_for('admin.change_password') }}">
+                Change my password
+              </a>
+              <a class="btn btn-warning mb-3"
+                  href="{{ url_for('admin.change_email') }}">
+                Change my email address
+              </a>
+          </div>
+
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingTwelve">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+              Email settings
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve">
+          <div class="card px-3 py-3 my-3">
+
+            <h3 class="card-title">Reply-to email address</h3>
+              <p class="card-subtitle mb-3 text-muted">
+              Emails are sent from a 'noreply' email address. If you like,
+              you can set a repl-to email address so that your subscribers may reply
+              to emails, such as their welcome email.
+              </p>
+              <a class="btn btn-success mb-3"
+                  href="{{ url_for('admin.set_reply_to_email') }}">
+                  Set reply-to email address
+              </a>
+            <h3 class="card-title">Templates</h3>
+              <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
+              to a plan.</p>
+              <a class="btn btn-success mb-3" 
+                  href="{{ url_for('admin.edit_welcome_email') }}">
+                Customer Signup Confirmation
+              </a>
+          </div>
         </div>
       </div>
     </div>
-
-  </div>
-
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Choice Groups</h3>
-    <p>
-      Create choice groups. Offer a choice between a selection 
-      of products. E.g. Shampoo A or Shampoo B.  
-    </p>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.list_choice_groups') }}">
-        Add / Edit / Delete Choice Groups
-      </a>
-  </div>
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">All Transactions</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View all transactions.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.transactions') }}">
-          View Transactions 
-      </a>
-  </div>
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Order Notes</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          View (optional) notes customers may give you when starting their 
-          subscription.
-      </p>
-      <a class="btn btn-success" 
-          href="{{ url_for('admin.order_notes') }}">
-          View Notes
-      </a>
-  </div>
-
-<!-- Logo upload -->
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Upload logo</h3>
-
-    <div class="card col-lg my-3 shadow-sm" >
-      <div class="card-body">
-        <h5 class="card-title">Logo</h5>
-        <p class="card-text">Upload your logo (optional) which is displayed in your shop header<p>
-        <a href="{{ url_for('admin.upload_logo') }}"
-	   class="btn btn-block btn-success">Upload Logo
-        </a>
-      </div>
-    </div> <!--end card-->
-  </div>
-<!-- End logo upload-->
-
-<!-- Social Integrations -->
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Manage Social Integrations</h3>
-
-    <div class="card col-lg my-3 shadow-sm" >
-      <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
-            class="card-img-top" 
-            alt="Tawk logo" 
-            style="width:auto; display:block; margin:1rem auto 0 auto">
-      <div class="card-body">
-        <h5 class="card-title">Tawk</h5>
-        <p class="card-text">Chat with your potential customers live on your website!</p>
-        <a href="{{ url_for('admin.connect_tawk_manually') }}"
-            class="btn btn-block
-            {% if integration.tawk_property_id %}
-              btn-success
-            {% else %}
-              btn-info
-            {% endif %}">
-            {% if integration.tawk_property_id %}
-                Active! Click to reconnect Tawk
-            {% else %}
-              Connect to Tawk
-            {% endif %}
-        </a>
-      </div>
-    </div> <!--end card-->
-  </div>
-<!-- End Tawk Integrations -->
-
-<!-- Analytics Integrations -->
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Manage Analytics Integrations</h3>
-
-    <div class="card col-lg my-3 shadow-sm" >
-      <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
-            class="card-img-top" 
-            alt="Google Tag Manager logo"  
-            style="width:25%; display:block; margin:1rem auto 0 auto">
-      <div class="card-body">
-        <h5 class="card-title">Google Tag Manager</h5>
-        <p class="card-text">Track customer behaviour like the pros.
-          <a href="https://marketingplatform.google.com/about/tag-manager/"
-              target="_blank">
-          Learn about using Tag Manager</a>
-        </p>
-        <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
-            class="btn btn-block
-            {% if integration.google_tag_manager_container_id %}
-              btn-success
-            {% else %}
-              btn-info
-            {% endif %}">
-            {% if google_tag_manager_connected %}
-                Active! Click to reconnect Tag Manager
-            {% else %}
-              Connect to Google Tag Manager
-            {% endif %}
-        </a>
-      </div>
-    </div> <!--end card-->
-  </div>
-<!-- End analytics Integrations -->
-
-<!-- Loaded modules and links to their index pages -->
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Modules</h3>
-
-    <p class="card-subtitle mb-3 text-muted">
-      List of enabled modules. For example, the iFrame embed module allows you to
-      embed your Subscription website into another website if you have an existing
-      website you want to keep using, but use Subscribie for your subscriptions.
-    </p>
-    
-    {% for moduleName in loadedModules %}
-      {% if loadedModules[moduleName]['links']|length != 0 %}
-        <div class="card col-lg my-3 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
-            {% for link in loadedModules[moduleName]['links'] %}
-              <a class="btn btn-block btn-success" href="{{ url_for(link) }}">Manage</a>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    {% endfor  %}
-  </div>
-<!-- End Loaded modules and links to their index pages -->
-
-
-<!-- SEO Titles module -->
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">SEO Titles</h3>
-      <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
-      <a class="btn btn-success" 
-          href="{{ url_for('seo_page_title.list_pages') }}"> 
-      List pages
-      </a>
-  </div>
-<!-- end SEO Titles module -->
-
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">User &amp; Password Management</h3>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.add_shop_admin') }}">
-        Add Shop Admin
-      </a>
-      <a class="btn btn-warning mb-3" 
-          href="{{ url_for('admin.change_password') }}">
-        Change my password
-      </a>
-      <a class="btn btn-warning mb-3"
-          href="{{ url_for('admin.change_email') }}">
-        Change my email address
-      </a>
-  </div>
-
-  <div class="card px-3 py-3 my-3">
-    <h2 class="card-title">Email</h2>
-
-    <h3 class="card-title">Settings</h3>
-      <p class="card-subtitle mb-3 text-muted">
-      Emails are sent from a 'noreply' email address. If you like,
-      you can set a repl-to email address so that your subscribers may reply
-      to emails, such as their welcome email.
-      </p>
-      <a class="btn btn-success mb-3"
-          href="{{ url_for('admin.set_reply_to_email') }}">
-          Set reply-to email address
-      </a>
-    <h3 class="card-title">Templates</h3>
-      <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
-      to a plan.</p>
-      <a class="btn btn-success mb-3" 
-          href="{{ url_for('admin.edit_welcome_email') }}">
-        Customer Signup Confirmation
-      </a>
-  </div>
 
 </div>
 
