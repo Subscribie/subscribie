@@ -1,5 +1,5 @@
 {% extends "admin/layout.html" %}
-{% block title %} Add Shop Admin{% endblock %}
+{% block title %} Account - {{ company.name }} {% endblock %}
 
 {% block body %}
 
@@ -7,8 +7,6 @@
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
     <li class="breadcrumb-item active" aria-current="page">Uploaded files</li>
   </ul>
 </div>
@@ -28,13 +26,11 @@
     <thead>
         <th>File name</th>
         <th>Created at</th>
-        <th>Action</th>
     </thead>
     {% for file in files %}
     <tr>
-        <th><a href="{{ url_for('admin.download_file', uuid = file.uuid) }}">{{ file.file_name }}</th>
+        <th><a href="{{ url_for('admin.download_file', uuid = file.uuid) }}" target="_blank">{{ file.file_name }}</th>
         <th>{{ file.created_at.strftime('%d/%m/%Y %H:%M') }}</th>
-        <th><a href="{{ url_for('admin.delete_file', uuid=file.uuid) }}">Delete</button>
     <tr>
     {% endfor %}
 
