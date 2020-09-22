@@ -252,3 +252,11 @@ class Setting(database.Model):
     __tablename__ = "setting"
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
+
+class File(database.Model):
+    """File uploads meta"""
+    __tablename__ = "file"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    file_name = database.Column(database.String())

@@ -200,7 +200,7 @@ def create_app(test_config=None):
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     images = UploadSet("images", IMAGES)
-    patch_request_class(app, 2 * 1024 * 1024)
+    patch_request_class(app, int(app.config.get('MAX_CONTENT_LENGTH', 2 * 1024 * 1024)))
     configure_uploads(app, images)
 
     from . import db

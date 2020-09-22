@@ -449,6 +449,28 @@
           </div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header" id="headingFileManagement">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFileManagement" aria-expanded="false" aria-controls="collapseFileManagement">
+              Upload Files
+            </button>
+          </h5>
+        </div>
+        <div id="collapseFileManagement" class="collapse" aria-labelledby="headingFileManagement">
+            <div class="card col-lg my-3 shadow-sm" >
+              <div class="card-body">
+                <p class="card-text">Upload files for your subscribers to have access to<p>
+                <a href="{{ url_for('admin.upload_files') }}"
+               class="btn btn-block btn-success">Upload Files
+                </a>
+                <a href="{{ url_for('admin.list_files') }}"
+               class="btn btn-block btn-success">List Files
+                </a>
+              </div>
+            </div>
+        </div>
+      </div>
     </div>
 
 </div>
