@@ -8,7 +8,7 @@ from flask import (
     session, g, current_app, request
 )
 from subscribie import PasswordLoginForm, SubscriberForgotPasswordForm, SubscriberResetPasswordForm
-from subscribie.models import Subscription, database, Person, Company, Option, ChosenOption
+from subscribie.models import Subscription, database, Person, Company, Option, ChosenOption, File
 from flask_mail import Mail, Message
 from jinja2 import Template
 
@@ -168,3 +168,10 @@ def update_subscription_choices(subscription_id):
         return redirect(url_for('subscriber.subscriptions'))
     else:
         return render_template('subscriber/update_choices.html', plan=plan)
+
+@subscriber.route('/account/files')
+@subscriber_login_required
+def list_files():
+    "View files"
+    files = File.query.order_by(File.id.desc()).all()
+    return render_template('subscriber/list_files.html', files=files)
