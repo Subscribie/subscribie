@@ -1,0 +1,46 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">List files</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Your uploaded files</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+          <h2>Your Files</h2>
+    <style>
+    th {
+        padding: 5px;
+    }
+    </style> 
+    <table border="1">  
+    <thead>
+        <th>File name</th>
+        <th>Created at</th>
+    </thead>
+    {% for file in files %}
+    <tr>
+        <th><a href="{{ url_for('admin.download_file', uuid = file.uuid) }}">{{ file.file_name }}</th>
+        <th>{{ file.created_at.strftime('%d/%m/%Y %H:%M') }}</th>
+    <tr>
+    {% endfor %}
+
+    </table>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

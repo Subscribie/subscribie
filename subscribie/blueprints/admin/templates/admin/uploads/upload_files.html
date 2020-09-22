@@ -23,12 +23,8 @@
 
           <form action="" method="POST" enctype="multipart/form-data" action="/">
             {{ form.csrf_token }}
-            <div class="form-group">
-                <div class="custom-file">
-                  <input type="file" name="upload" class="custom-file-input" id="files" multiple required> 
-                  <label class="custom-file-label" for="files">Choose file(s)</label>
-                </div>
-            </div>
+                  <input type="file" name="upload" id="files" multiple required> 
+                  <label for="files">Choose file(s)</label>
             <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
           </form>
         </div>

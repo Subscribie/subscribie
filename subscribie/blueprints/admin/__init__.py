@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash, json
+from flask import Blueprint, render_template, abort, flash, json, send_from_directory
 import jinja2
 from jinja2 import TemplateNotFound, Markup, Environment
 from subscribie import (
@@ -37,7 +37,7 @@ import subprocess
 import uuid
 from sqlalchemy import asc, desc
 from datetime import datetime
-from subscribie.models import ChoiceGroup, Transaction, EmailTemplate, Setting
+from subscribie.models import ChoiceGroup, Transaction, EmailTemplate, Setting, File
 import stripe
 from werkzeug.utils import secure_filename
 
@@ -1058,9 +1058,31 @@ def upload_files():
             # Check filetype
             if upload.content_type in allowed:
                 filename = secure_filename(upload.filename)
+                # Store to filesystem
                 upload.save(dst=current_app.config["UPLOADED_FILES_DEST"] + "/" + filename)
+                # Store file meta in db
+                uploadedFile = File()
+                uploadedFile.file_name = filename
+                database.session.add(uploadedFile)
                 flash(f"Uploaded {filename}")
+        database.session.commit()
     return render_template("admin/uploads/upload_files.html", form=form)
+
+
+@admin.route("/list-files", methods=["GET"])
+@login_required
+def list_files():
+    files = File.query.all()
+    return render_template("admin/uploads/list_files.html", files=files)
+
+@admin.route('/uploads/<uuid>')
+def download_file(uuid):
+    theFile = File.query.filter_by(uuid=uuid).first()
+    if theFile is not None:
+        return send_from_directory(current_app.config['UPLOADED_FILES_DEST'],
+                                   theFile.file_name, as_attachment=True)
+    else:
+        return "Not found", 404
 
 def getPlan(container, i, default=None):
     try:
