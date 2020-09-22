@@ -34,7 +34,11 @@
             {% endif %}</td>
             <td><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
             <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
-                <strong>Phone: </strong><a href="tel:{{ person.phone }}">{{ person.phone }}</a><br></td>
+                <strong>Phone: </strong><a href="tel:{{ person.mobile }}">
+                {% if person.mobile and person.mobile != "NULL" %}
+                    {{ person.mobile }}</a><br>
+                {% endif %}
+            </td>
             <td><address>
               {{ person.address_line1 }}<br />
               {{ person.city }} <br />
