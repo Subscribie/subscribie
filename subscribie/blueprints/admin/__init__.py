@@ -1080,6 +1080,23 @@ def list_files():
     files = File.query.all()
     return render_template("admin/uploads/list_files.html", files=files)
 
+@admin.route('/delete/file/<uuid>')
+@login_required
+def delete_file(uuid):
+    # Remove from database file meta
+    theFile = File.query.filter_by(uuid=uuid).first()
+    if theFile is not None:
+        database.session.delete(theFile)
+
+    database.session.commit()
+    # Remove from filesystem
+    try:
+        os.unlink(current_app.config['UPLOADED_FILES_DEST'] + theFile.file_name)
+    except Exception as e:
+        print(e)
+    flash(f"Deleted: {theFile.file_name}")
+    return redirect(request.referrer)
+
 @admin.route('/uploads/<uuid>')
 @protected_download
 def download_file(uuid):
