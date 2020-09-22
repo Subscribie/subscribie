@@ -98,6 +98,11 @@ def seed_db():
     module_pages.src = 'https://github.com/Subscribie/module-pages.git'                                                   
     database.session.commit()
 
+def detect_scheme(request):
+    if '127.0.0.1' in request.host:
+        return 'http'
+    else:
+        return 'https'
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)

@@ -5,7 +5,7 @@ import datetime
 from datetime import date
 import sqlite3
 from .signals import journey_complete
-from subscribie import session, CustomerForm, gocardless_pro, current_app
+from subscribie import session, CustomerForm, gocardless_pro, current_app, detect_scheme
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -67,17 +67,20 @@ def choose():
 def redirect_to_payment_step(plan, inside_iframe=False):
     """Depending on plans payment requirement, redirect to collection page
      accordingly"""
+
+    scheme = detect_scheme(request)
+
     if plan.requirements.instant_payment:
         return redirect(
             url_for(
                 "views.up_front",
-                _scheme="https",
+                _scheme=scheme,
                 _external=True
             )
         )
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
-    return redirect(url_for("views.thankyou", _scheme="https", _external=True))
+    return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
@@ -281,7 +284,8 @@ def instant_payment_complete():
         # Create subscription model to store any chosen choices even though this
         # is a one-off payment. 
         create_subscription() 
-        return redirect(url_for("views.thankyou", _scheme="https", _external=True))
+        scheme = detect_scheme(request)
+        return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
 @bp.route("/establish_mandate", methods=["GET"])
@@ -516,7 +520,7 @@ def thankyou():
     jinja_template = Template(template)
     html = jinja_template.render(first_name=session.get('given_name', None), 
                 company_name=company.name,
-                subscriber_login_url='https://' + flask.request.host + '/account/login',
+                subscriber_login_url=detect_scheme(request) + '://' + flask.request.host + '/account/login',
                 first_charge_date=first_charge_date,
                 first_charge_amount=first_charge_amount) 
 
