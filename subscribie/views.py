@@ -5,7 +5,7 @@ import datetime
 from datetime import date
 import sqlite3
 from .signals import journey_complete
-from subscribie import session, CustomerForm, gocardless_pro, current_app, detect_scheme
+from subscribie import session, CustomerForm, gocardless_pro, current_app
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -68,13 +68,11 @@ def redirect_to_payment_step(plan, inside_iframe=False):
     """Depending on plans payment requirement, redirect to collection page
      accordingly"""
 
-    scheme = detect_scheme(request)
-
     if plan.requirements.instant_payment:
         return redirect(
             url_for(
                 "views.up_front",
-                _scheme=scheme,
+                _scheme='https' if request.is_secure else 'http',
                 _external=True
             )
         )
@@ -286,8 +284,8 @@ def instant_payment_complete():
     else:
         # Create subscription model to store any chosen choices even though this
         # is a one-off payment. 
-        create_subscription() 
-        scheme = detect_scheme(request)
+        create_subscription()
+        scheme = 'https' if request.is_secure else 'http'
         return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
@@ -523,7 +521,7 @@ def thankyou():
     jinja_template = Template(template)
     html = jinja_template.render(first_name=session.get('given_name', None), 
                 company_name=company.name,
-                subscriber_login_url=detect_scheme(request) + '://' + flask.request.host + '/account/login',
+                subscriber_login_url='https://' if request.is_secure else 'http://' + flask.request.host + '/account/login',
                 first_charge_date=first_charge_date,
                 first_charge_amount=first_charge_amount) 
 
