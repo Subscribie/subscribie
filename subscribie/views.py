@@ -180,18 +180,26 @@ def set_options(plan_uuid):
 
 @bp.route("/up_front", methods=["GET"])
 def up_front():
-    plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
-    stripe_pub_key = payment_provider.stripe_publishable_key
+    if payment_provider.stripe_connect_account_id is None:
+        return """Shop owner has not connected Stripe payments yet.
+                This can be done by the shop owner via the admin dashboard."""
+
+    plan = Plan.query.filter_by(uuid=session["plan"]).first()
+    stripe_pub_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
     company = Company.query.first()
     stripe_create_checkout_session_url = url_for('views.stripe_create_checkout_session')
+
+    stripe_connected_account_id = payment_provider.stripe_connect_account_id
+
     return render_template(
         "up_front_payment.html",
         company=company,
         plan=plan,
         fname=session["given_name"],
         stripe_pub_key=stripe_pub_key,
-        stripe_create_checkout_session_url=stripe_create_checkout_session_url
+        stripe_create_checkout_session_url=stripe_create_checkout_session_url,
+        stripe_connected_account_id=stripe_connected_account_id
     )
 
 
@@ -200,8 +208,6 @@ def stripe_webhook():
     payment_provider = PaymentProvider.query.first()
     if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
         endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
-        if endpoint_secret is None:
-            return "Could not fetch endpoint_secret from app config", 500
     else:
         endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
         if endpoint_secret is None:
@@ -244,14 +250,13 @@ def stripe_webhook():
 @bp.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     payment_provider = PaymentProvider.query.first()
-
+    data = request.json
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
-    stripe_secret_key = payment_provider.stripe_secret_key
-    stripe.api_key = stripe_secret_key
+    stripe.api_key = current_app.config.get('STRIPE_SECRET_KEY')
     stripe_session = stripe.checkout.Session.create(
         payment_method_types = ["card"],
         line_items=[{
@@ -269,7 +274,11 @@ def stripe_create_checkout_session():
         customer_email = person.email,
         success_url = url_for('views.instant_payment_complete', _external=True, plan=plan.uuid),
         # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
-        cancel_url = url_for('views.up_front', _external=True)
+        cancel_url = url_for('views.up_front', _external=True),
+        payment_intent_data = {
+            'application_fee_amount': 20
+        },
+        stripe_account=data['account_id']
     )
     return jsonify(id=stripe_session.id)
 
