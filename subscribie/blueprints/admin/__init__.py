@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash, json, send_from_directory
+from flask import Blueprint, render_template, abort, flash, json, send_from_directory, g
 import jinja2
 from jinja2 import TemplateNotFound, Markup, Environment
 from subscribie import (
@@ -500,6 +500,104 @@ def connect_gocardless_start():
     )
     authorize_url = flow.step1_get_authorize_url()
     return flask.redirect(authorize_url, code=302)
+
+def getStripeAccount(account_id):
+    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
+    try:
+        account = stripe.Account.retrieve(account_id)
+    except stripe.error.PermissionError as e:
+        print(e)
+        account = None
+    except Exception as e:
+        print(f"Error fetching stripe account: {e}")
+        account = None
+
+    return account
+
+
+@admin.route("/connect/stripe-connect", methods=["GET"])
+@login_required
+def stripe_connect():
+    connection_attempted = False
+    account = None
+    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_connect_account_id is not None:
+        account = getStripeAccount(payment_provider.stripe_connect_account_id)
+        if account is not None and account.charges_enabled and account.payouts_enabled:
+            payment_provider.stripe_active = True
+    if 'success' in request.args:
+        # Success only means they have completed the onboarding fow
+        # successfully, it does NOT mean their account is active and
+        # payouts can be made.
+        connection_attempted = True
+
+    database.session.commit()
+    return render_template('admin/settings/stripe/stripe_connect.html',
+                            stripe_onboard_path=url_for('admin.stripe_onboarding'),
+                            connection_attempted=connection_attempted,
+                            account=account)
+
+@admin.route("/stripe-onboard", methods=["POST"])
+@login_required
+def stripe_onboarding():
+
+    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
+    company = Company.query.first()
+
+    # Check for existing stripe_connect_account_id
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_connect_account_id is None:
+        print("Creating stripe account")
+        account = stripe.Account.create(type='standard', email=g.user.email,
+                                        default_currency='gbp',
+                                        business_profile={'url': request.host_url,
+                                                          'name': company.name
+                                        })
+        payment_provider.stripe_connect_account_id = account.id
+        database.session.commit()
+    else:
+        print("Reusing already created payment_provider.stripe_connect_account_id")
+        account = getStripeAccount(payment_provider.stripe_connect_account_id)
+
+    session['account_id'] = account.id
+
+    account_link_url = _generate_account_link(account.id)
+    try:
+        return jsonify({'url': account_link_url})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+
+def _generate_account_link(account_id):
+    '''
+    From the Stripe Docs:
+    A user that is redirected to your return_url might not have completed the
+    onboarding process. Use the /v1/accounts endpoint to retrieve the user’s
+    account and check for charges_enabled. If the account is not fully onboarded,
+    provide UI prompts to allow the user to continue onboarding later. The user
+    can complete their account activation through a new account link (generated
+    by your integration). You can check the state of the details_submitted
+    parameter on their account to see if they’ve completed the onboarding process.
+    '''
+    account_link = stripe.AccountLink.create(
+        type='account_onboarding',
+        account=account_id,
+        refresh_url=url_for('admin.stripe_connect', refresh="refresh", _external=True),
+        return_url=url_for('admin.stripe_connect', success="success", _external=True),
+    )
+    return account_link.url
+
+@admin.route('/stripe-onboard/refresh', methods=['GET'])
+def onboard_user_refresh():
+    if 'account_id' not in session:
+        return redirect(url_for('admin.stripe_onboarding'))
+
+    account_id = session['account_id']
+
+    origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
+    account_link_url = _generate_account_link(account_id)
+    return redirect(account_link_url)
 
 
 @admin.route("/connect/stripe/manually", methods=["GET", "POST"])

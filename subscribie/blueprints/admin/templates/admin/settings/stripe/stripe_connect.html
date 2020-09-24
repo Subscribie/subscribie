@@ -24,22 +24,15 @@
           will be paid out to your into your bank account via Stripe.
           </p>
 
-         {% if account.charges_enabled %}
-            <div class="alert alert-success" role="alert">
-                <b>Great!</b> You can accept live payments on your site.
-            </div> 
-         {% else %}
-            <div class="alert alert-warning" role="alert">
-                Charges are not enabled on your site yet. Please complete setup
-                by clicking 'Setup payouts on Stripe' below.
-            </div> 
-         {% endif %}
-
          {% if account.payouts_enabled %}
             <div class="alert alert-success" role="alert">
                 <b>Congrats!</b> Payouts are active on your site, which means 
                 you'll receive funds to your bank account.
             </div> 
+
+            <a href="{{ stripe_express_dashboard_url }}" class="btn btn-success">
+                View balance, payouts and change bank account settings
+            </a> <br /> <br />
 
          {% elif account.charges_enabled and account.payouts_enabled is sameas False %}
             <div class="alert alert-warning" role="alert">

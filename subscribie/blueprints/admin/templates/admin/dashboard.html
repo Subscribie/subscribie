@@ -33,11 +33,10 @@
 
           {% if stripe_connected is sameas False %}
           <li>
-          You must to connect Stripe in order to take one-off payments for your 
-          plans (up-front costs).
+          Stripe connection is not yet complete.
           <a class="btn btn-warning" 
-              href="{{ url_for('admin.connect_stripe_manually') }}">
-              Connect Stripe
+              href="{{ url_for('admin.stripe_connect') }}">
+              Review Stripe
           </a>
           </li>
           {% endif %}
@@ -135,6 +134,9 @@
                   <div class="card-body">
                     <h5 class="card-title">Stripe</h5>
                     <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
+                    <a href="{{ url_for('admin.stripe_connect') }}" class="btn btn-block btn-success">
+                    Connect Stripe
+                    </a>
                     <a href="{{ url_for('admin.connect_stripe_manually') }}" 
                         class="btn btn-block
                         {% if stripe_connected  %}
