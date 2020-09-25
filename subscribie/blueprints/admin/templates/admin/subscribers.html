@@ -23,7 +23,7 @@
             <th>Name</th>
             <th>Contacts</th>
             <th>Address</th>
-            <th>Subscription</th>
+            <th>Plan</th>
           </tr>
         </thead>
         <tbody>
@@ -63,19 +63,25 @@
                         </details>
                     </li>
                     {% endif %}
-                    <li><strong>ID: </strong>{{ subscription.uuid }}</li>
+                    <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                    <li><strong>GoCardless Subscription id: </strong>
-                      {% if subscription.gocardless_subscription_id %}
+                    {% if subscription.gocardless_subscription_id %}
+                    <li>
+                      <strong>GoCardless Subscription id: </strong>
                       <a href="https://manage.gocardless.com/subscriptions/{{ subscription.gocardless_subscription_id }}"
                         target="_blank" title="View subscription in GoCardless dashboard">
                         {{ subscription.gocardless_subscription_id }}</a>
-                      {% else %}
-                        None
-                      {% endif %}</li>
+                    </li>
+                    {% endif %}
                     <li><strong>Price ({{ subscription.plan.interval_unit }}): </strong>{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</li>
                     <li><strong>Sell price: </strong>{{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
-                    <li><strong>Status: </strong>{{subscription_status(subscription.gocardless_subscription_id)}}</li>
+                    <li><strong>Status: </strong>
+                        {% if subscription.plan.requirements.subscription %}
+                            {{subscription_status(subscription.gocardless_subscription_id)}}
+                        {% else %}
+                            Paid
+                        {% endif %}
+                    </li>
                     <li><strong>Actions: </strong>
                       {% if subscription.gocardless_subscription_id %}
                         {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
