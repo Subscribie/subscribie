@@ -206,6 +206,8 @@ def up_front():
 @bp.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     payment_provider = PaymentProvider.query.first()
+    stripe_account_id = payment_provider.stripe_connect_account_id
+
     if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
         endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
     else:
@@ -242,12 +244,25 @@ def stripe_webhook():
         plan = Plan.query.filter_by(uuid=plan_uuid).first()
         person = Person.query.filter_by(uuid=person_uuid).first()
 
+        try:
+            chosen_option_ids = session['metadata']['chosen_option_ids']
+        except KeyError:
+            chosen_option_ids = None
+        try:
+            package = session['metadata']['package']
+        except KeyError:
+            package = None
+        subscription = create_subscription(email=session.customer_email,
+                                           package=package,
+                                           chosen_option_ids=chosen_option_ids)
+
         # Store the transaction
         transaction = Transaction()
         transaction.amount = session["amount_total"]
         transaction.external_id = session.id
         transaction.external_src = "stripe"
         transaction.person = person
+        transaction.subscription = subscription
         database.session.add(transaction)
         database.session.commit()
 
@@ -276,7 +291,11 @@ def stripe_create_checkout_session():
             'quantity': 1,
         }],
         mode='payment',
-        metadata={"person_uuid": person.uuid, "plan_uuid": session["plan"]},
+        metadata={"person_uuid": person.uuid,
+                  "plan_uuid": session["plan"],
+                  "chosen_option_ids": session.get('chosen_option_ids', None),
+                  "package": session.get('package', None)
+                 },
         customer_email = person.email,
         success_url = url_for('views.instant_payment_complete', _external=True, plan=plan.uuid),
         # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
@@ -297,9 +316,6 @@ def instant_payment_complete():
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
-        # Create subscription model to store any chosen choices even though this
-        # is a one-off payment. 
-        create_subscription()
         scheme = 'https' if request.is_secure else 'http'
         return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
@@ -466,20 +482,26 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
-def create_subscription() -> Subscription:
+def create_subscription(email=None, package=None, chosen_option_ids=None) -> Subscription:
     '''Create subscription model
     Note: A subscription model is also created if a plan only has
     one up_front payment (no recuring subscription). This allows
     the storing of chosen options againt their plan choice.'''
     print("Creating subscription")
     # Store Subscription against Person locally
-    person = database.session.query(Person).filter_by(email=session['email']).first()
-    subscription = Subscription(sku_uuid=session['package'], person=person)
+    if email is None:
+        email = session['email']
+
+    if package is None:
+        package = session['package']
+
+    person = database.session.query(Person).filter_by(email=email).first()
+    subscription = Subscription(sku_uuid=package, person=person)
 
     # Add chosen options (if any)
     chosen_options = []
-    if session.get('chosen_option_ids', None):
-        for option_id in session['chosen_option_ids']:
+    if session.get('chosen_option_ids', None) or chosen_option_ids: # May be passed via webhook
+        for option_id in chosen_option_ids:
             option = Option.query.get(option_id)
             # We will store as ChosenOption because option may change after the order has processed
             # This preserves integrity of the actual chosen options
@@ -492,8 +514,6 @@ def create_subscription() -> Subscription:
 
     database.session.add(subscription)
     database.session.commit()
-    # Add subscription id to session
-    session["subscription_id"] = subscription.id
     return subscription
 
 @bp.route("/thankyou", methods=["GET"])
