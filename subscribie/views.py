@@ -226,7 +226,7 @@ def stripe_webhook():
         return "Stripe ignatureVerificationError", 400
     # Only proces events for this connected account
     if event.account != payment_provider.stripe_connect_account_id:
-        return "Event account id does not match this shop", 403
+        return "Event account id does not match this shop, ignoring", 200
 
     print("#"*20 + "Event" + "#"*20)
     print(event)
