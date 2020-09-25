@@ -531,6 +531,28 @@ def stripe_connect():
     except (stripe.error.PermissionError, NameError):
         account = None
 
+    # Setup Stripe webhook endpoint if it dosent already exist
+    if account:
+        webhook_url = url_for('views.stripe_webhook',_external=True)
+
+        # Only proceed if webhook_endpoint_id is not already set
+        if payment_provider.stripe_webhook_endpoint_id is None and '127.0.0.1' not in request.host:
+            try:
+                webhook_endpoint = stripe.WebhookEndpoint.create(
+                  url = webhook_url,
+                  enabled_events=[
+                    "*",
+                  ],
+                  description = "Subscribie webhook endpoint",
+                  connect = True, # endpoint should receive events from connected accounts
+                )
+                # Store the webhook secret & webhook id
+                payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
+                payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
+            except stripe.error.InvalidRequestError:
+                flash("Error: Unable to create stripe webhook")
+                payment_provider.stripe_active = False
+
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
                             stripe_onboard_path=url_for('admin.stripe_onboarding'),
@@ -637,30 +659,6 @@ def connect_stripe_manually():
             # Ignore because Token.create() is invalid on purpose, we're only validating the api key
             pass
 
-        # Setup Stripe webhook endpoint if it dosent already exist
-        if keys_valid is False:
-            database.session.commit()
-            return redirect(url_for('admin.connect_stripe_manually'))
-        else:
-            webhook_url = url_for('views.stripe_webhook',_external=True)
-
-            # Only proceed if webhook_endpoint_id is not already set
-            if payment_provider.stripe_webhook_endpoint_id is None and '127.0.0.1' not in request.host:
-                try:
-                    stripe.api_key = secret_key
-                    webhook_endpoint = stripe.WebhookEndpoint.create(
-                      url = webhook_url,
-                      enabled_events=[
-                        "*",
-                      ],
-                      description = "Subscribie webhook endpoint",
-                    )
-                    # Store the webhook secret & webhook id
-                    payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
-                    payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
-                except stripe.error.InvalidRequestError:
-                    flash("Error: Unable to create stripe webhook")
-                    payment_provider.stripe_active = False
 
         database.session.commit() # Save changes
 
