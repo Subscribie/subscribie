@@ -224,11 +224,17 @@ def stripe_webhook():
         return e, 400
     except stripe.error.SignatureVerificationError as e:
         return "Stripe ignatureVerificationError", 400
+    # Only proces events for this connected account
+    if event.account != payment_provider.stripe_connect_account_id:
+        return "Event account id does not match this shop", 403
 
+    print("#"*20 + "Event" + "#"*20)
+    print(event)
+    print("#"*80)
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        print("#"*100)
+        print("#"*20 + "Session" + "#"*20)
         print(session)
         print("#"*100)
         plan_uuid = session['metadata']['plan_uuid']
