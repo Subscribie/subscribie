@@ -1,0 +1,147 @@
+{% extends "admin/layout.html" %}
+{% block title %} Connect Stripe Manually {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Manage My Shop</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Connect Stripe</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Connect Stripe to your shop</h2>
+          <p>Connect to Stripe below. When your subscribers pay one-off amounts, they 
+          will be paid out to your into your bank account via Stripe.
+          </p>
+
+         {% if account.charges_enabled %}
+            <div class="alert alert-success" role="alert">
+                <b>Great!</b> You can accept live payments on your site.
+            </div> 
+         {% else %}
+            <div class="alert alert-warning" role="alert">
+                Charges are not enabled on your site yet. Please complete setup
+                by clicking 'Setup payouts on Stripe' below.
+            </div> 
+         {% endif %}
+
+         {% if account.payouts_enabled %}
+            <div class="alert alert-success" role="alert">
+                <b>Congrats!</b> Payouts are active on your site, which means 
+                you'll receive funds to your bank account.
+            </div> 
+
+         {% elif account.charges_enabled and account.payouts_enabled is sameas False %}
+            <div class="alert alert-warning" role="alert">
+                Payouts to your bank account are not active yet. But don't worry, 
+                you can still accept live payments on your shop right now. Stripe
+                will safley hold your funds until your account is verified.<br />
+                Please check back here after a short while (30 mins) and Stripe 
+                will ask you to upload verification documents, by clicking 
+                'Setup payouts on stripe' again to continue where you left off.
+                <br />
+                <p>
+                    If you have recently uploaded these documents, please give Stripe some time
+                    to review and process them.
+                </p>
+                {% if account.requirements.currently_due %}
+                      <h3>Items Currently Due</h3>
+                      <p>Stripe currently needs the following information:</p>
+                      {% for item in account.requirements.currently_due %}
+                          <!-- {{ item }} <br/> -->
+                      {% endfor %}
+                      <ul>
+                      
+                      {% if 'individual.verification.document' in account.requirements.currently_due %}
+                          <li>Requires a proof of entity document establishing the business’ entity ID number, such as the company’s articles of incorporation.</li>
+                      {% endif %}
+                      {% if 'individual.verification.additional_document' in account.requirements.currently_due %}
+                          <li>Requires a color scan or photo of a document verifying the user’s address, such as a utility bill.</li>
+                      {% endif %}
+                      </ul>
+                <p>
+                    Click 'Setup payouts on stripe' to complete the document upload process.
+                </p>
+                {% endif %}  
+            </div> 
+         {% endif %}
+
+         {% if account.details_submitted is sameas False %}
+            <div class="alert alert-warning" role="alert">
+                Stripe is waiting for your to provide information to validate 
+                your account. Please login to your Stripe account and upload
+                any information they request.
+            </div> 
+         {% endif %}
+
+          <button id="submit" class="btn btn-success">Setup payouts on Stripe</button>
+
+        </div>
+
+        <div class="col-md-5">
+          <div class="card shadow-sm" >
+            <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
+                 class="card-img-top" 
+                 alt="..." 
+                 style="width:50%; display:block; margin:auto">
+            <div class="card-body">
+              <h4 class="card-title">How you get paid</h4>
+              <p>
+                We've automated the process, all you need to do is connect to 
+                Stripe and follow the on-screen instructions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+<script>
+let elmButton = document.querySelector("#submit");
+  
+if (elmButton) {
+  elmButton.addEventListener(
+    "click",
+    e => {
+      elmButton.setAttribute("disabled", "disabled");
+      elmButton.textContent = "Opening...";
+
+      fetch("{{ stripe_onboard_path }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.url) {
+            window.location = data.url;
+          } else {
+            elmButton.removeAttribute("disabled");
+            elmButton.textContent = "<Something went wrong>";
+            console.log("data", data);
+          }
+        });
+    },
+    false
+  );
+}
+</script>
+
+
+
+
+{% endblock %}
