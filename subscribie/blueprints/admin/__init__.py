@@ -522,36 +522,46 @@ def stripe_connect():
     account = None
     stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     payment_provider = PaymentProvider.query.first()
+
     try:
         account = getStripeAccount(payment_provider.stripe_connect_account_id)
         if account is not None and account.charges_enabled and account.payouts_enabled:
             payment_provider.stripe_active = True
         else:
             payment_provider.stripe_active = False
-    except (stripe.error.PermissionError, NameError):
+    except (stripe.error.PermissionError, NameError) as e:
+        print(e)
         account = None
 
     # Setup Stripe webhook endpoint if it dosent already exist
     if account:
         webhook_url = url_for('views.stripe_webhook',_external=True)
-
-        # Only proceed if webhook_endpoint_id is not already set
-        if payment_provider.stripe_webhook_endpoint_id is None and '127.0.0.1' not in request.host:
+        print("#"*222)
+        if '127.0.0.1' not in request.host: # Dont create webhooks on localhost, use stripe cli for that
             try:
-                webhook_endpoint = stripe.WebhookEndpoint.create(
-                  url = webhook_url,
-                  enabled_events=[
-                    "*",
-                  ],
-                  description = "Subscribie webhook endpoint",
-                  connect = True, # endpoint should receive events from connected accounts
-                )
-                # Store the webhook secret & webhook id
-                payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
-                payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
-            except stripe.error.InvalidRequestError:
-                flash("Error: Unable to create stripe webhook")
-                payment_provider.stripe_active = False
+                # Existing webook may be valid, if so, use that
+                print(f"Try fetch existing webhook: {payment_provider.stripe_webhook_endpoint_id}")
+                stripe.WebhookEndpoint.retrieve(payment_provider.stripe_webhook_endpoint_id)
+            except (stripe.error.InvalidRequestError):
+                # Otherwise, create the webhook
+                print("Invalid webhook, creating a new one.")
+                try:
+                    webhook_endpoint = stripe.WebhookEndpoint.create(
+                      url = webhook_url,
+                      enabled_events=[
+                        "*",
+                      ],
+                      description = "Subscribie webhook endpoint",
+                      connect = True, # endpoint should receive events from connected accounts
+                    )
+                    # Store the webhook secret & webhook id
+                    payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
+                    payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
+                    print(f"New webhook id is: {payment_provider.stripe_webhook_endpoint_id}")
+                except stripe.error.InvalidRequestError as e:
+                    print(e)
+                    flash("Error: Unable to create stripe webhook")
+                    payment_provider.stripe_active = False
 
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
