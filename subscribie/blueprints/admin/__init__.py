@@ -502,12 +502,13 @@ def connect_gocardless_start():
     return flask.redirect(authorize_url, code=302)
 
 def getStripeAccount(account_id):
+    if account_id is None:
+     raise NameError("account_id is not set")
     stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     try:
         account = stripe.Account.retrieve(account_id)
     except stripe.error.PermissionError as e:
-        print(e)
-        account = None
+        raise
     except Exception as e:
         print(f"Error fetching stripe account: {e}")
         account = None
@@ -518,24 +519,21 @@ def getStripeAccount(account_id):
 @admin.route("/connect/stripe-connect", methods=["GET"])
 @login_required
 def stripe_connect():
-    connection_attempted = False
     account = None
     stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_connect_account_id is not None:
+    try:
         account = getStripeAccount(payment_provider.stripe_connect_account_id)
         if account is not None and account.charges_enabled and account.payouts_enabled:
             payment_provider.stripe_active = True
-    if 'success' in request.args:
-        # Success only means they have completed the onboarding fow
-        # successfully, it does NOT mean their account is active and
-        # payouts can be made.
-        connection_attempted = True
+        else:
+            payment_provider.stripe_active = False
+    except (stripe.error.PermissionError, NameError):
+        account = None
 
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
                             stripe_onboard_path=url_for('admin.stripe_onboarding'),
-                            connection_attempted=connection_attempted,
                             account=account)
 
 @admin.route("/stripe-onboard", methods=["POST"])
@@ -545,9 +543,12 @@ def stripe_onboarding():
     stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     company = Company.query.first()
 
-    # Check for existing stripe_connect_account_id
+    # Try to use existing stripe_connect_account_id if present, otherwise create an account
     payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_connect_account_id is None:
+    try:
+        print("Trying if there's an existing stripe account")
+        account = getStripeAccount(payment_provider.stripe_connect_account_id)
+    except (stripe.error.PermissionError, NameError):
         print("Creating stripe account")
         account = stripe.Account.create(type='standard', email=g.user.email,
                                         default_currency='gbp',
@@ -556,9 +557,6 @@ def stripe_onboarding():
                                         })
         payment_provider.stripe_connect_account_id = account.id
         database.session.commit()
-    else:
-        print("Reusing already created payment_provider.stripe_connect_account_id")
-        account = getStripeAccount(payment_provider.stripe_connect_account_id)
 
     session['account_id'] = account.id
 
