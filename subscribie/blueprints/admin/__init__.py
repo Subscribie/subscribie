@@ -748,11 +748,15 @@ def utility_get_transaction_fulfillment_state():
 
 def get_subscription_status(gocardless_subscription_id) -> str:
     status_on_error = "Unknown"
-    payment_provider = PaymentProvider.query.first()        
-    client = gocardless_pro.Client(
-        access_token = payment_provider.gocardless_access_token,
-        environment= payment_provider.gocardless_environment
-    )
+    payment_provider = PaymentProvider.query.first()
+    try:
+        client = gocardless_pro.Client(
+            access_token = payment_provider.gocardless_access_token,
+            environment= payment_provider.gocardless_environment
+        )
+    except ValueError as e:
+        print(e)
+        return "Unknown"
 
     try:
         response = client.subscriptions.get(gocardless_subscription_id)
