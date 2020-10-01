@@ -562,6 +562,8 @@ def stripe_connect():
                     print(e)
                     flash("Error: Unable to create stripe webhook")
                     payment_provider.stripe_active = False
+        else:
+            print(f"Refusing to Stripe webhook on localhost: {webhook_url}")
 
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
@@ -628,57 +630,6 @@ def onboard_user_refresh():
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
     account_link_url = _generate_account_link(account_id)
     return redirect(account_link_url)
-
-
-@admin.route("/connect/stripe/manually", methods=["GET", "POST"])
-@login_required
-def connect_stripe_manually():
-    form = StripeConnectForm()
-    payment_provider = PaymentProvider.query.first()
-    keys_valid = True
-
-    if form.validate_on_submit():
-        publishable_key = form.data["publishable_key"].strip()
-        secret_key = form.data["secret_key"].strip()
-        payment_provider.stripe_publishable_key = publishable_key
-        payment_provider.stripe_secret_key = secret_key
-        payment_provider.stripe_active = True
-
-        # Validate that stripe sectet key is valid
-        try:
-            stripe.api_key = secret_key
-            stripe.Balance.retrieve() # Simple api call to verify api key is correct
-        except stripe.error.AuthenticationError:
-            flash("Error: Stripe secret key is invalid. Please check and try again")
-            payment_provider.stripe_active = False
-            keys_valid = False
-
-        # Validate that stripe public key is valid:
-        #
-        # In live mode, account tokens can only be created with your application’s
-        # publishable key. In test mode, account tokens can be created with your
-        # secret key or publishable key.
-        try:
-            stripe.api_key = publishable_key
-            stripe.Token.create()
-        except stripe.error.AuthenticationError:
-            flash("Error: Stripe publishable key is invalid")
-            payment_provider.stripe_active = False
-            keys_valid = False
-        except stripe.error.InvalidRequestError:
-            # Ignore because Token.create() is invalid on purpose, we're only validating the api key
-            pass
-
-
-        database.session.commit() # Save changes
-
-        return redirect(url_for("admin.connect_stripe_manually"))
-    else:
-        return render_template(
-            "admin/connect_stripe_manually.html",
-            form=form,
-            stripe_connected=payment_provider.stripe_active,
-        )
 
 
 @admin.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])

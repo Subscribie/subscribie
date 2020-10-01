@@ -137,19 +137,6 @@
                     <a href="{{ url_for('admin.stripe_connect') }}" class="btn btn-block btn-success">
                     Connect Stripe
                     </a>
-                    <a href="{{ url_for('admin.connect_stripe_manually') }}" 
-                        class="btn btn-block
-                        {% if stripe_connected  %}
-                          btn-success
-                        {% else %}
-                          btn-info
-                        {% endif %}">
-                      {% if stripe_connected %}
-                        Active! Click to reconnect Stripe
-                      {% else %}
-                        Connect to Stripe
-                      {% endif %}
-                    </a>
                   </div>
                 </div> <!--end card-->
 
