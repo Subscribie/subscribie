@@ -213,7 +213,9 @@ def stripe_webhook():
     else:
         endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
         if endpoint_secret is None:
-            return "Could not fetch stripe_webhook_endpoint_secret from db", 500
+            msg = "Could not fetch stripe_webhook_endpoint_secret from db"
+            print(msg)
+            return jsonify(msg), 500
 
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", None)
