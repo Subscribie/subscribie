@@ -85,7 +85,7 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
                     PlanRequirements, PlanSellingPoints,
                     ChoiceGroup, Option)
 
-from .blueprints.admin import get_subscription_status
+from .blueprints.admin import get_subscription_status, create_stripe_webhook
 
 def seed_db():                                                                 
     # Add module_seo_page_title    
@@ -227,6 +227,14 @@ def create_app(test_config=None):
 
         database.init_app(app)
         migrate = Migrate(app, database)
+        payment_provider = PaymentProvider.query.first()
+        if payment_provider is None:
+            # If payment provider table is not seeded, seed it now with blank values.
+            payment_provider = PaymentProvider()
+            database.session.add(payment_provider)
+            database.session.commit()
+
+        create_stripe_webhook()
 
         load_theme(app)
 
