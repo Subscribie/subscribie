@@ -227,14 +227,18 @@ def create_app(test_config=None):
 
         database.init_app(app)
         migrate = Migrate(app, database)
-        payment_provider = PaymentProvider.query.first()
-        if payment_provider is None:
-            # If payment provider table is not seeded, seed it now with blank values.
-            payment_provider = PaymentProvider()
-            database.session.add(payment_provider)
-            database.session.commit()
 
-        create_stripe_webhook()
+        try:
+            payment_provider = PaymentProvider.query.first()
+            if payment_provider is None:
+                # If payment provider table is not seeded, seed it now with blank values.
+                payment_provider = PaymentProvider()
+                database.session.add(payment_provider)
+                database.session.commit()
+                create_stripe_webhook()
+        except sqlalchemy.exc.OperationalError as e:
+            # Allow to fail until migrations have been ran (flask upgrade requires app boot)
+            print(e)
 
         load_theme(app)
 
