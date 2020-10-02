@@ -73,6 +73,7 @@ import urllib
 from pathlib import Path
 import subprocess
 from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
 from flask_migrate import Migrate, upgrade
 import click
 from jinja2 import Template
