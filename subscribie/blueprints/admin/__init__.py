@@ -589,6 +589,7 @@ def create_stripe_webhook():
 @login_required
 def stripe_connect():
     account = None
+    stripe_express_dashboard_url = None
     stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     payment_provider = PaymentProvider.query.first()
 
@@ -604,6 +605,7 @@ def stripe_connect():
 
     # Setup Stripe webhook endpoint if it dosent already exist
     if account:
+        stripe_express_dashboard_url = stripe.Account.create_login_link(account.id).url
         webhook_url = url_for('views.stripe_webhook',_external=True)
         if '127.0.0.1' not in request.host: # Dont create webhooks on localhost, use stripe cli for that
             create_stripe_webhook()
@@ -613,7 +615,8 @@ def stripe_connect():
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
                             stripe_onboard_path=url_for('admin.stripe_onboarding'),
-                            account=account)
+                            account=account,
+                            stripe_express_dashboard_url=stripe_express_dashboard_url)
 
 @admin.route("/stripe-onboard", methods=["POST"])
 @login_required
@@ -630,10 +633,14 @@ def stripe_onboarding():
         print(f"Yes, stripe account found: {account.id}")
     except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError, AttributeError):
         print("Could not find a stripe account, Creating stripe account")
-        account = stripe.Account.create(type='standard', email=g.user.email,
+        account = stripe.Account.create(type='express', email=g.user.email,
                                         default_currency='gbp',
                                         business_profile={'url': request.host_url,
                                                           'name': company.name
+                                        },
+                                        capabilities={
+                                            'card_payments': {'requested': True},
+                                            'transfers': {'requested': True},
                                         })
         payment_provider.stripe_connect_account_id = account.id
         database.session.commit()
