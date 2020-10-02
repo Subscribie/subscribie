@@ -508,9 +508,12 @@ def getStripeAccount(account_id):
     try:
         account = stripe.Account.retrieve(account_id)
     except stripe.error.PermissionError as e:
+        print(e)
+        raise
+    except stripe.error.InvalidRequestError as e:
+        print(e)
         raise
     except Exception as e:
-        print(f"Error fetching stripe account: {e}")
         account = None
 
     return account
@@ -595,7 +598,7 @@ def stripe_connect():
             payment_provider.stripe_active = True
         else:
             payment_provider.stripe_active = False
-    except (stripe.error.PermissionError, NameError) as e:
+    except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError) as e:
         print(e)
         account = None
 
@@ -624,8 +627,9 @@ def stripe_onboarding():
     try:
         print("Trying if there's an existing stripe account")
         account = getStripeAccount(payment_provider.stripe_connect_account_id)
-    except (stripe.error.PermissionError, NameError):
-        print("Creating stripe account")
+        print(f"Yes, stripe account found: {account.id}")
+    except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError, AttributeError):
+        print("Could not find a stripe account, Creating stripe account")
         account = stripe.Account.create(type='standard', email=g.user.email,
                                         default_currency='gbp',
                                         business_profile={'url': request.host_url,
