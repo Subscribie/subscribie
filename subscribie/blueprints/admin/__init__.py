@@ -598,7 +598,7 @@ def stripe_connect():
             payment_provider.stripe_active = True
         else:
             payment_provider.stripe_active = False
-    except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError) as e:
+    except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError, AttributeError) as e:
         print(e)
         account = None
 
