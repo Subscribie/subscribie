@@ -1,0 +1,39 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+  {{ title }}
+{% endblock title %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Style Your Shop</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Style Shop</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+    <h3>How to</h3>
+    <p class="card-subtitle mb-3 text-muted">Enter or paste in cusom css styling for your shop below:</p>
+
+    <hr>
+
+  <form action="#" method="POST"> 
+    <textarea name="css" cols="100" rows="20">{{ customCSS }}</textarea>
+    <br />
+    <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+  </form>
+
+    </div><!-- end container -->
+  </div><!-- end section -->
+</main>
+
+
+{% endblock body %}
