@@ -1,56 +1,52 @@
 {% extends "admin/layout.html" %}
 {% block title %} {{ title }} {% endblock %}
 
-{% block hero %}
-
-    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">iFrame Embed Code</h1>
-
-{% endblock %}
-
 {% block body %}
-      
-<div style="padding: 1rem 1.5rem 0 1.5rem;">
-  <div class="container">
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li><a href="{{ url_for("admin.dashboard") }}">Dashboard</a></li>
-        <li class="is-active"><a href="#" aria-current="page">iFrame Embed Code</a></li>
-      </ul>
-    </nav>
-  </div>
+
+<h2 class="text-center text-dark mb-3">iFrame Embed Code</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">iFrame Embed Code</li>
+  </ul>
 </div>
 
-<div class="section">
-  <div class="container">
+<main>
+  <div class="section">
+    <div class="container">
 
-    <div class="columns">
-      <div class="column">
-        <h2 class="title is-2">Embed Subscribie into your website</h2>
-        <p>If you have an existing website, you can use this code to embed subscribie
-           into a page of your choice. Simply copy and paste the <code>iFrame</code> 
-          into the page you want your subscribe shop to appear.</p>
-    
-        <p>To make the integration really smooth, we recommend you create a dedicated
-           page on your website, and then paste the embed code into that special page.
-        </p>
-        <p>Copy the embed code into your website:</p>
-        <br />
-        <textarea rows="10" cols="40" autocomplete="off" autocapitalize="none">{{ iframe }}</textarea>
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Embed Subscribie into your website</h2>
+          <p>If you have an existing website, you can use this code to embed subscribie
+            into a page of your choice. Simply copy and paste the <code>iFrame</code> 
+            into the page you want your subscribe shop to appear.</p>
+          <p>To make the integration really smooth, we recommend you create a dedicated
+            page on your website, and then paste the embed code into that special page.
+          </p>
+          <p>Copy the embed code into your website:</p>
 
+          <textarea class="form-control" rows="10" autocomplete="off" autocapitalize="none">{{ iframe }}</textarea>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title">Embed Code</h3>
+              <p>You may want to change the <code>width</code> and
+              <code>height</code>values to make the size work best for your
+              website.</p>
+              <p>Remember, most of your visitors are probably using a
+                mobile phone to view your website, so check that first
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="is-divider-vertical"></div>
-      <div class="column is-one-third" style="padding:0;">
-        <h3 class="title is-5">Embed Code</h3>
-        <ul>
-          <li>You may want to change the <code>width</code> and
-          <code>height</code>values to make the size work best for your
-          website.</li>
-          <li>Remember, most of your visitors are probably using a
-              mobile phone to view your website, so check that first
-          </li>
-        </ul>
-        <br />
-      </div>
-    </div>
 
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
 {% endblock body %}
