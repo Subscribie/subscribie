@@ -1,0 +1,38 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Edit Pages</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('pages.get_module_pages_index') }}">Pages</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Edit Pages</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Edit Pages</h3>
+        <p class="card-subtitle text-muted">Select a page to edit.</p>
+
+        <div class="list-group list-group-flush col-md-6 py-3">
+          {% for page in pages %}
+            <a href="{{ url_for('pages.edit_page', path=page.path) }}" class="list-group-item list-group-item-action text-primary">
+              {{ page.page_name }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

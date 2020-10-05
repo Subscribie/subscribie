@@ -365,14 +365,26 @@
                 </div>
               {% endif %}
             {% endfor  %}
-          <!-- SEO Titles module -->
+              <!-- Pages module -->
+              <div class="card col-lg my-3 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Pages</h5>
+                  <p class="card-subtitle mb-3 text-muted">Create pages on your shop.</p>
+                  <a class="btn btn-block btn-success" 
+                    href="{{ url_for('pages.get_module_pages_index') }}"> 
+                  List pages
+                  </a>
+                </div>
+              </div>
+              <!-- end pages module -->
+              <!-- SEO Titles module -->
               <div class="card col-lg my-3 shadow-sm">
                  <div class="card-body">
                     <h5 class="card-title">SEO Titles</h5>
                     <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
                     <a class="btn btn-block btn-success" 
                       href="{{ url_for('seo_page_title.list_pages') }}"> 
-                    List pages
+                    Manage pages
                     </a>
                  </div>
               </div>

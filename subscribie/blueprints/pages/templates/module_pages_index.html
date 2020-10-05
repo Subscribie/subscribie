@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Pages</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Pages</li>
+  </ul>
+</div>
+      
+
+<main>
+  <div class="section">
+    <div class="container">
+      <div class="col-md-7">
+        <h3>Add, Edit &amp; Delete Pages</h3>
+        <div class="list-group list-group-flush col-md-6 py-3">
+          <a href="{{ url_for('pages.add_page') }}" class="list-group-item list-group-item-action text-primary">Add page</a>
+          <a href="{{ url_for('pages.edit_pages_list') }}" class="list-group-item list-group-item-action text-primary">Edit page</a>
+          <a href="{{ url_for('pages.delete_pages_list') }}" class="list-group-item list-group-item-action text-primary">Delete page</a>
+        </div>
+      </div>
+    </div> <!--end container-->
+  </div><!--end section-->
+</main>
+{% endblock body %}
