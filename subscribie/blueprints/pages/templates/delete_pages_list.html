@@ -1,0 +1,63 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Delete Pages</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('pages.get_module_pages_index') }}">Pages</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Delete Pages</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Delete Page</h3>
+        <p class="card-subtitle mb-3 text-muted">Select a page to delete.</p>
+
+        {% if confirm is sameas false %}
+          <div class="card mx-auto my-3 py-3">
+            <h3 class="card-title mx-auto">Are you sure?</h3>
+            <div class="mx-auto">
+              <a href="{{ url_for('pages.delete_page_by_path', path=path) }}" 
+                  class="btn btn-danger mx-3 px-5" role="button">
+                  Yes
+              </a>
+              <a href="{{ url_for('pages.delete_pages_list', cancel=1) }}" 
+                  class="btn btn-success mx-3 px-5" role="button">
+                  No
+              </a>
+            </div>
+          </div>
+        {% else %}
+        <table class="table col-md-10 table-hover">
+            <thead>
+                <th>Name</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+            {% for page in pages %}
+              <tr>
+                  <td>{{ page.path }}</td>
+                  <td>
+                      <a href="{{ url_for('pages.delete_page_by_path', path=page.path,
+      confirm=1) }}" 
+                          class="btn btn-danger  btn-block">Delete</a>
+                  </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+      </div>
+    </div> <!--end container-->
+  </div><!--end section-->
+</main>
+{% endblock body %}

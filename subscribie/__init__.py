@@ -215,7 +215,9 @@ def create_app(test_config=None):
     app.register_blueprint(api.api)
     from .blueprints.admin import admin
     from .blueprints.subscriber import subscriber
+    from .blueprints.pages import module_pages
 
+    app.register_blueprint(module_pages, url_prefix="/pages")
     app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(subscriber)
 

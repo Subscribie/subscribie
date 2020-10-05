@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Delete Page</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Delete Page</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Delete page</h3>
+        <p class="card-subtitle mb-3 text-muted">Delete the page below.</p>
+
+        <hr>
+        
+      </div>
+      
+    </div> <!--end container-->
+  </div><!--end section-->
+</main>
+{% endblock body %}
