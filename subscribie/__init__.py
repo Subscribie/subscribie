@@ -131,12 +131,13 @@ def create_app(test_config=None):
         for page in pages:
             page_path = page.path
             template_file = page.template_file
-            view_func_name = page.page_name
+            view_func_name = page_path
             # Generate view function
             generate_view_func = """def %s_view_func():
-            return render_template('%s')""" % (
+            return render_template('%s', title="%s")""" % (
                 view_func_name,
                 template_file,
+                page.page_name
             )
             exec(generate_view_func) in globals(), locals()
             method_name = view_func_name + "_view_func"
