@@ -605,7 +605,10 @@ def stripe_connect():
 
     # Setup Stripe webhook endpoint if it dosent already exist
     if account:
-        stripe_express_dashboard_url = stripe.Account.create_login_link(account.id).url
+        try:
+            stripe_express_dashboard_url = stripe.Account.create_login_link(account.id).url
+        except stripe.error.InvalidRequestError:
+            stripe_express_dashboard_url = None
         webhook_url = url_for('views.stripe_webhook',_external=True)
         if '127.0.0.1' not in request.host: # Dont create webhooks on localhost, use stripe cli for that
             create_stripe_webhook()
