@@ -1,0 +1,61 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+  {{ title }}
+{% endblock title %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">SEO Titles</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">SEO Titles</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <table class="table table-hover table-scroll">
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Default title</th>
+            <th>Custom title</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rule in rules %}
+            <tr>
+              <td>
+                  {{ rule['path'] }}
+              </td>
+              <td>{{ rule['title'] }}</td>
+              <td><a class="btn btn-warning btn-sm btn-block" href="{{ url_for('seo.set_page_title', encodedPath=rule['encodedPath']) }}">
+                  Edit title</a>
+              </td>
+              <td><a class="btn btn-primary btn-sm btn-block" href="{{ rule['path']}}" target="_blank">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div><!-- end container -->
+  </div><!-- end section -->
+</main>
+
+{% endblock body %}

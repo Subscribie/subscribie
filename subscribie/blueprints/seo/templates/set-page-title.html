@@ -1,0 +1,42 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Set page title</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Set page title</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    
+    <div class="card mx-auto col-md-6">
+      <form method="POST" action="#">
+        <div class="form-group">
+          <label for="" class="col-form-label font-weight-bolder mt-2">Set the page title for page: {{ path }}.</label>
+          <input class="form-control" type="text" name="title" value="{{ current_path_title }}" />  
+          <input class="btn btn-primary btn-block col-md-6 my-3 mx-auto" type="submit" value="Save" />
+        </div>
+      </form>
+    </div>
+</main>
+
+{% endblock body %}
