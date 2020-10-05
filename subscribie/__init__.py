@@ -216,8 +216,10 @@ def create_app(test_config=None):
     from .blueprints.admin import admin
     from .blueprints.subscriber import subscriber
     from .blueprints.pages import module_pages
+    from .blueprints.iframe import module_iframe_embed
 
     app.register_blueprint(module_pages, url_prefix="/pages")
+    app.register_blueprint(module_iframe_embed, url_prefix="/iframe")
     app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(subscriber)
 
