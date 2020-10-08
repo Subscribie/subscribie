@@ -56,4 +56,4 @@ def save_custom_style():
     database.session.commit()
 
     flash(Markup('Styling updated. View your <a href="/">updated shop</a>'))
-    return redirect(url_for('style_shop.style_shop'))
+    return redirect(url_for('style.style_shop'))
