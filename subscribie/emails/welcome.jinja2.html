@@ -2,12 +2,22 @@
 
 <p>Welcome to {{ company_name or '' }}.</p>
 
-<p>Your first payment is set up for: {{ first_charge_date or 'To be confirmed' }}, 
-amount: &pound;{{ first_charge_amount|int / 100 or 'tbc' }}</p>
+<p>Plan name: {{ plan.title }}</p>
 
-<p>Each payment will be on the same day each month.</p>
 
-<p>You can login to manage your subscription at:
+{% if plan.requirements.instant_payment %}
+    <p>Upfront payment: &pound;{{ plan.sell_price|int /100 }}</p>
+{% endif %}
+
+{% if plan.requirements.subscription %}
+    <p>Interval: {{ plan.interval_unit }}</p>
+    <p>Amount: &pound;{{ plan.interval_amount|int /100 }}
+    <p>Your first payment will be taken on: {{ first_charge_date or 'To be confirmed' }}</p>
+    <p>Each payment will be on the same day {{ plan.interval_unit }}</p>
+{% endif %}
+
+
+<p>You can login to manage your account at:
     <a href="{{ subscriber_login_url }}">My account</a>
 </p>
 

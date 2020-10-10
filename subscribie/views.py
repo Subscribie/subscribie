@@ -521,6 +521,7 @@ def create_subscription(email=None, package=None, chosen_option_ids=None) -> Sub
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     company = Company.query.first()
+    plan = Plan.query.filter_by(uuid=session.get('plan', None)).first()
 
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False and \
@@ -562,7 +563,8 @@ def thankyou():
                 company_name=company.name,
                 subscriber_login_url=scheme + flask.request.host + '/account/login',
                 first_charge_date=first_charge_date,
-                first_charge_amount=first_charge_amount) 
+                first_charge_amount=first_charge_amount,
+                plan=plan)
 
     try:
         mail = Mail(current_app)
