@@ -557,9 +557,10 @@ def thankyou():
     first_charge_date = session.get('first_charge_date', None)
     first_charge_amount = session.get('first_charge_amount', None)
     jinja_template = Template(template)
+    scheme = 'https://' if request.is_secure else 'http://'
     html = jinja_template.render(first_name=session.get('given_name', None), 
                 company_name=company.name,
-                subscriber_login_url='https://' if request.is_secure else 'http://' + flask.request.host + '/account/login',
+                subscriber_login_url=scheme + flask.request.host + '/account/login',
                 first_charge_date=first_charge_date,
                 first_charge_amount=first_charge_amount) 
 
