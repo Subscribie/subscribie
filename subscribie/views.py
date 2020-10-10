@@ -539,7 +539,8 @@ def thankyou():
 
     database.session.commit()
     # Send journey_complete signal
-    journey_complete.send(current_app._get_current_object(), email=session["email"])
+    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
+    journey_complete.send(current_app._get_current_object(), email=email)
 
     #Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()
