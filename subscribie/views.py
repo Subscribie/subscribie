@@ -351,7 +351,7 @@ def establish_mandate():
     redirect_flow = gocclient.redirect_flows.create(
         params={
             "description": description,
-            "session_token": person.sid,
+            "session_token": session["sid"],
             "success_redirect_url": current_app.config["SUCCESS_REDIRECT_URL"],
             "prefilled_customer": {
                 "given_name": person.given_name,
@@ -413,7 +413,7 @@ def on_complete_mandate():
 
         logger.info(
             "Creating subscription with amount: %s",
-            str(plan.monthly_price),
+            str(plan.interval_amount),
         )
         logger.info(
             "Creating subscription with name: %s",
@@ -425,7 +425,7 @@ def on_complete_mandate():
         # If days_before_first_charge is set, apply start_date adjustment
         try:
             days_before_first_charge = plan.days_before_first_charge
-            if days_before_first_charge == 0 or days_before_first_charge == '':
+            if days_before_first_charge == 0 or days_before_first_charge == '' or days_before_first_charge == None:
                 start_date = None
             else:
                 today = date.today()

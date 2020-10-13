@@ -118,7 +118,7 @@ class Plan(database.Model):
     interval_amount = database.Column(database.Integer(), default=0) # Charge amount each interval
     monthly_price = database.Column(database.Integer())
     sell_price = database.Column(database.Integer()) # Upfront price
-    days_before_first_charge = database.Column(database.Integer())
+    days_before_first_charge = database.Column(database.Integer(), default=0)
     primary_icon = database.Column(database.String())
     requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
     selling_points = relationship("PlanSellingPoints", back_populates="plan")
