@@ -131,7 +131,7 @@ def create_app(test_config=None):
         for page in pages:
             page_path = page.path
             template_file = page.template_file
-            view_func_name = page_path
+            view_func_name = page_path.replace("-","_")
             # Generate view function
             generate_view_func = """def %s_view_func():
             return render_template('%s', title="%s")""" % (
@@ -145,11 +145,10 @@ def create_app(test_config=None):
             possibles.update(locals())
             view_func = possibles.get(method_name)
             print(f"Attempting to add rule for page_path: {page_path}, view_func_name: {view_func_name}, view_func: {view_func}")
-            for rule in app.url_map.iter_rules():
-                if rule.rule == "/" + page_path:
-                    print(f"Refusing to overwrite existing url rule for {page_path}")
-                else:
-                    app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
+            try:
+                app.add_url_rule("/" + page_path, view_func_name + "_view_func", view_func)
+            except AssertionError as e:
+                print(f"Not overwriting: {page_path}. Reason: {e}")
 
     @app.before_first_request
     def register_modules():
