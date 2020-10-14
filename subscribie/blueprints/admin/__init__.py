@@ -1101,6 +1101,18 @@ def upload_logo():
 
     return render_template("admin/upload_logo.html", form=form, company=company)
 
+@admin.route("/remove-logo", methods=["GET"])
+@login_required
+def remove_logo():
+    """Remove logo from shop"""
+    company = Company.query.first()
+    company.logo_src = None
+    database.session.commit()
+    flash("Logo removed")
+    # Return user to previous page
+    return redirect(request.referrer)
+
+
 @admin.route("/welcome-email-edit", methods=["GET", "POST"])
 @login_required
 def edit_welcome_email():
