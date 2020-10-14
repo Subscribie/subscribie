@@ -21,6 +21,7 @@ from .models import ( database, User, Person, Subscription, SubscriptionNote,
 from flask_mail import Mail, Message
 from sqlalchemy.sql.expression import func
 from typing import Optional
+import json
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -248,6 +249,7 @@ def stripe_webhook():
 
         try:
             chosen_option_ids = session['metadata']['chosen_option_ids']
+            chosen_option_ids = json.loads(chosen_option_ids)
         except KeyError:
             chosen_option_ids = None
         try:
@@ -295,7 +297,7 @@ def stripe_create_checkout_session():
         mode='payment',
         metadata={"person_uuid": person.uuid,
                   "plan_uuid": session["plan"],
-                  "chosen_option_ids": session.get('chosen_option_ids', None),
+                  "chosen_option_ids": json.dumps(session.get('chosen_option_ids', None)),
                   "package": session.get('package', None)
                  },
         customer_email = person.email,
@@ -504,6 +506,7 @@ def create_subscription(email=None, package=None, chosen_option_ids=None) -> Sub
     chosen_options = []
     if session.get('chosen_option_ids', None) or chosen_option_ids: # May be passed via webhook
         for option_id in chosen_option_ids:
+            print(f"Locating option id: {option_id}")
             option = Option.query.get(option_id)
             # We will store as ChosenOption because option may change after the order has processed
             # This preserves integrity of the actual chosen options
