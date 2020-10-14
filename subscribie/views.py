@@ -516,18 +516,20 @@ def create_subscription(email=None, package=None, chosen_option_ids=None) -> Sub
 
     database.session.add(subscription)
     database.session.commit()
+    session['subscription_uuid'] = subscription.uuid
     return subscription
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     company = Company.query.first()
     plan = Plan.query.filter_by(uuid=session.get('plan', None)).first()
+    subscription = database.session.query(Subscription).filter_by(uuid=session.get('subscription_uuid')).first()
 
     # Store note to seller if in session
     if session.get('note_to_seller', False) is not False and \
-      session.get('subscription_id', False) != False:
+      subscription is not None:
       note = SubscriptionNote(note=session["note_to_seller"],
-                             subscription_id=session["subscription_id"])
+                             subscription_id=subscription.id)
       database.session.add(note)
 
     # Store any transactions against subscriptions
