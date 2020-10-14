@@ -532,14 +532,6 @@ def thankyou():
                              subscription_id=subscription.id)
       database.session.add(note)
 
-    # Store any transactions against subscriptions
-    if session.get('subscription_id', None):
-        subscription = Subscription.query.get(session.get('subscription_id'))
-        if session.get('transactions', None):
-            for transaction_id in session['transactions']:
-                transaction = Transaction.query.get(transaction_id)
-                subscription.transactions.append(transaction)
-
     database.session.commit()
     # Send journey_complete signal
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
