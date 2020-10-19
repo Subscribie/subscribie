@@ -69,11 +69,13 @@ def redirect_to_payment_step(plan, inside_iframe=False):
     """Depending on plans payment requirement, redirect to collection page
      accordingly"""
 
+    scheme = 'https' if request.is_secure else 'http'
+
     if plan.requirements.instant_payment:
         return redirect(
             url_for(
                 "views.up_front",
-                _scheme='https' if request.is_secure else 'http',
+                _scheme=scheme,
                 _external=True
             )
         )
