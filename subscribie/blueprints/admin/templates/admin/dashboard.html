@@ -44,7 +44,7 @@
   </div>
 
 
-    <div class="accordion" id="accordionExample">
+    <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
       <div class="card">
         <div class="card-header" id="headingOne">
           <h5 class="mb-0">
@@ -55,16 +55,16 @@
         </div>
 
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
-              <div class="card px-3 py-3 my-3">
-                  <a class="btn btn-success mb-3" 
+              <div class="px-3 py-3 my-3">
+                  <a class="btn btn-success btn-block" 
                       href="{{ url_for('admin.edit') }}">
                     Edit plans
                   </a>
-                  <a class="btn btn-success mb-3" 
+                  <a class="btn btn-success btn-block" 
                       href="{{ url_for('admin.add_plan') }}">
                     Add plan
                   </a>
-                  <a class="btn btn-danger" 
+                  <a class="btn btn-danger btn-block" 
                       href="{{ url_for('admin.delete_plan') }}">
                     Delete plans
                   </a>
@@ -80,11 +80,11 @@
           </h5>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
-              <div class="card px-3 py-3 my-3">
+              <div class="px-3 py-3 my-3">
                   <p class="card-subtitle mb-3 text-muted">
                       View your subscribers.
                   </p>
-                  <a class="btn btn-success" 
+                  <a class="btn btn-success btn-block" 
                       href="{{ url_for('admin.subscribers') }}">
                       View Subscribers
                   </a>
@@ -100,11 +100,11 @@
           </h5>
         </div>
         <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
-              <div class="card px-3 py-3 my-3">
+              <div class="px-3 py-3 my-3">
                   <p class="card-subtitle mb-3 text-muted">
                       View upcoming payments from your subscribers.
                   </p>
-                  <a class="btn btn-success" 
+                  <a class="btn btn-success btn-block" 
                       href="{{ url_for('admin.upcoming_payments') }}">
                       View Upcoming Payments 
                   </a>
@@ -120,7 +120,7 @@
           </h5>
         </div>
         <div id="collapseFour" class="collapse" aria-labelledby="headingFour">
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
             <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
 
             <div class="container">
@@ -192,12 +192,12 @@
           </h5>
         </div>
         <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
             <p>
               Create choice groups. Offer a choice between a selection 
               of products. E.g. Shampoo A or Shampoo B.  
             </p>
-              <a class="btn btn-success mb-3" 
+              <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.list_choice_groups') }}">
                 Add / Edit / Delete Choice Groups
               </a>
@@ -214,11 +214,11 @@
         </div>
         <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
 
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
                   View all transactions.
               </p>
-              <a class="btn btn-success" 
+              <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.transactions') }}">
                   View Transactions 
               </a>
@@ -234,12 +234,12 @@
           </h5>
         </div>
         <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven">
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
                   View (optional) notes customers may give you when starting their 
                   subscription.
               </p>
-              <a class="btn btn-success" 
+              <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.order_notes') }}">
                   View Notes
               </a>
@@ -255,13 +255,11 @@
           </h5>
         </div>
         <div id="collapseEight" class="collapse" aria-labelledby="headingEight">
-            <div class="card col-lg my-3 shadow-sm" >
-              <div class="card-body">
-                <p class="card-text">Upload your logo (optional) which is displayed in your shop header<p>
+            <div class="px-3 py-3 my-3" >
+                <p class="card-subtitle mb-3 text-muted">Upload your logo (optional) which is displayed in your shop header<p>
                 <a href="{{ url_for('admin.upload_logo') }}"
                class="btn btn-block btn-success">Upload Logo
                 </a>
-              </div>
             </div>
         </div>
       </div>
@@ -274,9 +272,9 @@
         </div>
         <div id="collapseNine" class="collapse" aria-labelledby="headingNine">
           <!-- Social Integrations -->
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
 
-            <div class="card col-lg my-3 shadow-sm" >
+            <div class="card col-lg shadow-sm" >
               <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
                     class="card-img-top" 
                     alt="Tawk logo" 
@@ -303,8 +301,8 @@
           <!-- End Tawk Integrations -->
 
           <!-- Analytics Integrations -->
-          <div class="card px-3 py-3 my-3">
-            <div class="card col-lg my-3 shadow-sm" >
+          <div class="px-3 py-3 my-3">
+            <div class="card col-lg shadow-sm" >
               <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
                     class="card-img-top" 
                     alt="Google Tag Manager logo"  
@@ -345,7 +343,7 @@
         </div>
         <div id="collapseTen" class="collapse" aria-labelledby="headingTen">
           <!-- Loaded modules and links to their index pages -->
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
 
             <p class="card-subtitle mb-3 text-muted">
               List of enabled modules. For example, the iFrame embed module allows you to
@@ -426,16 +424,16 @@
           </h5>
         </div>
         <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven">
-          <div class="card px-3 py-3 my-3">
-              <a class="btn btn-success mb-3" 
+          <div class="px-3 py-3 my-3">
+              <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.add_shop_admin') }}">
                 Add Shop Admin
               </a>
-              <a class="btn btn-warning mb-3" 
+              <a class="btn btn-warning btn-block" 
                   href="{{ url_for('admin.change_password') }}">
                 Change my password
               </a>
-              <a class="btn btn-warning mb-3"
+              <a class="btn btn-warning btn-block"
                   href="{{ url_for('admin.change_email') }}">
                 Change my email address
               </a>
@@ -452,7 +450,7 @@
           </h5>
         </div>
         <div id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve">
-          <div class="card px-3 py-3 my-3">
+          <div class="px-3 py-3 my-3">
 
             <h3 class="card-title">Reply-to email address</h3>
               <p class="card-subtitle mb-3 text-muted">
@@ -460,14 +458,14 @@
               you can set a repl-to email address so that your subscribers may reply
               to emails, such as their welcome email.
               </p>
-              <a class="btn btn-success mb-3"
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.set_reply_to_email') }}">
                   Set reply-to email address
               </a>
             <h3 class="card-title">Templates</h3>
               <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
               to a plan.</p>
-              <a class="btn btn-success mb-3" 
+              <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.edit_welcome_email') }}">
                 Customer Signup Confirmation
               </a>
@@ -483,16 +481,14 @@
           </h5>
         </div>
         <div id="collapseFileManagement" class="collapse" aria-labelledby="headingFileManagement">
-            <div class="card col-lg my-3 shadow-sm" >
-              <div class="card-body">
-                <p class="card-text">Upload files for your subscribers to have access to<p>
+            <div class="px-3 py-3 my-3" >
+                <p class="card-subtitle mb-3 text-muted">Upload files for your subscribers to have access to<p>
                 <a href="{{ url_for('admin.upload_files') }}"
                class="btn btn-block btn-success">Upload Files
                 </a>
                 <a href="{{ url_for('admin.list_files') }}"
-               class="btn btn-block btn-success">List Files
+               class="btn btn-success btn-block">List Files
                 </a>
-              </div>
             </div>
         </div>
       </div>
