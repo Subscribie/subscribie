@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+{% block title %} {{ title }} {% endblock title %}
+
+{% block hero %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 pl-0">
+          <h1 class="h1 text-white font-weight-bold">{{ company.name }}</h1>
+          {% if company.slogan %}
+            <h2 class="h3 text-white">{{ company.slogan }}</h2>
+          {% endif %}
+        </div>
+
+        <div class="col-6 col-md-4 text-right d-none d-lg-block">
+          <img class="pr-3" src="/static/open.svg" style="height:100%;" >
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="section">
+
+  <h3 class="title is-4 has-text-centered is-size-4-mobile">Make your choice</h2>
+
+  <div class="container">
+      <div id="pricing-table" class="container ">
+        <div class="pricing-table row justify-content-around">
+          {% for plan in plans %}
+            <div class="pricing-plan col-lg-3 col-md-5 my-3 mx-3">
+                <div class="plan-header">
+                  {% if plan.primary_icon %}
+                    <a href="{{ plan.primary_icon }}">
+                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto"/>
+                    </a>
+                  {% endif %}
+                  {{ plan.title|safe }}
+                </div>
+                <div class="plan-plans">
+                {% for sellingPoint in plan.selling_points%}
+                    <div class="plan-plan">{{ sellingPoint.point|safe }}</div>
+                {% endfor %}
+                </div>
+              <div class="plan-footer">
+                  {# Make up-front price large if not a subscription, otherwise subscription price is large #}
+                  {% if plan.requirements.subscription %}
+                      <div class="plan-price" style="padding-bottom:0;">
+                          <span class="plan-price-amount">
+                              <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(plan.interval_amount/100) }}</span>/
+                              {{ plan.interval_unit }}
+                          </span>
+                      </div>
+                      {% if plan.requirements.instant_payment %}
+                        <small>Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}</small></br></br>
+                      {% else %}
+                        <small>Upfront cost: None</small></br></br>
+                      {% endif %}
+                  {% else  %} {# Not a subscription based product #}
+                      <div class="plan-price" style="padding-bottom:0;">
+                          <span class="plan-price-amount">
+                              <span class="plan-price-currency">&pound;</span>{{ "%.2f"|format(plan.sell_price/100) }}</span>/
+                              One-off
+                          </span>
+                      </div>
+                        <small>No subscription</small></br></br>
+
+
+                  {% endif %}
+                  {# End make up-front price large if not a subscription, otherwise subscription price is large #}
+
+                  {% if plan.choice_groups %}
+                  <h4>Choices</h4>
+                   {% for choice_group in plan.choice_groups %}
+                    <details>
+                      <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
+                      <ul>
+                        {% for option in choice_group.options %}
+                        <li>{{ option.title }}</li>
+                        {% endfor %}
+                      </ul>
+                    </details>
+                   {% endfor %}
+                  {% endif %}
+
+                  {% if plan.choice_groups %}
+
+                  <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}"
+                  class="button is-fullwidth is-info">
+                  Choose</a>
+
+                  {% else %}
+                    <a href="/new_customer?plan={{ plan.uuid }}"
+                    class="button is-fullwidth is-info">
+                    Choose</a>
+                  {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+  <script>
+    $('.pricing-plan').hover(
+         function(){ $(this).addClass('is-active') },
+         function(){ $(this).removeClass('is-active') }
+  )
+  </script>
+
+  <script>
+    function showHorizontal() {
+      document.getElementById('pricing-table-horizontal').style.display = "block";
+      document.getElementById('pricing-table-vertical').style.display = "none";
+      console.log('Button Clicked!');
+    }
+    function showVertical() {
+      document.getElementById('pricing-table-vertical').style.display = "block";
+      document.getElementById('pricing-table-horizontal').style.display = "none";
+      console.log('Button Clicked!');
+    }
+  </script>
+
+{% endblock %}

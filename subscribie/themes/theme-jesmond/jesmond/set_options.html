@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %} {{ title }} {% endblock title %}
+
+{% block hero %}
+
+    <div class="columns vertical-align is-mobile">
+      <div class="column">
+        <h1 class="title is-1 has-text-white is-size-2-mobile">{{ company.name }}</h1>
+        {% if company.slogan %}
+          <h2 class="subtitle has-text-white is-3 is-size-3-mobile">{{ company.slogan }}</h2>
+        {% endif %}
+      </div>
+      <div class="column is-one-third is-hidden-touch" style="text-align:right">
+        <img src="/static/open.svg" style="height:100%;" />
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark my-3 pt-3 h2">Choose your options</h2>
+
+<main>
+<div class="section">
+  <div class="container">
+
+      
+  
+      
+
+      <form action="" method="POST" class="col-md-6 pb-3">
+
+      {% for choice_group in plan.choice_groups %}
+      
+        <h3 class="h3">The <em>{{ plan.title }}</em> plan has options</h3>
+        <p class="card-subtitle text-muted mb-3">The choise group {{ choice_group.title }} has {{ choice_group.options|count }} options. Please choose one of them</p>
+        
+        <hr>
+
+          {% for option in choice_group.options %}
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <input type="radio" name="{{ choice_group.id }}" id="{{ option.id }}" value="{{ option.id }}"  required>
+              </div>
+            </div>
+            <label class="form-control" for="{{ option.id }}">{{ option.title }}</label>
+          </div>
+          {% endfor %}
+        
+      
+      {% endfor %}
+
+      <input type="submit" class="btn btn-success btn-block"  value="Save" />
+      </form>
+  </div>
+</div>
+</main>
+{% endblock %}

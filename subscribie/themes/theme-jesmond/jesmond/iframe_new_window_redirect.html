@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %} Login {% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white has-text-centered is-size-1-mobile">Secure Checkout</h1>
+
+    <div class="box" style="max-width:800px; margin:3rem auto;">
+      <h2 class="title is-3 has-text-centered is-size-3-mobile">Complete Secure Checkout</h2>
+      <p>
+        Press continue to be redirected to GoCardless in a new window
+      </p>
+      <br />
+      <a href="{{ redirect_url }}" target="_blank" style="margin-top:0.5rem" 
+          class="button is-large is-success is-fullwidth">
+          <span style="margin-right:1rem" class="icon"><i class="fas fa-lock"></i></span><span>Continue</span>
+      </a>
+  		</form>
+    </div>
+
+{% endblock %}
