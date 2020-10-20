@@ -112,9 +112,6 @@ def create_app(test_config=None):
             test_config
         )
 
-    if not os.path.exists(app.config["UPLOADED_FILES_DEST"]):
-        print("Creating UPLOADED_FILES_DEST directory" + app.config["UPLOADED_FILES_DEST"])
-        os.makedirs(app.config["UPLOADED_FILES_DEST"])
 
     @app.before_request
     def start_session():
