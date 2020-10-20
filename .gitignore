@@ -16,5 +16,4 @@ subscribie.egg-info/*
 build/*
 dist/*
 data.db
-themes/
 modules/
