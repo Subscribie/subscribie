@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- ico -->
+    <link rel="icon" href="/favicon.ico">
+
+    <title>{% block title %}{% endblock %} | {{ company.name }}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
+    crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Special Font for Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+    <!-- Font -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% if integration.google_tag_manager_container_id                                
+   and integration.google_tag_manager_active                                     
+%}                                                                               
+    <!-- Google Tag Manager -->                                                  
+    <script>                                                                     
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':                   
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],    
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=        
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',                                     
+    '{{ integration.google_tag_manager_container_id }}');                        
+    </script>                                                                    
+    <!-- End Google Tag Manager -->                                              
+{% endif %} 
+
+{% if integration.hotjar_account_id
+   and integration.hotjar_active
+%}
+
+<!-- Hotjar Tracking Code for https://subscriptionwebsitebuilder.co.uk -->
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:{{ integration.hotjar_account_id }},hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+{% endif %}
+
+{% if integration.tawk_property_id                                               
+   and integration.tawk_active                                                   
+%}                                                                               
+    <!-- Tawk Chat -->                                                           
+    <script type="text/javascript">                                              
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();                    
+        (function(){                                                             
+        var                                                                      
+        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;                                                           
+        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
+        s1.charset='UTF-8';                                                      
+        s1.setAttribute('crossorigin','*');                                      
+        s0.parentNode.insertBefore(s1,s0);                                       
+        })();                                                                    
+        </script>                                                                
+    <!-- End Tawk Chat -->                                                       
+{% endif %}
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="/">{{ company.name }}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      {% if g.user %}
+        <li class="nav-item active">
+          <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+        </li>
+      {% endif %}
+      <li class="nav-item active">
+        <a class="nav-link" href="/pricing">Pricing</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="https://subscriptionwebsitebuilder.co.uk/blog">
+        Blog
+        </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="https://subscriptionwebsitebuilder.co.uk/faq">
+        Faq
+        </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="https://subscriptionwebsitebuilder.co.uk/features">
+        Features
+        </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="https://subscriptionwebsitebuilder.co.uk/choose-subscribie">
+        Why Subscribie?
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+    {% block body %}{% endblock %}
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+crossorigin="anonymous"></script>
+    <script
+src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+crossorigin="anonymous"></script>
+    <script
+src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+crossorigin="anonymous"></script>
+</body>
+
+</html>

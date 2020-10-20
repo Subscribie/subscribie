@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% block title %}New Customer{% endblock %}
+
+
+{% block body %}
+
+<div class="jumbotron jumbotron-fluid">                                          
+    <div class="container">                                                      
+        <div class="row">                                                        
+            <div class="col-sm">                                                 
+            <h1 class="display-4">Start Selling Today</h1>                 
+            </h2>                                                                
+            <h2 class="display-6">Join the many other business owners, like you, 
+                        who chose subscription website builder.
+            </h2>
+            <hr class="my-4">                                                    
+             <div class="flashy-container"><div class="flashy"></div></div>      
+            </div>                                                               
+            <div class="col-sm">
+                <img src="/static/happy-shopper.svg" 
+                    class="d-sm-none d-md-block img-fluid" />
+            </div>
+        </div>                                                                   
+    </div>                                                                       
+</div>
+
+<div class="container">
+
+
+    <form action="" id="new_customer" method=post action=/new_customer >
+
+    <input type="hidden" name="mobile" id="mobile" placeholder="+447920000000"
+        value="NULL">
+
+
+    {{ form.csrf_token }}
+
+    {% if error %}
+      <p class=error><stong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <div class="form-group">
+        <label for="given_name">First Name</label>
+        <input type="text" name="given_name" id="given_name" class="form-control"
+            placeholder="John" value="{{ session.get('given_name', '') }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="family_name">Last Name</label>
+        <input type="text" name=family_name id=family_name class="form-control" 
+            placeholder="Smith" value="{{ session.get('family_name', '') }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name=email id=email class="form-control" 
+            placeholder="johnsmith@gmail.com" value="{{ session.get('email', '') }}" required>
+    </div>
+
+    <h3>Address</h3>
+    <div class="form-group">
+        <label for="address_line_one">Address line 1</label>
+        <input type="text" name="address_line_one" id="address_line_one" 
+            class="form-control" aria-describedby="addressHelp" 
+            value="{{ session.get('address_line_one', '') }}" required>
+        <small id="addressHelp" class="form-text text-muted">
+        We need this for billing purposes, that's all!
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label for="city">City</label>
+        <input  type="text" name="city" id="city" class="form-control" 
+          value="{{ session.get("city", '') }}" required>
+    </div>
+
+    <div class="form-group">
+        <label class="label">Post Code</label>
+        <input  type="text" name="postcode" id="postcode" class="form-control" 
+          value="{{ session.get("postcode", '') }}" required>
+    </div>
+
+          <h3>Order Summary</h3>
+
+          <h4>{{ plan.title }}</h4>
+          <div>
+            <ul>
+            {% for selling_point in plan.selling_points %}
+              <li>{{ selling_point.point }}</li>
+            {% endfor %}
+            </ul>
+          </div>
+          <div>
+          {% if plan.requirements.instant_payment == True %}
+            <p><b>Pay today:</b> &pound;{{ "%.2f"|format(plan.sell_price/100) }}</p>
+          {% endif %}
+          {% if plan.requirements.subscription == True %}
+            <p><b>Price:</b> &pound;{{ "%.2f"|format(plan.interval_amount/100) }} / {{ plan.interval_unit }}</p>
+          {% endif %}
+          </div>
+          <div>
+
+
+    <input type=submit class="btn btn-primary" value="Next Step">
+
+  </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+{% block title %}New Customer{% endblock %}
+
+{% block body %}
+<div class="section">
+  <div class="container">
+
+    <h1 class="title is-2 is-size-2-mobile">Let's get started!</h1>
+    <h2 class="subtitle is-3 is-size-3-mobile">Add your products &amp; services</h2>
+
+    <p>We're looking forward to having you onboard! To get started, enter your product(s) and/or service(s) into the form below. You can add as many or few as you'd like, starting off with three is best.</p><br />
+
+    <form action="#" id="products" method="post">
+        {{ form.csrf_token }}
+        {{ form.name.label }} {{ form.name }}
+        {{ form.sell_price }}
+        {{ form.monthly_price }}
+        {{ form.instant_payment }}
+        {{ form.image }}
+        {{ form.selling_points }}
+        {{ form.subscription }}
+      <h3 class="title is-4 is-size-4-mobile">Your Products/Services</h3>
+
+      {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+      {% endif %}
+      <div id="items">
+        <div class="box" id="box_1">
+          <article class="media">
+            <figure class="media-left is-hidden-touch">
+                  <i class="fas fa-box fa-3x"></i>
+            </figure>
+            <div class="media-content">
+              <h4 class="title is-4" style="margin-bottom:0"><b>Item #1</b></h4>
+              <hr style="margin: 0.75rem 0;" />
+              <div class="columns">
+                <div class="column">
+                  <h4 class="title is-5" style="margin:1rem 0">Item Name</h4>
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-large" type="text" name="name-0" placeholder="E.g. Rocket Ship">
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <h4 class="title is-5" style="margin:1rem 0">Upload a Picture</h4>
+                    <div class="file is-large is-fullwidth has-name">
+                      <label class="file-label">
+                        <input class="file-input" id="file" type="file" name="image-0">
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose a file…
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <h4 class="title is-5" style="margin:0 0 1rem 0">Pricing</h4>
+                  <div class="columns">
+                    <div class="column">
+                      <div class="field">
+                        <label class="label">
+                          <input name="instant_payment-0" id="sell_price-0" type="checkbox">
+                          &nbsp;One-Off Price?
+                          </input>
+                        </label>
+                        <div class="control has-icons-left">
+                          <input name="item1_price_value" id="item1_price_value" disabled class="input is-large" type="text" placeholder="x.xx">
+                          <span class="icon is-left">
+                            <p>£</p>
+                          </span>
+                        </div>
+                      </div>
+                      <small>If the item is one-off, or there is an upfront cost, check this box and enter a one-off price</small>
+                    </div>
+                    <div class="column">
+                      <div class="field">
+                        <label class="label">
+                          <input name="subscription-0" id="item1_r_price" type="checkbox">
+                          &nbsp;Re-occuring Price?
+                          </input>
+                        </label>
+                        <div class="control has-icons-left">
+                          <input name="monthly_price-0" id="item1_r_price_value" disabled class="input is-large" type="text" placeholder="x.xx">
+                          <span class="icon is-left">
+                            <p>£</p>
+                          </span>
+                        </div>
+                      </div>
+                      <small>If the item is a subscription, check this box and enter a monthly price</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <h4 class="title is-5" style="margin:0 0 1rem 0">Item's Selling Points</h4>
+                    <p>This is your time to shine! What makes your item special?</p>
+                    <div style="margin:0.5rem 0 0.33rem 0" class="control has-icons-left">
+                      <input name="selling_points-0" class="input is-small" type="text" />
+                      <span class="icon is-left">
+                        <p>#1</p>
+                      </span>
+                    </div>
+                    <div style="margin:0.33rem 0" class="control has-icons-left">
+                      <input name="selling_points-1" class="input is-small" type="text" />
+                      <span class="icon is-left">
+                        <p>#2</p>
+                      </span>
+                    </div>
+                    <div style="margin:0.33rem 0" class="control has-icons-left">
+                      <input name="selling_points-2" class="input is-small" type="text" />
+                      <span class="icon is-left">
+                        <p>#3</p>
+                      </span>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="media-right">
+              <div id="box_1" class="delete"></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <br />
+      <div id="addbox" class="button is-pulled-right is-medium is-info"><i class="fas fa-plus"></i> &nbsp;Add Another...</div><br /><br /><br />
+      <input type=submit class="button is-success is-large is-fullwidth" value="Awesome, continue...">
+
+    </form>
+  </div>
+</div>
+
+<script>
+//var file = document.getElementById("file");
+//file.onchange = function(){
+//    if(file.files.length > 0)
+//    {
+//
+//      document.getElementById('file-label').innerHTML = file.files[0].name;
+//
+//    }
+//};
+</script>
+
+<script>
+
+  // Set item count to 1, as there already is a item on first page load
+  var itemCount = 1;
+
+  $(document).ready(
+    $( "#addbox" ).click(function() {
+        console.log("Added another product!");
+
+        // Set everything to be unique, using the itemCount
+        itemCount++;
+
+        // Append onto the end of the 'items' div container
+
+        $('#items').append('<div class="box" id=box_' + itemCount + '><article class="media"><figure class="media-left is-hidden-touch"><i class="fas fa-box fa-3x"></i></figure><div class="media-content"><h4 class="title is-4" style="margin-bottom:0"><b>Item #' + itemCount + '</b></h4> <hr style="margin: 0.75rem 0;"/> <div class="columns"> <div class="column"> <h4 class="title is-5" style="margin:1rem 0">Item Name</h4> <div class="field"> <div class="control"> <input class="input is-large" type="text" placeholder="E.g. Rocket Ship"> </div></div></div><div class="column"> <div class="field"> <h4 class="title is-5" style="margin:1rem 0">Upload a Picture</h4><div class="file is-large"><label class="file-label"> <input class="file-input" id="file" type="file" name="resume"> <span class="file-cta"> <span class="file-icon"> <i class="fas fa-upload"></i> </span> <span class="file-label"> Choose a file… </span> </span> </label> </div></div></div></div><div class="columns"> <div class="column"> <h4 class="title is-5" style="margin:0 0 1rem 0">Pricing</h4> <div class="columns"> <div class="column"> <div class="field"> <label class="label"> <input type="checkbox" name="item' + itemCount + '_price" id="item' + itemCount + '_price"> &nbsp;One-Off Price? </input> </label> <div class="control has-icons-left"> <input name="item' + itemCount + '_price_value" id="item' + itemCount + '_price_value" disabled class="input is-large" type="text" placeholder="x.xx"> <span class="icon is-left"> <p>£</p></span> </div></div><small>If the item is one-off, or there is an upfront cost, check this box and enter a one-off price</small> </div><div class="column"> <div class="field"> <label class="label"> <input name="item' + itemCount + '_r_price" id="item' + itemCount + '_r_price" type="checkbox"> &nbsp;Re-occuring Price? </input> </label> <div class="control has-icons-left"> <input name="item' + itemCount + '_r_price_value" id="item' + itemCount + '_r_price_value" disabled class="input is-large" type="text" placeholder="x.xx"> <span class="icon is-left"> <p>£</p></span> </div></div><small>If the item is a subscription, check this box and enter a monthly price</small> </div></div></div><div class="column"> <div class="field"> <h4 class="title is-5" style="margin:0 0 1rem 0">Items Selling Points</h4> <p>This is your time to shine! What makes your item special?</p><div style="margin:0.5rem 0 0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#1</p></span> </div><div style="margin:0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#2</p></span> </div><div style="margin:0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#3</p></span> </div><div style="margin:0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#4</p></span> </div><div style="margin:0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#5</p></span> </div><div style="margin:0.33rem 0" class="control has-icons-left"> <input class="input is-small" type="text"/> <span class="icon is-left"> <p>#6</p></span> </div></div></div></div></div><div class="media-right"><div id="box_' + itemCount + '" class="delete"></div></div></article></div>');
+
+        // Show Notification
+        Snackbar.show({text: '<i class="fas fa-plus"></i><b>&nbsp;Added another item!</b>', showAction: false, backgroundColor: "#50b6d9", textColor: "#ffffff"});
+
+    }));
+
+      // ALLOW EDITING OF PRICES ****AFTER**** CLICKING THE TICK BOX
+
+      $("body").on("click", "input[type='checkbox']", function(){
+        var checkbox_id = $(this).attr('id');
+        if ($(this).is(':checked')) {
+          // User checked the box, enable the input
+            $('#' + checkbox_id + '_value').removeAttr('disabled');
+        } else {
+          // User unchecked the box
+            $('#' + checkbox_id + '_value').attr('disabled', 'disabled');
+        }
+      });
+
+      // ALLOW DELETING OF ALL ITEMS EXCEPT 1
+
+      $("body").on("click", ".delete", function(){
+        var button = $(this).attr('id');
+        if (button == "box_1") {
+          // Don't allow user to delete the first item!
+          Snackbar.show({text: '<i class="fas fa-exclamation-triangle"></i><b>&nbsp;You can&#39;t delete the first/only item!</b>', showAction: false, backgroundColor: "#DB4437", textColor: "#ffffff"});
+        } else {
+          // Remove the div and therefore the item
+          $( "#" + button ).remove();
+          Snackbar.show({text: '<i class="fas fa-times"></i><b>&nbsp;You removed an item</b>', showAction: false, backgroundColor: "#50b6d9", textColor: "#ffffff"});
+          
+        }
+      });
+
+
+</script>
+
+{% endblock %}

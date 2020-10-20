@@ -1,0 +1,250 @@
+{% extends "layout.html" %}
+{% block title %}New Customer{% endblock %}
+
+
+{% block body %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <h1 class="display-4">Let's get started!</h1>
+        <h2 class="display-6">
+          Start by adding your business name &amp; packages
+        </h2>
+        <hr class="my-4">
+        <div class="flashy-container">
+          <div class="flashy"></div>
+        </div>
+        <p>We're looking forward to having you onboard! To get started,
+          enter your packages and/or services below. 
+          You can add as many or few as you'd like
+        </p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <form enctype="multipart/form-data" action="/start-building" method="POST">
+            {{ form.csrf_token }}
+            <div class="row">
+              <div class="col">
+                <label for="company_name">Business Name</label>
+                <input class="form-control" type="text" 
+                  name="company_name"
+                  id="company_name"
+                  placeholder="E.g. My Business" required>
+              </div>
+              <div class="col">
+                <label for="email">Email</label>
+                <input class="form-control" type="email" 
+                  name="email" id="email" placeholder="me@example.com"
+                  required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="password">Password</label>
+                <input class="form-control" type="password" 
+                  name="password" id="password" placeholder="secret"
+                  required>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card mx-auto plan">
+
+      <div class="form-group">
+        <h3><label for="title-0">Package or Service name
+          <small style="font-size: 59%;font-style: italic;">
+              Required
+          </small>
+          </label>
+        </h3>
+        <input class="form-control" type="text" name="title-0" id="title-0" aria-describedby="planHelpBlock-0" placeholder="E.g. Coffee Subscription" required="">
+        <small id="planHelpBlock-0" class="form-text text-muted">
+          What subscription service do you sell? Enter the title here. 
+          Perhaps you sell coffee every month <i class="fas fa-coffee"></i>,
+          or, perhaps a funky personal trainer collecting monthly fees for your 
+          zumba clases.
+        </small>
+        <p>Note: You can add multiple packages later.</p>
+      </div>
+
+      <div class="form-group">
+        <h3><label for="image-0">Picture 
+            <small style="font-size: 59%;font-style: italic;">
+                You can upload an image after creating your account.
+            </small>
+            </label>
+        </h3>
+      </div>
+
+      <h3>Pricing</h3>
+
+      <fieldset>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-0" id="subscription-0" checked>
+            <label class="form-check-label font-weight-bolder" for="subscription-0">Recurring Charge?</label>
+          </div>
+          <small id="subscriptionHelpBlock-0" class="form-text text-muted">
+            Do you want to take a recurring amount for this service?
+          </small>
+        </div>
+
+        <div class="extra_fields">
+          <div class="form-group">
+            <label for="interval_amount-0" class="col-form-label font-weight-bolder">Recurring Amount</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">£</span>
+              </div>
+              <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="interval_unit-0" class="col-form-label font-weight-bolder">Interval Unit</label>
+            <div class="input-group">
+              <select name="interval_unit-0" id="interval_unit-0" class="form-control">
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <hr>
+
+      <fieldset>
+        <div class="form-group">
+          <div class="form-check">
+          <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-0" id="instant_payment-0" >
+          <label class="form-check-label font-weight-bolder" for="instant_payment-0">Add upfront charge</label>
+          </div>
+          <small id="instant_paymentHelpBlock-0" class="form-text text-muted">
+            Do you want to take an up-front payment for this service? E.g. 
+            perhaps your subscription requires an initial higher fee to 
+            cover costs, and a monthly fee thereafter.
+          </small>
+        </div>
+
+
+        <div class="form-group extra_fields" id="upfront_price" >
+          <label for="sell_price-0" class="col-form-label font-weight-bolder">Upfront price</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">£</span>
+            </div>
+            <input type="number" step="0.01" name="sell_price-0" id="sell_price-0" class="form-control">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-group">
+        <h3><label for="selling_points-0-0">Product Selling Points</label></h3>
+        <small id="selling_pointsHelpBlock-0-0" class="form-text text-muted">
+          What are your <em>top three</em> selling points your customer 
+          will want to buy this subscription?
+        </small>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">1</span>
+          </div>
+          <input name="selling_points-0-0" id="selling_points-0-0" class="form-control" placeholder="The best hand-roasted coffee" aria-describedby="selling_pointsHelpBlock-0-0" type="text">
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">2</span>
+        </div>
+        <input name="selling_points-0-1" class="form-control" placeholder="New flavours every month" type="text">
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">3</span>
+        </div>
+        <input name="selling_points-0-2" class="form-control" type="text" placeholder="Money back guarantee">
+      </div>
+      </fieldset>
+
+      <hr>
+      <button type="submit" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
+    </form>
+  </div>
+
+</div>
+
+</section>
+
+<section id="building-site-overlay">
+  <span>Building your site <small>...please wait</small></span>
+</section>
+<style type="text/css">
+  #building-site-overlay{
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  background: #060606e0;
+  position: fixed;
+  z-index: 999999;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  }
+  #building-site-overlay span {
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 2.5rem;
+  transform: translate(-50%, -50%);
+  }
+</style>
+<script>
+  // Wrapper
+  
+  const check_input = document.querySelectorAll('.toggle');                        
+const extra_fields = document.querySelectorAll('.extra_fields');                 
+                                                                                 
+check_input.forEach((input, i) => {                                              
+  function showExtraFields() {                                                   
+    if (input.checked == true) {                                                 
+      extra_fields.item(i).style.display = 'block';                              
+    } else {                                                                     
+      extra_fields.item(i).style.display = 'none';                               
+    }                                                                            
+  }                                                                              
+                                                                                 
+  showExtraFields(); //show or don't show extra fields when page load            
+                                                                                 
+  input.addEventListener('click', () => {                                        
+    showExtraFields(); //show or don't show extra fields when checkbox checked or unchecked
+  });                                                                            
+}); 
+  
+  /* Show building site overlay after form submission */
+  document.forms[0].addEventListener('submit', function(e) {
+  document.getElementById('building-site-overlay').style.display="flex";
+  window.scrollTo(0,0);
+  });
+
+/* Prefill email if set */
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+if (urlParams.get('email')) {
+    emailElm = document.getElementById('email')
+    emailElm.value = urlParams.get('email')
+}
+
+</script>
+{% endblock %}

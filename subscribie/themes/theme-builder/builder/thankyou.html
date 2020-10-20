@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Thank you!{% endblock %}
+
+{% block hero %}
+
+  <div class="columns">                                                          
+    <div class="column has-text-centered-touch">                                 
+      <h1 class="title is-1 has-text-white is-size-1-mobile">Website Activated</h1>
+      <h2 class="subtitle has-text-white is-3 is-size-3-mobile">Congratulations, your subscription website is live!</h2>
+      <p class="has-text-white">You can now take monthly payments &amp; up-front payments with your website.</p><br />
+      <a href="{{ session['site-url'] }}" class="button is-light is-large">View My Site</a>
+    </div>                                                                       
+    <div class="column is-one-third">                                            
+      <img src="/static/start.svg" style="max-width: 500px; width:75%; padding-bottom:25px" />
+    </div>                                                                       
+  </div> 
+
+{% endblock %}
+
+{% block body %}
+
+<div class="section">
+  <div class="container">
+
+    <h3 class="title is-3 is-size-4-mobile">So, what happens next?</h3>
+    <p>
+      Your site is ready to login to and start setting up!
+    </p>
+    <br />
+      <a class="btn btn-primary" href="{{ session['site-url'] }}/auth/login">Login to my site</a>
+    <br /><br />
+    <p>Now your subscription website is live the real work begins. How do you make your website a sucess? Would you open
+    a real shop and expect everyone to know about it without any marketing? No!</p>
+
+    <p>Read our <a href="https://subscriptionwebsitebuilder.co.uk/blog">blog</a> 
+        full of practical steps &amp; ideas you can take right now to make your subscription website a sucess.
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+{% block title %}Subscription Website Builder for Subscription Billing{% endblock %}
+
+{% block body %}
+<div class="jumbotron jumbotron-fluid">
+	<div class="container">
+		<div class="row">
+            <div class="col-sm">
+        	<h1 class="display-4">Subscription Website Builder</h1>
+		  	<p class="lead">
+			{{ company.slogan }}
+            <i class="fas fa-clock"></i>
+            </p>
+		  	<hr class="my-4">
+		  	<p>Create a subscription based website &amp; take recurring payments 
+               online easily. We don't take a cut!</p>
+            <form action="/start-building">
+            <div class="form-group">
+            <input type="email" name="email" placeholder="Enter your email" class="form-control" />
+            </div>
+			<button class="btn btn-primary btn-lg " href="/start-building" 
+                role="button">Start now</button>
+			<a href="#content" class="btn btn-secondary btn-lg active" 
+                role="button" >Learn more</a>
+            </form>
+			</div>
+            <div class="col-sm">
+		  	<img src="/static/start2.svg" class="d-sm-none d-md-block img-fluid"/>
+            </div>
+		</div>
+	</div>
+</div>
+
+<div class="container" id="content">
+
+
+
+    <h2><i class="fas fa-redo-alt"></i> Create a Subscription Service</h3>
+	<p class="lead">Easily create a subscription website.</p>
+    <p>Simply put in the items you wish to sell on subscription, and the website builder
+       will generate a subscription website for you right away. Create your own subscription 
+       box service, sell flowers, lessons, memberships on subscription. Whatever the subscription service you want
+       to make, use Subscribie to generate your subscription website in minutes.
+       <a href="https://subscriptionwebsitebuilder.co.uk/start-building">Start building now.</a>
+    </p>
+
+    <h2><i class="fas fa-money-bill-wave"></i> Take recurring payments online</h3>
+	<p class="lead">Easily take repeat payments without lifting a finger.</p>
+    <p>Easily accept one-off, recurring payments online using our subscription 
+       website builder.
+    </p>
+    <p>We integrate with the gocardless api which allows customers to pay for your 
+       subscription service using direct debit. This gives great flexibility to 
+       you and your customers. You can take variable payments online, and change subscriptions as needed.</p>
+
+	<h2><span class="fa-stack">
+        <i class="fas fa-coins fa-stack-1x"></i>
+        <i class="fas fa-ban fa-stack-2x has-text-danger"></i>
+	    </span>
+	Transaction Fees? Not here.
+    </h2>
+	<p class="lead">Some online stores take a cut of each sale, we don't.</p>
+    <p>No matter how many subscriptions or products you sell, you can 
+	rest easy knowing that your costs remain the same.
+    </p>
+
+	<h2><i class="fas fa-smile"></i>
+	Simple Customer Flow
+	</h2>
+	<p class="lead">A simple 3-step process to get your customer signed up.</a>
+
+    <p>We've created the quickest way for your customers to quickly &amp; easily 
+     sign up to purchase the service or items you sell on subscription.</p>
+
+<div class="card-group">
+  <div class="card zoom">
+    <img class="card-img-top" src="/static/steps/1.svg" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">1. Customer chooses a package</h5>
+      <p class="card-text">
+      Use our easy website builder to set-up packages your customers can choose
+      from.
+      <p>
+      <p class="card-text">
+      <small class="text-muted">
+      You can add as few or as many packages as you like!
+      </small></p>
+    </div>
+  </div>
+  <div class="card zoom">
+    <img class="card-img-top" src="/static/steps/2.svg" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">2. Customer enters contact info</h5>
+      <p class="card-text">The simple customer form takes all the required 
+      information such as name &amp; address.</p>
+      <p class="card-text">
+	  <small class="text-muted">
+      You don't have to collect address information if you don't need it.
+      </small>
+      </p>
+    </div>
+  </div>
+  <div class="card zoom">
+    <img class="card-img-top" src="/static/steps/3.svg" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">3. A recurring subscription it set-up!</h5>
+      <p class="card-text">
+      The customer is set-up with a recurring payment for the package they choose.
+      </p>
+      <p class="card-text">
+      <small class="text-muted">
+      Payments automatically get paid into your account!
+      </small>
+      </p>
+    </div>
+  </div>
+</div>
+
+<br />
+<h2><i class="fas fa-laptop"></i>Example Sites</h2>
+
+  <div>
+  <ul>
+      <li><a href="https://halleandharpertreats.co.uk/" target="_blank">Halle and Harper Treats</a></li>
+      <li><a href="https://eyelashclub.subscriby.shop/" target="_blank">Eyelash Club</a></li>
+	  <li><a href="https://karmabroadband.subscriby.shop/" target="_blank">Broadband Subscription</a></li>
+  </ul>
+      <style>
+        .demo-sites img {
+           box-shadow: 3px 3px 5px 6px #ccc;
+           margin: 5px;
+           margin-bottom: 20px;
+        }
+        .zoom {
+          transition: transform .2s; /* Animation */
+        }
+
+        .zoom:hover {
+          transform: scale(1.01);
+        }
+      </style>
+      <div class="demo-sites">
+      <a href="https://halleandharpertreats.co.uk/" target="_blank">
+        <img src="/static/sell-dog-treats-subscription.png" width="250px" class="zoom" />
+      </a>
+      <a href="https://eyelashclub.subscriby.shop/" target="_blank">
+        <img src="/static/eyelash-subscription-business.png" width="250px" class="zoom" />
+      </a>
+      <a href="https://karmabroadband.subscriby.shop/" target="_blank">
+        <img src="/static/start-a-subscription-website-example.png" width="250px" class="zoom" />
+      </a>
+      </div>
+  </div>
+
+
+ <h3 class="display-5">Start your subscription based website today and begin
+ gaining customers</h3>
+
+    <p class="lead">In just ten minutes you'll have your own subscription website
+    started. What are you waiting for?</p>
+    <a href="/start-building" class="btn btn-primary btn-lg active" 
+    role="button" aria-pressed="true">Start now</a>
+    <a href="https://subscriptionwebsitebuilder.co.uk/blog"
+        class="btn btn-secondary btn-lg active" role="button">
+    or be inspired</a>
+</div>
+
+{% endblock %}
