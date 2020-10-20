@@ -16,3 +16,10 @@ build/*
 dist/*
 data.db
 modules/
+*.db
+*.pub
+id_rsa
+.vscode
+.mypy_cache
+.project
+.pylintrc
