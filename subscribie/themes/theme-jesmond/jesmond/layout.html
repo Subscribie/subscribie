@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang=en>
+<head>
+<title>{% block title %}{% endblock %} | {{ company.name }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js">
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+
+{% if integration.google_tag_manager_container_id
+   and integration.google_tag_manager_active
+%}
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',
+    '{{ integration.google_tag_manager_container_id }}');
+    </script>
+    <!-- End Google Tag Manager --> 
+{% endif %}
+
+{% if integration.tawk_property_id
+   and integration.tawk_active
+%}
+    <!-- Tawk Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var
+        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+    <!-- End Tawk Chat -->
+{% endif %}
+
+<meta name="theme-color" content="#1e88e5">
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet"></head>
+<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue">
+
+    <a class="navbar-brand font-weight-bolder pl-md-5 pr-3" href="/">
+      {% if company.logo_src is not sameas None %}
+      <style>
+      @media only screen and (max-width: 600px) {
+	  #logo {
+	    width: 100px;
+	  }
+	}
+      @media only screen and (min-width: 600px) {
+	  #logo {
+	    width: 200px;
+	  }
+	}
+      </style>
+      <img src="{{ company.logo_src }}" id="logo" alt="{{ company.name }} logo">
+      {% else %}
+        {{ company.name }}
+      {% endif %}
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        {% if g.user %}
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/logout">Logout</a>
+          </li>
+        {% endif %}
+
+        {% for page in pages %}
+          <li class="nav-item">
+            <a class="nav-link" href="/{{ page.path }}">
+              {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('subscriber.login') }}" title="Subscriber login">My account</a>
+          </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="site-content">
+    {% block top %}
+    {% endblock top %}
+    <section class="jumbotron jumbotron-fluid kcBlue">
+      <div class="container" style="z-index:9999">
+          {% block hero %}{% endblock %}
+      </div>
+    </section>
+
+    <main class="main">
+      {% block body %}{% endblock %}
+    </main>
+  </div>
+
+  <footer class="container-fluid bg-light text-center py-5" >
+    <p> By <a href="/">{{ company['name'] }}</a>. </p>
+    <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+    <a href="{{ url_for('auth.login') }}">Shop owner login</a>
+    {% if g.user %}
+      <a class="nav-link" href="/auth/logout">Logout</a>
+    {% endif %}
+    <br />
+    <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+
+<script type="application/javascript">
+    jQuery(document).ready(function ($) {
+      $('.modal-button').click(function() {
+        console.log("Modal Opened");
+        var target = $(this).data('target');
+        $('html').addClass('is-clipped');
+        $('#' + target).addClass('is-active');
+      });
+      $('.modal-background, .modal-close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-head .delete').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $('.modal-card-body #close').click(function() {
+        $('html').removeClass('is-clipped');
+        $('.modal').removeClass('is-active');
+      });
+      $(document).on('keyup',function(e) {
+        if (e.keyCode == 27) {
+          $('html').removeClass('is-clipped');
+          $('.modal').removeClass('is-active');
+        }
+      });
+    });
+  </script>
+  {{ custom_css|safe }}
+</html>
