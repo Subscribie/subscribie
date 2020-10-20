@@ -37,6 +37,9 @@ def load_theme(app):
         "static",
     ).resolve()
 
+    # Set THEME_PATH
+    app.config["THEME_PATH"] = themePath
+
     my_loader = jinja2.ChoiceLoader(
         [jinja2.FileSystemLoader(str(themePath)), app.jinja_loader]
     )
