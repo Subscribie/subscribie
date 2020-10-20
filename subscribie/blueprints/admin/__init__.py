@@ -385,7 +385,7 @@ def add_plan():
         if form.interval_amount.data[0] is None:
             draftPlan.interval_amount = 0
         else:
-            draftPlan.interval_amount = int(form.interval_amount.data[0]) * 100
+            draftPlan.interval_amount = int(float(form.interval_amount.data[0]) * 100)
 
         if form.instant_payment.data[0] == 'yes':
             plan_requirements.instant_payment = True
@@ -395,7 +395,7 @@ def add_plan():
         if form.sell_price.data[0] is None:
             draftPlan.sell_price = 0
         else:
-            draftPlan.sell_price = int(form.sell_price.data[0]) * 100
+            draftPlan.sell_price = int(float(form.sell_price.data[0]) * 100)
 
         points = form.selling_points.data[0]
 
