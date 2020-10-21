@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 
 from subscribie import create_app
 from subscribie import database as _db
-from subscribie.models import User
+from subscribie.models import User, Company
 from subscribie import seed_db
 
 
@@ -92,5 +92,8 @@ def with_shop_owner(db, session):
     user = User()
     user.email = "admin@example.com"
     session.add(user)
+    # Add a company
+    company = Company()
+    company.name = "Subscription Shop"
+    company.slogan = "Buy plans on subscription"
     session.commit()
-

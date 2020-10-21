@@ -16,6 +16,40 @@ def test_admin_can_view_dashboard(session, app, client, admin_session):
     with user_set(app, user):
         req = client.get("/admin/dashboard", follow_redirects=True)
 
+def test_admin_cal_add_plan(session, app, client, admin_session):
+    user = User.query.filter_by(email='admin@example.com').first()
+    with user_set(app, user):
+        req = client.post("/admin/add", follow_redirects=True, data={
+            # TODO add plan should not use PlansForm as it requires company
+            "company_name": "Coffee Castle",
+            "slogan": "None",
+            "email": "admin@example.com",
+            "title-0": "Coffee Delux",
+            "selling_points-0-0": "Roasted by us",
+            "selling_points-0-1": "Monthly delievey",
+            "selling_points-0-3": "Highest Quality",
+            "image-0": "",
+            "subscription-0": "yes",
+            "interval_amount-0": "6.95",
+            "interval_unit-0": "monthly",
+            "days_before_first_charge-0": "0",
+            "instant_payment-0": "yes",
+            "sell_price-0": "5",
+            "note_to_buyer_message-0": "",
+            "position-0": ""
+        })
+        assert 'Plan added.' in req.data.decode('utf-8')
+
+        # Verify plan has been stored correctly
+        # by visiting admin edit plans page
+        req = client.get('/admin/edit')
+        assert 'Coffee Delux' in req.data.decode('utf-8')
+        assert 'Roasted by us' in req.data.decode('utf-8')
+        assert 'Monthly delievey' in req.data.decode('utf-8')
+        assert 'Highest Quality' in req.data.decode('utf-8')
+        assert '<input name="interval_amount-0" id="interval_amount-0"\n                        \n                        value="6.95"' in req.data.decode('utf-8')
+        assert 'name="sell_price-0" value="5.0"' in req.data.decode('utf-8')
+
 
 @pytest.fixture(scope='function')
 def admin_session(client, with_shop_owner):
