@@ -50,6 +50,13 @@ from .choice_group import list_choice_groups
 from .option import list_options
 from .subscriber import show_subscriber
 
+def dec2pence(amount):
+  '''Take two decimal place string and convert to pence'''
+  if amount == '':
+    return 0
+  import math
+  return int(math.ceil(float(amount) * 100))
+
 @admin.app_template_filter()
 def currencyFormat(value):
   value = float(value)/100
@@ -292,7 +299,7 @@ def edit():
             if getPlan(form.interval_amount.data, index, default=0) is None:
                 interval_amount = 0
             else:
-                interval_amount = int(getPlan(form.interval_amount.data, index, default=0) * 100)
+                interval_amount = dec2pence(getPlan(form.interval_amount.data, index, default=0))
             draftPlan.interval_amount = interval_amount
             if getPlan(form.instant_payment.data, index) == 'yes':
                 plan_requirements.instant_payment = True
@@ -318,7 +325,7 @@ def edit():
             if getPlan(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
             else:
-                sell_price = int(getPlan(form.sell_price.data, index, default=0) * 100)
+                sell_price = dec2pence(getPlan(form.sell_price.data, index, default=0))
 
             draftPlan.sell_price = sell_price
 
@@ -385,7 +392,7 @@ def add_plan():
         if form.interval_amount.data[0] is None:
             draftPlan.interval_amount = 0
         else:
-            draftPlan.interval_amount = int(float(form.interval_amount.data[0]) * 100)
+            draftPlan.interval_amount = dec2pence(form.interval_amount.data[0])
 
         if form.instant_payment.data[0] == 'yes':
             plan_requirements.instant_payment = True
@@ -395,7 +402,7 @@ def add_plan():
         if form.sell_price.data[0] is None:
             draftPlan.sell_price = 0
         else:
-            draftPlan.sell_price = int(float(form.sell_price.data[0]) * 100)
+            draftPlan.sell_price = dec2pence(form.sell_price.data[0])
 
         points = form.selling_points.data[0]
 
