@@ -21,6 +21,8 @@
         <div class="col-md-7">
           <h2>Upload logo</h2>
           <p>Optionally upload a shop logo. This will be displayed in the header of your shop.</p>
+          <p>Make sure your file is a smaller than 5 MB before uploading.</p>
+	        <p>Then select and upload your logo.</p>
           
           <form action="" method="POST" action="/" enctype="multipart/form-data">
               {{ form.csrf_token }}
@@ -46,11 +48,7 @@
             Remove Logo
           </a>
 	    {% endif %}
-            <div class="card-body">
-              <h4 class="card-title">Image upload</h4>
-	      <p>Make sure your file is a small file size before uploading.</p>
-	      <p>Then select and upload your logo.</p>
-            </div>
+            
           </div>
         </div>
       </div>
