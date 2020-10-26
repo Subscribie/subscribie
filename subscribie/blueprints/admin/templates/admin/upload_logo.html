@@ -38,10 +38,10 @@
         </div>
 
         <div class="col-md-5">
-          <div class="card shadow-sm">
+          <div class="card shadow-sm p-3">
 	    {% if company.logo_src is not sameas None %}
 		  <img src="{{ company.logo_src }}"
-		 class="card-img-top mt-4 mb-3" 
+		 class="card-img-top my-4" 
 		 alt="Company logo"
 		 style="width:60%; display:block; margin:auto" />
           <a href="{{ url_for('admin.remove_logo') }}" class="btn btn-danger">
