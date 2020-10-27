@@ -32,10 +32,10 @@ def check_if_inside_iframe():
     then referer header is emtpy, and therefore the header/footer is 
     displayed as normal.
     """
-    if request.args.get('iframe_embeded', False) and request.headers.get('referer') is not None:
+    if request.args.get('iframe_embeded', False) or session.get('iframe_embeded') is True and request.headers.get('referer') is not None:
         print("Loading from within iframe")
         session['iframe_embeded'] = True
-    elif session.get('iframe_embeded') is not True:
+    else:
         session['iframe_embeded'] = False
 
 @bp.app_context_processor
