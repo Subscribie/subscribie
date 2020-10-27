@@ -102,7 +102,7 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    load_dotenv()
+    load_dotenv(verbose=True)
     app.config.update(
      os.environ
     )
@@ -241,7 +241,8 @@ def create_app(test_config=None):
                 payment_provider = PaymentProvider()
                 database.session.add(payment_provider)
                 database.session.commit()
-                create_stripe_webhook()
+                if app.config.get("STRIPE_SECRET_KEY", None):
+                    create_stripe_webhook()
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations have been ran (flask upgrade requires app boot)
             print(e)
