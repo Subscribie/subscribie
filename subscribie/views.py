@@ -11,7 +11,7 @@ from uuid import uuid4
 from pathlib import Path
 from jinja2 import Template
 
-from flask import Blueprint, redirect, render_template, request, session, url_for, flash, jsonify
+from flask import Blueprint, redirect, render_template, request, session, url_for, flash, jsonify, g
 import flask
 
 from .models import ( database, User, Person, Subscription, SubscriptionNote,
@@ -24,6 +24,19 @@ from typing import Optional
 import json
 
 bp = Blueprint("views", __name__, url_prefix=None)
+
+@bp.before_app_request
+def check_if_inside_iframe():
+    """Set iframe_embeded in session object if app is loaded from inside an iframe
+    If visited directly, (e.g. as a shop admin),
+    then referer header is emtpy, and therefore the header/footer is 
+    displayed as normal.
+    """
+    if request.args.get('iframe_embeded', False) or session.get('iframe_embeded') is True and request.headers.get('referer') is not None:
+        print("Loading from within iframe")
+        session['iframe_embeded'] = True
+    else:
+        session['iframe_embeded'] = False
 
 @bp.app_context_processor
 def inject_template_globals():
