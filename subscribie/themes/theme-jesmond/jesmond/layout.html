@@ -52,6 +52,9 @@
 
 <body>
 
+  {# if not inside iframe_embeded, show header #} 
+  {% if session.get('iframe_embeded') is sameas False %}
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue">
 
     <a class="navbar-brand font-weight-bolder pl-md-5 pr-3" href="/">
@@ -111,10 +114,14 @@
       </div>
     </section>
 
+  {% endif %} {# if not inside iframe_embeded, show header #}
     <main class="main">
       {% block body %}{% endblock %}
     </main>
   </div>
+
+  {# if not inside iframe_embeded, show footer #} 
+  {% if session.get('iframe_embeded') is sameas False %}
 
   <footer class="container-fluid bg-light text-center py-5" >
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
@@ -126,6 +133,8 @@
     <br />
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
   </footer>
+  {# end if not inside iframe_embeded, show footer #} 
+  {% endif %}
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

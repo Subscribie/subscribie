@@ -12,7 +12,7 @@ def get_iframe_embed():
                 allowfullscreen="true"
                 title="Subscription shop">
         </iframe>
-        '''.format(request.host_url)
+        '''.format(request.host_url + "?iframe_embeded")
   try:
     return render_template('show-iframe-embed.html', iframe=iframe)
   except TemplateNotFound:
