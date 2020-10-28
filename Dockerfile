@@ -13,8 +13,8 @@ RUN sed -i 's#STATIC_FOLDER.*#STATIC_FOLDER=/usr/src/app/subscribie/subscribie/t
 # Remove SERVER_NAME app config in docker environment
 RUN sed -i 's#SERVER_NAME.*##g' .env
 
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
-RUN --mount=type=cache,target=/root/.cache/pip pip install uwsgi
+RUN pip install -r requirements.txt
+RUN pip install uwsgi
 RUN export FLASK_APP=subscribie; flask db upgrade
 EXPOSE 80
 CMD uwsgi --http :80 --workers 2 --wsgi-file subscribie.wsgi --touch-chain-reload subscribie.wsgi --chdir /usr/src/app/subscribie/
