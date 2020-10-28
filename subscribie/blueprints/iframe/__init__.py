@@ -8,11 +8,11 @@ module_iframe_embed = Blueprint('iframe', __name__, template_folder='templates')
 @login_required
 def get_iframe_embed():
   """Set optimised title tags for your pages."""
-  iframe = '''<iframe src={} width="100%" height="800px" scrolling="auto"
+  iframe = '''<iframe src={} width="100%" frameborder="0" height="800px" scrolling="auto"
                 allowfullscreen="true"
                 title="Subscription shop">
         </iframe>
-        '''.format(request.host_url + "?iframe_embeded")
+        '''.format(request.host_url + '?iframe_embeded="1"')
   try:
     return render_template('show-iframe-embed.html', iframe=iframe)
   except TemplateNotFound:
