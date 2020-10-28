@@ -17,4 +17,4 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip pip install uwsgi
 RUN export FLASK_APP=subscribie; flask db upgrade
 EXPOSE 80
-CMD uwsgi --http :80 --workers 2 --wsgi-file subscribie.wsgi --touch-chain-reload subscribie.wsgi --chdir /usr/src/app/subscribie/
+ENTRYPOINT [ "./entrypoint.sh" ]
