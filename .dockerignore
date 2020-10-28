@@ -3,3 +3,5 @@ charts/
 NOTICE
 LICENSE
 README.md
+data.db*
+venv
