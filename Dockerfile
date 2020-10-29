@@ -13,6 +13,7 @@ RUN sed -i 's#STATIC_FOLDER.*#STATIC_FOLDER=/usr/src/app/subscribie/subscribie/t
 
 # Set cookie secure flag to false in development
 RUN sed -i 's#SESSION_COOKIE_SECURE.*##g' .env
+RUN sed -i 's#SESSION_COOKIE_SAMESITE.*#Lax#g' .env
 
 # Remove SERVER_NAME app config in docker environment
 RUN sed -i 's#SERVER_NAME.*##g' .env
