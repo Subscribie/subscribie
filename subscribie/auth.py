@@ -302,4 +302,4 @@ def protected_download(view):
 @bp.route("/logout")
 def logout():
     session.clear()
-    return "Logged out"
+    return render_template('admin/logout.html')

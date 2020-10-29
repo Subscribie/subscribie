@@ -1,0 +1,12 @@
+{% extends "admin/layout.html" %}
+{% block title %} Login {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark">You have logged out</h2>
+
+<div class="container">
+  <p><a href="{{ url_for('auth.login') }}">Click here to log back in.</a></p>
+</div>
+
+{% endblock body %}
