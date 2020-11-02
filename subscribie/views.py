@@ -3,7 +3,7 @@ import os
 import datetime
 from datetime import date
 from .signals import journey_complete
-from subscribie import session, CustomerForm, gocardless_pro, current_app
+from subscribie import CustomerForm, gocardless_pro, current_app
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
@@ -22,7 +22,6 @@ from flask import (
     url_for,
     flash,
     jsonify,
-    g,
 )
 import flask
 
@@ -128,20 +127,16 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
-<<<<<<< HEAD
-    plan = Plan.query.filter_by(uuid=request.args['plan']).first()
-    session["plan"] = plan.uuid
-=======
     plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
->>>>>>> wip #315 lint and format views.py
+    session["plan"] = plan.uuid
 
     # Fetch selected options, if present
     chosen_options = []
     if session.get("chosen_option_ids", None):
         for option_id in session["chosen_option_ids"]:
             option = Option.query.get(option_id)
-            # We will store as ChosenOption because option may change after the order has processed
-            # This preserves integrity of the actual chosen options
+            # We will store as ChosenOption because option may change after the order
+            # has processed. This preserves integrity of the actual chosen options
             chosen_option = ChosenOption()
             chosen_option.option_title = option.title
             chosen_option.choice_group_title = option.choice_group.title
@@ -153,12 +148,7 @@ def new_customer():
 
     package = request.args.get("plan", "not set")
     session["package"] = package
-<<<<<<< HEAD
-    plan = Plan.query.filter_by(uuid=request.args.get('plan')).first()
-=======
     plan = Plan.query.filter_by(uuid=request.args.get("plan")).first()
-    session["plan"] = plan.uuid
->>>>>>> wip #315 lint and format views.py
     form = CustomerForm()
     return render_template(
         "new_customer.html",
@@ -224,7 +214,7 @@ def store_customer():
             inside_iframe = False
         return redirect_to_payment_step(plan, inside_iframe=inside_iframe)
     else:
-        return "Oops, there was an error processing that form, please go back and try again."
+        return "There was an error processing that form, please go back and try again."
 
 
 @bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
@@ -508,7 +498,7 @@ def on_complete_mandate():
             if (
                 days_before_first_charge == 0
                 or days_before_first_charge == ""
-                or days_before_first_charge == None
+                or days_before_first_charge is None
             ):
                 start_date = None
             else:
@@ -598,8 +588,8 @@ def create_subscription(
         for option_id in chosen_option_ids:
             print(f"Locating option id: {option_id}")
             option = Option.query.get(option_id)
-            # We will store as ChosenOption because option may change after the order has processed
-            # This preserves integrity of the actual chosen options
+            # We will store as ChosenOption because option may change after the order
+            # has processed. This preserves integrity of the actual chosen options
             chosen_option = ChosenOption()
             chosen_option.option_title = option.title
             chosen_option.choice_group_title = option.choice_group.title
