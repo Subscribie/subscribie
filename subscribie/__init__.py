@@ -86,7 +86,7 @@ from .models import (User, Person, Subscription, SubscriptionNote, Company,
                     PlanRequirements, PlanSellingPoints,
                     ChoiceGroup, Option)
 
-from .blueprints.admin import get_subscription_status, create_stripe_webhook
+from .blueprints.admin import get_subscription_status
 
 def seed_db():                                                                 
     # Add module_seo_page_title    
@@ -241,8 +241,6 @@ def create_app(test_config=None):
                 payment_provider = PaymentProvider()
                 database.session.add(payment_provider)
                 database.session.commit()
-                if app.config.get("STRIPE_SECRET_KEY", None):
-                    create_stripe_webhook()
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations have been ran (flask upgrade requires app boot)
             print(e)

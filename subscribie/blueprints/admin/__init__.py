@@ -22,8 +22,9 @@ from subscribie import (
     jsonify,
     TawkConnectForm,
     database, User, Person, Subscription, SubscriptionNote, Company,
-    Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints
+    Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints,
 )
+from subscribie.utils import get_stripe_secret_key
 from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm, UploadFilesForm
 from subscribie.auth import login_required, protected_download
 from subscribie.db import get_db
@@ -509,10 +510,19 @@ def connect_gocardless_start():
     authorize_url = flow.step1_get_authorize_url()
     return flask.redirect(authorize_url, code=302)
 
-def getStripeAccount(account_id):
-    if account_id is None:
-     raise NameError("account_id is not set")
-    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
+
+def getStripeConnectAccount():
+    payment_provider = PaymentProvider.query.first()
+    stripe.api_key = get_stripe_secret_key()
+
+    if payment_provider.stripe_livemode:
+        account_id = payment_provider.stripe_live_connect_account_id
+    else:
+        account_id = payment_provider.stripe_test_connect_account_id
+
+    if account_id is None or account_id == "":
+        raise NameError("account_id is not set")
+
     try:
         account = stripe.Account.retrieve(account_id)
     except stripe.error.PermissionError as e:
@@ -522,62 +532,48 @@ def getStripeAccount(account_id):
         print(e)
         raise
     except Exception as e:
+        print(e)
         account = None
 
     return account
+
 
 @admin.route("/connect/stripe-set-livemode", methods=["POST"])
 @login_required
 def set_stripe_livemode():
     livemode = request.data.decode('utf-8')
-    import pdb; pdb.set_trace()
     if livemode == 'test' or livemode == 'live':
         # Restart the app
-        flash(f"Stipe is now in mode")
-        #reload_flask_app()
+        flash("Stipe is now in mode")
+        # reload_flask_app()
         return redirect("/admin/connect/stripe-connect")
 
     return jsonify("Invalid request, valid values: 'live' or 'test'"), 500
 
+
 def create_stripe_webhook():
     """
-    Creates a new webhook, deleting old one if present
-    switching from test to live mode
+    Creates a new webhook, deleting old one if invalid
     """
-    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
-    webhook_url = url_for('views.stripe_webhook',_external=True)
+    stripe.api_key = get_stripe_secret_key()
+    webhook_url = url_for('views.stripe_webhook', _external=True)
     payment_provider = PaymentProvider.query.first()
 
-    liveMode = False
-    webhookIdExists = False
-    newWebhookNeeded = True
+    liveMode = payment_provider.stripe_livemode  # returns bool
 
-    if payment_provider.stripe_webhook_endpoint_id is not None:
-        webhookIdExists = True
-
-    # Determine if in live or test mode by inspecting api keys
-    if (
-        "live" in current_app.config.get("STRIPE_SECRET_KEY","")
-        and "live" in current_app.config["STRIPE_PUBLISHABLE_KEY"]
-    ):
-        liveMode = True
+    if liveMode:
+        webhook_id = payment_provider.stripe_live_webhook_endpoint_id
     else:
-        liveMode = False
+        webhook_id = payment_provider.stripe_test_webhook_endpoint_id
 
-    # Try to get current webhook and check if its in livemode
-    if webhookIdExists:
-        try:
-            current_webhook = stripe.WebhookEndpoint.retrieve(payment_provider.stripe_webhook_endpoint_id)
-            if current_webhook.livemode == liveMode:
-                newWebhookNeeded = False
-            else:
-                stripe.WebhookEndpoint.delete(current_webhook.id)
-                newWebhookNeeded = True
+    # Try to get current webhook
+    try:
+        stripe.WebhookEndpoint.retrieve(webhook_id)
+    except stripe.error.InvalidRequestError as e:
+        print(e)
+        newWebhookNeeded = True
 
-        except stripe.error.InvalidRequestError as e:
-                newWebhookNeeded = True
-
-    if newWebhookNeeded and "127.0.0.1" not in current_app.config.get("SERVER_NAME", ""):
+    if newWebhookNeeded:
         # Delete previous webhooks which match the webhook_url
         webhooks = stripe.WebhookEndpoint.list()
         for webhook in webhooks:
@@ -587,21 +583,29 @@ def create_stripe_webhook():
         # Create a new webhook
         try:
             webhook_endpoint = stripe.WebhookEndpoint.create(
-              url = webhook_url,
+              url=webhook_url,
               enabled_events=[
                 "*",
               ],
-              description = "Subscribie webhook endpoint",
-              connect = True, # endpoint should receive events from connected accounts
+              description="Subscribie webhook endpoint",
+              connect=True,  # endpoint should receive events from connected accounts
             )
             # Store the webhook secret & webhook id
-            payment_provider.stripe_webhook_endpoint_id = webhook_endpoint.id
-            payment_provider.stripe_webhook_endpoint_secret = webhook_endpoint.secret
-            payment_provider.stripe_livemode = liveMode
-            print(f"New webhook id is: {payment_provider.stripe_webhook_endpoint_id}")
+            if payment_provider.stripe_livemode:
+                payment_provider.stripe_live_webhook_endpoint_id = webhook_endpoint.id
+                payment_provider.stripe_live_webhook_endpoint_secret = webhook_endpoint.secret # noqa
+                print(f"New live webhook id is: {payment_provider.stripe_live_webhook_endpoint_id}") # noqa
+            else:
+                payment_provider.stripe_test_webhook_endpoint_id = webhook_endpoint.id
+                payment_provider.stripe_test_webhook_endpoint_secret = webhook_endpoint.secret # noqa
+                print(f"New test webhook id is: {payment_provider.stripe_test_webhook_endpoint_id}") # noqa
+
         except stripe.error.InvalidRequestError as e:
             print(e)
-            flash("Error trying to create Stripe webhook")
+            if "127.0.0.1" in request.host or "localhost" in request.host:
+                flash("Refusing to create Stripe webhook on localhost, use stripe cli for local development")
+            else:
+                flash("Error trying to create Stripe webhook")
             payment_provider.stripe_active = False
     database.session.commit()
 
@@ -611,11 +615,11 @@ def create_stripe_webhook():
 def stripe_connect():
     account = None
     stripe_express_dashboard_url = None
-    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
+    stripe.api_key = current_app.config.get("STRIPE_LIVE_SECRET_KEY", None)
     payment_provider = PaymentProvider.query.first()
 
     try:
-        account = getStripeAccount(payment_provider.stripe_connect_account_id)
+        account = getStripeConnectAccount()
         if account is not None and account.charges_enabled and account.payouts_enabled:
             payment_provider.stripe_active = True
         else:
@@ -630,30 +634,30 @@ def stripe_connect():
             stripe_express_dashboard_url = stripe.Account.create_login_link(account.id).url
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
-        webhook_url = url_for('views.stripe_webhook',_external=True)
-        if '127.0.0.1' not in request.host: # Dont create webhooks on localhost, use stripe cli for that
-            create_stripe_webhook()
-        else:
-            print(f"Refusing to Stripe webhook on localhost: {webhook_url}")
 
     database.session.commit()
     return render_template('admin/settings/stripe/stripe_connect.html',
                             stripe_onboard_path=url_for('admin.stripe_onboarding'),
                             account=account,
+                            payment_provider=payment_provider,
                             stripe_express_dashboard_url=stripe_express_dashboard_url)
 
 @admin.route("/stripe-onboard", methods=["POST"])
 @login_required
 def stripe_onboarding():
+    # Determine if in live or test mode
+    payment_provider = PaymentProvider.query.first()
+    stripe.api_key = get_stripe_secret_key()
 
-    stripe.api_key = current_app.config.get("STRIPE_SECRET_KEY", None)
     company = Company.query.first()
+
+    create_stripe_webhook()
 
     # Try to use existing stripe_connect_account_id if present, otherwise create an account
     payment_provider = PaymentProvider.query.first()
     try:
         print("Trying if there's an existing stripe account")
-        account = getStripeAccount(payment_provider.stripe_connect_account_id)
+        account = getStripeConnectAccount()
         print(f"Yes, stripe account found: {account.id}")
     except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError, AttributeError):
         print("Could not find a stripe account, Creating stripe account")
@@ -666,11 +670,14 @@ def stripe_onboarding():
                                             'card_payments': {'requested': True},
                                             'transfers': {'requested': True},
                                         })
-        payment_provider.stripe_connect_account_id = account.id
+        if payment_provider.stripe_livemode:
+            payment_provider.stripe_live_connect_account_id = account.id
+        else:
+            payment_provider.stripe_test_connect_account_id = account.id
+
         database.session.commit()
 
     session['account_id'] = account.id
-
     account_link_url = _generate_account_link(account.id)
     try:
         return jsonify({'url': account_link_url})
@@ -960,45 +967,6 @@ def upcoming_payments():
             next_page_cursor=next_page_cursor,
             previous_page_cursor=previous_page_cursor
             )
-
-@admin.route("/customers", methods=["GET"])
-@login_required
-def customers():
-    payment_provider = PaymentProvider.query.first()        
-    from SSOT import SSOT
-    
-    target_gateways = ()
-
-    if payment_provider.gocardless_active:
-        access_token = payment_provider.gocardless_access_token,
-        gc_environment = payment_provider.gocardless_environment,
-        target_gateways = target_gateways + ({"name": "GoCardless", 
-                                              "construct": {
-                                                "access_token":access_token,
-                                                "environment": gc_environment
-                                                }
-                                            },)
-
-    if payment_provider.stripe_active:
-        stripe_token = payment_provider.stripe_secret_key
-        target_gateways = target_gateways + ({"name": "Stripe", "construct": stripe_token},)
-
-    try:
-        SSOT = SSOT(target_gateways)
-        partners = SSOT.partners
-    except gocardless_pro.errors.InvalidApiUsageError as e:
-        logging.error(e.type)
-        logging.error(e.message)
-        flash("Invalid GoCardless API token. Correct your GoCardless API key.")
-        return redirect(url_for("admin.connect_gocardless_manually"))
-    except ValueError as e:
-        logging.error(e.message)
-        if e.message == "No access_token provided":
-            flash("You must connect your GoCardless account first.")
-            return redirect(url_for("admin.connect_gocardless_manually"))
-        else:
-            raise
-    return render_template("admin/customers.html", partners=partners)
 
 
 @admin.route("/transactions", methods=["GET"])
