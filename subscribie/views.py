@@ -1,43 +1,68 @@
 from . import logger
 import os
-import yaml
 import datetime
 from datetime import date
-import sqlite3
 from .signals import journey_complete
 from subscribie import session, CustomerForm, gocardless_pro, current_app
 from subscribie.utils import get_stripe_publishable_key
 import stripe
-from uuid import uuid4
 from pathlib import Path
 from jinja2 import Template
 
-from flask import Blueprint, redirect, render_template, request, session, url_for, flash, jsonify, g
+from flask import (
+    Blueprint,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+    flash,
+    jsonify,
+    g,
+)
 import flask
 
-from .models import ( database, User, Person, Subscription, SubscriptionNote,
-                    Company, Plan, Integration, PaymentProvider, Transaction,
-                    Page, Option, ChosenOption, EmailTemplate, Setting)
+from .models import (
+    database,
+    User,
+    Person,
+    Subscription,
+    SubscriptionNote,
+    Company,
+    Plan,
+    Integration,
+    PaymentProvider,
+    Transaction,
+    Page,
+    Option,
+    ChosenOption,
+    EmailTemplate,
+    Setting,
+)
 
 from flask_mail import Mail, Message
-from sqlalchemy.sql.expression import func
-from typing import Optional
 import json
 
 bp = Blueprint("views", __name__, url_prefix=None)
+
 
 @bp.before_app_request
 def check_if_inside_iframe():
     """Set iframe_embeded in session object if app is loaded from inside an iframe
     If visited directly, (e.g. as a shop admin),
-    then referer header is emtpy, and therefore the header/footer is 
+    then referer header is emtpy, and therefore the header/footer is
     displayed as normal.
     """
-    if request.args.get('iframe_embeded', False) or session.get('iframe_embeded') is True and request.headers.get('referer') is not None:
+    if (
+        request.args.get("iframe_embeded", False)
+        or session.get("iframe_embeded") is True
+        and request.headers.get("referer") is not None
+    ):
         print("Loading from within iframe")
-        session['iframe_embeded'] = True
+        session["iframe_embeded"] = True
     else:
-        session['iframe_embeded'] = False
+        session["iframe_embeded"] = False
+
 
 @bp.app_context_processor
 def inject_template_globals():
@@ -45,13 +70,12 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    return dict(company=company, integration=integration, plans=plans,
-                pages=pages)
+    return dict(company=company, integration=integration, plans=plans, pages=pages)
+
 
 def redirect_url():
-    return request.args.get('next') or \
-        request.referrer or \
-        url_for('index')
+    return request.args.get("next") or request.referrer or url_for("index")
+
 
 def index():
     return render_template("index.html")
@@ -64,54 +88,53 @@ def reload_app():
     flash("Reload triggered")
     return redirect(redirect_url())
 
+
 def reload_flask_app():
     """Reload flask app
     when running as a uwsgi vassal, a touch is performed
-    on the app's .ini file to trigger a graceful reload of 
+    on the app's .ini file to trigger a graceful reload of
     the app"""
     path = os.path.abspath(__file__ + "../../../../")
     # .ini file is named <hostname>.ini
-    vassalFilePath = Path(path , request.host + '.ini')
+    vassalFilePath = Path(path, request.host + ".ini")
     # Perform reload by touching file
     print("Reloading by touching ini file at {}".format(vassalFilePath))
     vassalFilePath.touch(exist_ok=True)
     flash("Reloaded")
 
-    
 
 @bp.route("/choose")
 def choose():
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
-    return render_template("choose.html",
-                            plans=plans)
+    return render_template("choose.html", plans=plans)
+
 
 def redirect_to_payment_step(plan, inside_iframe=False):
     """Depending on plans payment requirement, redirect to collection page
-     accordingly"""
+    accordingly"""
 
-    scheme = 'https' if request.is_secure else 'http'
+    scheme = "https" if request.is_secure else "http"
 
     if plan.requirements.instant_payment:
-        return redirect(
-            url_for(
-                "views.up_front",
-                _scheme=scheme,
-                _external=True
-            )
-        )
+        return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
     return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
+
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
+<<<<<<< HEAD
     plan = Plan.query.filter_by(uuid=request.args['plan']).first()
     session["plan"] = plan.uuid
+=======
+    plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
+>>>>>>> wip #315 lint and format views.py
 
     # Fetch selected options, if present
     chosen_options = []
-    if session.get('chosen_option_ids', None):
-        for option_id in session['chosen_option_ids']:
+    if session.get("chosen_option_ids", None):
+        for option_id in session["chosen_option_ids"]:
             option = Option.query.get(option_id)
             # We will store as ChosenOption because option may change after the order has processed
             # This preserves integrity of the actual chosen options
@@ -119,19 +142,27 @@ def new_customer():
             chosen_option.option_title = option.title
             chosen_option.choice_group_title = option.choice_group.title
             chosen_options.append(chosen_option)
-    
+
     # If already entered sign-up information, take to payment step
     if session.get("person_id", None):
         return redirect_to_payment_step(plan)
 
-
     package = request.args.get("plan", "not set")
     session["package"] = package
+<<<<<<< HEAD
     plan = Plan.query.filter_by(uuid=request.args.get('plan')).first()
+=======
+    plan = Plan.query.filter_by(uuid=request.args.get("plan")).first()
+    session["plan"] = plan.uuid
+>>>>>>> wip #315 lint and format views.py
     form = CustomerForm()
-    return render_template("new_customer.html", form=form, package=package,
-                         plan=plan,
-                         chosen_options=chosen_options)
+    return render_template(
+        "new_customer.html",
+        form=form,
+        package=package,
+        plan=plan,
+        chosen_options=chosen_options,
+    )
 
 
 @bp.route("/new_customer", methods=["POST"])
@@ -153,22 +184,29 @@ def store_customer():
         session["given_name"] = given_name
 
         # Store person info in session for form pre-population
-        session['given_name'] = given_name
-        session['family_name'] = family_name
-        session['address_line_one'] = address_line_one
-        session['city'] = city
-        session['postcode'] = postcode
-        session['email'] = email
-        session['mobile'] = mobile
+        session["given_name"] = given_name
+        session["family_name"] = family_name
+        session["address_line_one"] = address_line_one
+        session["city"] = city
+        session["postcode"] = postcode
+        session["email"] = email
+        session["mobile"] = mobile
 
         # Don't store person if already exists
         person = Person.query.filter_by(email=email).first()
         if person is None:
             # Store person, with randomly generated password
-            person = Person(sid=sid, given_name=given_name, family_name=family_name,
-                            address_line1=address_line_one, city=city,
-                            postal_code=postcode, email=email, mobile=mobile,
-                            password=str(os.urandom(16)))
+            person = Person(
+                sid=sid,
+                given_name=given_name,
+                family_name=family_name,
+                address_line1=address_line_one,
+                city=city,
+                postal_code=postcode,
+                email=email,
+                mobile=mobile,
+                password=str(os.urandom(16)),
+            )
             database.session.add(person)
             database.session.commit()
         session["person_id"] = person.id
@@ -184,19 +222,19 @@ def store_customer():
     else:
         return "Oops, there was an error processing that form, please go back and try again."
 
+
 @bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
 def set_options(plan_uuid):
     plan = Plan.query.filter_by(uuid=plan_uuid).first()
 
     if request.method == "POST":
         # Store chosen options in session
-        session['chosen_option_ids'] = []
+        session["chosen_option_ids"] = []
         for choice_group_id in request.form.keys():
             for option_id in request.form.getlist(choice_group_id):
-                session['chosen_option_ids'].append(option_id)
+                session["chosen_option_ids"].append(option_id)
 
-
-        return redirect(url_for('views.new_customer', plan=plan_uuid))
+        return redirect(url_for("views.new_customer", plan=plan_uuid))
 
     return render_template("set_options.html", plan=plan)
 
@@ -204,14 +242,20 @@ def set_options(plan_uuid):
 @bp.route("/up_front", methods=["GET"])
 def up_front():
     payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_connect_account_id is None:
+    if (
+        payment_provider.stripe_livemode
+        and payment_provider.stripe_live_connect_account_id is None
+        or payment_provider.stripe_livemode is False
+        and payment_provider.stripe_test_connect_account_id is None
+    ):
+
         return """Shop owner has not connected Stripe payments yet.
                 This can be done by the shop owner via the admin dashboard."""
 
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     stripe_pub_key = get_stripe_publishable_key()
     company = Company.query.first()
-    stripe_create_checkout_session_url = url_for('views.stripe_create_checkout_session')
+    stripe_create_checkout_session_url = url_for("views.stripe_create_checkout_session")
 
     stripe_connected_account_id = payment_provider.stripe_connect_account_id
 
@@ -222,7 +266,7 @@ def up_front():
         fname=session["given_name"],
         stripe_pub_key=stripe_pub_key,
         stripe_create_checkout_session_url=stripe_create_checkout_session_url,
-        stripe_connected_account_id=stripe_connected_account_id
+        stripe_connected_account_id=stripe_connected_account_id,
     )
 
 
@@ -232,7 +276,9 @@ def stripe_webhook():
 
     if "127.0.0.1" in request.host or "localhost" in request.host:
         # Operate in local mode
-        endpoint_secret = current_app.config.get("STRIPE_CLI_WEBHOOK_ENDPOINT_SECRET", None) # noqa
+        endpoint_secret = current_app.config.get(
+            "STRIPE_CLI_WEBHOOK_ENDPOINT_SECRET", None
+        )  # noqa
     else:
         if payment_provider.stripe_livemode:
             endpoint_secret = payment_provider.stripe_live_webhook_endpoint_secret
@@ -248,43 +294,42 @@ def stripe_webhook():
     sig_header = request.headers.get("Stripe-Signature", None)
     event = None
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except ValueError as e:
         return e, 400
     except stripe.error.SignatureVerificationError as e:
+        print(e)
         return "Stripe ignatureVerificationError", 400
 
-    print("#"*20 + "Event" + "#"*20)
+    print("#" * 20 + "Event" + "#" * 20)
     print(event)
-    print("#"*80)
+    print("#" * 80)
     # Handle the checkout.session.completed event
-    if event['type'] == 'checkout.session.completed':
+    if event["type"] == "checkout.session.completed":
         # Only proces events for this connected account
         if event.account != payment_provider.stripe_connect_account_id:
             return "Event account id does not match this shop, ignoring", 200
-        session = event['data']['object']
-        print("#"*20 + "Session" + "#"*20)
+        session = event["data"]["object"]
+        print("#" * 20 + "Session" + "#" * 20)
         print(session)
-        print("#"*100)
-        plan_uuid = session['metadata']['plan_uuid']
-        person_uuid = session['metadata']['person_uuid']
-        plan = Plan.query.filter_by(uuid=plan_uuid).first()
+        print("#" * 100)
+        person_uuid = session["metadata"]["person_uuid"]
         person = Person.query.filter_by(uuid=person_uuid).first()
 
         try:
-            chosen_option_ids = session['metadata']['chosen_option_ids']
+            chosen_option_ids = session["metadata"]["chosen_option_ids"]
             chosen_option_ids = json.loads(chosen_option_ids)
         except KeyError:
             chosen_option_ids = None
         try:
-            package = session['metadata']['package']
+            package = session["metadata"]["package"]
         except KeyError:
             package = None
-        subscription = create_subscription(email=session.customer_email,
-                                           package=package,
-                                           chosen_option_ids=chosen_option_ids)
+        subscription = create_subscription(
+            email=session.customer_email,
+            package=package,
+            chosen_option_ids=chosen_option_ids,
+        )
 
         # Store the transaction
         transaction = Transaction()
@@ -298,42 +343,45 @@ def stripe_webhook():
 
     return "OK", 200
 
+
 @bp.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
-    payment_provider = PaymentProvider.query.first()
     data = request.json
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
-    stripe.api_key = current_app.config.get('STRIPE_LIVE_SECRET_KEY')
+    stripe.api_key = current_app.config.get("STRIPE_LIVE_SECRET_KEY")
     stripe_session = stripe.checkout.Session.create(
-        payment_method_types = ["card"],
-        line_items=[{
-            'price_data': {
-                'currency': charge['currency'],
-                'product_data': {
-                    'name': plan.title,
+        payment_method_types=["card"],
+        line_items=[
+            {
+                "price_data": {
+                    "currency": charge["currency"],
+                    "product_data": {
+                        "name": plan.title,
+                    },
+                    "unit_amount": charge["amount"],
                 },
-                'unit_amount': charge['amount']
-            },
-            'quantity': 1,
-        }],
-        mode='payment',
-        metadata={"person_uuid": person.uuid,
-                  "plan_uuid": session["plan"],
-                  "chosen_option_ids": json.dumps(session.get('chosen_option_ids', None)),
-                  "package": session.get('package', None)
-                 },
-        customer_email = person.email,
-        success_url = url_for('views.instant_payment_complete', _external=True, plan=plan.uuid),
-        # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
-        cancel_url = url_for('views.up_front', _external=True),
-        payment_intent_data = {
-            'application_fee_amount': 20
+                "quantity": 1,
+            }
+        ],
+        mode="payment",
+        metadata={
+            "person_uuid": person.uuid,
+            "plan_uuid": session["plan"],
+            "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
+            "package": session.get("package", None),
         },
-        stripe_account=data['account_id']
+        customer_email=person.email,
+        success_url=url_for(
+            "views.instant_payment_complete", _external=True, plan=plan.uuid
+        ),
+        # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
+        cancel_url=url_for("views.up_front", _external=True),
+        payment_intent_data={"application_fee_amount": 20},
+        stripe_account=data["account_id"],
     )
     return jsonify(id=stripe_session.id)
 
@@ -341,12 +389,12 @@ def stripe_create_checkout_session():
 @bp.route("/instant_payment_complete", methods=["GET"])
 def instant_payment_complete():
 
-    plan_uuid = request.args.get('plan')
+    plan_uuid = request.args.get("plan")
     plan = Plan.query.filter_by(uuid=plan_uuid).first()
     if plan.requirements.subscription:
         return redirect(url_for("views.establish_mandate"))
     else:
-        scheme = 'https' if request.is_secure else 'http'
+        scheme = "https" if request.is_secure else "http"
         return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
@@ -398,11 +446,13 @@ def establish_mandate():
 
     # Check if we're inside an iframe, if yes redirect to pop-up
     # Issue https://github.com/Subscribie/subscribie/issues/128
-    if request.args.get('inside_iframe', 'False') == "True":
-        inside_iframe = True
-        return render_template("iframe_new_window_redirect.html", 
-                                redirect_url=redirect_flow.redirect_url)
-        return '<a href="{}" target="_blank">Continue</a>'.format(redirect_flow.redirect_url)
+    if request.args.get("inside_iframe", "False") == "True":
+        return render_template(
+            "iframe_new_window_redirect.html", redirect_url=redirect_flow.redirect_url
+        )
+        return '<a href="{}" target="_blank">Continue</a>'.format(
+            redirect_flow.redirect_url
+        )
     else:
         return redirect(redirect_flow.redirect_url)
 
@@ -433,11 +483,6 @@ def on_complete_mandate():
         session["gocardless_mandate_id"] = redirect_flow.links.mandate
         session["gocardless_customer_id"] = redirect_flow.links.customer
         # Store customer
-        sid = session["sid"]
-        now = datetime.datetime.now()
-        mandate = redirect_flow.links.mandate
-        customer = redirect_flow.links.customer
-        flow = redirect_flow_id
 
         logger.info(
             "Creating subscription with amount: %s",
@@ -453,12 +498,16 @@ def on_complete_mandate():
         # If days_before_first_charge is set, apply start_date adjustment
         try:
             days_before_first_charge = plan.days_before_first_charge
-            if days_before_first_charge == 0 or days_before_first_charge == '' or days_before_first_charge == None:
+            if (
+                days_before_first_charge == 0
+                or days_before_first_charge == ""
+                or days_before_first_charge == None
+            ):
                 start_date = None
             else:
                 today = date.today()
                 enddate = today + datetime.timedelta(days=int(days_before_first_charge))
-                start_date = enddate.strftime('%Y-%m-%d')
+                start_date = enddate.strftime("%Y-%m-%d")
         except KeyError:
             start_date = None
 
@@ -487,19 +536,22 @@ def on_complete_mandate():
                 "interval_unit": interval_unit,
                 "metadata": {"subscribie_subscription_uuid": subscription.uuid},
                 "links": {"mandate": session["gocardless_mandate_id"]},
-                "start_date" : start_date
+                "start_date": start_date,
             }
         )
         # Get first charge date & store in session
-        first_charge_date = gc_subscription.upcoming_payments[0]['charge_date']
-        first_charge_amount = gc_subscription.upcoming_payments[0]['amount']
-        session['first_charge_date'] = str(datetime.datetime.strptime(first_charge_date, '%Y-%m-%d').strftime('%d/%m/%Y'))
-        session['first_charge_amount'] = first_charge_amount
+        first_charge_date = gc_subscription.upcoming_payments[0]["charge_date"]
+        first_charge_amount = gc_subscription.upcoming_payments[0]["amount"]
+        session["first_charge_date"] = str(
+            datetime.datetime.strptime(first_charge_date, "%Y-%m-%d").strftime(
+                "%d/%m/%Y"
+            )
+        )
+        session["first_charge_amount"] = first_charge_amount
         # Store GoCardless subscription id
         subscription.gocardless_subscription_id = gc_subscription.id
         database.session.add(subscription)
         database.session.commit()
-
 
     except Exception as e:
         logger.error(e)
@@ -512,25 +564,30 @@ def on_complete_mandate():
     # their Direct Debit has been set up.
     return redirect(current_app.config["THANKYOU_URL"])
 
-def create_subscription(email=None, package=None, chosen_option_ids=None) -> Subscription:
-    '''Create subscription model
+
+def create_subscription(
+    email=None, package=None, chosen_option_ids=None
+) -> Subscription:
+    """Create subscription model
     Note: A subscription model is also created if a plan only has
     one up_front payment (no recuring subscription). This allows
-    the storing of chosen options againt their plan choice.'''
+    the storing of chosen options againt their plan choice."""
     print("Creating subscription")
     # Store Subscription against Person locally
     if email is None:
-        email = session['email']
+        email = session["email"]
 
     if package is None:
-        package = session['package']
+        package = session["package"]
 
     person = database.session.query(Person).filter_by(email=email).first()
     subscription = Subscription(sku_uuid=package, person=person)
 
     # Add chosen options (if any)
     chosen_options = []
-    if session.get('chosen_option_ids', None) or chosen_option_ids: # May be passed via webhook
+    if (
+        session.get("chosen_option_ids", None) or chosen_option_ids
+    ):  # May be passed via webhook
         for option_id in chosen_option_ids:
             print(f"Locating option id: {option_id}")
             option = Option.query.get(option_id)
@@ -539,55 +596,66 @@ def create_subscription(email=None, package=None, chosen_option_ids=None) -> Sub
             chosen_option = ChosenOption()
             chosen_option.option_title = option.title
             chosen_option.choice_group_title = option.choice_group.title
-            chosen_option.choice_group_id = option.choice_group.id # Used for grouping latest choice
-            chosen_options.append(chosen_option)    
+            chosen_option.choice_group_id = (
+                option.choice_group.id
+            )  # Used for grouping latest choice
+            chosen_options.append(chosen_option)
     subscription.chosen_options = chosen_options
 
     database.session.add(subscription)
     database.session.commit()
-    session['subscription_uuid'] = subscription.uuid
+    session["subscription_uuid"] = subscription.uuid
     return subscription
+
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
     company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session.get('plan', None)).first()
-    subscription = database.session.query(Subscription).filter_by(uuid=session.get('subscription_uuid')).first()
+    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
+    subscription = (
+        database.session.query(Subscription)
+        .filter_by(uuid=session.get("subscription_uuid"))
+        .first()
+    )
 
     # Store note to seller if in session
-    if session.get('note_to_seller', False) is not False and \
-      subscription is not None:
-      note = SubscriptionNote(note=session["note_to_seller"],
-                             subscription_id=subscription.id)
-      database.session.add(note)
+    if session.get("note_to_seller", False) is not False and subscription is not None:
+        note = SubscriptionNote(
+            note=session["note_to_seller"], subscription_id=subscription.id
+        )
+        database.session.add(note)
 
     database.session.commit()
     # Send journey_complete signal
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
     journey_complete.send(current_app._get_current_object(), email=email)
 
-    #Send welcome email (either default template of custom, if active)
+    # Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()
     if custom_template is not None and custom_template.use_custom_welcome_email is True:
         # Load custom welcome email
         template = custom_template.custom_welcome_email_template
     else:
-        # Load default welcome email from template folder 
-        welcome_template = str(Path(current_app.root_path + '/emails/welcome.jinja2.html'))
+        # Load default welcome email from template folder
+        welcome_template = str(
+            Path(current_app.root_path + "/emails/welcome.jinja2.html")
+        )
         fp = open(welcome_template)
         template = fp.read()
         fp.close()
 
-    first_charge_date = session.get('first_charge_date', None)
-    first_charge_amount = session.get('first_charge_amount', None)
+    first_charge_date = session.get("first_charge_date", None)
+    first_charge_amount = session.get("first_charge_amount", None)
     jinja_template = Template(template)
-    scheme = 'https://' if request.is_secure else 'http://'
-    html = jinja_template.render(first_name=session.get('given_name', None), 
-                company_name=company.name,
-                subscriber_login_url=scheme + flask.request.host + '/account/login',
-                first_charge_date=first_charge_date,
-                first_charge_amount=first_charge_amount,
-                plan=plan)
+    scheme = "https://" if request.is_secure else "http://"
+    html = jinja_template.render(
+        first_name=session.get("given_name", None),
+        company_name=company.name,
+        subscriber_login_url=scheme + flask.request.host + "/account/login",
+        first_charge_date=first_charge_date,
+        first_charge_amount=first_charge_amount,
+        plan=plan,
+    )
 
     try:
         mail = Mail(current_app)
@@ -599,7 +667,9 @@ def thankyou():
         if setting is not None:
             msg.reply_to = setting.reply_to_email_address
         else:
-            msg.reply_to = User.query.first().email # Fallback to first shop admin email
+            msg.reply_to = (
+                User.query.first().email
+            )  # Fallback to first shop admin email
         msg.html = html
         mail.send(msg)
     except Exception as e:
