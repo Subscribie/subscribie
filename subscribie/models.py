@@ -6,11 +6,13 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
 
+
 def uuid_string():
     return str(uuid4())
 
+
 class User(database.Model):
-    __tablename__ = 'user'
+    __tablename__ = "user"
     id = database.Column(database.Integer(), primary_key=True)
     email = database.Column(database.String())
     password = database.Column(database.String())
@@ -26,10 +28,11 @@ class User(database.Model):
         return check_password_hash(self.password, password)
 
     def __repr__(self):
-        return '<User {}>'.format(self.email)
+        return "<User {}>".format(self.email)
+
 
 class Person(database.Model):
-    __tablename__ = 'person'
+    __tablename__ = "person"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
@@ -41,7 +44,7 @@ class Person(database.Model):
     city = database.Column(database.String())
     postal_code = database.Column(database.String())
     email = database.Column(database.String())
-    password = database.Column(database.String()) # Hash of password
+    password = database.Column(database.String())  # Hash of password
     password_reset_string = database.Column(database.String())
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
@@ -54,16 +57,21 @@ class Person(database.Model):
         return check_password_hash(self.password, password)
 
     def __repr__(self):
-        return '<Person {}>'.format(self.given_name)
+        return "<Person {}>".format(self.given_name)
+
 
 class Subscription(database.Model):
-    __tablename__ = 'subscription'
+    __tablename__ = "subscription"
     id = database.Column(database.Integer(), primary_key=True)
     uuid = database.Column(database.String(), default=uuid_string)
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
-    person_id = database.Column(database.Integer(), ForeignKey('person.id'))
-    plan = relationship("Plan", uselist=False, primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid")
+    person_id = database.Column(database.Integer(), ForeignKey("person.id"))
+    plan = relationship(
+        "Plan",
+        uselist=False,
+        primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
+    )
     person = relationship("Person", back_populates="subscriptions")
     note = relationship("SubscriptionNote", back_populates="subscription")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
@@ -77,75 +85,115 @@ class Subscription(database.Model):
         """
         from datetime import date
         from dateutil import rrule
-        if self.plan.interval_unit == 'yearly':
-            next_date = list(rrule.rrule(rrule.YEARLY, interval=1, until=date.today() + relativedelta(years=+2), dtstart=self.created_at))[-1]
-        elif self.plan.interval_unit == 'weekly':
-            next_date = list(rrule.rrule(rrule.WEEKLY, interval=1, until=date.today() + relativedelta(weeks=+2), dtstart=self.created_at))[-1]
+
+        if self.plan.interval_unit == "yearly":
+            next_date = list(
+                rrule.rrule(
+                    rrule.YEARLY,
+                    interval=1,
+                    until=date.today() + relativedelta(years=+2),
+                    dtstart=self.created_at,
+                )
+            )[-1]
+        elif self.plan.interval_unit == "weekly":
+            next_date = list(
+                rrule.rrule(
+                    rrule.WEEKLY,
+                    interval=1,
+                    until=date.today() + relativedelta(weeks=+2),
+                    dtstart=self.created_at,
+                )
+            )[-1]
         else:
-            next_date = list(rrule.rrule(rrule.MONTHLY, interval=1, until=date.today() + relativedelta(months=+2), dtstart=self.created_at))[-1]
+            next_date = list(
+                rrule.rrule(
+                    rrule.MONTHLY,
+                    interval=1,
+                    until=date.today() + relativedelta(months=+2),
+                    dtstart=self.created_at,
+                )
+            )[-1]
 
         return next_date
 
+
 class SubscriptionNote(database.Model):
-    __tablename__ = 'subscription_note'
+    __tablename__ = "subscription_note"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     note = database.Column(database.String())
-    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id")
+    )  # noqa
     subscription = relationship("Subscription", back_populates="note")
 
+
 class Company(database.Model):
-    __tablename__ = 'company'
+    __tablename__ = "company"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     slogan = database.Column(database.String())
     logo_src = database.Column(database.String())
 
-association_table_plan_choice_group = database.Table('plan_choice_group',
-    database.Column('choice_group_id', database.Integer, ForeignKey('choice_group.id')),
-    database.Column('plan_id', database.Integer, ForeignKey('plan.id'))
+
+association_table_plan_choice_group = database.Table(
+    "plan_choice_group",
+    database.Column("choice_group_id", database.Integer, ForeignKey("choice_group.id")),
+    database.Column("plan_id", database.Integer, ForeignKey("plan.id")),
 )
 
+
 class Plan(database.Model):
-    __tablename__ = 'plan'
+    __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     archived = database.Column(database.Boolean(), default=False)
     uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
-    interval_unit = database.Column(database.String()) # Charge interval
-    interval_amount = database.Column(database.Integer(), default=0) # Charge amount each interval
+    interval_unit = database.Column(database.String())  # Charge interval
+    interval_amount = database.Column(
+        database.Integer(), default=0
+    )  # Charge amount each interval
     monthly_price = database.Column(database.Integer())
-    sell_price = database.Column(database.Integer()) # Upfront price
+    sell_price = database.Column(database.Integer())  # Upfront price
     days_before_first_charge = database.Column(database.Integer(), default=0)
     primary_icon = database.Column(database.String())
-    requirements = relationship("PlanRequirements", uselist=False, back_populates="plan")
+    requirements = relationship(
+        "PlanRequirements", uselist=False, back_populates="plan"
+    )
     selling_points = relationship("PlanSellingPoints", back_populates="plan")
-    choice_groups = relationship("ChoiceGroup", secondary=association_table_plan_choice_group, backref=database.backref('plans', lazy='dynamic'))
+    choice_groups = relationship(
+        "ChoiceGroup",
+        secondary=association_table_plan_choice_group,
+        backref=database.backref("plans", lazy="dynamic"),
+    )
     position = database.Column(database.Integer(), default=0)
 
+
 class PlanRequirements(database.Model):
-    __tablename__ = 'plan_requirements'
+    __tablename__ = "plan_requirements"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    plan_id = database.Column(database.Integer(), ForeignKey('plan.id'))
+    plan_id = database.Column(database.Integer(), ForeignKey("plan.id"))
     plan = relationship("Plan", back_populates="requirements")
     instant_payment = database.Column(database.Boolean(), default=False)
     subscription = database.Column(database.Boolean(), default=False)
-    note_to_seller_required = database.Column(database.Boolean(), default=False)
+    note_to_seller_required = database.Column(database.Boolean(), default=False)  # noqa
     note_to_buyer_message = database.Column(database.String())
 
+
 class PlanSellingPoints(database.Model):
-    __tablename__ = 'plan_selling_points'
+    __tablename__ = "plan_selling_points"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     point = database.Column(database.String())
-    plan_id = database.Column(database.Integer(), ForeignKey('plan.id'))
+    plan_id = database.Column(database.Integer(), ForeignKey("plan.id"))
     plan = relationship("Plan", back_populates="selling_points")
 
+
 class Integration(database.Model):
-    __tablename__ = 'integration'
+    __tablename__ = "integration"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     google_tag_manager_active = database.Column(database.Boolean())
@@ -153,8 +201,9 @@ class Integration(database.Model):
     tawk_active = database.Column(database.Boolean())
     tawk_property_id = database.Column(database.String())
 
+
 class PaymentProvider(database.Model):
-    __tablename__ = 'payment_provider'
+    __tablename__ = "payment_provider"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     gocardless_active = database.Column(database.Boolean())
@@ -168,23 +217,26 @@ class PaymentProvider(database.Model):
     stripe_connect_account_id = database.Column(database.String())
     stripe_livemode = database.Column(database.Boolean(), default=False)
 
+
 class Page(database.Model):
-    __tablename__ = 'page'
+    __tablename__ = "page"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     page_name = database.Column(database.String())
     path = database.Column(database.String())
     template_file = database.Column(database.String())
 
+
 class Module(database.Model):
-    __tablename__ = 'module'
+    __tablename__ = "module"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     src = database.Column(database.String())
 
+
 class Transaction(database.Model):
-    __tablename__ = 'transactions'
+    __tablename__ = "transactions"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
@@ -194,30 +246,36 @@ class Transaction(database.Model):
     external_id = database.Column(database.String())
     # Source of transaction e.g. Stripe or GoCardless
     external_src = database.Column(database.String())
-    person_id = database.Column(database.Integer(), ForeignKey('person.id'))
+    person_id = database.Column(database.Integer(), ForeignKey("person.id"))
     person = relationship("Person", back_populates="transactions")
-    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
+    subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id")
+    )  # noqa
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
 
+
 class SeoPageTitle(database.Model):
-    __tablename__ = 'module_seo_page_title'
+    __tablename__ = "module_seo_page_title"
     path = database.Column(database.String(), primary_key=True)
     title = database.Column(database.String())
-    
+
 
 class ChoiceGroup(database.Model):
-    __tablename__ = 'choice_group'
+    __tablename__ = "choice_group"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     title = database.Column(database.String())
     options = relationship("Option", back_populates="choice_group")
 
+
 class Option(database.Model):
-    __tablename__ = 'option'
+    __tablename__ = "option"
     id = database.Column(database.Integer(), primary_key=True)
-    choice_group_id = database.Column(database.Integer(), ForeignKey('choice_group.id'))
+    choice_group_id = database.Column(
+        database.Integer(), ForeignKey("choice_group.id")
+    )  # noqa
     choice_group = relationship("ChoiceGroup", back_populates="options")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     title = database.Column(database.String())
@@ -226,37 +284,49 @@ class Option(database.Model):
 
 
 class ChosenOption(database.Model):
-    __tablename__ = 'chosen_option'
+    __tablename__ = "chosen_option"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     choice_group_id = database.Column(database.Integer())
     choice_group_title = database.Column(database.String())
     option_title = database.Column(database.String())
-    subscription_id = database.Column(database.Integer(), ForeignKey('subscription.id'))
-    subscription = relationship("Subscription", back_populates="chosen_options")
+    subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id")
+    )  # noqa
+    subscription = relationship("Subscription", back_populates="chosen_options")  # noqa
+
 
 class ModuleStyle(database.Model):
     """For custom css style injection"""
-    __tablename__ = 'module_style'
+
+    __tablename__ = "module_style"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     css = database.Column(database.String())
 
+
 class EmailTemplate(database.Model):
     """Custom email templates"""
-    __tablename__ = 'email_template'
+
+    __tablename__ = "email_template"
     id = database.Column(database.Integer(), primary_key=True)
     custom_welcome_email_template = database.Column(database.String())
-    use_custom_welcome_email = database.Column(database.Boolean(), default=False)
+    use_custom_welcome_email = database.Column(
+        database.Boolean(), default=False
+    )  # noqa
+
 
 class Setting(database.Model):
     """Settings"""
+
     __tablename__ = "setting"
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
 
+
 class File(database.Model):
     """File uploads meta"""
+
     __tablename__ = "file"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
