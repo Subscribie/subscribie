@@ -531,6 +531,7 @@ def create_stripe_webhook():
     stripe.api_key = get_stripe_secret_key()
     webhook_url = url_for('views.stripe_webhook', _external=True)
     payment_provider = PaymentProvider.query.first()
+    newWebhookNeeded = False
 
     liveMode = payment_provider.stripe_livemode  # returns bool
 
