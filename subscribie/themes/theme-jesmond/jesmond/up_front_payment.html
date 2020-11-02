@@ -42,12 +42,16 @@
 
 		<div class="content">
 		<p>
+        {% if plan.requirements.instant_payment %}
            <b>Pay today:</b>
            <span class="tag is-success is-medium">&pound; {{ "%.2f"|format(plan.sell_price/100) }}</span>
+        {% endif %}
         </p>
 		<p>
+        {% if plan.requirements.subscription %}
            <b>Price ({{ plan.interval_unit }})</b>
            <span class="tag is-info is-medium">&pound; {{ "%.2f"|format(plan.interval_amount/100) }}</span>
+        {% endif %}
         </p>
 		</div>
 
