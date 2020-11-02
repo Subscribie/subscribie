@@ -24,7 +24,7 @@ from subscribie import (
     database, User, Person, Subscription, SubscriptionNote, Company,
     Integration, PaymentProvider, Plan, PlanRequirements, PlanSellingPoints,
 )
-from subscribie.utils import get_stripe_secret_key
+from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account
 from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyToEmailForm, UploadFilesForm
 from subscribie.auth import login_required, protected_download
 from subscribie.db import get_db
@@ -511,33 +511,6 @@ def connect_gocardless_start():
     return flask.redirect(authorize_url, code=302)
 
 
-def getStripeConnectAccount():
-    payment_provider = PaymentProvider.query.first()
-    stripe.api_key = get_stripe_secret_key()
-
-    if payment_provider.stripe_livemode:
-        account_id = payment_provider.stripe_live_connect_account_id
-    else:
-        account_id = payment_provider.stripe_test_connect_account_id
-
-    if account_id is None or account_id == "":
-        raise NameError("account_id is not set")
-
-    try:
-        account = stripe.Account.retrieve(account_id)
-    except stripe.error.PermissionError as e:
-        print(e)
-        raise
-    except stripe.error.InvalidRequestError as e:
-        print(e)
-        raise
-    except Exception as e:
-        print(e)
-        account = None
-
-    return account
-
-
 @admin.route("/connect/stripe-set-livemode", methods=["POST"])
 @login_required
 def set_stripe_livemode():
@@ -571,6 +544,7 @@ def create_stripe_webhook():
         stripe.WebhookEndpoint.retrieve(webhook_id)
     except stripe.error.InvalidRequestError as e:
         print(e)
+        print(f"Creating new Stripe webhook in mode {liveMode}")
         newWebhookNeeded = True
 
     if newWebhookNeeded:
@@ -620,7 +594,7 @@ def stripe_connect():
     payment_provider = PaymentProvider.query.first()
 
     try:
-        account = getStripeConnectAccount()
+        account = get_stripe_connect_account()
         if account is not None and account.charges_enabled and account.payouts_enabled:
             payment_provider.stripe_active = True
         else:
@@ -658,7 +632,7 @@ def stripe_onboarding():
     payment_provider = PaymentProvider.query.first()
     try:
         print("Trying if there's an existing stripe account")
-        account = getStripeConnectAccount()
+        account = get_stripe_connect_account()
         print(f"Yes, stripe account found: {account.id}")
     except (stripe.error.PermissionError, stripe.error.InvalidRequestError, NameError, AttributeError):
         print("Could not find a stripe account, Creating stripe account")

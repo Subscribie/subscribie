@@ -4,7 +4,11 @@ import datetime
 from datetime import date
 from .signals import journey_complete
 from subscribie import session, CustomerForm, gocardless_pro, current_app
-from subscribie.utils import get_stripe_publishable_key
+from subscribie.utils import (
+    get_stripe_publishable_key,
+    get_stripe_secret_key,
+    get_stripe_connect_account,
+)
 import stripe
 from pathlib import Path
 from jinja2 import Template
@@ -257,7 +261,10 @@ def up_front():
     company = Company.query.first()
     stripe_create_checkout_session_url = url_for("views.stripe_create_checkout_session")
 
-    stripe_connected_account_id = payment_provider.stripe_connect_account_id
+    if payment_provider.stripe_livemode:
+        stripe_connected_account_id = payment_provider.stripe_live_connect_account_id
+    else:
+        stripe_connected_account_id = payment_provider.stripe_test_connect_account_id
 
     return render_template(
         "up_front_payment.html",
@@ -307,7 +314,7 @@ def stripe_webhook():
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         # Only proces events for this connected account
-        if event.account != payment_provider.stripe_connect_account_id:
+        if event.account != get_stripe_connect_account().id:
             return "Event account id does not match this shop, ignoring", 200
         session = event["data"]["object"]
         print("#" * 20 + "Session" + "#" * 20)
@@ -352,7 +359,7 @@ def stripe_create_checkout_session():
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
-    stripe.api_key = current_app.config.get("STRIPE_LIVE_SECRET_KEY")
+    stripe.api_key = get_stripe_secret_key()
     stripe_session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=[
