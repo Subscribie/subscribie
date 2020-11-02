@@ -577,7 +577,8 @@ def create_stripe_webhook():
         # Delete previous webhooks which match the webhook_url
         webhooks = stripe.WebhookEndpoint.list()
         for webhook in webhooks:
-            if webhook.url == webhook_url:
+            # Only delete webhook if matched url and same live mode state (true/false)
+            if webhook.url == webhook_url and webhook.livemode == liveMode:
                 stripe.WebhookEndpoint.delete(webhook.id)
 
         # Create a new webhook
