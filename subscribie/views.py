@@ -6,6 +6,7 @@ from datetime import date
 import sqlite3
 from .signals import journey_complete
 from subscribie import session, CustomerForm, gocardless_pro, current_app
+from subscribie.utils import get_stripe_publishable_key
 import stripe
 from uuid import uuid4
 from pathlib import Path
@@ -208,7 +209,7 @@ def up_front():
                 This can be done by the shop owner via the admin dashboard."""
 
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    stripe_pub_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY')
+    stripe_pub_key = get_stripe_publishable_key()
     company = Company.query.first()
     stripe_create_checkout_session_url = url_for('views.stripe_create_checkout_session')
 
@@ -228,16 +229,20 @@ def up_front():
 @bp.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     payment_provider = PaymentProvider.query.first()
-    stripe_account_id = payment_provider.stripe_connect_account_id
 
-    if current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None):
-        endpoint_secret  = current_app.config.get("STRIPE_WEBHOOK_ENDPOINT_SECRET", None)
+    if "127.0.0.1" in request.host or "localhost" in request.host:
+        # Operate in local mode
+        endpoint_secret = current_app.config.get("STRIPE_CLI_WEBHOOK_ENDPOINT_SECRET", None) # noqa
     else:
-        endpoint_secret = payment_provider.stripe_webhook_endpoint_secret
-        if endpoint_secret is None:
-            msg = "Could not fetch stripe_webhook_endpoint_secret from db"
-            print(msg)
-            return jsonify(msg), 500
+        if payment_provider.stripe_livemode:
+            endpoint_secret = payment_provider.stripe_live_webhook_endpoint_secret
+        else:
+            endpoint_secret = payment_provider.stripe_test_webhook_endpoint_secret
+
+    if endpoint_secret is None:
+        msg = "Could not get endpoint_secret"
+        print(msg)
+        return jsonify(msg), 500
 
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", None)
@@ -302,7 +307,7 @@ def stripe_create_checkout_session():
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
-    stripe.api_key = current_app.config.get('STRIPE_SECRET_KEY')
+    stripe.api_key = current_app.config.get('STRIPE_LIVE_SECRET_KEY')
     stripe_session = stripe.checkout.Session.create(
         payment_method_types = ["card"],
         line_items=[{
