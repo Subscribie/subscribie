@@ -28,6 +28,7 @@ from subscribie.forms import UploadLogoForm, WelcomeEmailTemplateForm, SetReplyT
 from subscribie.auth import login_required, protected_download
 from subscribie.db import get_db
 from subscribie.symlink import symlink
+from subscribie.views import reload_flask_app
 import yaml
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 import os, sys
@@ -524,6 +525,19 @@ def getStripeAccount(account_id):
         account = None
 
     return account
+
+@admin.route("/connect/stripe-set-livemode", methods=["POST"])
+@login_required
+def set_stripe_livemode():
+    livemode = request.data.decode('utf-8')
+    import pdb; pdb.set_trace()
+    if livemode == 'test' or livemode == 'live':
+        # Restart the app
+        flash(f"Stipe is now in mode")
+        #reload_flask_app()
+        return redirect("/admin/connect/stripe-connect")
+
+    return jsonify("Invalid request, valid values: 'live' or 'test'"), 500
 
 def create_stripe_webhook():
     """

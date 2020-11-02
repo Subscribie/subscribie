@@ -77,8 +77,23 @@
             </div> 
          {% endif %}
 
-          <button id="submit" class="btn btn-success">Setup payouts on Stripe</button>
+          <button class="btn btn-success">Setup payouts on Stripe</button>
 
+          <hr />
+          <h3>Live / Test mode</h3>
+          <p>Switch between live and test mode.</p>
+          <p><em>Live</em> means use real money. <em>Test</em> is pretend money.</p>
+
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="live" checked>
+            <label class="form-check-label" for="inlineRadio1">Live</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="test">
+            <label class="form-check-label" for="inlineRadio2">Test</label>
+          </div>
+        
         </div>
 
         <div class="col-md-5">
@@ -132,6 +147,24 @@ if (elmButton) {
     false
   );
 }
+
+/* Toggle stripe live mode */
+elms = document.querySelectorAll('.stripe-change-live-mode');
+
+for (let elm of elms) {
+  elm.addEventListener('click', function(e) {
+    console.log(e.target.value);
+    fetch('/admin/connect/stripe-set-livemode?next=/admin/connect/stripe-connect', {
+      method: 'POST',
+      body: e.target.value,
+    })
+    .then(function(response){
+      document.location = response.url;
+    });
+
+  });
+}
+/* */
 </script>
 
 
