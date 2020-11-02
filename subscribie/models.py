@@ -213,6 +213,8 @@ class PaymentProvider(database.Model):
     stripe_live_webhook_endpoint_secret = database.Column(database.String())
     stripe_live_webhook_endpoint_id = database.Column(database.String())
     stripe_live_connect_account_id = database.Column(database.String())
+    stripe_test_webhook_endpoint_secret = database.Column(database.String())
+    stripe_test_webhook_endpoint_id = database.Column(database.String())
     stripe_test_connect_account_id = database.Column(database.String())
     stripe_livemode = database.Column(database.Boolean(), default=False)
 
