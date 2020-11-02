@@ -25,6 +25,16 @@
           </p>
 
          {% if account.payouts_enabled %}
+            {% if payment_provider.stripe_livemode is not sameas True %}
+            <div class="alert alert-warning" role="alert">
+                <b>Your currently running in test mode.</b> <br />
+                To make a test order, use the following test card: <br />
+                4242 4242 4242 4242 <br />
+                Month/Year: 06/20 <br />
+                CVC: 123 <br />
+                Any valid name/Address
+            </div>
+            {% endif %}
             <div class="alert alert-success" role="alert">
                 <b>Congrats!</b> Payouts are active on your site, which means 
                 you'll receive funds to your bank account.
