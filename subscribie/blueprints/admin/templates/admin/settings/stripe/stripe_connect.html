@@ -93,7 +93,7 @@
 
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="live"
+            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1"
               {% if payment_provider.stripe_livemode %} 
                 checked
               {% endif %}
@@ -101,7 +101,7 @@
             <label class="form-check-label" for="inlineRadio1">Live</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="test"
+            <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0"
               {% if payment_provider.stripe_livemode is sameas False %}
                 checked
               {% endif %}

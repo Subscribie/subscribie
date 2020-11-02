@@ -542,10 +542,10 @@ def getStripeConnectAccount():
 @login_required
 def set_stripe_livemode():
     livemode = request.data.decode('utf-8')
-    if livemode == 'test' or livemode == 'live':
-        # Restart the app
-        flash("Stipe is now in mode")
-        # reload_flask_app()
+    if livemode == '0' or livemode == '1':
+        payment_provider = PaymentProvider.query.first()
+        payment_provider.stripe_livemode = int(livemode)
+        database.session.commit()
         return redirect("/admin/connect/stripe-connect")
 
     return jsonify("Invalid request, valid values: 'live' or 'test'"), 500
