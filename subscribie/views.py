@@ -99,6 +99,7 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 @bp.route("/new_customer", methods=["GET"])
 def new_customer():
     plan = Plan.query.filter_by(uuid=request.args['plan']).first()
+    session["plan"] = plan.uuid
 
     # Fetch selected options, if present
     chosen_options = []
@@ -120,7 +121,6 @@ def new_customer():
     package = request.args.get("plan", "not set")
     session["package"] = package
     plan = Plan.query.filter_by(uuid=request.args.get('plan')).first()
-    session["plan"] = plan.uuid
     form = CustomerForm()
     return render_template("new_customer.html", form=form, package=package,
                          plan=plan,
