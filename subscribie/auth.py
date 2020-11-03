@@ -1,7 +1,6 @@
 import functools
 
 from flask import (
-    Flask,
     Blueprint,
     flash,
     g,
@@ -13,29 +12,31 @@ from flask import (
     current_app,
     render_template_string,
 )
-from werkzeug.security import check_password_hash, generate_password_hash
-from subscribie.db import get_db
-from subscribie import logger
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from base64 import b64encode, urlsafe_b64encode
-import smtplib
-import sqlite3
+from base64 import urlsafe_b64encode
 import os
-from .forms import LoginForm, PasswordLoginForm, ForgotPasswordForm, ForgotPasswordResetPasswordForm
+from .forms import (
+    LoginForm,
+    PasswordLoginForm,
+    ForgotPasswordForm,
+    ForgotPasswordResetPasswordForm,
+)
 from flask_mail import Mail, Message
 from .models import database, User, Company
 import binascii
 from pathlib import Path
 import flask
 from jinja2 import Template
-from flask import jsonify, current_app
+from flask import jsonify
 import jwt
 from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
+import logging
+
+logger = logging
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 def token_required(f):
     @wraps(f)
@@ -43,33 +44,35 @@ def token_required(f):
         # Skip token_required is user is cookie authenticated
         if g.user is not None:
             return f(*args, **kwds)
-        if 'Authorization' not in request.headers:
-            resp = jsonify({'msg': "Not authenticated"})
-            resp.headers.set('www-authenticate',  'Bearer')
+        if "Authorization" not in request.headers:
+            resp = jsonify({"msg": "Not authenticated"})
+            resp.headers.set("www-authenticate", "Bearer")
 
             return resp, 401
 
-        auth_header = parse_auth_header(request.headers['Authorization'])
+        auth_header = parse_auth_header(request.headers["Authorization"])
         # Validate & decode jwt
-        public_key = open(current_app.config['PUBLIC_KEY']).read()
+        public_key = open(current_app.config["PUBLIC_KEY"]).read()
         try:
-            jwt.decode(auth_header['access_token'], public_key, algorithms=['RS256'])
+            jwt.decode(auth_header["access_token"], public_key, algorithms=["RS256"])
         except jwt.exceptions.InvalidSignatureError:
-            return jsonify({'msg': 'InvalidSignatureError'}), 401
+            return jsonify({"msg": "InvalidSignatureError"}), 401
         except jwt.exceptions.ExpiredSignatureError:
-            return jsonify({'msg': 'ExpiredSignatureError'}), 401
+            return jsonify({"msg": "ExpiredSignatureError"}), 401
         except jwt.exceptions.InvalidAlgorithmError:
-            return jsonify({'msg': 'InvalidAlgorithmError'}), 401
+            return jsonify({"msg": "InvalidAlgorithmError"}), 401
         return f(*args, **kwds)
+
     return wrapper
+
 
 @bp.route("/jwt-login", methods=["GET", "POST"])
 def jwt_login():
 
-    if 'Authorization' in request.headers:
+    if "Authorization" in request.headers:
         email = request.authorization.username
         password = request.authorization.password
-    elif request.method == "POST": # Oauth style login from form POST
+    elif request.method == "POST":  # Oauth style login from form POST
         email = request.form.get("username", "")
         password = request.form.get("password", "")
 
@@ -77,15 +80,20 @@ def jwt_login():
     if user is not None:
         # Check password
         if not user.check_password(password):
-            return jsonify({'msg': 'Bad credentials'}), 401
+            return jsonify({"msg": "Bad credentials"}), 401
 
-        private_key = open(current_app.config['PRIVATE_KEY']).read()
-        jwt_payload = jwt.encode({
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
-            'user_id': user.id
-            }, private_key, algorithm='RS256')
-        return jsonify({'token': jwt_payload.decode('utf-8')})
-    return jsonify({'msg': 'Bad credentials'})
+        private_key = open(current_app.config["PRIVATE_KEY"]).read()
+        jwt_payload = jwt.encode(
+            {
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+                "user_id": user.id,
+            },
+            private_key,
+            algorithm="RS256",
+        )
+        return jsonify({"token": jwt_payload.decode("utf-8")})
+    return jsonify({"msg": "Bad credentials"})
+
 
 @bp.route("/protected")
 @token_required
@@ -106,8 +114,8 @@ def generate_login_token():
     password_login_form = PasswordLoginForm()
 
     if password_login_form.validate_on_submit():
-        email = password_login_form.data['email']
-        password = password_login_form.data['password']
+        email = password_login_form.data["email"]
+        password = password_login_form.data["password"]
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash("User not found with that email")
@@ -159,7 +167,7 @@ def do_login(login_token):
 
     session.clear()
     session["user_id"] = user.email
-    
+
     # Invalidate previous token
     new_login_token = urlsafe_b64encode(os.urandom(24))
     user.login_token = new_login_token
@@ -216,7 +224,7 @@ def send_login_url(email):
 def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():
-        email = form.data['email']
+        email = form.data["email"]
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash("User not found with that email")
@@ -226,15 +234,20 @@ def forgot_password():
         user.password_reset_string = token
         database.session.commit()
 
-        email_template = str(Path(current_app.root_path + '/emails/user-reset-password.jinja2.html'))
+        email_template = str(
+            Path(current_app.root_path + "/emails/user-reset-password.jinja2.html")
+        )
         company = Company.query.first()
-        password_reset_url='https://' + flask.request.host + '/auth/password-reset?token=' + token
+        password_reset_url = (
+            "https://" + flask.request.host + "/auth/password-reset?token=" + token
+        )
         print(f"password_reset_url: {password_reset_url}")
 
-        with open(email_template) as file_:                                   
-            template = Template(file_.read())     
-            html = template.render(password_reset_url=password_reset_url,
-                                    company=company) 
+        with open(email_template) as file_:
+            template = Template(file_.read())
+            html = template.render(
+                password_reset_url=password_reset_url, company=company
+            )
 
             try:
                 mail = Mail(current_app)
@@ -247,9 +260,12 @@ def forgot_password():
             except Exception as e:
                 print(e)
                 print("Failed to send user password reset email")
-            flash("We've sent you an email with a password reset link, please check your spam/junk folder too")
+            flash(
+                "We've sent you an email with a password reset link, \
+                please check your spam/junk folder too"
+            )
 
-    return render_template('admin/forgot_password.html', form=form)
+    return render_template("admin/forgot_password.html", form=form)
 
 
 @bp.route("/password-reset", methods=["GET", "POST"])
@@ -258,23 +274,29 @@ def password_reset():
     form = ForgotPasswordResetPasswordForm()
 
     if form.validate_on_submit():
-        if User.query.filter_by(password_reset_string=form.data['token']).first() == None:
+        if (
+            User.query.filter_by(password_reset_string=form.data["token"]).first()
+            is None
+        ):
             return "Invalid reset token"
-        
-        user = User.query.filter_by(password_reset_string=form.data['token']).first()
-        user.set_password(form.data['password'])
+
+        user = User.query.filter_by(password_reset_string=form.data["token"]).first()
+        user.set_password(form.data["password"])
         database.session.commit()
         flash("Your password has been reset")
-        return redirect(url_for('auth.login'))
+        return redirect(url_for("auth.login"))
 
-    if request.args.get("token", None) is None or \
-       len(request.args["token"]) != 64 or \
-       User.query.filter_by(password_reset_string=request.args["token"]).first() == None:
-       return "Invalid reset link. Please try generating a new reset link."
+    if (
+        request.args.get("token", None) is None
+        or len(request.args["token"]) != 64
+        or User.query.filter_by(password_reset_string=request.args["token"]).first()
+        is None
+    ):
+        return "Invalid reset link. Please try generating a new reset link."
 
-    return render_template('/admin/reset_password.html',
-                        token=request.args["token"],
-                        form=form)
+    return render_template(
+        "/admin/reset_password.html", token=request.args["token"], form=form
+    )
 
 
 def login_required(view):
@@ -287,8 +309,10 @@ def login_required(view):
 
     return wrapped_view
 
+
 def protected_download(view):
     """Only allow authenticated users to download (Shop owners or subscribers)"""
+
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is not None or g.subscriber is not None:
@@ -302,4 +326,4 @@ def protected_download(view):
 @bp.route("/logout")
 def logout():
     session.clear()
-    return render_template('admin/logout.html')
+    return render_template("admin/logout.html")

@@ -1,9 +1,10 @@
-from . import logger
 import os
+import logging
 import datetime
 from datetime import date
 from .signals import journey_complete
-from subscribie import CustomerForm, gocardless_pro, current_app
+import gocardless_pro
+from subscribie.forms import CustomerForm
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
@@ -22,6 +23,7 @@ from flask import (
     url_for,
     flash,
     jsonify,
+    current_app,
 )
 import flask
 
@@ -459,9 +461,9 @@ def on_complete_mandate():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     payment_provider = PaymentProvider.query.first()
     redirect_flow_id = request.args.get("redirect_flow_id")
-    logger.info("Recieved flow ID: %s ", redirect_flow_id)
+    logging.info("Recieved flow ID: %s ", redirect_flow_id)
 
-    logger.info(
+    logging.info(
         "Setting up client environment as: %s",
         payment_provider.gocardless_environment,
     )
@@ -473,24 +475,24 @@ def on_complete_mandate():
         redirect_flow = gocclient.redirect_flows.complete(
             redirect_flow_id, params={"session_token": session["sid"]}
         )
-        logger.info("Confirmation URL: %s", redirect_flow.confirmation_url)
+        logging.info("Confirmation URL: %s", redirect_flow.confirmation_url)
         # Save this mandate & customer ID for the next section.
-        logger.info("Mandate: %s", redirect_flow.links.mandate)
-        logger.info("Customer: %s", redirect_flow.links.customer)
+        logging.info("Mandate: %s", redirect_flow.links.mandate)
+        logging.info("Customer: %s", redirect_flow.links.customer)
         session["gocardless_mandate_id"] = redirect_flow.links.mandate
         session["gocardless_customer_id"] = redirect_flow.links.customer
         # Store customer
 
-        logger.info(
+        logging.info(
             "Creating subscription with amount: %s",
             str(plan.interval_amount),
         )
-        logger.info(
+        logging.info(
             "Creating subscription with name: %s",
             plan.title,
         )
-        logger.info("Plan session is set to: %s", str(session["plan"]))
-        logger.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
+        logging.info("Plan session is set to: %s", str(session["plan"]))
+        logging.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
 
         # If days_before_first_charge is set, apply start_date adjustment
         try:
@@ -551,7 +553,7 @@ def on_complete_mandate():
         database.session.commit()
 
     except Exception as e:
-        logger.error(e)
+        logging.error(e)
         if isinstance(e, gocardless_pro.errors.InvalidStateError):
             if e.error["type"] == "invalid_state":
                 # Allow pass through if redirect flow already completed
@@ -671,13 +673,15 @@ def thankyou():
         mail.send(msg)
     except Exception as e:
         print(e)
-        logger.warning("Failed to send welcome email")
+        logging.warning("Failed to send welcome email")
 
     try:
-        logger.info("The Mandate id is: %s", str(session["gocardless_mandate_id"]))
-        logger.info("The GC Customer id is: %s", str(session["gocardless_customer_id"]))
+        logging.info("The Mandate id is: %s", str(session["gocardless_mandate_id"]))
+        logging.info(
+            "The GC Customer id is: %s", str(session["gocardless_customer_id"])
+        )
     except KeyError:
-        logger.warning("No mandate for this transaction")
-        logger.warning("Maybe OK as not all plans require a direct debit mandate")
+        logging.warning("No mandate for this transaction")
+        logging.warning("Maybe OK as not all plans require a direct debit mandate")
     finally:
         return render_template("thankyou.html")

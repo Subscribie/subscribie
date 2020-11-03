@@ -3,11 +3,12 @@ from enum import Enum
 from datetime import datetime
 from typing import List, Optional
 from sqlalchemy.orm import Query
-import uuid
+import uuid as _uuid
+
 
 class OrmBase(BaseModel):
     # Common properties across orm models
-    # Credit: https://github.com/samuelcolvin/pydantic/issues/1334#issuecomment-679207580
+    # Credit: https://github.com/samuelcolvin/pydantic/issues/1334#issuecomment-679207580 # noqa
 
     @validator("*", pre=True)
     def evaluate_lazy_columns(cls, v):
@@ -31,6 +32,7 @@ class PlanRequirements(PlanRequirementsBase):
     id: int
     plan_id: int
 
+
 class PlanRequirementsCreate(PlanRequirementsBase):
     pass
 
@@ -45,27 +47,29 @@ class PlanSellingPoint(PlanSellingPointBase):
     plan_id: int
 
 
-
 class PlanSellingPointCreate(PlanSellingPointBase):
     pass
 
+
 class IntervalUnitEnum(str, Enum):
-    weekly = 'weekly'
-    monthly = 'monthly'
-    yearly = 'yearly'
+    weekly = "weekly"
+    monthly = "monthly"
+    yearly = "yearly"
+
 
 class PlanBase(OrmBase):
     title: Optional[str] = None
     requirements: Optional[PlanRequirementsBase] = None
     selling_points: Optional[List[PlanSellingPointBase]] = []
     archived: Optional[bool] = False
-    uuid: str = str(uuid.uuid4())
+    uuid: str = str(_uuid.uuid4())
     title: str
-    interval_unit: Optional[IntervalUnitEnum] = 'monthly'
+    interval_unit: Optional[IntervalUnitEnum] = "monthly"
     interval_amount: Optional[int] = None
     sell_price: Optional[int] = 0
     days_before_first_charge: Optional[int] = 0
-    primary_icon: Optional[str] = ''
+    primary_icon: Optional[str] = ""
+
 
 class PlanInDBBase(PlanBase):
     created_at: datetime = datetime.utcnow()
@@ -76,6 +80,7 @@ class Plan(PlanBase):
 
     class Config:
         orm_mode = True
+
 
 class PlanUpdate(PlanBase):
     pass

@@ -1,4 +1,5 @@
-import os, tempfile
+import os
+import tempfile
 
 
 def symlink(target, link_name, overwrite=False):
@@ -37,7 +38,7 @@ def symlink(target, link_name, overwrite=False):
                 f"Cannot symlink over existing directory: '{link_name}'"
             )
         os.replace(temp_link_name, link_name)
-    except:
+    except Exception:
         if os.path.islink(temp_link_name):
             os.remove(temp_link_name)
         raise

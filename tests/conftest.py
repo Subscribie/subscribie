@@ -1,8 +1,7 @@
 import os
 import pytest
 
-from flask_migrate import upgrade                                                
-from flask_sqlalchemy import SQLAlchemy                                          
+from flask_migrate import upgrade
 from flask_migrate import Migrate
 
 from subscribie import create_app
@@ -11,19 +10,19 @@ from subscribie.models import User, Company
 from subscribie import seed_db
 
 
-TESTDB = 'test_project.db'
+TESTDB = "test_project.db"
 TESTDB_PATH = "/tmp/{}".format(TESTDB)
-TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
+TEST_DATABASE_URI = "sqlite:///" + TESTDB_PATH
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app(request):
     """Session-wide test `Flask` application."""
     settings_override = {
-        'TESTING': True,
-        'WTF_CSRF_ENABLED': False,
-        'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI,
-        'DB_FULL_PATH': TESTDB_PATH
+        "TESTING": True,
+        "WTF_CSRF_ENABLED": False,
+        "SQLALCHEMY_DATABASE_URI": TEST_DATABASE_URI,
+        "DB_FULL_PATH": TESTDB_PATH,
     }
     app = create_app(settings_override)
 
@@ -37,20 +36,22 @@ def app(request):
     request.addfinalizer(teardown)
     return app
 
+
 @pytest.fixture
 def client(app):
-  client = app.test_client()
-  return client
+    client = app.test_client()
+    return client
 
 
 def apply_migrations(app):
     """Applies all alembic migrations."""
-    _db.init_app(app)                                                                 
+    _db.init_app(app)
     Migrate(app, _db)
-    upgrade('./migrations')
+    upgrade("./migrations")
     seed_db()
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def db(app, request):
     """Session-wide test database."""
     if os.path.exists(TESTDB_PATH):
@@ -68,7 +69,7 @@ def db(app, request):
     return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
@@ -76,7 +77,7 @@ def session(db, request):
 
     options = dict(bind=connection, binds={})
     session = db.create_scoped_session(options=options)
-    
+
     db.session = session
 
     def teardown():
@@ -87,7 +88,8 @@ def session(db, request):
     request.addfinalizer(teardown)
     return session
 
-@pytest.fixture(scope='function')
+
+@pytest.fixture(scope="function")
 def with_shop_owner(db, session):
     user = User()
     user.email = "admin@example.com"
