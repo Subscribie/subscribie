@@ -1,10 +1,13 @@
-from . import database
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
+from flask_sqlalchemy import SQLAlchemy
+
+
+database = SQLAlchemy()
 
 
 def uuid_string():

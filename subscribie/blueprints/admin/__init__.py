@@ -1,35 +1,30 @@
-from flask import Blueprint, render_template, flash, send_from_directory, g
-import jinja2
-from jinja2 import Environment
-from subscribie import (
-    logging,
-    session,
-    request,
-    gocardless_pro,
-    GocardlessConnectForm,
-    ChangePasswordForm,
-    ChangeEmailForm,
-    AddShopAdminForm,
+from flask import (
+    Blueprint,
+    render_template,
+    flash,
+    send_from_directory,
+    g,
     current_app,
     redirect,
     url_for,
-    GoogleTagManagerConnectForm,
-    PlansForm,
     jsonify,
-    TawkConnectForm,
-    database,
-    User,
-    Person,
-    Subscription,
-    Company,
-    Integration,
-    PaymentProvider,
-    Plan,
-    PlanRequirements,
-    PlanSellingPoints,
+    request,
+    session,
 )
+import jinja2
+from jinja2 import Environment
+import gocardless_pro
+import logging
+from flask_sqlalchemy import SQLAlchemy
 from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account
 from subscribie.forms import (
+    TawkConnectForm,
+    GocardlessConnectForm,
+    ChangePasswordForm,
+    GoogleTagManagerConnectForm,
+    PlansForm,
+    ChangeEmailForm,
+    AddShopAdminForm,
     UploadLogoForm,
     WelcomeEmailTemplateForm,
     SetReplyToEmailForm,
@@ -44,10 +39,25 @@ from .getLoadedModules import getLoadedModules
 import uuid
 from sqlalchemy import desc
 from datetime import datetime
-from subscribie.models import Transaction, EmailTemplate, Setting, File
+from subscribie.models import (
+    Transaction,
+    EmailTemplate,
+    Setting,
+    File,
+    User,
+    Person,
+    Subscription,
+    Company,
+    Integration,
+    PaymentProvider,
+    Plan,
+    PlanRequirements,
+    PlanSellingPoints,
+)
 import stripe
 from werkzeug.utils import secure_filename
 
+database = SQLAlchemy()
 
 admin = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
