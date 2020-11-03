@@ -66,7 +66,7 @@ def test_admin_cal_add_plan(session, app, client, admin_session):
 def admin_session(client, with_shop_owner):
     user = User.query.filter_by(email="admin@example.com").first()
     with client.session_transaction() as sess:
-        sess["user_id"] = user.email
+        sess["user_id"] = "admin@example.com"
 
 
 def test_homepage(session, client):
