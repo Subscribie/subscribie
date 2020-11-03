@@ -53,15 +53,7 @@ database = SQLAlchemy()
 
 
 def seed_db():
-    # Add module_seo_page_title
-    module_seo = Module()
-    module_seo.name = "module_seo_page_title"
-    module_seo.src = "https://github.com/Subscribie/module-seo-page-title.git"
-    database.session.add(module_seo)
-    module_pages = Module()
-    module_pages.name = "module_pages"
-    module_pages.src = "https://github.com/Subscribie/module-pages.git"
-    database.session.commit()
+    pass
 
 
 def create_app(test_config=None):
