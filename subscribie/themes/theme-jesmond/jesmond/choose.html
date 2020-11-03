@@ -7,7 +7,9 @@
       <div class="row">
         <div class="col-md-8 pl-0">
           <h1 class="h1 text-white font-weight-bold">{{ company.name }}</h1>
-          {% if company.slogan %}
+          {% if company.slogan is sameas None or company.slogan == "None"  %}
+            <h2></h2>
+          {% else %}
             <h2 class="h3 text-white">{{ company.slogan }}</h2>
           {% endif %}
         </div>
@@ -33,9 +35,23 @@
             <div class="pricing-plan col-lg-3 col-md-5 my-3 mx-3">
                 <div class="plan-header">
                   {% if plan.primary_icon %}
-                    <a href="{{ plan.primary_icon }}">
-                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto"/>
-                    </a>
+                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" data-toggle="modal" data-target="#myModal">
+
+                    <div class="modal" id="myModal" style="z-index: 1050;">
+                      <div class="modal-dialog">
+                        <div class="modal-content" style="margin: 0;">
+                          <!-- Modal Header -->
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+                          <!-- Modal body -->
+                          <div class="modal-body">
+                            <img src="{{ plan.primary_icon }}">
+                          </div>
+                         
+                        </div>
+                      </div>
+                    </div>
                   {% endif %}
                   {{ plan.title|safe }}
                 </div>
@@ -105,6 +121,7 @@
   </div>
 </div>
 
+<!--
 
   <script>
     $('.pricing-plan').hover(
@@ -112,6 +129,7 @@
          function(){ $(this).removeClass('is-active') }
   )
   </script>
+  -->
 
   <script>
     function showHorizontal() {
