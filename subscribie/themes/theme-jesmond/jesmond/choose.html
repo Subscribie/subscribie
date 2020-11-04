@@ -88,12 +88,12 @@
                   {% if plan.choice_groups %}
 
                   <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}"
-                  class="button is-fullwidth is-info">
+                  class="choose-plan button is-fullwidth is-info">
                   Choose</a>
 
                   {% else %}
                     <a href="/new_customer?plan={{ plan.uuid }}"
-                    class="button is-fullwidth is-info">
+                    class="choose-plan button is-fullwidth is-info">
                     Choose</a>
                   {% endif %}
               </div>

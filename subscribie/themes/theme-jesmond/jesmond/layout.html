@@ -168,6 +168,27 @@
         }
       });
     });
+  
+  function inIframe () {
+      try {
+          return window.self !== window.top;
+      } catch (e) {
+          return true;
+      }
+  }
+
+  /* 
+    if in iframe, open new plan/customer in new window
+    as GoCardless denys iframe via X-Frame-Options deny
+  */
+  if (inIframe()) {
+    chooseElms = document.querySelectorAll('.choose-plan');
+    for (chooseElm of chooseElms) {
+      console.log(chooseElm);
+      chooseElm.target = "_blank";
+    }
+  }
+
   </script>
   {{ custom_css|safe }}
 </html>
