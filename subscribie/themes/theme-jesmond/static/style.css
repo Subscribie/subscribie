@@ -7105,7 +7105,6 @@ a.dropdown-item.is-active {
           justify-content: center;
   overflow: hidden;
   position: fixed;
-  z-index: 20;
 }
 
 .modal.is-active {
