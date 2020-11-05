@@ -99,11 +99,11 @@
               </div>
             </div>
 
-            {% if plan.primary_icon %}
+            <!-- {% if plan.primary_icon %}
             <div class="modal">
 
             </div>
-            {% endif %}
+            {% endif %} -->
           {% endfor %}
         </div>
       </div>
@@ -113,10 +113,6 @@
     {% if plan.primary_icon %}
     <!-- The Modal -->
       <div id="myModal" class="modal">
-        <!-- Close button -->
-      <span class="close">&times;</span>
-      <!-- Modal content -->
-   <img class="modal-content" id="modal-image">
       </div>
     {% endif %}
   {% endfor %}
@@ -148,25 +144,38 @@
 
   <script>
     var modal = document.getElementById('myModal');
-   var img = document.getElementById('myImg');
-   var modalImg = document.getElementById('modal-image');
+    var img = document.getElementById('myImg');
+    
+    
+    window.openModal = function(img) {
 
-   window.openModal = function(img) {
-  modal.style.display = "block";
-  modalImg.src = img.getAttribute("data-highres");
-}
+      genereteModalHTML();
 
-   var span = document.getElementsByClassName("close")[0];
+      var modalImg = document.getElementById('modal-image');
+      
+      modal.style.display = "block";
+      modalImg.src = img.getAttribute("data-highres");
+    }
 
-span.onclick = function() {
-modal.style.display = "none";
-}
+    function genereteModalHTML() {
+      var modalHTML ='';
+      modalHTML += `
 
-window.onclick = function() {
-if(event.target == modal) {
-     modal.style.display = "none";
-   }
-}
+      <!-- Modal content -->
+      <img class="modal-content" id="modal-image">
+
+      `;
+      modal.innerHTML += modalHTML;
+
+      // Close modal window
+
+      window.onclick = function() {
+        if(event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+      
+    }
 
   </script>
 
