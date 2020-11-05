@@ -35,23 +35,7 @@
             <div class="pricing-plan col-lg-3 col-md-5 my-3 mx-3">
                 <div class="plan-header">
                   {% if plan.primary_icon %}
-                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" data-toggle="modal" data-target="#myModal">
-
-                    <div class="modal" id="myModal" style="z-index: 1050;">
-                      <div class="modal-dialog">
-                        <div class="modal-content" style="margin: 0;">
-                          <!-- Modal Header -->
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                          </div>
-                          <!-- Modal body -->
-                          <div class="modal-body">
-                            <img src="{{ plan.primary_icon }}">
-                          </div>
-                         
-                        </div>
-                      </div>
-                    </div>
+                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" class="plan-img" data-highres="{{ plan.primary_icon }}" onclick="openModal(this)">
                   {% endif %}
                   {{ plan.title|safe }}
                 </div>
@@ -114,14 +98,33 @@
                   {% endif %}
               </div>
             </div>
+
+            {% if plan.primary_icon %}
+            <div class="modal">
+
+            </div>
+            {% endif %}
           {% endfor %}
         </div>
       </div>
 
   </div>
+  {% for plan in plans %}
+    {% if plan.primary_icon %}
+    <!-- The Modal -->
+      <div id="myModal" class="modal">
+        <!-- Close button -->
+      <span class="close">&times;</span>
+      <!-- Modal content -->
+   <img class="modal-content" id="modal-image">
+      </div>
+    {% endif %}
+  {% endfor %}
+
 </div>
 
-<!--
+
+
 
   <script>
     $('.pricing-plan').hover(
@@ -129,7 +132,6 @@
          function(){ $(this).removeClass('is-active') }
   )
   </script>
-  -->
 
   <script>
     function showHorizontal() {
@@ -142,6 +144,30 @@
       document.getElementById('pricing-table-horizontal').style.display = "none";
       console.log('Button Clicked!');
     }
+  </script>
+
+  <script>
+    var modal = document.getElementById('myModal');
+   var img = document.getElementById('myImg');
+   var modalImg = document.getElementById('modal-image');
+
+   window.openModal = function(img) {
+  modal.style.display = "block";
+  modalImg.src = img.getAttribute("data-highres");
+}
+
+   var span = document.getElementsByClassName("close")[0];
+
+span.onclick = function() {
+modal.style.display = "none";
+}
+
+window.onclick = function() {
+if(event.target == modal) {
+     modal.style.display = "none";
+   }
+}
+
   </script>
 
 {% endblock %}
