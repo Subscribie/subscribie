@@ -35,7 +35,9 @@
             <div class="pricing-plan col-lg-3 col-md-5 my-3 mx-3">
                 <div class="plan-header">
                   {% if plan.primary_icon %}
-                    <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" class="plan-img" data-highres="{{ plan.primary_icon }}" onclick="openModal(this)">
+                    <a href="#" class="plan-img-action" data-toggle="modal" data-target="#imgModal" data-highres="{{ plan.primary_icon }}">
+                      <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" class="plan-img">
+                    </a>
                   {% endif %}
                   {{ plan.title|safe }}
                 </div>
@@ -99,23 +101,28 @@
               </div>
             </div>
 
-            <!-- {% if plan.primary_icon %}
-            <div class="modal">
-
-            </div>
-            {% endif %} -->
           {% endfor %}
         </div>
       </div>
 
   </div>
-  {% for plan in plans %}
-    {% if plan.primary_icon %}
-    <!-- The Modal -->
-      <div id="myModal" class="modal">
+
+  <!-- modal -->
+  <div class="modal fade " id="imgModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img class="modal-img" src="" alt="" />
+        </div>
       </div>
-    {% endif %}
-  {% endfor %}
+    </div>
+  </div>
+  <!-- // end modal -->
 
 </div>
 
@@ -143,40 +150,10 @@
   </script>
 
   <script>
-    var modal = document.getElementById('myModal');
-    var img = document.getElementById('myImg');
-    
-    
-    window.openModal = function(img) {
-
-      genereteModalHTML();
-
-      var modalImg = document.getElementById('modal-image');
-      
-      modal.style.display = "block";
-      modalImg.src = img.getAttribute("data-highres");
-    }
-
-    function genereteModalHTML() {
-      var modalHTML ='';
-      modalHTML += `
-
-      <!-- Modal content -->
-      <img class="modal-content" id="modal-image">
-
-      `;
-      modal.innerHTML += modalHTML;
-
-      // Close modal window
-
-      window.onclick = function() {
-        if(event.target == modal) {
-          modal.style.display = "none";
-        }
-      }
-      
-    }
-
+    $( ".plan-img-action" ).click(function() {
+      var imgURL = $(this).attr('data-highres');
+      $(".modal-img").attr("src", imgURL);
+    });
   </script>
 
 {% endblock %}
