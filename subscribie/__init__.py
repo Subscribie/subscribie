@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 import sys
 import sqlite3
+from .database import database
 import flask
 import datetime
 from base64 import b64encode
@@ -31,7 +32,6 @@ import importlib
 from importlib import reload
 import urllib
 from pathlib import Path
-from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy
 from flask_migrate import Migrate
 import click
@@ -47,9 +47,6 @@ from .models import (
 )
 
 from .blueprints.admin import get_subscription_status
-
-
-database = SQLAlchemy()
 
 
 def seed_db():

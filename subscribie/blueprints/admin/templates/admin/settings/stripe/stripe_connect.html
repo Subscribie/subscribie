@@ -43,7 +43,11 @@
             {% endif %}
             <div class="alert alert-success" role="alert">
                 <b>Congrats!</b> Payouts are active on your site, which means 
-                you'll receive funds to your bank account.
+                you'll receive funds to your bank account. <br />
+                {% if payment_provider.stripe_livemode is not sameas True %}
+                  <b>Your accout is currently in test mode, once you are ready, 
+                  you can switch to live mode using real money.</b>
+                {% endif %}
             </div> 
 
             <a href="{{ stripe_express_dashboard_url }}" class="btn btn-success">
@@ -88,7 +92,7 @@
          {% if account.details_submitted is sameas False %}
             <div class="alert alert-warning" role="alert">
                 Stripe is waiting for you to provide information to validate 
-                your account. Please login to your Stripe account and upload
+                your bank account for payments. Please connect Stripe below and upload
                 any information they request.
             </div> 
          {% endif %}
@@ -156,7 +160,7 @@ if (elmButton) {
     "click",
     e => {
       elmButton.setAttribute("disabled", "disabled");
-      elmButton.textContent = "Opening...";
+      elmButton.textContent = "Opening please wait...";
 
       fetch("{{ stripe_onboard_path }}", {
         method: "POST",

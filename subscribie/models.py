@@ -4,10 +4,8 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
-from flask_sqlalchemy import SQLAlchemy
 
-
-database = SQLAlchemy()
+from .database import database
 
 
 def uuid_string():

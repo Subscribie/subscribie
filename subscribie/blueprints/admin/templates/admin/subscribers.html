@@ -73,7 +73,14 @@
                         {{ subscription.gocardless_subscription_id }}</a>
                     </li>
                     {% endif %}
-                    <li><strong>Price ({{ subscription.plan.interval_unit }}): </strong>{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</li>
+                    <li>
+                        {% if subscription.plan.requirements.subscription %}
+                          <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
+                          {{ subscription.plan.interval_amount |default(0)|currencyFormat }}
+                        {% else %}
+                          (One-off. Not a subscription)
+                        {% endif %}
+                    </li>
                     <li><strong>Sell price: </strong>{{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
                     <li><strong>Status: </strong>
                         {% if subscription.plan.requirements.subscription %}
