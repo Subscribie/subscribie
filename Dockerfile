@@ -10,6 +10,7 @@ RUN sed -i 's#SQLALCHEMY_DATABASE_URI.*#SQLALCHEMY_DATABASE_URI="sqlite:////usr/
 RUN sed -i 's#DB_FULL_PATH.*#DB_FULL_PATH=/usr/src/app/data.db#g' .env
 RUN sed -i 's#TEMPLATE_BASE_DIR.*#TEMPLATE_BASE_DIR=/usr/src/app/subscribie/subscribie/themes/#g' .env
 RUN sed -i 's#STATIC_FOLDER.*#STATIC_FOLDER=/usr/src/app/subscribie/subscribie/themes/theme-jesmond/static/#g' .env
+RUN sed -i 's#UPLOADED_IMAGES_DEST.*#UPLOADED_IMAGES_DEST=/usr/src/app/subscribie/subscribie/static/#g' .env
 
 # Set cookie secure flag to false in development
 RUN sed -i 's#SESSION_COOKIE_SECURE.*##g' .env
