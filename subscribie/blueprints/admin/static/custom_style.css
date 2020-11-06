@@ -18,3 +18,8 @@
     margin-bottom: 1rem;
   }
 }
+
+
+textarea {
+  padding: 10px;
+}
