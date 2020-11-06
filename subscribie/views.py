@@ -28,7 +28,6 @@ from flask import (
 import flask
 
 from .models import (
-    database,
     User,
     Person,
     Subscription,
@@ -44,6 +43,8 @@ from .models import (
     EmailTemplate,
     Setting,
 )
+
+from .database import database
 
 from flask_mail import Mail, Message
 import json
@@ -298,7 +299,7 @@ def stripe_webhook():
         return e, 400
     except stripe.error.SignatureVerificationError as e:
         print(e)
-        return "Stripe ignatureVerificationError", 400
+        return "Stripe SignatureVerificationError", 400
 
     print("#" * 20 + "Event" + "#" * 20)
     print(event)
@@ -329,6 +330,7 @@ def stripe_webhook():
             package=package,
             chosen_option_ids=chosen_option_ids,
         )
+        print(f"Live mode is: {event['livemode']}, type: {type(event['livemode'])}")
 
         # Store the transaction
         transaction = Transaction()
