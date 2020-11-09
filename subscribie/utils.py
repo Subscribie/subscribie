@@ -63,10 +63,17 @@ def get_stripe_connect_account():
     return account
 
 
-def create_stripe_webhook():
+def create_stripe_webhook(newWebhookNeeded=False):
     """
     Creates a new webhook, deleting old one if invalid
+
+    If newWebhookNeeded is set to True, then a new webhook is
+    always created. This is useful for if the stripe webhook
+    secret is changed/rolled as a new secret is then needed.
     """
+
+    if newWebhookNeeded is not False:
+        newWebhookNeeded = True
 
     if "127.0.0.1" in request.host or "localhost" in request.host:
         flash(
@@ -78,7 +85,6 @@ def create_stripe_webhook():
     webhook_url = url_for("views.stripe_webhook", _external=True)
 
     payment_provider = PaymentProvider.query.first()
-    newWebhookNeeded = False
 
     liveMode = payment_provider.stripe_livemode  # returns bool
 
