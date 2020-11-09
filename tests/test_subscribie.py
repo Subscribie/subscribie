@@ -92,10 +92,7 @@ def test_shop_owner_forgot_password_submission(session, client, with_shop_owner)
         follow_redirects=True,
         data=dict(email="admin@example.com"),
     )
-    assert (
-        b"We&#39;ve sent you an email with a password reset link, please check your spam/junk folder too"  # noqa
-        in req.data
-    )
+    assert b"We&#39;ve sent you an email with a password reset link" in req.data
 
 
 def test_user_model(session):
