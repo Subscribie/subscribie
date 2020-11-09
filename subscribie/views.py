@@ -9,6 +9,7 @@ from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     get_stripe_connect_account,
+    create_stripe_webhook,
 )
 import stripe
 from pathlib import Path
@@ -299,6 +300,8 @@ def stripe_webhook():
         return e, 400
     except stripe.error.SignatureVerificationError as e:
         print(e)
+        print("Generating new stripe webhook upon SignatureVerificationError")
+        create_stripe_webhook(newWebhookNeeded=True)
         return "Stripe SignatureVerificationError", 400
 
     print("#" * 20 + "Event" + "#" * 20)
