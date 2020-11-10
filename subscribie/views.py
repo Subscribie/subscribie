@@ -575,7 +575,9 @@ def create_subscription(
     """Create subscription model
     Note: A subscription model is also created if a plan only has
     one up_front payment (no recuring subscription). This allows
-    the storing of chosen options againt their plan choice."""
+    the storing of chosen options againt their plan choice.
+    Chosen option ids may be passed via webhook or through session
+    """
     print("Creating subscription")
     # Store Subscription against Person locally
     if email is None:
@@ -586,12 +588,13 @@ def create_subscription(
 
     person = database.session.query(Person).filter_by(email=email).first()
     subscription = Subscription(sku_uuid=package, person=person)
-
     # Add chosen options (if any)
-    chosen_options = []
-    if (
-        session.get("chosen_option_ids", None) or chosen_option_ids
-    ):  # May be passed via webhook
+    if chosen_option_ids is None:
+        chosen_option_ids = session.get("chosen_option_ids", None)
+
+    if chosen_option_ids:
+        print(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
+        chosen_options = []
         for option_id in chosen_option_ids:
             print(f"Locating option id: {option_id}")
             option = Option.query.get(option_id)
@@ -604,7 +607,9 @@ def create_subscription(
                 option.choice_group.id
             )  # Used for grouping latest choice
             chosen_options.append(chosen_option)
-    subscription.chosen_options = chosen_options
+        subscription.chosen_options = chosen_options
+    else:
+        print("No chosen_option_ids were found or applied.")
 
     database.session.add(subscription)
     database.session.commit()
