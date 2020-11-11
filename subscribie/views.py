@@ -1,6 +1,7 @@
 import os
 import logging
 import datetime
+from uuid import uuid4
 from datetime import date
 from .signals import journey_complete
 import gocardless_pro
@@ -314,6 +315,9 @@ def stripe_webhook():
         print("#" * 100)
         person_uuid = session["metadata"]["person_uuid"]
         person = Person.query.filter_by(uuid=person_uuid).first()
+        subscribie_checkout_session_id = session["metadata"][
+            "subscribie_checkout_session_id"
+        ]
 
         try:
             chosen_option_ids = session["metadata"]["chosen_option_ids"]
@@ -328,6 +332,7 @@ def stripe_webhook():
             email=session.customer_email,
             package=package,
             chosen_option_ids=chosen_option_ids,
+            subscribie_checkout_session_id=subscribie_checkout_session_id,
         )
         print(f"Live mode is: {event['livemode']}, type: {type(event['livemode'])}")
 
@@ -352,6 +357,7 @@ def stripe_create_checkout_session():
     charge = {}
     charge["amount"] = plan.sell_price
     charge["currency"] = "GBP"
+    session["subscribie_checkout_session_id"] = str(uuid4())
     stripe.api_key = get_stripe_secret_key()
     stripe_session = stripe.checkout.Session.create(
         payment_method_types=["card"],
@@ -373,6 +379,9 @@ def stripe_create_checkout_session():
             "plan_uuid": session["plan"],
             "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
             "package": session.get("package", None),
+            "subscribie_checkout_session_id": session.get(
+                "subscribie_checkout_session_id", None
+            ),
         },
         customer_email=person.email,
         success_url=url_for(
@@ -566,7 +575,10 @@ def on_complete_mandate():
 
 
 def create_subscription(
-    email=None, package=None, chosen_option_ids=None
+    email=None,
+    package=None,
+    chosen_option_ids=None,
+    subscribie_checkout_session_id=None,
 ) -> Subscription:
     """Create subscription model
     Note: A subscription model is also created if a plan only has
@@ -574,7 +586,9 @@ def create_subscription(
     the storing of chosen options againt their plan choice.
     Chosen option ids may be passed via webhook or through session
     """
-    print("Creating subscription")
+    print("Creating Subscription model if needed")
+    subscription = None  # Initalize subscription model to None
+
     # Store Subscription against Person locally
     if email is None:
         email = session["email"]
@@ -583,38 +597,73 @@ def create_subscription(
         package = session["package"]
 
     person = database.session.query(Person).filter_by(email=email).first()
-    subscription = Subscription(sku_uuid=package, person=person)
-    # Add chosen options (if any)
-    if chosen_option_ids is None:
-        chosen_option_ids = session.get("chosen_option_ids", None)
 
-    if chosen_option_ids:
-        print(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
-        chosen_options = []
-        for option_id in chosen_option_ids:
-            print(f"Locating option id: {option_id}")
-            option = Option.query.get(option_id)
-            # We will store as ChosenOption because option may change after the order
-            # has processed. This preserves integrity of the actual chosen options
-            chosen_option = ChosenOption()
-            chosen_option.option_title = option.title
-            chosen_option.choice_group_title = option.choice_group.title
-            chosen_option.choice_group_id = (
-                option.choice_group.id
-            )  # Used for grouping latest choice
-            chosen_options.append(chosen_option)
-        subscription.chosen_options = chosen_options
-    else:
-        print("No chosen_option_ids were found or applied.")
+    # subscribie_checkout_session_id can be passed by stripe metadata (webhook) or
+    # via session (e.g. when GoCardless session only with no up-front payment)
+    if subscribie_checkout_session_id is None:
+        subscribie_checkout_session_id = session.get(
+            "subscribie_checkout_session_id", None
+        )
+    print(f"subscribie_checkout_session_id is: {subscribie_checkout_session_id}")
 
-    database.session.add(subscription)
-    database.session.commit()
-    session["subscription_uuid"] = subscription.uuid
+    # Verify Subscription not already created (e.g. stripe payment webhook)
+    # another hook or mandate only payment may have already created the Subscription
+    # model, if so, fetch it via its subscribie_checkout_session_id
+    if subscribie_checkout_session_id is not None:
+        subscription = (
+            Subscription.query.filter_by(
+                subscribie_checkout_session_id=subscribie_checkout_session_id
+            )
+            .filter(Subscription.person.has(email=email))
+            .first()
+        )
+        """subscription = (
+            database.session.query(Subscription)
+            .filter_by(subscribie_checkout_session_id=subscribie_checkout_session_id)
+            .has.first()
+        )"""
+
+    if subscription is None:
+        print("No existing subscription model found, creating Subscription model")
+        # Create new subscription model
+        subscription = Subscription(
+            sku_uuid=package,
+            person=person,
+            subscribie_checkout_session_id=subscribie_checkout_session_id,
+        )
+        # Add chosen options (if any)
+        if chosen_option_ids is None:
+            chosen_option_ids = session.get("chosen_option_ids", None)
+
+        if chosen_option_ids:
+            print(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
+            chosen_options = []
+            for option_id in chosen_option_ids:
+                print(f"Locating option id: {option_id}")
+                option = Option.query.get(option_id)
+                # Store as ChosenOption because options may change after the order
+                # has processed. This preserves integrity of the actual chosen options
+                chosen_option = ChosenOption()
+                chosen_option.option_title = option.title
+                chosen_option.choice_group_title = option.choice_group.title
+                chosen_option.choice_group_id = (
+                    option.choice_group.id
+                )  # Used for grouping latest choice
+                chosen_options.append(chosen_option)
+            subscription.chosen_options = chosen_options
+        else:
+            print("No chosen_option_ids were found or applied.")
+
+        database.session.add(subscription)
+        database.session.commit()
+        session["subscription_uuid"] = subscription.uuid
     return subscription
 
 
 @bp.route("/thankyou", methods=["GET"])
 def thankyou():
+    # Remove subscribie_checkout_session_id from session
+    session.pop("subscribie_checkout_session_id", None)
     company = Company.query.first()
     plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
     subscription = (
