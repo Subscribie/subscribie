@@ -51,6 +51,7 @@ from .models import (
 
 from .blueprints.admin import get_subscription_status
 
+load_dotenv(verbose=True)
 beeline.init(writekey=os.environ.get("HONEYCOMB_API_KEY"), dataset="subscribie", service_name="subscribie")
 
 def seed_db():
