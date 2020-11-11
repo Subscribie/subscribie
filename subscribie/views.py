@@ -146,10 +146,6 @@ def new_customer():
             chosen_option.choice_group_title = option.choice_group.title
             chosen_options.append(chosen_option)
 
-    # If already entered sign-up information, take to payment step
-    if session.get("person_id", None):
-        return redirect_to_payment_step(plan)
-
     package = request.args.get("plan", "not set")
     session["package"] = package
     plan = Plan.query.filter_by(uuid=request.args.get("plan")).first()
