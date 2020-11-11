@@ -9,6 +9,9 @@
 """
 from dotenv import load_dotenv
 import os
+import logging
+import beeline
+from uwsgidecorators import postfork
 import sys
 import sqlite3
 from .database import database
@@ -47,6 +50,12 @@ from .models import (
 )
 
 from .blueprints.admin import get_subscription_status
+
+@postfork
+def init_beeline():
+    logging.info(f'beeline initialization in process pid {os.getpid()}')
+    load_dotenv(verbose=True)
+    beeline.init(writekey=os.environ.get("HONEYCOMB_API_KEY"), dataset="honeycomb-uwsgi", debug=True)
 
 
 def seed_db():
