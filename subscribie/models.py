@@ -78,6 +78,7 @@ class Subscription(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
+    subscribie_checkout_session_id = database.Column(database.String())
 
     def next_date(self):
         """Return the next delivery date of this subscription
