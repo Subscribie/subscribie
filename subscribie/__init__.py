@@ -9,9 +9,6 @@
 """
 from dotenv import load_dotenv
 import os
-import logging
-import beeline
-from uwsgidecorators import postfork
 import sys
 import sqlite3
 from .database import database
@@ -27,6 +24,9 @@ from flask import (
     current_app,
     Blueprint,
 )
+
+import beeline
+from beeline.middleware.flask import HoneyMiddleware
 
 from .Template import load_theme
 from flask_cors import CORS
@@ -51,12 +51,7 @@ from .models import (
 
 from .blueprints.admin import get_subscription_status
 
-@postfork
-def init_beeline():
-    logging.info(f'beeline initialization in process pid {os.getpid()}')
-    load_dotenv(verbose=True)
-    beeline.init(writekey=os.environ.get("HONEYCOMB_API_KEY"), dataset="honeycomb-uwsgi", debug=True)
-
+beeline.init(writekey=os.environ.get("HONEYCOMB_API_KEY"), dataset="subscribie", service_name="subscribie")
 
 def seed_db():
     pass
@@ -64,6 +59,7 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    HoneyMiddleware(app, db_events=True) # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy
     load_dotenv(verbose=True)
     app.config.update(os.environ)
 
