@@ -45,8 +45,16 @@
               <li class="list-group-item">
                 <strong>{{ subscription.plan.title }}</strong><br />
                 <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
-                <strong>Interval Unit:</strong> {{ subscription.plan.interval_unit|capitalize }} <br />
-                <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
+                <strong>Interval Unit:</strong> 
+                        {% if subscription.plan.requirements.subscription %}
+                          {{ subscription.plan.interval_unit|capitalize }} 
+                        {% else %}
+                          (One-off. Not a subscription)
+                        {% endif %}
+                  <br />
+                {% if subscription.plan.requirements.subscription %}
+                  <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
+                {% endif %}
                 {% if subscription.chosen_options %}
                 <strong>Choices:</strong>
                   
