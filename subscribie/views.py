@@ -1,10 +1,7 @@
 import os
 import logging
-import datetime
 from uuid import uuid4
-from datetime import date
 from .signals import journey_complete
-import gocardless_pro
 from subscribie.forms import CustomerForm
 from subscribie.utils import (
     get_stripe_publishable_key,
@@ -113,11 +110,7 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 
     scheme = "https" if request.is_secure else "http"
 
-    if plan.requirements.instant_payment:
-        return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
-    if plan.requirements.subscription:
-        return redirect(url_for("views.establish_mandate", inside_iframe=inside_iframe))
-    return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
+    return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
 
 
 @bp.route("/new_customer", methods=["GET"])
@@ -412,181 +405,8 @@ def stripe_create_checkout_session():
 
 @bp.route("/instant_payment_complete", methods=["GET"])
 def instant_payment_complete():
-
-    plan_uuid = request.args.get("plan")
-    plan = Plan.query.filter_by(uuid=plan_uuid).first()
-    if plan.requirements.subscription:
-        return redirect(url_for("views.establish_mandate"))
-    else:
-        scheme = "https" if request.is_secure else "http"
-        return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
-
-
-@bp.route("/establish_mandate", methods=["GET"])
-def establish_mandate():
-    company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    payment_provider = PaymentProvider.query.first()
-
-    if payment_provider.gocardless_active is False:
-        dashboard_url = url_for("admin.dashboard")
-        return """<h1>Shop not set-up yet</h1>
-            The shop owner first needs to login to their
-            <a href="{}">dahboard</a>, and connect GoCardless to their shop.
-            Once this has been completed, you will be able to order.
-        """.format(
-            dashboard_url
-        )
-
-    # Get person from session
-    person = Person.query.get(session["person_id"])
-
-    # validate that hasInstantPaid is true for the customer
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
-
-    description = " ".join([company.name, plan.title])[0:100]
-    redirect_flow = gocclient.redirect_flows.create(
-        params={
-            "description": description,
-            "session_token": session["sid"],
-            "success_redirect_url": current_app.config["SUCCESS_REDIRECT_URL"],
-            "prefilled_customer": {
-                "given_name": person.given_name,
-                "family_name": person.family_name,
-                "address_line1": person.address_line1,
-                "city": person.city,
-                "postal_code": person.postal_code,
-                "email": person.email,
-            },
-        }
-    )
-    # Hold on to this ID - we'll need it when we
-    # "confirm" the dedirect flow later
-    print("ID: {} ".format(redirect_flow.id))
-    print("URL: {} ".format(redirect_flow.redirect_url))
-
-    # Check if we're inside an iframe, if yes redirect to pop-up
-    # Issue https://github.com/Subscribie/subscribie/issues/128
-    if request.args.get("inside_iframe", "False") == "True":
-        return render_template(
-            "iframe_new_window_redirect.html", redirect_url=redirect_flow.redirect_url
-        )
-        return '<a href="{}" target="_blank">Continue</a>'.format(
-            redirect_flow.redirect_url
-        )
-    else:
-        return redirect(redirect_flow.redirect_url)
-
-
-@bp.route("/complete_mandate", methods=["GET"])
-def on_complete_mandate():
-    plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    payment_provider = PaymentProvider.query.first()
-    redirect_flow_id = request.args.get("redirect_flow_id")
-    logging.info("Recieved flow ID: %s ", redirect_flow_id)
-
-    logging.info(
-        "Setting up client environment as: %s",
-        payment_provider.gocardless_environment,
-    )
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
-    try:
-        redirect_flow = gocclient.redirect_flows.complete(
-            redirect_flow_id, params={"session_token": session["sid"]}
-        )
-        logging.info("Confirmation URL: %s", redirect_flow.confirmation_url)
-        # Save this mandate & customer ID for the next section.
-        logging.info("Mandate: %s", redirect_flow.links.mandate)
-        logging.info("Customer: %s", redirect_flow.links.customer)
-        session["gocardless_mandate_id"] = redirect_flow.links.mandate
-        session["gocardless_customer_id"] = redirect_flow.links.customer
-        # Store customer
-
-        logging.info(
-            "Creating subscription with amount: %s",
-            str(plan.interval_amount),
-        )
-        logging.info(
-            "Creating subscription with name: %s",
-            plan.title,
-        )
-        logging.info("Plan session is set to: %s", str(session["plan"]))
-        logging.info("Mandate id is set to: %s", session["gocardless_mandate_id"])
-
-        # If days_before_first_charge is set, apply start_date adjustment
-        try:
-            days_before_first_charge = plan.days_before_first_charge
-            if (
-                days_before_first_charge == 0
-                or days_before_first_charge == ""
-                or days_before_first_charge is None
-            ):
-                start_date = None
-            else:
-                today = date.today()
-                enddate = today + datetime.timedelta(days=int(days_before_first_charge))
-                start_date = enddate.strftime("%Y-%m-%d")
-        except KeyError:
-            start_date = None
-
-        subscription = create_subscription()
-
-        # Get interval_unit
-        if plan.interval_unit is None:
-            # Default to monthly interval if interval_unit not set
-            interval_unit = "monthly"
-        else:
-            interval_unit = plan.interval_unit
-
-        # Get interval_amount
-        if plan.interval_amount is None:
-            # Default to monthly amount if interval_amount is not set
-            interval_amount = plan.monthly_price
-        else:
-            interval_amount = plan.interval_amount
-
-        # Submit to GoCardless as subscription
-        gc_subscription = gocclient.subscriptions.create(
-            params={
-                "amount": interval_amount,
-                "currency": "GBP",
-                "name": plan.title,
-                "interval_unit": interval_unit,
-                "metadata": {"subscribie_subscription_uuid": subscription.uuid},
-                "links": {"mandate": session["gocardless_mandate_id"]},
-                "start_date": start_date,
-            }
-        )
-        # Get first charge date & store in session
-        first_charge_date = gc_subscription.upcoming_payments[0]["charge_date"]
-        first_charge_amount = gc_subscription.upcoming_payments[0]["amount"]
-        session["first_charge_date"] = str(
-            datetime.datetime.strptime(first_charge_date, "%Y-%m-%d").strftime(
-                "%d/%m/%Y"
-            )
-        )
-        session["first_charge_amount"] = first_charge_amount
-        # Store GoCardless subscription id
-        subscription.gocardless_subscription_id = gc_subscription.id
-        database.session.add(subscription)
-        database.session.commit()
-
-    except Exception as e:
-        logging.error(e)
-        if isinstance(e, gocardless_pro.errors.InvalidStateError):
-            if e.error["type"] == "invalid_state":
-                # Allow pass through if redirect flow already completed
-                if e.errors[0]["reason"] == "redirect_flow_already_completed":
-                    pass
-    # Display a confirmation page to the customer, telling them
-    # their Direct Debit has been set up.
-    return redirect(current_app.config["THANKYOU_URL"])
+    scheme = "https" if request.is_secure else "http"
+    return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
 def create_subscription(
@@ -745,14 +565,6 @@ def thankyou():
         print(e)
         logging.warning("Failed to send welcome email")
 
-    try:
-        logging.info("The Mandate id is: %s", str(session["gocardless_mandate_id"]))
-        logging.info(
-            "The GC Customer id is: %s", str(session["gocardless_customer_id"])
-        )
-    except KeyError:
-        logging.warning("No mandate for this transaction")
-        logging.warning("Maybe OK as not all plans require a direct debit mandate")
     finally:
         return render_template("thankyou.html")
 
