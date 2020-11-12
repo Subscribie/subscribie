@@ -11,6 +11,7 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
     create_stripe_webhook,
+    format_to_stripe_interval,
 )
 from subscribie.auth import check_private_page
 import stripe
@@ -344,7 +345,8 @@ def stripe_create_checkout_session():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
-    charge["amount"] = plan.sell_price
+    charge["sell_price"] = plan.sell_price
+    charge["interval_amount"] = plan.interval_amount
     charge["currency"] = "GBP"
     session["subscribie_checkout_session_id"] = str(uuid4())
     stripe.api_key = get_stripe_secret_key()
@@ -355,14 +357,27 @@ def stripe_create_checkout_session():
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
+                        "name": "(Up-front fee) " + plan.title,
+                    },
+                    "unit_amount": charge["sell_price"],
+                },
+                "quantity": 1,
+            },
+            {
+                "price_data": {
+                    "recurring": {
+                        "interval": format_to_stripe_interval(plan.interval_unit)
+                    },
+                    "currency": charge["currency"],
+                    "product_data": {
                         "name": plan.title,
                     },
-                    "unit_amount": charge["amount"],
+                    "unit_amount": charge["interval_amount"],
                 },
                 "quantity": 1,
             }
         ],
-        mode="payment",
+        mode="subscription",
         metadata={
             "person_uuid": person.uuid,
             "plan_uuid": session["plan"],
@@ -378,7 +393,18 @@ def stripe_create_checkout_session():
         ),
         # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
         cancel_url=url_for("views.up_front", _external=True),
-        payment_intent_data={"application_fee_amount": 20},
+        subscription_data={
+                "application_fee_percent": 1.25,
+                "metadata": {
+                    "person_uuid": person.uuid,
+                    "plan_uuid": session["plan"],
+                    "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)), # noqa
+                    "package": session.get("package", None),
+                    "subscribie_checkout_session_id": session.get(
+                        "subscribie_checkout_session_id", None
+                    ),
+                }
+        },
         stripe_account=data["account_id"],
     )
     return jsonify(id=stripe_session.id)
