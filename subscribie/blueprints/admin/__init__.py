@@ -10,6 +10,7 @@ from flask import (
     jsonify,
     request,
     session,
+    Response,
 )
 import jinja2
 from jinja2 import Environment
@@ -813,6 +814,32 @@ def subscription_status():
         )
 
     return dict(subscription_status=formatted_status)
+
+
+@admin.route("/export-subscribers-email")
+@login_required
+def export_subscribers_email():
+
+    subscriptions = database.session.query(Subscription)
+    emails = []
+    for subscription in subscriptions:
+        emails.append(subscription.person.email)
+
+    if "csv" in request.args:
+        import csv
+        import io
+
+        outfile = io.StringIO()
+        outcsv = csv.writer(outfile)
+        outcsv.writerow([email for email in emails])
+        return Response(
+            outfile.getvalue(),
+            mimetype="text/csv",
+            headers={"Content-disposition": "attachment; filename=emails.csv"},
+        )
+        return outfile.getvalue()
+
+    return jsonify(emails)
 
 
 @admin.route("/subscribers")
