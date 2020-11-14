@@ -9,7 +9,10 @@ from flask import request, Response, jsonify
 @login_required
 def export_subscribers():
 
-    subscriptions = database.session.query(Subscription)
+    subscriptions = database.session.query(Subscription).all()
+
+    if len(subscriptions) == 0:
+        return "You don't have any subscribers yet."
     subscribers = []
     for subscription in subscriptions:
         subscribers.append(
