@@ -821,25 +821,34 @@ def subscription_status():
 def export_subscribers_email():
 
     subscriptions = database.session.query(Subscription)
-    emails = []
+    subscribers = []
     for subscription in subscriptions:
-        emails.append(subscription.person.email)
+        subscribers.append(
+            {
+                "given_name": subscription.person.given_name,
+                "family_name": subscription.person.family_name,
+                "email": subscription.person.email,
+            }
+        )
 
     if "csv" in request.args:
         import csv
         import io
 
         outfile = io.StringIO()
-        outcsv = csv.writer(outfile)
-        outcsv.writerow([email for email in emails])
+        outcsv = csv.DictWriter(outfile, fieldnames=subscribers[0].keys())
+        outcsv.writeheader()
+        for subscriber in subscribers:
+            outcsv.writerow(subscriber)
+
         return Response(
             outfile.getvalue(),
             mimetype="text/csv",
-            headers={"Content-disposition": "attachment; filename=emails.csv"},
+            headers={"Content-disposition": "attachment; filename=subscribers.csv"},
         )
         return outfile.getvalue()
 
-    return jsonify(emails)
+    return jsonify(subscribers)
 
 
 @admin.route("/subscribers")
