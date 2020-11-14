@@ -69,6 +69,7 @@ admin = Blueprint(
 from .choice_group import list_choice_groups  # noqa
 from .option import list_options  # noqa
 from .subscriber import show_subscriber  # noqa
+from .export_subscribers import export_subscribers  # noqa
 
 
 def dec2pence(amount):
@@ -814,41 +815,6 @@ def subscription_status():
         )
 
     return dict(subscription_status=formatted_status)
-
-
-@admin.route("/export-subscribers-email")
-@login_required
-def export_subscribers_email():
-
-    subscriptions = database.session.query(Subscription)
-    subscribers = []
-    for subscription in subscriptions:
-        subscribers.append(
-            {
-                "given_name": subscription.person.given_name,
-                "family_name": subscription.person.family_name,
-                "email": subscription.person.email,
-            }
-        )
-
-    if "csv" in request.args:
-        import csv
-        import io
-
-        outfile = io.StringIO()
-        outcsv = csv.DictWriter(outfile, fieldnames=subscribers[0].keys())
-        outcsv.writeheader()
-        for subscriber in subscribers:
-            outcsv.writerow(subscriber)
-
-        return Response(
-            outfile.getvalue(),
-            mimetype="text/csv",
-            headers={"Content-disposition": "attachment; filename=subscribers.csv"},
-        )
-        return outfile.getvalue()
-
-    return jsonify(subscribers)
 
 
 @admin.route("/subscribers")
