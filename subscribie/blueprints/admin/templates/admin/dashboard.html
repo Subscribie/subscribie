@@ -87,11 +87,11 @@
               </div>
               <div class="px-3 py-3 my-3">
                   <p class="card-subtitle mb-3 text-muted">
-                      Get a csv export of your subscribers email address
+                      Get a csv export of your subscribers name &amp; email address
                   </p>
                   <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.export_subscribers_email', csv="") }}">
-                      Export Subscribers email addresses
+                      href="{{ url_for('admin.export_subscribers', csv="") }}">
+                      Export Subscribers
                   </a>
               </div>
         </div>
