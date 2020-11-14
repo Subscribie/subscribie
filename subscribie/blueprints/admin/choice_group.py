@@ -1,11 +1,9 @@
 from . import admin
-from flask_sqlalchemy import SQLAlchemy
 from subscribie.auth import login_required
 from subscribie.forms import ChoiceGroupForm
 from subscribie.models import ChoiceGroup, Plan
 from flask import request, render_template, url_for, flash, redirect
-
-database = SQLAlchemy()
+from subscribie.database import database
 
 
 @admin.route("/add-choice-group", methods=["GET", "POST"])
