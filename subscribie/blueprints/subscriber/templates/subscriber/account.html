@@ -34,6 +34,17 @@
       </a>
   </div>
 
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Private Pages Access</h3>
+
+    <p>Some subscriptions may give you access to private pages. If they do, they will appear below</p>
+    <ul>
+      {% for page in pages if page.private %}
+      <li><a href="/{{ page.path }}">{{ page.page_name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
 </div>
 
 
