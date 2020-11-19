@@ -21,7 +21,7 @@ from .forms import (
     ForgotPasswordResetPasswordForm,
 )
 from flask_mail import Mail, Message
-from .models import database, User, Company
+from .models import database, User, Company, Page
 import binascii
 from pathlib import Path
 import flask
@@ -32,6 +32,8 @@ from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
 import logging
+from flask.templating import _render
+from flask.globals import _app_ctx_stack
 
 logger = logging
 
@@ -327,3 +329,39 @@ def protected_download(view):
 def logout():
     session.clear()
     return render_template("admin/logout.html")
+
+
+def check_private_page(page_id):
+    """Block access to page if private, only allow shop owner or subscriber"""
+    blocked = False
+    page = Page.query.get(page_id)
+    if page.private:
+        if g.user is None and g.subscriber is None:
+            blocked = True
+            return blocked, redirect("/")
+    return blocked, None
+
+
+def render_private_template_page(template_name_or_list, page_id, **context):
+    """
+    Based on Flask render_template
+    Renders a template from the template folder with the given
+    context, checking if the page is private or not
+    :param template_name_or_list: the name of the template to be
+                                  rendered, or an iterable with template names
+                                  the first one existing will be rendered
+    :param context: the variables that should be available in the
+                    context of the template.
+    """
+    blocked, redirect = check_private_page(page_id)
+
+    if blocked:
+        return redirect
+
+    ctx = _app_ctx_stack.top
+    ctx.app.update_template_context(context)
+    return _render(
+        ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+        context,
+        ctx.app,
+    )
