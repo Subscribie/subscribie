@@ -194,3 +194,23 @@ def save_new_page():
     )
 
     return redirect(url_for("pages.edit_pages_list"))
+
+
+@module_pages.route("/private-pages", methods=["GET", "POST"])
+@login_required
+def update_private_pages():
+    """Set pages as private or public"""
+
+    if request.method == "POST":
+        # Set all pages to public, then set all marked pages
+        # to private
+        pages = Page.query.all()
+        for page in pages:
+            page.private = 0
+
+        for page_id in request.form:
+            Page.query.get(page_id).private = True
+
+        database.session.commit()
+        flash("Private pages updated")
+    return render_template("update_private_pages.html")
