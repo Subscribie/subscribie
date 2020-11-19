@@ -228,7 +228,7 @@ class Page(database.Model):
     page_name = database.Column(database.String())
     path = database.Column(database.String())
     template_file = database.Column(database.String())
-    private = database.Column(database.Boolean())
+    private = database.Column(database.Boolean(), default=0)
 
 
 class Module(database.Model):
