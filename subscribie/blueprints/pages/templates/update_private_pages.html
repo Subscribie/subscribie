@@ -1,0 +1,57 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Update Private Pages</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('pages.get_module_pages_index') }}">Pages</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Edit Pages</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Choose which pages to make private</h3>
+        <p class="card-subtitle text-muted">Tick the box next to each page you want to make private.</p>
+
+        {% if pages|length < 1 %}
+            <div class="alert alert-warning">You don't have any pages yet. 
+                <a href="{{ url_for('pages.get_module_pages_index') }}">
+                Create a page
+                </a>
+            </div>
+        {% endif %}
+        <div class="list-group list-group-flush col-md-6 py-3">
+        <form action="#" method="POST">
+        {% for page in pages %}
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="{{ page.id }}" id="{{ page.id }}"
+            {% if page.private %}
+                checked
+            {% endif %}
+            >
+            <label class="form-check-label" for="{{ page.id }}">
+                {{ page.page_name }}
+            </label>
+            </div>
+
+        {% endfor %}
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        </div>
+      </div>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}
