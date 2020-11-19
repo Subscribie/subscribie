@@ -112,6 +112,24 @@
           </li>
         {% endif %}
 
+        {% for page in pages %}
+          {# Hide private pages unless shop owner or subscriber is logged in #}
+          {% if page.private %} 
+            {% if g.user is not sameas None or g.subscriber is not sameas None %}
+              <li class="nav-item">
+                <a class="nav-link" href="/{{ page.path }}">
+                  {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
+                </a>
+              </li>
+            {% endif %}
+          {% elif page.private is sameas False %}
+            <li class="nav-item">
+              <a class="nav-link" href="/{{ page.path }}">
+                {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
       </ul>
       <ul class="navbar-nav mt-2 mt-lg-0">
           <li class="nav-item">
