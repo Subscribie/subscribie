@@ -99,28 +99,6 @@ def show_500():
     return abort(500)
 
 
-@bp.route("/reload")
-def reload_app():
-    """Reload app route"""
-    reload_flask_app()
-    flash("Reload triggered")
-    return redirect(redirect_url())
-
-
-def reload_flask_app():
-    """Reload flask app
-    when running as a uwsgi vassal, a touch is performed
-    on the app's .ini file to trigger a graceful reload of
-    the app"""
-    path = os.path.abspath(__file__ + "../../../../")
-    # .ini file is named <hostname>.ini
-    vassalFilePath = Path(path, request.host + ".ini")
-    # Perform reload by touching file
-    print("Reloading by touching ini file at {}".format(vassalFilePath))
-    vassalFilePath.touch(exist_ok=True)
-    flash("Reloaded")
-
-
 @bp.route("/choose")
 def choose():
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()

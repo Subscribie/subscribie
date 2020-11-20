@@ -63,9 +63,7 @@ def delete_page_by_path(path):
     database.session.commit()
 
     flash(f'Page "{path}" deleted.')
-    return redirect(
-        url_for("views.reload_app") + "?next=" + url_for("pages.delete_pages_list")
-    )
+    return redirect(url_for("pages.delete_pages_list"))
 
 
 @module_pages.route("/edit-pages")
@@ -136,10 +134,8 @@ def edit_page(path):
         # Save page to database
         database.session.commit()
 
-        # Graceful reload app to load new page
-        return redirect(
-            url_for("views.reload_app") + "?next=" + url_for("pages.edit_pages_list")
-        )
+        # Go back to pages list
+        return redirect(url_for("pages.edit_pages_list"))
 
 
 @module_pages.route("/add-page", methods=["POST"])
@@ -173,9 +169,7 @@ def save_new_page():
     page = Page.query.filter_by(path=pageName).first()
     if page is not None:
         flash(Markup(f'The page <a href="/{pageName}">{pageName}</a> already exists'))
-        return redirect(
-            url_for("views.reload_app") + "?next=" + url_for("pages.edit_pages_list")
-        )
+        return redirect(url_for("pages.edit_pages_list"))
 
     # Add new page
     page = Page()
@@ -194,12 +188,9 @@ def save_new_page():
 
     flash(
         Markup(
-            f'Your new page <a href="{url_for("views.custom_page", path=page.path)}">{page.page_name}</a> \
-            will be visable after reloading'
+            f'Your new page <a href="{url_for("views.custom_page", path=page.path)}"> \
+            {page.page_name}</a> has been created'
         )
     )
 
-    # Graceful reload app to load new page
-    return redirect(
-        url_for("views.reload_app") + "?next=" + url_for("pages.edit_pages_list")
-    )
+    return redirect(url_for("pages.edit_pages_list"))
