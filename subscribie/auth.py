@@ -340,28 +340,3 @@ def check_private_page(page_id):
             blocked = True
             return blocked, redirect("/")
     return blocked, None
-
-
-def render_private_template_page(template_name_or_list, page_id, **context):
-    """
-    Based on Flask render_template
-    Renders a template from the template folder with the given
-    context, checking if the page is private or not
-    :param template_name_or_list: the name of the template to be
-                                  rendered, or an iterable with template names
-                                  the first one existing will be rendered
-    :param context: the variables that should be available in the
-                    context of the template.
-    """
-    blocked, redirect = check_private_page(page_id)
-
-    if blocked:
-        return redirect
-
-    ctx = _app_ctx_stack.top
-    ctx.app.update_template_context(context)
-    return _render(
-        ctx.app.jinja_env.get_or_select_template(template_name_or_list),
-        context,
-        ctx.app,
-    )
