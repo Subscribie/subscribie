@@ -52,7 +52,12 @@ from .models import (
 from .blueprints.admin import get_subscription_status
 
 load_dotenv(verbose=True)
-beeline.init(writekey=os.environ.get("HONEYCOMB_API_KEY"), dataset="subscribie", service_name="subscribie")
+beeline.init(
+    writekey=os.environ.get("HONEYCOMB_API_KEY"),
+    dataset="subscribie",
+    service_name="subscribie",
+)
+
 
 def seed_db():
     pass
@@ -60,7 +65,9 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    HoneyMiddleware(app, db_events=True) # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy
+    HoneyMiddleware(
+        app, db_events=True
+    )  # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy
     load_dotenv(verbose=True)
     app.config.update(os.environ)
 
@@ -74,37 +81,6 @@ def create_app(test_config=None):
         except KeyError:
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             print("Starting with sid {}".format(session["sid"]))
-
-    @app.before_first_request
-    def register_custom_page_routes():
-        """Register custom pages as routes"""
-        pages = Page.query.all()
-        for page in pages:
-            page_path = page.path
-            template_file = page.template_file
-            view_func_name = page_path.replace("-", "_")
-            # Generate view function
-            generate_view_func = """def %s_view_func():
-            return render_template('%s', title="%s")""" % (
-                view_func_name,
-                template_file,
-                page.page_name,
-            )
-            exec(generate_view_func) in globals(), locals()
-            method_name = view_func_name + "_view_func"
-            possibles = globals().copy()
-            possibles.update(locals())
-            view_func = possibles.get(method_name)
-            print(
-                f"Attempting to add rule for page_path: {page_path}, \
-                  view_func_name: {view_func_name}, view_func: {view_func}"
-            )
-            try:
-                app.add_url_rule(
-                    "/" + page_path, view_func_name + "_view_func", view_func
-                )
-            except AssertionError as e:
-                print(f"Not overwriting: {page_path}. Reason: {e}")
 
     @app.before_first_request
     def register_modules():

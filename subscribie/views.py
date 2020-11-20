@@ -14,7 +14,9 @@ from subscribie.utils import (
 )
 import stripe
 from pathlib import Path
-from jinja2 import Template
+import jinja2
+from jinja2 import Template, Environment, FileSystemLoader
+
 
 from flask import (
     abort,
@@ -27,6 +29,7 @@ from flask import (
     flash,
     jsonify,
     current_app,
+    g,
 )
 import flask
 
@@ -747,3 +750,59 @@ def thankyou():
         logging.warning("Maybe OK as not all plans require a direct debit mandate")
     finally:
         return render_template("thankyou.html")
+
+
+@bp.route("/page/<path>", methods=["GET"])
+def custom_page(path):
+    page = Page.query.filter_by(path=path).first()
+    with open(Path(str(current_app.config["THEME_PATH"]), page.template_file)) as fh:
+        body = fh.read()
+
+    page_header = """
+        {% extends "layout.html" %}
+        {% block title %} {{ title }} {% endblock title %}
+
+        {% block hero %}
+
+            <div class="container">
+              <div class="row">
+                <div class="col-md-8 pl-0">
+                  <h1 class="h1 text-white font-weight-bold">{{ title }}</h1>
+                </div>
+              </div>
+            </div>
+
+        {% endblock %}
+        {% block body %}
+        <div class="section">
+          <div class="container">
+
+    """
+    page_footer = """
+          </div><!-- end container -->
+        </div><!-- end section -->
+        {% endblock body %}
+    """
+    try:
+        rtemplate = Environment(
+            loader=FileSystemLoader(str(current_app.config["THEME_PATH"]))
+        ).from_string(page_header + body + page_footer)
+    except jinja2.exceptions.TemplateAssertionError as e:
+        return f"Page needs updating: {e}"
+
+    company = Company.query.first()
+    integration = Integration.query.first()
+    plans = Plan.query.filter_by(archived=0)
+    pages = Page.query.all()
+    template = rtemplate.render(
+        company=company,
+        integration=integration,
+        plans=plans,
+        pages=pages,
+        session=session,
+        g=g,
+        url_for=url_for,
+        title=page.page_name,
+    )
+
+    return template
