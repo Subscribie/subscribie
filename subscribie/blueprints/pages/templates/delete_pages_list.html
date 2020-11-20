@@ -45,7 +45,11 @@
             <tbody>
             {% for page in pages %}
               <tr>
-                  <td>{{ page.path }}</td>
+                  <td>
+                    <a href="{{ url_for('views.custom_page', path=page.path) }}">
+                      {{ page.path }}
+                    </a>
+                  </td>
                   <td>
                       <a href="{{ url_for('pages.delete_page_by_path', path=page.path,
       confirm=1) }}" 

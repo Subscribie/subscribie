@@ -12,6 +12,7 @@ from subscribie.utils import (
     get_stripe_connect_account,
     create_stripe_webhook,
 )
+from subscribie.auth import check_private_page
 import stripe
 from pathlib import Path
 import jinja2
@@ -733,8 +734,18 @@ def thankyou():
 @bp.route("/page/<path>", methods=["GET"])
 def custom_page(path):
     page = Page.query.filter_by(path=path).first()
-    with open(Path(str(current_app.config["THEME_PATH"]), page.template_file)) as fh:
-        body = fh.read()
+    # Check if private page & enforce
+    blocked, redirect = check_private_page(page.id)
+    if blocked:
+        return redirect
+    try:
+        with open(
+            Path(str(current_app.config["THEME_PATH"]), page.template_file)
+        ) as fh:
+            body = fh.read()
+    except FileNotFoundError as e:
+        print(e)
+        return "Template not found for this page.", 404
 
     page_header = """
         {% extends "layout.html" %}

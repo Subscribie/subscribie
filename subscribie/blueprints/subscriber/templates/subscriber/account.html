@@ -40,7 +40,7 @@
     <p>Some subscriptions may give you access to private pages. If they do, they will appear below</p>
     <ul>
       {% for page in pages if page.private %}
-      <li><a href="/{{ page.path }}">{{ page.page_name }}</li>
+      <li><a href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name }}</li>
       {% endfor %}
     </ul>
   </div>
