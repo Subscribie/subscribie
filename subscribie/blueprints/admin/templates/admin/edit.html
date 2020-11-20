@@ -60,7 +60,7 @@
               {{ form.csrf_token }}
 
               <div class="form-group">
-                <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product name</label>
+                <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Plan or Product name</label>
                 <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
 							<div class="invalid-feedback">
 								Plan name is required.
