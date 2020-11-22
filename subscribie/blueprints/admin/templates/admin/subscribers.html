@@ -89,6 +89,18 @@
                             Paid
                         {% endif %}
                     </li>
+                    <li>
+                      {% if subscription.plan.requirements.note_to_seller_required %}
+                      <details open>
+                        <summary><strong>Order Note</strong></summary>
+                          {% if subscription.note %}
+                            {{ subscription.note.note }}
+                          {% else %}
+                            No note was given.
+                          {% endif %}
+                      </details>
+                      {% endif %}
+                    </li>
                     <li><strong>Actions: </strong>
                       {% if subscription.gocardless_subscription_id %}
                         {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}

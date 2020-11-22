@@ -74,7 +74,7 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
-    note = relationship("SubscriptionNote", back_populates="subscription")
+    note = relationship("SubscriptionNote", back_populates="subscription", uselist=False)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
