@@ -16,7 +16,7 @@
 
 <main>
   <div class="section">
-    <div class="container">
+    <div class="container" style="overflow:scroll">
       
       <table class="table table-hover table-scroll">
   
@@ -105,6 +105,18 @@
                         {% endif %}
                         <li><strong>ID: </strong>{{ payment.links['subscription'] }}</li>
                         <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
+                        {% if subscription.plan.requirements.note_to_seller_required %}
+                        <li>
+                          <details open>
+                            <summary><strong>Order Note</strong></summary>
+                              {% if subscription.note %}
+                                {{ subscription.note.note }}
+                              {% else %}
+                                No note was given.
+                              {% endif %}
+                          </details>
+                        </li>
+                        {% endif %}
                       </ul>
                     </div>
                   </li>  
