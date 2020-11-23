@@ -85,9 +85,8 @@
           <li class="nav-item">
             <a class="nav-link h5 px-3 mb-0" href="/admin/dashboard">Dashboard</a>
           </li>
-        {% endif %}
 
-        {% for page in pages %}
+          {% for page in pages %}
           {# Hide private pages unless shop owner or subscriber is logged in #}
           {% if page.private %} 
             {% if g.user is not sameas None or g.subscriber is not sameas None %}
@@ -106,15 +105,16 @@
           {% endif %}
         {% endfor %}
 
+          <li class="nav-item">
+            <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
+          </li>
+        {% endif %}
+
+        
       </ul>
       <ul class="navbar-nav mt-2 mt-lg-0">
           <li class="nav-item">
             <a class="nav-link px-md-5 h5 mb-0" href="{{ url_for('subscriber.login') }}" title="Subscriber login">My account</a>
-            {% if g.user %}
-              <li class="nav-item">
-                <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
-              </li>
-            {% endif %}
           </li>
       </ul>
     </div>
