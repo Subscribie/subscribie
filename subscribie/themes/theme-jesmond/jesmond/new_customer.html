@@ -3,15 +3,18 @@
 
 {% block hero %}
 
-  <div class="columns vertical-align is-mobile">
-    <div class="column">
-      <h1 class="title is-1 has-text-white is-size-3-mobile">Order Information</h1>
-      <h2 class="subtitle has-text-white is-3 is-size-4-mobile">Complete the form below</h2>
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 pl-0">
+      <h1 class="h1 text-white font-weight-bold">Order Information</h1>
+      <h2 class="h3 text-white">Complete the form below</h2>
     </div>
-    <div class="column is-one-third is-hidden-touch" style="text-align:right">
-      <img src="/static/mutli-box.svg" style="height:100%;" />
+
+    <div class="col-6 col-md-4 text-right d-none d-lg-block">
+      <img class="pr-3" src="/static/mutli-box.svg" style="height:100%;" >
     </div>
   </div>
+</div>
 
 {% endblock %}
 
