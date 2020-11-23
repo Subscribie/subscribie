@@ -56,9 +56,9 @@
   {# if not inside iframe_embeded, show header #} 
   {% if session.get('iframe_embeded') is sameas False %}
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue px-md-5">
 
-    <a class="navbar-brand font-weight-bolder pl-md-5 pr-3" href="/">
+    <a class="navbar-brand font-weight-bolder pl-lg-5 pr-3" href="/">
       {% if company.logo_src is not sameas None %}
       <style>
 	  #logo {
@@ -80,27 +80,30 @@
     </button>
 
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <ul class="navbar-nav mt-2 mt-lg-0">
         {% if g.user %}
           <li class="nav-item">
-            <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+            <a class="nav-link h5 px-3 mb-0" href="/admin/dashboard">Dashboard</a>
           </li>
+
+          {% for page in pages %}
+            <li class="nav-item">
+              <a class="nav-link h5 px-3 mb-0" href="/{{ page.path }}">
+                {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
+              </a>
+            </li>
+          {% endfor %}
+
           <li class="nav-item">
-            <a class="nav-link" href="/auth/logout">Logout</a>
+            <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
           </li>
         {% endif %}
 
-        {% for page in pages %}
-          <li class="nav-item">
-            <a class="nav-link" href="/{{ page.path }}">
-              {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
-            </a>
-          </li>
-        {% endfor %}
+        
       </ul>
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <ul class="navbar-nav mt-2 mt-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('subscriber.login') }}" title="Subscriber login">My account</a>
+            <a class="nav-link px-md-5 h5 mb-0" href="{{ url_for('subscriber.login') }}" title="Subscriber login">My account</a>
           </li>
       </ul>
     </div>
@@ -109,8 +112,8 @@
   <div class="site-content">
     {% block top %}
     {% endblock top %}
-    <section class="jumbotron jumbotron-fluid kcBlue">
-      <div class="container" > <!-- style="z-index:9999" -->
+    <section class="jumbotron jumbotron-fluid kcBlue ">
+      <div class="container px-md-5" > <!-- style="z-index:9999" -->
           {% block hero %}{% endblock %}
       </div>
     </section>
@@ -126,7 +129,7 @@
 
   <footer class="container-fluid bg-light text-center py-5" >
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
-    <p> Made with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+    <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
     <a href="{{ url_for('auth.login') }}">Shop owner login</a>
     {% if g.user %}
       <a class="nav-link" href="/auth/logout">Logout</a>
