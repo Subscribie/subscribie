@@ -30,164 +30,114 @@
       <p class=error><stong>Error:</strong> {{ error }}
     {% endif %}
 
-    <div class="columns">
-        <div class="column is-two-thirds">
+    <div class="row row-cols-1 row-cols-lg-2">
+      <div class="col-lg-8">
+        <h2 class="font-weight-bold">Your details</h2>
+        <p>We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
 
-          <h3 class="title is-3 is-size-4-mobile" style="text-align:left">Your details</h3>
-          <p class="subtitle is-5 is-size-6-mobile" style="text-align:left">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Your Name</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded has-icons-left">
-                  <input class="input is-medium" type="text" name=given_name id=given_name placeholder="John" value="{{ given_name }}" required>
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-user"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control is-expanded has-icons-left">
-                  <input class="input is-medium" type="text" name=family_name id=family_name placeholder="Smith" value="{{ family_name }}" required>
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-user"></i>
-                  </span>
-                </p>
-              </div>
-            </div>
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Your Name <i class="fas fa-user ml-1"></i></label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control form-control-lg mb-3 mb-lg-0" name=given_name id=given_name placeholder="John" value="{{ given_name }}" required>
           </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Email</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded has-icons-left">
-                  <input class="input is-medium" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}" required>
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-envelope"></i>
-                  </span>
-                </p>
-              </div>
-            </div>
+          <div class="col-lg-4">
+            <input class="form-control form-control-lg" type="text" name=family_name id=family_name placeholder="Smith" value="{{ family_name }}" required>
           </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Phone</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded has-icons-left">
-                  <input class="input is-medium" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-phone"></i>
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <br />
-
-          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Your Address</h3>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-                <label class="label">Address line 1</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name="address_line_one" id="address_line_one" required>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label">City</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name="city" id="city" required>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label">Post Code</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control is-expanded">
-                  <input class="input" type="text" name="postcode" id="postcode" required>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {% if plan.requirements.note_to_seller_required %}
-            <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Note to seller</h3>
-            <p>{{ plan.requirements.note_to_buyer_message }}<p>
-            <textarea rows="5" cols="25" name="note_to_seller" required>
-            </textarea>
-          {% endif %}
-
         </div>
 
-        <div class="is-divider-vertical"></div>
-
-        <div class="column">
-
-          <h3 class="title is-4 is-size-4-mobile" style="text-align:left">Order Summary</h3>
-
-          <h4 class="title is-5 is-size-5-mobile" style="text-align:left">{{ plan.title }}</h4>
-          <div class="content">
-            <ul>
-            {% for selling_point in plan.selling_points %}
-              <li><p class="subtitle is-6">{{ selling_point.point}}</p></li>
-            {% endfor %}
-            </ul>
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Email <i class="fas fa-envelope ml-1"></i></label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}" required>
           </div>
-
-          {%if chosen_options %}
-          <h4 class="title is-5 is-size-5-mobile" style="text-align:left">Choices</h4>
-          <div class="content">
-            <ul>
-            {% for option in chosen_options %}
-              <li><p class="subtitle is-6">{{ option.choice_group_title }}: {{ option.option_title }}</p></li>
-            {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-
-          <div class="content has-text-right">
-            {% if plan.requirements.instant_payment %}
-              <p><b>Pay today:</b> <span class="tag is-success is-medium">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
-            {% endif %}
-            {% if plan.requirements.subscription %}
-            <p><b>Price ({{ plan.interval_unit }}) :</b> <span class="tag is-info is-large">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
-            {% endif %}
-          </div>
-          <div class="content has-text-right">
-
-          </div>
-
         </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Phone <i class="fas fa-phone ml-1"></i></label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
+          </div>
+        </div>
+
+        <h3 class="pt-3 font-weight-bold">Your Address</h3>
+
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Address</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="address_line_one" id="address_line_one" required>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">City</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="city" id="city" required>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Post Code</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="postcode" id="postcode" required>
+          </div>
+        </div>
+
+        {% if plan.requirements.note_to_seller_required %}
+        <h3 class="pt-3 font-weight-bold">Note to seller</h3>
+
+        <div class="form-group row pt-3 m-0">
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ plan.requirements.note_to_buyer_message }}</label>
+          <div class="col-lg-8">
+            <textarea class="form-control" rows="5" name="note_to_seller" required></textarea>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="col-lg-4 my-3 my-lg-0">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h3 class="pt-3 font-weight-bold">Order Summary</h3>
+          </div>
+          <div class="card-body">
+
+            <h4 class="my-3 font-weight-bolder">{{ plan.title }}</h4>
+
+            <ul style="list-style: disc;" class="pl-3 ml-3">
+              {% for selling_point in plan.selling_points %}
+                <li>{{ selling_point.point}}</li>
+              {% endfor %}
+            </ul>
+
+            {%if chosen_options %}
+            <h4 class="my-3">Choices</h4>
+
+            <ul style="list-style: disc;" class="pl-3 ml-3">
+              {% for option in chosen_options %}
+                <li>{{ option.choice_group_title }}: {{ option.option_title }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div class="text-right">
+              {% if plan.requirements.instant_payment %}
+                <p class="py-2"><b>Pay today:</b><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
+              {% endif %}
+
+              {% if plan.requirements.subscription %}
+                <p class="py-2"><b>Price ({{ plan.interval_unit }}) :</b><span class="p-2 bg-primary text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
+    <!---------------------------->
     <!-- detect if embeded in iframe to trigger new tab if needed -->
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
-    <input type=submit class="button is-success is-medium is-fullwidth" value="Continue to Payment">
+    <input type=submit class="btn btn-primary btn-lg btn-block col-lg-8 my-3" value="Continue to Payment">
 
   </form>
   <script type="text/javascript">
