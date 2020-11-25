@@ -62,6 +62,19 @@ def test_admin_cal_add_plan(session, app, client, admin_session):
         assert 'name="sell_price-0" value="5.0"' in req.data.decode("utf-8")
 
 
+def test_admin_can_add_choice_group(session, app, client, admin_session):
+    user = User.query.filter_by(email="admin@example.com").first()
+    with user_set(app, user):
+        req = client.post(
+            "/admin/add-choice-group",
+            follow_redirects=True,
+            data={
+                "title": "Colour choice",
+            },
+        )
+        assert "Colour choice" in req.data.decode("utf-8")
+
+
 @pytest.fixture(scope="function")
 def admin_session(client, with_shop_owner):
     user = User.query.filter_by(email="admin@example.com").first()
