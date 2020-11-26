@@ -17,7 +17,6 @@ from pathlib import Path
 from jinja2 import Template
 
 from flask import (
-    abort,
     Blueprint,
     redirect,
     render_template,
@@ -88,12 +87,6 @@ def redirect_url():
 
 def index():
     return render_template("index.html")
-
-
-@bp.route("/500")
-def show_500():
-    """Force 500 error"""
-    return abort(500)
 
 
 @bp.route("/reload")
