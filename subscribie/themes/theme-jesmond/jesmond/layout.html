@@ -85,6 +85,10 @@
           <li class="nav-item">
             <a class="nav-link h5 px-3 mb-0" href="/admin/dashboard">Dashboard</a>
           </li>
+        {% if g.user %}
+          <li class="nav-item">
+            <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
+          </li>
         {% endif %}
 
         {% for page in pages %}
@@ -99,7 +103,7 @@
             {% endif %}
           {% elif page.private is sameas False %}
             <li class="nav-item">
-              <a class="nav-link h5 px-3 mb-0" href="{{ url_for('views.custom_page', path=page.path) }}">
+              <a class="nav-link" href="/{{ page.path }}">
                 {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
               </a>
             </li>
