@@ -3,15 +3,20 @@
 
 {% block hero %}
 
-    <div class="columns vertical-align is-mobile">
-      <div class="column">
-        <h1 class="title is-1 has-text-white is-size-2-mobile">{{ company.name }}</h1>
-        {% if company.slogan %}
-          <h2 class="subtitle has-text-white is-3 is-size-3-mobile">{{ company.slogan }}</h2>
-        {% endif %}
-      </div>
-      <div class="column is-one-third is-hidden-touch" style="text-align:right">
-        <img src="/static/open.svg" style="height:100%;" />
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 pl-0">
+          <h1 class="h1 text-white font-weight-bold">{{ company.name }}</h1>
+          {% if company.slogan is sameas None or company.slogan == "None"  %}
+            <h2></h2>
+          {% else %}
+            <h2 class="h3 text-white">{{ company.slogan }}</h2>
+          {% endif %}
+        </div>
+
+        <div class="col-6 col-md-4 text-right d-none d-lg-block">
+          <img class="pr-3" src="/static/open.svg" style="height:100%;" >
+        </div>
       </div>
     </div>
 
