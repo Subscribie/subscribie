@@ -44,6 +44,7 @@ jobs:
           ssh dokku@$DOKKU_HOST -C "dokku git:set $SUBDOMAIN-${{ github.head_ref }} deploy-branch ${{ github.head_ref }}"
       - name: Set subdomain
         run: |
+          set -x
           echo SUBDOMAIN=`echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]'` >> $GITHUB_ENV
           echo $GITHUB_ENV
 
