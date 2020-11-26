@@ -2,10 +2,9 @@ from . import admin
 from subscribie.auth import login_required
 from subscribie.forms import OptionForm
 from subscribie.models import ChoiceGroup, Option
+from subscribie.database import database
 from flask import request, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
-
-database = SQLAlchemy()
 
 
 @admin.route("/add-option/choice_group_id/<choice_group_id>", methods=["GET", "POST"])
