@@ -50,7 +50,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           dokku-host: ${{ secrets.DOKKU_HOST }}
-          app-name: ${{ github.event.pull_request.user.login }}-${{ github.head_ref }}
+          app-name: $SUBDOMAIN-${{ github.head_ref }}
           git-push-flags: '--force'
           remote-branch: ${{ github.head_ref }}
       - name: Click to see your PR web address
