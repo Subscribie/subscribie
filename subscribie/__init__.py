@@ -40,9 +40,6 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 from flask_mail import Mail, Message
-from subscribie.auth import (  # noqa because view func is generated dynamically
-    render_private_template_page,
-)
 
 from .models import (
     PaymentProvider,
