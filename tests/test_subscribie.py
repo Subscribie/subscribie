@@ -75,6 +75,30 @@ def test_admin_can_add_choice_group(session, app, client, admin_session):
         assert "Colour choice" in req.data.decode("utf-8")
 
 
+def test_admin_can_add_an_option_to_a_choice_group(session, app, client, admin_session):
+    user = User.query.filter_by(email="admin@example.com").first()
+    with user_set(app, user):
+        # First add a choice group (will have an id of 1)
+        req = client.post(
+            "/admin/add-choice-group",
+            follow_redirects=True,
+            data={
+                "title": "Colour choice",
+            },
+        )
+
+        # Now add an option to this new choice group
+        req = client.post(
+            "/admin/add-option/choice_group_id/1",
+            follow_redirects=True,
+            data={
+                "title": "Light Blue",
+            },
+        )
+
+        assert "Light Blue" in req.data.decode("utf-8")
+
+
 @pytest.fixture(scope="function")
 def admin_session(client, with_shop_owner):
     user = User.query.filter_by(email="admin@example.com").first()
