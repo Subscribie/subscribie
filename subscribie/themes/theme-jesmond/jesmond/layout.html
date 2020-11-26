@@ -85,7 +85,6 @@
           <li class="nav-item">
             <a class="nav-link h5 px-3 mb-0" href="/admin/dashboard">Dashboard</a>
           </li>
-<<<<<<< HEAD
         {% endif %}
 
         {% for page in pages %}
@@ -107,40 +106,15 @@
           {% endif %}
         {% endfor %}
 
-        {% if g.user %}
-          <li class="nav-item">
-            <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
-          </li>
-        {% endif %}
-
-        {% for page in pages %}
-          {# Hide private pages unless shop owner or subscriber is logged in #}
-          {% if page.private %} 
-            {% if g.user is not sameas None or g.subscriber is not sameas None %}
-              <li class="nav-item">
-                <a class="nav-link h5 px-3 mb-0" href="{{ url_for('views.custom_page', path=page.path) }}">
-                  {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
-                </a>
-              </li>
-            {% endif %}
-          {% elif page.private is sameas False %}
-            <li class="nav-item">
-              <a class="nav-link" href="/{{ page.path }}">
-                {{ page.page_name[0]|upper}}{{ page.page_name[1:] }}
-              </a>
-            </li>
-          {% endif %}
-        {% endfor %}
-
-        {% if g.user %}
-          <li class="nav-item">
-            <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
-          </li>
-        {% endif %}
       </ul>
       <ul class="navbar-nav mt-2 mt-lg-0">
           <li class="nav-item">
             <a class="nav-link px-md-5 h5 mb-0" href="{{ url_for('subscriber.login') }}" title="Subscriber login">My account</a>
+            {% if g.user %}
+              <li class="nav-item">
+                <a class="nav-link h5 px-3 mb-0" href="/auth/logout">Logout</a>
+              </li>
+            {% endif %}
           </li>
       </ul>
     </div>
@@ -168,9 +142,6 @@
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
     <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
     <a href="{{ url_for('auth.login') }}">Shop owner login</a>
-    {% if g.user %}
-      <a class="nav-link" href="/auth/logout">Logout</a>
-    {% endif %}
     <br />
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
   </footer>
