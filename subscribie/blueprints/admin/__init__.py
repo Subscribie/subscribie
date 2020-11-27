@@ -1023,6 +1023,10 @@ def edit_welcome_email():
         Path(current_app.root_path + "/emails/welcome.jinja2.html")
     ).read()
     custom_template = EmailTemplate.query.first()
+    new_custom_template = None
+
+    if request.method == "POST":
+        new_custom_template = form.template.data
 
     if custom_template is None:  # First time creating custom template
         custom_template = EmailTemplate()
@@ -1055,6 +1059,7 @@ def edit_welcome_email():
         form=form,
         default_template=default_template,
         custom_template=custom_template.custom_welcome_email_template,
+        new_custom_template=new_custom_template,
         use_custom_welcome_email=custom_template.use_custom_welcome_email,
         company=company,
     )

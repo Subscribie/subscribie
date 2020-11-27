@@ -69,7 +69,15 @@
 	    <br />
 	    <p>Enter your own customised email template below:</p>
 
-	    <textarea cols="80" rows="15" name="template" placeholder="{{ default_template }}">{% if custom_template %} {{ custom_template }} {% endif %}</textarea>
+	    <textarea cols="80" rows="15" name="template" placeholder="{{ default_template }}">
+
+        {% if new_custom_template %} {# Preserve new template, even if invalid #}
+          {{ new_custom_template }}
+        {% elif custom_template %}
+          {{ custom_template }}
+        {% endif %}
+
+      </textarea>
 
 	    <p>You can include the name of your customer by using the "<em>{% raw %} {{ first_name }} {% endraw %}</em>"
 	       variable.
