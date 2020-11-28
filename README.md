@@ -64,6 +64,8 @@ to `cp .env.docker.example .env` to the project root directory.
 To go inside the container, you can do: `docker-compose exec web /bin/bash` 
 from the project root directory.
 
+To rebuild the latest container, stop docker compose then do: `docker-compose build`.
+
 # Docs 
 
 https://subscribie.readthedocs.io
