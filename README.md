@@ -45,11 +45,24 @@ Now visit http://127.0.0.1:5000
 
 # Quickstart (with Docker compose)
 
+If you like to use docker-compose workflow for local development:
+
 ```
+git clone https://github.com/Subscribie/subscribie.git
+cd subscribie
+cp .env.docker.example .env
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 docker-compose up
 ```
+
+Then visit http://127.0.0.1:5000
+
+If you see `File doesn't exist` in the output, the you have probably forgotten
+to `cp .env.docker.example .env` to the project root directory.
+
+To go inside the container, you can do: `docker-compose exec web /bin/bash` 
+from the project root directory.
 
 # Docs 
 
