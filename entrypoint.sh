@@ -8,5 +8,5 @@ flask db upgrade
 
 flask initdb
 
-exec uwsgi --http :80 --workers 2 --wsgi-file subscribie.wsgi --touch-chain-reload subscribie.wsgi --chdir /usr/src/app/subscribie/
+exec uwsgi --http :80 --workers 1 --wsgi-file subscribie.wsgi --touch-chain-reload subscribie.wsgi --chdir /usr/src/app/subscribie/
 
