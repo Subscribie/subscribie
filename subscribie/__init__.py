@@ -195,7 +195,12 @@ def create_app(test_config=None):
         with open("seed.sql") as fp:
             con = sqlite3.connect(app.config["DB_FULL_PATH"])
             cur = con.cursor()
-            cur.executescript(fp.read())
+            # Check not already seeded
+            cur.execute("SELECT id from user")
+            if cur.fetchone() is None:
+                cur.executescript(fp.read())
+            else:
+                print("Database already seeded.")
             con.close()
 
     @app.cli.command()
