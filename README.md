@@ -66,6 +66,27 @@ from the project root directory.
 
 To rebuild the latest container, stop docker compose then do: `docker-compose build`.
 
+# How to change theme (theme development)
+
+### How to change from the default jesmond theme to the builder theme.
+
+1. Edit your `.env` file
+
+Change:
+
+- `THEME_NAME="jesmond"` to `THEME_NAME="builder"`
+- `STATIC_FOLDER="./subscribie/themes/theme-jesmond/static/"` to `STATIC_FOLDER="./subscribie/themes/theme-builder/static/"`
+- **(optional)** change `TEMPLATE_BASE_DIR` if you want to store themes in a different directory.
+
+2. Stop & start subscribie
+
+3. Complete. The other theme will now load
+
+#### Create a new theme
+
+If you're creating a *new* theme, then change `TEMPLATE_BASE_DIR` to a directory **outside** of 
+subscribie root project.
+
 # Docs 
 
 https://subscribie.readthedocs.io
