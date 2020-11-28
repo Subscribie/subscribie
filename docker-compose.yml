@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    ports: 
+      - "5000:80"
+    volumes:
+      - type: bind
+        source: .
+        target: /usr/src/app/subscribie
