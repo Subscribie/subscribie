@@ -28,7 +28,7 @@ An abstraction layer for managing variable recurring subscriptions and billing. 
 
 Keywords: subscriptions, payments, PS2, SEPA 
 
-# Quickstart
+# Quickstart (without Docker)
 
 ```
 git clone https://github.com/Subscribie/subscribie.git
@@ -43,6 +43,13 @@ flask run # Run the app
 ```
 Now visit http://127.0.0.1:5000
 
+# Quickstart (with Docker compose)
+
+```
+export COMPOSE_DOCKER_CLI_BUILD=1
+export DOCKER_BUILDKIT=1
+docker-compose up
+```
 
 # Docs 
 
