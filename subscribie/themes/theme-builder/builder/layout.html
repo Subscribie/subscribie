@@ -145,6 +145,7 @@
         Why Subscribie?
         </a>
       </li>
+      {# 
       {% for page in pages %}
         {# Hide private pages unless shop owner or subscriber #}
         {% if page.private and g.user != None or  page.private and g.subscriber != None %}
@@ -161,6 +162,7 @@
           </li>
         {% endif %}
       {% endfor %}
+      #}
     </ul>
   </div>
 </div>
