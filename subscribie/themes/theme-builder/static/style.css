@@ -1,7 +1,7 @@
 body {
     background: rgb(247, 247, 247);
     font-family: 'Open Sans', sans-serif;
-    margin-bottom: 25px;
+    margin-bottom: 60px;
 }
 
 nav.navbar {
@@ -13,9 +13,167 @@ nav.navbar {
     color: #fff;
 }
 
+.banner-title {
+    font-weight: 600;
+    font-size: 3.2rem;
+}
+
+.banner-container {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.slogan-title {
+    font-size: 1.5rem;
+}
+
+.email-input {
+    height: 40px;
+   padding: 6px 15px;
+   border-radius: 5px;
+   outline: none;
+   border: none;
+   background: #ffffff;
+   font-size: 16px;
+}
+
+
+.banner-btn {
+    border: 0;
+    margin-right: 10px;
+}
+
+.divider-line {
+    background-color: #ffffff;
+}
+
+.banner-image-container {
+    margin-top: 32px;
+}
+
+.banner-image-container img {
+    max-width: 300px;
+    display: block;
+    margin: 0 auto;
+}
+
+.feature-container {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.feature-container h2 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.7rem;
+    margin-bottom: 32px;
+    margin-top: 48px;
+    color: #6518CF;
+}
+
+.feature-container p {
+    color: #555555;
+    line-height: 2;
+}
+
+.demo-sites h3 {
+    font-size: 20px;
+    text-align: center;
+    color: #333333;
+    margin-bottom: 16px;
+}
+
+.card-img-top {
+    width: 65%;
+    display: block;
+    margin: 0 auto;
+}
+
+h2 .fas {
+    margin-right: 8px;
+}
+
+
+.navbar-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.navbar-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.navbar-collapse {
+    position: absolute;
+    top: 55px;
+    width: 100%;
+    left: 0;
+}
+
+.navbar-collapse {
+    padding: 32px;
+}
+
+.demo-sites { 
+    text-align: center;
+}
+@media (min-width: 920px) 
+{ 
+
+
+    .demo-sites {
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 60px;
+    }
+
+    .banner-image-container img {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 991px) 
+{  
+    .navbar-collapse {
+        position: relative;
+        top: 0;
+        width: 100%;
+        left: 0;
+        padding: 0;
+    }
+}
 
 @media (min-width: 1202px) 
-{ 
+{   
+
+
+    .banner-container {
+        padding-left: 0;
+    }
+    .navbar-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .three-item-container {
+        display: flex
+    }
+
+    .three-item {
+        margin-left: 10px;
+        margin-right: 10px;
+        flex-basis: calc(33% - 20px);
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .banner-title {
+        font-size: 3.5rem;
+    }
+
     .jumbotron:before {
       content: '';
       position: absolute;

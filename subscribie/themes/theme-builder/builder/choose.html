@@ -5,35 +5,38 @@
 <div class="jumbotron jumbotron-fluid">
 	<div class="container">
 		<div class="row">
-            <div class="col-sm">
-        	<h1 class="display-4">Subscription Website Builder</h1>
-		  	<p class="lead">
+            <div class="col-sm banner-container">
+        	<h1 class="display-4 banner-title">Subscription Website Builder</h1>
+		  	<p class="lead slogan-title">
 			{{ company.slogan }}
             <i class="fas fa-clock"></i>
             </p>
-		  	<hr class="my-4">
+		  	<hr class="my-4 divider-line">
 		  	<p>Create a subscription based website &amp; take recurring payments 
                online easily. We don't take a cut!</p>
             <form action="/start-building">
             <div class="form-group">
-            <input type="email" name="email" placeholder="Enter your email" class="form-control" />
+            <input type="email" name="email" placeholder="Enter your email" class="form-control email-input" />
             </div>
-			<button class="btn btn-primary btn-lg " href="/start-building" 
+			<button class="btn btn-success btn-lg banner-btn" href="/start-building" 
                 role="button">Start now</button>
-			<a href="#content" class="btn btn-secondary btn-lg active" 
+			<a href="#content" class="btn btn-secondary btn-lg active banner-btn" 
                 role="button" >Learn more</a>
             </form>
 			</div>
-            <div class="col-sm">
+            <div class="col-sm banner-image-container">
 		  	<img src="/static/start2.svg" class="d-sm-none d-md-block img-fluid"/>
             </div>
 		</div>
 	</div>
 </div>
 
-<div class="container" id="content">
+<div class="container feature-container" id="content">
 
 
+  <div class="three-item-container">
+
+  <div class="three-item">
 
     <h2><i class="fas fa-redo-alt"></i> Create a Subscription Service</h3>
 	<p class="lead">Easily create a subscription website.</p>
@@ -43,7 +46,9 @@
        to make, use Subscribie to generate your subscription website in minutes.
        <a href="https://subscriptionwebsitebuilder.co.uk/start-building">Start building now.</a>
     </p>
+  </div>
 
+  <div class="three-item">
     <h2><i class="fas fa-money-bill-wave"></i> Take recurring payments online</h3>
 	<p class="lead">Easily take repeat payments without lifting a finger.</p>
     <p>Easily accept one-off, recurring payments online using our subscription 
@@ -53,16 +58,21 @@
        subscription service using direct debit. This gives great flexibility to 
        you and your customers. You can take variable payments online, and change subscriptions as needed.</p>
 
+    </div>
+
+    <div class="three-item">
 	<h2><span class="fa-stack">
         <i class="fas fa-coins fa-stack-1x"></i>
         <i class="fas fa-ban fa-stack-2x has-text-danger"></i>
 	    </span>
-	Transaction Fees? Not here.
+	Zero Transaction Fees
     </h2>
 	<p class="lead">Some online stores take a cut of each sale, we don't.</p>
     <p>No matter how many subscriptions or products you sell, you can 
 	rest easy knowing that your costs remain the same.
     </p>
+    </div>
+  </div>
 
 	<h2><i class="fas fa-smile"></i>
 	Simple Customer Flow
@@ -120,15 +130,9 @@
 <h2><i class="fas fa-laptop"></i>Example Sites</h2>
 
   <div>
-  <ul>
-      <li><a href="https://halleandharpertreats.co.uk/" target="_blank">Halle and Harper Treats</a></li>
-      <li><a href="https://eyelashclub.subscriby.shop/" target="_blank">Eyelash Club</a></li>
-	  <li><a href="https://karmabroadband.subscriby.shop/" target="_blank">Broadband Subscription</a></li>
-  </ul>
       <style>
         .demo-sites img {
            box-shadow: 3px 3px 5px 6px #ccc;
-           margin: 5px;
            margin-bottom: 20px;
         }
         .zoom {
@@ -141,12 +145,15 @@
       </style>
       <div class="demo-sites">
       <a href="https://halleandharpertreats.co.uk/" target="_blank">
+        <h3>Halle and Harper Treats</h3>
         <img src="/static/sell-dog-treats-subscription.png" width="250px" class="zoom" />
       </a>
       <a href="https://eyelashclub.subscriby.shop/" target="_blank">
+        <h3>Eyelash Club</h3>
         <img src="/static/eyelash-subscription-business.png" width="250px" class="zoom" />
       </a>
       <a href="https://karmabroadband.subscriby.shop/" target="_blank">
+        <h3>Broadband Subscription</h3>
         <img src="/static/start-a-subscription-website-example.png" width="250px" class="zoom" />
       </a>
       </div>
