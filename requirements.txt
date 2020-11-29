@@ -3,7 +3,7 @@ Flask>=1,<2
 flask_cors
 flask_login
 Flask-Reuploaded==0.3.2
-flask_wtf
+Flask-WTF==0.14.3
 wtforms[email]
 Flask-Mail>=0.9.1
 requests
