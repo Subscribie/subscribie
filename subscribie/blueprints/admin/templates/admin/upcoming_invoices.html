@@ -1,0 +1,182 @@
+{% extends "admin/layout.html" %}                                              
+{% block title %} Upcoming Invoices{% endblock %}                                
+                                                                                 
+{% block body %}
+
+<style>
+li { list-style: none}
+</style>
+<h2 class="text-center text-dark mb-3">Upcoming Invoices</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Upcoming Invoices</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+      <p>
+      Subscriptions which have upcoming invoices.
+      </p>
+      <table class="table table-hover table-scroll">
+  
+        <thead>
+          <tr>
+            <th>Fulfillment State</th>
+            <th>Due Date</th>
+            <th>Stripe Subscription ID</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Name</th>
+            <th>Contacts</th>
+            <th>Address</th>
+            <th>Subscription</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+        {% if subscriptions|length == 0 %}
+          <tr>
+            <td colspan="9">
+               No upcoming invoices yet. You can do it!
+            </td>
+          </td>
+        {% endif %}
+  
+        {% for subscription in subscriptions %}
+        {% set upcoming_invoice = subscription.upcoming_invoice() %}
+          <tr>
+            <td>
+              <form action="{{ url_for('admin.update_payment_fulfillment', stripe_external_id=upcoming_invoice.subscription) }}" method="GET">
+                <select class="form-control form-control-sm my-2" name="state">
+                  {% set fulfillment_state = get_transaction_fulfillment_state(upcoming_invoice.subscription) %}
+                  <option value="">-</option>
+                  <option value="complete"
+                    {% if fulfillment_state == "complete" %}
+                    selected
+                    {% endif %}>
+                    Complete
+                  </option>
+                </select>
+                <input type="submit" class="btn btn-primary btn-sm btn-block" value="Update" />
+              </form>
+            </td>
+            <td>{{ datetime.fromtimestamp(upcoming_invoice.next_payment_attempt).strftime("%d/%m/%Y") }}</td>
+            <td>{{ upcoming_invoice.subscription }}</td>
+            <td title="Valid states are: Draft, Deleted, Open, Paid, Uncollectible, Void">{{ upcoming_invoice.status }}</td>
+            <td>{{ upcoming_invoice.amount_due|default(0)|currencyFormat }}</td>
+            {% if subscription.upcoming_invoice()  %}
+            <td>
+              <a href="{{ url_for('admin.show_subscriber', subscriber_id=subscription.person.id) }}">
+                {{ subscription.person.given_name }} {{ subscription.person.family_name }}
+              </a>
+            </td>
+            <td>
+              <strong>Email: </strong><a href="mailto:{{ subscription.person.email }}">{{ subscription.person.email }}</a><br>
+              <strong>Phone: </strong><a href="tel:{{ subscription.person.mobile}}">{{ subscription.person.mobile}}</a><br>
+            </td>
+            <td><address>
+                {{ subscription.person.address_line1 }}<br />
+                {{ subscription.person.city }}
+                {{ subscription.person.postal_code }}
+            </address></td>
+            <td>
+              <div class="content">
+                <ul class="is-unstyled-li">
+                  <li>
+                    <div class="card">
+                      <ul class="list-unstyled px-2">
+                        <li><strong>Plan: </strong>{{ subscription.plan.title }}</li>
+                        {% if subscription.chosen_options %}
+                        <li>
+                            <details open>
+                              <summary><strong>Chosen Options</strong></summary>
+                              <ul>
+                              {% for choice in subscription.chosen_options %}
+                                <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                              {% endfor %}
+                              </ul>
+                            </details>
+                        </li>
+                        {% endif %}
+                        <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
+                        <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
+                        {% if subscription.stripe_external_id %}
+                        <li>
+                          <strong>GoCardless Subscription id: </strong>
+                          <a href="https://manage.gocardless.com/subscriptions/{{ subscription.stripe_external_id }}"
+                            target="_blank" title="View subscription in GoCardless dashboard">
+                            {{ subscription.stripe_external_id }}</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            {% if subscription.plan.requirements.subscription %}
+                              <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
+                              {{ subscription.plan.interval_amount |default(0)|currencyFormat }}
+                            {% else %}
+                              (One-off. Not a subscription)
+                            {% endif %}
+                        </li>
+                        <li><strong>Sell price: </strong>{{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                        <li><strong>Status: </strong>
+                            {% if subscription.plan.requirements.subscription %}
+                                {{subscription_status(subscription.stripe_external_id)}}
+                            {% else %}
+                                Paid
+                            {% endif %}
+                        </li>
+                        <li><strong>Actions: </strong>
+                          {% if subscription.stripe_external_id %}
+                            {% if subscription_status(subscription.stripe_external_id) == 'Active' %}
+                            <a href="{{ url_for("admin.pause_stripe_subscription",
+                              subscription_id=subscription.stripe_external_id,
+                              goback=1) }}">
+                            Pause
+                            </a> | 
+                            {% endif %}
+                            {% if subscription_status(subscription.stripe_external_id) == 'Paused' %}
+                            <a href="{{ url_for("admin.resume_stripe_subscription",
+                              subscription_id=subscription.stripe_external_id,
+                              goback=1) }}">
+                            Resume
+                            </a>
+                            {% endif %}
+                          {% endif %}</li>
+                        </ul>
+                    </div>
+                  </li>  
+                </ul>
+              </div>
+            </td>
+            {% else %}
+            <td colspan="4"></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+        </tbody>
+        
+      </table>
+
+      <nav role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-start">
+          <li class="page-item">
+              <a class="page-link" href="{{ url_for('admin.upcoming_payments', previous=previous_page_cursor) }}">Previous</a>
+          </li>
+          <li class="page-item">
+              <a class="page-link" href="{{ url_for('admin.upcoming_payments', next=next_page_cursor) }}">Next page</a>
+          </li>
+        </ul>
+      </nav>
+
+    </div><!-- end .container -->
+  </div><!-- end .section -->
+</main>
+
+
+
+{% endblock body %} 
+

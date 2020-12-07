@@ -1,10 +1,11 @@
-from subscribie.models import PaymentProvider, Company
 from subscribie.database import database
 from flask import current_app, request, g, url_for, flash
 import stripe
 
 
 def get_stripe_secret_key():
+    from .models import PaymentProvider
+
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
         return current_app.config.get("STRIPE_LIVE_SECRET_KEY", None)
@@ -13,6 +14,8 @@ def get_stripe_secret_key():
 
 
 def get_stripe_publishable_key():
+    from .models import PaymentProvider
+
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
         return current_app.config.get("STRIPE_LIVE_PUBLISHABLE_KEY", None)
@@ -20,7 +23,7 @@ def get_stripe_publishable_key():
         return current_app.config.get("STRIPE_TEST_PUBLISHABLE_KEY", None)
 
 
-def create_stripe_connect_account(company: Company):
+def create_stripe_connect_account(company):
     stripe.api_key = get_stripe_secret_key()
     account = stripe.Account.create(
         type="express",
@@ -37,6 +40,8 @@ def create_stripe_connect_account(company: Company):
 
 
 def get_stripe_connect_account():
+    from .models import PaymentProvider
+
     payment_provider = PaymentProvider.query.first()
     stripe.api_key = get_stripe_secret_key()
 
@@ -63,6 +68,19 @@ def get_stripe_connect_account():
     return account
 
 
+def get_stripe_connect_account_id():
+    """Get stripe connect account id locally without querying Stripe api"""
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_livemode:
+        account_id = payment_provider.stripe_live_connect_account_id
+    else:
+        account_id = payment_provider.stripe_test_connect_account_id
+
+    return account_id
+
+
 def create_stripe_webhook(newWebhookNeeded=False):
     """
     Creates a new webhook, deleting old one if invalid
@@ -71,6 +89,7 @@ def create_stripe_webhook(newWebhookNeeded=False):
     always created. This is useful for if the stripe webhook
     secret is changed/rolled as a new secret is then needed.
     """
+    from .models import PaymentProvider
 
     if newWebhookNeeded is not False:
         newWebhookNeeded = True
