@@ -1,0 +1,30 @@
+{
+  "name": "subscribie",
+  "version": "1.0.0",
+  "description": "Subscription website builder",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.6.2",
+    "playwright-chromium": "^1.6.2",
+    "sqlite3": "^5.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Subscribie/subscribie.git"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Subscribie/subscribie/issues"
+  },
+  "homepage": "https://github.com/Subscribie/subscribie#readme"
+}

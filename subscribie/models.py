@@ -4,6 +4,11 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
+import stripe
+from subscribie.utils import (
+    get_stripe_secret_key,
+    get_stripe_connect_account_id,
+)
 
 from .database import database
 
@@ -74,11 +79,34 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
-    note = relationship("SubscriptionNote", back_populates="subscription", uselist=False)
+    note = relationship(
+        "SubscriptionNote", back_populates="subscription", uselist=False
+    )
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
     subscribie_checkout_session_id = database.Column(database.String())
+    stripe_subscription_id = database.Column(database.String())
+    stripe_external_id = database.Column(database.String())
+
+    def upcoming_invoice(self):
+        """Return the upcoming invoice (if exists) associated with this Subscription"""
+        stripe.api_key = get_stripe_secret_key()
+        stripe_connect_account_id = get_stripe_connect_account_id()
+
+        if self.stripe_subscription_id is not None:
+            try:
+                upcoming_invoice = stripe.Invoice.upcoming(
+                    subscription=self.stripe_subscription_id,
+                    stripe_account=stripe_connect_account_id,
+                )
+                return upcoming_invoice
+            except stripe.error.InvalidRequestError as e:
+                print(
+                    f"Cannot get stripe subscription id: {self.stripe_subscription_id}"
+                )
+                print(e)
+        return None
 
     def next_date(self):
         """Return the next delivery date of this subscription

@@ -13,7 +13,7 @@
           {{ form.csrf_token }}
           <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="">
           <input id="password" class="form-control form-control-lg mt-4" name="password" type="password" placeholder="Password" value="">
-          <button type="submit" class="btn btn-success btn-lg btn-block my-3">
+          <button type="submit" id="login" class="btn btn-success btn-lg btn-block my-3">
             <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Login</span>
           </button>
           <a href="{{ url_for('auth.forgot_password')}}">Forgot your password?</a>

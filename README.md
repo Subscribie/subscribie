@@ -190,6 +190,21 @@ To run tests:
 ```
 . venv/bin/activate # activate virtualenv
 python -m pytest # run pytest
+
+## Autmated browser testing with playright
+
+
+```
+npm i -D playwright
+```
+
+Might see `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
+```
+  Install missing packages with:
+      sudo apt-get install libgstreamer-plugins-bad1.0-0\
+          libenchant1c2a
+```
+
 ```
 
 # Where can I get more help, if I need it?
