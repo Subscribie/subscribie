@@ -1,0 +1,67 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Invoices {% endblock %}                                
+                                                                                 
+{% block hero %}                                                                 
+                                                                                 
+<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+    Invoices
+</h1>                                                                        
+                                                                                 
+{% endblock hero %} 
+                                                                                 
+{% block body %}
+<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
+  <div class="container">                                                        
+    <nav class="breadcrumb" aria-label="breadcrumbs">                            
+      <ul>                                                                       
+        <li><a href="/">Shop</a></li>                                            
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
+        <li class="is-active"><a href="#" aria-current="page">
+            View Invoices</a>
+        </li>                                                                    
+      </ul>                                                                      
+    </nav>                                                                       
+  </div>                                                                         
+</div>
+
+<div class="section">
+	<div class="container" style="overflow-x:auto">
+        <h1>All Ivoices</h1>
+        <p>Every invoice on your shop. Excluding <a href="{{ url_for('admin.upcoming_payments') }}">upcoming invoices</a></p>
+		<table class="table">
+		  <thead>
+			<tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th>ID</th>
+        <th>PDF</th>
+        <th>Amount Due</th>
+        <th>Amount Paid</th>
+        <th>Amount Remaining</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			{% for invoice in invoices %}
+			<tr>
+        <td>{{ datetime.fromtimestamp(invoice.created).strftime("%d/%m/%Y") }}</td>
+        <td>{{ invoice.status }}</td>
+        <td>{{ invoice.id }}</td>
+        <td>
+          <a href="{{ invoice.invoice_pdf }}">
+            Download PDF
+          </a>
+        </td>
+        <td>&pound;{{ "%.2f"|format(invoice.amount_due/100) }}</td>
+        <td>&pound;{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
+        <td>&pound;{{ "%.2f"|format(invoice.amount_remaining/100) }}</td>
+			</tr>
+			{% endfor %}
+		  </tbody>
+    </table>
+
+	</div><!-- end .container -->
+</div><!-- end .section -->
+
+{% endblock body %} 
+
+

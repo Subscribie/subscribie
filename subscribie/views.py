@@ -6,9 +6,8 @@ from subscribie.forms import CustomerForm
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
-    get_stripe_connect_account,
-    create_stripe_webhook,
     format_to_stripe_interval,
+    get_stripe_connect_account_id,
 )
 from subscribie.auth import check_private_page
 import stripe
@@ -53,6 +52,7 @@ from .database import database
 
 from flask_mail import Mail, Message
 import json
+from pprint import pprint
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -109,8 +109,9 @@ def redirect_to_payment_step(plan, inside_iframe=False):
     accordingly"""
 
     scheme = "https" if request.is_secure else "http"
-
-    return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
+    if plan.requirements.instant_payment or plan.requirements.subscription:
+        return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
+    return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
 @bp.route("/new_customer", methods=["GET"])
@@ -254,12 +255,13 @@ def up_front():
 @bp.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     payment_provider = PaymentProvider.query.first()
+    stripe_connect_account_id = get_stripe_connect_account_id()
 
     if "127.0.0.1" in request.host or "localhost" in request.host:
         # Operate in local mode
         endpoint_secret = current_app.config.get(
             "STRIPE_CLI_WEBHOOK_ENDPOINT_SECRET", None
-        )  # noqa
+        )
     else:
         if payment_provider.stripe_livemode:
             endpoint_secret = payment_provider.stripe_live_webhook_endpoint_secret
@@ -275,32 +277,56 @@ def stripe_webhook():
     sig_header = request.headers.get("Stripe-Signature", None)
     event = None
     try:
+        # Only proces events for this connected account
+        try:
+            event = request.get_json()
+            print(f"Live mode is: {event['livemode']}")
+
+            print("#" * 20 + "Event type" + "#" * 20)
+            print(event["type"])
+            print("#" * 80)
+
+            print("#" * 20 + "Event data" + "#" * 20)
+            pprint(event)
+            print("#" * 80)
+
+            if "account" not in event:
+                return (
+                    "Skipping webhook as has no 'account' property \
+                    (not a connect webhook)",
+                    200,
+                )
+            print(
+                f"Checking if account ids match: \
+                  {request.json['account']} == {stripe_connect_account_id}"
+            )
+            if request.get_json()["account"] != stripe_connect_account_id:
+                return "Event account id does not match this shop, ignoring", 200
+            else:
+                print("Connect account id matches.")
+        except Exception as e:
+            print("Error determining account")
+            print(e)
+            return "Could not determine account for webhook", 400
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except ValueError as e:
+        print(e)  # Invalid payload
         return e, 400
     except stripe.error.SignatureVerificationError as e:
         print(e)
-        print("Generating new stripe webhook upon SignatureVerificationError")
-        create_stripe_webhook(newWebhookNeeded=True)
         return "Stripe SignatureVerificationError", 400
 
-    print("#" * 20 + "Event" + "#" * 20)
-    print(event)
-    print("#" * 80)
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
-        # Only proces events for this connected account
-        if event.account != get_stripe_connect_account().id:
-            return "Event account id does not match this shop, ignoring", 200
         session = event["data"]["object"]
-        print("#" * 20 + "Session" + "#" * 20)
-        print(session)
-        print("#" * 100)
-        person_uuid = session["metadata"]["person_uuid"]
-        person = Person.query.filter_by(uuid=person_uuid).first()
         subscribie_checkout_session_id = session["metadata"][
             "subscribie_checkout_session_id"
         ]
+
+        if session.mode == "subscription":
+            stripe_subscription_id = session.subscription
+        else:
+            stripe_subscription_id = None
 
         try:
             chosen_option_ids = session["metadata"]["chosen_option_ids"]
@@ -311,23 +337,94 @@ def stripe_webhook():
             package = session["metadata"]["package"]
         except KeyError:
             package = None
-        subscription = create_subscription(
-            email=session.customer_email,
-            package=package,
-            chosen_option_ids=chosen_option_ids,
-            subscribie_checkout_session_id=subscribie_checkout_session_id,
-        )
-        print(f"Live mode is: {event['livemode']}, type: {type(event['livemode'])}")
 
-        # Store the transaction
-        transaction = Transaction()
-        transaction.amount = session["amount_total"]
-        transaction.external_id = session.id
-        transaction.external_src = "stripe"
-        transaction.person = person
-        transaction.subscription = subscription
-        database.session.add(transaction)
-        database.session.commit()
+        """
+        We treat Stripe checkout session.mode equally because
+        a subscribie plan may either be a one-off plan or a
+        recuring plan. A 'subscription' is still created in the
+        subscribie database regardless of if the Stripe session
+        mode is "payment" or "subscription".
+        See https://stripe.com/docs/api/checkout/sessions/object
+        """
+        if session.mode == "subscription" or session.mode == "payment":
+            create_subscription(
+                email=session.customer_email,
+                package=package,
+                chosen_option_ids=chosen_option_ids,
+                subscribie_checkout_session_id=subscribie_checkout_session_id,
+                stripe_subscription_id=stripe_subscription_id,
+                stripe_external_id=session.id,
+            )
+
+    if event["type"] == "payment_intent.succeeded":
+        """Store suceeded payment_intents as transactions
+        These events will fire both at the begining of a subscription,
+        and also at each successful recuring billing cycle.
+        """
+
+        data = event["data"]["object"]
+        stripe.api_key = get_stripe_secret_key()
+        subscribie_subscription = None
+
+        # Get the Subscribie subscription id from Stripe subscription metadata
+        try:
+            subscribie_checkout_session_id = data.metadata["plan_uuid"]
+        except KeyError:
+            msg = f"KeyError No plan_uuid on event metadata {data.metadata}, \
+                    trying data.invoice"
+            print(msg)
+            # Try and get metadata via invoice (if payment cam from a subscription,
+            # then event.data.invoice will be able to trace back to the subscription,
+            # then get the metadata from there
+            try:
+                invoice_id = data.invoice
+                invoice = stripe.Invoice.retrieve(
+                    stripe_account=event.account, id=invoice_id
+                )
+                # Fetch subscription via its invoice
+                subscription = stripe.Subscription.retrieve(
+                    stripe_account=event.account, id=invoice.subscription
+                )
+                subscribie_checkout_session_id = subscription.metadata[
+                    "subscribie_checkout_session_id"
+                ]
+            except Exception as e:
+                msg = "KeyError No plan_uuid on event metadata"
+                print(msg)
+                print(e)
+                return msg, 500
+
+        # Locate the Subscribie subscription by its subscribie_checkout_session_id
+        subscribie_subscription = (
+            database.session.query(Subscription)
+            .filter_by(subscribie_checkout_session_id=subscribie_checkout_session_id)
+            .first()
+        )
+
+        # Store the transaction in Transaction model
+        # (regardless of if subscription or just one-off plan)
+        if (
+            database.session.query(Transaction).filter_by(external_id=data.id).first()
+            is None
+        ):
+            transaction = Transaction()
+            transaction.amount = data.amount
+            transaction.payment_status = (
+                "paid" if data.status == "succeeded" else data.status
+            )
+            transaction.external_id = data.id
+            transaction.external_src = "stripe"
+            if subscribie_subscription is not None:
+                transaction.person = subscribie_subscription.person
+                transaction.subscription = subscribie_subscription
+            else:
+                print(
+                    "WARNING: subscribie_subscription not found for this\
+                    payment_intent.succeeded. The metadata was:"
+                )
+                print(data.metadata)
+            database.session.add(transaction)
+            database.session.commit()
 
     return "OK", 200
 
@@ -342,20 +439,85 @@ def stripe_create_checkout_session():
     charge["interval_amount"] = plan.interval_amount
     charge["currency"] = "GBP"
     session["subscribie_checkout_session_id"] = str(uuid4())
+    payment_method_types = ["card"]
+    success_url = url_for(
+        "views.instant_payment_complete", _external=True, plan=plan.uuid
+    )
+    cancel_url = url_for("views.up_front", _external=True)
+
     stripe.api_key = get_stripe_secret_key()
-    stripe_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=[
+
+    metadata = {
+        "person_uuid": person.uuid,
+        "plan_uuid": session["plan"],
+        "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
+        "package": session.get("package", None),
+        "subscribie_checkout_session_id": session.get(
+            "subscribie_checkout_session_id", None
+        ),
+    }
+
+    # Add note to seller if present directly on payment metadata
+    if session.get("note_to_seller", False):
+        metadata["note_to_seller"] = session.get("note_to_seller")
+
+    if plan.requirements.subscription:
+        subscription_data = {
+            "application_fee_percent": 1.25,
+            "metadata": {
+                "person_uuid": person.uuid,
+                "plan_uuid": session["plan"],
+                "chosen_option_ids": json.dumps(
+                    session.get("chosen_option_ids", None)
+                ),  # noqa
+                "package": session.get("package", None),
+                "subscribie_checkout_session_id": session.get(
+                    "subscribie_checkout_session_id", None
+                ),
+            },
+        }
+        # Add note to seller if present on subscription_data metadata
+        if session.get("note_to_seller", False):
+            subscription_data["metadata"]["note_to_seller"] = session.get(
+                "note_to_seller"
+            )
+        # Add trial period if present
+        if plan.days_before_first_charge and plan.days_before_first_charge > 0:
+            subscription_data["trial_period_days"] = plan.days_before_first_charge
+
+    if plan.requirements.instant_payment:
+        payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
+
+    if plan.requirements.subscription:
+        mode = "subscription"
+    else:
+        mode = "payment"
+
+    # Build line_items array depending on plan requirements
+    line_items = []
+
+    # Add line item for instant_payment if required
+    if plan.requirements.instant_payment:
+        # Append "Up-front fee" to product name if also a subscription
+        plan_name = plan.title
+        if plan.requirements.subscription:
+            plan_name = "(Up-front fee) " + plan_name
+
+        line_items.append(
             {
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
-                        "name": "(Up-front fee) " + plan.title,
+                        "name": plan_name,
                     },
                     "unit_amount": charge["sell_price"],
                 },
                 "quantity": 1,
-            },
+            }
+        )
+
+    if plan.requirements.subscription:
+        line_items.append(
             {
                 "price_data": {
                     "recurring": {
@@ -369,38 +531,35 @@ def stripe_create_checkout_session():
                 },
                 "quantity": 1,
             }
-        ],
-        mode="subscription",
-        metadata={
-            "person_uuid": person.uuid,
-            "plan_uuid": session["plan"],
-            "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
-            "package": session.get("package", None),
-            "subscribie_checkout_session_id": session.get(
-                "subscribie_checkout_session_id", None
-            ),
-        },
-        customer_email=person.email,
-        success_url=url_for(
-            "views.instant_payment_complete", _external=True, plan=plan.uuid
-        ),
-        # cancel_url is when the customer clicks 'back' in the Stripe checkout ui.
-        cancel_url=url_for("views.up_front", _external=True),
-        subscription_data={
-                "application_fee_percent": 1.25,
-                "metadata": {
-                    "person_uuid": person.uuid,
-                    "plan_uuid": session["plan"],
-                    "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)), # noqa
-                    "package": session.get("package", None),
-                    "subscribie_checkout_session_id": session.get(
-                        "subscribie_checkout_session_id", None
-                    ),
-                }
-        },
-        stripe_account=data["account_id"],
-    )
-    return jsonify(id=stripe_session.id)
+        )
+
+    # Create Stripe checkout session for payment or subscription mode
+    if plan.requirements.subscription:
+        stripe_session = stripe.checkout.Session.create(
+            stripe_account=data["account_id"],
+            payment_method_types=payment_method_types,
+            line_items=line_items,
+            mode=mode,
+            metadata=metadata,
+            customer_email=person.email,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            subscription_data=subscription_data,
+        )
+        return jsonify(id=stripe_session.id)
+    elif plan.requirements.instant_payment:
+        stripe_session = stripe.checkout.Session.create(
+            stripe_account=data["account_id"],
+            payment_method_types=payment_method_types,
+            line_items=line_items,
+            mode=mode,
+            metadata=metadata,
+            customer_email=person.email,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            payment_intent_data=payment_intent_data,
+        )
+        return jsonify(id=stripe_session.id)
 
 
 @bp.route("/instant_payment_complete", methods=["GET"])
@@ -414,6 +573,8 @@ def create_subscription(
     package=None,
     chosen_option_ids=None,
     subscribie_checkout_session_id=None,
+    stripe_external_id=None,
+    stripe_subscription_id=None,
 ) -> Subscription:
     """Create subscription model
     Note: A subscription model is also created if a plan only has
@@ -465,6 +626,8 @@ def create_subscription(
             sku_uuid=package,
             person=person,
             subscribie_checkout_session_id=subscribie_checkout_session_id,
+            stripe_external_id=stripe_external_id,
+            stripe_subscription_id=stripe_subscription_id,
         )
         # Add chosen options (if any)
         if chosen_option_ids is None:
