@@ -27,3 +27,5 @@ id_rsa
 node_modules
 *chromium.png
 *webkit.png
+.env
+.env.docker
