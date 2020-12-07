@@ -21,6 +21,7 @@ from subscribie.utils import (
     get_stripe_connect_account,
     create_stripe_connect_account,
     create_stripe_webhook,
+    get_stripe_connect_account_id,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -86,55 +87,81 @@ def currencyFormat(value):
     return "£{:,.2f}".format(value)
 
 
-def store_gocardless_transaction(gocardless_payment_id):
-    """Store GoCardless payment in transactions table"""
-    payment_provider = PaymentProvider.query.first()
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
-    payment = gocclient.payments.get(gocardless_payment_id)
+def store_stripe_transaction(stripe_external_id):
+    """Store Stripe invoice payment in transactions table"""
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    invoice = None
+
+    # It might be an upcoming invoice or an existing invoice which
+    # is being updated
+    # First try fetching paid invoice
+    try:
+        invoice = stripe.Invoice.retrieve(
+            id=stripe_external_id,
+            stripe_account=stripe_connect_account_id,
+        )
+    except stripe.error.InvalidRequestError as e:
+        print(f"Cannot get stripe invoice subscription id: {stripe_external_id}")
+        print("This might be okay. Trying to fetch upcoming invoice with same id...")
+        print(e)
+        try:
+            invoice = stripe.Invoice.upcoming(
+                subscription=stripe_external_id,
+                stripe_account=stripe_connect_account_id,
+            )
+        except stripe.error.InvalidRequestError as e:
+            print(
+                f"Cannot get stripe upcoming invoice subscription id: \
+                  {stripe_external_id}"
+            )
+            print(e)
+            raise Exception(
+                f"Cannot locate Stripe subscription invoice {stripe_external_id}"
+            )
 
     # Check if there's an existing payment record in transactions table
-    transaction = Transaction.query.filter_by(external_id=gocardless_payment_id).first()
+    transaction = Transaction.query.filter_by(external_id=stripe_external_id).first()
     if transaction is None:
-        # No existing transaction found, so fetch payment info from GoCardless
+        # No existing transaction found, so add payment info from Stripe invoice
+        # Note, if the subscription invoice is unsettled, its amount could
+        # potentially change until it's finalized
+
         # Store as transaction
         transaction = Transaction()
-        transaction.amount = payment.amount
-        transaction.payment_status = payment.status
-        transaction.comment = str(payment.metadata)
-        transaction.external_id = gocardless_payment_id
-        transaction.external_src = "gocardless"
-        # Find related subscription if exists
-        if payment.links.subscription:
-            subscription_id = payment.links.subscription
-            subscription = Subscription.query.filter_by(
-                gocardless_subscription_id=subscription_id
-            ).first()
-            if subscription is not None:
-                transaction.subscription = subscription
-            try:
-                transaction.person = subscription.person
-            except AttributeError:  # A transaction may not have a person
-                pass
+        transaction.amount = invoice.amount_due
+        transaction.payment_status = invoice.status
+        transaction.comment = str(invoice.lines.data[0].metadata)
+        transaction.external_id = stripe_external_id
+        transaction.external_src = "stripe"
+        # Find related subscribie subscription model if exists
+        subscription = Subscription.query.filter_by(
+            stripe_external_id=stripe_external_id
+        ).first()
+        if subscription is not None:
+            transaction.subscription = subscription
+        try:
+            transaction.person = subscription.person
+        except AttributeError:  # A transaction may not have a person
+            pass
 
-    # Update payment_status to gocardless latest status
-    transaction.payment_status = payment.status
+    # Update payment_status to stripe latest status
+    transaction.payment_status = invoice.status
 
     database.session.add(transaction)
     database.session.commit()  # Save/update transaction in transactions table
     return transaction
 
 
-@admin.route("payments/update/<gocardless_payment_id>")
+@admin.route("payments/update/<stripe_external_id>")
 @login_required
-def update_payment_fulfillment(gocardless_payment_id):
+def update_payment_fulfillment(stripe_external_id):
     """Update payment fulfillment stage"""
 
-    transaction = Transaction.query.filter_by(external_id=gocardless_payment_id).first()
+    transaction = Transaction.query.filter_by(external_id=stripe_external_id).first()
     if transaction is None:
-        transaction = store_gocardless_transaction(gocardless_payment_id)
+        transaction = store_stripe_transaction(stripe_external_id)
 
     # Update transactions fulfillment_state to the value specified
     fulfillment_state = request.args.get("state", "")
@@ -150,44 +177,46 @@ def update_payment_fulfillment(gocardless_payment_id):
     return redirect(request.referrer)
 
 
-@admin.route("/gocardless/subscriptions/<subscription_id>/actions/pause")
+@admin.route("/stripe/subscriptions/<subscription_id>/actions/pause")
 @login_required
-def pause_gocardless_subscription(subscription_id):
-    """Pause a GoCardless subscription"""
-    payment_provider = PaymentProvider.query.first()
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
+def pause_stripe_subscription(subscription_id: str):
+    """Pause a Stripe subscription"""
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
 
     try:
-        gocclient.subscriptions.pause(subscription_id)
-    except gocardless_pro.errors.InvalidStateError as e:
-        return jsonify(error=e.message)
-
-    flash("Subscription paused")
+        stripe.Subscription.modify(
+            subscription_id,
+            stripe_account=connect_account_id,
+            pause_collection={"behavior": "void"},
+        )
+        flash("Subscription paused")
+    except Exception as e:
+        flash("Error pausing subscription")
+        print(e)
 
     if "goback" in request.args:
         return redirect(request.referrer)
     return jsonify(message="Subscription paused", subscription_id=subscription_id)
 
 
-@admin.route("/gocardless/subscriptions/<subscription_id>/actions/resume")
+@admin.route("/stripe/subscriptions/<subscription_id>/actions/resume")
 @login_required
-def resume_gocardless_subscription(subscription_id):
-    """Resume a GoCardless subscription"""
-    payment_provider = PaymentProvider.query.first()
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
+def resume_stripe_subscription(subscription_id):
+    """Resume a Stripe subscription"""
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
 
     try:
-        gocclient.subscriptions.resume(subscription_id)
-    except gocardless_pro.errors.InvalidStateError as e:
-        return jsonify(error=e.message)
-
-    flash("Subscription resumed")
+        stripe.Subscription.modify(
+            subscription_id,
+            stripe_account=connect_account_id,
+            pause_collection="",  # passing empty string unpauses the subscription
+        )
+        flash("Subscription resumed")
+    except Exception as e:
+        flash("Error resuming subscription")
+        print(e)
 
     if "goback" in request.args:
         return redirect(request.referrer)
@@ -736,40 +765,6 @@ def utility_gocardless_check_user_active():
 
 
 @admin.context_processor
-def utility_gocardless_get_sku_uuid_from_gocardless_subscription_id():
-    def get_sku_uuid_from_gocardless_subscription_id(subscription_id):
-        """Get sku uuid from GoCardless subscription id"""
-        try:
-            subscription = Subscription.query.filter_by(
-                gocardless_subscription_id=subscription_id
-            ).first()
-            sku_uuid = subscription.sku_uuid
-        except AttributeError:
-            return None
-        return sku_uuid
-
-    return dict(
-        get_sku_uuid_from_gocardless_subscription_id=get_sku_uuid_from_gocardless_subscription_id  # noqa
-    )
-
-
-@admin.context_processor
-def utility_get_subscription_from_gocardless_subscription_id():
-    """Return sqlalchemy Subscription object"""
-
-    def get_subscription_from_gocardless_subscription_id(subscription_id):
-        if subscription_id is None:
-            return None
-        return Subscription.query.filter_by(
-            gocardless_subscription_id=subscription_id
-        ).first()
-
-    return dict(
-        get_subscription_from_gocardless_subscription_id=get_subscription_from_gocardless_subscription_id  # noqa
-    )
-
-
-@admin.context_processor
 def utility_get_transaction_fulfillment_state():
     """return fulfullment_state of transaction"""
 
@@ -783,33 +778,33 @@ def utility_get_transaction_fulfillment_state():
     return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
 
 
-def get_subscription_status(gocardless_subscription_id) -> str:
+def get_subscription_status(stripe_external_id: str) -> str:
     status_on_error = "Unknown"
-    payment_provider = PaymentProvider.query.first()
+    if stripe_external_id is None:
+        return status_on_error
     try:
-        client = gocardless_pro.Client(
-            access_token=payment_provider.gocardless_access_token,
-            environment=payment_provider.gocardless_environment,
+        stripe.api_key = get_stripe_secret_key()
+        connect_account = get_stripe_connect_account()
+        subscription = stripe.Subscription.retrieve(
+            stripe_account=connect_account.id, id=stripe_external_id
         )
+        if subscription.pause_collection is not None:
+            return "paused"
+        else:
+            return "active"
+    except stripe.error.InvalidRequestError as e:
+        print(e)
+        return status_on_error
     except ValueError as e:
         print(e)
-        return "Unknown"
-
-    try:
-        response = client.subscriptions.get(gocardless_subscription_id)
-        return response.status if hasattr(response, "status") else status_on_error
-    except Exception as e:
-        logging.error(e)
         return status_on_error
 
 
 @admin.context_processor
 def subscription_status():
-    def formatted_status(gocardless_subscription_id):
+    def formatted_status(stripe_external_id):
         return (
-            get_subscription_status(gocardless_subscription_id)
-            .capitalize()
-            .replace("_", " ")
+            get_subscription_status(stripe_external_id).capitalize().replace("_", " ")
         )
 
     return dict(subscription_status=formatted_status)
@@ -832,45 +827,31 @@ def subscribers():
 @admin.route("/upcoming-payments")
 @login_required
 def upcoming_payments():
-
-    previous_page_cursor = request.args.get("previous", None)
-    next_page_cursor = request.args.get("next", None)
-
-    payment_provider = PaymentProvider.query.first()
-    client = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
-
-    # Get latest payments
-    payments = client.payments.list(params={"limit": 10}).records
-
-    # Paginate
-    try:
-        if next_page_cursor:
-            payments = client.payments.list(
-                params={"after": next_page_cursor, "limit": 10}
-            ).records
-
-        next_page_cursor = payments[-1].id
-
-        previous_payments = client.payments.list(
-            params={"before": next_page_cursor, "limit": 10}
-        ).records
-        previous_page_cursor = previous_payments[-1].id
-    except IndexError:
-        payments = []  # No payments yet
-
-    # Store / Update transactions table
-    for payment in payments:
-        store_gocardless_transaction(payment.id)
+    get_stripe_secret_key()
+    all_subscriptions = Subscription.query.all()
+    subscriptions = []
+    for subscription in all_subscriptions:
+        if subscription.upcoming_invoice() is not None:
+            subscriptions.append(subscription)
 
     return render_template(
-        "admin/upcoming_payments.html",
-        payments=payments,
+        "admin/upcoming_invoices.html",
+        subscriptions=subscriptions,
         datetime=datetime,
-        next_page_cursor=next_page_cursor,
-        previous_page_cursor=previous_page_cursor,
+    )
+
+
+@admin.route("/invoices")
+@login_required
+def invoices():
+    stripe.api_key = get_stripe_secret_key()
+    connect_account = get_stripe_connect_account()
+    invoices = stripe.Invoice.list(stripe_account=connect_account.id)
+
+    return render_template(
+        "admin/invoices.html",
+        invoices=invoices,
+        datetime=datetime,
     )
 
 

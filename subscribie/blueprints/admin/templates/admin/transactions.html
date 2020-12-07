@@ -32,6 +32,7 @@
 		  <thead>
 			<tr>
         <th>Date</th>
+        <th>Status</th>
         <th>Payment id</th>
         <th>Amount</th>
         <th>Source</th>
@@ -43,6 +44,7 @@
 			{% for transaction in transactions.items %}
 			<tr>
         <td>{{ transaction.created_at }}</td>
+        <td>{{ transaction.payment_status }}</td>
         <td>{{ transaction.external_id }}</td>
         <td>&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>

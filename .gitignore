@@ -24,3 +24,6 @@ id_rsa
 .mypy_cache
 .project
 .pylintrc
+node_modules
+*chromium.png
+*webkit.png

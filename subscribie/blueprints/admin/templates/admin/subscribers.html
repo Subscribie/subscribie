@@ -33,7 +33,8 @@
               {{ person.created_at.strftime('%Y-%m-%d') }}
             {% endif %}</td>
             <td><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
-            <td><strong>Email: </strong><a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
+            <td><strong>Email: </strong>
+                <a href="mailto:{{ person.email }}" class="subscriber-email">{{ person.email }}</a><br>
                 <strong>Phone: </strong><a href="tel:{{ person.mobile }}">
                 {% if person.mobile and person.mobile != "NULL" %}
                     {{ person.mobile }}</a><br>
@@ -50,7 +51,9 @@
                 {% for subscription in person.subscriptions %}
                 <li><div class="card">
                   <ul class="list-unstyled px-2">
-                    <li><strong>Title: </strong>{{ subscription.plan.title }}</li>
+                    <li><strong>Title: </strong>
+                        <span class="subscription-title">{{ subscription.plan.title }}</span>
+                    </li>
                     {% if subscription.chosen_options %}
                     <li>
                         <details open>
@@ -65,12 +68,10 @@
                     {% endif %}
                     <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
                     <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                    {% if subscription.gocardless_subscription_id %}
+                    {% if subscription.stripe_external_id %}
                     <li>
-                      <strong>GoCardless Subscription id: </strong>
-                      <a href="https://manage.gocardless.com/subscriptions/{{ subscription.gocardless_subscription_id }}"
-                        target="_blank" title="View subscription in GoCardless dashboard">
-                        {{ subscription.gocardless_subscription_id }}</a>
+                      <strong>Stripe Subscription id: </strong>
+                      {{ subscription.stripe_external_id }}
                     </li>
                     {% endif %}
                     <li>
@@ -84,7 +85,7 @@
                     <li><strong>Sell price: </strong>{{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
                     <li><strong>Status: </strong>
                         {% if subscription.plan.requirements.subscription %}
-                            {{subscription_status(subscription.gocardless_subscription_id)}}
+                            {{subscription_status(subscription.stripe_external_id)}}
                         {% else %}
                             Paid
                         {% endif %}
@@ -102,17 +103,17 @@
                       {% endif %}
                     </li>
                     <li><strong>Actions: </strong>
-                      {% if subscription.gocardless_subscription_id %}
-                        {% if subscription_status(subscription.gocardless_subscription_id) == 'Active' %}
-                        <a href="{{ url_for("admin.pause_gocardless_subscription",
-                          subscription_id=subscription.gocardless_subscription_id,
+                      {% if subscription.stripe_external_id %}
+                        {% if subscription_status(subscription.stripe_external_id) == 'Active' %}
+                        <a href="{{ url_for("admin.pause_stripe_subscription",
+                          subscription_id=subscription.stripe_external_id,
                           goback=1) }}">
                          Pause
                         </a> | 
                         {% endif %}
-                        {% if subscription_status(subscription.gocardless_subscription_id) == 'Paused' %}
-                        <a href="{{ url_for("admin.resume_gocardless_subscription",
-                          subscription_id=subscription.gocardless_subscription_id,
+                        {% if subscription_status(subscription.stripe_external_id) == 'Paused' %}
+                        <a href="{{ url_for("admin.resume_stripe_subscription",
+                          subscription_id=subscription.stripe_external_id,
                           goback=1) }}">
                          Resume
                         </a>
