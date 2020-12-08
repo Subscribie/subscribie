@@ -46,12 +46,10 @@
         <td>{{ transaction.created_at }}</td>
         <td>{{ transaction.payment_status }}</td>
         <td>{{ transaction.external_id }}</td>
-        <td>&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
+        <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
         <td>
-          <a href="{{ url_for('admin.show_subscriber', subscriber_id=transaction.person.id)}}">
-            {{ transaction.person.given_name }}
-          </a>
+          <a class="transaction-subscriber" href="{{ url_for('admin.show_subscriber', subscriber_id=transaction.person.id)}}">{{ transaction.person.given_name }}</a>
         </td>
         <td> {% if transaction.subscription.plan %}
                {{ transaction.subscription.plan.title}}
