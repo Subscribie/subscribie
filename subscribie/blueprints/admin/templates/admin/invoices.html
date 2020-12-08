@@ -26,7 +26,7 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
-        <h1>All Ivoices</h1>
+        <h1>All Invoices</h1>
         <p>Every invoice on your shop. Excluding <a href="{{ url_for('admin.upcoming_payments') }}">upcoming invoices</a></p>
 		<table class="table">
 		  <thead>
@@ -44,7 +44,7 @@
 			{% for invoice in invoices %}
 			<tr>
         <td>{{ datetime.fromtimestamp(invoice.created).strftime("%d/%m/%Y") }}</td>
-        <td>{{ invoice.status }}</td>
+        <td class="invoice-status">{{ invoice.status }}</td>
         <td>{{ invoice.id }}</td>
         <td>
           <a href="{{ invoice.invoice_pdf }}">
@@ -52,7 +52,7 @@
           </a>
         </td>
         <td>&pound;{{ "%.2f"|format(invoice.amount_due/100) }}</td>
-        <td>&pound;{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
+        <td class="invoice-amount-paid">&pound;{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
         <td>&pound;{{ "%.2f"|format(invoice.amount_remaining/100) }}</td>
 			</tr>
 			{% endfor %}

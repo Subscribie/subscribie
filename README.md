@@ -194,9 +194,9 @@ python -m pytest # run pytest
 
 ## Autmated browser testing with playright
 
-
+Run npm install & pray to the npm gods.
 ```
-npm i -D playwright
+npm install
 ```
 
 Might see `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
@@ -206,7 +206,12 @@ Might see `UnhandledPromiseRejectionWarning: browserType.launch: Host system is 
           libenchant1c2a
 ```
 
+To run playwright tests:
+
 ```
+npm test
+```
+
 
 # Where can I get more help, if I need it?
 
