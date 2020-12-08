@@ -121,7 +121,7 @@
 
             <div class="text-right">
               {% if plan.requirements.instant_payment %}
-                <p class="py-2"><b>Pay today:</b><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
+                <p class="py-2"><b>Pay today:</b><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
               {% endif %}
 
               {% if plan.requirements.subscription %}
