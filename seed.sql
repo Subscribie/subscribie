@@ -9,8 +9,8 @@ INSERT INTO plan
 VALUES(1, datetime(), 0,  '840500cb-c663-43e6-a632-d8521bb14c42', 'Hair Gel', 'weekly', 599, 100, 0);
 
 INSERT INTO plan 
-(id, created_at, archived, uuid, title, interval_unit, interval_amount, sell_price, days_before_first_charge)
-VALUES(2, datetime(), 0,  '91547595-6dac-40ab-b789-924656f28c94', 'Bath Soaps', 'monthly', 1099, 500, 0);
+(id, created_at, archived, uuid, title, interval_unit, interval_amount, days_before_first_charge)
+VALUES(2, datetime(), 0,  '5813b05b-9031-45b3-b120-8fc6b1b3082e', 'Bath Soaps', 'monthly', 1099, 0);
 
 INSERT INTO plan 
 (id, created_at, archived, uuid, title, sell_price, days_before_first_charge)
@@ -20,7 +20,7 @@ INSERT INTO plan_requirements (
 id, created_at, plan_id, instant_payment, subscription)
 VALUES
 (1, datetime(), 1, 1, 1),
-(2, datetime(), 2, 1, 1),
+(2, datetime(), 2, 0, 1),
 (3, datetime(), 3, 1, 0);
 
 INSERT INTO plan_selling_points (
