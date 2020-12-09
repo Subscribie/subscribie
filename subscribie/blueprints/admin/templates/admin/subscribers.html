@@ -82,7 +82,14 @@
                           (One-off. Not a subscription)
                         {% endif %}
                     </li>
-                    <li><strong>Sell price: </strong>{{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                    <li><strong>Sell price: </strong>
+                      <span class="subscribers-plan-sell-price">
+                      {% if subscription.plan.requirements.instant_payment %}
+                        {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                      {% else %}
+                        (No up-front fee)
+                      {% endif %}
+                      </span>
                     <li><strong>Status: </strong>
                         {% if subscription.plan.requirements.subscription %}
                             {{subscription_status(subscription.stripe_external_id)}}
