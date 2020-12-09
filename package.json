@@ -16,7 +16,7 @@
     "sqlite3": "^5.0.0"
   },
   "scripts": {
-    "test": "node index.js"
+    "test": "node tests/browser-automated-tests-playwright/index.js"
   },
   "repository": {
     "type": "git",
