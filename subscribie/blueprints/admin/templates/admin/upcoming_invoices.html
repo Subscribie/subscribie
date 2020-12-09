@@ -120,7 +120,11 @@ li { list-style: none}
                             {% endif %}
                         </li>
                         <li><strong>Sell price: </strong>
+                            {% if subscription.plan.requirements.instant_payment %}
                             <span class="plan-sell-price">{{ subscription.plan.sell_price|default(0)|currencyFormat }}</span>
+                            {% else %}
+                              <span class="upcoming-invoices-plan-no-sell_price">(No up-front cost)</span>
+                            {% endif %}
                         </li>
                         <li><strong>Status: </strong>
                             {% if subscription.plan.requirements.subscription %}
