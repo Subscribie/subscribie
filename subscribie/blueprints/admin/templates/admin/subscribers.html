@@ -77,7 +77,7 @@
                     <li>
                         {% if subscription.plan.requirements.subscription %}
                           <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
-                          {{ subscription.plan.interval_amount |default(0)|currencyFormat }}
+                          <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
                         {% else %}
                           (One-off. Not a subscription)
                         {% endif %}
