@@ -23,7 +23,6 @@ from subscribie.utils import (
 )
 from subscribie.forms import (
     TawkConnectForm,
-    GocardlessConnectForm,
     ChangePasswordForm,
     GoogleTagManagerConnectForm,
     PlansForm,
@@ -233,17 +232,12 @@ def dashboard():
         payment_provider = PaymentProvider()
         database.session.add(payment_provider)
         database.session.commit()
-    if payment_provider.gocardless_active:
-        gocardless_connected = True
-    else:
-        gocardless_connected = False
     if payment_provider.stripe_active:
         stripe_connected = True
     else:
         stripe_connected = False
     return render_template(
         "admin/dashboard.html",
-        gocardless_connected=gocardless_connected,
         stripe_connected=stripe_connected,
         integration=integration,
         loadedModules=getLoadedModules(),
@@ -471,36 +465,6 @@ def delete_plan_by_uuid(uuid):
     flash("Plan deleted.")
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
-
-
-@admin.route("/connect/gocardless/manually", methods=["GET", "POST"])
-@login_required
-def connect_gocardless_manually():
-    payment_provider = PaymentProvider.query.first()
-    form = GocardlessConnectForm()
-    if payment_provider.gocardless_active:
-        gocardless_connected = True
-    else:
-        gocardless_connected = False
-    if form.validate_on_submit():
-        access_token = form.data["access_token"]
-        payment_provider.gocardless_access_token = access_token
-        # Check if live or test api key was given
-        if "live" in access_token:
-            payment_provider.gocardless_environment = "live"
-        else:
-            payment_provider.gocardless_environment = "sandbox"
-
-        payment_provider.gocardless_active = True
-        database.session.commit()  # save changes
-
-        return redirect(url_for("admin.dashboard"))
-    else:
-        return render_template(
-            "admin/connect_gocardless_manually.html",
-            form=form,
-            gocardless_connected=gocardless_connected,
-        )
 
 
 @admin.route("/connect/stripe-set-livemode", methods=["POST"])

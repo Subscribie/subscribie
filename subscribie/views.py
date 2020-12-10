@@ -24,7 +24,6 @@ from flask import (
     request,
     session,
     url_for,
-    flash,
     jsonify,
     current_app,
     g,
@@ -595,7 +594,7 @@ def create_subscription(
     person = database.session.query(Person).filter_by(email=email).first()
 
     # subscribie_checkout_session_id can be passed by stripe metadata (webhook) or
-    # via session (e.g. when GoCardless session only with no up-front payment)
+    # via session (e.g. when session only with no up-front payment)
     if subscribie_checkout_session_id is None:
         subscribie_checkout_session_id = session.get(
             "subscribie_checkout_session_id", None
