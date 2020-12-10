@@ -826,9 +826,9 @@ def subscribers():
     return render_template("admin/subscribers.html", people=people)
 
 
-@admin.route("/upcoming-payments")
+@admin.route("/upcoming-invoices")
 @login_required
-def upcoming_payments():
+def upcoming_invoices():
     get_stripe_secret_key()
     all_subscriptions = Subscription.query.all()
     subscriptions = []

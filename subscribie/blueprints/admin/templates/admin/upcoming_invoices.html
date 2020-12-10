@@ -168,10 +168,10 @@ li { list-style: none}
       <nav role="navigation" aria-label="pagination">
         <ul class="pagination justify-content-start">
           <li class="page-item">
-              <a class="page-link" href="{{ url_for('admin.upcoming_payments', previous=previous_page_cursor) }}">Previous</a>
+              <a class="page-link" href="{{ url_for('admin.upcoming_invoices', previous=previous_page_cursor) }}">Previous</a>
           </li>
           <li class="page-item">
-              <a class="page-link" href="{{ url_for('admin.upcoming_payments', next=next_page_cursor) }}">Next page</a>
+              <a class="page-link" href="{{ url_for('admin.upcoming_invoices', next=next_page_cursor) }}">Next page</a>
           </li>
         </ul>
       </nav>
