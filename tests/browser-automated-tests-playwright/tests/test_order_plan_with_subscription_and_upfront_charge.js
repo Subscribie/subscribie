@@ -95,7 +95,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert(content_paid_invoice_amount === '£6.99')
 
     // Verify upcoming invoice has been generated for the subscription:
-    await page.goto('http://127.0.0.1:5000/admin/upcoming-payments')
+    await page.goto('http://127.0.0.1:5000/admin/upcoming-invoices')
     await page.screenshot({ path: `view-upcoming-invoices-${browserType}.png` });
     const content_upcoming_invoice_amount = await page.textContent('.upcoming-invoice-amount');
     assert(content_upcoming_invoice_amount === '£5.99')

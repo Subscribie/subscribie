@@ -86,7 +86,7 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
                       `);
 
     // Go to upcoming payments and ensure plan is attached to upcoming invoice
-    await page.goto('http://127.0.0.1:5000/admin/upcoming-payments');
+    await page.goto('http://127.0.0.1:5000/admin/upcoming-invoices');
     const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
     assert(content_upcoming_invoice_plan_price_interval === '£10.99');
 
