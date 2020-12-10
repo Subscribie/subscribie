@@ -51,6 +51,9 @@ def test_admin_cal_add_plan(session, app, client, admin_session):
         # Verify plan has been stored correctly
         # by visiting admin edit plans page
         req = client.get("/admin/edit")
+        import pdb
+
+        pdb.set_trace()
         assert "Coffee Delux" in req.data.decode("utf-8")
         assert "Roasted by us" in req.data.decode("utf-8")
         assert "Monthly delievey" in req.data.decode("utf-8")
@@ -59,7 +62,10 @@ def test_admin_cal_add_plan(session, app, client, admin_session):
             '<input name="interval_amount-0" id="interval_amount-0"\n                        \n                        value="6.95"'  # noqa
             in req.data.decode("utf-8")
         )
-        assert 'name="sell_price-0" value="5.0"' in req.data.decode("utf-8")
+        assert (
+            'name="sell_price-0"\n                      \n                        value="5.0"'
+            in req.data.decode("utf-8")
+        )
 
 
 def test_admin_can_add_choice_group(session, app, client, admin_session):
