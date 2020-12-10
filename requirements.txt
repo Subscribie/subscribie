@@ -11,7 +11,6 @@ blinker
 oauth2client
 pyyaml
 stripe
-gocardless_pro
 GitPython
 pathlib
 reload
