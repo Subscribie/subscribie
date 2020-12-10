@@ -46,6 +46,9 @@ jobs:
           echo The url will be ${{ github.event.pull_request.user.login }}-${{ github.head_ref }}.pcpink.co.uk
           ssh dokku@$DOKKU_HOST -C "dokku git:initialize ${{ env.SUBDOMAIN }}-${{ github.head_ref }}"
           ssh dokku@$DOKKU_HOST -C "dokku git:set ${{ env.SUBDOMAIN }}-${{ github.head_ref }} deploy-branch ${{ github.head_ref }}"
+          # set Stripe test keys as env vars dor dokku/docker
+          ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }}-${{ github.head_ref }} STRIPE_TEST_SECRET_KEY=${{ secrets.STRIPE_TEST_SECRET_KEY }}"
+          ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }}-${{ github.head_ref }} STRIPE_TEST_PUBLISHABLE_KEY=${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}"
 
       - uses: actions/checkout@v2
         with:
