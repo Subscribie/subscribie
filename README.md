@@ -23,7 +23,7 @@ to try the [subscription website hosting service](http://subscriptionwebsitebuil
 - No coding required
 - Simple: Just give us your USPs for each service & price
 - Upload your pictures
-- Choose between Stripe & Gocardless (more coming soon!) 
+- Stripe for subscriptions & one-off payments
 
 An abstraction layer for managing variable recurring subscriptions and billing. Abstracts direct debit and token based card payment providers or payment-institutions.
 

@@ -191,7 +191,9 @@
 
   /* 
     if in iframe, open new plan/customer in new window
-    as GoCardless denys iframe via X-Frame-Options deny
+    as GoCardless denys iframe via X-Frame-Options deny.
+    TODO remove if stripe does not have this restriction, as
+    GoCardless has been removed from codebase.
   */
   if (inIframe()) {
     chooseElms = document.querySelectorAll('.choose-plan');
