@@ -21,16 +21,6 @@
           you'll need to complete them to get the most out of your shop.
       </p>
       <ul>
-          {% if gocardless_connected is sameas False %}
-          <li>
-          You must to connect GoCardless in order to start taking repeat payments.
-          <a class="btn btn-warning" 
-              href="{{ url_for('admin.connect_gocardless_manually') }}">
-              Connect GoCardless
-          </a>
-          </li>
-          {% endif %}
-
           {% if stripe_connected is sameas False %}
           <li>
           Stripe connection is not yet complete.
@@ -137,30 +127,6 @@
                     <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
                     <a href="{{ url_for('admin.stripe_connect') }}" class="btn btn-block btn-success">
                     Connect Stripe
-                    </a>
-                  </div>
-                </div> <!--end card-->
-
-                <div class="card col-lg my-3 mx-1 shadow-sm" >
-                  <img src="{{ url_for('admin.static', filename='gocardless-blue-rgb_2018.svg') }}"  
-                        class="card-img-top" 
-                        alt="..." 
-                        style="width:60%; display:block; margin:2.2rem auto">
-                  <div class="card-body">
-                    <h5 class="card-title">GoCardless</h5>
-                    <p class="card-text">GoCardless allows you to take scheduled payments easily using Direct Debit, which makes it great for subscription services.</p>
-                    <a href="{{ url_for('admin.connect_gocardless_manually') }}" 
-                        class="btn btn-block 
-                        {% if gocardless_connected  %}
-                          btn-success
-                        {% else %}
-                          btn-info
-                        {% endif %}">
-                      {% if gocardless_connected  %}
-                        Active! Click to reconnect GoCardless
-                      {% else %}
-                        Connect to GoCardless
-                      {% endif %}
                     </a>
                   </div>
                 </div> <!--end card-->
