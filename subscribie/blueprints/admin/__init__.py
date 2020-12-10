@@ -14,8 +14,6 @@ from flask import (
 import jinja2
 import requests
 from jinja2 import Environment
-import gocardless_pro
-import logging
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
@@ -222,43 +220,6 @@ def resume_stripe_subscription(subscription_id):
         return redirect(request.referrer)
 
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
-
-
-@admin.route("/cancel/mandates/<email>")
-@login_required
-def cancel_mandates(email):
-    """Cancel all mandates associated with a given email"""
-    if "confirm" in request.args:
-        # Get all mandates associated with <email>
-        # Then cancel them
-        transactions = get_transactions()
-        partner_madates = []
-        for transaction in transactions:
-            # Match email to mandates
-            if (
-                transaction.mandate["links"]["customer"]["email"] == email
-                and transaction.mandate["status"] == "active"
-            ):
-                partner_madates.append(transaction.mandate)
-
-        if len(partner_madates) > 0:
-            payment_provider = PaymentProvider.query.first()
-            gocclient = gocardless_pro.Client(
-                access_token=payment_provider.gocardless_access_token,
-                environment=payment_provider.gocardless_environment,
-            )
-
-            for mandate in partner_madates:  # Cancel each mandate for given email
-                try:
-                    gocclient.mandates.cancel(mandate["id"])
-                    flash("Mandate canceled for {}".format(email))
-                    flash("The mandate ID was: {}".format(mandate["id"]))
-                except gocardless_pro.errors.InvalidStateError:
-                    flash("Mandate already canceled for {}".format(email))
-                    flash("The mandate ID was: {}".format(mandate["id"]))
-
-            return redirect(url_for("admin.customers"))
-    return render_template("admin/cancel_mandates_confirm.html", email=email)
 
 
 @admin.route("/dashboard")
@@ -698,70 +659,6 @@ def connect_tawk_manually():
         return render_template(
             "admin/connect_tawk_manually.html", form=form, integration=integration
         )
-
-
-@admin.route("/retry-payment/<payment_id>", methods=["GET"])
-def retry_payment(payment_id):
-    payment_provider = PaymentProvider.query.first()
-    gocclient = gocardless_pro.Client(
-        access_token=payment_provider.gocardless_access_token,
-        environment=payment_provider.gocardless_environment,
-    )
-    r = gocclient.payments.retry(payment_id)
-
-    return "Payment (" + payment_id + " retried." + str(r)
-
-
-def get_transactions():
-    """Return tuple list of transactions from SSOT"""
-    from SSOT import SSOT
-
-    payment_provider = PaymentProvider.query.first()
-    access_token = payment_provider.gocardless_access_token
-    gc_environment = payment_provider.gocardless_environment
-
-    target_gateways = (
-        {
-            "name": "GoCardless",
-            "construct": {"access_token": access_token, "environment": gc_environment},
-        },
-    )
-    try:
-        SSOT = SSOT(target_gateways)
-        transactions = SSOT.transactions
-    except gocardless_pro.errors.InvalidApiUsageError as e:
-        logging.error(e.type)
-        logging.error(e.message)
-        flash("Invalid GoCardless API token. Correct your GoCardless API key.")
-        return redirect(url_for("admin.connect_gocardless_manually"))
-    except ValueError as e:
-        logging.error(e.message)
-        if e.message == "No access_token provided":
-            flash("You must connect your GoCardless account first.")
-            return redirect(url_for("admin.connect_gocardless_manually"))
-        else:
-            raise
-    return transactions
-
-
-@admin.context_processor
-def utility_gocardless_check_user_active():
-    def is_active_gocardless(email):
-        # Locate mandate IDs which contain customer email,
-        # and cancel them.
-        transactions = get_transactions()
-        partner_madates = []
-        for transaction in transactions:
-            # Match email to mandate
-            if (
-                transaction.mandate["links"]["customer"]["email"] == email
-                and transaction.mandate["status"] == "active"
-            ):
-                partner_madates.append(transaction.mandate)
-                return True
-        return False
-
-    return dict(is_active_gocardless=is_active_gocardless)
 
 
 @admin.context_processor
