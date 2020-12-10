@@ -26,17 +26,17 @@
 
 <div class="section">
 
-  <h3 class="title is-4 has-text-centered is-size-4-mobile">Make your choice</h2>
+  <h3 class="text-center h2 mb-3">Make your choice</h2>
 
-  <div class="container">
-      <div id="pricing-table" class="container ">
+  <div class="container-fluid">
+      <div id="pricing-table" class="container-fluid">
         <div class="pricing-table row justify-content-around">
           {% for plan in plans %}
             <div class="pricing-plan col-lg-3 col-md-5 my-3 mx-3">
                 <div class="plan-header">
                   {% if plan.primary_icon %}
                     <a href="#" class="plan-img-action" data-toggle="modal" data-target="#imgModal" data-highres="{{ plan.primary_icon }}">
-                      <img src="{{ plan.primary_icon }}" style="display:block; margin:auto" class="plan-img">
+                      <img src="{{ plan.primary_icon }}" class="plan-img">
                     </a>
                   {% endif %}
                   {{ plan.title|safe }}
@@ -90,12 +90,12 @@
                   {% if plan.choice_groups %}
 
                   <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}"
-                  class="choose-plan button is-fullwidth is-info">
+                  class="choose-plan btn btn-block btn-primary">
                   Choose</a>
 
                   {% else %}
                     <a href="/new_customer?plan={{ plan.uuid }}"
-                    class="choose-plan button is-fullwidth is-info">
+                    class="choose-plan btn btn-block btn-primary">
                     Choose</a>
                   {% endif %}
               </div>
