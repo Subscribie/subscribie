@@ -58,9 +58,6 @@ jobs:
           app-name: ${{ env.SUBDOMAIN }}-${{ github.head_ref }}
           git-push-flags: '--force'
           remote-branch: ${{ github.head_ref }}
-      - name: Browser automated tests with screenshots using playwright
-        run: |
-          stripe listen --forward-to 127.0.0.1:5000/stripe_webhook 2> >(tee out.txt >&2)& echo "Waiting for key"; sleep 5;WHSEC=`egrep -o 'whsec_([A-Za-z]|[0-9])*' out.txt`
       - name: Click to see your PR web address
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
