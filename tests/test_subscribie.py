@@ -51,12 +51,19 @@ def test_admin_can_add_plan(session, app, client, admin_session):
         # Verify plan has been stored correctly
         # by visiting admin edit plans page
         req = client.get("/admin/edit")
+        import pdb
+
+        pdb.set_trace()
         assert "Coffee Delux" in req.data.decode("utf-8")
         assert "Roasted by us" in req.data.decode("utf-8")
         assert "Monthly delievey" in req.data.decode("utf-8")
         assert "Highest Quality" in req.data.decode("utf-8")
         assert 'name="sell_price-0"  value="5.0"  id="sell_price-0"' in req.data.decode(
             "utf-8"
+        )
+        assert (
+            'name="sell_price-0"\n                      \n                        value="5.0"'
+            in req.data.decode("utf-8")
         )
 
 
