@@ -6,7 +6,7 @@ Flask-Reuploaded==0.3.2
 Flask-WTF==0.14.3
 wtforms[email]
 Flask-Mail>=0.9.1
-requests=2.25.0
+requests==2.25.0
 blinker
 oauth2client
 pyyaml
