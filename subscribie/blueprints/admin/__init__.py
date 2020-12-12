@@ -1,4 +1,4 @@
-from subscribie.database import database
+from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
     render_template,
@@ -10,9 +10,9 @@ from flask import (
     jsonify,
     request,
     session,
-    Response,
 )
 import jinja2
+import requests
 from jinja2 import Environment
 import gocardless_pro
 import logging
@@ -1085,6 +1085,36 @@ def set_reply_to_email():
     return render_template(
         "admin/settings/set_reply_to_email.html", form=form, current_email=current_email
     )
+
+
+@admin.route("/announce-stripe-connect", methods=["GET"])
+def announce_shop_stripe_connect_ids():
+    """The single stripe webhook endpoint needs to know
+    which shops to send events to. Do this this, it needs
+    to know the stripe_live_connect_account_id and
+    stripe_test_connect_account_id on the payment_provider
+    model, as well as the shop address (flask.host).
+
+    This endpoint (announce_shop_stripe_connect_ids) is called
+    via cron for each shop to keep the connect_account_id
+    up to date should they change.
+    """
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_live_connect_account_id is not None:
+        # send it
+        connect_account_id = payment_provider.stripe_live_connect_account_id
+        r = requests.post(
+            "https://httpbin.org/post", data={"connect_account_id": connect_account_id}
+        )
+    if payment_provider.stripe_test_connect_account_id is not None:
+        # send test connect account id
+        connect_account_id = payment_provider.stripe_test_connect_account_id
+        post = requests.post(
+            "https://httpbin.org/post", data={"connect_account_id": connect_account_id}
+        )
+        import pdb
+
+        pdb.set_trace()
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])
