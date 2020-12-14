@@ -130,6 +130,7 @@ def create_app(test_config=None):
                 )
 
     CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/auth/jwt-login/*": {"origins": "*"}})
     images = UploadSet("images", IMAGES)
     patch_request_class(app, int(app.config.get("MAX_CONTENT_LENGTH", 2 * 1024 * 1024)))
     configure_uploads(app, images)
