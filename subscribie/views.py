@@ -7,7 +7,6 @@ from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     format_to_stripe_interval,
-    get_stripe_connect_account_id,
 )
 from subscribie.auth import check_private_page
 import stripe
@@ -51,7 +50,6 @@ from .database import database
 
 from flask_mail import Mail, Message
 import json
-from pprint import pprint
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -253,67 +251,15 @@ def up_front():
 
 @bp.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
-    payment_provider = PaymentProvider.query.first()
-    stripe_connect_account_id = get_stripe_connect_account_id()
+    """Recieve stripe webhook from proxy (not directly from Stripe)
 
-    if "127.0.0.1" in request.host or "localhost" in request.host:
-        # Operate in local mode
-        endpoint_secret = current_app.config.get(
-            "STRIPE_CLI_WEBHOOK_ENDPOINT_SECRET", None
-        )
-    else:
-        if payment_provider.stripe_livemode:
-            endpoint_secret = payment_provider.stripe_live_webhook_endpoint_secret
-        else:
-            endpoint_secret = payment_provider.stripe_test_webhook_endpoint_secret
+    All stripe connect webhooks are routed from a single endpoint which
+    send the webhook event to the correct shop, based on the
+    stripe connect account id sent in the event.
 
-    if endpoint_secret is None:
-        msg = "Could not get endpoint_secret"
-        print(msg)
-        return jsonify(msg), 500
-
-    payload = request.data
-    sig_header = request.headers.get("Stripe-Signature", None)
-    event = None
-    try:
-        # Only proces events for this connected account
-        try:
-            event = request.get_json()
-            print(f"Live mode is: {event['livemode']}")
-
-            print("#" * 20 + "Event type" + "#" * 20)
-            print(event["type"])
-            print("#" * 80)
-
-            print("#" * 20 + "Event data" + "#" * 20)
-            pprint(event)
-            print("#" * 80)
-
-            if "account" not in event:
-                return (
-                    "Skipping webhook as has no 'account' property \
-                    (not a connect webhook)",
-                    200,
-                )
-            print(
-                f"Checking if account ids match: \
-                  {request.json['account']} == {stripe_connect_account_id}"
-            )
-            if request.get_json()["account"] != stripe_connect_account_id:
-                return "Event account id does not match this shop, ignoring", 200
-            else:
-                print("Connect account id matches.")
-        except Exception as e:
-            print("Error determining account")
-            print(e)
-            return "Could not determine account for webhook", 400
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except ValueError as e:
-        print(e)  # Invalid payload
-        return e, 400
-    except stripe.error.SignatureVerificationError as e:
-        print(e)
-        return "Stripe SignatureVerificationError", 400
+    See https://github.com/Subscribie/subscribie/issues/352
+    """
+    event = request.json
 
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
