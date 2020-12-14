@@ -18,7 +18,6 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
     create_stripe_connect_account,
-    create_stripe_webhook,
     get_stripe_connect_account_id,
 )
 from subscribie.forms import (
@@ -529,8 +528,6 @@ def stripe_onboarding():
     stripe.api_key = get_stripe_secret_key()
 
     company = Company.query.first()
-
-    create_stripe_webhook()
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     payment_provider = PaymentProvider.query.first()
