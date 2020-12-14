@@ -78,3 +78,20 @@ def get_stripe_connect_account_id():
         account_id = payment_provider.stripe_test_connect_account_id
 
     return account_id
+
+
+def format_to_stripe_interval(plan: str):
+    """Format plan.interval_unit to Stripe accepted interval
+    https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-line_items-price_data-recurring-interval
+    """
+    if plan == "daily":
+        plan = "day"
+    elif plan == "weekly":
+        plan = "week"
+    elif plan == "monthly":
+        plan = "month"
+    elif plan == "yearly":
+        plan = "year"
+    else:
+        return ""
+    return plan
