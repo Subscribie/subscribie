@@ -74,10 +74,18 @@ def jwt_login():
     if "Authorization" in request.headers:
         email = request.authorization.username
         password = request.authorization.password
-    elif request.method == "POST":  # Oauth style login from form POST
+    elif (
+        request.method == "POST"
+        and request.headers.get("Content-Type") == "application/x-www-form-urlencoded"
+    ):  # Oauth style login from form POST
         email = request.form.get("username", "")
         password = request.form.get("password", "")
-
+    elif (  # json post login
+        request.method == "POST"
+        and request.headers.get("Content-Type") == "application/json"
+    ):
+        email = request.json["username"]
+        password = request.json["password"]
     user = User.query.filter_by(email=email).first()
     if user is not None:
         # Check password
