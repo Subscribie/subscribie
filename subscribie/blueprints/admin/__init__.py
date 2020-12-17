@@ -941,31 +941,41 @@ def announce_shop_stripe_connect_ids():
     up to date should they change. It can also be called manually.
     It does not matter how many times this is called.
     """
+    stripe_live_connect_account_id = None
+    stripe_test_connect_account_id = None
+
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_live_connect_account_id is not None:
-        connect_account_id = payment_provider.stripe_live_connect_account_id
+        stripe_live_connect_account_id = payment_provider.stripe_live_connect_account_id
         requests.post(
             current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
             json={
-                "stripe_connect_account_id": connect_account_id,
+                "stripe_connect_account_id": stripe_live_connect_account_id,
                 "live_mode": 1,
                 "site_url": request.host_url,
             },
         )
     if payment_provider.stripe_test_connect_account_id is not None:
         # send test connect account id
-        connect_account_id = payment_provider.stripe_test_connect_account_id
+        stripe_test_connect_account_id = payment_provider.stripe_test_connect_account_id
         requests.post(
             current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
             json={
-                "stripe_connect_account_id": connect_account_id,
+                "stripe_connect_account_id": stripe_test_connect_account_id,
                 "live_mode": 0,
                 "site_url": request.host_url,
             },
         )
 
+    stripe_connect_account_id = None
+    if stripe_live_connect_account_id is not None:
+        stripe_connect_account_id = stripe_test_connect_account_id
+    elif stripe_test_connect_account_id is not None:
+        stripe_connect_account_id = stripe_test_connect_account_id
+
     return (
-        f"Announced Stripe connect account ID(s) for site_url {request.host_url},\
+        f"Announced Stripe connect account {stripe_connect_account_id}\
+          for site_url {request.host_url},\
           to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST: \
           {current_app.config['STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST']}",
         200,
