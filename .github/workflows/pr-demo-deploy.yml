@@ -11,6 +11,7 @@ on:
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
+    environment: testing
     steps:
       - name: Dump context
         env:
@@ -49,6 +50,7 @@ jobs:
           # set Stripe test keys as env vars dor dokku/docker
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }}-${{ github.head_ref }} STRIPE_TEST_SECRET_KEY=${{ secrets.STRIPE_TEST_SECRET_KEY }}"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }}-${{ github.head_ref }} STRIPE_TEST_PUBLISHABLE_KEY=${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}"
+          ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }}-${{ github.head_ref }} STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST=${{ secrets.STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST }}"
 
       - uses: actions/checkout@v2
         with:
