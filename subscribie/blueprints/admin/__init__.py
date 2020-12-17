@@ -929,7 +929,7 @@ def set_reply_to_email():
 @admin.route("/announce-stripe-connect", methods=["GET"])
 def announce_shop_stripe_connect_ids():
     """Accounce this shop's stripe connect account id(s)
-    to the INTERNAL_STRIPE_CONNECT_ACCOUNT_ANNOUNCE_SERVER
+    to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST
     - stripe_live_connect_account_id
     - stripe_test_connect_account_id
     The single stripe webhook endpoint needs to know
@@ -947,7 +947,7 @@ def announce_shop_stripe_connect_ids():
     if payment_provider.stripe_live_connect_account_id is not None:
         connect_account_id = payment_provider.stripe_live_connect_account_id
         requests.post(
-            current_app.config["INTERNAL_STRIPE_CONNECT_ACCOUNT_ANNOUNCE_SERVER"],
+            current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
             json={
                 "stripe_connect_account_id": connect_account_id,
                 "live_mode": 1,
@@ -958,7 +958,7 @@ def announce_shop_stripe_connect_ids():
         # send test connect account id
         connect_account_id = payment_provider.stripe_test_connect_account_id
         requests.post(
-            current_app.config["INTERNAL_STRIPE_CONNECT_ACCOUNT_ANNOUNCE_SERVER"],
+            current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
             json={
                 "stripe_connect_account_id": connect_account_id,
                 "live_mode": 0,
@@ -968,8 +968,8 @@ def announce_shop_stripe_connect_ids():
 
     return (
         f"Announced Stripe connect account ID(s) for site_url {request.host_url},\
-          to the INTERNAL_STRIPE_CONNECT_ACCOUNT_ANNOUNCE_SERVER: \
-          {current_app.config['INTERNAL_STRIPE_CONNECT_ACCOUNT_ANNOUNCE_SERVER']}",
+          to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST: \
+          {current_app.config['STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST']}",
         200,
     )
 
