@@ -1,3 +1,6 @@
+import logging
+import json
+from multiprocessing.dummy import Pool
 from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
@@ -10,6 +13,7 @@ from flask import (
     jsonify,
     request,
     session,
+    Response,
 )
 import jinja2
 import requests
@@ -927,7 +931,8 @@ def set_reply_to_email():
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])
-def announce_shop_stripe_connect_ids():
+@admin.after_app_request
+def announce_shop_stripe_connect_ids(response=None):
     """Accounce this shop's stripe connect account id(s)
     to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST
     - stripe_live_connect_account_id
@@ -945,43 +950,74 @@ def announce_shop_stripe_connect_ids():
     """
     stripe_live_connect_account_id = None
     stripe_test_connect_account_id = None
+    msg = None
+    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"]
+    pool = Pool(2)
 
     payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_live_connect_account_id is not None:
-        stripe_live_connect_account_id = payment_provider.stripe_live_connect_account_id
-        requests.post(
-            current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
-            json={
-                "stripe_connect_account_id": stripe_live_connect_account_id,
-                "live_mode": 1,
-                "site_url": request.host_url,
-            },
+
+    def announce_success(callback):
+        logging.info(f"Stripe connect account announced\n{callback}")
+        logging.info(callback.text)
+
+    def announce_error(callback):
+        logging.error(f"Failed to announce Stripe connect account id\n{callback}")
+        logging.error(callback)
+
+    def announce_stripe_connect_account(account_id, live_mode=0):
+        logging.debug(
+            f"Announcing stripe account to {url_for('index', _external=True)}"
         )
-    if payment_provider.stripe_test_connect_account_id is not None:
-        # send test connect account id
-        stripe_test_connect_account_id = payment_provider.stripe_test_connect_account_id
-        requests.post(
-            current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"],
-            json={
-                "stripe_connect_account_id": stripe_test_connect_account_id,
-                "live_mode": 0,
-                "site_url": request.host_url,
+        pool.apply_async(
+            requests.post,
+            args=(ANNOUNCE_HOST,),
+            kwds={
+                "json": {
+                    "stripe_connect_account_id": account_id,
+                    "live_mode": live_mode,
+                    "site_url": url_for("index", _external=True),
+                },
             },
+            callback=announce_success,
+            error_callback=announce_error,
         )
 
-    stripe_connect_account_id = None
-    if stripe_live_connect_account_id is not None:
-        stripe_connect_account_id = stripe_test_connect_account_id
-    elif stripe_test_connect_account_id is not None:
-        stripe_connect_account_id = stripe_test_connect_account_id
+    try:
+        if payment_provider.stripe_live_connect_account_id is not None:
+            stripe_live_connect_account_id = (
+                payment_provider.stripe_live_connect_account_id
+            )
+            announce_stripe_connect_account(stripe_live_connect_account_id, live_mode=1)
 
-    return (
-        f"Announced Stripe connect account {stripe_connect_account_id}\
-          for site_url {request.host_url},\
-          to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST: \
-          {current_app.config['STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST']}",
-        200,
-    )
+        if payment_provider.stripe_test_connect_account_id is not None:
+            # send test connect account id
+            stripe_test_connect_account_id = (
+                payment_provider.stripe_test_connect_account_id
+            )
+            announce_stripe_connect_account(stripe_test_connect_account_id, live_mode=0)
+
+        stripe_connect_account_id = None
+        if stripe_live_connect_account_id is not None:
+            stripe_connect_account_id = stripe_test_connect_account_id
+        elif stripe_test_connect_account_id is not None:
+            stripe_connect_account_id = stripe_test_connect_account_id
+
+        msg = {
+            "msg": f"Announced Stripe connect account {stripe_connect_account_id} \
+for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST: \
+{current_app.config['STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST']}\n\
+WARNING: This is sent asynchronously, check logs to verify recipt"
+        }
+        logging.info(msg)
+    except Exception as e:
+        logging.error(f"Failed to announce stripe connect id:\n{e}")
+
+    # If accessing directly (e.g. via cron) return a response
+    if request.path == "/admin/announce-stripe-connect":
+        return Response(json.dumps(msg), status=200, mimetype="application/json")
+    else:
+        # Otherwise passthrough the response
+        return response
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])
