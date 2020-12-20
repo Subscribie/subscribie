@@ -1,6 +1,7 @@
 const playwright = require('playwright');
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000
+const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 
 /* Test an order can be placed for a plan with only a recurring payment (just a subscription) */
 async function test_order_plan_with_only_recurring_charge(browsers) {
@@ -13,8 +14,8 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
     const page = await context.newPage();
 
     // Buy item with subscription & upfront fee
-    await page.goto('http://127.0.0.1:5000/'); // Go to home before selecting product
-    await page.goto('http://127.0.0.1:5000/new_customer?plan=5813b05b-9031-45b3-b120-8fc6b1b3082e');
+    await page.goto(PLAYWRIGHT_HOST); // Go to home before selecting product
+    await page.goto(PLAYWRIGHT_HOST + '/new_customer?plan=5813b05b-9031-45b3-b120-8fc6b1b3082e');
 
     // Fill in order form
     await page.fill('#given_name', 'John');
@@ -54,7 +55,7 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
     
     // Login and verify order appears in admin dashboard
     // Login
-    await page.goto('http://127.0.0.1:5000/auth/login');
+    await page.goto(PLAYWRIGHT_HOST + '/auth/login');
     await page.fill('#email', 'admin@example.com');
     await page.fill('#password', 'password');
     await page.click('#login');
@@ -64,7 +65,7 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
     assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
     // Go to My Subscribers page
-    await page.goto('http://127.0.0.1:5000/admin/subscribers')
+    await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
     // Verify that subscriber is present in the list
@@ -86,7 +87,7 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
                       `);
 
     // Go to upcoming payments and ensure plan is attached to upcoming invoice
-    await page.goto('http://127.0.0.1:5000/admin/upcoming-invoices');
+    await page.goto(PLAYWRIGHT_HOST + '/admin/upcoming-invoices');
     const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
     assert(content_upcoming_invoice_plan_price_interval === '£10.99');
 
@@ -96,7 +97,7 @@ async function test_order_plan_with_only_recurring_charge(browsers) {
     
 
     // Logout of shop owners admin dashboard
-    await page.goto('http://127.0.0.1:5000/auth/logout');
+    await page.goto(PLAYWRIGHT_HOST + '/auth/logout');
     await page.screenshot({ path: `logged-out-${browserType}.png` });
     // Assert logged out OK
     const logged_out_content = await page.textContent('.text-center');
