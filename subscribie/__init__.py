@@ -7,6 +7,7 @@
 
     :copyright: (c) 2018 by Karma Computing Ltd
 """
+import logging
 from dotenv import load_dotenv
 import os
 import sys
@@ -51,6 +52,9 @@ from .models import (
 from .blueprints.admin import get_subscription_status
 
 load_dotenv(verbose=True)
+PYTHON_LOG_LEVEL = os.environ.get("PYTHON_LOG_LEVEL", "WARNING")
+logging.basicConfig(level=PYTHON_LOG_LEVEL)
+
 beeline.init(
     writekey=os.environ.get("HONEYCOMB_API_KEY"),
     dataset="subscribie",
