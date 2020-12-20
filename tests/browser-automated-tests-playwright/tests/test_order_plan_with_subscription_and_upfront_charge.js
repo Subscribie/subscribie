@@ -1,5 +1,6 @@
 const playwright = require('playwright');
 const assert = require('assert');
+const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 
 /* Test an order can be placed for a plan with subscription & upfront payment */
 async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
@@ -13,8 +14,8 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     const page = await context.newPage();
 
     // Buy item with subscription & upfront fee
-    await page.goto('http://127.0.0.1:5000/'); // Go to home before selecting product
-    await page.goto('http://127.0.0.1:5000/new_customer?plan=840500cb-c663-43e6-a632-d8521bb14c42');
+    await page.goto(PLAYWRIGHT_HOST); // Go to home before selecting product
+    await page.goto(PLAYWRIGHT_HOST + 'new_customer?plan=840500cb-c663-43e6-a632-d8521bb14c42');
 
     // Fill in order form
     await page.fill('#given_name', 'John');
@@ -34,7 +35,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     //Verify first payment is correct (upfront charge + first recuring charge)
     const first_payment_content = await page.textContent('#ProductSummary-totalAmount');
     assert(first_payment_content === "£6.99");
-    const recuring_charge_content = await page.textContent('#ProductSummary-Description');
+    const recuring_charge_content = await page.textContent('.ProductSummaryDescription');
     assert(recuring_charge_content === "Then £5.99 per week");
 
     // Pay with test card
@@ -54,7 +55,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     
     // Login and verify order appears in admin dashboard
     // Login
-    await page.goto('http://127.0.0.1:5000/auth/login');
+    await page.goto(PLAYWRIGHT_HOST + 'auth/login');
     await page.fill('#email', 'admin@example.com');
     await page.fill('#password', 'password');
     await page.click('#login');
@@ -64,7 +65,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
     // Go to My Subscribers page
-    await page.goto('http://127.0.0.1:5000/admin/subscribers')
+    await page.goto(PLAYWRIGHT_HOST + 'admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
     // Verify that subscriber is present in the list
@@ -76,7 +77,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert(subscriber_subscription_title_content === 'Hair Gel');
 
     // Verify transaction is present in 'All transactions page'
-    await page.goto('http://127.0.0.1:5000/admin/transactions')
+    await page.goto(PLAYWRIGHT_HOST + 'admin/transactions')
     await page.screenshot({ path: `view-transactions-${browserType}.png` });
     const transaction_content = await page.textContent('.transaction-amount');
     assert (transaction_content == '£6.99');
@@ -86,7 +87,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert (transaction_subscriber_content === 'John');
 
     // Verify paid invoice has been generated & marked "paid":
-    await page.goto('http://127.0.0.1:5000/admin/invoices')
+    await page.goto(PLAYWRIGHT_HOST + 'admin/invoices')
     await page.screenshot({ path: `view-paid-invoices-${browserType}.png` });
     const content_paid_invoice_status = await page.textContent('.invoice-status');
     assert(content_paid_invoice_status === 'paid')
@@ -95,7 +96,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert(content_paid_invoice_amount === '£6.99')
 
     // Verify upcoming invoice has been generated for the subscription:
-    await page.goto('http://127.0.0.1:5000/admin/upcoming-invoices')
+    await page.goto(PLAYWRIGHT_HOST + 'admin/upcoming-invoices')
     await page.screenshot({ path: `view-upcoming-invoices-${browserType}.png` });
     const content_upcoming_invoice_amount = await page.textContent('.upcoming-invoice-amount');
     assert(content_upcoming_invoice_amount === '£5.99')
@@ -107,7 +108,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
     assert(content_upcoming_invoice_plan_upfront_amount === '£1.00')
 
     // Logout of shop owners admin dashboard
-    await page.goto('http://127.0.0.1:5000/auth/logout');
+    await page.goto(PLAYWRIGHT_HOST + 'auth/logout');
     await page.screenshot({ path: `logged-out-${browserType}.png` });
     // Assert logged out OK
     const logged_out_content = await page.textContent('.text-center');
