@@ -1,6 +1,7 @@
 const playwright = require('playwright');
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000
+const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 
 /* Test an order can be placed for a plan with only an upfront payment */
 async function test_order_plan_with_only_upfront_charge(browsers) {
@@ -14,8 +15,8 @@ async function test_order_plan_with_only_upfront_charge(browsers) {
     const page = await context.newPage();
 
     // Buy item with subscription & upfront fee
-    await page.goto('http://127.0.0.1:5000/'); // Go to home before selecting product
-    await page.goto('http://127.0.0.1:5000/new_customer?plan=58921f7a-3371-4ccf-aeee-e2b8af5cca3a');
+    await page.goto(PLAYWRIGHT_HOST); // Go to home before selecting product
+    await page.goto(PLAYWRIGHT_HOST + '/new_customer?plan=58921f7a-3371-4ccf-aeee-e2b8af5cca3a');
 
     // Fill in order form
     await page.fill('#given_name', 'John');
@@ -55,7 +56,7 @@ async function test_order_plan_with_only_upfront_charge(browsers) {
     
     // Login and verify order appears in admin dashboard
     // Login
-    await page.goto('http://127.0.0.1:5000/auth/login');
+    await page.goto(PLAYWRIGHT_HOST + '/auth/login');
     await page.fill('#email', 'admin@example.com');
     await page.fill('#password', 'password');
     await page.click('#login');
@@ -65,7 +66,7 @@ async function test_order_plan_with_only_upfront_charge(browsers) {
     assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
     // Go to My Subscribers page
-    await page.goto('http://127.0.0.1:5000/admin/subscribers')
+    await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
     // Verify that subscriber is present in the list
@@ -77,7 +78,7 @@ async function test_order_plan_with_only_upfront_charge(browsers) {
     assert(subscriber_plan_title_content === 'One-Off Soaps');
 
     // Logout of shop owners admin dashboard
-    await page.goto('http://127.0.0.1:5000/auth/logout');
+    await page.goto(PLAYWRIGHT_HOST + '/auth/logout');
     await page.screenshot({ path: `logged-out-${browserType}.png` });
     // Assert logged out OK
     const logged_out_content = await page.textContent('.text-center');
