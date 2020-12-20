@@ -8,14 +8,10 @@ wtforms[email]
 Flask-Mail>=0.9.1
 requests==2.25.0
 blinker
-oauth2client
-pyyaml
 stripe
 GitPython
 pathlib
-reload
 pytest
-tinycss
 flask_sqlalchemy
 flask_migrate
 python-dotenv==0.13.0
