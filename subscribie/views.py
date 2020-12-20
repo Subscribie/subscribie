@@ -261,15 +261,18 @@ def stripe_webhook():
     """
     event = request.json
 
+    logging.info(f"Received stripe webhook event type {event['type']}")
+
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
+        logging.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
         subscribie_checkout_session_id = session["metadata"][
             "subscribie_checkout_session_id"
         ]
 
-        if session.mode == "subscription":
-            stripe_subscription_id = session.subscription
+        if session["mode"] == "subscription":
+            stripe_subscription_id = session["subscription"]
         else:
             stripe_subscription_id = None
 
@@ -291,21 +294,23 @@ def stripe_webhook():
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
         """
-        if session.mode == "subscription" or session.mode == "payment":
+        if session["mode"] == "subscription" or session["mode"] == "payment":
             create_subscription(
-                email=session.customer_email,
+                email=session["customer_email"],
                 package=package,
                 chosen_option_ids=chosen_option_ids,
                 subscribie_checkout_session_id=subscribie_checkout_session_id,
                 stripe_subscription_id=stripe_subscription_id,
-                stripe_external_id=session.id,
+                stripe_external_id=session["id"],
             )
+        return "OK", 200
 
     if event["type"] == "payment_intent.succeeded":
         """Store suceeded payment_intents as transactions
         These events will fire both at the begining of a subscription,
         and also at each successful recuring billing cycle.
         """
+        logging.info("Processing payment_intent.succeeded")
 
         data = event["data"]["object"]
         stripe.api_key = get_stripe_secret_key()
@@ -313,30 +318,29 @@ def stripe_webhook():
 
         # Get the Subscribie subscription id from Stripe subscription metadata
         try:
-            subscribie_checkout_session_id = data.metadata["plan_uuid"]
+            subscribie_checkout_session_id = data["metadata"]["plan_uuid"]
         except KeyError:
-            msg = f"KeyError No plan_uuid on event metadata {data.metadata}, \
-                    trying data.invoice"
+            msg = f"KeyError No plan_uuid on event metadata {data['metadata']}, \
+                    trying data['invoice']"
             print(msg)
             # Try and get metadata via invoice (if payment cam from a subscription,
             # then event.data.invoice will be able to trace back to the subscription,
             # then get the metadata from there
             try:
-                invoice_id = data.invoice
+                invoice_id = data["invoice"]
                 invoice = stripe.Invoice.retrieve(
-                    stripe_account=event.account, id=invoice_id
+                    stripe_account=event["account"], id=invoice_id
                 )
                 # Fetch subscription via its invoice
                 subscription = stripe.Subscription.retrieve(
-                    stripe_account=event.account, id=invoice.subscription
+                    stripe_account=event["account"], id=invoice.subscription
                 )
                 subscribie_checkout_session_id = subscription.metadata[
                     "subscribie_checkout_session_id"
                 ]
             except Exception as e:
-                msg = "KeyError No plan_uuid on event metadata"
-                print(msg)
-                print(e)
+                msg = f"KeyError No plan_uuid on event metadata.\n{e}"
+                logging.error(msg)
                 return msg, 500
 
         # Locate the Subscribie subscription by its subscribie_checkout_session_id
@@ -349,15 +353,17 @@ def stripe_webhook():
         # Store the transaction in Transaction model
         # (regardless of if subscription or just one-off plan)
         if (
-            database.session.query(Transaction).filter_by(external_id=data.id).first()
+            database.session.query(Transaction)
+            .filter_by(external_id=data["id"])
+            .first()
             is None
         ):
             transaction = Transaction()
-            transaction.amount = data.amount
+            transaction.amount = data["amount"]
             transaction.payment_status = (
-                "paid" if data.status == "succeeded" else data.status
+                "paid" if data["status"] == "succeeded" else data["status"]
             )
-            transaction.external_id = data.id
+            transaction.external_id = data["id"]
             transaction.external_src = "stripe"
             if subscribie_subscription is not None:
                 transaction.person = subscribie_subscription.person
@@ -367,11 +373,15 @@ def stripe_webhook():
                     "WARNING: subscribie_subscription not found for this\
                     payment_intent.succeeded. The metadata was:"
                 )
-                print(data.metadata)
+                print(data["metadata"])
             database.session.add(transaction)
             database.session.commit()
+        return "OK", 200
 
-    return "OK", 200
+    msg = {"msg": "Unknown event", "event": event}
+    logging.debug(msg)
+
+    return jsonify(msg), 422
 
 
 @bp.route("/stripe-create-checkout-session", methods=["POST"])
