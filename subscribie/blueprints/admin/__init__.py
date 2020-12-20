@@ -932,7 +932,7 @@ def set_reply_to_email():
 @admin.after_app_request
 def announce_shop_stripe_connect_ids(response=None):
     """Accounce this shop's stripe connect account id(s)
-    to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST
+    to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST
     - stripe_live_connect_account_id
     - stripe_test_connect_account_id
     The single stripe webhook endpoint needs to know
@@ -949,7 +949,7 @@ def announce_shop_stripe_connect_ids(response=None):
     stripe_live_connect_account_id = None
     stripe_test_connect_account_id = None
     msg = None
-    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST"]
+    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
     pool = Pool(2)
 
     payment_provider = PaymentProvider.query.first()
@@ -1002,8 +1002,8 @@ def announce_shop_stripe_connect_ids(response=None):
 
         msg = {
             "msg": f"Announced Stripe connect account {stripe_connect_account_id} \
-for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST: \
-{current_app.config['STRIPE_CONNECT_ACCOUNT_RECEIVER_HOST']}\n\
+for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
+{current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
 WARNING: This is sent asynchronously, check logs to verify recipt"
         }
         logging.info(msg)
