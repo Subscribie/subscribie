@@ -12,8 +12,7 @@
   "devDependencies": {
     "playwright": "^1.6.2",
     "playwright-chromium": "^1.6.2",
-    "playwright-cli": "^0.162.1",
-    "sqlite3": "^5.0.0"
+    "playwright-cli": "^0.162.1"
   },
   "scripts": {
     "test": "node tests/browser-automated-tests-playwright/index.js"
