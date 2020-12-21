@@ -53,7 +53,9 @@ cd subscribie
 cp .env.example .env
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
-docker-compose up
+# Build is only required if you want to force the image to be rebuilt
+# --force-recreate is for recreating the container (not the image)
+docker-compose up --build --force-recreate
 ```
 
 Then visit http://127.0.0.1:5000
