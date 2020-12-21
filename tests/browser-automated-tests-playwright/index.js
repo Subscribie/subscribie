@@ -28,8 +28,17 @@ async function clearDB() {
   await page.click('#login');
 
   await page.goto(PLAYWRIGHT_HOST + '/admin/remove-subscriptions');
+  const contentSubscriptions = await page.evaluate(() => document.body.textContent.indexOf("all subscriptions deleted"));
+  assert(contentSubscriptions > -1);
+
   await page.goto(PLAYWRIGHT_HOST + '/admin/remove-people');
+  const contentPeople = await page.evaluate(() => document.body.textContent.indexOf("all people deleted"));
+  assert(contentPeople > -1);
+
   await page.goto(PLAYWRIGHT_HOST + '/admin/remove-transactions');
+  const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
+  assert(contentTransactions > -1);
+
   await browser.close();
 }
 
