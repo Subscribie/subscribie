@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
+
 # Subscribie  - Subscription Website Builder 
 #### variable subscription & recurring payments
 [![Build Status](https://travis-ci.org/Subscribie/subscribie.svg?branch=master)](https://travis-ci.org/Subscribie/subscribie)
