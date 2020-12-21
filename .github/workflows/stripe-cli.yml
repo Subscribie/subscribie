@@ -16,3 +16,5 @@ jobs:
           set -x
           curl -OL https://github.com/stripe/stripe-cli/releases/download/v1.5.5/stripe_1.5.5_linux_amd64.deb
           sudo dpkg -i stripe_1.5.5_linux_amd64.deb
+          stripe config --set test_mode_api_key ${{ secrets.STRIPE_TEST_SECRET_KEY }}
+          stripe config --set test_mode_publishable_key ${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}
