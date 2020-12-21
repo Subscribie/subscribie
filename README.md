@@ -51,7 +51,7 @@ If you like to use docker-compose workflow for local development:
 ```
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
-cp .env.docker.example .env
+cp .env.example .env
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 docker-compose up
