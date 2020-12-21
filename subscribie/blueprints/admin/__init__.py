@@ -66,10 +66,12 @@ from werkzeug.utils import secure_filename
 admin = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
 )
-from .choice_group import list_choice_groups  # noqa
-from .option import list_options  # noqa
-from .subscriber import show_subscriber  # noqa
-from .export_subscribers import export_subscribers  # noqa
+
+from .ResetSite import remove_subscriptions  # noqa: F401,E402
+from .choice_group import list_choice_groups  # noqa: F401, E402
+from .option import list_options  # noqa: F401, E402
+from .subscriber import show_subscriber  # noqa: F401, E402
+from .export_subscribers import export_subscribers  # noqa: F401, E402a
 
 
 def dec2pence(amount):

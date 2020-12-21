@@ -17,23 +17,20 @@ const iPhone = devices['iPhone 6'];
 
 // Delete any existing persons & subscriptions from the database
 async function clearDB() {
-  const sqlite3 = require('sqlite3').verbose();
-  const db = new sqlite3.Database(process.env.DB_FULL_PATH);
+  const browser = await playwright['chromium'].launch({headless: false});
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  db.serialize(function() {
+  // Login then clearDB
+  await page.goto(PLAYWRIGHT_HOST + 'auth/login');
+  await page.fill('#email', 'admin@example.com');
+  await page.fill('#password', 'password');
+  await page.click('#login');
 
-    console.log("Deleting subscriptions");
-    db.run("DELETE from subscription");
-
-    console.log("Deleting persons");
-    db.run("DELETE from person");
-
-    console.log("Deleting transactions");
-    db.run("DELETE from transactions");
-   
-  });
-   
-  db.close();
+  await page.goto(PLAYWRIGHT_HOST + '/admin/remove-subscriptions');
+  await page.goto(PLAYWRIGHT_HOST + '/admin/remove-people');
+  await page.goto(PLAYWRIGHT_HOST + '/admin/remove-transactions');
+  await browser.close();
 }
 
 
@@ -177,15 +174,18 @@ async function test_connect_to_stripe_connect()  {
 
 
 (async() => {
-  clearDB();
+  await clearDB();
   await test_connect_to_stripe_connect();
-  await test_order_plan_with_subscription_and_upfront_charge(browsers);
-  clearDB();
-  await test_order_plan_with_only_upfront_charge(browsers);
-  clearDB();
-  await test_order_plan_with_only_recurring_charge(browsers);
-  clearDB();
-  await test_order_plan_with_only_recurring_charge(browsers);
 
-  clearDB();
+  await test_order_plan_with_subscription_and_upfront_charge(browsers);
+  await clearDB();
+
+  await test_order_plan_with_only_upfront_charge(browsers);
+  await clearDB();
+
+  await test_order_plan_with_only_recurring_charge(browsers);
+  await clearDB();
+
+  await test_order_plan_with_only_recurring_charge(browsers);
+  await clearDB();
 })();
