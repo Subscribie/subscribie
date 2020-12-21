@@ -3,13 +3,11 @@ const assert = require('assert');
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 
 /* Test an order can be placed for a plan with subscription & upfront payment */
-async function test_order_plan_with_subscription_and_upfront_charge(browsers) {
+async function test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions) {
   for (const browserType of browsers) {
     console.log("test_order_plan_with_subscription_and_upfront_charge");
     const browser = await playwright[browserType].launch({headless: false});
-    const context = await browser.newContext({
-      //...iPhone
-    });
+    const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(10000);
     const page = await context.newPage();
 
