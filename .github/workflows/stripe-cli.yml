@@ -1,0 +1,18 @@
+---
+name: Install Stripe cli
+on: 
+  push:
+    branches: [ videos-of-tests ]
+jobs:
+  deploy-pr:
+    runs-on: ubuntu-20.04
+    environment: testing
+    steps:
+      - name: Install Stripe cli 
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+        run: |
+          set -x
+          curl -O https://github.com/stripe/stripe-cli/releases/download/v1.5.5/stripe_1.5.5_linux_amd64.deb
+          dpkg -i stripe_1.5.5_linux_amd64.deb
