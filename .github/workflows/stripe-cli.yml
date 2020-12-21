@@ -22,3 +22,4 @@ jobs:
           stripe config --set test_mode_publishable_key ${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}
           stripe listen --forward-to 127.0.0.1:5000/stripe_webhook 2> >(tee out.txt >&2)& echo "Waiting for webhook signing secret"; sleep 5;WHSEC=`egrep -o 'whsec_([A-Za-z]|[0-9])*' out.txt`;
           echo $WHSEC
+          jobs
