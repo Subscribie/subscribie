@@ -4,6 +4,14 @@ set -euxo pipefail
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 
+if [ -a .env ]
+then
+  echo ".env exists already so not copying from .env.example"
+else
+  echo ".env not found, so copying from .env.example"
+  cp .env.example .env
+fi
+
 # Set DB URI & PATH
 sed -i 's#SQLALCHEMY_DATABASE_URI.*#SQLALCHEMY_DATABASE_URI="sqlite:////usr/src/app/data.db"#g' .env
 sed -i 's#DB_FULL_PATH.*#DB_FULL_PATH=/usr/src/app/data.db#g' .env
