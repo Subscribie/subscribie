@@ -105,10 +105,10 @@ use in further requests.
 3. In your `.env` file set `STRIPE_WEBHOOK_ENDPOINT_SECRET` to the webhook secret
 
 ```
-stripe listen --forward-to 127.0.0.1:5000/stripe_webhook
+stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
 ```
 
-This will allow you to see/process webhook requests locally using test api keys.
+This will allow you to see/process webhook requests locally using test api keys. Note that in production, stripe webhooks are proxied via https://github.com/Subscribie/stripe-connect-webhook-endpoint-router which validates every webhook before it get forwarded.
 
 # API Basics
 
