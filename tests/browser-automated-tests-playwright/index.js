@@ -5,10 +5,15 @@ test_order_plan_with_only_upfront_charge = require('./tests/test_order_plan_with
 test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_with_only_recurring_charge');
 
 const playwright = require('playwright');
+const fs = require('fs');
 const devices = playwright.devices;
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
+const videosDir = __dirname + '/videos/';
+const videoWidth = 1280
+const videoHeight = 720;
+const browserContextOptions = {recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight} }}
 
 //const browsers = ['chromium', 'webkit'];
 const browsers = ['chromium'];
@@ -18,7 +23,7 @@ const iPhone = devices['iPhone 6'];
 // Delete any existing persons & subscriptions from the database
 async function clearDB() {
   const browser = await playwright['chromium'].launch({headless: false});
-  const context = await browser.newContext();
+  const context = await browser.newContext(browserContextOptions);
   const page = await context.newPage();
 
   // Login then clearDB
@@ -42,15 +47,22 @@ async function clearDB() {
   await browser.close();
 }
 
+async function saveVideo(filename) {
+  const currentVideoFile = fs.readdirSync(videosDir).find(name => name.endsWith('webm'));
+  console.log("The current file is:");
+  console.log(currentVideoFile);
+  await new Promise(x => setTimeout(x, 1000));
+  //await fs.copyFileSync(videosDir + currentVideoFile, videosDir + filename + currentVideoFile);
+}
+
+
 
 // Connect to stripe connect using test/fake sms as we're in test mode
 async function test_connect_to_stripe_connect()  {
 
   console.log("test_connect_to_stripe_connect");
   const browser = await playwright['chromium'].launch({headless: false});
-  const context = await browser.newContext({
-    //...iPhone
-  });
+  const context = await browser.newContext(browserContextOptions);
   context.setDefaultTimeout(10000);
   const page = await context.newPage();
 
@@ -186,15 +198,15 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_connect_to_stripe_connect();
 
-  await test_order_plan_with_subscription_and_upfront_charge(browsers);
+  await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
   await clearDB();
 
-  await test_order_plan_with_only_upfront_charge(browsers);
+  await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
   await clearDB();
 
-  await test_order_plan_with_only_recurring_charge(browsers);
+  await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
   await clearDB();
 
-  await test_order_plan_with_only_recurring_charge(browsers);
+  await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
   await clearDB();
 })();
