@@ -15,4 +15,4 @@ jobs:
         run: |
           set -x
           curl -O https://github.com/stripe/stripe-cli/releases/download/v1.5.5/stripe_1.5.5_linux_amd64.deb
-          dpkg -i stripe_1.5.5_linux_amd64.deb
+          sudo dpkg -i stripe_1.5.5_linux_amd64.deb
