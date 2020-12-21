@@ -8,6 +8,6 @@ WORKDIR /usr/src/app/subscribie/
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip pip install uwsgi
-RUN export FLASK_APP=subscribie; flask db upgrade
+RUN export FLASK_APP=subscribie;
 EXPOSE 80
 ENTRYPOINT [ "./entrypoint.sh" ]
