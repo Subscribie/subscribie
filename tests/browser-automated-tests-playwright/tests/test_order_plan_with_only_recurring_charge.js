@@ -2,11 +2,12 @@ const playwright = require('playwright');
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
+const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 
 /* Test an order can be placed for a plan with only a recurring payment (just a subscription) */
 async function test_order_plan_with_only_recurring_charge(browsers, browserContextOptions) {
   for (const browserType of browsers) {
-    const browser = await playwright[browserType].launch({headless: false});
+    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(DEFAULT_TIMEOUT);
     const page = await context.newPage();
