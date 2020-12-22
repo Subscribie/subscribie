@@ -1,6 +1,7 @@
 ---
 name: Install Stripe cli
 on: 
+  workflow_dispatch:
   push:
     branches: [ videos-of-tests ]
 jobs:
