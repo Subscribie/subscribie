@@ -41,3 +41,9 @@ jobs:
           set -x
           cp .env.example .env
           node tests/browser-automated-tests-playwright/index.js
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: ./*.png
