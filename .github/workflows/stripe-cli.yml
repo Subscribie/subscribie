@@ -40,7 +40,7 @@ jobs:
         run: |
           set -x
           cp .env.example .env
-          node tests/browser-automated-tests-playwright/index.js
+          node --unhandled-rejections=strict tests/browser-automated-tests-playwright/index.js
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
