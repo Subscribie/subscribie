@@ -91,10 +91,10 @@ jobs:
 
       - uses: microsoft/playwright-github-action@v1
 
-      - name: Install node dependencies
+      - name: Install node dependencies needed for Playwright browser tests
         run: npm install
 
-      - name: Run Playwright tests
+      - name: Run & Record browser automated tests (Playwright)
         env:
           PLAYWRIGHT_HOST: http://${{ github.event.pull_request.user.login }}-${{ github.head_ref }}.pcpink.co.uk
         run: |
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: test-artifacts
+          name: Screenshots-and-video-artifacts
           path: |
             ./*.png
             ./tests/browser-automated-tests-playwright/videos/*
