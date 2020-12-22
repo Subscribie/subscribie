@@ -10,6 +10,7 @@ const devices = playwright.devices;
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
+const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
 const videoHeight = 720;
@@ -22,7 +23,7 @@ const iPhone = devices['iPhone 6'];
 
 // Delete any existing persons & subscriptions from the database
 async function clearDB() {
-  const browser = await playwright['chromium'].launch({headless: false});
+  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS});
   const context = await browser.newContext(browserContextOptions);
   const page = await context.newPage();
 
@@ -61,7 +62,7 @@ async function saveVideo(filename) {
 async function test_connect_to_stripe_connect()  {
 
   console.log("test_connect_to_stripe_connect");
-  const browser = await playwright['chromium'].launch({headless: false});
+  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS});
   const context = await browser.newContext(browserContextOptions);
   context.setDefaultTimeout(10000);
   const page = await context.newPage();
