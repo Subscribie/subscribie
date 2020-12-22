@@ -64,3 +64,15 @@ jobs:
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
         run: |
           echo Visit your pr here: http://${{ github.event.pull_request.user.login }}-${{ github.head_ref }}.pcpink.co.uk
+      - name: 'Comment PR with web address of application live preview'
+        uses: actions/github-script@v3
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "🙌 ${{ github.event.pull_request.user.login }}. Live preview is here: http://${{ github.event.pull_request.user.login }}-${{ github.head_ref }}.pcpink.co.uk"
+            })
+
