@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-20.04
     environment: testing
     steps:
+      - uses: actions/checkout@v2
+
       - name: Install Stripe cli 
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
