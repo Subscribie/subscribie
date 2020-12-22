@@ -85,8 +85,6 @@ jobs:
                     Password: password"
             })
 
-      # Begin playwright browser automation tests
-
       - uses: actions/setup-node@v1
 
       - uses: microsoft/playwright-github-action@v1
