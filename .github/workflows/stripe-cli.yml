@@ -35,6 +35,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
+          FLASK_ENV: development
           PLAYWRIGHT_HOST: http://chrisjsimpson-293-stripe-subscriptions.pcpink.co.uk/
         run: |
           set -x
