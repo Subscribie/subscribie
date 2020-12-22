@@ -32,3 +32,11 @@ jobs:
 
       - name: Install node dependencies
         run: npm install
+
+      - name: Run Playwright tests
+        env:
+          PLAYWRIGHT_HOST: http://chrisjsimpson-293-stripe-subscriptions.pcpink.co.uk/
+        run: |
+          set -x
+          cp .env.example .env
+          node tests/browser-automated-tests-playwright/index.js
