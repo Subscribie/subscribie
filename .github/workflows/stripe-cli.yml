@@ -46,4 +46,6 @@ jobs:
         if: ${{ always() }}
         with:
           name: test-artifacts
-          path: ./*.png
+          path: |
+            ./*.png
+            ./tests/browser-automated-tests-playwright/videos/*
