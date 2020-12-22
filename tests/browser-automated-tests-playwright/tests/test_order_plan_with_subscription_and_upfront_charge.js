@@ -66,6 +66,8 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
     assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
     // Go to My Subscribers page
+    // Crude wait before we check subscribers to allow webhooks time
+    await new Promise(x => setTimeout(x, 15000)); //15 secconds
     await page.goto(PLAYWRIGHT_HOST + 'admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
