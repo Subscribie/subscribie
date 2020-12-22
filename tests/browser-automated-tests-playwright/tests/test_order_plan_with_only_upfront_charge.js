@@ -43,6 +43,7 @@ async function test_order_plan_with_only_upfront_charge(browsers, browserContext
     await page.fill('#cardExpiry', '04 / 24');
     await page.fill('#cardCvc', '123');
     await page.fill('#billingName', 'John Smith');
+    await page.selectOption('select#billingCountry', 'GB');
     await page.fill('#billingPostalCode', 'LN1 7FH');
     await page.screenshot({ path: `stripe-checkout-filled-in-${browserType}.png` });
     await page.click('.SubmitButton');
