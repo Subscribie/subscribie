@@ -23,3 +23,7 @@ jobs:
           stripe listen --forward-to 127.0.0.1:5000/stripe_webhook 2> >(tee out.txt >&2)& echo "Waiting for webhook signing secret"; sleep 5;WHSEC=`egrep -o 'whsec_([A-Za-z]|[0-9])*' out.txt`;
           echo $WHSEC
           jobs
+
+      - uses: actions/setup-node@v1
+
+      - uses: microsoft/playwright-github-action@v1
