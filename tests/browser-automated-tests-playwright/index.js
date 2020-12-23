@@ -6,7 +6,8 @@ test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_wi
 
 const playwright = require('playwright');
 const fs = require('fs');
-const devices = playwright.devices;
+const { devices } = require('playwright');
+const iPhone = devices['iPhone 11'];
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 10000;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
@@ -14,12 +15,11 @@ const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() 
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
 const videoHeight = 720;
-const browserContextOptions = {recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight} }}
+const browserContextOptions = {...iPhone, recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight} }}
 
 //const browsers = ['chromium', 'webkit'];
 const browsers = ['chromium'];
 
-const iPhone = devices['iPhone 6'];
 
 // Delete any existing persons & subscriptions from the database
 async function clearDB() {
