@@ -67,7 +67,7 @@ async function test_order_plan_with_only_upfront_charge(browsers, browserContext
 
     // Go to My Subscribers page
     // Crude wait before we check subscribers to allow webhooks time
-    await new Promise(x => setTimeout(x, 15000)); //15 secconds
+    await new Promise(x => setTimeout(x, 30000)); //30 secconds
     await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
