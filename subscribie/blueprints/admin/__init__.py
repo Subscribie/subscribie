@@ -36,7 +36,6 @@ from subscribie.forms import (
     UploadFilesForm,
 )
 from subscribie.auth import login_required, protected_download
-from subscribie.symlink import symlink
 from flask_uploads import UploadSet, IMAGES
 import os
 from pathlib import Path
@@ -369,7 +368,7 @@ def edit():
                     [current_app.config["UPLOADED_IMAGES_DEST"], filename]
                 )
                 link = "".join([current_app.config["STATIC_FOLDER"], filename])
-                symlink(img_src, link, overwrite=True)
+                os.symlink(img_src, link)
                 src = url_for("static", filename=filename)
                 draftPlan.primary_icon = src
         database.session.commit()  # Save
@@ -992,7 +991,7 @@ def upload_logo():
             # symlink to active theme static directory
             img_src = "".join([current_app.config["UPLOADED_IMAGES_DEST"], filename])
             link = "".join([current_app.config["STATIC_FOLDER"], filename])
-            symlink(img_src, link, overwrite=True)
+            os.symlink(img_src, link)
             src = url_for("static", filename=filename)
             company.logo_src = src
             database.session.commit()
