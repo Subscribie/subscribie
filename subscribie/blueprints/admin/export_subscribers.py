@@ -38,6 +38,5 @@ def export_subscribers():
             mimetype="text/csv",
             headers={"Content-disposition": "attachment; filename=subscribers.csv"},
         )
-        return outfile.getvalue()
 
     return jsonify(subscribers)

@@ -1,19 +1,15 @@
+from kubernetes import client, config
 import requests
 import json
 import random
 import re
-import subprocess
 import kubernetes
-from kubernetes import client, config
 from kubernetes.client.rest import ApiException
-import yaml
-import tempfile
 from time import sleep
 import os
 import pprint
-pp = pprint.PrettyPrinter(indent=4)
 
-from kubernetes import client, config
+pp = pprint.PrettyPrinter(indent=4)
 
 
 def loadClusterConfig():
@@ -55,7 +51,10 @@ WAITING_VIEW = COUCHDB + "/_design" + "/sites-queue" + "/_view" + "/waiting"
 
 # create an instance of the API class
 configuration = kubernetes.client.Configuration()
-api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
+api_instance = kubernetes.client.CustomObjectsApi(
+    kubernetes.client.ApiClient(configuration)
+)
+
 
 def generateCephFilesystemManifest(docId):
     """ Generate persistent volume claim manifest """
@@ -64,51 +63,47 @@ def generateCephFilesystemManifest(docId):
     siteName = formatSiteName(doc)
 
     manifest = {
-      "apiVersion": "ceph.rook.io/v1",
-      "kind": "CephFilesystem",
-      "metadata": {
-        "name": "site-storage-" + siteName,
-        "namespace": "rook-ceph"
-      },
-      "spec": {
-        "metadataPool": {
-          "replicated": {
-            "size": 2
-          }
+        "apiVersion": "ceph.rook.io/v1",
+        "kind": "CephFilesystem",
+        "metadata": {"name": "site-storage-" + siteName, "namespace": "rook-ceph"},
+        "spec": {
+            "metadataPool": {"replicated": {"size": 2}},
+            "dataPools": [{"replicated": {"size": 2}}],
+            "metadataServer": {
+                "activeCount": 1,
+                "activeStandby": True,  # True not "true" as operator does not validate
+            },
         },
-        "dataPools": [
-          {
-            "replicated": {
-              "size": 2
-            }
-          }
-        ],
-        "metadataServer": {
-          "activeCount": 1,
-          "activeStandby": True  # True not "true" as operator does not validate
-        }
-      }
     }
     return manifest
 
-def deployCephFilesystemManifest(manifest):
-  api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
-  group = 'ceph.rook.io' # str | the custom resource's group
-  version = 'v1' # str | the custom resource's version
-  namespace = 'rook-ceph'
-  plural = 'cephfilesystems' # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
-  body = manifest # object | The JSON schema of the Resource to create.
-  pretty = 'true' # str | If 'true', then the output is pretty printed. (optional)
 
-  try: 
-      api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
-      pp.pprint(api_response)
-  except ApiException as e:
-      print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
+def deployCephFilesystemManifest(manifest):
+    api_instance = kubernetes.client.CustomObjectsApi(
+        kubernetes.client.ApiClient(configuration)
+    )
+    group = "ceph.rook.io"  # str | the custom resource's group
+    version = "v1"  # str | the custom resource's version
+    namespace = "rook-ceph"
+    plural = "cephfilesystems"  # str | the custom object's plural name. For TPRs this would be lowercase plural kind.
+    body = manifest  # object | The JSON schema of the Resource to create.
+    pretty = "true"  # str | If 'true', then the output is pretty printed. (optional)
+
+    try:
+        api_response = api_instance.create_namespaced_custom_object(
+            group, version, namespace, plural, body, pretty=pretty
+        )
+        pp.pprint(api_response)
+    except ApiException as e:
+        print(
+            "Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n"
+            % e
+        )
+
 
 def init():
     # Create required database
-    req = requests.put(HOST + "/" + DBNAME)
+    requests.put(HOST + "/" + DBNAME)
     # Create required views
     # - waiting view
     # - completed view
@@ -123,17 +118,17 @@ def init():
         },
         "language": "javascript",
     }
-    req = requests.put(COUCHDB + "/_design/sites-queue", json=views)
+    requests.put(COUCHDB + "/_design/sites-queue", json=views)
 
 
 init()  # Create required database and view(s)
 
 
 def getDoc(docId):
-    """ Return doc from Couchdb 
-  docId: Document id
-  returns: Complete doc (excluding attachments)
-  """
+    """Return doc from Couchdb
+    docId: Document id
+    returns: Complete doc (excluding attachments)
+    """
     req = requests.get(COUCHDB + "/" + docId)
     resp = json.loads(req.text)
     return resp
@@ -145,11 +140,13 @@ def formatSiteName(doc):
 
 
 def generateManifest(docId):
-    """ Generate Kubernetes manifest yaml from CouchDB document
-  the attached jamla document is to be injected into the
-  subscribie container, along with any environment vars
-  needed. """
-    containerImageName = os.getenv('SUBSCRIBIE_IMAGE_NAME', 'subscribie/subscribie:latest')
+    """Generate Kubernetes manifest yaml from CouchDB document
+    the attached jamla document is to be injected into the
+    subscribie container, along with any environment vars
+    needed."""
+    containerImageName = os.getenv(
+        "SUBSCRIBIE_IMAGE_NAME", "subscribie/subscribie:latest"
+    )
     # Generate manifest
     doc = getDoc(docId)
     try:
@@ -168,7 +165,7 @@ def generateManifest(docId):
                 },
             },
             "spec": {
-                "replicas": 2, # reduce disruption from preemptive node kills
+                "replicas": 2,  # reduce disruption from preemptive node kills
                 # TODO use a PodDisruptionBudget issue #31
                 "selector": {"matchLabels": {"subscribie": siteName}},
                 "template": {
@@ -189,21 +186,48 @@ def generateManifest(docId):
                                     {"name": "subscribie-port", "containerPort": 8080}
                                 ],
                                 "env": [
-                                        {"name": "EXAMPLE", "value": "example_value"},
-                                        {"name": "SUBSCRIBIE_SHOPNAME", "value": siteName},
-                                        {"name": "SUBSCRIBIE_FETCH_JAMLA", "value":"couchdb"},
-                                        {"name": "COUCH_DB_SERVICE_NAME", "value": "couchdb-service"},
-                                        {"name": "COUCHDB_USER", "value": "admin"},
-                                        {"name": "COUCHDB_PASSWORD", "value": "password"},
-                                        {"name": "COUCHDB_DBNAME", "value": "jamlas"},
-                                        {"name": "COUCHDB_PASSWORD", "value": "password"},
-                                        {"name": "MAIL_DEFAULT_SENDER", "value": os.getenv("MAIL_DEFAULT_SENDER")},
-                                        {"name": "EMAIL_LOGIN_FROM", "value": os.getenv("EMAIL_LOGIN_FROM")},
-                                        {"name": "MAIL_SERVER", "value": os.getenv("MAIL_SERVER")},
-                                        {"name": "MAIL_PORT", "value": os.getenv("MAIL_PORT")},
-                                        {"name": "MAIL_USE_TLS", "value": os.getenv("MAIL_USE_TLS")},
-                                        {"name": "MAIL_USERNAME", "value": os.getenv("MAIL_USERNAME")},
-                                        {"name": "MAIL_PASSWORD", "value": os.getenv("MAIL_PASSWORD")}
+                                    {"name": "EXAMPLE", "value": "example_value"},
+                                    {"name": "SUBSCRIBIE_SHOPNAME", "value": siteName},
+                                    {
+                                        "name": "SUBSCRIBIE_FETCH_JAMLA",
+                                        "value": "couchdb",
+                                    },
+                                    {
+                                        "name": "COUCH_DB_SERVICE_NAME",
+                                        "value": "couchdb-service",
+                                    },
+                                    {"name": "COUCHDB_USER", "value": "admin"},
+                                    {"name": "COUCHDB_PASSWORD", "value": "password"},
+                                    {"name": "COUCHDB_DBNAME", "value": "jamlas"},
+                                    {"name": "COUCHDB_PASSWORD", "value": "password"},
+                                    {
+                                        "name": "MAIL_DEFAULT_SENDER",
+                                        "value": os.getenv("MAIL_DEFAULT_SENDER"),
+                                    },
+                                    {
+                                        "name": "EMAIL_LOGIN_FROM",
+                                        "value": os.getenv("EMAIL_LOGIN_FROM"),
+                                    },
+                                    {
+                                        "name": "MAIL_SERVER",
+                                        "value": os.getenv("MAIL_SERVER"),
+                                    },
+                                    {
+                                        "name": "MAIL_PORT",
+                                        "value": os.getenv("MAIL_PORT"),
+                                    },
+                                    {
+                                        "name": "MAIL_USE_TLS",
+                                        "value": os.getenv("MAIL_USE_TLS"),
+                                    },
+                                    {
+                                        "name": "MAIL_USERNAME",
+                                        "value": os.getenv("MAIL_USERNAME"),
+                                    },
+                                    {
+                                        "name": "MAIL_PASSWORD",
+                                        "value": os.getenv("MAIL_PASSWORD"),
+                                    },
                                 ],
                                 "volumeMounts": [
                                     {
@@ -217,13 +241,13 @@ def generateManifest(docId):
                             {
                                 "name": siteName + "-static",
                                 "flexVolume": {
-                                  "driver": "ceph.rook.io/rook",
-                                  "fsType": "ceph",
-                                  "options": {
-                                    "fsName": "site-storage-" + siteName,
-                                    "clusterNamespace": "rook-ceph"
-                                  }
-                                }
+                                    "driver": "ceph.rook.io/rook",
+                                    "fsType": "ceph",
+                                    "options": {
+                                        "fsName": "site-storage-" + siteName,
+                                        "clusterNamespace": "rook-ceph",
+                                    },
+                                },
                             }
                         ],
                     },
@@ -235,7 +259,7 @@ def generateManifest(docId):
         print("Error could not parse site jamla. (KeyError)")
         return False
     """
-    - storage? Ceph? No. Not ready for it. Possibly CouchDB, 
+    - storage? Ceph? No. Not ready for it. Possibly CouchDB,
       just give clients an object store.
   """
 
@@ -295,7 +319,7 @@ def generateIngressManifest(docId):
     - This expects that cert-manager installed and working on your cluster
     - This ASSUMES you've checked and validated your cert-manager with issuer
       letsencrypt-staging manually first, rather than letsencrypt-prod
-  """
+    """
     doc = getDoc(docId)
     siteName = formatSiteName(doc)
     manifest = {
@@ -388,7 +412,7 @@ def markDocCompleted(docId):
     # Get doc + revision
     req = requests.get(COUCHDB + "/" + docId)
     resp = json.loads(req.text)
-    rev = resp["_rev"]
+    print(f"Revision is {resp['_rev']}")
     # Mark as completed
     resp["queue_state"] = "completed"
     # Put updated doc
@@ -403,18 +427,18 @@ def consumeSites():
         docRow = random.choice(resp["rows"])
         # Generate storage
         fsManifest = generateCephFilesystemManifest(docRow["id"])
-        print("#"*45)
+        print("#" * 45)
         print(fsManifest)
         # Deploy storage
         deployCephFilesystemManifest(fsManifest)
         # Generate service & deploy
         manifest = generateServiceManifest(docRow["id"])
-        print("#"*45)
+        print("#" * 45)
         print(manifest)
         deployServiceManifest(manifest)
         # Generate and deploy deployment
         manifest = generateManifest(docRow["id"])
-        print("#"*45)
+        print("#" * 45)
         print(manifest)
         if manifest:
             try:
@@ -428,13 +452,14 @@ def consumeSites():
         # Generate Ingress & deploy Ingress
         manifest = generateIngressManifest(docRow["id"])
         deployIngressManifest(manifest)
-        print("#"*45)
+        print("#" * 45)
         print(manifest)
 
     except IndexError:
         print("Do documents left to process")
     sleep(1)
     consumeSites()  # Keep checking
+
 
 consumeSites()
 

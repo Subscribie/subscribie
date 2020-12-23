@@ -578,7 +578,6 @@ def stripe_onboarding():
     create_stripe_webhook()
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
-    payment_provider = PaymentProvider.query.first()
     try:
         print("Trying if there's an existing stripe account")
         account = get_stripe_connect_account()

@@ -33,8 +33,7 @@ from kubernetes import client, config
 
 
 def runUsageExample():
-    """ demonstrate usage by creating a simple Pod through default client
-    """
+    """demonstrate usage by creating a simple Pod through default client"""
     logging.basicConfig(level=logging.DEBUG)
     config.load_kube_config()
     #   # --or alternatively--
@@ -65,27 +64,27 @@ spec:
 
 
 def fromYaml(rawData, client=None, **kwargs):
-    """ invoke the K8s API to create or replace an object given as YAML spec.
-        @param rawData: either a string or an opened input stream with a
-                        YAML formatted spec, as you'd use for `kubectl apply -f`
-        @param client: (optional) preconfigured client environment to use for invocation
-        @param kwargs: (optional) further arguments to pass to the create/replace call
-        @return: response object from Kubernetes API call
+    """invoke the K8s API to create or replace an object given as YAML spec.
+    @param rawData: either a string or an opened input stream with a
+                    YAML formatted spec, as you'd use for `kubectl apply -f`
+    @param client: (optional) preconfigured client environment to use for invocation
+    @param kwargs: (optional) further arguments to pass to the create/replace call
+    @return: response object from Kubernetes API call
     """
     for obj in yaml.load_all(rawData):
         createOrUpdateOrReplace(obj, client, **kwargs)
 
 
 def createOrUpdateOrReplace(obj, client=None, **kwargs):
-    """ invoke the K8s API to create or replace a kubernetes object.
-        The first attempt is to create(insert) this object; when this is rejected because
-        of an existing object with same name, we attempt to patch this existing object.
-        As a last resort, if even the patch is rejected, we *delete* the existing object
-        and recreate from scratch.
-        @param obj: complete object specification, including API version and metadata.
-        @param client: (optional) preconfigured client environment to use for invocation
-        @param kwargs: (optional) further arguments to pass to the create/replace call
-        @return: response object from Kubernetes API call
+    """invoke the K8s API to create or replace a kubernetes object.
+    The first attempt is to create(insert) this object; when this is rejected because
+    of an existing object with same name, we attempt to patch this existing object.
+    As a last resort, if even the patch is rejected, we *delete* the existing object
+    and recreate from scratch.
+    @param obj: complete object specification, including API version and metadata.
+    @param client: (optional) preconfigured client environment to use for invocation
+    @param kwargs: (optional) further arguments to pass to the create/replace call
+    @return: response object from Kubernetes API call
     """
     k8sApi = findK8sApi(obj, client)
     try:
@@ -162,9 +161,9 @@ def deleteObject(obj, client=None, **kwargs):
 
 
 def findK8sApi(obj, client=None):
-    """ Investigate the object spec and lookup the corresponding API object
-        @param client: (optional) preconfigured client environment to use for invocation
-        @return: a client instance wired to the apriopriate API
+    """Investigate the object spec and lookup the corresponding API object
+    @param client: (optional) preconfigured client environment to use for invocation
+    @return: a client instance wired to the apriopriate API
     """
     grp, _, ver = obj["apiVersion"].partition("/")
     if ver == "":
@@ -179,12 +178,12 @@ def findK8sApi(obj, client=None):
 
 
 def invokeApi(k8sApi, action, obj, **args):
-    """ find a suitalbe function and perform the actual API invocation.
-        @param k8sApi: client object for the invocation, wired to correct API version
-        @param action: either 'create' (to inject a new objet) or 'replace','patch','delete'
-        @param obj: the full object spec to be passed into the API invocation
-        @param args: (optional) extraneous arguments to pass
-        @return: response object from Kubernetes API call
+    """find a suitalbe function and perform the actual API invocation.
+    @param k8sApi: client object for the invocation, wired to correct API version
+    @param action: either 'create' (to inject a new objet) or 'replace','patch','delete'
+    @param obj: the full object spec to be passed into the API invocation
+    @param args: (optional) extraneous arguments to pass
+    @return: response object from Kubernetes API call
     """
     # transform ActionType from Yaml into action_type for swagger API
     kind = camel2snake(obj["kind"])
