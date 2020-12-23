@@ -130,7 +130,7 @@ async function test_connect_to_stripe_connect()  {
   try {
     await page.fill('#first_name', "Sam");
     await page.fill('#last_name', "Smith");
-    await page.fill('#dob', "01");
+    await page.fill('input[name=dob-day]', "28");
     await page.fill('input[name=dob-month]', "12");
     await page.fill('input[name=dob-year]', "1990");
     await page.fill('input[name=address]', "123 Tree Lane");
