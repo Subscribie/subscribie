@@ -49,7 +49,7 @@
               <td><a class="btn btn-warning btn-sm btn-block" href="{{ url_for('seo.set_page_title', encodedPath=rule['encodedPath']) }}">
                   Edit title</a>
               </td>
-              <td><a class="btn btn-primary btn-sm btn-block" href="{{ rule['path']}}" target="_blank">View</a></td>
+              <td><a class="btn btn-primary btn-sm btn-block" href="{{ rule['path']}}" target="_blank" rel="noopener noreferrer">View</a></td>
             </tr>
             {% endfor %}
         </tbody>
