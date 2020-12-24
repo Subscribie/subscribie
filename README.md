@@ -227,6 +227,8 @@ Needed components / services. Check the `.env.example` for each of them.
 - [ ] A Redis hostname is set
 - [ ] Redis is configured with password authentication
 - [ ] Iptables are configured for redis
+- [ ] Hostname is setup for stripe-connect-webhook-endpoint-router
+- [ ] Hostname is setup for stripe-connect-account-announcer (listening on port 8001 by default)
 
 # Where can I get more help, if I need it?
 
