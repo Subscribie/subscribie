@@ -222,6 +222,11 @@ Needed components / services. Check the `.env.example` for each of them.
 - [Stripe connect account announcer](https://github.com/Subscribie/stripe-connect-account-announcer) Each shop announces its [stripe connect account id](https://stripe.com/docs/api/connected_accounts) to a redis endpoing (key is the account id, value is the shop url)
 - [Stripe webhook router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) which routes webhooks to the correct shop
 
+#### Checklist 
+
+- [ ] A Redis hostname is set
+- [ ] Redis is configured with password authentication
+- [ ] Iptables are configured for redis
 
 # Where can I get more help, if I need it?
 
