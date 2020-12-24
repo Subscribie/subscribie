@@ -59,10 +59,6 @@ def test_admin_can_add_plan(session, app, client, admin_session):
         assert 'name="sell_price-0"  value="5.0"  id="sell_price-0"' in req.data.decode(
             "utf-8"
         )
-        assert (
-            'name="sell_price-0"\n                      \n                        value="5.0"'
-            in req.data.decode("utf-8")
-        )
 
 
 def test_admin_can_add_choice_group(session, app, client, admin_session):
