@@ -190,8 +190,9 @@ To run tests:
 ```
 . venv/bin/activate # activate virtualenv
 python -m pytest --ignore=node_modules # run pytest
+```
 
-## Autmated browser testing with playright
+## Automated browser testing with playright
 
 Run npm install & pray to the npm gods.
 ```
