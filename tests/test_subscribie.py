@@ -20,7 +20,7 @@ def test_admin_can_view_dashboard(session, app, client, admin_session):
         client.get("/admin/dashboard", follow_redirects=True)
 
 
-def test_admin_cal_add_plan(session, app, client, admin_session):
+def test_admin_can_add_plan(session, app, client, admin_session):
     user = User.query.filter_by(email="admin@example.com").first()
     with user_set(app, user):
         req = client.post(
@@ -55,11 +55,9 @@ def test_admin_cal_add_plan(session, app, client, admin_session):
         assert "Roasted by us" in req.data.decode("utf-8")
         assert "Monthly delievey" in req.data.decode("utf-8")
         assert "Highest Quality" in req.data.decode("utf-8")
-        assert (
-            '<input name="interval_amount-0" id="interval_amount-0"\n                        \n                        value="6.95"'  # noqa
-            in req.data.decode("utf-8")
+        assert 'name="sell_price-0"  value="5.0"  id="sell_price-0"' in req.data.decode(
+            "utf-8"
         )
-        assert 'name="sell_price-0" value="5.0"' in req.data.decode("utf-8")
 
 
 def test_admin_can_add_choice_group(session, app, client, admin_session):
@@ -101,7 +99,6 @@ def test_admin_can_add_an_option_to_a_choice_group(session, app, client, admin_s
 
 @pytest.fixture(scope="function")
 def admin_session(client, with_shop_owner):
-    user = User.query.filter_by(email="admin@example.com").first()
     with client.session_transaction() as sess:
         sess["user_id"] = "admin@example.com"
 

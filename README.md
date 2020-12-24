@@ -190,7 +190,7 @@ To run tests:
 
 ```
 . venv/bin/activate # activate virtualenv
-python -m pytest # run pytest
+python -m pytest --ignore=node_modules # run pytest
 ```
 
 # Where can I get more help, if I need it?
