@@ -148,6 +148,7 @@ h2 .fas {
       content: '';
       position: absolute;
       z-index: 0;
+      top: -26px; /* Needed on up_front page to prevent overhang preventing click on checkout */
       width: 100%;
       height: 480px;
       background: url(/static/right_top.png) center 120px no-repeat;
