@@ -1,81 +1,111 @@
 {% extends "layout.html" %}
-{% block title %} Up-front payment {% endblock %} 
+{% block title %}Order Summary{% endblock %}
 
-{% block body %} 
+
+{% block body %}
 
 <div class="jumbotron jumbotron-fluid kcBlue text-white">
-    <div class="container">                                                      
-        <div class="row">                                                        
-            <div class="col-sm">                                                 
-            <h1 class="display-4">Great choice {{ fname }}!</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+            <h1 class="display-4">Order Summary</h1>
             </h2>
-            <h2 class="display-6">                                               
-            Complete your order below
-            </h2>                                                                
-            <hr class="my-4">                                                    
-             <div class="flashy-container"><div class="flashy"></div></div>      
-            </div>                         
-        </div>                                      
-    </div>                                                                       
-</div> 
+            <h2 class="display-6">You're nearly done!</h2>
+            <hr class="my-4">
+             <div class="flashy-container"><div class="flashy"></div></div>
+            </div>
+            <div class="col-sm">
+                <img src="/static/happy-shopper.svg"
+                    class="d-sm-none d-md-block img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
 
-<h2>Order Summary:</h2>
+    <div class="row row-cols-1 row-cols-lg-2">
+        <div class="col-lg-8">
+            <h2 class="font-weight-bold">Please complete your order</h2>
+            <p class="pb-3">Great choice {{ fname }}, please complete the form below.</p>
+            <div>
+                {% if plan.requirements.instant_payment %}
+                <p class="py-3 h5">
+                    <b>Pay today:</b>
+                    <span class="p-1 bg-success text-white rounded ml-2">&pound; {{ "%.2f"|format(plan.sell_price/100) }}</span>
+                </p>
+                {% endif %}
 
-<h4>Plan: {{ plan.title|capitalize() }}</h4>
-<ul>
-    {% for selling_point in plan.selling_points %}
-    <li>{{ selling_point.point }}</li>
-    {% endfor %}
-</ul>
+                {% if plan.requirements.subscription %}
+                <p class="py-3 h5">
+                    <b>Price ({{ plan.interval_unit }})</b>
+                    <span class="p-2 bg-primary text-white rounded ml-2">&pound; {{ "%.2f"|format(plan.interval_amount/100) }}</span>
+                </p>
+                {% endif %}
+            </div>
+        </div>
 
-   <h4>Total: 
-    <small class="text-muted">
-        &pound; {{ "%.2f"|format(plan.sell_price/100) }}
-    </small>
-   </h4>
-   
-    <button id="checkout-button" class="btn btn-success">Checkout</button>
+        <div class="col-lg-4 my-3 my-lg-0">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="pt-3 font-weight-bold">Order Summary</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="my-3 font-weight-bolder">{{ plan.title|capitalize() }}</h5>
 
-      <script type="text/javascript">
-      // Create an instance of the Stripe
-      var stripe = Stripe('{{ stripe_pub_key }}', {
-          stripeAccount: "{{ stripe_connected_account_id }}"
-      });
-      var checkoutButton = document.getElementById('checkout-button');
+                    <ul style="list-style: disc;" class="pl-3 ml-3">
+                        {% for selling_point in plan.selling_points %}
+                          <li>{{ selling_point.point }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      checkoutButton.addEventListener('click', function(e) {
-          e.target.setAttribute("disabled", "disabled");
-          e.target.textContent = "Opening...";
-          const account_id = "{{ stripe_connected_account_id }}"
-          fetch('{{ stripe_create_checkout_session_url }}', {
-              method: 'POST',
-              headers: {
-                 "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  account_id
-              })
-          })
-          .then(function(response) {
-              return response.json();
-          })
-          .then(function(session) {
-              return stripe.redirectToCheckout({ sessionId: session.id });
-          })
-          .then(function(result) {
-              // If `redirectToCheckout` fails due to a browser or network
-              // error, you should display the localized error message to your
-              // customer using `error.message`.
-              if (result.error) {
-                  alert(result.error.message);
-              }
-          })
-          .catch(function(error) {
-              console.error('Error:', error);
-          })
-      });
-      </script>
+    <button id="checkout-button" class="btn btn-success btn-lg btn-block col-lg-8 my-3">Checkout</button>
+
 </div>
+
+
+        <script type="text/javascript">
+        // Create an instance of the Stripe
+        var stripe = Stripe('{{ stripe_pub_key }}', {
+            stripeAccount: "{{ stripe_connected_account_id }}"
+        });
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function(e) {
+            e.target.setAttribute("disabled", "disabled");
+            e.target.textContent = "Opening...";
+            const account_id = "{{ stripe_connected_account_id }}"
+            fetch('{{ stripe_create_checkout_session_url }}', {
+                method: 'POST',
+                headers: {
+                   "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    account_id
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(session) {
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, you should display the localized error message to your
+                // customer using `error.message`.
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            })
+        });
+        </script>
+</section>
 {% endblock %}
