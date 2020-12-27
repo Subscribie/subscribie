@@ -4,10 +4,10 @@
     </div>
 
     <div class="container">
-      <div class="card-deck mb-3 text-center">
+      <div class="row justify-content-around">
         {% for plan in plans %}
 
-        <div class="card mb-4 shadow-sm">
+        <div class="card mb-4 shadow-sm col-lg-3 col-md-5 my-3 mx-3 px-0">
           <div class="card-header">
             <h4 class="my-0 font-weight-normal">
                {{ plan['title']|safe }}
@@ -60,4 +60,5 @@
         </div>
         {% endfor %}
       </div>
+    </div>
 
