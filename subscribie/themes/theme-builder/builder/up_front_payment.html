@@ -40,12 +40,23 @@
 
       <script type="text/javascript">
       // Create an instance of the Stripe
-      var stripe = Stripe('{{ stripe_pub_key }}');
+      var stripe = Stripe('{{ stripe_pub_key }}', {
+          stripeAccount: "{{ stripe_connected_account_id }}"
+      });
       var checkoutButton = document.getElementById('checkout-button');
 
-      checkoutButton.addEventListener('click', function() {
+      checkoutButton.addEventListener('click', function(e) {
+          e.target.setAttribute("disabled", "disabled");
+          e.target.textContent = "Opening...";
+          const account_id = "{{ stripe_connected_account_id }}"
           fetch('{{ stripe_create_checkout_session_url }}', {
               method: 'POST',
+              headers: {
+                 "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  account_id
+              })
           })
           .then(function(response) {
               return response.json();
