@@ -5,6 +5,7 @@
     <title>Error</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/style.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
     <meta name="theme-color" content="#1e88e5">
@@ -29,28 +30,22 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-    <nav class="navbar is-info kcBlue">
-      <div class="container">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="/">
-            Subscribie
-          </a>
-        </div>
-      </div>
-    </nav>
-
+  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue px-md-5 m-0">
+    <a class="navbar-brand mt-3 pl-lg-5 pr-3" href="/">
+      <h1 class="font-weight-bold">Subscribie</h1>
+    </a>
+  </nav>
     <div class="site-content">
-
-      <section class="hero kcBlue">
-        <div class="hero-body">
-          <div class="container" style="z-index:9999">
-            <div class="columns vertical-align is-mobile">
-              <div class="column">
-                <h1 class="title is-1 has-text-white is-size-3-mobile">Something's gone wrong</h1>
-                <h2 class="subtitle has-text-white is-3 is-size-4-mobile">Sorry we encountered an error on this page.</h2>
-                <a href="/" class="button is-large is-light">Take me home</a>
+      <section class="jumbotron jumbotron-fluid kcBlue ">
+        <div class="container px-md-5" >
+          <div class="container">
+            <div class="row">
+              <div class="col-md-8 pl-0">
+                <h1 class="h1 text-white font-weight-bold">Something's gone wrong</h1>
+                <h2 class="h3 text-white">Sorry we encountered an error on this page.</h2>
+                <a href="/" class="btn btn-lg btn-light my-3 p-3">Take me home</a>
               </div>
-              <div class="column is-one-third is-hidden-touch" style="text-align:right">
+              <div class="col-6 col-md-3 text-right d-none d-lg-block mr-lg-5">
                 <img src="/static/packing_peanuts.png" style="height:250px;" />
               </div>
             </div>
@@ -59,33 +54,19 @@
       </section>
 
       <main class="main">
-        <div class="section">
-          <div class="container">
-
-                <h3 class="title is-3">How did that happen?!</h3>
-                <p class="has-text-left">Sorry you encountered this error, we've logged it and will dispatch a team of monkeys to fix it. Click the button above to go back home.</p>
-
-          </div>
+        <div class="section mx-lg-5">
+        <h2 class="text-dark mb-3 h2 text-center font-weight-bold">How did that happen?!</h2>
+          <p class="text-center">Sorry you encountered this error, we've logged it and will dispatch a team of monkeys to fix it. Click the button above to go back home.</p>
         </div>
       </main>
 
     </div>
-
-    <footer class="footer" style="padding: 3rem 1.5rem 3rem;">
-      <div class="container">
-        <div class="content has-text-centered">
-          <p>
-            By Subscribie.
-            <br />
-          </p>
-          <small>Made possible with <a href="https://subscriptionwebsitebuilder.co.uk"
-                  title="Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</small>
-          <br />
-          <a href="/login">Login</a>
-          <br />
-          <a href="#" class="button is-small">Scroll back to top</a>
-        </div>
-      </div>
+    <footer class="container-fluid bg-light text-center py-5" >
+      <p class="pb-3">By Subscribie.</p>
+      <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+      <a href="/login">Login</a>
+      <br>
+      <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
     </footer>
 
   </body>
