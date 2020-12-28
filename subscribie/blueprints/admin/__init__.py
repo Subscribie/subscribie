@@ -1,6 +1,5 @@
 import logging
 import json
-from multiprocessing.dummy import Pool
 from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
@@ -931,8 +930,7 @@ def set_reply_to_email():
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])
-@admin.after_app_request
-def announce_shop_stripe_connect_ids(response=None):
+def announce_shop_stripe_connect_ids():
     """Accounce this shop's stripe connect account id(s)
     to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST
     - stripe_live_connect_account_id
@@ -952,34 +950,20 @@ def announce_shop_stripe_connect_ids(response=None):
     stripe_test_connect_account_id = None
     msg = None
     ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
-    pool = Pool(2)
 
     payment_provider = PaymentProvider.query.first()
-
-    def announce_success(callback):
-        logging.info(f"Stripe connect account announced\n{callback}")
-        logging.info(callback.text)
-
-    def announce_error(callback):
-        logging.error(f"Failed to announce Stripe connect account id\n{callback}")
-        logging.error(callback)
 
     def announce_stripe_connect_account(account_id, live_mode=0):
         logging.debug(
             f"Announcing stripe account to {url_for('index', _external=True)}"
         )
-        pool.apply_async(
-            requests.post,
-            args=(ANNOUNCE_HOST,),
-            kwds={
-                "json": {
-                    "stripe_connect_account_id": account_id,
-                    "live_mode": live_mode,
-                    "site_url": url_for("index", _external=True),
-                },
+        requests.post(
+            ANNOUNCE_HOST,
+            json={
+                "stripe_connect_account_id": account_id,
+                "live_mode": live_mode,
+                "site_url": url_for("index", _external=True),
             },
-            callback=announce_success,
-            error_callback=announce_error,
         )
 
     try:
@@ -1006,18 +990,14 @@ def announce_shop_stripe_connect_ids(response=None):
             "msg": f"Announced Stripe connect account {stripe_connect_account_id} \
 for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
 {current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
-WARNING: This is sent asynchronously, check logs to verify recipt"
+WARNING: Check logs to verify recipt"
         }
         logging.info(msg)
     except Exception as e:
-        logging.error(f"Failed to announce stripe connect id:\n{e}")
+        msg = f"Failed to announce stripe connect id:\n{e}"
+        logging.error(msg)
 
-    # If accessing directly (e.g. via cron) return a response
-    if request.path == "/admin/announce-stripe-connect":
-        return Response(json.dumps(msg), status=200, mimetype="application/json")
-    else:
-        # Otherwise passthrough the response
-        return response
+    return Response(json.dumps(msg), status=200, mimetype="application/json")
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])
