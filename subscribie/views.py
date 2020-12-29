@@ -26,6 +26,7 @@ from flask import (
     jsonify,
     current_app,
     g,
+    send_from_directory,
 )
 import flask
 
@@ -80,6 +81,11 @@ def inject_template_globals():
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     return dict(company=company, integration=integration, plans=plans, pages=pages)
+
+
+@bp.route("/cdn/<path:filename>")
+def custom_static(filename):
+    return send_from_directory(current_app.config["UPLOADED_IMAGES_DEST"], filename)
 
 
 def redirect_url():
