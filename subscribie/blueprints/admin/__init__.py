@@ -831,11 +831,7 @@ def upload_logo():
             flash("File required")
         else:
             filename = images.save(f)
-            # symlink to active theme static directory
-            img_src = "".join([current_app.config["UPLOADED_IMAGES_DEST"], filename])
-            link = "".join([current_app.config["STATIC_FOLDER"], filename])
-            os.symlink(img_src, link)
-            src = url_for("static", filename=filename)
+            src = url_for("views.custom_static", filename=filename)
             company.logo_src = src
             database.session.commit()
             flash("Logo has been uploaded")
