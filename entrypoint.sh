@@ -25,7 +25,6 @@ sed -i 's#SERVER_NAME.*##g' .env
 
 # Set static dir
 sed -i 's#TEMPLATE_BASE_DIR.*#TEMPLATE_BASE_DIR=/usr/src/app/subscribie/subscribie/themes/#g' .env
-sed -i 's#STATIC_FOLDER.*#STATIC_FOLDER=/usr/src/app/subscribie/subscribie/themes/theme-jesmond/static/#g' .env
 sed -i 's#UPLOADED_IMAGES_DEST.*#UPLOADED_IMAGES_DEST=/usr/src/app/subscribie/subscribie/static/#g' .env
 
 flask db upgrade
