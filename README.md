@@ -75,7 +75,6 @@ To rebuild the latest container, stop docker compose then do: `docker-compose bu
 Change:
 
 - `THEME_NAME="jesmond"` to `THEME_NAME="builder"`
-- `STATIC_FOLDER="./subscribie/themes/theme-jesmond/static/"` to `STATIC_FOLDER="./subscribie/themes/theme-builder/static/"`
 - **(optional)** change `TEMPLATE_BASE_DIR` if you want to store themes in a different directory.
 
 2. Stop & start subscribie
