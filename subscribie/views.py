@@ -52,8 +52,18 @@ from .database import database
 from flask_mail import Mail, Message
 import json
 import backoff
+from flask_migrate import upgrade
 
 bp = Blueprint("views", __name__, url_prefix=None)
+
+
+@bp.before_app_first_request
+def migrate_database():
+    """Migrate database when app first boots"""
+    print("#" * 233)
+    upgrade(
+        directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
+    )
 
 
 @bp.before_app_request
