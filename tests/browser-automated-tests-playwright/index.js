@@ -191,6 +191,11 @@ async function test_connect_to_stripe_connect()  {
     console.log("Continuing regardless");
   }
 
+  console.log("Announce stripe account manually visiting announce url. In prod this is called via uwsgi cron");
+  await page.goto(PLAYWRIGHT_HOST + '/admin/announce-stripe-connect');
+  const contentStripeAccountAnnounced = await page.evaluate(() => document.body.textContent.indexOf("Announced Stripe connect account"));
+  assert(contentStripeAccountAnnounced > -1);
+
   await browser.close();
 }
 
