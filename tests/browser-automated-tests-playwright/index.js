@@ -77,13 +77,13 @@ async function test_connect_to_stripe_connect()  {
   const content = await page.textContent('.card-title')
   assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
-  // Connect to Stripe via connect onboarding process
+  // Go to Stripe Connect payment gateways page
   await page.goto(PLAYWRIGHT_HOST + '/admin/connect/stripe-connect');
   await page.screenshot({ path: `connect-stripe-to-shop-dashboard-chromium.png` });
 
   // Check onboarding not already completed
   try {
-    const contentSuccess = await page.textContent('.alert-success', {'timeout': 5000});
+    const contentSuccess = await page.textContent('.alert-success');
     if (contentSuccess.indexOf('Congrats!') > -1) {
       console.log("Already connected Stripe sucessfully, exiting test");
       await browser.close();
@@ -91,112 +91,145 @@ async function test_connect_to_stripe_connect()  {
     }
   } catch (e) {
     console.log("Exception checking if onboarding completed, looks like it's not complete");
-    console.log("Continuing anyway");
+    console.log("Continuing with Stripe Connect onboarding");
   }
-  // Create shop owner strip connect email address based on 'admin' + 'hostname'
+
+  // Create shop owner stripe connect email address based on 'admin' + 'hostname'
   const email = await page.evaluate(() => 'admin@' + document.location.hostname);
 
+  // Start Stripe connect onboarding
   await page.click('.btn.btn-success');
   await page.waitForNavigation({'timeout': 30000});
 
-  // Click use the text phone number for SMS verification
-  await page.click('text="the test phone number"');
+  async function detect_stripe_onboarding_page() {
+    try {
+      let contentStripePage = await page.evaluate(() => document.body.textContent);
+ 
+      // Stripe onboarding login
+      if ( contentStripePage.indexOf("Subscribie partners with Stripe for fast") > -1 ) {
+        // Use the text phone number for SMS verification
+        await page.click('text="the test phone number"');
+        await page.fill('#email', email);
+        await page.click('text="Next"');
+        await page.click('text="Use test code"'); //Use Test code for SMS
+      }
 
-  await page.fill('#email', email);
-  await page.click('text="Next"');
-  await page.click('text="Use test code"'); //Use Test code for SMS
+      // Stripe onboarding Business type
+      if (contentStripePage.indexOf('Type of business') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.selectOption('#Select17', 'individual');
+        await page.click('text="Next"');
+      }
 
-  // Select Business details -> Industry as Software (needed again if repeating onboarding)
-  try {
-    await page.click('text="Please select your industry…"');
-    await page.click('text="Software"');
-    await page.click('text="Next"');
-  } catch (e) {
-    console.log("Exception when setting Industry - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
+      // Stripe onboarding Type of entity
+      // (sometimes a dropdown is shown, sometimes a radio selection
+      if (contentStripePage.indexOf('Type of entity') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.check('input[name="business_type"][value="individual"]');
+        await page.click('text="Next"');
+      }
+      
+
+      // Stripe onboarding personal details step
+      if (contentStripePage.indexOf('Tell us a few details about yourself') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        try {
+            await page.fill('#first_name', "Sam");
+            await page.fill('#last_name', "Smith");
+            await page.fill('input[name=dob-day]', "28");
+            await page.fill('input[name=dob-month]', "12");
+            await page.fill('input[name=dob-year]', "1990");
+        } catch (e) {
+          console.log("Exception in setting personal details, perhaps already completed");
+          console.log(e);
+          console.log("Continuing regardless");
+        }
+        await page.fill('input[name=address]', "123 Tree Lane");
+        await page.fill('input[name=locality]', "123 Tree Lane");
+        await page.fill('input[name=zip]', "SW1A 1AA");
+        await page.click('text="Next"');
+      }
+
+
+      // Stripe onboarding industry selection
+      if (contentStripePage.indexOf('Tell us about Soap Subscription.') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Please select your industry…"');
+        await page.click('text="Software"');
+        await page.click('text="Next"');
+      }
+
+
+      // Stripe onboarding identify verification step
+      if (contentStripePage.indexOf('ID verification for Sam Smith') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Use test document"');
+      }
+
+
+      // Stripe onboarding payouts bank details
+      if (contentStripePage.indexOf('Tell us where you’d like to receive your payouts.') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Use test account"');
+      }
+
+
+      // Stripe onboarding verification summary
+      if (contentStripePage.indexOf('almost ready to start getting paid by Subscribie.') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
+        //await page.waitForNavigation({'timeout': 30000});
+      }
+
+
+      // Stripe onboarding verification complete
+      if (contentStripePage.indexOf('Your verification is complete') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
+        //await page.waitForNavigation({'timeout': 30000});
+      }
+
+
+      // Stripe onboarding proof of address
+      if (contentStripePage.indexOf('Proof of address') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+
+      }
+
+
+      // Stripe onboarding go back to onboarding if incomplete
+      if (contentStripePage.indexOf('Payouts to your bank account are not active yet') > -1 ) {
+        await page.click('.btn.btn-success');
+        await page.waitForNavigation({'timeout': 30000});
+      }
+
+    } catch (e) { 
+      console.log(e);
+      console.log("Retrying onboarding steps");
+    }
+
+    // If Stripe onboarding not complete, retry
+
+    try {
+      let pageBody = await page.evaluate(() => document.body.textContent);
+      if (pageBody.indexOf('Congrats! Payouts are active on your site') == -1) {
+        await detect_stripe_onboarding_page();
+      }
+    } catch (e) {
+        console.log(e);
+        await detect_stripe_onboarding_page();
+    }
   }
 
-  // Try and select Sole Trader
-  try {
-    await page.click('#radio17', {'timeout': 5000}); // Sole trader
-    await page.click('text="Next"');
-  } catch (e) {
-    console.log("Exception when setting Sole trader- maybe already completed this step");
-    console.log(e);
-  }
-
-  // Fill personal details
-  try {
-    await page.fill('#first_name', "Sam");
-    await page.fill('#last_name', "Smith");
-    await page.fill('input[name=dob-day]', "28");
-    await page.fill('input[name=dob-month]', "12");
-    await page.fill('input[name=dob-year]', "1990");
-    await page.fill('input[name=address]', "123 Tree Lane");
-    await page.fill('input[name=locality]', "123 Tree Lane");
-    await page.fill('input[name=zip]', "SW1A 1AA");
-    await page.click('text="Next"');
-  } catch (e) {
-    console.log("Exception when setting personal details - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
-  // Select Business details -> Industry as Software (needed if first time onboarding)
-  try {
-    await page.click('text="Please select your industry…"');
-    await page.click('text="Software"');
-    await page.click('text="Next"');
-  } catch (e) {
-    console.log("Exception when setting Industry - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
-  // ID verification stage
-  try {
-    await page.click('text="Use test document"');
-  } catch (e) {
-    console.log("Exception when setting ID verification - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
-  // Proof of address document stage
-  try {
-    await page.click('text="Use test document"');
-  } catch (e) {
-    console.log("Exception when performing Proof of address document stage - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
-  // Payout details
-  try {
-    await page.click('text="Use test account"');
-  } catch (e) {
-    console.log("Exception when performing Payout details stage - maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
-  // Verification summary
-  try {
-    await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
-    await page.waitForNavigation({'timeout': 30000});
-  } catch (e) {
-    console.log("Exception in verivation summary done page- maybe already completed this step");
-    console.log(e);
-    console.log("Continuing regardless");
-  }
-
+  await detect_stripe_onboarding_page();
+  
   console.log("Announce stripe account manually visiting announce url. In prod this is called via uwsgi cron");
   await page.goto(PLAYWRIGHT_HOST + '/admin/announce-stripe-connect');
   const contentStripeAccountAnnounced = await page.evaluate(() => document.body.textContent.indexOf("Announced Stripe connect account"));
   assert(contentStripeAccountAnnounced > -1);
 
   await browser.close();
+
 }
 
 
