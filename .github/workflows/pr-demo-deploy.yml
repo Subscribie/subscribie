@@ -11,6 +11,7 @@ on:
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     environment: testing
     steps:
       - name: Dump context
