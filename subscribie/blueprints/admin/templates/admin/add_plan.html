@@ -145,6 +145,27 @@
           <hr>
 
           <fieldset>
+            <!--- Plan Description -->
+            <div class="form-group ">
+              <div class="form-check">
+                <input type="checkbox" value="yes" class="form-check-input toggle" name="plan_description_required-0" id="plan_description_required-0">
+                <label class="form-check-label font-weight-bolder" for="plan_description_required-0">Plan Description</label>
+              </div>
+              <small class="form-text text-muted">
+                Add a paragraph describing the plan (optional).
+              </small>
+            </div>
+
+            <div class="form-group extra_fields" id="message" >
+              <label for="description-0" class="col-form-label font-weight-bolder">Plan description</label>
+              <textarea class="form-control" id="description-0" name="description-0" rows="3"></textarea>
+              <small class="form-text text-muted">
+                Enter a description about the plan.
+              </small>
+            </div>
+
+            <!-- End Plan Description -->
+
             <div class="form-group ">
               <div class="form-check">
                 <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
@@ -163,16 +184,17 @@
               </small>
             </div>
 
-	    <div class="form-group">
-	      <label for="position-0" class="col-form-label font-weight-bolder">Position</label>
-	      <div class="input-group">
-	        <input type="number" step="1" name="position-0" id="position-0" class="form-control"
-	        placeholder="0">
-	      </div>
-	      <small class="form-text text-muted">
-	        Control the order in which plans appear. Lower number appears first
-	      </small>
-	    </div>
+
+            <div class="form-group">
+              <label for="position-0" class="col-form-label font-weight-bolder">Position</label>
+              <div class="input-group">
+                <input type="number" step="1" name="position-0" id="position-0" class="form-control"
+                placeholder="0">
+              </div>
+              <small class="form-text text-muted">
+                Control the order in which plans appear. Lower number appears first
+              </small>
+            </div>
 
           </fieldset>
         

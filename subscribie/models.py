@@ -181,6 +181,7 @@ class Plan(database.Model):
     archived = database.Column(database.Boolean(), default=False)
     uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
+    description = database.Column(database.String())
     interval_unit = database.Column(database.String())  # Charge interval
     interval_amount = database.Column(
         database.Integer(), default=0

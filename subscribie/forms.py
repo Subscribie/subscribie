@@ -72,6 +72,9 @@ class PlansForm(StripWhitespaceForm):
         FileField(validators=[FileAllowed(images, "Images only!")]), min_entries=1
     )
     position = FieldList(IntegerField("Position", [validators.optional()], default=0))
+    description = FieldList(
+        StringField("Description", [validators.optional()], default=False)
+    )
 
 
 class ChoiceGroupForm(FlaskForm):
