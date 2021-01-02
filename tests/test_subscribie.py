@@ -35,6 +35,7 @@ def test_admin_can_add_plan(session, app, client, admin_session):
                 "selling_points-0-0": "Roasted by us",
                 "selling_points-0-1": "Monthly delievey",
                 "selling_points-0-3": "Highest Quality",
+                "description-0": "A long description",
                 "image-0": "",
                 "subscription-0": "yes",
                 "interval_amount-0": "6.95",
