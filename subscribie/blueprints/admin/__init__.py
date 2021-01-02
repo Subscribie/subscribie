@@ -291,6 +291,8 @@ def edit():
             draftPlan.title = getPlan(form.title.data, index, default="").strip()
 
             draftPlan.position = getPlan(form.position.data, index)
+            if getPlan(form.description.data, index) != "":
+                draftPlan.description = getPlan(form.description.data, index)
 
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
@@ -373,6 +375,9 @@ def add_plan():
         draftPlan.title = form.title.data[0].strip()
         draftPlan.position = request.form.get("position-0", 0)
         interval_unit = form.interval_unit.data[0].strip()
+
+        if form.description.data[0].strip() != "":
+            draftPlan.description = form.description.data[0]
         if (
             "monthly" in interval_unit
             or "yearly" in interval_unit

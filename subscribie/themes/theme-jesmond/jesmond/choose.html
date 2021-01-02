@@ -46,6 +46,18 @@
                     <div class="plan-plan">{{ sellingPoint.point|safe }}</div>
                 {% endfor %}
                 </div>
+
+                <!-- Show plan description if present -->
+                {% if plan.description is not sameas None %}
+                <div id="accordion">
+                  <div class="plan-plan" id="description-{{ plan.uuid }}" class="btn collapsed" data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">Read More</div>
+                    <div id="collapse-{{ plan.uuid }}" class="collapse" aria-labelledby="heading-{{ plan.uuid }}" data-parent="#accordion">
+                      <p class="col-sm">{{ plan.description }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- End Show plan description if present -->
+
               <div class="plan-footer">
                   {# Make up-front price large if not a subscription, otherwise subscription price is large #}
                   {% if plan.requirements.subscription %}
