@@ -9,8 +9,8 @@ INSERT INTO plan
 VALUES(1, datetime(), 0,  '840500cb-c663-43e6-a632-d8521bb14c42', 'Hair Gel', 'weekly', 599, 100, 0);
 
 INSERT INTO plan 
-(id, created_at, archived, uuid, title, interval_unit, interval_amount, days_before_first_charge)
-VALUES(2, datetime(), 0,  '5813b05b-9031-45b3-b120-8fc6b1b3082e', 'Bath Soaps', 'monthly', 1099, 0);
+(id, created_at, archived, uuid, title, interval_unit, interval_amount, days_before_first_charge, description)
+VALUES(2, datetime(), 0,  '5813b05b-9031-45b3-b120-8fc6b1b3082e', 'Bath Soaps', 'monthly', 1099, 0, 'This plan has a description');
 
 INSERT INTO plan 
 (id, created_at, archived, uuid, title, sell_price, days_before_first_charge)
