@@ -237,13 +237,13 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_connect_to_stripe_connect();
 
-  await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
-  await clearDB();
+  //await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
+  //await clearDB();
 
-  await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
-  await clearDB();
+  //await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
+  //await clearDB();
 
-  await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
-  await clearDB();
+  //await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
+  //await clearDB();
 
 })();
