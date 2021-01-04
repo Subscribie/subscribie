@@ -124,7 +124,7 @@ def redirect_to_payment_step(plan, inside_iframe=False):
 
     scheme = "https" if request.is_secure else "http"
     if plan.requirements.instant_payment or plan.requirements.subscription:
-        return redirect(url_for("views.up_front", _scheme=scheme, _external=True))
+        return redirect(url_for("views.order_summary", _scheme=scheme, _external=True))
     return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
 
 
@@ -232,8 +232,8 @@ def set_options(plan_uuid):
     return render_template("set_options.html", plan=plan)
 
 
-@bp.route("/up_front", methods=["GET"])
-def up_front():
+@bp.route("/order-summary", methods=["GET"])
+def order_summary():
     payment_provider = PaymentProvider.query.first()
     if (
         payment_provider.stripe_livemode
@@ -256,7 +256,7 @@ def up_front():
         stripe_connected_account_id = payment_provider.stripe_test_connect_account_id
 
     return render_template(
-        "up_front_payment.html",
+        "order_summary.html",
         company=company,
         plan=plan,
         fname=session["given_name"],
@@ -418,7 +418,7 @@ def stripe_create_checkout_session():
     success_url = url_for(
         "views.instant_payment_complete", _external=True, plan=plan.uuid
     )
-    cancel_url = url_for("views.up_front", _external=True)
+    cancel_url = url_for("views.order_summary", _external=True)
 
     stripe.api_key = get_stripe_secret_key()
 
