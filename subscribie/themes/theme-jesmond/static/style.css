@@ -701,6 +701,20 @@ input[type=checkbox]:checked + label::after {
 
 
 /* -------------------- Custom styles --------------------- */
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+main {
+  padding-bottom: 15rem;
+}
 
 .navbar-brand, .navbar-tabs {
   min-height: 0;
