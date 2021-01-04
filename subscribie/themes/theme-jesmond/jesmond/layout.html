@@ -138,7 +138,7 @@
   {# if not inside iframe_embeded, show footer #} 
   {% if session.get('iframe_embeded') is sameas False %}
 
-  <footer class="container-fluid bg-light text-center py-5" >
+  <footer class="container-fluid bg-light text-center py-3 footer mt-auto" >
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
     <p> Made with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
     <a href="{{ url_for('auth.login') }}">Shop owner login</a>
