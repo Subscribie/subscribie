@@ -87,6 +87,9 @@
                 <input type="file" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
                 {% if plan.primary_icon %}
                   <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
+                  <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                    Remove Image
+                  </a>
                 {% endif %}
               </div>
 
