@@ -357,7 +357,7 @@ def edit():
                 draftPlan.primary_icon = src
         database.session.commit()  # Save
         flash("Plan(s) updated.")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(request.referrer)
     return render_template("admin/edit.html", plans=plans, form=form)
 
 
@@ -842,6 +842,18 @@ def remove_logo():
     company.logo_src = None
     database.session.commit()
     flash("Logo removed")
+    # Return user to previous page
+    return redirect(request.referrer)
+
+
+@admin.route("/remove-plan-image/<plan_id>", methods=["GET"])
+@login_required
+def remove_plan_image(plan_id):
+    """Remove primary image from plan"""
+    plan = Plan.query.get(plan_id)
+    plan.primary_icon = None
+    database.session.commit()
+    flash("Plan image removed")
     # Return user to previous page
     return redirect(request.referrer)
 
