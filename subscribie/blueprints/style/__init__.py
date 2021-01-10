@@ -1,8 +1,7 @@
-from flask import Blueprint, request, render_template, abort, flash, redirect
+from flask import Blueprint, request, render_template, abort, redirect
 from subscribie.auth import login_required
 from subscribie.models import database, ModuleStyle
 from jinja2 import TemplateNotFound
-from flask import Markup
 
 module_style_shop = Blueprint("style", __name__, template_folder="templates")
 
@@ -122,5 +121,4 @@ def save_custom_style():
     database.session.add(style)
     database.session.commit()
 
-    flash(Markup('Styling updated. View your <a href="/">updated shop</a>'))
     return redirect("/")
