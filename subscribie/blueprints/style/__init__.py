@@ -12,16 +12,37 @@ def inject_custom_style():
     # Styles are injected into the base of the template
     # output as inline css using <style> tags.
     styles = ModuleStyle.query.first()
-    global_css = styles.css
-    bg_primary = styles.bg_primary
+    if styles is not None:
+        global_css = styles.css
+        bg_primary = styles.bg_primary
+    else:
+        global_css = ""
+        bg_primary = ""
+    css_custom_properties = ""
 
-    css_custom_properties = "".join(
+    # Apply default primary colour
+    if bg_primary == "":
+        css_custom_properties += "".join(
+            [
+                """:root {
+                --bg-primary: rgb(0, 123, 255);
+            }"""
+            ]
+        )
+    else:
+        css_custom_properties += "".join(
+            [
+                """
+      :root {
+        --bg-primary: """,
+                bg_primary,
+                "}",
+            ]
+        )
+
+    # Override bootstrap
+    css_custom_properties += "".join(
         [
-            """
-    :root {
-      --bg-primary: """,
-            bg_primary,
-            "}",
             """.bg-info {
       background-color: var(--bg-primary) !important;
     }""",
@@ -72,10 +93,12 @@ def style_shop():
     try:
         # Load custom css rules (if any) and display in an editable textbox
         css = ModuleStyle.query.first()
-        customCSS = css.css
-        bg_primary = css.bg_primary
-        if customCSS is None:
+        if css is not None:
+            customCSS = css.css
+            bg_primary = css.bg_primary
+        else:
             customCSS = ""
+            bg_primary = ""
         return render_template(
             "show-custom-css.html", customCSS=customCSS, bg_primary=bg_primary
         )
