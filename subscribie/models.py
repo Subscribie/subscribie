@@ -335,6 +335,7 @@ class ModuleStyle(database.Model):
     __tablename__ = "module_style"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    bg_primary = database.Column(database.String())
     css = database.Column(database.String())
 
 

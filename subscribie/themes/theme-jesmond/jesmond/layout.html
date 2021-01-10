@@ -56,7 +56,7 @@
   {# if not inside iframe_embeded, show header #} 
   {% if session.get('iframe_embeded') is sameas False %}
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue px-md-5">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue px-md-5" style="background: var(--bg-primary)">
 
     <a class="navbar-brand font-weight-bolder pl-lg-5 pr-3" href="/">
       {% if company.logo_src is not sameas None %}
@@ -123,7 +123,7 @@
   <div class="site-content">
     {% block top %}
     {% endblock top %}
-    <section class="jumbotron jumbotron-fluid kcBlue ">
+    <section class="jumbotron jumbotron-fluid kcBlue " style="background: var(--bg-primary)">
       <div class="container px-md-5" > <!-- style="z-index:9999" -->
           {% block hero %}{% endblock %}
       </div>

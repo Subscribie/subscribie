@@ -1,10 +1,13 @@
 {% extends "admin/layout.html" %}
 
+
 {% block title %}
   {{ title }}
 {% endblock title %}
 
 {% block body %}
+
+<script src="https://unpkg.com/vanilla-picker@2"></script>
 
 <h2 class="text-center text-dark mb-3">Style Your Shop</h2>
 
@@ -25,6 +28,37 @@
 
     <hr>
 
+  <form action="#" method="POST">
+
+        <h2>Primary Background Colour</h2>
+        <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
+        <input name="bg_primary" value="{{ bg_primary }}" type="text" id="chosen-primary-colour" />
+        <div id="primary-colour"></div>
+
+    <script>
+        const parentFixed = document.querySelector('#primary-colour'),
+              pickerFixed = new Picker({
+                  parent: parentFixed,
+                  popup: false,
+                  alpha: false,
+                  editor: false,
+                  {% if bg_primary %}
+                  color: '{{ bg_primary }}',
+                  {% else %}
+                  color: '#007bff',
+                  {% endif %}
+                  onChange: function(color) {
+                      parentFixed.style.backgroundColor = color.rgbaString;
+                      document.getElementById('chosen-primary-colour').defaultValue = color.rgbaString;
+                      document.getElementById('chosen-primary-colour').value = color.rgbaString;
+                  },
+              });
+    </script>
+
+    <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+  </form>
+
+  <h2>Global Styles</h2>
   <form action="#" method="POST"> 
     <textarea name="css" cols="100" rows="20">{{ customCSS }}</textarea>
     <br />
