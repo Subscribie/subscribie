@@ -33,7 +33,7 @@
       {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('builder.show_owner_login') }}">
+    <form method="POST" action="{{ url_for('builder.shop_owner_login') }}">
   			{{ form.csrf_token }}
         <div class="form-group">
             <label for="email">Email address</label>
