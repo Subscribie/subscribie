@@ -35,6 +35,13 @@
         <input name="bg_primary" value="{{ bg_primary }}" type="text" id="chosen-primary-colour" />
         <div id="primary-colour"></div>
 
+    <br /> <br /><h4>Live view:<hr />
+
+    <iframe id="style-preview" src={{ request.host_url }} width="100%" frameborder="0" height="800px" scrolling="auto"
+            allowfullscreen="true"
+            title="Subscription shop">
+    </iframe>
+
     <script>
         const parentFixed = document.querySelector('#primary-colour'),
               pickerFixed = new Picker({
@@ -51,11 +58,21 @@
                       parentFixed.style.backgroundColor = color.rgbaString;
                       document.getElementById('chosen-primary-colour').defaultValue = color.rgbaString;
                       document.getElementById('chosen-primary-colour').value = color.rgbaString;
+
+                      // Save the new colour
+                      var http = new XMLHttpRequest();
+                      var url = '/style/style-shop';
+                      var params = 'bg_primary=' + color.rgbaString;
+                      http.open('POST', url, true);
+
+                      //Send the proper header information along with the request
+                      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                      http.send(params);
+                      // Refresh preview
+                      document.getElementById('style-preview').contentWindow.location.reload();
                   },
               });
     </script>
-
-    <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
 
   <h2>Global Styles</h2>
   <p class="card-subtitle mb-3 text-muted">If you know how to write CSS, you can paste it here:</p>
