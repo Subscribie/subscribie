@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, abort, flash, url_for, redirect
+from flask import Blueprint, request, render_template, abort, flash, redirect
 from subscribie.auth import login_required
 from subscribie.models import database, ModuleStyle
 from jinja2 import TemplateNotFound
@@ -11,13 +11,49 @@ module_style_shop = Blueprint("style", __name__, template_folder="templates")
 def inject_custom_style():
     # Styles are injected into the base of the template
     # output as inline css using <style> tags.
-    css = getCustomCSS()
+    styles = ModuleStyle.query.first()
+    global_css = styles.css
+    bg_primary = styles.bg_primary
+
+    css_custom_properties = "".join(
+        [
+            """
+    :root {
+      --bg-primary: """,
+            bg_primary,
+            "}",
+            """.bg-info {
+      background-color: var(--bg-primary) !important;
+    }""",
+            """
+    .btn-primary {
+      background-color: var(--bg-primary) !important;
+      border-color: var(--bg-primary) !important;
+    }
+    """,
+            """
+    .navbar-dark .navbar-nav :hover {
+      background-color: var(--bg-primary) !important;
+    }
+    """,
+            """
+    .bg-primary {
+      background-color: var(--bg-primary) !important;
+    }""",
+            """
+    .btn-success {
+      background-color: var(--bg-primary) !important;
+      border-color: var(--bg-primary) !important;
+    }""",
+        ]
+    )
+
     # Wrap style tags
-    if css is not None:
-        custom_css = "".join(['<style type="text/css">', css, "</style>"])
-        return dict(custom_css=custom_css)
-    else:
-        return dict()
+    custom_css = "".join(
+        ['<style type="text/css">', css_custom_properties, global_css, "</style>"]
+    )
+
+    return dict(custom_css=custom_css)
 
 
 def getCustomCSS():
@@ -35,10 +71,14 @@ def getCustomCSS():
 def style_shop():
     try:
         # Load custom css rules (if any) and display in an editable textbox
-        customCSS = getCustomCSS()
+        css = ModuleStyle.query.first()
+        customCSS = css.css
+        bg_primary = css.bg_primary
         if customCSS is None:
             customCSS = ""
-        return render_template("show-custom-css.html", customCSS=customCSS)
+        return render_template(
+            "show-custom-css.html", customCSS=customCSS, bg_primary=bg_primary
+        )
     except TemplateNotFound:
         abort(404)
 
@@ -47,15 +87,17 @@ def style_shop():
 @login_required
 def save_custom_style():
     """Remove all old css, and replace with submitted css"""
-    css = request.form["css"]
+    css = request.form.get("css", "")
+    bg_primary = request.form.get("bg_primary", "")
     print(css)
     # Delete previous css entry
     ModuleStyle.query.delete()
     # Add new style css entry
     style = ModuleStyle()
     style.css = css
+    style.bg_primary = bg_primary
     database.session.add(style)
     database.session.commit()
 
     flash(Markup('Styling updated. View your <a href="/">updated shop</a>'))
-    return redirect(url_for("style.style_shop"))
+    return redirect("/")
