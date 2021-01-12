@@ -12,6 +12,7 @@ jobs:
     - name: Pull new site
       run: |
         set -x
+        mkdir -p ~/.ssh
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh-keyscan $ONBOARDING_HOST>> ~/.ssh/known_hosts
