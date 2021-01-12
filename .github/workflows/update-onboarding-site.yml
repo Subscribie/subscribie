@@ -1,5 +1,6 @@
 name: Update Onboarding Site
 on:
+  workflow_dispatch:
   push:
     paths:
     - 'subscribie/themes/theme-builder/**'
@@ -9,4 +10,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: Pull new site
-      run: echo "Test"
+      run: |
+        set -x
+        eval `ssh-agent -s`
+        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-keyscan $ONBOARDING_HOST>> ~/.ssh/known_hosts
+
