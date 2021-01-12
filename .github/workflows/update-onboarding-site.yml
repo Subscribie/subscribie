@@ -27,4 +27,4 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
-        ssh -tt ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "/etc/init.d/apache2 reload"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "sudo /etc/init.d/apache2 reload"
