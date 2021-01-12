@@ -9,11 +9,13 @@ jobs:
     name: Update onboarding
     runs-on: ubuntu-20.04
     steps:
-    - name: Pull new site
+    - name: Setup ssh access
       run: |
         set -x
         mkdir -p ~/.ssh
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
-
+    - name: Pull new site
+      run: |
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; git fetch; git rebase origin/master"
