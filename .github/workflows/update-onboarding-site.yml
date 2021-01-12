@@ -15,5 +15,5 @@ jobs:
         mkdir -p ~/.ssh
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
-        ssh-keyscan $ONBOARDING_HOST>> ~/.ssh/known_hosts
+        ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
 
