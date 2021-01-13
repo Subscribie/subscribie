@@ -35,11 +35,11 @@
             {% endif %}
 		    {% if plan.requirements.instant_payment %}
               <p class="text-muted">
-              Upfont cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}
+              Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}
               </p>
 		    {% else %}
               <p class="text-muted">
-              Upfont cost: &pound;0.00
+              Upfront cost: &pound;0.00
               </p>
 		    {% endif %}
             <ul class="list-unstyled mt-3 mb-4">
