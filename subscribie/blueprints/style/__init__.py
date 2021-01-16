@@ -12,6 +12,8 @@ def inject_custom_style():
     # Styles are injected into the base of the template
     # output as inline css using <style> tags.
     global_css = ""
+    # Set default colours
+    css_properties_json = {"primary": "#2575fc", "secondary": "", "info": ""}
     css_custom_properties = ""
 
     styles = ModuleStyle.query.first()
@@ -19,19 +21,22 @@ def inject_custom_style():
         global_css = styles.css
         try:
             css_properties_json = json.loads(styles.css_properties_json)
+            css_custom_properties += "".join(
+                [
+                    ":root {",
+                    "--bg-primary:",
+                    css_properties_json["primary"],
+                    ";" "--bg-secondary:",
+                    css_properties_json["secondary"],
+                    ";",
+                    "--bg-info:",
+                    css_properties_json["info"],
+                    ";" "}",
+                ]
+            )
         except Exception:
-            css_properties_json = {"primary": "", "secondary": "", "info": ""}
-
-    # Apply default primary colour
-    if css_properties_json["primary"] == "":
-        css_custom_properties += "".join(
-            [
-                """:root {
-                --bg-primary: rgb(0, 123, 255);
-            }"""
-            ]
-        )
-    else:
+            pass
+    else:  # Fallback to default
         css_custom_properties += "".join(
             [
                 ":root {",
@@ -120,7 +125,6 @@ def save_custom_style():
 
     # Convert POST data to json and save to the database column
     css_properties = json.dumps(request.form.to_dict())
-
     global_css = request.form.get("css", "")
     print(global_css)
     # Delete previous css entry
