@@ -7,7 +7,9 @@
 
 {% block body %}
 
-<script src="https://unpkg.com/vanilla-picker@2"></script>
+<script src="https://code.jquery.com/jquery-3.0.0.js"></script>
+<script src="{{ url_for('static', filename='spectrum.js') }}"></script>
+<link rel='stylesheet' href="{{ url_for('static', filename='spectrum.css') }}" />
 
 <h2 class="text-center text-dark mb-3">Style Your Shop</h2>
 
@@ -30,10 +32,18 @@
 
   <form action="#" method="POST">
 
-        <h2>Primary Background Colour</h2>
-        <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
-        <input name="bg_primary" value="{{ bg_primary }}" type="text" id="chosen-primary-colour" />
-        <div id="primary-colour"></div>
+    <h2>Choose your default colours</h2>
+    <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
+
+    <label for="primary">Primary</label>
+    <input name="primary" value="{{ primary }}" id="primary" autocomplete="off" />
+    <br />
+    <label for="secondary">Secondary</label>
+    <input name="secondary" value="{{ secondary }}" id="secondary" autocomplete="off" />
+    <br />
+    <label for="info">Info</label>
+    <input name="info" value="{{ info }}" id="info" autocomplete="off" />
+    <br />
 
     <br /> <br /><h4>Live view:<hr />
 
@@ -42,37 +52,64 @@
             title="Subscription shop">
     </iframe>
 
-    <script>
-        const parentFixed = document.querySelector('#primary-colour'),
-              pickerFixed = new Picker({
-                  parent: parentFixed,
-                  popup: false,
-                  alpha: false,
-                  editor: false,
-                  {% if bg_primary %}
-                  color: '{{ bg_primary }}',
-                  {% else %}
-                  color: '#007bff',
-                  {% endif %}
-                  onChange: function(color) {
-                      parentFixed.style.backgroundColor = color.rgbaString;
-                      document.getElementById('chosen-primary-colour').defaultValue = color.rgbaString;
-                      document.getElementById('chosen-primary-colour').value = color.rgbaString;
 
-                      // Save the new colour
-                      var http = new XMLHttpRequest();
-                      var url = '/style/style-shop';
-                      var params = 'bg_primary=' + color.rgbaString;
-                      http.open('POST', url, true);
+  <script>
 
-                      //Send the proper header information along with the request
-                      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                      http.send(params);
-                      // Refresh preview
-                      document.getElementById('style-preview').contentWindow.location.reload();
-                  },
-              });
-    </script>
+  function setColours(name, value) {
+    document.documentElement.style.setProperty(name, value);
+  }
+
+  function saveColors() {
+    // Get the chosen values for colours
+    var primary = document.getElementById('primary').value
+    var secondary = document.getElementById('secondary').value
+    var info = document.getElementById('info').value
+
+    var http = new XMLHttpRequest();
+    var url = '/style/style-shop';
+    var params = 'primary=' + primary + '&secondary=' + secondary + '&info=' + info;
+    http.open('POST', url, true);
+
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
+          console.log("Saved chosen colour");
+        }
+    }
+    http.send(params);
+    document.getElementById('style-preview').contentWindow.location.reload();
+  }
+
+  $('#primary').spectrum({
+      type: "component",
+      color: "{{ css_properties['primary'] }}", /* default to current colour */
+      showInput: "true",
+      showInitial: "true",
+      move: function(color) { setColours('--primary', color)},
+      change: function(color) { saveColors()},
+  });
+
+  $('#secondary').spectrum({
+      type: "component",
+      color: "{{ css_properties['secondary'] }}", /* default to current colour */
+      showInput: "true",
+      showInitial: "true",
+      move: function(color) { setColour('--secondary', color)},
+      change: function(color) { saveColors()},
+  });
+
+  $('#info').spectrum({
+      type: "component",
+      color: "{{ css_properties['info'] }}", /* default to current colour */
+      showInput: "true",
+      showInitial: "true",
+      move: function(color) { setColour('--info', color)},
+      change: function(color) { saveColors()},
+  });
+
+  </script>
+
 
   <h2>Global Styles</h2>
   <p class="card-subtitle mb-3 text-muted">If you know how to write CSS, you can paste it here:</p>

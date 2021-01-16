@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template, abort, redirect
 from subscribie.auth import login_required
 from subscribie.models import database, ModuleStyle
 from jinja2 import TemplateNotFound
+import json
 
 module_style_shop = Blueprint("style", __name__, template_folder="templates")
 
@@ -10,17 +11,19 @@ module_style_shop = Blueprint("style", __name__, template_folder="templates")
 def inject_custom_style():
     # Styles are injected into the base of the template
     # output as inline css using <style> tags.
+    global_css = ""
+    css_custom_properties = ""
+
     styles = ModuleStyle.query.first()
     if styles is not None:
         global_css = styles.css
-        bg_primary = styles.bg_primary
-    else:
-        global_css = ""
-        bg_primary = ""
-    css_custom_properties = ""
+        try:
+            css_properties_json = json.loads(styles.css_properties_json)
+        except Exception:
+            css_properties_json = {"primary": "", "secondary": "", "info": ""}
 
     # Apply default primary colour
-    if bg_primary == "":
+    if css_properties_json["primary"] == "":
         css_custom_properties += "".join(
             [
                 """:root {
@@ -31,11 +34,15 @@ def inject_custom_style():
     else:
         css_custom_properties += "".join(
             [
-                """
-      :root {
-        --bg-primary: """,
-                bg_primary,
-                "}",
+                ":root {",
+                "--bg-primary:",
+                css_properties_json["primary"],
+                ";" "--bg-secondary:",
+                css_properties_json["secondary"],
+                ";",
+                "--bg-info:",
+                css_properties_json["info"],
+                ";" "}",
             ]
         )
 
@@ -94,12 +101,13 @@ def style_shop():
         css = ModuleStyle.query.first()
         if css is not None:
             customCSS = css.css
-            bg_primary = css.bg_primary
+            css_properties = json.loads(css.css_properties_json)
         else:
             customCSS = ""
-            bg_primary = ""
+            css_properties = ""
+
         return render_template(
-            "show-custom-css.html", customCSS=customCSS, bg_primary=bg_primary
+            "show-custom-css.html", customCSS=customCSS, css_properties=css_properties
         )
     except TemplateNotFound:
         abort(404)
@@ -109,15 +117,18 @@ def style_shop():
 @login_required
 def save_custom_style():
     """Remove all old css, and replace with submitted css"""
-    css = request.form.get("css", "")
-    bg_primary = request.form.get("bg_primary", "")
-    print(css)
+
+    # Convert POST data to json and save to the database column
+    css_properties = json.dumps(request.form.to_dict())
+
+    global_css = request.form.get("css", "")
+    print(global_css)
     # Delete previous css entry
     ModuleStyle.query.delete()
     # Add new style css entry
     style = ModuleStyle()
-    style.css = css
-    style.bg_primary = bg_primary
+    style.css_properties_json = css_properties
+    style.css = global_css
     database.session.add(style)
     database.session.commit()
 
