@@ -54,6 +54,8 @@ import json
 import backoff
 from flask_migrate import upgrade
 
+from subscribie.blueprints.style import inject_custom_style
+
 bp = Blueprint("views", __name__, url_prefix=None)
 
 
@@ -743,7 +745,10 @@ def custom_page(path):
           <div class="container">
 
     """
-    page_footer = """
+    # Inject custom styles into the footer also
+    custom_css = inject_custom_style()["custom_css"]
+    page_footer = custom_css
+    page_footer += """
           </div><!-- end container -->
         </div><!-- end section -->
         {% endblock body %}
