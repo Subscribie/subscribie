@@ -28,7 +28,6 @@ li { list-style: none}
           <tr>
             <th>Fulfillment State</th>
             <th>Due Date</th>
-            {# <th>Stripe Subscription ID</th> #}
             <th>Status</th>
             <th>Amount</th>
             <th>Name</th>
@@ -66,7 +65,6 @@ li { list-style: none}
               </form>
             </td>
             <td>{{ datetime.fromtimestamp(upcoming_invoice.next_payment_attempt).strftime("%d/%m/%Y") }}</td>
-            {# <td>{{ upcoming_invoice.subscription }}</td> #}
             <td title="Valid states are: Draft, Deleted, Open, Paid, Uncollectible, Void">{{ upcoming_invoice.status }}</td>
             <td class="upcoming-invoice-amount">{{ upcoming_invoice.amount_due|default(0)|currencyFormat }}</td>
             {% if subscription.upcoming_invoice()  %}
@@ -103,16 +101,7 @@ li { list-style: none}
                             </details>
                         </li>
                         {% endif %}
-                        <!--li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li-->
                         <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                        {#
-                        {% if subscription.stripe_external_id %}
-                        <li>
-                          <strong>Stripe external id: </strong>
-                          {{ subscription.stripe_external_id }}
-                        </li>
-                        {% endif %}
-                        #}
                         <li>
                             {% if subscription.plan.requirements.subscription %}
                               <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
