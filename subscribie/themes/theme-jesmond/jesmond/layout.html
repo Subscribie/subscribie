@@ -93,24 +93,22 @@
         {% endfor %}
 
         {% if g.user %}
-          {% for page in pages %}
-            {% if page.private %}
-              <div class="dropdown nav-item">
-                <a class="dropdown-toggle nav-link text-black px-3 mb-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Private pages
-                </a>
-              
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div class="dropdown nav-item">
+            <a class="dropdown-toggle nav-link text-black px-3 mb-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Private pages
+            </a>
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                
-                    {% if g.user is not sameas None or g.subscriber is not sameas None %}
-                      <a class="dropdown-item" href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name[0]|upper}}{{ page.page_name[1:] }}</a>
-                    {% endif %}
-
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
+            {% for page in pages %}
+              {% if page.private %}
+                {% if g.user is not sameas None or g.subscriber is not sameas None %}
+                  <a class="dropdown-item" href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name[0]|upper}}{{ page.page_name[1:] }}</a>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            </div>
+          </div>
 
           <li class="nav-item">
             <a class="nav-link h5 px-3 mb-0" href="/admin/dashboard">Dashboard</a>
