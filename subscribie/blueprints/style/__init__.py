@@ -103,10 +103,10 @@ def getCustomCSS():
 def style_shop():
     try:
         # Load custom css rules (if any) and display in an editable textbox
-        css = ModuleStyle.query.first()
-        if css is not None:
-            customCSS = css.css
-            css_properties = json.loads(css.css_properties_json)
+        css_style = ModuleStyle.query.first()
+        if css_style is not None and css_style.css is not None:
+            customCSS = css_style.css
+            css_properties = json.loads(css_style.css_properties_json)
         else:
             customCSS = ""
             css_properties = ""
