@@ -69,12 +69,6 @@
                                 {% endif %}
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
                                 <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                                {% if subscription.stripe_external_id %}
-                                    <li>
-                                        <strong>Stripe Subscription id: </strong>
-                                        {{ subscription.stripe_external_id }}
-                                    </li>
-                                {% endif %}
                                 <li>
                                     {% if subscription.plan.requirements.subscription %}
                                         <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
@@ -138,117 +132,7 @@
         {% endfor %}
         </tbody>
       </table>
-
-      <ul class="d-sm-none list-group mb-4">
-
-        {% for person in people.items %} {# Note: .items comes from sqlalchemy pagination  #}
-          <li class="list-group-item">
-              <div class="d-flex px-2 justify-content-between justify-items-center mb-2">
-              <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
-              <small>
-            {% if person.created_at %} 
-              {{ person.created_at.strftime('%Y-%m-%d') }}
-            {% endif %}
-              </small>
-              </div>
-              <div class="bg-light p-2 mb-2">
-                  <h4>Contact Details</h4>
-                  <a href="mailto:{{ person.email }}" class="subscriber-email">{{ person.email }}</a> |
-                  <a href="tel:{{ person.mobile }}">
-                      {% if person.mobile and person.mobile != "NULL" %}
-                          {{ person.mobile }}</a><br>
-                  {% endif %}
-                  <address>
-                      {{ person.address_line1 }}<br />
-                      {{ person.city }} <br />
-                      {{ person.postal_code }} <br />
-                  </address>
-              </div>
-              {% if person.subscriptions %}
-                  <h4>Plans</h4>
-                  <ul class="list-unstyled">
-                      {% for subscription in person.subscriptions %}
-                          <li>
-                              <div class="card mb-4">
-                                  <ul class="list-unstyled px-2">
-                                      <li><strong>Title: </strong>
-                                          <span class="subscription-title">{{ subscription.plan.title }}</span>
-                                      </li>
-                                      {% if subscription.chosen_options %}
-                                          <li>
-                                              <details open>
-                                                  <summary><strong>Chosen Options</strong></summary>
-                                                  <ul>
-                                                      {% for choice in subscription.chosen_options %}
-                                                          <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
-                                                      {% endfor %}
-                                                  </ul>
-                                              </details>
-                                          </li>
-                                      {% endif %}
-                                      <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                                      <li>
-                                          {% if subscription.plan.requirements.subscription %}
-                                              <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
-                                              <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
-                                          {% else %}
-                                              (One-off. Not a subscription)
-                                          {% endif %}
-                                      </li>
-                                      <li><strong>Sell price: </strong>
-                                          <span class="subscribers-plan-sell-price">
-                                              {% if subscription.plan.requirements.instant_payment %}
-                                                  {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
-                                  {% else %}
-                                      (No up-front fee)
-                                  {% endif %}
-                                          </span>
-                                          <li><strong>Status: </strong>
-                                              {% if subscription.plan.requirements.subscription %}
-                                                  {{subscription_status(subscription.stripe_external_id)}}
-                                              {% else %}
-                                                  Paid
-                                              {% endif %}
-                                          </li>
-                                          <li>
-                                              {% if subscription.plan.requirements.note_to_seller_required %}
-                                                  <details open>
-                                                      <summary><strong>Order Note</strong></summary>
-                                                      {% if subscription.note %}
-                                                          {{ subscription.note.note }}
-                                                      {% else %}
-                                                          No note was given.
-                                                      {% endif %}
-                                                  </details>
-                                              {% endif %}
-                                          </li>
-                                          <li><strong>Actions: </strong>
-                                              {% if subscription.stripe_external_id %}
-                                                  {% if subscription_status(subscription.stripe_external_id) == 'Active' %}
-                                                      <a href="{{ url_for("admin.pause_stripe_subscription",
-                                                      subscription_id=subscription.stripe_external_id,
-                                                      goback=1) }}">
-                                                          Pause
-                                                      </a> | 
-                                                  {% endif %}
-                                                  {% if subscription_status(subscription.stripe_external_id) == 'Paused' %}
-                                                      <a href="{{ url_for("admin.resume_stripe_subscription",
-                                                      subscription_id=subscription.stripe_external_id,
-                                                      goback=1) }}">
-                                                          Resume
-                                                      </a>
-                                                  {% endif %}
-                                              {% endif %}
-                                          </li>
-                                  </ul>
-                              </div>
-                          </li>
-                      {% endfor %}
-                  </ul>
-              {% endif %}
-          </li>
-      {% endfor %}
-      </ul>
+      
 
       <nav role="navigation" aria-label="pagination">
           <ul class="pagination justify-content-start">
