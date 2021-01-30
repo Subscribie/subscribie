@@ -20,6 +20,34 @@
 }
 
 
+@media screen and (max-width:768px) {
+    table.mobile-optimised {
+        display:block;
+    }
+    table.mobile-optimised thead {
+        display:none
+    }
+    table.mobile-optimised td {
+        display: block;
+        border: none;
+    }
+    table.mobile-optimised tbody, table.mobile-optimised tr {
+        display:block
+    }
+    .mobile-optimised td:before {
+        content:attr(data-th);
+        display:block;
+        font-weight:bold;
+        margin:0 0 2px;
+        color:#000;
+    }
+    .mobile-optimised tbody tr {
+        border: 1px solid rgba(0,0,0,.125);
+        margin-bottom:10px;
+    }
+}
+
+
 textarea {
-  padding: 10px;
+    padding: 10px;
 }
