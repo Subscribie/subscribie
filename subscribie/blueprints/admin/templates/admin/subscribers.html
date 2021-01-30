@@ -16,7 +16,7 @@
 <main>
   <div class="section">
     <div class="container">
-      <table class="table table-hover table-scroll">
+      <table class="table mobile-optimised">
         <thead>
           <tr>
             <th>Date</th>
@@ -29,23 +29,23 @@
         <tbody>
         {% for person in people.items %} {# Note: .items comes from sqlalchemy pagination  #}
           <tr>
-            <td>{% if person.created_at %} 
+            <td data-th="Date">{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
             {% endif %}</td>
-            <td><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
-            <td><strong>Email: </strong>
+            <td data-th="Name"><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
+            <td data-th="Contact"><strong>Email: </strong>
                 <a href="mailto:{{ person.email }}" class="subscriber-email">{{ person.email }}</a><br>
                 <strong>Phone: </strong><a href="tel:{{ person.mobile }}">
                 {% if person.mobile and person.mobile != "NULL" %}
                     {{ person.mobile }}</a><br>
                 {% endif %}
             </td>
-            <td><address>
+            <td data-th="Address"><address>
               {{ person.address_line1 }}<br />
               {{ person.city }} <br />
               {{ person.postal_code }} <br />
             </address></td>
-            <td>
+            <td data-th="Plan">
               {% if person.subscriptions %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
@@ -138,6 +138,10 @@
         {% endfor %}
         </tbody>
       </table>
+<<<<<<< HEAD
+=======
+      
+>>>>>>> second atempt
 
       <nav role="navigation" aria-label="pagination">
         <ul class="pagination justify-content-start">
