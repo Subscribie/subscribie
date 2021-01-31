@@ -27,7 +27,9 @@ to try the [subscription website hosting service](http://subscriptionwebsitebuil
 
 An abstraction layer for managing variable recurring subscriptions and billing. Abstracts direct debit and token based card payment providers or payment-institutions.
 
-Keywords: subscriptions, payments, PS2, SEPA 
+Keywords: subscriptions, payments, PS2, SEPA
+
+Want to be involved? See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
 
 # Quickstart (without Docker)
 
