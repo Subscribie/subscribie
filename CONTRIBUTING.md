@@ -8,11 +8,11 @@ Please note we have a code of conduct, please follow it in all your interactions
 ## Git Pull Request Process
 
 Question:
-> I would like to ask for explanation about git best practices. Like naming branches, I was in most cases worked alone projects so things like this were not important to me but now I need some guidance about those stuffs. 
+> I would like to ask for an explanation about git best practices. Like naming branches etc, I was in most cases working alone on projects so things like this were not important to me but now I need some guidance about these things. 
 
 Answer: 
 
-- Contribution and change must start with creating a github issue, even if a tiny change. This gives you an issue number to use later on
+- Contributions and changes must start with creating a github issue, even if a tiny change. This gives you an issue number to use later on
 
 
 Locally developing code, after coning the repo (see README.md)
