@@ -129,6 +129,16 @@ async function test_connect_to_stripe_connect()  {
         await page.click('text="Next"');
       }
       
+      // If on the document verification page, only email and phone number needed to login
+      // so press next. This is confusing because "Tell us a few details about yourself" also
+      // appears on an earlier onboarding step (before doing document verification)
+      if (contentStripePage.indexOf('Tell us a few details about yourself') > -1)
+      {
+        let numInputs = await page.evaluate(() => document.forms[0].querySelectorAll('input').length);
+        if (numInputs == 2) {
+            await page.click('text="Next"');
+        }
+      }
 
       // Stripe onboarding personal details step
       if (contentStripePage.indexOf('Tell us a few details about yourself') > -1 ) {

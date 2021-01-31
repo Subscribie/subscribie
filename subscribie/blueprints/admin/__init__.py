@@ -22,6 +22,7 @@ from subscribie.utils import (
     get_stripe_connect_account,
     create_stripe_connect_account,
     get_stripe_connect_account_id,
+    modify_stripe_account_capability,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -502,6 +503,14 @@ def stripe_connect():
 
     # Setup Stripe webhook endpoint if it dosent already exist
     if account:
+        # Attempt to Updates an existing Account Capability to accept card payments
+        try:
+            account = get_stripe_connect_account()
+            modify_stripe_account_capability(account.id)
+        except Exception as e:
+            logging.info("Could not update card_payments capability for account")
+            logging.info(e)
+
         try:
             stripe_express_dashboard_url = stripe.Account.create_login_link(
                 account.id
