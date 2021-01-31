@@ -56,12 +56,12 @@
 
          {% elif account.charges_enabled and account.payouts_enabled is sameas False %}
             <div class="alert alert-warning" role="alert">
-                Payouts to your bank account are not active yet. But don't worry, 
-                you can still accept live payments on your shop right now. Stripe
-                will safley hold your funds until your account is verified.<br />
-                Please check back here after a short while (30 mins) and Stripe 
-                will ask you to upload verification documents, by clicking 
-                'Setup payouts on stripe' again to continue where you left off.
+                Payouts to your bank account are not active yet.
+                Stripe needs you to provide identification.<br />
+                Please check back here after a short while (5 mins) and Stripe
+                will ask you to upload verification documents. Click
+                'Setup payouts on stripe' again and you'll be asked to provide documents
+                (this is to reduce fraud and protect you and your customers).
                 <br />
                 <p>
                     If you have recently uploaded these documents, please give Stripe some time

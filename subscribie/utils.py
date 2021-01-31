@@ -95,3 +95,9 @@ def format_to_stripe_interval(plan: str):
     else:
         return ""
     return plan
+
+
+def modify_stripe_account_capability(account_id):
+    """Request (again) card_payments capability after kyc onboarding
+    is complete"""
+    stripe.Account.modify_capability(account_id, "card_payments", requested=True)
