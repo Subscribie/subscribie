@@ -12,7 +12,7 @@ Question:
 
 Answer: 
 
-- Contribution and change musy start with creating a github issue, even if a tiny change. This gives you an issue number to use later on
+- Contribution and change must start with creating a github issue, even if a tiny change. This gives you an issue number to use later on
 
 
 Locally developing code, after coning the repo (see README.md)
