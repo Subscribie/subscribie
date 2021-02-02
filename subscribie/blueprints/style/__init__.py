@@ -26,7 +26,7 @@ def inject_custom_style():
         hsl_s = primary.split(",")[1]
         hsl_l = primary.split(",")[2]
         js_inject = """<script>
-        document.documentElement.style.setProperty('--primary-color-hs', [Math.round({hsl_h}), Math.round({hsl_s} * 100) + '%'].join()); # noqa
+        document.documentElement.style.setProperty('--primary-color-hs', [Math.round({hsl_h}), Math.round({hsl_s} * 100) + '%'].join());
         document.documentElement.style.setProperty('--primary-color-l', Math.round({hsl_l} * 100) + '%');
         </script>
         """.format(
