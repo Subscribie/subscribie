@@ -13,77 +13,27 @@ def inject_custom_style():
     # output as inline css using <style> tags.
     global_css = ""
     # Set default colours
-    css_properties_json = {"primary": "#2575fc", "secondary": "", "info": ""}
-    css_custom_properties = ""
-
     styles = ModuleStyle.query.first()
     if styles is not None:
         global_css = styles.css
-        try:
-            css_properties_json = json.loads(styles.css_properties_json)
-            css_custom_properties += "".join(
-                [
-                    ":root {",
-                    "--bg-primary:",
-                    css_properties_json["primary"],
-                    ";" "--bg-secondary:",
-                    css_properties_json["secondary"],
-                    ";",
-                    "--bg-info:",
-                    css_properties_json["info"],
-                    ";" "}",
-                ]
-            )
-        except Exception:
-            pass
-    else:  # Fallback to default
-        css_custom_properties += "".join(
-            [
-                ":root {",
-                "--bg-primary:",
-                css_properties_json["primary"],
-                ";" "--bg-secondary:",
-                css_properties_json["secondary"],
-                ";",
-                "--bg-info:",
-                css_properties_json["info"],
-                ";" "}",
-            ]
-        )
 
-    # Override bootstrap
-    css_custom_properties += "".join(
-        [
-            """.bg-info {
-      background-color: var(--bg-primary) !important;
-    }""",
-            """
-    .btn-primary {
-      background-color: var(--bg-primary) !important;
-      border-color: var(--bg-primary) !important;
-    }
-    """,
-            """
-    .navbar-dark .navbar-nav :hover {
-      background-color: var(--bg-primary) !important;
-    }
-    """,
-            """
-    .bg-primary {
-      background-color: var(--bg-primary) !important;
-    }""",
-            """
-    .btn-success {
-      background-color: var(--bg-primary) !important;
-      border-color: var(--bg-primary) !important;
-    }""",
-        ]
-    )
+    # Js primary colours injection via javascript
+    css_properties_json = json.loads(styles.css_properties_json)
+    primary = css_properties_json["primary"]
+    hsl_h = primary.split(",")[0]
+    hsl_s = primary.split(",")[1]
+    hsl_l = primary.split(",")[2]
 
-    # Wrap style tags
-    custom_css = "".join(
-        ['<style type="text/css">', css_custom_properties, global_css, "</style>"]
+    js_inject = """<script>
+    document.documentElement.style.setProperty('--primary-color-hs', [Math.round({hsl_h}), Math.round({hsl_s} * 100) + '%'].join());
+    document.documentElement.style.setProperty('--primary-color-l', Math.round({hsl_l} * 100) + '%');
+
+    </script>
+    """.format(
+        hsl_h=hsl_h, hsl_s=hsl_s, hsl_l=hsl_l
     )
+    # Raw global css overrises
+    custom_css = "".join([js_inject, '<style type="text/css">', global_css, "</style>"])
 
     return dict(custom_css=custom_css)
 
@@ -104,9 +54,14 @@ def style_shop():
     try:
         # Load custom css rules (if any) and display in an editable textbox
         css_style = ModuleStyle.query.first()
+        customCSS = ""
         if css_style is not None and css_style.css != "":
             customCSS = css_style.css
+        if css_style is not None and css_style.css_properties_json != "":
             css_properties = json.loads(css_style.css_properties_json)
+            parts = css_properties["primary"].split(",")
+
+            css_properties["primary"] = f"hsl({parts[0]}, {parts[1]}, {parts[2]})"
         else:
             customCSS = ""
             css_properties = ""

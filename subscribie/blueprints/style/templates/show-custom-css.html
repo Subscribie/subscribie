@@ -8,8 +8,8 @@
 {% block body %}
 
 <script src="https://code.jquery.com/jquery-3.0.0.js"></script>
-<script src="{{ url_for('static', filename='spectrum.js') }}"></script>
-<link rel='stylesheet' href="{{ url_for('static', filename='spectrum.css') }}" />
+<script src="{{ url_for('static', filename='spectrum/spectrum.min.js') }}" /></script>
+<link rel='stylesheet' href="{{ url_for('static', filename='spectrum/spectrum.min.css') }}" />
 
 <h2 class="text-center text-dark mb-3">Style Your Shop</h2>
 
@@ -57,20 +57,14 @@
 
   <script>
 
-  function setColours(name, value) {
-    document.documentElement.style.setProperty(name, value);
-    saveColors();
-  }
-
-  function saveColors() {
+  function saveColor(color) {
     // Get the chosen values for colours
-    var primary = document.getElementById('primary').value
-    var secondary = document.getElementById('secondary').value
-    var info = document.getElementById('info').value
+    var hsl = color.toHsl()
+    var primary = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
     var http = new XMLHttpRequest();
     var url = '/style/style-shop';
-    var params = 'primary=' + primary + '&secondary=' + secondary + '&info=' + info;
+    var params = 'primary=' + primary;
     http.open('POST', url, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -86,32 +80,12 @@
 
   $('#primary').spectrum({
       type: "component",
-      preferredFormat: "hsl",
+      preferredFormat: "hex",
       color: "{{ css_properties['primary'] }}", /* default to current colour */
       showInput: "true",
       showInitial: "true",
-      move: function(color) { setColours('--primary', color)},
-      change: function(color) { saveColors()},
-  });
-
-  $('#secondary').spectrum({
-      type: "component",
-      preferredFormat: "hsl",
-      color: "{{ css_properties['secondary'] }}", /* default to current colour */
-      showInput: "true",
-      showInitial: "true",
-      move: function(color) { setColour('--secondary', color)},
-      change: function(color) { saveColors()},
-  });
-
-  $('#info').spectrum({
-      type: "component",
-      preferredFormat: "hsl",
-      color: "{{ css_properties['info'] }}", /* default to current colour */
-      showInput: "true",
-      showInitial: "true",
-      move: function(color) { setColour('--info', color)},
-      change: function(color) { saveColors()},
+      move: function(color) { saveColor(color)},
+      change: function(color) { saveColor(color)},
   });
 
   </script>
