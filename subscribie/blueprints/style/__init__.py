@@ -12,26 +12,29 @@ def inject_custom_style():
     # Styles are injected into the base of the template
     # output as inline css using <style> tags.
     global_css = ""
+    js_inject = ""
     # Set default colours
     styles = ModuleStyle.query.first()
     if styles is not None:
         global_css = styles.css
 
     # Js primary colours injection via javascript
-    css_properties_json = json.loads(styles.css_properties_json)
-    primary = css_properties_json["primary"]
-    hsl_h = primary.split(",")[0]
-    hsl_s = primary.split(",")[1]
-    hsl_l = primary.split(",")[2]
-
-    js_inject = """<script>
-    document.documentElement.style.setProperty('--primary-color-hs', [Math.round({hsl_h}), Math.round({hsl_s} * 100) + '%'].join());
-    document.documentElement.style.setProperty('--primary-color-l', Math.round({hsl_l} * 100) + '%');
-
-    </script>
-    """.format(
-        hsl_h=hsl_h, hsl_s=hsl_s, hsl_l=hsl_l
-    )
+    try:
+        css_properties_json = json.loads(styles.css_properties_json)
+        primary = css_properties_json["primary"]
+        hsl_h = primary.split(",")[0]
+        hsl_s = primary.split(",")[1]
+        hsl_l = primary.split(",")[2]
+        js_inject = """<script>
+        document.documentElement.style.setProperty('--primary-color-hs', [Math.round({hsl_h}), Math.round({hsl_s} * 100) + '%'].join()); # noqa
+        document.documentElement.style.setProperty('--primary-color-l', Math.round({hsl_l} * 100) + '%');
+        </script>
+        """.format(
+            hsl_h=hsl_h, hsl_s=hsl_s, hsl_l=hsl_l
+        )
+    except Exception as e:
+        print(e)
+        print("Could not load custom css properties")
     # Raw global css overrises
     custom_css = "".join([js_inject, '<style type="text/css">', global_css, "</style>"])
 
