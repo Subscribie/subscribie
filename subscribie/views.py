@@ -741,8 +741,8 @@ def custom_page(path):
 
         {% endblock %}
         {% block body %}
-        <div class="section">
-          <div class="container">
+        <div class="section mx-auto">
+          <div class="container mx-auto">
 
     """
     # Inject custom styles into the footer also
