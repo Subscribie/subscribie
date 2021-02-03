@@ -25,7 +25,7 @@ jobs:
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C \
           "set -x \
-          cd ${{ secrets.SUBSCRIBIE_PATH }}; \
+          cd /home/subwebbuild/www/subscriptionwebsitebuilder.co.uk/subscribie; \
           pwd &&\
           git fetch; git rebase origin/master \
           . venv/bin/activate; \
