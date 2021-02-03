@@ -26,7 +26,7 @@ jobs:
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C \
           "set -x \
           cd ${{ secrets.SUBSCRIBIE_PATH }}; \
-          pwd \
+          pwd &&\
           git fetch; git rebase origin/master \
           . venv/bin/activate; \
           pip install -r requirements.txt; \
