@@ -7,6 +7,8 @@ on:
 jobs:
   deploy_prod:
     name: Deploy to prod
+    environment:
+      name: Production
     runs-on: ubuntu-20.04
     steps:
     - name: Setup ssh access
@@ -23,8 +25,8 @@ jobs:
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C \
           "set -x \
-          git fetch; git rebase origin/master \
           cd ${{ secrets.SUBSCRIBIE_PATH }}; \
+          git fetch; git rebase origin/master \
           . venv/bin/activate; \
           pip install -r requirements.txt; \
           export FLASK_APP=subscribie; \
