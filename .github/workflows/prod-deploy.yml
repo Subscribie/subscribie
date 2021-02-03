@@ -5,7 +5,7 @@ on:
 #    branches:
 #      - master
 jobs:
-  Deploy prod:
+  deploy_prod:
     name: Deploy to prod
     runs-on: ubuntu-20.04
     steps:
