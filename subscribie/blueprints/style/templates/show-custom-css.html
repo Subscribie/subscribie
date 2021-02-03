@@ -30,7 +30,7 @@
 
     <hr>
 
-  <form action="#" method="POST">
+  <form action="#" method="POST" id="styleForm">
 
     <h2>Choose your default colour</h2>
     <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
@@ -57,6 +57,28 @@
 
   <script>
 
+  // Save the global styles override
+  form = document.getElementById('styleForm');
+  form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      // Save the global style
+      var url = '/style/style-shop';
+      var global_css = document.getElementById('global_css').value;
+      var params = 'global_css=' + global_css;
+      var http = new XMLHttpRequest();
+      http.open('POST', url, true);
+
+      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+      http.onreadystatechange = function() {
+          if(http.readyState == 4 && http.status == 200) {
+           console.log("Saved Global styles");
+          }
+      }
+      http.send(params);
+      document.location = "/";
+  });
+
   function saveColor(color) {
     // Get the chosen values for colours
     var hsl = color.toHsl()
@@ -81,7 +103,7 @@
   $('#primary').spectrum({
       type: "component",
       preferredFormat: "hex",
-      color: "{{ css_properties['primary'] }}", /* default to current colour */
+      color: "{{  css_primary }}", /* default to current colour */
       showInput: "true",
       showInitial: "true",
       move: function(color) { saveColor(color)},
@@ -93,8 +115,7 @@
 
   <h2>Global Styles</h2>
   <p class="card-subtitle mb-3 text-muted">If you know how to write CSS, you can paste it here:</p>
-  <form action="#" method="POST"> 
-    <textarea name="css" cols="100" rows="20">{{ customCSS }}</textarea>
+    <textarea id="global_css" name="css" cols="100" rows="20">{{ customCSS }}</textarea>
     <br />
     <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
   </form>

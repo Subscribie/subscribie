@@ -57,20 +57,24 @@ def style_shop():
     try:
         # Load custom css rules (if any) and display in an editable textbox
         css_style = ModuleStyle.query.first()
+        css_primary = ""
         customCSS = ""
         if css_style is not None and css_style.css != "":
             customCSS = css_style.css
         if css_style is not None and css_style.css_properties_json != "":
-            css_properties = json.loads(css_style.css_properties_json)
-            parts = css_properties["primary"].split(",")
-
-            css_properties["primary"] = f"hsl({parts[0]}, {parts[1]}, {parts[2]})"
+            try:
+                css_properties = json.loads(css_style.css_properties_json)
+                parts = css_properties["primary"].split(",")
+                css_primary = f"hsl({parts[0]}, {parts[1]}, {parts[2]})"
+            except Exception as e:
+                print(e)
+                print("Could not load css_style.css_properties_json")
         else:
             customCSS = ""
             css_properties = ""
 
         return render_template(
-            "show-custom-css.html", customCSS=customCSS, css_properties=css_properties
+            "show-custom-css.html", customCSS=customCSS, css_primary=css_primary
         )
     except TemplateNotFound:
         abort(404)
@@ -80,18 +84,22 @@ def style_shop():
 @login_required
 def save_custom_style():
     """Remove all old css, and replace with submitted css"""
+    styles = ModuleStyle.query.first()
+    if styles is None:
+        styles = ModuleStyle()
 
-    # Convert POST data to json and save to the database column
-    css_properties = json.dumps(request.form.to_dict())
-    global_css = request.form.get("css", "")
-    print(global_css)
-    # Delete previous css entry
-    ModuleStyle.query.delete()
-    # Add new style css entry
-    style = ModuleStyle()
-    style.css_properties_json = css_properties
-    style.css = global_css
-    database.session.add(style)
+    if request.form.get("global_css", None):
+        # Save global css
+        global_css = request.form.get("global_css", "")
+        styles.css = global_css
+    else:
+        styles.css = ""  # Remove global css styles as empty
+        # Save custom hsl colours
+        css_properties = json.dumps(request.form.to_dict())
+        if "primary" in css_properties:
+            styles.css_properties_json = css_properties
+
+    database.session.add(styles)
     database.session.commit()
 
     return redirect("/")
