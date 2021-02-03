@@ -24,13 +24,13 @@ jobs:
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C \
-          "set -x \
-          cd ${{ secrets.SUBSCRIBIE_PATH }} && \
-          pwd && \
-          git fetch; git rebase origin/master && \
-          . venv/bin/activate && \
-          pip install -r requirements.txt && \
-          export FLASK_APP=subscribie &&\
+          "set -x \ 
+          cd ${{ secrets.SUBSCRIBIE_PATH }} && \ 
+          pwd && \ 
+          git fetch; git rebase origin/master && \ 
+          . venv/bin/activate && \ 
+          pip install -r requirements.txt && \ 
+          export FLASK_APP=subscribie &&\ 
           flask db upgrade"
     - name: Reload apache
       run: |
