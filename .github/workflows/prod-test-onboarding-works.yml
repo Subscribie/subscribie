@@ -1,0 +1,35 @@
+---
+name: Verify Prod Onbording
+on: 
+  workflow_dispatch
+jobs:
+  deploy-pr:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+
+      - uses: microsoft/playwright-github-action@v1
+
+      - name: Install node dependencies needed for Playwright browser tests
+        run: npm install
+
+      - name: Run & Record browser automated tests (Playwright)
+        env:
+          PLAYWRIGHT_HEADLESS: true
+        run: |
+          set -x
+          node --unhandled-rejections=strict tests/test_prod_new_customer_can_sign_up.js
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: Screenshots-and-video-artifacts
+          path: |
+            ./*.png
+            ./tests/browser-automated-tests-playwright/videos/*
+
