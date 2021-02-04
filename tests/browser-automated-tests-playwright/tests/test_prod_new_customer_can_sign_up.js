@@ -3,7 +3,7 @@ const fs = require('fs');
 const { devices } = require('playwright');
 const iPhone = devices['iPhone 11'];
 const assert = require('assert');
-const DEFAULT_TIMEOUT = 10000
+const DEFAULT_TIMEOUT = 500000
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const videosDir = __dirname + '/videos/';
