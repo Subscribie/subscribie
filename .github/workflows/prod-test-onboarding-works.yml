@@ -1,10 +1,10 @@
 ---
 name: Verify Prod Onbording
 on: 
-  workflow_dispatch
   schedule:
-    - cron: 0 9 * * *
-    - cron: 0 19 * * *
+  - cron: "0 9 * * *"
+  - cron: "0 19 * * *"
+  workflow_dispatch:
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
