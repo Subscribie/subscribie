@@ -23,7 +23,7 @@ jobs:
           PLAYWRIGHT_HEADLESS: true
         run: |
           set -x
-          node --unhandled-rejections=strict tests/test_prod_new_customer_can_sign_up.js
+          node --unhandled-rejections=strict tests/browser-automated-tests-playwright/tests/test_prod_new_customer_can_sign_up.js
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
