@@ -1,4 +1,16 @@
+:root {
+  --primary-color-hs: 165, 35%;
+  --primary-color-l: 45%;
+  --primary-color-hsl-full: var(--primary-color-hs), var(--primary-color-l);
 
+  --primary-color: hsl(var(--primary-color-hs), var(--primary-color-l));
+  --primary-color-lighten-15: hsl(var(--primary-color-hs),calc(var(--primary-color-l) + 15%));
+  --primary-color-lighten-50: hsl(var(--primary-color-hs),calc(var(--primary-color-l) + 50%));
+  --primary-color-darken: hsl(var(--primary-color-hs),calc(var(--primary-color-l) - 15%));
+
+  --primary: var(--primary-color);
+  --bg-primary: var(--primary-color);
+}
 
 /* Icon */
 label::after {
@@ -79,7 +91,7 @@ input[type=checkbox]:checked + label::after {
 
 .kcBlue{
 
-  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
 
 }
 
