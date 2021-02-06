@@ -20,7 +20,7 @@
         {% if show_active %}
           <a href="{{url_for('admin.subscribers')}}" class="btn btn-primary active">Active Shown</a>
         {% else %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" class="btn btn-primary">Show Active</a>
+          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
       {%endif %}
        </div>
       <table class="table mobile-optimised">
@@ -175,5 +175,13 @@
     </div> <!-- end .container -->
   </div><!-- end .section -->
 </main>
+
+<script>
+{# give UI feedback whilst waiting for active subscribers to load #}
+document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
+  e.target.textContent = "Please wait...";
+});
+
+</script>
 
 {% endblock body %} 
