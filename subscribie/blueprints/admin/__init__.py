@@ -759,10 +759,10 @@ def subscribers():
     def url_pagination(page=None):
         return url_for("admin.subscribers", page=page, action=action)
 
-    query = database.session.query(Person)
-
     if show_active:
-        query = query.filter(Person.subscriptions.any())
+        query = database.session.query(Person).filter(Person.subscriptions.any())
+    else:
+        query = database.session.query(Person)
 
     people = query.order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
 
