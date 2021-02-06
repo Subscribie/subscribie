@@ -240,11 +240,22 @@ def dashboard():
         stripe_connected = True
     else:
         stripe_connected = False
+
+    # Get number of subscribers with plans:
+    num_active_subscribers = get_number_of_active_subscribers()
+    num_subscribers = get_number_of_subscribers()
+    num_signups = get_number_of_signups()
+    num_one_off_purchases = get_number_of_one_off_purchases()
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
         integration=integration,
         loadedModules=getLoadedModules(),
+        num_active_subscribers=num_active_subscribers,
+        num_subscribers=num_subscribers,
+        num_signups=num_signups,
+        num_one_off_purchases=num_one_off_purchases,
     )
 
 
@@ -645,15 +656,15 @@ def utility_get_transaction_fulfillment_state():
     return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
 
 
-def get_subscription_status(stripe_external_id: str) -> str:
+def get_subscription_status(stripe_subscription_id: str) -> str:
     status_on_error = "Unknown"
-    if stripe_external_id is None:
+    if stripe_subscription_id is None:
         return status_on_error
     try:
         stripe.api_key = get_stripe_secret_key()
         connect_account = get_stripe_connect_account()
         subscription = stripe.Subscription.retrieve(
-            stripe_account=connect_account.id, id=stripe_external_id
+            stripe_account=connect_account.id, id=stripe_subscription_id
         )
         if subscription.pause_collection is not None:
             return "paused"
@@ -677,6 +688,66 @@ def subscription_status():
     return dict(subscription_status=formatted_status)
 
 
+def get_number_of_active_subscribers():
+    count = 0
+    subscribers_with_subscriptions = (
+        database.session.query(Person)
+        .join(Subscription)
+        .join(Plan, Subscription.sku_uuid == Plan.uuid)
+        .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .filter(PlanRequirements.subscription == 1)
+    )
+    # Check if their subscriptions are active
+    for subscriber in subscribers_with_subscriptions:
+        # Check each subscibers subscriptions to see if they're active
+        for subscription in subscriber.subscriptions:
+            if subscription.stripe_subscription_active():
+                logging.info(
+                    f"Checking if subscription {subscription.stripe_subscription_id} is active"  # noqa: E501
+                )
+                count += 1
+    return count
+
+
+def get_number_of_subscribers():
+    """Returns number of subscribers, including subscribers with inactive subscriptions"""  # noqa: E501
+    count = (
+        database.session.query(Person)
+        .join(Subscription)
+        .join(Plan, Subscription.sku_uuid == Plan.uuid)
+        .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .filter(PlanRequirements.subscription == 1)
+        .count()
+    )
+    return count
+
+
+def get_number_of_signups():
+    """Returns number of subscribers, either signing up with subscription OR one-off payment"""  # noqa: E501
+    count = (
+        database.session.query(Person)
+        .join(Subscription)
+        .join(Plan, Subscription.sku_uuid == Plan.uuid)
+        .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .count()
+    )
+    return count
+
+
+def get_number_of_one_off_purchases():
+    """Returns number of people who completed a one-off payment"""  # noqa: E501
+    count = (
+        database.session.query(Person)
+        .join(Subscription)
+        .join(Plan, Subscription.sku_uuid == Plan.uuid)
+        .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .filter(PlanRequirements.subscription == 0)
+        .filter(PlanRequirements.instant_payment == 1)
+        .count()
+    )
+    return count
+
+
 @admin.route("/subscribers")
 @login_required
 def subscribers():
@@ -688,7 +759,10 @@ def subscribers():
         .paginate(page=page, per_page=5)
     )
 
-    return render_template("admin/subscribers.html", people=people)
+    return render_template(
+        "admin/subscribers.html",
+        people=people,
+    )
 
 
 @admin.route("/upcoming-invoices")
