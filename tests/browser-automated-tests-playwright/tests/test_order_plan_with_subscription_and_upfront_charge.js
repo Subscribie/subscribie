@@ -9,7 +9,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
     console.log("test_order_plan_with_subscription_and_upfront_charge");
     const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
     const context = await browser.newContext(browserContextOptions);
-    context.setDefaultTimeout(10000);
+    context.setDefaultTimeout(15000);
     const page = await context.newPage();
 
     // Buy item with subscription & upfront fee
