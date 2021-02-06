@@ -33,6 +33,14 @@
       </ul>
   </div>
 
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Stats</h3>
+    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> with <em>active</em> subscriptions.</p>
+    <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
+    <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription since starting your shop.</p>
+    <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers') }}">people</a> buy a one-off item from your shop.</p>
+  </div>
+
 
     <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
       <div class="card">
