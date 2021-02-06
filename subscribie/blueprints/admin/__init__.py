@@ -688,12 +688,12 @@ def subscribers():
     def url_pagination(page=None):
         return url_for("admin.subscribers", page=page, action=action)
 
-    query = database.session.query(Person).order_by(desc(Person.created_at))
+    query = database.session.query(Person)
 
     if show_active:
         query = query.filter(Person.subscriptions.any())
 
-    people = query.paginate(page=page, per_page=2)
+    people = query.order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
 
     return render_template(
         "admin/subscribers.html",
