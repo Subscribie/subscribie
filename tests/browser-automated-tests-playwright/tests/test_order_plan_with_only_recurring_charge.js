@@ -81,7 +81,7 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     const content_subscriber_plan_interval_amount = await page.textContent('.subscribers-plan-interval_amount');
     assert(content_subscriber_plan_interval_amount === '£10.99');
 
-    const subscriber_plan_sell_price_content = await page.evaluate(() => document.querySelector('.subscribers-plan-sell-price').textContent.indexOf("(No up-front fee)");
+    const subscriber_plan_sell_price_content = await page.evaluate(() => document.querySelector('.subscribers-plan-sell-price').textContent.indexOf("(No up-front fee)"));
     assert(subscriber_plan_sell_price_content > -1)
 
     // Go to upcoming payments and ensure plan is attached to upcoming invoice
