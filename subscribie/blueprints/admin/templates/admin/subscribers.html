@@ -16,6 +16,13 @@
 <main>
   <div class="section">
     <div class="container">
+      <div class="mb-4">
+        {% if show_active %}
+          <a href="{{url_for('admin.subscribers')}}" class="btn btn-primary active">Active Shown</a>
+        {% else %}
+          <a href="{{url_for('admin.subscribers', action='show_active')}}" class="btn btn-primary">Show Active</a>
+      {%endif %}
+       </div>
       <table class="table mobile-optimised">
         <thead>
           <tr>
@@ -138,18 +145,19 @@
           <ul class="pagination justify-content-start">
               <li class="page-item">
                   {% if people.has_prev %}
-                      <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+                      <a class="page-link" href="{{ url_pagination( page=people.page - 1) }}">Previous</a>
                   {% endif %}</li>
 
               {% for page_num in people.iter_pages() %}
                   {% if page_num %}
                       {% if people.page == page_num %}
                           <li class="page-item active">
-                              <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b></a>
+                              <a class="page-link" href="{{ url_pagination(page=page_num) }}"><b>{{ page_num }}</b>
+                              </a>
                           </li>
                       {% else %}
                           <li class="page-item ">
-                              <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+                              <a class="page-link" href="{{ url_pagination(page=page_num) }}">{{ page_num }}</a>
                           </li>
 
                       {% endif %}
@@ -160,7 +168,7 @@
 
               <li class="page-item">
                   {% if people.has_next %}
-                      <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+                      <a class="page-link" href="{{ url_pagination(page=people.page + 1) }}">Next page</a>
                   {% endif %}</li>
           </ul>
       </nav>

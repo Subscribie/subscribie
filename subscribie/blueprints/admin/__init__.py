@@ -681,14 +681,26 @@ def subscription_status():
 @login_required
 def subscribers():
     page = request.args.get("page", 1, type=int)
+    action = request.args.get("action")
 
-    people = (
-        database.session.query(Person)
-        .order_by(desc(Person.created_at))
-        .paginate(page=page, per_page=5)
+    show_active = action == "show_active"
+
+    def url_pagination(page=None):
+        return url_for("admin.subscribers", page=page, action=action)
+
+    query = database.session.query(Person).order_by(desc(Person.created_at))
+
+    if show_active:
+        query = query.filter(Person.subscriptions.any())
+
+    people = query.paginate(page=page, per_page=2)
+
+    return render_template(
+        "admin/subscribers.html",
+        people=people,
+        url_pagination=url_pagination,
+        show_active=show_active,
     )
-
-    return render_template("admin/subscribers.html", people=people)
 
 
 @admin.route("/upcoming-invoices")
