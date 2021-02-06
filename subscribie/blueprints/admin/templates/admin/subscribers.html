@@ -18,7 +18,7 @@
     <div class="container">
       <div class="mb-4">
         {% if show_active %}
-          <a href="{{url_for('admin.subscribers')}}" class="btn btn-primary active">Show all</a>
+          <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
         {% else %}
           <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
       {%endif %}
