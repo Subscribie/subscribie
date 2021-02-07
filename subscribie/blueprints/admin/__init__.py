@@ -756,9 +756,6 @@ def subscribers():
 
     show_active = action == "show_active"
 
-    def url_pagination(page=None):
-        return url_for("admin.subscribers", page=page, action=action)
-
     if show_active:
         query = database.session.query(Person).filter(Person.subscriptions.any())
     else:
@@ -769,7 +766,6 @@ def subscribers():
     return render_template(
         "admin/subscribers.html",
         people=people,
-        url_pagination=url_pagination,
         show_active=show_active,
     )
 
