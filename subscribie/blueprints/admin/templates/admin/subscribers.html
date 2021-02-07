@@ -145,19 +145,19 @@
           <ul class="pagination justify-content-start">
               <li class="page-item">
                   {% if people.has_prev %}
-                      <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page - 1) }}">Previous</a>
+                      <a class="page-link" href="{{ url_pagination( page=people.page - 1) }}">Previous</a>
                   {% endif %}</li>
 
               {% for page_num in people.iter_pages() %}
                   {% if page_num %}
                       {% if people.page == page_num %}
                           <li class="page-item active">
-                              <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}"><b>{{ page_num }}</b>
+                              <a class="page-link" href="{{ url_pagination(page=page_num) }}"><b>{{ page_num }}</b>
                               </a>
                           </li>
                       {% else %}
                           <li class="page-item ">
-                              <a class="page-link" href="{{ url_for('admin.subscribers', page=page_num) }}">{{ page_num }}</a>
+                              <a class="page-link" href="{{ url_pagination(page=page_num) }}">{{ page_num }}</a>
                           </li>
 
                       {% endif %}
@@ -168,7 +168,7 @@
 
               <li class="page-item">
                   {% if people.has_next %}
-                      <a class="page-link" href="{{ url_for('admin.subscribers', page=people.page + 1) }}">Next page</a>
+                      <a class="page-link" href="{{ url_pagination(page=people.page + 1) }}">Next page</a>
                   {% endif %}</li>
           </ul>
       </nav>
