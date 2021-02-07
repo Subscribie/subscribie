@@ -6,7 +6,10 @@ from flask import (
     url_for,
     redirect,
     jsonify,
+    current_app,
 )
+import flask
+from flask_mail import Mail, Message
 from subscribie.models import (
     Plan,
     Option,
@@ -16,6 +19,10 @@ from subscribie.models import (
     Company,
     Subscription,
     Transaction,
+    SubscriptionNote,
+    EmailTemplate,
+    Setting,
+    User,
 )
 from subscribie.utils import (
     get_stripe_publishable_key,
@@ -24,8 +31,11 @@ from subscribie.utils import (
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
+from subscribie.signals import journey_complete
+from jinja2 import Template
 import stripe
 import backoff
+from pathlib import Path
 import os
 import json
 import logging
@@ -151,6 +161,86 @@ def order_summary():
         stripe_create_checkout_session_url=stripe_create_checkout_session_url,
         stripe_connected_account_id=stripe_connected_account_id,
     )
+
+
+@checkout.route("/instant_payment_complete", methods=["GET"])
+def instant_payment_complete():
+    scheme = "https" if request.is_secure else "http"
+    return redirect(url_for("checkout.thankyou", _scheme=scheme, _external=True))
+
+
+@checkout.route("/thankyou", methods=["GET"])
+def thankyou():
+    # Remove subscribie_checkout_session_id from session
+    session.pop("subscribie_checkout_session_id", None)
+    company = Company.query.first()
+    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
+    subscription = (
+        database.session.query(Subscription)
+        .filter_by(uuid=session.get("subscription_uuid"))
+        .first()
+    )
+
+    # Store note to seller if in session
+    if session.get("note_to_seller", False) is not False and subscription is not None:
+        note = SubscriptionNote(
+            note=session["note_to_seller"], subscription_id=subscription.id
+        )
+        database.session.add(note)
+
+    database.session.commit()
+    # Send journey_complete signal
+    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
+    journey_complete.send(current_app._get_current_object(), email=email)
+
+    # Send welcome email (either default template of custom, if active)
+    custom_template = EmailTemplate.query.first()
+    if custom_template is not None and custom_template.use_custom_welcome_email is True:
+        # Load custom welcome email
+        template = custom_template.custom_welcome_email_template
+    else:
+        # Load default welcome email from template folder
+        welcome_template = str(
+            Path(current_app.root_path + "/emails/welcome.jinja2.html")
+        )
+        fp = open(welcome_template)
+        template = fp.read()
+        fp.close()
+
+    first_charge_date = session.get("first_charge_date", None)
+    first_charge_amount = session.get("first_charge_amount", None)
+    jinja_template = Template(template)
+    scheme = "https://" if request.is_secure else "http://"
+    html = jinja_template.render(
+        first_name=session.get("given_name", None),
+        company_name=company.name,
+        subscriber_login_url=scheme + flask.request.host + "/account/login",
+        first_charge_date=first_charge_date,
+        first_charge_amount=first_charge_amount,
+        plan=plan,
+    )
+
+    try:
+        mail = Mail(current_app)
+        msg = Message()
+        msg.subject = company.name + " " + "Subscription Confirmation"
+        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+        msg.recipients = [session["email"]]
+        setting = Setting.query.first()
+        if setting is not None:
+            msg.reply_to = setting.reply_to_email_address
+        else:
+            msg.reply_to = (
+                User.query.first().email
+            )  # Fallback to first shop admin email
+        msg.html = html
+        mail.send(msg)
+    except Exception as e:
+        print(e)
+        logging.warning("Failed to send welcome email")
+
+    finally:
+        return render_template("thankyou.html")
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
