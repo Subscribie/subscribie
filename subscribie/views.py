@@ -1,11 +1,7 @@
-import logging
-from .signals import journey_complete
 from subscribie.auth import check_private_page
 from pathlib import Path
 import jinja2
-from jinja2 import Template, Environment, FileSystemLoader
-
-
+from jinja2 import Environment, FileSystemLoader
 from flask import (
     abort,
     Blueprint,
@@ -18,25 +14,13 @@ from flask import (
     g,
     send_from_directory,
 )
-import flask
-
 from .models import (
-    User,
-    Subscription,
-    SubscriptionNote,
     Company,
     Plan,
     Integration,
     Page,
-    EmailTemplate,
-    Setting,
 )
-
-from .database import database
-
-from flask_mail import Mail, Message
 from flask_migrate import upgrade
-
 from subscribie.blueprints.style import inject_custom_style
 
 bp = Blueprint("views", __name__, url_prefix=None)
@@ -117,86 +101,6 @@ def set_options(plan_uuid):
         return redirect(url_for("views.new_customer", plan=plan_uuid))
 
     return render_template("set_options.html", plan=plan)
-
-
-@bp.route("/instant_payment_complete", methods=["GET"])
-def instant_payment_complete():
-    scheme = "https" if request.is_secure else "http"
-    return redirect(url_for("views.thankyou", _scheme=scheme, _external=True))
-
-
-@bp.route("/thankyou", methods=["GET"])
-def thankyou():
-    # Remove subscribie_checkout_session_id from session
-    session.pop("subscribie_checkout_session_id", None)
-    company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
-    subscription = (
-        database.session.query(Subscription)
-        .filter_by(uuid=session.get("subscription_uuid"))
-        .first()
-    )
-
-    # Store note to seller if in session
-    if session.get("note_to_seller", False) is not False and subscription is not None:
-        note = SubscriptionNote(
-            note=session["note_to_seller"], subscription_id=subscription.id
-        )
-        database.session.add(note)
-
-    database.session.commit()
-    # Send journey_complete signal
-    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
-    journey_complete.send(current_app._get_current_object(), email=email)
-
-    # Send welcome email (either default template of custom, if active)
-    custom_template = EmailTemplate.query.first()
-    if custom_template is not None and custom_template.use_custom_welcome_email is True:
-        # Load custom welcome email
-        template = custom_template.custom_welcome_email_template
-    else:
-        # Load default welcome email from template folder
-        welcome_template = str(
-            Path(current_app.root_path + "/emails/welcome.jinja2.html")
-        )
-        fp = open(welcome_template)
-        template = fp.read()
-        fp.close()
-
-    first_charge_date = session.get("first_charge_date", None)
-    first_charge_amount = session.get("first_charge_amount", None)
-    jinja_template = Template(template)
-    scheme = "https://" if request.is_secure else "http://"
-    html = jinja_template.render(
-        first_name=session.get("given_name", None),
-        company_name=company.name,
-        subscriber_login_url=scheme + flask.request.host + "/account/login",
-        first_charge_date=first_charge_date,
-        first_charge_amount=first_charge_amount,
-        plan=plan,
-    )
-
-    try:
-        mail = Mail(current_app)
-        msg = Message()
-        msg.subject = company.name + " " + "Subscription Confirmation"
-        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-        msg.recipients = [session["email"]]
-        setting = Setting.query.first()
-        if setting is not None:
-            msg.reply_to = setting.reply_to_email_address
-        else:
-            msg.reply_to = (
-                User.query.first().email
-            )  # Fallback to first shop admin email
-        msg.html = html
-        mail.send(msg)
-    except Exception as e:
-        print(e)
-        logging.warning("Failed to send welcome email")
-
-    finally:
-        return render_template("thankyou.html")
 
 
 @bp.route("/page/<path>", methods=["GET"])
