@@ -70,7 +70,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     HoneyMiddleware(
         app, db_events=True
-    )  # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy
+    )  # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy # noqa
     load_dotenv(verbose=True)
     app.config.update(os.environ)
 
@@ -147,6 +147,7 @@ def create_app(test_config=None):
     app.register_blueprint(views.bp)
     app.register_blueprint(api.api)
     from .blueprints.admin import admin
+    from .blueprints.checkout import checkout
     from .blueprints.subscriber import subscriber
     from .blueprints.pages import module_pages
     from .blueprints.iframe import module_iframe_embed
@@ -158,6 +159,7 @@ def create_app(test_config=None):
     app.register_blueprint(module_style_shop, url_prefix="/style")
     app.register_blueprint(module_seo_page_title, url_prefix="/seo")
     app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(checkout)
     app.register_blueprint(subscriber)
 
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
