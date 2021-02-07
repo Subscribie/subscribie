@@ -147,40 +147,33 @@
 <!------------------------>
 
 
-  <script>
-    $('.pricing-plan').hover(
-         function(){ $(this).addClass('is-active') },
-         function(){ $(this).removeClass('is-active') }
+<script>
+  $('.pricing-plan').hover(
+       function(){ $(this).addClass('is-active') },
+       function(){ $(this).removeClass('is-active') }
   )
-  </script>
+  function showHorizontal() {
+    document.getElementById('pricing-table-horizontal').style.display = "block";
+    document.getElementById('pricing-table-vertical').style.display = "none";
+    console.log('Button Clicked!');
+  }
+  function showVertical() {
+    document.getElementById('pricing-table-vertical').style.display = "block";
+    document.getElementById('pricing-table-horizontal').style.display = "none";
+    console.log('Button Clicked!');
+  }
 
-  <script>
-    function showHorizontal() {
-      document.getElementById('pricing-table-horizontal').style.display = "block";
-      document.getElementById('pricing-table-vertical').style.display = "none";
-      console.log('Button Clicked!');
-    }
-    function showVertical() {
-      document.getElementById('pricing-table-vertical').style.display = "block";
-      document.getElementById('pricing-table-horizontal').style.display = "none";
-      console.log('Button Clicked!');
-    }
-  </script>
+  $( ".plan-img-action" ).click(function() {
+    var imgURL = $(this).attr('data-highres');
+    $(".modal-img").attr("src", imgURL);
+  });
 
-  <script>
-    $( ".plan-img-action" ).click(function() {
-      var imgURL = $(this).attr('data-highres');
-      $(".modal-img").attr("src", imgURL);
+  // Show choose options 
+  for (var i = 0; i < $(".acc").length; i++) {
+    $(".acc")[i].addEventListener("click", function() {
+      this.nextElementSibling.classList.toggle("show")
     });
-  </script>
-
-  <!-------- Show choose options ---------->
-  <script>
-    for (var i = 0; i < $(".acc").length; i++) {
-      $(".acc")[i].addEventListener("click", function() {
-        this.nextElementSibling.classList.toggle("show")
-      });
-    }
-  </script>
+  }
+</script>
 
 {% endblock %}

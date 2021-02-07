@@ -44,14 +44,7 @@
     <!-- End Tawk Chat -->
 {% endif %}
 
-<meta name="theme-color" content="#1e88e5">
-<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 <link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
-
-<!-- color picker -->
-    
-
 </head>
 
 <body>
@@ -63,21 +56,21 @@
 
     <a class="navbar-brand mr-0 px-0 px-sm-4" href="/">
       {% if company.logo_src is not sameas None %}
-      <style>
-	  #logo {
-	    height: 50px;
-	  }
-      @media only screen and (min-width: 600px) {
-	  #logo {
-	    height: 80px;
-	  }
-	}
-      </style>
-      <img src="{{ company.logo_src }}" id="logo" alt="{{ company.name }} logo">
+        <style>
+        #logo {
+          height: 50px;
+        }
+        @media only screen and (min-width: 600px) {
+        #logo {
+          height: 80px;
+        }
+        }
+        </style>
+        <img src="{{ company.logo_src }}" id="logo" alt="{{ company.name }} logo">
       {% else %}
-      <h1 class="lobster m-0">
-        {{ company.name }}
-      </h1>
+        <h1 class="lobster m-0">
+          {{ company.name }}
+        </h1>
       {% endif %}
     </a>
     <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,7 +133,7 @@
     {% block top %}
     {% endblock top %}
       
-        {% block hero %}{% endblock %}
+    {% block hero %}{% endblock %}
 
   {% endif %} {# if not inside iframe_embeded, show header #}
     <main class="main">
