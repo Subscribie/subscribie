@@ -124,6 +124,7 @@ p {
 .btn-outlined:hover {
   color: white;
   background-color: var(--primary-color-darken);
+  border: 1px solid var(--primary-color-darken);
   text-decoration: none;
 }
 
@@ -152,6 +153,7 @@ p {
 .btn-outlined-lg:hover {
   color: white;
   background-color: var(--primary-color-darken);
+  border: 2px solid var(--primary-color-darken);
   text-decoration: none;
 }
 
@@ -165,6 +167,21 @@ p {
   letter-spacing: 4%;
   padding: 12px 16px;
   cursor: pointer;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+
+  transition: all .3s ease-in-out;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;  
+}
+
+.btn-link-lg:hover {
+  background-color: var(--grey-100);
 }
 
 .btn-link {
