@@ -226,6 +226,17 @@ body {
   padding: 0;
 }
 
+/* --------------- logo --------------- */
+#logo {
+  height: 50px;
+}
+
+@media only screen and (min-width: 600px) {
+  #logo {
+    height: 80px;
+  }
+}
+
 /* --------------- nav --------------- */
 
 .custom-toggler .navbar-toggler-icon {
