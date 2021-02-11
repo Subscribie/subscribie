@@ -280,106 +280,6 @@ body {
   -o-border-radius: 16px;
 }
 
-.container-img .background-img {
-  width: 100%;
-  height: auto;
-  padding-top: 75%;
-  background-image: url(/static/golf-3685616.jpg);
-  background-position: center;
-  background-size: cover;
-}
-
-/* --------------- value points section --------------- */
-
-.value-points {
-  padding: 40px 0;
-}
-
-i.fa-flag {
-  font-size: 40px;
-}
-
-/* --------------- about section --------------- */
-
-.about-section {
-  margin-bottom: 40px; 
-}
-
-.about-img {
-  max-width: 400px;
-  width: 100%;
-  height: auto;
-}
-
-/* --------------- value section --------------- */
-
-.value-section {
-  margin-bottom: 40px;
-  
-}
-
-.value-section .wrapper{
-  max-width: 1280px;
-  width: 100%;
-  background-color: hsla(var(--primary-color-hsl-full), 0.1);
-  border-radius: 16px;
-  -webkit-border-radius: 16px;
-  -moz-border-radius: 16px;
-  -ms-border-radius: 16px;
-  -o-border-radius: 16px;
-}
-
-.value-section div.icon {
-  width: 24px;
-  height: 24px;
-  background-color: var(--primary);
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  -ms-border-radius: 50%;
-  -o-border-radius: 50%;
-  margin-bottom: 24px;
-  margin-top: 40px;
-}
-
-/* --------------- testimonials section --------------- */
-
-.testimonials-secction .fa-quote-left {
-  color: var(--grey-300);
-  font-size: 33px;
-}
-
-.carousel-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.carousel-control-next, .carousel-control-prev, .carousel-indicators{
-  position: relative;
-}
-.carousel-control-next, .carousel-control-prev {
-  color: var(--grey-600);
-  font-size: 20px;
-  font-weight: bold;
-  width: 5%;
-}
-
-.carousel-control-prev:hover, .carousel-control-next:hover, .carousel-control-prev:visited, .carousel-control-next:visited {
-  opacity: 1;
-  color: var(--grey-900);
-}
-
-.carousel-indicators li {
-  background-color: var(--grey-600);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  -ms-border-radius: 50%;
-  -o-border-radius: 50%;
-}
 
 /* --------------- plans section --------------- */
 
@@ -455,49 +355,11 @@ i.fa-flag {
   color:  var(--grey-900);
 }
 
-/* About */
-.about-section-hero .wrapper {
-  position: relative;
-  max-width: 1280px;
-  width: 100%;
-  background-color: var(--primary);
-  color: var(--secondary);
-  overflow: hidden;
-  border-radius: 16px;
-  -webkit-border-radius: 16px;
-  -moz-border-radius: 16px;
-  -ms-border-radius: 16px;
-  -o-border-radius: 16px;
-}
-
-.about-hero-img img, .certificates img{
-  width: 100%;
-}
-
-.medals-section img {
-  width: 20%;
-}
-
 /* --------------- media small --------------- */
 @media (min-width: 576px){
 }
 
 /* --------------- media medium --------------- */
 @media (min-width: 769px) {
-
-  .container-img {
-    position: absolute;
-    top: 0;
-    right: 0;
-    max-width: 640px;
-    width: 50%;
-    height: 100%;
-  }
-
-  .container-img .background-img {
-    padding-top: 0;
-    width: auto;
-    height: 100%;
-  }
 
 }
