@@ -6,22 +6,15 @@
   <div class="wrapper mx-auto">
 
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-12 col-md-6">
-          <div class="hero-content py-5 px-0 px-sm-4">
-            <h2 class="title-1">{{ company.name }}</h2>
-            {% if company.slogan is sameas None or company.slogan == "None"  %}
-                <p></p>
-            {% else %}
-                <p class="text-light">{{ company.slogan }}</p>
-            {% endif %}
-            <a class="btn-outlined-lg" href="#plans" title="Subscriber login">Choose plan</a>
-          </div>
-        </div>
+      <div class="hero-content py-5 px-0 px-sm-4 ">
+        <h2 class="title-1">{{ company.name }}</h2>
+        {% if company.slogan is sameas None or company.slogan == "None"  %}
+            <p></p>
+        {% else %}
+            <p class="text-light">{{ company.slogan }}</p>
+        {% endif %}
+        <a class="btn-outlined-lg" href="#plans" title="Subscriber login">Choose plan</a>
       </div>
-    </div>
-
-    <div class="container-img">
     </div>
     
   </div>
@@ -32,7 +25,7 @@
 {% block body %}
 
 <!-- Plans -->
-<div class="plans-section mx-2 my-5 py-md-4">
+<div class="plans-section mx-2 mb-5 py-md-4">
   <div class="wrapper mx-auto">
     <div id="plans" class="container mx-auto py-5 px-4">
       <div class="plans-section-header text-center my-4">
