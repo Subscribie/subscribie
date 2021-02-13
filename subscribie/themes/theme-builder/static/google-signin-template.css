@@ -1,0 +1,32 @@
+.btn-google {
+    width: 191px;
+    height: 46px;
+    display: inline-block;
+    background-image: url(./google/btn_google_signin_light_normal_web.png);
+
+}
+
+.btn-google:focus {
+    outline:none;
+    background-image: url(./google/btn_google_signin_light_focus_web.png);
+}
+
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .btn-google {
+        background-image: url(./google/btn_google_signin_light_normal_web@2x.png);
+    }
+
+    .btn-google:focus {
+        background-image: url(./google/btn_google_signin_light_focus_web@2x.png);
+    }
+
+}
+
+@media (max-width: 500px) {
+  .btn-google {
+      min-height: 93px;
+      min-width: 378px;
+  }
+}
+

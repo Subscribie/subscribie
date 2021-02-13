@@ -8,7 +8,16 @@
     <div class="card" style="max-width:800px; margin:3rem auto;">
       <div class="card-body">
         <h3 class="card-title text-center my-3">Sign into your Subscribie account</h3>
-        <p>Enter your email and password to login.</p>
+
+        <script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
+        <template id="google-signin-template">
+          <link rel="stylesheet" href="{{url_for('static', filename="google-signin-template.css")}}">
+          <a href="{{ url_for('views.google_signin') }}" class="btn-google"></a>
+        </template>
+
+        <google-signin></google-signin>
+        <p>Use Google sign-in or enter your email and password below to login.</p>
+
         <form method="POST" action="{{ url_for('auth.login') }}">
           {{ form.csrf_token }}
           <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="">

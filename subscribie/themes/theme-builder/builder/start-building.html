@@ -41,6 +41,8 @@
                   required>
               </div>
             </div>
+            {# dont ask for password if using google signin/up #}
+            {% if session.get('refresh_token', None) is sameas None %}
             <div class="row">
               <div class="col">
                 <label for="password">Password</label>
@@ -49,6 +51,8 @@
                   required>
               </div>
             </div>
+            {# End dont ask for password if using google signin/up #}
+            {% endif %}
         </div>
       </div>
     </div>

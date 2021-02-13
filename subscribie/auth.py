@@ -110,6 +110,21 @@ def check_password_login(email, password):
     return False
 
 
+def start_new_user_session(email):
+    session.clear()
+    session["user_id"] = email
+
+
+def oauth_login_user(email):
+    """Log user in based on email address
+    email must only be provided after a valid oauth
+    flow completion"""
+    user = User.query.filter_by(email=email).first()
+    if user is not None:
+        return True
+    return False
+
+
 @bp.route("/login", methods=["POST"])
 def generate_login_token():
     magic_login_form = LoginForm()
@@ -124,8 +139,7 @@ def generate_login_token():
             return redirect(url_for("auth.login"))
 
         if check_password_login(email, password):
-            session.clear()
-            session["user_id"] = user.email
+            start_new_user_session(email)
             return redirect(url_for("admin.dashboard"))
         else:
             session.clear()
@@ -182,7 +196,7 @@ def do_login(login_token):
     if user is None:
         return "Invalid valid user"
 
-    session.clear()
+    start_new_user_session(user.email)
 
     if isinstance(user, User):
         session["user_id"] = user.email
