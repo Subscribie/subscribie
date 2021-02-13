@@ -197,7 +197,6 @@ client_id={client_id}"
 def google_return():
     client_id = current_app.config["GOOGLE_CLIENT_ID"]
     redirect_uri = current_app.config["GOOGLE_REDIRECT_URI"]
-    scope = current_app.config["GOOGLE_SCOPE"]
     client_secret = current_app.config["GOOGLE_CLIENT_SECRET"]
 
     # Verify state token
@@ -229,13 +228,13 @@ def google_return():
     # Try and get access token from the response
     access_token = resp.json().get("access_token", None)
     refresh_token = resp.json().get("refresh_token", None)
-    scope = resp.json().get("scope", None)
+    scopes_permitted = resp.json().get("scope", None)
     token_type = resp.json().get("token_type", None)
 
     # Put access token and refresh_token in session (normally would store in database) # noqa
     session["access_token"] = access_token
     session["refresh_token"] = refresh_token
-    session["scope"] = scope
+    session["scope"] = scopes_permitted
     session["token_type"] = token_type
 
     # Get user profile information (name, email)
