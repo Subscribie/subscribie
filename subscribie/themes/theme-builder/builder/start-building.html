@@ -42,7 +42,7 @@
               </div>
             </div>
             {# dont ask for password if using google signin/up #}
-            {% if session.get('refresh_token', None) is sameas None %}
+            {% if session.get('token_type', None) is sameas None %}
             <div class="row">
               <div class="col">
                 <label for="password">Password</label>
