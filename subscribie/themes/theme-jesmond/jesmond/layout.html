@@ -49,8 +49,16 @@
 
 <body>
 
-  {# if not inside iframe_embeded, show header #} 
-  {% if session.get('iframe_embeded') is sameas False %}
+{# if not inside iframe_embeded, show header #}
+{% if session.get('iframe_embeded') is sameas False %}
+
+ {# Discover if any private pages exist #}
+ {% set ns = namespace(hasPrivatePages = false) %}
+ {% for page in pages %}
+    {% if page.private %}
+      {% set ns.hasPrivatePages = true %}
+    {% endif %}
+ {% endfor %}
 
   <nav class="navbar navbar-expand-lg my-4 container">
 
@@ -83,7 +91,7 @@
 
       
       <ul class="navbar-nav mt-2 mt-lg-0">
-        {% if g.user %}
+        {% if ns.hasPrivatePages %}
         <div class="dropdown nav-item">
           <a class="dropdown-toggle btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Private pages
