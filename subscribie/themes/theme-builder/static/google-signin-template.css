@@ -1,6 +1,7 @@
 .btn-google {
     width: 191px;
     height: 46px;
+    background-size: cover;
     display: inline-block;
     background-image: url(./google/btn_google_signin_light_normal_web.png);
 
@@ -23,10 +24,4 @@
 
 }
 
-@media (max-width: 500px) {
-  .btn-google {
-      min-height: 93px;
-      min-width: 378px;
-  }
-}
 
