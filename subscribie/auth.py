@@ -32,8 +32,6 @@ from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
 import logging
-from flask.templating import _render
-from flask.globals import _app_ctx_stack
 
 logger = logging
 
@@ -103,12 +101,6 @@ def jwt_login():
         )
         return jsonify({"token": jwt_payload.decode("utf-8")})
     return jsonify({"msg": "Bad credentials"})
-
-
-@bp.route("/protected")
-@token_required
-def protected():
-    return jsonify("hello")
 
 
 def check_password_login(email, password):
