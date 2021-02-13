@@ -68,6 +68,12 @@ class Person(database.Model):
         return "<Person {}>".format(self.given_name)
 
 
+class LoginToken(database.Model):
+    __tablename__ = "login_token"
+    user_uuid = database.Column(database.String, primary_key=True)
+    login_token = database.Column(database.String)
+
+
 class Subscription(database.Model):
     __tablename__ = "subscription"
     id = database.Column(database.Integer(), primary_key=True)

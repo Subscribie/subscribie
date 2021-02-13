@@ -21,7 +21,7 @@ from .forms import (
     ForgotPasswordResetPasswordForm,
 )
 from flask_mail import Mail, Message
-from .models import database, User, Company, Page
+from .models import database, User, Person, Company, Page, LoginToken
 import binascii
 from pathlib import Path
 import flask
@@ -162,19 +162,34 @@ def login():
 def do_login(login_token):
     if len(login_token) < 10:
         return "Invalid token"
+
     # Try to get user from login_token
     user = User.query.filter_by(login_token=login_token).first()
+    if user is not None:
+        # Invalidate previous token
+        new_login_token = urlsafe_b64encode(os.urandom(24))
+        user.login_token = new_login_token
+        database.session.commit()
+    else:
+        # Try and get token from LoginToken table
+        token = LoginToken.query.filter_by(login_token=login_token).first()
+        if token is not None:
+            user = Person.query.filter_by(uuid=token.user_uuid).first()
+            # Invalidate previous token
+            database.session.delete(token)
+            database.session.commit()
+
     if user is None:
         return "Invalid valid user"
 
     session.clear()
-    session["user_id"] = user.email
 
-    # Invalidate previous token
-    new_login_token = urlsafe_b64encode(os.urandom(24))
-    user.login_token = new_login_token
-    database.session.commit()
-    return redirect(url_for("admin.dashboard"))
+    if isinstance(user, User):
+        session["user_id"] = user.email
+        return redirect(url_for("admin.dashboard"))
+    elif isinstance(user, Person):
+        session["subscriber_id"] = user.email
+        return redirect(url_for("subscriber.account"))
 
 
 @bp.before_app_request
@@ -190,11 +205,19 @@ def load_logged_in_user():
 def generate_login_url(email):
     user = User.query.filter_by(email=email.lower()).first()
     if user is None:
+        user = Person.query.filter_by(email=email.lower()).first()
+
+    if user is None:
         return "Invalid valid user"
+
     # Generate login token
     login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
     # Insert login token into db
-    user.login_token = login_token
+    loginToken = LoginToken()
+    loginToken.user_uuid = user.uuid
+    loginToken.login_token = login_token
+    database.session.add(loginToken)
+
     database.session.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
     print("One-time login url: {}".format(login_url))
