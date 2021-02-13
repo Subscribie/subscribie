@@ -21,10 +21,12 @@
     background-color: #dfdfdf;
 }
 
-@media only screen and (min-width: 1024px) {
-
-
-    .btn-google {
-        max-width: 290px;
-    }
+.btn-google--lg {
+    font-size: 1.5rem;
+    background-size: 4rem 4rem;
 }
+
+.btn-google--border {
+    border: 1px solid #ccc;
+}
+
