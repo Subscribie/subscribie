@@ -211,20 +211,23 @@ def load_logged_in_user():
 
 
 def generate_login_url(email):
+    # Generate login token
+    login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
     user = User.query.filter_by(email=email.lower()).first()
-    if user is None:
+
+    if user is not None:
+        user.login_token = login_token
+    elif user is None:
         user = Person.query.filter_by(email=email.lower()).first()
+        if user is not None:
+            # Insert login token into db
+            loginToken = LoginToken()
+            loginToken.user_uuid = user.uuid
+            loginToken.login_token = login_token
+            database.session.add(loginToken)
 
     if user is None:
         return "Invalid valid user"
-
-    # Generate login token
-    login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
-    # Insert login token into db
-    loginToken = LoginToken()
-    loginToken.user_uuid = user.uuid
-    loginToken.login_token = login_token
-    database.session.add(loginToken)
 
     database.session.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
