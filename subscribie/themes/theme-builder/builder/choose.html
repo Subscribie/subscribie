@@ -7,7 +7,7 @@
 <script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
 <template id="google-signin-template">
   <link rel="stylesheet" href="{{url_for('static', filename="google-signin-template.css")}}">
-  <a href="{{ url_for('views.google_signin') }}" class="btn-google"></a>
+  <a href="{{ url_for('views.google_signin') }}" class="btn-google">Continue with Google</a>
 </template>
 {# End template for google signin #}
 
@@ -22,7 +22,9 @@
             </p>
 		  	<hr class="my-4 divider-line">
 		  	<p>Easily take recurring payments online and create unlimited subscription packages at no extra cost.</p>
+                        <div class="form-group">
             <google-signin></google-signin>
+                        </div>
             <form action="/start-building">
             <div class="form-group">
             <input type="email" name="email" placeholder="Enter your email" class="form-control email-input" />
