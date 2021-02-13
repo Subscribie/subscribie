@@ -28,6 +28,14 @@ jobs:
           set -x
           node --unhandled-rejections=strict tests/browser-automated-tests-playwright/tests/test_prod_new_customer_can_sign_up.js
 
+      - name: Verify oauth Google sigin step one works (only checks step one oauth client config-not complete flow)
+        env:
+          PLAYWRIGHT_HEADLESS: true
+        run: |
+          set -x
+          node --unhandled-rejections=strict tests/browser-automated-tests-playwright/tests/test_prod_google_oauth_step_one_works.js
+
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
