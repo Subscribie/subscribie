@@ -26,5 +26,6 @@
   .btn-google {
       min-height: 93px;
       min-width: 378px;
+      padding-left: 30px;
   }
 }
