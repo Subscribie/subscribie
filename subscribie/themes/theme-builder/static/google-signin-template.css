@@ -1,27 +1,30 @@
 .btn-google {
-    width: 191px;
-    height: 46px;
-    background-size: cover;
-    display: inline-block;
-    background-image: url(./google/btn_google_signin_light_normal_web.png);
+    /*width: 191px;
+    height: 46px;*/
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-decoration: none;
+    display: block;
+    border-radius: 0.25rem;
+    color: #555;
+    text-align: center;
+    box-sizing:border-box;
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-image: url(./google-icon.svg);
 
 }
 
-.btn-google:focus {
-    outline:none;
-    background-image: url(./google/btn_google_signin_light_focus_web.png);
+.btn-google:hover {
+
+    background-color: #dfdfdf;
 }
 
+@media only screen and (min-width: 1024px) {
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+
     .btn-google {
-        background-image: url(./google/btn_google_signin_light_normal_web@2x.png);
+        max-width: 290px;
     }
-
-    .btn-google:focus {
-        background-image: url(./google/btn_google_signin_light_focus_web@2x.png);
-    }
-
 }
-
-
