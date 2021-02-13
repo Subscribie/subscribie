@@ -12,7 +12,7 @@
         <script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
         <template id="google-signin-template">
           <link rel="stylesheet" href="{{url_for('static', filename="google-signin-template.css")}}">
-          <a href="{{ url_for('views.google_signin') }}" class="btn-google"></a>
+          <a href="{{ url_for('views.google_signin') }}" class="btn-google btn-google--lg btn-google--border">Continue with Google</a>
         </template>
 
         <google-signin></google-signin>
