@@ -21,7 +21,7 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
-        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; git fetch; git rebase origin/master"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; git fetch; git stash; git rebase origin/master; git stash pop"
     - name: Reload apache
       run: |
         set -x
