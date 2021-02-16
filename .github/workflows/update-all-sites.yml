@@ -1,0 +1,30 @@
+name: Update Onboarding Site
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main 
+jobs:
+  update_onboarding:
+    name: Update onboarding
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Setup ssh access
+      run: |
+        set -x
+        mkdir -p ~/.ssh
+        eval `ssh-agent -s`
+        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
+    - name: Pull new site
+      run: |
+        set -x
+        eval `ssh-agent -s`
+        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git stash; git rebase origin/master; git stash pop"
+    - name: Reload apache
+      run: |
+        set -x
+        eval `ssh-agent -s`
+        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ALL_SITES_PATH }}; find . -maxdepth 2 -mindepth 2 -name '*.ini' -exec touch {} + -print -exec sleep 3 \; "
