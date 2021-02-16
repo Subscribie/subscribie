@@ -1,4 +1,4 @@
-name: Update Onboarding Site
+name: Update All Sites
 on:
   workflow_dispatch:
   push:
@@ -22,7 +22,7 @@ jobs:
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git stash; git rebase origin/master; git stash pop"
-    - name: Reload apache
+    - name: Reload all uwsgi vassals, one by one
       run: |
         set -x
         eval `ssh-agent -s`
