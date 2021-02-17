@@ -45,6 +45,15 @@
 {% endif %}
 
 <link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
+<<<<<<< HEAD
+=======
+<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
+
+<!-- color picker -->
+<script src="https://code.jquery.com/jquery-3.0.0.js"></script>
+    
+
+>>>>>>> wip #427 replace jesmond theme with newer theme
 </head>
 
 <body>
@@ -69,6 +78,7 @@
         <h1 class="lobster m-0">
           {{ company.name }}
         </h1>
+
       {% endif %}
     </a>
     <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,9 +99,8 @@
         {% endfor %}
       </ul>
 
-      
       <ul class="navbar-nav mt-2 mt-lg-0">
-        {% if ns.hasPrivatePages %}
+        {% if g.user %}
         <div class="dropdown nav-item">
           <a class="dropdown-toggle btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Private pages
@@ -131,7 +140,7 @@
     {% block top %}
     {% endblock top %}
       
-    {% block hero %}{% endblock %}
+        {% block hero %}{% endblock %}
 
   {% endif %} {# if not inside iframe_embeded, show header #}
     <main class="main">
