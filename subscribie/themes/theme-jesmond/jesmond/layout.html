@@ -45,15 +45,12 @@
 {% endif %}
 
 <link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
-<<<<<<< HEAD
-=======
 <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
 
 <!-- color picker -->
 <script src="https://code.jquery.com/jquery-3.0.0.js"></script>
     
 
->>>>>>> wip #427 replace jesmond theme with newer theme
 </head>
 
 <body>
@@ -101,22 +98,25 @@
 
       <ul class="navbar-nav mt-2 mt-lg-0">
         {% if g.user %}
-        <div class="dropdown nav-item">
-          <a class="dropdown-toggle btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Private pages
-          </a>
-        
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-          {% for page in pages %}
-            {% if page.private %}
-              {% if g.user is not sameas None or g.subscriber is not sameas None %}
-                <a class="dropdown-item" href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name[0]|upper}}{{ page.page_name[1:] }}</a>
+        {% if ns.hasPrivatePages %}
+          <div class="dropdown nav-item">
+            <a class="dropdown-toggle btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Private pages
+            </a>
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+            {% for page in pages %}
+              {% if page.private %}
+                {% if g.user is not sameas None or g.subscriber is not sameas None %}
+                  <a class="dropdown-item" href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name[0]|upper}}{{ page.page_name[1:] }}</a>
+                {% endif %}
               {% endif %}
-            {% endif %}
-          {% endfor %}
+            {% endfor %}
+            </div>
           </div>
-        </div>
+        {% endif %}
 
         <li class="nav-item">
           <a class="btn-link" href="/admin/dashboard">Dashboard</a>
