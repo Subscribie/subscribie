@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main 
+      - master
 jobs:
   update_onboarding:
     name: Update onboarding
