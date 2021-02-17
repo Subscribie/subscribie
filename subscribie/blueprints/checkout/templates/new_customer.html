@@ -3,24 +3,29 @@
 
 {% block hero %}
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-8 pl-0">
-      <h1 class="h1 text-white font-weight-bold">Order Information</h1>
-      <h2 class="h3 text-white">Complete the form below</h2>
-    </div>
+<div class="section-hero px-2">
+  <div class="wrapper mx-auto">
 
-    <div class="col-6 col-md-4 text-right d-none d-lg-block">
-      <img class="pr-3" src="/static/mutli-box.svg" style="height:100%;" >
+    <div class="container">
+      <div class="row">
+        <div class="col col-md-8 hero-content py-5 px-3 px-sm-4 ">
+          <h2 class="title-1">Order Information</h2>
+          <p class="text-light body-lg mb-0">Complete the form below</p>
+        </div>
+        <div class="col-4 col-md-4 text-right d-none d-lg-block py-5 px-0 px-sm-4">
+          <img class="pr-3" src="/static/mutli-box.svg" style="height:100%;" >
+        </div>
+      </div>
     </div>
+    
   </div>
 </div>
 
 {% endblock %}
 
 {% block body %}
-<div class="section">
-  <div class="container">
+<div class="section mx-auto my-4">
+  <div class="container mx-auto">
 
   <form action="" id="new_customer" method=post action=/new_customer >
 
@@ -32,8 +37,8 @@
 
     <div class="row row-cols-1 row-cols-lg-2">
       <div class="col-lg-8">
-        <h2 class="font-weight-bold">Your details</h2>
-        <p>We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
+        <h3 class="title-1">Your details</h3>
+        <p class="text mb-3">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
 
         <div class="form-group row pt-3 m-0">
           <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Your Name <i class="fas fa-user ml-1"></i></label>
@@ -52,14 +57,14 @@
           </div>
         </div>
 
-        <div class="form-group row pt-3 m-0">
+        <div class="form-group row py-3 m-0">
           <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Phone <i class="fas fa-phone ml-1"></i></label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
           </div>
         </div>
 
-        <h3 class="pt-3 font-weight-bold">Your Address</h3>
+        <h3 class="title-1 pt-4">Your Address</h3>
 
         <div class="form-group row pt-3 m-0">
           <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Address</label>
@@ -97,15 +102,15 @@
       <div class="col-lg-4 my-3 my-lg-0">
         <div class="card shadow-sm">
           <div class="card-header">
-            <h3 class="pt-3 font-weight-bold">Order Summary</h3>
+            <h3 class="pt-3 title-1">Order Summary</h3>
           </div>
           <div class="card-body">
 
-            <h4 class="my-3 font-weight-bolder">{{ plan.title }}</h4>
+            <h4 class="my-3 body-lg">{{ plan.title }}</h4>
 
-            <ul style="list-style: disc;" class="pl-3 ml-3">
+            <ul style="list-style: none;" class="pl-0 ml-0">
               {% for selling_point in plan.selling_points %}
-                <li>{{ selling_point.point}}</li>
+                <li><i class="fas fa-check-circle pr-2 mt-1"></i>{{ selling_point.point}}</li>
               {% endfor %}
             </ul>
 
@@ -121,11 +126,11 @@
 
             <div class="text-right">
               {% if plan.requirements.instant_payment %}
-                <p class="py-2"><b>Pay today:</b><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
+                <p class="py-2"><span class="body-lg">Pay today:</span><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
               {% endif %}
 
               {% if plan.requirements.subscription %}
-                <p class="py-2"><b>Price ({{ plan.interval_unit }}) :</b><span class="p-2 bg-primary text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
+                <p class="py-2"><span class="body-lg">Price ({{ plan.interval_unit }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
               {% endif %}
             </div>
           </div>
@@ -137,7 +142,7 @@
     <!-- detect if embeded in iframe to trigger new tab if needed -->
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
-    <input type=submit class="btn btn-primary btn-lg btn-block col-lg-8 my-3" value="Continue to Payment">
+    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value="Continue to Payment">
 
   </form>
   <script type="text/javascript">
