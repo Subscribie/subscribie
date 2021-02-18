@@ -328,7 +328,7 @@ body {
           transform: scale(1.05);
 }
 
-.plan-selling-points i {
+.plan-selling-points i, .fa-check-circle {
   color: var(--primary);
 }
 
