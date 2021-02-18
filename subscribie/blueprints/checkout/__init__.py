@@ -54,12 +54,16 @@ def new_customer():
     if session.get("chosen_option_ids", None):
         for option_id in session["chosen_option_ids"]:
             option = Option.query.get(option_id)
-            # We will store as ChosenOption because option may change after the order
-            # has processed. This preserves integrity of the actual chosen options
-            chosen_option = ChosenOption()
-            chosen_option.option_title = option.title
-            chosen_option.choice_group_title = option.choice_group.title
-            chosen_options.append(chosen_option)
+            if option is not None:
+              # We will store as ChosenOption because option may change after the order
+              # has processed. This preserves integrity of the actual chosen options
+              chosen_option = ChosenOption()
+              chosen_option.option_title = option.title
+              chosen_option.choice_group_title = option.choice_group.title
+              chosen_options.append(chosen_option)
+            else:
+              logging.error(f"Failed to get Open from session option_id: {option_id}")
+
 
     package = request.args.get("plan", "not set")
     session["package"] = package
@@ -445,12 +449,15 @@ def create_subscription(
                 # Store as ChosenOption because options may change after the order
                 # has processed. This preserves integrity of the actual chosen options
                 chosen_option = ChosenOption()
-                chosen_option.option_title = option.title
-                chosen_option.choice_group_title = option.choice_group.title
-                chosen_option.choice_group_id = (
-                    option.choice_group.id
-                )  # Used for grouping latest choice
-                chosen_options.append(chosen_option)
+                if option is not None:
+                  chosen_option.option_title = option.title
+                  chosen_option.choice_group_title = option.choice_group.title
+                  chosen_option.choice_group_id = (
+                      option.choice_group.id
+                  )  # Used for grouping latest choice
+                  chosen_options.append(chosen_option)
+                else:
+                  logging.error(f"Failed to get Open from session option_id: {option_id}")
             subscription.chosen_options = chosen_options
         else:
             print("No chosen_option_ids were found or applied.")
