@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+test_shop_owner_can_create_custom_page = require('./tests/test_shop_owner_can_create_custom_page');
 test_order_plan_with_subscription_and_upfront_charge = require('./tests/test_order_plan_with_subscription_and_upfront_charge');
 test_order_plan_with_only_upfront_charge = require('./tests/test_order_plan_with_only_upfront_charge');
 test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_with_only_recurring_charge');
@@ -244,6 +245,8 @@ async function test_connect_to_stripe_connect()  {
 
 
 (async() => {
+  await test_shop_owner_can_create_custom_page(browsers, browserContextOptions);
+
   await clearDB();
   await test_connect_to_stripe_connect();
 

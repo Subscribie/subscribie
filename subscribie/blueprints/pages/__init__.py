@@ -188,8 +188,8 @@ def save_new_page():
 
     flash(
         Markup(
-            f'Your new page <a href="{url_for("views.custom_page", path=page.path)}"> \
-            {page.page_name}</a> has been created'
+            (f'Your new page <a href="{url_for("views.custom_page", path=page.path)}">'
+            f'{page.page_name}</a> has been created')
         )
     )
 
