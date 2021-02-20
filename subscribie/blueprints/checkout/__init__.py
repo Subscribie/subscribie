@@ -529,6 +529,10 @@ def stripe_process_event_payment_intent_succeeded(event):
         if subscribie_subscription is not None:
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
+        elif data["metadata"] == {}:
+            logging.warn("Empty metadata")
+            logging.ward(data)
+            return "Empty metadata", 422
         else:
             print(
                 "WARNING: subscribie_subscription not found for this\
