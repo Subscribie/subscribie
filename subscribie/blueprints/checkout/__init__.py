@@ -225,20 +225,21 @@ def thankyou():
     )
 
     try:
-        mail = Mail(current_app)
-        msg = Message()
-        msg.subject = company.name + " " + "Subscription Confirmation"
-        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-        msg.recipients = [session["email"]]
-        setting = Setting.query.first()
-        if setting is not None:
-            msg.reply_to = setting.reply_to_email_address
-        else:
-            msg.reply_to = (
-                User.query.first().email
-            )  # Fallback to first shop admin email
-        msg.html = html
-        mail.send(msg)
+        pass
+      #  mail = Mail(current_app)
+      #  msg = Message()
+      #  msg.subject = company.name + " " + "Subscription Confirmation"
+      #  msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
+      #  msg.recipients = [session["email"]]
+      #  setting = Setting.query.first()
+      #  if setting is not None:
+      #      msg.reply_to = setting.reply_to_email_address
+      #  else:
+      #      msg.reply_to = (
+      #          User.query.first().email
+      #      )  # Fallback to first shop admin email
+      #  msg.html = html
+      #  mail.send(msg)
     except Exception as e:
         print(e)
         logging.warning("Failed to send welcome email")
