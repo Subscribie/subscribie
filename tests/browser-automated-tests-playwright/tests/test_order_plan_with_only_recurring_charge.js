@@ -25,7 +25,7 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     await page.fill('#city', 'London');
     await page.fill('#postcode', 'L01 T3U');
     await page.screenshot({ path: `new-customer-form-${browserType}.png` });
-    await page.click('.btn-primary');
+    await page.click('.btn-primary-lg');
     await page.screenshot({ path: `begin-payment-step-${browserType}.png` });
     // Begin stripe checkout
     await page.screenshot({ path: `pre-stripe-checkout-${browserType}.png` });
@@ -48,8 +48,8 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     await page.click('.SubmitButton');
   
     // Verify get to the thank you page order complete
-    context.setDefaultTimeout(30000);
-    const order_complete_content = await page.textContent('.title');
+    context.setDefaultTimeout(40000);
+    const order_complete_content = await page.textContent('.title-1');
     assert(order_complete_content === "Order Complete!");
     await page.screenshot({ path: `order-complete-${browserType}.png` });
     

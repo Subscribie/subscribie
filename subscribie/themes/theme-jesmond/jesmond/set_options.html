@@ -2,21 +2,15 @@
 {% block title %} {{ title }} {% endblock title %}
 
 {% block hero %}
-
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 pl-0">
-          <h1 class="h1 text-white font-weight-bold">{{ company.name }}</h1>
-          {% if company.slogan is sameas None or company.slogan == "None"  %}
-            <h2></h2>
-          {% else %}
-            <h2 class="h3 text-white">{{ company.slogan }}</h2>
-          {% endif %}
+    <div class="section-hero px-2">
+      <div class="wrapper mx-auto">
+    
+        <div class="container">
+          <div class="hero-content py-5 px-0 px-sm-4 ">
+            <h2 class="title-1">Choose your options</h2>
+          </div>
         </div>
-
-        <div class="col-6 col-md-4 text-right d-none d-lg-block">
-          <img class="pr-3" src="/static/open.svg" style="height:100%;" >
-        </div>
+        
       </div>
     </div>
 
@@ -24,25 +18,16 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark my-3 pt-3 h2">Choose your options</h2>
-
 <main>
-<div class="section">
-  <div class="container">
-
-      
-  
-      
-
+<div class="section mx-auto my-4">
+  <div class="container mx-auto">
       <form action="" method="POST" class="col-md-6 pb-3">
 
       {% for choice_group in plan.choice_groups %}
       
-        <h3 class="h3">The <em>{{ plan.title }}</em> plan has options</h3>
-        <p class="card-subtitle text-muted mb-3">The choice group {{ choice_group.title }} has {{ choice_group.options|count }} options. Please choose one of them</p>
-        
-        <hr>
-
+        <h3 class="body">The <span class="body-lg">{{ plan.title }}</span> plan has options</h3>
+        <p class="text mb-3">The choice group <span class="body-lg">{{ choice_group.title }}</span> has <span class="body-lg">{{ choice_group.options|count }}</span> options. Please choose one of them</p>
+   
           {% for option in choice_group.options %}
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -57,7 +42,7 @@
       
       {% endfor %}
 
-      <input type="submit" class="btn btn-success btn-block"  value="Save" />
+      <input type="submit" class="btn-primary-lg btn-block"  value="Save" />
       </form>
   </div>
 </div>

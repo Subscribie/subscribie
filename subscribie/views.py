@@ -100,7 +100,7 @@ def set_options(plan_uuid):
             for option_id in request.form.getlist(choice_group_id):
                 session["chosen_option_ids"].append(option_id)
 
-        return redirect(url_for("views.new_customer", plan=plan_uuid))
+        return redirect(url_for("checkout.new_customer", plan=plan_uuid))
 
     return render_template("set_options.html", plan=plan)
 
