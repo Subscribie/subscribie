@@ -14,17 +14,17 @@ jobs:
         set -x
         mkdir -p ~/.ssh
         eval `ssh-agent -s`
-        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
         ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
     - name: Pull new site
       run: |
         set -x
         eval `ssh-agent -s`
-        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
     - name: Reload all uwsgi vassals, one by one
       run: |
         set -x
         eval `ssh-agent -s`
-        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ALL_SITES_PATH }}; find . -maxdepth 2 -mindepth 2 -name '*.ini' -exec touch {} + -print -exec sleep 3 \; "
