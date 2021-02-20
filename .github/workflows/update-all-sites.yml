@@ -5,8 +5,8 @@ on:
     branches:
       - master
 jobs:
-  update_onboarding:
-    name: Update onboarding
+  update_all_sites:
+    name: Update all sites
     runs-on: ubuntu-20.04
     steps:
     - name: Setup ssh access
