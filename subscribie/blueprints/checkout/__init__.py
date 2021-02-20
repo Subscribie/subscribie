@@ -468,7 +468,7 @@ def create_subscription(
     return subscription
 
 
-@backoff.on_exception(backoff.expo, Exception, max_tries=8)
+@backoff.on_exception(backoff.expo, Exception, max_tries=20)
 def stripe_process_event_payment_intent_succeeded(event):
     """Store suceeded payment_intents as transactions
     These events will fire both at the begining of a subscription,
