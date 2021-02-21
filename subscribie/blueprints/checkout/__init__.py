@@ -8,8 +8,6 @@ from flask import (
     jsonify,
     current_app,
 )
-import flask
-from flask_mail import Mail, Message
 from subscribie.models import (
     Plan,
     Option,
@@ -20,9 +18,6 @@ from subscribie.models import (
     Subscription,
     Transaction,
     SubscriptionNote,
-    EmailTemplate,
-    Setting,
-    User,
 )
 from subscribie.utils import (
     get_stripe_publishable_key,
@@ -32,10 +27,9 @@ from subscribie.utils import (
 from subscribie.forms import CustomerForm
 from subscribie.database import database
 from subscribie.signals import journey_complete
-from jinja2 import Template
+from subscribie.email import send_welcome_email
 import stripe
 import backoff
-from pathlib import Path
 import os
 import json
 import logging
@@ -55,15 +49,14 @@ def new_customer():
         for option_id in session["chosen_option_ids"]:
             option = Option.query.get(option_id)
             if option is not None:
-              # We will store as ChosenOption because option may change after the order
-              # has processed. This preserves integrity of the actual chosen options
-              chosen_option = ChosenOption()
-              chosen_option.option_title = option.title
-              chosen_option.choice_group_title = option.choice_group.title
-              chosen_options.append(chosen_option)
+                # We will store as ChosenOption because option may change after the order # noqa
+                # has processed. This preserves integrity of the actual chosen options
+                chosen_option = ChosenOption()
+                chosen_option.option_title = option.title
+                chosen_option.choice_group_title = option.choice_group.title
+                chosen_options.append(chosen_option)
             else:
-              logging.error(f"Failed to get Open from session option_id: {option_id}")
-
+                logging.error(f"Failed to get Open from session option_id: {option_id}")
 
     package = request.args.get("plan", "not set")
     session["package"] = package
@@ -177,8 +170,6 @@ def instant_payment_complete():
 def thankyou():
     # Remove subscribie_checkout_session_id from session
     session.pop("subscribie_checkout_session_id", None)
-    company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
     subscription = (
         database.session.query(Subscription)
         .filter_by(uuid=session.get("subscription_uuid"))
@@ -193,58 +184,14 @@ def thankyou():
         database.session.add(note)
 
     database.session.commit()
+
     # Send journey_complete signal
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
     journey_complete.send(current_app._get_current_object(), email=email)
 
-    # Send welcome email (either default template of custom, if active)
-    custom_template = EmailTemplate.query.first()
-    if custom_template is not None and custom_template.use_custom_welcome_email is True:
-        # Load custom welcome email
-        template = custom_template.custom_welcome_email_template
-    else:
-        # Load default welcome email from template folder
-        welcome_template = str(
-            Path(current_app.root_path + "/emails/welcome.jinja2.html")
-        )
-        fp = open(welcome_template)
-        template = fp.read()
-        fp.close()
+    send_welcome_email()
 
-    first_charge_date = session.get("first_charge_date", None)
-    first_charge_amount = session.get("first_charge_amount", None)
-    jinja_template = Template(template)
-    scheme = "https://" if request.is_secure else "http://"
-    html = jinja_template.render(
-        first_name=session.get("given_name", None),
-        company_name=company.name,
-        subscriber_login_url=scheme + flask.request.host + "/account/login",
-        first_charge_date=first_charge_date,
-        first_charge_amount=first_charge_amount,
-        plan=plan,
-    )
-
-    try:
-        mail = Mail(current_app)
-        msg = Message()
-        msg.subject = company.name + " " + "Subscription Confirmation"
-        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-        msg.recipients = [session["email"]]
-        setting = Setting.query.first()
-        if setting is not None:
-            msg.reply_to = setting.reply_to_email_address
-        else:
-            msg.reply_to = (
-                User.query.first().email
-            )  # Fallback to first shop admin email
-        msg.html = html
-        mail.send(msg)
-    except Exception as e:
-        print(e)
-        logging.warning("Failed to send welcome email")
-
-    finally:
-        return render_template("thankyou.html")
+    return render_template("thankyou.html")
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
@@ -450,14 +397,16 @@ def create_subscription(
                 # has processed. This preserves integrity of the actual chosen options
                 chosen_option = ChosenOption()
                 if option is not None:
-                  chosen_option.option_title = option.title
-                  chosen_option.choice_group_title = option.choice_group.title
-                  chosen_option.choice_group_id = (
-                      option.choice_group.id
-                  )  # Used for grouping latest choice
-                  chosen_options.append(chosen_option)
+                    chosen_option.option_title = option.title
+                    chosen_option.choice_group_title = option.choice_group.title
+                    chosen_option.choice_group_id = (
+                        option.choice_group.id
+                    )  # Used for grouping latest choice
+                    chosen_options.append(chosen_option)
                 else:
-                  logging.error(f"Failed to get Open from session option_id: {option_id}")
+                    logging.error(
+                        f"Failed to get Open from session option_id: {option_id}"
+                    )
             subscription.chosen_options = chosen_options
         else:
             print("No chosen_option_ids were found or applied.")
