@@ -26,9 +26,6 @@ from flask import (
     Blueprint,
 )
 
-import beeline
-from beeline.middleware.flask import HoneyMiddleware
-
 from .Template import load_theme
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
@@ -55,12 +52,6 @@ load_dotenv(verbose=True)
 PYTHON_LOG_LEVEL = os.environ.get("PYTHON_LOG_LEVEL", "WARNING")
 logging.basicConfig(level=PYTHON_LOG_LEVEL)
 
-beeline.init(
-    writekey=os.environ.get("HONEYCOMB_API_KEY"),
-    dataset="subscribie",
-    service_name="subscribie",
-)
-
 
 def seed_db():
     pass
@@ -68,9 +59,6 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    HoneyMiddleware(
-        app, db_events=True
-    )  # db_events defaults to True, set to False if not using our db middleware with Flask-SQLAlchemy # noqa
     load_dotenv(verbose=True)
     app.config.update(os.environ)
 
