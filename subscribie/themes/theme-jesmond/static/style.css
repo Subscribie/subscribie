@@ -179,17 +179,17 @@ p {
 }
 
 .btn-outlined:hover {
-  border: 1px solid var(--primary);
+  border: 1px solid var(--primary-color-darken);
 }
 
 .btn-outlined-lg:hover {
-  border: 2px solid var(--primary);
+  border: 2px solid var(--primary-color-darken);
 }
 
 .btn-outlined:hover, 
 .btn-outlined-lg:hover {
   color: white;
-  background-color: var(--primary);
+  background-color: var(--primary-color-darken);
   text-decoration: none;
 }
 
