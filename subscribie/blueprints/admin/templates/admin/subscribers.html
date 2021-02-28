@@ -34,9 +34,13 @@
           </tr>
         </thead>
         <tbody>
-        {% for person in people.items %} {# Note: .items comes from sqlalchemy pagination  #}
+        {% for person in people %}
           <tr>
-            <td data-th="Name"><a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a></td>
+            <td data-th="Name">
+              <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
+              <br />
+              <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}" title="Remove subscriber from view">Archive</a>
+            </td>
             <td data-th="Date">{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
             {% endif %}</td>
@@ -56,7 +60,7 @@
               {% if person.subscriptions %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
-                    {% if subscription.plan.requirements.subscription %}
+                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                     {# if plan is a subscription, get its live subscription status #}
                       {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_external_id)) %}
                     {% endif %}
@@ -81,7 +85,7 @@
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
                                 <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
                                 <li>
-                                    {% if subscription.plan.requirements.subscription %}
+                                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                         <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
                                         <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
                                     {% else %}
@@ -90,21 +94,21 @@
                                 </li>
                                 <li><strong>Sell price: </strong>
                                     <span class="subscribers-plan-sell-price">
-                                        {% if subscription.plan.requirements.instant_payment %}
+                                        {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
                                             {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
                             {% else %}
                                 (No up-front fee)
                             {% endif %}
                                     </span>
                                     <li><strong>Status: </strong>
-                                        {% if subscription.plan.requirements.subscription %}
+                                        {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {{ ns.stripe_subscription_status }}
                                         {% else %}
                                             Paid
                                         {% endif %}
                                     </li>
                                     <li>
-                                        {% if subscription.plan.requirements.note_to_seller_required %}
+                                        {% if subscription.plan.requirements and subscription.plan.requirements.note_to_seller_required %}
                                             <details open>
                                                 <summary><strong>Order Note</strong></summary>
                                                 {% if subscription.note %}
@@ -116,7 +120,7 @@
                                         {% endif %}
                                     </li>
                                     <li><strong>Actions: </strong>
-                                        {% if subscription.plan.requirements.subscription %}
+                                        {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if ns.stripe_subscription_status == 'Active' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_external_id,
@@ -143,39 +147,6 @@
         {% endfor %}
         </tbody>
       </table>
-      
-
-      <nav role="navigation" aria-label="pagination">
-          <ul class="pagination justify-content-start">
-              <li class="page-item">
-                  {% if people.has_prev %}
-                      <a class="page-link" href="{{ url_pagination( page=people.page - 1) }}">Previous</a>
-                  {% endif %}</li>
-
-              {% for page_num in people.iter_pages() %}
-                  {% if page_num %}
-                      {% if people.page == page_num %}
-                          <li class="page-item active">
-                              <a class="page-link" href="{{ url_pagination(page=page_num) }}"><b>{{ page_num }}</b>
-                              </a>
-                          </li>
-                      {% else %}
-                          <li class="page-item ">
-                              <a class="page-link" href="{{ url_pagination(page=page_num) }}">{{ page_num }}</a>
-                          </li>
-
-                      {% endif %}
-                  {% else %}
-                      ...
-                  {% endif %}
-              {% endfor %}
-
-              <li class="page-item">
-                  {% if people.has_next %}
-                      <a class="page-link" href="{{ url_pagination(page=people.page + 1) }}">Next page</a>
-                  {% endif %}</li>
-          </ul>
-      </nav>
     </div> <!-- end .container -->
   </div><!-- end .section -->
 </main>
