@@ -751,27 +751,32 @@ def get_number_of_one_off_purchases():
 @admin.route("/subscribers")
 @login_required
 def subscribers():
-    page = request.args.get("page", 1, type=int)
     action = request.args.get("action")
-
     show_active = action == "show_active"
-
-    def url_pagination(page=None):
-        return url_for("admin.subscribers", page=page, action=action)
 
     if show_active:
         query = database.session.query(Person).filter(Person.subscriptions.any())
     else:
         query = database.session.query(Person)
 
-    people = query.order_by(desc(Person.created_at)).paginate(page=page, per_page=5)
+    people = query.order_by(desc(Person.created_at))
 
     return render_template(
         "admin/subscribers.html",
-        people=people,
-        url_pagination=url_pagination,
+        people=people.all(),
         show_active=show_active,
     )
+
+
+@admin.route("/archive-subscriber/<subscriber_id>")
+@login_required
+def archive_subscriber(subscriber_id):
+    person = Person.query.get(subscriber_id)
+    if person:
+        person.archived = 1
+        database.session.commit()
+        flash("Subscriber has been archived")
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/upcoming-invoices")

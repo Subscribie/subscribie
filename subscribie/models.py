@@ -1,5 +1,11 @@
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.query import Query
 from sqlalchemy import ForeignKey
+from sqlalchemy import event
+from sqlalchemy import Column
+from sqlalchemy import Boolean
+
+
 from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,8 +21,23 @@ from .database import database
 import logging
 
 
+@event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
+def filter_archived(query):
+    for desc in query.column_descriptions:
+        if desc["type"] is Person:
+            entity = desc["entity"]
+            query = query.filter(entity.archived == 0)
+    return query
+
+
 def uuid_string():
     return str(uuid4())
+
+
+class HasArchived(object):
+    """Mixin that identifies a class as having archived entities"""
+
+    archived = Column(Boolean, nullable=False, default=False)
 
 
 class User(database.Model):
@@ -39,7 +60,7 @@ class User(database.Model):
         return "<User {}>".format(self.email)
 
 
-class Person(database.Model):
+class Person(database.Model, HasArchived):
     __tablename__ = "person"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
@@ -201,11 +222,10 @@ association_table_plan_choice_group = database.Table(
 )
 
 
-class Plan(database.Model):
+class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    archived = database.Column(database.Boolean(), default=False)
     uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
     description = database.Column(database.String())
