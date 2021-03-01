@@ -34,6 +34,7 @@ import os
 import json
 import logging
 from uuid import uuid4
+import sqlalchemy
 
 checkout = Blueprint("checkout", __name__, template_folder="templates")
 
@@ -98,7 +99,11 @@ def store_customer():
         session["mobile"] = mobile
 
         # Don't store person if already exists
-        person = Person.query.filter_by(email=email).first()
+        try:
+            person = Person.query.filter_by(email=email).one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            person = None
+
         if person is None:
             # Store person, with randomly generated password
             person = Person(
@@ -351,7 +356,7 @@ def create_subscription(
     if package is None:
         package = session["package"]
 
-    person = database.session.query(Person).filter_by(email=email).first()
+    person = database.session.query(Person).filter_by(email=email).one()
 
     # subscribie_checkout_session_id can be passed by stripe metadata (webhook) or
     # via session (e.g. when session only with no up-front payment)
