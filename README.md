@@ -207,7 +207,11 @@ Might see `UnhandledPromiseRejectionWarning: browserType.launch: Host system is 
           libenchant1c2a
 ```
 
-To run playwright tests:
+The https://github.com/Subscribie/stripe-connect-account-announcer
+needs to be running locally if you're runnning browser automated tests
+locally.
+
+Then, to run playwright tests:
 
 ```
 npm test
