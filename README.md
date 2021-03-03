@@ -90,9 +90,6 @@ Change:
 If you're creating a *new* theme, then change `TEMPLATE_BASE_DIR` to a directory **outside** of 
 subscribie root project.
 
-# Docs 
-
-https://subscribie.readthedocs.io
 
 # API based authentication with jwt token
 
