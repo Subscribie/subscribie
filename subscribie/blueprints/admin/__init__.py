@@ -779,6 +779,28 @@ def archive_subscriber(subscriber_id):
     return redirect(url_for("admin.subscribers"))
 
 
+@admin.route("/un-archive-subscriber/<subscriber_id>")
+@login_required
+def un_archive_subscriber(subscriber_id):
+    person = Person.query.get(subscriber_id)
+    if person:
+        person.archived = 0
+        database.session.commit()
+        flash("Subscriber has been un-archived")
+    return redirect(url_for("admin.subscribers"))
+
+
+@admin.route("/archived-subscribers")
+@login_required
+def archived_subscribers():
+    # See models.py for archived filter
+    people = database.session.query(Person).all()
+    return render_template(
+        "admin/subscribers-archived.html",
+        people=people,
+    )
+
+
 @admin.route("/upcoming-invoices")
 @login_required
 def upcoming_invoices():
