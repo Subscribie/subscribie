@@ -16,6 +16,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_stripe_connect_account,
 )
+from flask import request
 
 from .database import database
 import logging
@@ -23,10 +24,13 @@ import logging
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
 def filter_archived(query):
+
     for desc in query.column_descriptions:
-        if desc["type"] is Person:
-            entity = desc["entity"]
+        entity = desc["entity"]
+        if desc["type"] is Person and "archive" not in request.path:
             query = query.filter(entity.archived == 0)
+        elif desc["type"] is Person and "archived-subscribers" in request.path:
+            query = query.filter(entity.archived == 1)
     return query
 
 

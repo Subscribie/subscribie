@@ -1,9 +1,9 @@
 {% extends "admin/layout.html" %}                                                
-{% block title %} Subscribers {% endblock %}                                
+{% block title %} Archived Subscribers {% endblock %}                                
                                                                                  
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">My Subscribers</h2>
+<h2 class="text-center text-dark mb-3">Archived Subscribers</h2>
 
 <div class="container">
   <ul class="breadcrumb">
@@ -17,13 +17,6 @@
   <div class="section">
     <div class="container">
       <div class="mb-4">
-        {% if show_active %}
-          <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
-        {% else %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
-      {%endif %}
-      <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
-       </div>
       <table class="table mobile-optimised">
         <thead>
           <tr>
@@ -38,9 +31,9 @@
         {% for person in people %}
           <tr>
             <td data-th="Name">
-              <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
+              {{ person.given_name }} {{ person.family_name }}
               <br />
-              <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}" title="Remove subscriber from view">Archive</a>
+              <a class="btn btn-warning" href="{{ url_for('admin.un_archive_subscriber', subscriber_id = person.id) }}" title="Remove subscriber from view">Un-Archive</a>
             </td>
             <td data-th="Date">{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
