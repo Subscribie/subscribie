@@ -42,6 +42,8 @@ virtualenv -p python3 venv # Create a python3.x virtualenv
 pip install -r requirements.txt # Install requirements
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
+flask db upgrade
+flask initdb
 flask run # Run the app
 ```
 Now visit http://127.0.0.1:5000
