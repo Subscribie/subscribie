@@ -61,6 +61,7 @@ from subscribie.models import (
 )
 import stripe
 from werkzeug.utils import secure_filename
+import subprocess
 
 
 admin = Blueprint(
@@ -1049,6 +1050,18 @@ def set_reply_to_email():
     return render_template(
         "admin/settings/set_reply_to_email.html", form=form, current_email=current_email
     )
+
+
+@admin.route("/rename-shop", methods=["GET", "POST"])
+@login_required
+def rename_shop():
+    if request.method == "GET":
+        return render_template("admin/settings/rename_shop.html")
+    elif request.method == "POST":
+        old_name = request.host
+        new_name = request.form.get("new_name", None)
+        subprocess.run("ls -l", shell=True)
+        return new_name
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])

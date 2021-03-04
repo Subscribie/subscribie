@@ -1,0 +1,52 @@
+{% extends "admin/layout.html" %}
+{% block title %} Rename Shop Address{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Rename Shop Address</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Set repliy-to shop</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>dwaddress</h2>
+          <p>Set a reply-to shop so that customers may reply to shops sent by your shop.</p>
+	      <p>Emails (such as the welcome shop, which is sent when subscribers sign up) are sent from a 'noreply' 
+          shop addres, but you can set a reply-to shop address which makes it possible for 
+          your subscribers to reply to these shops.
+          </p>
+          <p>
+          Need a professional shop address? Just let us know.
+          </p>
+
+          <form action="" method="POST" action="/">
+            <div class="form-group">
+              Your current web address is: {{ request.host }} 
+              <label for="shop">New name</label>
+              <input type="text" name="new_name" class="form-control" id="shop" 
+                     aria-describedby="shopHelp" placeholder="Enter new shop name" 
+                     required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
