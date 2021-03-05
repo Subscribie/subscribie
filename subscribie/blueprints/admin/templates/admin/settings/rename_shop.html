@@ -9,7 +9,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Set repliy-to shop</li>
+    <li class="breadcrumb-item active" aria-current="page">Rename Shop Address</li>
   </ul>
 </div>
 
@@ -19,23 +19,19 @@
 
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col-md-7">
-          <h2>dwaddress</h2>
-          <p>Set a reply-to shop so that customers may reply to shops sent by your shop.</p>
-	      <p>Emails (such as the welcome shop, which is sent when subscribers sign up) are sent from a 'noreply' 
-          shop addres, but you can set a reply-to shop address which makes it possible for 
-          your subscribers to reply to these shops.
-          </p>
-          <p>
-          Need a professional shop address? Just let us know.
-          </p>
-
+          <h2>Change Your Shop Web Address</h2>
+          <p>The URL of your shop will be changed as long as the name is available
+              and the name contain only letter and numbers</p>
+	      <p>Please Write your New web address without the .subscriby.shop
+          since this will be added by default.</p>
+	  <p> Your current web address is: {{ request.host }}</p>	
           <form action="" method="POST" action="/">
             <div class="form-group">
-              Your current web address is: {{ request.host }} 
-              <label for="shop">New name</label>
+     
+              <label for="shop">New name:</label>
               <input type="text" name="new_name" class="form-control" id="shop" 
                      aria-describedby="shopHelp" placeholder="Enter new shop name" 
-                     required>
+                     pattern="[a-zA-Z0-9-]" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
           </form>

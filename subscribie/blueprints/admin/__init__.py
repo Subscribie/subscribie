@@ -1058,9 +1058,10 @@ def rename_shop():
     if request.method == "GET":
         return render_template("admin/settings/rename_shop.html")
     elif request.method == "POST":
-        old_name = request.host
+        old_name = request.host #this will be active in the real environment
+        #old_name= "example.subscriby.shop" # this will be for local development
         new_name = request.form.get("new_name", None)
-        subprocess.run("ls -l", shell=True)
+        subprocess.run(f"./rename-shop.sh {old_name} {new_name}", shell=True)
         return new_name
 
 
