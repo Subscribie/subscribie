@@ -410,7 +410,6 @@ class Setting(database.Model):
     charge_vat = database.Column(database.Boolean(), default=False)
 
 
-
 class File(database.Model):
     """File uploads meta"""
 
@@ -427,4 +426,5 @@ class TaxRate(database.Model):
     __tablename__ = "tax_rate"
     id = database.Column(database.Integer(), primary_key=True)
     stripe_tax_rate_id = database.Column(database.String())
+    stripe_livemode = database.Column(database.Boolean())
     created_at = database.Column(database.DateTime, default=datetime.utcnow)

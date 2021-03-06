@@ -1,5 +1,6 @@
 from flask import current_app, request, g
 import stripe
+from subscribie import database
 
 
 def get_stripe_secret_key():
@@ -101,3 +102,43 @@ def modify_stripe_account_capability(account_id):
     """Request (again) card_payments capability after kyc onboarding
     is complete"""
     stripe.Account.modify_capability(account_id, "card_payments", requested=True)
+
+
+def create_stripe_tax_rate():
+    from .models import PaymentProvider
+    from subscribie.models import TaxRate
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_livemode:
+        livemode = True
+    else:
+        livemode = False
+
+    # If there's no tax rate for current live mode create and save one:
+    if TaxRate.query.filter_by(stripe_livemode=livemode).first() is None:
+        stripe.api_key = get_stripe_secret_key()
+        tax_rate = stripe.TaxRate.create(
+            stripe_account=get_stripe_connect_account_id(),
+            display_name="VAT",
+            description="VAT UK",
+            jurisdiction="GB",
+            percentage=20,
+            inclusive=False,
+        )
+        # Save tax_rate id and livemode to db
+        newTaxRate = TaxRate()
+        newTaxRate.stripe_livemode = tax_rate.livemode
+        newTaxRate.stripe_tax_rate_id = tax_rate.id
+        database.session.add(newTaxRate)
+        database.session.commit()
+
+    return True
+
+
+def get_stripe_livemode():
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_livemode:
+        return True
+    return False

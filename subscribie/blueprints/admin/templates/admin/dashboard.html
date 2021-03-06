@@ -463,8 +463,22 @@
                 </a>
             </div>
         </div>
+      </div><!-- end Upload Files -->
+      <div class="card">
+        <div class="card-header" id="headingShopSettings">
+            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
+            Shop Settings (TAX &amp; VAT)
+            </button>
+        </div>
+        <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
+          <div class="px-3 py-3 my-3">
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.vat_settings') }}">
+              VAT Settings
+              </a>
+          </div>
+        </div>
       </div>
-    </div>
 
 </div>
 

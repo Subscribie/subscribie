@@ -23,6 +23,7 @@ from subscribie.utils import (
     create_stripe_connect_account,
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
+    create_stripe_tax_rate,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -58,6 +59,7 @@ from subscribie.models import (
     Plan,
     PlanRequirements,
     PlanSellingPoints,
+    TaxRate,
 )
 import stripe
 from werkzeug.utils import secure_filename
@@ -1206,3 +1208,30 @@ def getPlan(container, i, default=None):
         return container[i]
     except IndexError:
         return default
+
+
+@admin.route("/vat-settings", methods=["GET", "POST"])
+@login_required
+def vat_settings():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings is None:
+        settings = Setting()
+        database.session.add(settings)
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("chargeVAT", 0)) == 1:
+            settings.charge_vat = 1
+            # Check if already have a stripe tax_rate
+            tax_rate = TaxRate.query.first()
+            if tax_rate is None:
+                # Create stripe tax rate
+                stripe.api_key = get_stripe_secret_key()
+                create_stripe_tax_rate()
+        else:
+            settings.charge_vat = 0
+        flash("VAT settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.vat_settings", settings=settings))
+
+    return render_template("admin/settings/vat_settings.html", settings=settings)

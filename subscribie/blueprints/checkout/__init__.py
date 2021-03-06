@@ -18,11 +18,15 @@ from subscribie.models import (
     Subscription,
     Transaction,
     SubscriptionNote,
+    Setting,
+    TaxRate
 )
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     format_to_stripe_interval,
+    create_stripe_tax_rate,
+    get_stripe_livemode
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
@@ -202,6 +206,16 @@ def thankyou():
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     data = request.json
+
+    # If VAT tax is enabled, get stripe tax id
+    settings = Setting.query.first()
+    if settings is not None:
+        charge_vat = settings.charge_vat
+        create_stripe_tax_rate()
+        tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).first()
+    else:
+        charge_vat = False
+
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
@@ -246,6 +260,10 @@ def stripe_create_checkout_session():
                 ),
             },
         }
+        if charge_vat:
+            subscription_data["default_tax_rates"] = [
+                tax_rate.stripe_tax_rate_id
+            ]
         # Add note to seller if present on subscription_data metadata
         if session.get("note_to_seller", False):
             subscription_data["metadata"]["note_to_seller"] = session.get(
@@ -273,8 +291,10 @@ def stripe_create_checkout_session():
         if plan.requirements.subscription:
             plan_name = "(Up-front fee) " + plan_name
 
+        tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat == True else []
         line_items.append(
             {
+                "tax_rates": tax_rates,
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
