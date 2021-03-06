@@ -407,6 +407,8 @@ class Setting(database.Model):
     __tablename__ = "setting"
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
+    charge_vat = database.Column(database.Boolean(), default=False)
+
 
 
 class File(database.Model):
@@ -417,3 +419,12 @@ class File(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
     file_name = database.Column(database.String())
+
+
+class TaxRate(database.Model):
+    """Stripe Tax Rate ids"""
+
+    __tablename__ = "tax_rate"
+    id = database.Column(database.Integer(), primary_key=True)
+    stripe_tax_rate_id = database.Column(database.String())
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
