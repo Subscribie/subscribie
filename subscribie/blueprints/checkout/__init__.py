@@ -107,6 +107,8 @@ def store_customer():
             person = Person.query.filter_by(email=email).one()
         except sqlalchemy.orm.exc.NoResultFound:
             person = None
+        except sqlalchemy.orm.exc.MultipleResultsFound:
+            person = Person.query.filter_by(email=email).all()[0]
 
         if person is None:
             # Store person, with randomly generated password
