@@ -19,14 +19,14 @@ from subscribie.models import (
     Transaction,
     SubscriptionNote,
     Setting,
-    TaxRate
+    TaxRate,
 )
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     format_to_stripe_interval,
     create_stripe_tax_rate,
-    get_stripe_livemode
+    get_stripe_livemode,
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
@@ -214,7 +214,9 @@ def stripe_create_checkout_session():
     if settings is not None:
         charge_vat = settings.charge_vat
         create_stripe_tax_rate()
-        tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).first()
+        tax_rate = TaxRate.query.filter_by(
+            stripe_livemode=get_stripe_livemode()
+        ).first()
     else:
         charge_vat = False
 
@@ -263,9 +265,7 @@ def stripe_create_checkout_session():
             },
         }
         if charge_vat:
-            subscription_data["default_tax_rates"] = [
-                tax_rate.stripe_tax_rate_id
-            ]
+            subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
         # Add note to seller if present on subscription_data metadata
         if session.get("note_to_seller", False):
             subscription_data["metadata"]["note_to_seller"] = session.get(

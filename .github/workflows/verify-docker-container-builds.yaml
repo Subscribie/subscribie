@@ -5,6 +5,9 @@ on:
     branches:
       - master
 jobs:
+  - uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
   verify_container_builds:
     name: Verify container builds
     environment:
