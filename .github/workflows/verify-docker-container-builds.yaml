@@ -7,8 +7,8 @@ on:
 jobs:
   verify_container_builds:
     name: Verify container builds
-    environment: testing
-      name: 
+    environment:
+      name: testing
     runs-on: ubuntu-20.04
     steps:
     - name: Build container
