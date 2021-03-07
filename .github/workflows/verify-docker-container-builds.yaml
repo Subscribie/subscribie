@@ -1,0 +1,19 @@
+name: Verify Docker Container Builds
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+jobs:
+  verify_container_builds:
+    name: Verify container builds
+    environment: testing
+      name: 
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Build container
+      run: |
+        cp .env.example .env
+        export COMPOSE_DOCKER_CLI_BUILD=1
+        export DOCKER_BUILDKIT=1
+        docker build -t test .
