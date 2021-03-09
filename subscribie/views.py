@@ -729,17 +729,6 @@ def custom_page(path):
         {% extends "layout.html" %}
         {% block title %} {{ title }} {% endblock title %}
 
-        {% block hero %}
-
-            <div class="container">
-              <div class="row">
-                <div class="col-md-8 pl-0">
-                  <h1 class="h1 text-white font-weight-bold">{{ title }}</h1>
-                </div>
-              </div>
-            </div>
-
-        {% endblock %}
         {% block body %}
         <div class="section mx-auto">
           <div class="container mx-auto">
