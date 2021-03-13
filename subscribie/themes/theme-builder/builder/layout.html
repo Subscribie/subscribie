@@ -1,43 +1,17 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- ico -->
-    <link rel="icon" href="/favicon.ico">
-
     <title>{% block title %}{% endblock %} | {{ company.name }}</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" 
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
-    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
-    crossorigin="anonymous">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/style.css">
-
-    <!-- Special Font for Icons -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-
-    <!-- Font -->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600&display=swap"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
-
 {% if integration.google_tag_manager_container_id                                
    and integration.google_tag_manager_active                                     
 %}                                                                               
@@ -89,98 +63,131 @@
     <!-- End Tawk Chat -->                                                       
 {% endif %}
 </head>
-
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-info kcBlue px-md-5 pt-md-3">
-  <div class="navbar-container"> 
+<div class="main-container">
+    <div class="header header-bg">
+        <div class="row nav-menu">
+            <div class="col-sm-12 ">
+                <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between">
+                    <a class="navbar-brand text-white" href="/">Subscribie</a>
+                    <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                            class="navbar-toggler"
+                            data-target="#navbarNav" data-toggle="collapse" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ">
+                            <li class="nav-item active">
+                                <a class="nav-link text-white" href="#">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Pricing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Login</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                    <span class="description text-center py-4">
+                        Make a subscription website and easily take recurring payments.<br>
+                       <span class="py-2">Take recurring payments</span>
+                    </span>
+                </div>
+            </div>
+        </div>
 
-  <a class="navbar-brand" href="/">{{ company.name }}</a>
-  
-  <div class="navbar-list-container">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  <div class="collapse navbar-collapse kcBlue" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-      </li>
-      {% if g.user %}
-        <li class="nav-item active">
-          <a class="nav-link" href="/admin/dashboard">Dashboard</a>
-        </li>
-      {% endif %}
-      <li class="nav-item active">
-        <a class="nav-link" href="/page/pricing">Pricing</a>
-      </li>
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                <a href="/start-building" class="get-started-btn">Get Started</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center">
+            </div>
+        </div>
 
-      {% if g.user == None %}
-      <li class="nav-item active">
-        <a class="nav-link" href="/shop-owner-login">Login</a>
-      </li>
-      {% else %}
-      <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-      </li>
-      {% endif %}
+    </div>
+{% block body %}{% endblock %}
+    <footer>
+        <div class="row footer-section">
+            <div class="col-sm-12 col-md-3 d-flex justify-content-center align-items-start text-center">
+                <h3>Subscribie</h3>
+            </div>
 
-      <li class="nav-item active">
-        <a class="nav-link" href="https://subscriptionwebsitebuilder.co.uk/blog">
-        Blog
-        </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/page/faq">
-        FAQ
-        </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/page/features">
-        Features
-        </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/page/subscription-billing">
-        Subscription Billing
-        </a>
-      </li>
-        
-      <li class="nav-item active">
-        <a class="nav-link" href="/page/choose-subscribie">
-        Why Subscribie?
-        </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/#revenue-calculator" title="Work out the revenue you could get from subscribers">
-        Revenue Calculator
-        </a>
-      </li>
-       <li class="nav-item active">
-        <a class="nav-link" href="/page/subscription-software">
-        Subscription Software
-        </a>
-      </li>
-    </ul>
-  </div>
+            <div class="col-sm-12 col-md-3">
+                <div class="section-title w-100">
+                    <span>Create an account</span>
+                </div>
+                <div class="w-100">
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item">SignIn</li>
+                        <li class="footer-menu-item">About</li>
+                        <li class="footer-menu-item">Pricing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <div class="section-title w-100">
+                    <span>Resources</span>
+                </div>
+                <div class="w-100">
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item">Blog</li>
+                        <li class="footer-menu-item">Documentation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <div class="section-title w-100">
+                    <span>Support</span>
+                </div>
+                <div class="w-100">
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item">Contact US</li>
+                        <li class="footer-menu-item">Terms and conditions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row footer-bottom d-flex justify-content-sm-center align-content-md-start align-items-center">
+            <div class="col-sm-12 col-md-6">
+                <div class="copyrights">
+                    © Subscribie 2019. All right reserved
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center">
+                <div class="social-links d-flex justify-content-center align-content-between">
+                    <div class="social-link">
+                        <img alt="" src="{{ url_for('static', filename='iconfinder_Circled_Facebook_svg_5279111.png') }}">
+                    </div>
+
+                    <div class="social-link">
+                        <img alt="" src="{{ url_for('static', filename='iconfinder_Circled_Twitter_svg_5279123.png') }}">
+                    </div>
+
+                    <div class="social-link">
+                        <img alt="" src="{{ url_for('static', filename='iconfinder_Circled_Instagram_svg_5279112.png') }}">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
 </div>
-  </div>
-</nav>
-
-
-    {% block body %}{% endblock %}
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-crossorigin="anonymous"></script>
-    <script
-src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-crossorigin="anonymous"></script>
-    <script
-src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
+
