@@ -198,11 +198,18 @@
 
           </fieldset>
         
-          <button type="submit" class="btn btn-primary btn-block my-3 mx-auto">Save</button>
+          <button type="submit" id="save" class="btn btn-primary btn-block my-3 mx-auto">Save</button>
         </form>
       </div>
 
     </div>
   </div><!-- end .section -->
 </main>
+<script> 
+  var button_save = document.getElementById("save");
+  button_save.onclick = function disable_button() {
+      button_save.textContent="Saving"
+     return button_save.disabled = true
+  }
+  </script>
 {% endblock body %}
