@@ -1,0 +1,44 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Category{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Category</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="">Categorys</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add Category</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Add Category</h3>
+      <p class="card-subtitle text-muted mb-3">Categorys allow you to category plans into categories.</p>
+      <p>Example one: You might have different plans for 'Dogs', and 'Cats'.</p>
+      <p>Example two: You might have different plans for 'Web hosting', and 'Email hosting'.</p>
+
+      <hr>
+      
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        <div class="form-category row">
+          <label class="col-sm-3 col-form-label" for="title">Category name:</label>
+          <div class="col-sm-9">
+            <input class="form-control" placeholder="Cats" name="category" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

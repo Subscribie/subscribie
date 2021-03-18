@@ -1,0 +1,50 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Category - Assign Plan</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_categories') }}">Category</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Assign Category to Plan</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Assign Category <em>{{ category.name}}</em> To Plan(s)</h3>
+      <p class="card-subtitle text-muted">Check which plan you want to assign the category to.</p>
+      <p class="card-subtitle text-muted mb-3">Doing so will make the options available to your customer when chosing a plan.</p>
+
+      <hr>
+
+      <form action="" method="POST" class="col-md-7 py-3">
+      {% for plan in plans %}
+      {{ plan.categories }}
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <input type="checkbox" name="assign" value="{{ plan.id }}" id="{{ plan.id }}"
+            {% if plan.category == category  %}
+              checked
+            {% endif %}>
+          </div>
+        </div>
+        <label class="form-control" for="{{ plan.id }}">{{ plan.title }}</label>
+      </div>
+      {% endfor %}
+
+      <input type="submit" class="btn btn-success btn-block" value="Save" />
+      </form>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

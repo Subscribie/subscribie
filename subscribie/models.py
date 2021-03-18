@@ -252,6 +252,18 @@ class Plan(database.Model, HasArchived):
     )
     position = database.Column(database.Integer(), default=0)
 
+    category_uuid = database.Column(database.Integer, ForeignKey("category.uuid"))
+    category = relationship("Category", back_populates="plans")
+
+
+class Category(database.Model):
+    __tablename__ = "category"
+    id = database.Column(database.Integer(), primary_key=True)
+    uuid = database.Column(database.String(), default=uuid_string)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    name = database.Column(database.String())
+    plans = relationship("Plan", back_populates="category")
+
 
 class PlanRequirements(database.Model):
     __tablename__ = "plan_requirements"
