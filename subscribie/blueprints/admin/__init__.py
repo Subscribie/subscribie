@@ -303,6 +303,9 @@ def edit():
             # Preserve choice_groups
             draftPlan.choice_groups = plan.choice_groups
 
+            # Preserve category
+            draftPlan.category_uuid = plan.category_uuid
+
             draftPlan.title = getPlan(form.title.data, index, default="").strip()
 
             draftPlan.position = getPlan(form.position.data, index)
