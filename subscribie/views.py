@@ -15,12 +15,7 @@ from flask import (
     g,
     send_from_directory,
 )
-from .models import (
-    Company,
-    Plan,
-    Integration,
-    Page,
-)
+from .models import Company, Plan, Integration, Page, Category
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 import requests
@@ -85,8 +80,9 @@ def show_500():
 
 @bp.route("/choose")
 def choose():
-    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
-    return render_template("choose.html", plans=plans)
+    # Note: Categories link to plans (via category.plans)
+    categories = Category.query.all()
+    return render_template("choose.html", categories=categories)
 
 
 @bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])

@@ -60,6 +60,7 @@ from subscribie.models import (
     PlanRequirements,
     PlanSellingPoints,
     TaxRate,
+    Category,
 )
 import stripe
 from werkzeug.utils import secure_filename
@@ -446,6 +447,14 @@ def add_plan():
             src = url_for("views.custom_static", filename=filename)
             draftPlan.primary_icon = src
 
+        # Add plan to a category
+        if Category.query.count() == 0:  # If no categories, create default
+            category = Category()
+            category.name = "Make your choice"
+            database.session.add(category)
+        # Assign plan to first category by default
+        draftPlan.category = Category.query.order_by("id").first()
+
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
@@ -477,6 +486,77 @@ def delete_plan_by_uuid(uuid):
     flash("Plan deleted.")
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
+
+
+@admin.route("/list-categories", methods=["get"])
+@login_required
+def list_categories():
+    categories = Category.query.all()
+    return render_template(
+        "admin/categories/list_categories.html", categories=categories
+    )
+
+
+@admin.route("/add-category", methods=["get", "post"])
+@login_required
+def add_category():
+    if request.method == "POST":
+        category_name = request.form.get("category", None)
+        if category_name:
+            category = Category()
+            category.name = category_name
+            database.session.add(category)
+            database.session.commit()
+            flash(f"added new category: {category_name}")
+            return redirect(url_for("admin.list_categories"))
+    return render_template("admin/categories/add_category.html")
+
+
+@admin.route("/edit-category", methods=["get", "post"])
+@login_required
+def edit_category():
+    category_id = request.args.get("id", None)
+    category = Category.query.get(category_id)
+    if request.method == "POST":
+        category.name = request.form.get("name")
+        database.session.commit()
+        flash("Category name updated")
+        return redirect(url_for("admin.list_categories"))
+    return render_template("admin/categories/edit_category.html", category=category)
+
+
+@admin.route("/delete-category", methods=["get", "post"])
+@login_required
+def delete_category():
+    category_id = request.args.get("id", None)
+    category = Category.query.get(category_id)
+    if category is not None:
+        database.session.delete(category)
+        database.session.commit()
+    flash("Category deleted")
+
+    return redirect(url_for("admin.list_categories"))
+
+
+@admin.route("/assign-plan-to-category/<category_id>", methods=["GET", "POST"])
+@login_required
+def category_assign_plan(category_id):
+    category = Category.query.get(category_id)
+    plans = Plan.query.filter_by(archived=0)
+
+    if request.method == "POST":
+        for plan_id in request.form.getlist("assign"):
+            plan = Plan.query.get(plan_id)
+            plan.category = category
+        database.session.commit()
+        flash("Plan category has been updated for selected plan")
+        return redirect(url_for("admin.category_assign_plan", category_id=category_id))
+
+    return render_template(
+        "admin/categories/category_assign_plan.html",
+        category=category,
+        plans=plans,
+    )
 
 
 @admin.route("/connect/stripe-set-livemode", methods=["POST"])
