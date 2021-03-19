@@ -247,39 +247,4 @@
   </div><!-- end .section -->
 </main>
 
-  <script>
-  function handlePlansForm(e) {
-    // Remove hidden subscription inputs if subscription is checked
-    elms = document.querySelectorAll('.subscription-check');
-    for (i=0;i<elms.length;i++) {
-      //Check if checked, disable hidden input with subscription=no
-      if (document.getElementById('subscription-' + elms[i].dataset.id).checked)
-      {
-        elms[i].disabled = true;
-      }
-    }
-    // Remove hidden instant_payment inputs if instant_payment is checked
-    elms = document.querySelectorAll('.instant_payment-check');
-    for (i=0;i<elms.length;i++) {
-      //Check if checked, disable hidden input with instant_payment=no
-      if (document.getElementById('instant_payment-' + elms[i].dataset.id).checked)
-      {
-        elms[i].disabled = true;
-      }
-    }
-    // Remove hidden note_to_seller_required inputs if note_to_seller_required is checked
-    elms = document.querySelectorAll('.note_to_seller_required-check');
-    for (i=0;i<elms.length;i++) {
-      //Check if checked, disable hidden input with note_to_seller_required=no
-      if (document.getElementById('note_to_seller_required-' + elms[i].dataset.id).checked)
-      {
-        elms[i].disabled = true;
-      }
-    }
-  }
-  form = document.getElementById('plansForm');
-  form.addEventListener('submit', handlePlansForm);
-  
-  </script>
-
 {% endblock body %}
