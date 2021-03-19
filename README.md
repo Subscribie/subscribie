@@ -43,6 +43,7 @@ pip install -r requirements.txt # Install requirements
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask db upgrade
+# The database file will be called "data.db". It will be *above* your current directory
 flask initdb
 flask run # Run the app
 ```
