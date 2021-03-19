@@ -32,7 +32,7 @@
       {% endif %} 
 
     <div class="container">
-    <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
+    <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate onSubmit="document.getElementById('save').disabled=true;return true;">
 
 	<div class="card mx-auto col-md-6 mb-3">
         
@@ -279,12 +279,6 @@
   }
   form = document.getElementById('plansForm');
   form.addEventListener('submit', handlePlansForm);
- 
-  var button_save = document.getElementById("save");
-  button_save.onclick = function disable_button() {
-      button_save.textContent="Saving"
-     return button_save.disabled = true
-  }
   
   </script>
 
