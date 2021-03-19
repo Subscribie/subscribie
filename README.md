@@ -36,7 +36,7 @@ Want to be involved? See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below
 ```
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
-cp .env.example .env # Copy default .env settings (look at it)
+cp .env.example .env # Copy default .env settings (read it)
 virtualenv -p python3 venv # Create a python3.x virtualenv
 . venv/bin/activate # Activate the virtualenv
 pip install -r requirements.txt # Install requirements
