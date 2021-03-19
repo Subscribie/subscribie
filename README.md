@@ -44,7 +44,7 @@ export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask db upgrade
 # The database file will be called "data.db". It will be *above* your current directory
-flask initdb
+flask initdb # This wil insert pretend data into your database.
 flask run # Run the app
 ```
 Now visit http://127.0.0.1:5000
