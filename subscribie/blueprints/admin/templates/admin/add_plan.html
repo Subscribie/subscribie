@@ -33,7 +33,7 @@
     <div class="container mb-3">
 
       <div class="card mx-auto col-md-6">
-        <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate onSubmit="document.getElementById('save').disabled=true;return true;">
           {{ form.csrf_token }}
 
           <div style="display:none">
@@ -205,11 +205,4 @@
     </div>
   </div><!-- end .section -->
 </main>
-<script> 
-  var button_save = document.getElementById("save");
-  button_save.onclick = function disable_button() {
-      button_save.textContent="Saving"
-     return button_save.disabled = true
-  }
-  </script>
 {% endblock body %}
