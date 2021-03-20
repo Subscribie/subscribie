@@ -118,7 +118,7 @@ button {
     align-items: center;
     padding: 14rem 1rem;
     position: absolute;
-    clip-path: polygon(100% 0, 100% 80%, 0 100%, 0 20%);
+    clip-path: polygon(100% 0, 100% 95%, 0 100%, 0 6%);
     background: #5c74a5;
 }
 
@@ -135,7 +135,6 @@ button {
 
 .payment-p {
     color: white;
-    font-size: 15px;
     min-width: 250px;
 }
 
@@ -155,6 +154,10 @@ button {
     list-style: none !important;
     padding: 0;
     font-weight: 400;
+}
+
+li.footer-menu-item {
+    padding: 0.5em;
 }
 
 footer h3 {

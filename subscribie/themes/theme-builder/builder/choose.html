@@ -2,7 +2,6 @@
 {% block title %}Subscription Website Builder for Subscription Billing{% endblock %}
 
 {% block body %}
-
 {# Template for google signin. This gets shown by using the <google-signin></google_signin> html tag #}
 <script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
 <template id="google-signin-template">
@@ -11,7 +10,37 @@
 </template>
 {# End template for google signin #}
 
-            <google-signin></google-signin>
+<div class="header-content py-4">
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h1>Subscription Billing</h1>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h3>Take recurring payments</h3>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center">
+          <span class="description text-center py-4">
+              Easily take recurring payments online and create unlimited subscription plans at no extra cost.<br>
+          </span>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center my-3">
+        <google-signin></google-signin>
+      </div>
+  </div>
+
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center">
+          <a href="/start-building"  class="get-started-btn">Get Started</a>
+      </div>
+  </div>
+</div>
+</div><!-- end header header-bg -->
 
 <section class="features">
     <div class="row">
@@ -22,7 +51,7 @@
 
     <div class="row">
         <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-            <span class="feature-section-description">What subscribie has to offe, and how it can work for you.</span>
+            <span class="feature-section-description">Easy Subscription billing &amp; website sign-up flow for your customers</span>
         </div>
     </div>
 
@@ -30,18 +59,18 @@
         <div class="col-sm-12 col-md-4">
             <div class="row">
                 <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
-                    <img alt="" src="{{ url_for('static', filename='feature1.png') }}">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/1.svg') }}">
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <span class="feature-description">Customer chose package</span>
+                    <span class="feature-description">Customer chooses package</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <span class="customer-description">
-                        Use out easy website builder to setup packages for your customers
+                        Use our easy builder to setup unlimited subscription plans for your customers to choose from.
                     </span>
                 </div>
             </div>
@@ -49,18 +78,18 @@
         <div class="col-sm-12 col-md-4">
             <div class="row">
                 <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
-                    <img alt="" src="{{ url_for('static', filename='feature2.png') }}">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/2.svg') }}">
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <span class="feature-description">Customer enter contact info</span>
+                    <span class="feature-description">Customer enters info</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <span class="customer-description">
-                        A simple customer form takes all the required information, such as name and adress
+                        A simple customer form takes all the required information, such as name and address.
                     </span>
                 </div>
             </div>
@@ -68,18 +97,18 @@
         <div class="col-sm-12 col-md-4">
             <div class="row">
                 <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
-                    <img alt="" src="{{ url_for('static', filename='feature3.png') }}">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='steps/3.svg') }}">
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <span class="feature-description">Recurring subscription is Set-up</span>
+                    <span class="feature-description">Recurring subscription is set-up!</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <span class="customer-description">
-                        The customer is setup with a recurring payment for the package they choose
+                        The customer is setup with automatic recurring payments going into your account for the package they choose.
                     </span>
                 </div>
             </div>
@@ -89,39 +118,70 @@
 
 <section class="features payment-section position-relative">
     <div class="payment-bg"></div>
-    <div class="row">
-        <div class="col-sm-12 mb-2 mt-2 col-md-6 d-flex flex-wrap justify-content-center align-items-center text-center">
+    <div class="row d-flex justify-content-between flex-wrap align-items-center">
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
                     <span class="payment-title">
-                    Reccuring payments
+                     Create a Subscription Service
                 </span>
                 </div>
             </div>
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <span class="payment-desc"> Easily take repeat payments without filtering a finger </span>
+                    <span class="payment-desc">Create a subscription website in minutes.</span>
                 </div>
             </div>
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
                     <div class="payment-icon">
-                        <img alt="" src="{{ url_for('static', filename='credit.png') }}">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='credit.png') }}">
                     </div>
                 </div>
             </div>
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
                     <div class="payment-description">
-                        <span class="payment-p">No matter how many subscriptions or products you sell, your cost will stay the same</span>
-                        <p>Easily accept one-off, recurring payments online using our subscription website builder.</p>
-                        <p>We integrate with Stripe which allows customers to pay for your subscription service on a recurring basis, or one-off if you have on-time plans. This gives great flexibility to you and your customers. You can take recurring payments online, and change subscriptions plans as needed.</p>
+                        <p class="payment-p">Produce any subscription service you want using Subscribie to generate an entire subscription website from scratch. Whatever you’re selling, from club memberships to dog treats, simply tell us what is in your subscription and Subscribie will build your site. Start building now.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-12 mb-2 mt-2 col-md-6 d-flex flex-wrap justify-content-center align-items-center text-center">
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-title">
+                    Take recurring payments online
+                </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-desc">Accept payments without lifting a finger. </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-icon">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='no-credit.png') }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-description">
+                        <p class="payment-p">Easily accept one-off, recurring payments online using our subscription website builder.<br>
+                            We integrate with Stripe which allows customers to pay for your subscription service on a recurring basis, or one-off if you have on-time plans.
+                            This gives great flexibility to you and your customers.<br><br>
+                            You can take recurring payments online, and change subscriptions plans as needed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
                     <span class="payment-title">
@@ -132,29 +192,31 @@
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
                     <span class="payment-desc">Rest easy knowing your costs won’t change.</span>
-                </div><br /><br />
-                <p>Create unlimited subscription packages and no matter how many you sell, your basic Subscribie cost and
-                 the percentage taken will remain the same. We offer a free shop web address, or Subscribie can be embedded 
-                 into an existing website.
-                 </p>
+                </div>
             </div>
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
                     <div class="payment-icon">
-                        <img alt="" src="{{ url_for('static', filename='no-credit.png') }}">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/1.svg') }}">
                     </div>
                 </div>
             </div>
             <div class="row w-100 d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
                     <div class="payment-description">
-                        <span class="payment-p">No matter how many subscriptions or products you sell, your cost will stay the same</span>
+                        <p class="payment-p">Create unlimited subscription packages and no matter how many you sell,
+                            your basic Subscribie cost and the percentage taken will remain the same.
+                            We offer a free shop web address, or Subscribie can be embedded into an existing website.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-sm-12">
+        <iframe id="revenue-calculator" src="https://subscribie.github.io/subscriber-revenue-calculator/" style="width: 100%;min-height: 730px;overflow:hidden;border-width:0px;" scrolling="no">
+      </iframe>
+        </div>
 
     </div>
 </section>
-
-{% endblock %}
+{% endblock %} {# end of body block #}

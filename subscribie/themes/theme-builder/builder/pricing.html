@@ -1,10 +1,17 @@
-    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+<style>
+
+.card {
+  color: black;
+}
+</style>
+
+    <div class="row mb-3">
         <h1 class="display-4">Simple Pricing</h1>
+        <br />
         <small class="lead">Start selling your subscriptions now.</small>
     </div>
 
-    <div class="container">
-      <div class="row justify-content-around">
+      <div class="row">
         {% for plan in plans %}
 
         <div class="card mb-4 shadow-sm col-lg-3 col-md-5 my-3 mx-3 px-0">
@@ -60,5 +67,5 @@
         </div>
         {% endfor %}
       </div>
-    </div>
+</div>
 
