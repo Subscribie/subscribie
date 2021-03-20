@@ -3,31 +3,26 @@
 
 
 {% block body %}
-<div class="jumbotron jumbotron-fluid kcBlue text-white">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        <h1 class="display-4">Let's get started!</h1>
-        <h2 class="display-6">
-          Start by adding your business name &amp; packages
-        </h2>
-        <hr class="my-4">
-        <div class="flashy-container">
-          <div class="flashy"></div>
-        </div>
-        <p>We're looking forward to having you onboard! To get started,
-          enter your packages and/or services below. 
-          You can add as many or few as you'd like
-        </p>
+<div class="header-content py-4">
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h1>Create your first subscription plan<h1>
       </div>
-    </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h3>Just fill in what you want to sell below</h3>
+      </div>
+  </div>
+</div>
+
     <div class="container">
       <div class="row">
         <div class="col-sm">
           <form enctype="multipart/form-data" action="/start-building" method="POST">
             {{ form.csrf_token }}
             <div class="row">
-              <div class="col">
+              <div class="col mr-2">
                 <label for="company_name">Business Name</label>
                 <input class="form-control" type="text" 
                   name="company_name"
@@ -44,7 +39,7 @@
             </div>
             {# dont ask for password if using google signin/up #}
             {% if session.get('token_type', None) is sameas None %}
-            <div class="row">
+            <div class="row mt-3">
               <div class="col">
                 <label for="password">Password</label>
                 <input class="form-control" type="password" 
@@ -58,11 +53,10 @@
       </div>
     </div>
   </div>
-</div>
 
 <div class="container">
 
-  <div class="card mx-auto plan">
+  <div class="mx-auto plan">
 
       <div class="form-group">
         <h3><label for="title-0">Package or Service name
@@ -73,10 +67,6 @@
         </h3>
         <input class="form-control data-hj-allow" type="text" name="title-0" id="title-0" aria-describedby="planHelpBlock-0" placeholder="E.g. Coffee Subscription" required="">
         <small id="planHelpBlock-0" class="form-text text-muted">
-          What subscription service do you sell? Enter the title here. 
-          Perhaps you sell coffee every month <i class="fas fa-coffee"></i>,
-          or, perhaps a funky personal trainer collecting monthly fees for your 
-          zumba clases.
         </small>
         <p>Note: You can add multiple packages later.</p>
       </div>
@@ -160,13 +150,13 @@
           What are your <em>top three</em> selling points your customer 
           will want to buy this subscription?
         </small>
-        <div class="input-group">
+        <div class="input-group mb-2">
           <div class="input-group-prepend">
             <span class="input-group-text">1</span>
           </div>
           <input name="selling_points-0-0" id="selling_points-0-0" class="form-control data-hj-allow" placeholder="The best hand-roasted coffee" aria-describedby="selling_pointsHelpBlock-0-0" type="text">
       </div>
-      <div class="input-group">
+      <div class="input-group mb-2">
         <div class="input-group-prepend">
           <span class="input-group-text">2</span>
         </div>
