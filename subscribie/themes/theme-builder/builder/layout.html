@@ -1,7 +1,7 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-    <title>{% block title %}{% endblock %} | {{ company.name }}</title>
     <meta charset="UTF-8">
     <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
           name="viewport">
@@ -11,57 +11,7 @@
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet">
-    <script src="https://js.stripe.com/v3/"></script>
-{% if integration.google_tag_manager_container_id                                
-   and integration.google_tag_manager_active                                     
-%}                                                                               
-    <!-- Google Tag Manager -->                                                  
-    <script>                                                                     
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':                   
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],    
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=        
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer',                                     
-    '{{ integration.google_tag_manager_container_id }}');                        
-    </script>                                                                    
-    <!-- End Google Tag Manager -->                                              
-{% endif %} 
-
-{% if integration.hotjar_account_id
-   and integration.hotjar_active
-%}
-
-<!-- Hotjar Tracking Code for https://subscriptionwebsitebuilder.co.uk -->
-<script>
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:{{ integration.hotjar_account_id }},hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
-{% endif %}
-
-{% if integration.tawk_property_id                                               
-   and integration.tawk_active                                                   
-%}                                                                               
-    <!-- Tawk Chat -->                                                           
-    <script type="text/javascript">                                              
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();                    
-        (function(){                                                             
-        var                                                                      
-        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;                                                           
-        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
-        s1.charset='UTF-8';                                                      
-        s1.setAttribute('crossorigin','*');                                      
-        s0.parentNode.insertBefore(s1,s0);                                       
-        })();                                                                    
-        </script>                                                                
-    <!-- End Tawk Chat -->                                                       
-{% endif %}
+    <title>Subscribie website</title>
 </head>
 <body>
 
@@ -69,65 +19,261 @@
     <div class="header header-bg">
         <div class="row nav-menu">
             <div class="col-sm-12 ">
-                <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between">
-                    <a class="navbar-brand text-white" href="/">Subscribie</a>
+                <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between flex-wrap">
+                    <a class="navbar-brand text-white" href="#">Subscribie</a>
                     <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
                             class="navbar-toggler"
                             data-target="#navbarNav" data-toggle="collapse" type="button">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ">
-                            <li class="nav-item active">
+                        <ul class="navbar-nav w-100 d-flex justify-content-end align-items-center ">
+                            <li class="nav-item w-auto active">
                                 <a class="nav-link text-white" href="#">Home <span class="sr-only">(current)</span></a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item w-auto">
                                 <a class="nav-link text-white" href="/page/pricing">Pricing</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="#">Blog</a>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/shop-owner-login">Login</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="#">Login</a>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="https://subscriptionwebsitebuilder.co.uk/blog">Blog</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/page/faq">FAQ</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/page/features">Features</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/page/subscription-billing">Subscription Billing</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/page/choose-subscribie">Why Subscribie?</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/#revenue-calculator">Revenue Calculator</a>
+                            </li>
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/page/subscription-software">Subscription Software</a>
                             </li>
                         </ul>
                     </div>
                 </nav>
             </div>
         </div>
+
         <div class="header-content py-4">
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <h1>Subscribie</h1>
+                    <h1>Subscription Website Builder</h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
-                    <h3>The new way to sell your subscription products</h3>
+                    <h3>Take recurring payments</h3>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 d-flex justify-content-center align-items-center">
                     <span class="description text-center py-4">
-                        Make a subscription website and easily take recurring payments.<br>
-                       <span class="py-2">Take recurring payments</span>
+                        Easily take recurring payments online and create unlimited subscription packages at no extra cost.<br>
+                       <span class="py-2"> We don't take a cut !</span>
                     </span>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-sm-12 d-flex justify-content-center align-items-center">
-                <a href="/start-building" class="get-started-btn">Get Started</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 d-flex justify-content-center align-items-center">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center my-3">
+                    <button class="btn" >To be replaced with google Oauth</button>
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                <a href="/start-building"  class="get-started-btn">Get Started</a>
+            </div>
+        </div>
+
+
     </div>
-{% block body %}{% endblock %}
+
+    <section class="features">
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                <span class="feature-section-title">Features</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                <span class="feature-section-description">What subscribie has to offe, and how it can work for you.</span>
+            </div>
+        </div>
+
+        <div class="row features-container">
+            <div class="col-sm-12 col-md-4">
+                <div class="row">
+                    <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='feature1.png') }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="feature-description">Customer chose package</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <span class="customer-description">
+                            Use out easy website builder to setup packages for your customers
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="row">
+                    <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='feature2.png') }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="feature-description">Customer enter contact info</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <span class="customer-description">
+                            A simple customer form takes all the required information, such as name and adress
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="row">
+                    <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='feature3.png') }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="feature-description">Recurring subscription is Set-up</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <span class="customer-description">
+                            The customer is setup with a recurring payment for the package they choose
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features payment-section position-relative">
+        <div class="payment-bg"></div>
+        <div class="row d-flex justify-content-between flex-wrap align-items-center">
+            <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-title">
+                         Create a Subscription Service
+                    </span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-desc">Create a subscription website in minutes.</span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-icon">
+                            <img class="feature-img" alt="" src="{{ url_for('static', filename='credit.png') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-description">
+                            <p class="payment-p">Produce any subscription service you want using Subscribie to generate an entire subscription website from scratch. Whatever you’re selling, from club memberships to dog treats, simply tell us what is in your subscription and Subscribie will build your site. Start building now.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-title">
+                        Take recurring payments online
+                    </span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-desc">Accept payments without lifting a finger. </span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-icon">
+                            <img class="feature-img" alt="" src="{{ url_for('static', filename='no-credit.png') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-description">
+                            <p class="payment-p">Easily accept one-off, recurring payments online using our subscription website builder.<br>
+                                We integrate with Stripe which allows customers to pay for your subscription service on a recurring basis, or one-off if you have on-time plans.
+                                This gives great flexibility to you and your customers.<br><br>
+                                You can take recurring payments online, and change subscriptions plans as needed.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-title">
+                        Unlimited plans, no extra cost
+                    </span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                        <span class="payment-desc">Rest easy knowing your costs won’t change.</span>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-icon">
+                            <img class="feature-img" alt="" src="{{ url_for('static', filename='no-credit.png') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 d-flex justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                        <div class="payment-description">
+                            <p class="payment-p">Create unlimited subscription packages and no matter how many you sell,
+                                your basic Subscribie cost and the percentage taken will remain the same.
+                                We offer a free shop web address, or Subscribie can be embedded into an existing website.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <footer>
         <div class="row footer-section">
             <div class="col-sm-12 col-md-3 d-flex justify-content-center align-items-start text-center">
@@ -140,9 +286,9 @@
                 </div>
                 <div class="w-100">
                     <ul class="footer-menu">
-                        <li class="footer-menu-item"><a href="/shop-owner-login">Sign in</a></li>
+                        <li class="footer-menu-item">SignIn</li>
                         <li class="footer-menu-item">About</li>
-                        <li class="footer-menu-item"><a href="/page/pricing">Pricing</a></li>
+                        <li class="footer-menu-item">Pricing</li>
                     </ul>
                 </div>
             </div>
@@ -197,8 +343,8 @@
         </div>
     </footer>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
-
