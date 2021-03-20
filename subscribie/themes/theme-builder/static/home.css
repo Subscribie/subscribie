@@ -6,35 +6,39 @@ body {
     min-width: 360px !important;
 }
 
-.navbar-collapse {
-    max-width: 220px;
-}
-
 h1 {
     font-weight: 600;
     font-size: 45px;
 }
 
-p {
-  color: white;
-}
+/**
+    Override bootstrap styles
+ */
 
 button {
-    outline: none !important;
+    outline: none;
 }
 
 .row {
-    margin: 0 !important;
+    margin: 0;
 }
 
 .col {
-    padding: 0 !important;
+    padding: 0;
+}
+
+.navbar-collapse {
+    max-width: 90%;
 }
 
 .header {
     padding: 0;
     color: white;
     position: relative;
+}
+
+.header-content {
+    margin-top: 4rem;
 }
 
 .nav-menu {
@@ -47,6 +51,7 @@ button {
 
 .navbar-brand, .nav-link {
     color: white;
+    font-size: 14px;
 }
 
 .get-started-btn {
@@ -83,6 +88,11 @@ button {
     font-weight: 700;
     color: #5c74a5;
     margin: 0.4rem 0;
+}
+
+.feature-img {
+    max-width: 40%;
+    margin: 1rem 0;
 }
 
 .feature-section-description {
@@ -125,7 +135,8 @@ button {
 
 .payment-p {
     color: white;
-    font-size: 16px;
+    font-size: 15px;
+    min-width: 250px;
 }
 
 .footer-section {
@@ -324,6 +335,11 @@ footer img {
 }
 
 @media (max-width: 1024px) {
+
+    .header-bg {
+        padding: 0 0 250px 0 !important;
+    }
+
     .navbar-collapse {
         max-width: 100% !important;
         margin: 2rem 0;
@@ -345,6 +361,10 @@ footer img {
     }
 
     .navbar-nav {
+        width: 100% !important;
+    }
+
+    .nav-item {
         width: 100% !important;
     }
 
@@ -392,4 +412,9 @@ footer img {
         display: none;
     !important;
     }
+
+    .payment-section{
+        padding: 26rem 1rem!important;
+    }
+
 }
