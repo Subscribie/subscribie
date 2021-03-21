@@ -18,6 +18,7 @@ from flask import (
 from .models import Company, Plan, Integration, Page, Category
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
+from subscribie.database import database
 import requests
 
 bp = Blueprint("views", __name__, url_prefix=None)
@@ -30,6 +31,19 @@ def migrate_database():
     upgrade(
         directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
     )
+
+
+@bp.before_app_request
+def on_each_request():
+    # Add all plans to one
+    if Category.query.count() == 0:  # If no categories, create default
+        category = Category()
+        category.name = "Make your choice"
+        # Add all plans to this category
+        plans = Plan.query.all()
+        for plan in plans:
+            plan.category = category
+        database.session.add(category)
 
 
 @bp.before_app_request
