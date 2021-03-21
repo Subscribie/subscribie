@@ -21,7 +21,7 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
-        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "eval `ssh-agent` && ssh-add ~/.ssh/github-action-key && cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "eval `ssh-agent`; ssh-add ~/.ssh/github-action-key ; cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
     - name: Reload all uwsgi vassals, one by one
       run: |
         set -x
