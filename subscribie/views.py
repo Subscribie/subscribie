@@ -81,7 +81,7 @@ def show_500():
 @bp.route("/choose")
 def choose():
     # Note: Categories link to plans (via category.plans)
-    categories = Category.query.all()
+    categories = Category.query.order_by(Category.position).all()
     return render_template("choose.html", categories=categories)
 
 

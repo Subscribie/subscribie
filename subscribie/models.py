@@ -263,6 +263,7 @@ class Category(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     name = database.Column(database.String())
     plans = relationship("Plan", back_populates="category")
+    position = database.Column(database.Integer(), default=0)
 
 
 class PlanRequirements(database.Model):

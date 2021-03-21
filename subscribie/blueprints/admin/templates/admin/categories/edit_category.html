@@ -30,7 +30,13 @@
             <input name="name" id="name" type="text" value="{{ category.name }}" autofocus class="form-control" required>
           </div>
         </div>
-
+        <div class="row py-md-3">
+          <label for="title" class="col-sm-2 col-form-label">Position:</label>
+          <div class="col-sm-10">
+            <input name="position" id="position" type="number" placeholder="0" value="{{ category.position }}" autofocus class="form-control" required>
+            <p>Use a position number to control the order in which categories appear. Lower positions appear first.</p>
+          </div>
+        </div>
         <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
       </form>
 

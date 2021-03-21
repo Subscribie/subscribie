@@ -494,7 +494,7 @@ def delete_plan_by_uuid(uuid):
 @admin.route("/list-categories", methods=["get"])
 @login_required
 def list_categories():
-    categories = Category.query.all()
+    categories = Category.query.order_by(Category.position).all()
     return render_template(
         "admin/categories/list_categories.html", categories=categories
     )
@@ -522,6 +522,7 @@ def edit_category():
     category = Category.query.get(category_id)
     if request.method == "POST":
         category.name = request.form.get("name")
+        category.position = request.form.get("position")
         database.session.commit()
         flash("Category name updated")
         return redirect(url_for("admin.list_categories"))
