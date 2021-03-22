@@ -63,7 +63,7 @@
                 {% for subscription in person.subscriptions %}
                     {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                     {# if plan is a subscription, get its live subscription status #}
-                      {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_external_id)) %}
+                      {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_subscription_id)) %}
                     {% endif %}
                     <li>
                         <div class="card">
@@ -124,14 +124,14 @@
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if ns.stripe_subscription_status == 'Active' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
-                                                subscription_id=subscription.stripe_external_id,
+                                                subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
                                                     Pause
                                                 </a> | 
                                             {% endif %}
                                             {% if ns.stripe_subscription_status == 'Paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
-                                                subscription_id=subscription.stripe_external_id,
+                                                subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
                                                     Resume
                                                 </a>
