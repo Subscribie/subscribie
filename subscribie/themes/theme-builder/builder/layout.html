@@ -12,6 +12,56 @@
     <script src="https://js.stripe.com/v3/"></script>
     <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+{% if integration.google_tag_manager_container_id
+   and integration.google_tag_manager_active
+%}
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',
+    '{{ integration.google_tag_manager_container_id }}');
+    </script>
+    <!-- End Google Tag Manager -->
+{% endif %}
+
+{% if integration.hotjar_account_id
+   and integration.hotjar_active
+%}
+
+<!-- Hotjar Tracking Code for https://subscriptionwebsitebuilder.co.uk -->
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:{{ integration.hotjar_account_id }},hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+{% endif %}
+
+{% if integration.tawk_property_id
+   and integration.tawk_active
+%}
+    <!-- Tawk Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var
+        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+    <!-- End Tawk Chat -->
+{% endif %}
     <title>{% block title %}{% endblock %} | {{ company.name }}</title>
 </head>
 <body>
