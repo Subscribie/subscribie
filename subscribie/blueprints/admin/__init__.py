@@ -229,6 +229,31 @@ def resume_stripe_subscription(subscription_id):
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
 
 
+@admin.route("/stripe/subscriptions/<subscription_id>/actions/cancel")
+@login_required
+def cancel_stripe_subscription(subscription_id: str):
+    """Cancel a Stripe subscription"""
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/cancel_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
+        )
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe.Subscription.delete(
+                subscription_id, stripe_account=connect_account_id
+            )
+            flash("Subscription cancelled")
+        except Exception as e:
+            flash("Error cancelling subscription")
+            print(e)
+    return redirect(url_for("admin.subscribers"))
+
+
 @admin.route("/dashboard")
 @login_required
 def dashboard():
@@ -754,6 +779,8 @@ def get_subscription_status(stripe_subscription_id: str) -> str:
         )
         if subscription.pause_collection is not None:
             return "paused"
+        elif subscription.status == "canceled":
+            return "canceled"
         else:
             return "active"
     except stripe.error.InvalidRequestError as e:
