@@ -62,6 +62,13 @@
         </script>
     <!-- End Tawk Chat -->
 {% endif %}
+
+{% if custom_code != "None" %}
+<!-- custom code -->
+  {{ custom_code }}
+<!-- end custom code -->
+{% endif %}
+
     <title>{% block title %}{% endblock %} | {{ company.name }}</title>
 </head>
 <body>
