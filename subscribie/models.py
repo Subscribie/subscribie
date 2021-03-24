@@ -421,6 +421,7 @@ class Setting(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
     charge_vat = database.Column(database.Boolean(), default=False)
+    custom_code = database.Column(database.String(), default=None)
 
 
 class File(database.Model):

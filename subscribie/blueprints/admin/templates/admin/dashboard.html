@@ -247,7 +247,7 @@
       <div class="card">
         <div class="card-header" id="headingNine">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-              Integrations (Online Chat &amp; Analytics)
+              Integrations (Online Chat, Analytics &amp; inject custom code)
             </button>
         </div>
         <div id="collapseNine" class="collapse" aria-labelledby="headingNine">
@@ -279,6 +279,21 @@
             </div> <!--end card-->
           </div>
           <!-- End Tawk Integrations -->
+          <!-- Inject Code -->
+          <div class="px-3 py-3 my-3">
+
+            <div class="card col-lg shadow-sm" >
+              <div class="card-body">
+                <h5 class="card-title">Inject Code</h5>
+                <p class="card-text">Inject custom code into your shop. E.g. javascript</p>
+                <a href="{{ url_for('admin.add_custom_code') }}"
+                    class="btn btn-block btn-info">
+                      Add custom code
+                </a>
+              </div>
+            </div> <!--end card-->
+          </div>
+          <!-- End add custom code -->
 
           <!-- Analytics Integrations -->
           <div class="px-3 py-3 my-3">

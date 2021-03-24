@@ -14,8 +14,9 @@ from flask import (
     current_app,
     g,
     send_from_directory,
+    Markup,
 )
-from .models import Company, Plan, Integration, Page, Category
+from .models import Company, Plan, Integration, Page, Category, Setting
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
@@ -70,7 +71,19 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    return dict(company=company, integration=integration, plans=plans, pages=pages)
+    setting = Setting.query.first()
+    if setting is None:
+        setting = Setting()
+        database.session.add(setting)
+        database.session.commit()
+    custom_code = Setting.query.first().custom_code
+    return dict(
+        company=company,
+        integration=integration,
+        plans=plans,
+        pages=pages,
+        custom_code=Markup(custom_code),
+    )
 
 
 @bp.route("/cdn/<path:filename>")
