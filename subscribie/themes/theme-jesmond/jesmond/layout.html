@@ -10,6 +10,12 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
 
+{% if custom_code != "None" %}
+<!-- custom code -->
+  {{ custom_code }}
+<!-- end custom code -->
+{% endif %}
+
 {% if integration.google_tag_manager_container_id
    and integration.google_tag_manager_active
 %}

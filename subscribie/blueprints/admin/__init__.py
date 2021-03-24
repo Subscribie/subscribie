@@ -753,6 +753,33 @@ def connect_tawk_manually():
         )
 
 
+@admin.route("/add/custom/code", methods=["GET", "POST"])
+@login_required
+def add_custom_code():
+    setting = Setting.query.first()
+    if setting is None:
+        setting = Setting()
+        database.session.add(setting)
+
+    if request.method == "POST":
+        custom_code = request.form.get("code", None)
+        if custom_code is not None:
+            setting = Setting.query.first()
+            if setting is None:
+                setting = Setting()
+                database.session.add(setting)
+            setting.custom_code = custom_code
+            database.session.commit()
+            flash("Custom code added")
+        return redirect(
+            url_for("admin.add_custom_code", custom_code=setting.custom_code)
+        )
+    else:
+        return render_template(
+            "admin/add_custom_code.html", custom_code=setting.custom_code
+        )
+
+
 @admin.context_processor
 def utility_get_transaction_fulfillment_state():
     """return fulfullment_state of transaction"""

@@ -1,0 +1,64 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add custom code {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add custom code</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add Custom Code</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Add / Inject Custom Code</h2>
+          <div class="py-3">
+            <p>Paste your code below:</p>
+            <p>You can find your  property id by logging into your 
+              account ( is free), then selecting 'Admn' (the cog). Your
+               property id is in the url at the top. </p> 
+            <p>
+                You must include the script start and end tags.
+            </p>
+          </div>
+
+          <form action="" method="POST" action="/">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="code">Custom code:</label>
+              <div class="col-sm-9">
+                <textarea type="text" name="code" id="code" rows="10" cols="50" placeholder="&lt;script&gt;&lt;/script&gt;">{% if custom_code is not sameas None %} {{ custom_code }} {% endif %}</textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">
+              Save
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h4 class="card-title">Need some help?</h4>
+              <p>You can paste any code you want here, and it will be
+                injected onto every page of your shop.
+              <p>Make sure you only paste code you trust, and that 
+                your site still works after you save.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}
