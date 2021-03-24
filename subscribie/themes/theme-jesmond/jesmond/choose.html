@@ -45,9 +45,16 @@
                 <h5 class="body-lg">{{ plan.title|safe }}</h5>
 
                 {% if plan.description is not sameas None %}
-                  <p class="text mb-0">{{ plan.description }}</p>
+                  <div>
+                    <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
+                      More details
+                    </div>
+                    <div class="collapse" id="collapse-{{ plan.id }}">
+                      <p class="text mb-0 pt-2">{{ plan.description }}</p>
+                    </div>
+                  </div>
                 {% endif %}
-
+                
                 <hr class="my-4">
                 {% if plan.trial_period_days > 0 %}
                 <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
@@ -83,11 +90,11 @@
               <div class="card-footer">
 
                 {% if plan.choice_groups %}
-                  <div id="accordion">
-                    <div class="btn-link-lg btn-block mb-1 collapsed acc">
+                  <div>
+                    <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
                       See choice options
                     </div>
-                    <div class="collapse" >
+                    <div class="collapse" id="collapse-choise-{{ plan.id }}" >
                       {% for choice_group in plan.choice_groups %}
                       <details>
                         <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
@@ -166,12 +173,6 @@
     $(".modal-img").attr("src", imgURL);
   });
 
-  // Show choose options 
-  for (var i = 0; i < $(".acc").length; i++) {
-    $(".acc")[i].addEventListener("click", function() {
-      this.nextElementSibling.classList.toggle("show")
-    });
-  }
 </script>
 
 {% endblock %}
