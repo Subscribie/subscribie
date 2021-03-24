@@ -264,6 +264,9 @@ def stripe_create_checkout_session():
                 ),
             },
         }
+        if plan.trial_period_days > 0:
+            subscription_data["trial_period_days"] = plan.trial_period_days
+
         if charge_vat:
             subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
         # Add note to seller if present on subscription_data metadata

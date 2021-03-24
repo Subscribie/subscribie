@@ -49,10 +49,13 @@
                 {% endif %}
 
                 <hr class="my-4">
-
+                {% if plan.trial_period_days > 0 %}
+                <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
+                {% endif %}
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
+                      {% if plan.trial_period_days > 0 %}Then {% endif %}
                       <span class="price">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}

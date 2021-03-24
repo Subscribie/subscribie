@@ -48,6 +48,9 @@
             <h3 class="title-1">Please complete your order</h3>
             <p class="text mb-3">Great choice {{ fname }}, please complete the form below.</p>
             <div>
+                {% if plan.trial_period_days > 0 %}
+                <p class="py-3 body-lg">{{ plan.trial_period_days }} days free, then</p>
+                {% endif %}
                 {% if plan.requirements.instant_payment %}
                 <p class="py-3 body-lg">
                     <b>Pay today:</b>
