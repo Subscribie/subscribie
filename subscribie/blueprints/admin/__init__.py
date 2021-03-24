@@ -380,6 +380,13 @@ def edit():
 
             draftPlan.days_before_first_charge = days_before_first_charge
 
+            try:
+                trial_period_days = int(form.trial_period_days[index].data)
+            except ValueError:
+                trial_period_days = 0
+
+            draftPlan.trial_period_days = trial_period_days
+
             if getPlan(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
             else:
@@ -446,6 +453,13 @@ def add_plan():
             days_before_first_charge = 0
 
         draftPlan.days_before_first_charge = days_before_first_charge
+
+        try:
+            trial_period_days = int(form.trial_period_days.data[0])
+        except ValueError:
+            trial_period_days = 0
+
+        draftPlan.trial_period_days = trial_period_days
 
         if form.interval_amount.data[0] is None:
             draftPlan.interval_amount = 0
@@ -806,10 +820,8 @@ def get_subscription_status(stripe_subscription_id: str) -> str:
         )
         if subscription.pause_collection is not None:
             return "paused"
-        elif subscription.status == "canceled":
-            return "canceled"
         else:
-            return "active"
+            return subscription.status
     except stripe.error.InvalidRequestError as e:
         print(e)
         return status_on_error

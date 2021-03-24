@@ -28,10 +28,14 @@
             </h4>
           </div>
           <div class="card-body">
-            {% if plan.requirements.subscription %}
+              {% if plan.requirements.subscription %}
               <h1 class="card-title pricing-card-title">
-              &pound;{{ "%.2f"|format(plan.interval_amount/100) }}
-              <small class="text-muted">/ {{ plan.interval_unit }}</small>
+              {% if plan.trial_period_days > 0 %}
+              {{ plan.trial_period_days }} days free
+              {% endif %}
+              <small class="text-muted">
+              then &pound;{{ "%.2f"|format(plan.interval_amount/100) }}
+              / {{ plan.interval_unit }}</small>
               </h1>
             {% else %}
               <h1 class="card-title pricing-card-title">

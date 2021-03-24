@@ -139,6 +139,16 @@
                       "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
                     </small>
                   </div>
+                  <div class="form-group">
+                    <label for="trial_period_days-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Free trial period number of days</label>
+                    <input id="trial_period_days-{{ loop.index0 }}" name="trial_period_days-{{ loop.index0 }}" type="number" min="0" max="" value="{{ plan.trial_period_days }}" class="form-control" >
+                    <small class="form-text text-muted">
+                    If you want to offer a free trial, simply put the number of days and the plan
+                    will only start charging after the trial has ended. When creating a subscription with a
+                    trial period, no payment is taken from the customer.
+                    An immediate invoice is still created, but for a zero amount.
+                    </small>
+                  </div>
                 </div>
               </fieldset>
 

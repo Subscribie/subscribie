@@ -240,6 +240,7 @@ class Plan(database.Model, HasArchived):
     monthly_price = database.Column(database.Integer())
     sell_price = database.Column(database.Integer())  # Upfront price
     days_before_first_charge = database.Column(database.Integer(), default=0)
+    trial_period_days = database.Column(database.Integer(), default=0)
     primary_icon = database.Column(database.String())
     requirements = relationship(
         "PlanRequirements", uselist=False, back_populates="plan"

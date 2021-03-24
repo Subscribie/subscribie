@@ -26,6 +26,9 @@
             <h2 class="font-weight-bold">Please complete your order</h2>
             <p class="pb-3">Great choice {{ fname }}, please complete the form below.</p>
             <div>
+                {% if plan.trial_period_days > 0 %}
+                <p class="py-3 body-lg h5"><b>{{ plan.trial_period_days }} days free</b>, then</p>
+                {% endif %}
                 {% if plan.requirements.instant_payment %}
                 <p class="py-3 h5">
                     <b>Pay today:</b>
@@ -34,8 +37,8 @@
                 {% endif %}
 
                 {% if plan.requirements.subscription %}
-                <p class="py-3 h5">
-                    <b>Price ({{ plan.interval_unit }})</b>
+                <p class="py-3">
+                    Price ({{ plan.interval_unit }})
                     <span class="p-2 bg-primary text-white rounded ml-2">&pound; {{ "%.2f"|format(plan.interval_amount/100) }}</span>
                 </p>
                 {% endif %}

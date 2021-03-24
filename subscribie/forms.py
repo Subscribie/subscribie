@@ -51,6 +51,7 @@ class PlansForm(StripWhitespaceForm):
         )
     )
     days_before_first_charge = FieldList(StringField("Days before first charge"))
+    trial_period_days = FieldList(StringField("Trial number of days"))
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )
