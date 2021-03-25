@@ -8,8 +8,8 @@ INSERT INTO category(id, uuid, created_at, name) VALUES
 (1, "7085d61d-c84d-4951-a824-aa27c7e21086", datetime(), "Make your choice");
 
 INSERT INTO plan 
-(id, created_at, archived, uuid, title, interval_unit, interval_amount, sell_price, days_before_first_charge, category_uuid)
-VALUES(1, datetime(), 0,  '840500cb-c663-43e6-a632-d8521bb14c42', 'Hair Gel', 'weekly', 599, 100, 0, '7085d61d-c84d-4951-a824-aa27c7e21086');
+(id, created_at, archived, uuid, title, interval_unit, interval_amount, sell_price, days_before_first_charge, trial_period_days, category_uuid)
+VALUES(1, datetime(), 0,  '840500cb-c663-43e6-a632-d8521bb14c42', 'Hair Gel', 'weekly', 599, 100, 0, 0, '7085d61d-c84d-4951-a824-aa27c7e21086');
 
 INSERT INTO plan 
 (id, created_at, archived, uuid, title, interval_unit, interval_amount, days_before_first_charge, description, category_uuid)
