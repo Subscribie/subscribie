@@ -131,6 +131,8 @@ def set_options(plan_uuid):
 @bp.route("/page/<path>", methods=["GET"])
 def custom_page(path):
     page = Page.query.filter_by(path=path).first()
+    if page is None:
+        return "Page not found", 404
     # Check if private page & enforce
     blocked, redirect = check_private_page(page.id)
     if blocked:
