@@ -41,6 +41,7 @@ def test_admin_can_add_plan(session, app, client, admin_session):
                 "interval_amount-0": "6.95",
                 "interval_unit-0": "monthly",
                 "days_before_first_charge-0": "0",
+                "trial_period_days-0": "0",
                 "instant_payment-0": "yes",
                 "sell_price-0": "5",
                 "note_to_buyer_message-0": "",
