@@ -27,11 +27,12 @@ def filter_archived(query):
 
     for desc in query.column_descriptions:
         entity = desc["entity"]
-        if desc["type"] is Person and "archive" not in request.path:
-            query = query.filter(entity.archived == 0)
-        elif desc["type"] is Person and "archived-subscribers" in request.path:
+        if desc["type"] is Person and "archived-subscribers" in request.path:
             query = query.filter(entity.archived == 1)
-    return query
+            return query
+        elif desc["type"] is Person and "un-archive" not in request.path:
+            query = query.filter(entity.archived == 0)
+            return query
 
 
 def uuid_string():
