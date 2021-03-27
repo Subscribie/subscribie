@@ -41,6 +41,7 @@ class PlansForm(StripWhitespaceForm):
     )
     uuid = FieldList(StringField(), min_entries=1)
     subscription = FieldList(TextField("Subscription", default=False), min_entries=1)
+    private = FieldList(TextField("Private Plan", default=False), min_entries=1)
     note_to_seller_required = FieldList(
         TextField("Require note from customer", default=False), min_entries=1
     )

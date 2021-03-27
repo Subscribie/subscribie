@@ -398,6 +398,11 @@ def edit():
             for point in points:
                 draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
+            if request.form.get("private-" + str(index)) is not None:
+                draftPlan.private = 1
+            else:
+                draftPlan.private = 0
+
             # Primary icon image storage
             f = getPlan(form.image.data, index)
             if f:
@@ -496,6 +501,11 @@ def add_plan():
             database.session.add(category)
         # Assign plan to first category by default
         draftPlan.category = Category.query.order_by("id").first()
+
+        if request.form.get("private") is not None:
+            draftPlan.private = 1
+        else:
+            draftPlan.private = 0
 
         database.session.commit()
         flash("Plan added.")
