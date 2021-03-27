@@ -255,6 +255,7 @@ class Plan(database.Model, HasArchived):
 
     category_uuid = database.Column(database.Integer, ForeignKey("category.uuid"))
     category = relationship("Category", back_populates="plans")
+    hidden = database.Column(database.Boolean(), default=0)
 
 
 class Category(database.Model):
