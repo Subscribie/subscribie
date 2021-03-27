@@ -1,8 +1,8 @@
-"""add hidden to plan model
+"""add private to plan model
 
-Revision ID: e12b4fc15fe2
+Revision ID: b767faeb4c0d
 Revises: 21b64f9d73dd
-Create Date: 2021-03-27 00:15:11.090276
+Create Date: 2021-03-27 00:26:17.579713
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "e12b4fc15fe2"
+revision = "b767faeb4c0d"
 down_revision = "21b64f9d73dd"
 branch_labels = None
 depends_on = None
@@ -18,9 +18,7 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table("plan") as batch_op:
-        batch_op.add_column(
-            sa.Column("hidden", sa.Boolean(), nullable=True, default=False)
-        )
+        batch_op.add_column(sa.Column("private", sa.Boolean(), default=False))
 
 
 def downgrade():
