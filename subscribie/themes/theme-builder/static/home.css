@@ -71,7 +71,7 @@ button {
 .header-bg {
     width: 100%;
     padding: 0 0 200px 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 80%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 86%);
     background: rgb(74, 150, 254);
     background: -moz-linear-gradient(36deg, rgba(74, 150, 254, 1) 0%, rgba(74, 150, 254, 1) 39%, rgba(135, 97, 246, 1) 100%);
     background: -webkit-linear-gradient(36deg, rgba(74, 150, 254, 1) 0%, rgba(74, 150, 254, 1) 39%, rgba(135, 97, 246, 1) 100%);
