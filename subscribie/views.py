@@ -282,3 +282,22 @@ def google_return():
         else:
             login_url = url_for("auth.login")
             return f"User not found, try username/password please login instead of Google signin. <a href='{login_url}'>Login</a>"  # noqa: E501
+
+@bp.route("/plan/<uuid>")
+def view_plan(uuid):
+    # fetch plan from db
+    plan = Plan.query.filter_by(uuid=uuid).first()
+    if request.method == "POST":
+        # Store chosen options in session
+        session["chosen_option_ids"] = []
+        for choice_group_id in request.form.keys():
+            for option_id in request.form.getlist(choice_group_id):
+                session["chosen_option_ids"].append(option_id)
+
+        return redirect(url_for("checkout.new_customer", plan=plan_uuid))
+
+    return render_template("viewplan.html", plan=plan)
+
+    if plan is None:
+      return "Plan not found, stop trying to hack us please"
+    return plan.title

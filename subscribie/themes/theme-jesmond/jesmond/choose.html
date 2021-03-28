@@ -16,7 +16,7 @@
         <a class="btn-outlined-lg" href="#plans" title="Subscriber login">Choose plan</a>
       </div>
     </div>
-    
+
   </div>
 </div>
 
@@ -42,7 +42,7 @@
                 </a>
               {% endif %}
               <div class="card-body">
-                <h5 class="body-lg">{{ plan.title|safe }}</h5>
+                <h5 class="body-lg"><a href="{{ url_for('views.view_plan', uuid=plan.uuid) }}">{{ plan.title|safe }}</a></h5>
 
                 {% if plan.description is not sameas None %}
                   <div>
@@ -54,7 +54,7 @@
                     </div>
                   </div>
                 {% endif %}
-                
+
                 <hr class="my-4">
                 {% if plan.trial_period_days > 0 %}
                 <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
