@@ -28,8 +28,9 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
     await page.goto("http://subscriptionwebsitebuilder.co.uk/");
     await page.screenshot({ path: `prod-sign-up-landingpage-${browserType}.png` });
     
-    await page.click('text="Start now"');
+    await page.click('text="Get Started"');
     await page.screenshot({ path: `prod-sign-up-start-now-page-${browserType}.png` });
+
 
     // Fill in sign-up form (Getting started form)
     await page.fill('#email', 'prod-test-' + epoch + '@example.com');
@@ -77,6 +78,11 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
 
     await page.screenshot({ path: `prod-sign-up-reached-stripe-checkout-${browserType}.png` });
 
+    // Verify new site has come online ok
+    await new Promise(x => setTimeout(x, 5000)); //Allow 5 secconds for new site to boot
+    await page.goto("https://" + 'prodtest' + epoch + ".subscriby.shop");
+    const new_shop_category_title_content = await page.textContent('.title-1');
+    assert(new_shop_category_title_content === 'prod-test-' + epoch)
     await browser.close();
   }
 };
