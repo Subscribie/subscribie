@@ -40,7 +40,6 @@
             <td data-th="Name">
               <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
               <br />
-              <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}" title="Remove subscriber from view">Archive</a>
             </td>
             <td data-th="Date">{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
