@@ -287,17 +287,16 @@ def google_return():
 def view_plan(uuid):
     # fetch plan from db
     plan = Plan.query.filter_by(uuid=uuid).first()
-    if request.method == "POST":
+    if plan is None:
+        return "Plan not found, stop trying to hack us please"
+    if plan == True:
+        if request.method == "POST":
         # Store chosen options in session
-        session["chosen_option_ids"] = []
-        for choice_group_id in request.form.keys():
-            for option_id in request.form.getlist(choice_group_id):
-                session["chosen_option_ids"].append(option_id)
+           session["chosen_option_ids"] = []
+           for choice_group_id in request.form.keys():
+               for option_id in request.form.getlist(choice_group_id):
+                   session["chosen_option_ids"].append(option_id)
 
-        return redirect(url_for("checkout.new_customer", plan=plan_uuid))
+           return redirect(url_for("checkout.new_customer", plan=plan_uuid))
 
     return render_template("viewplan.html", plan=plan)
-
-    if plan is None:
-      return "Plan not found, stop trying to hack us please"
-    return plan.title
