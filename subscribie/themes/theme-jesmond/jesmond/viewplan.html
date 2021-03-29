@@ -30,7 +30,7 @@
           </a>
         {% endif %}
         <div class="card-body">
-          <h5 class="body-lg"><a href="{{ url_for('views.view_plan', uuid=plan.uuid) }}">{{ plan.title|safe }}</a></h5>
+          <h5 class="body-lg">{{ plan.title|safe }}</h5>
 
           {% if plan.description is not sameas None %}
             <div>
