@@ -283,11 +283,14 @@ def google_return():
             login_url = url_for("auth.login")
             return f"User not found, try username/password please login instead of Google signin. <a href='{login_url}'>Login</a>"  # noqa: E501
 
+
 @bp.route("/plan/<uuid>")
 def view_plan(uuid):
     # fetch plan from db
     plan = Plan.query.filter_by(uuid=uuid).first()
     if plan is None:
-        return "Plan not found"
-    
+        return "Plan not found. Visit <a href='/'>home</a>"
+    elif plan.archived:
+        return "This plan has been archived. Visit <a href='/'>home</a>"
+
     return render_template("view-plan.html", plan=plan)
