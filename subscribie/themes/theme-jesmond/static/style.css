@@ -332,7 +332,7 @@ body {
   color: var(--primary);
 }
 
-.plans-section .card-footer {
+.pricing-plan .card-footer {
   background-color: white;
   border: none;
 }
