@@ -64,7 +64,7 @@
               <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
                 See choice options
               </div>
-              <div class="collapse" id="collapse-choise-{{ plan.id }}" >
+              <div class="collapse mb-3" id="collapse-choise-{{ plan.id }}" >
                 {% for choice_group in plan.choice_groups %}
                 <details>
                   <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
