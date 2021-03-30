@@ -1,33 +1,15 @@
 {% extends "layout.html" %}
 {% block title %} {{ title }} {% endblock title %}
-{% block hero %}
-<div class="section-hero px-2">
-  <div class="wrapper mx-auto">
-
-    <div class="container">
-      <div class="hero-content py-5 px-0 px-sm-4 ">
-        <h2 class="title-1">{{ company.name }}</h2>
-        {% if company.slogan is sameas None or company.slogan == "None"  %}
-            <p></p>
-        {% else %}
-            <p class="text-light">{{ company.slogan }}</p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</div>
-
-{% endblock %}
 
 {% block body %}
 
-<div class="plans-row row row-cols-1 row-cols-md-2 row-cols-lg-3">
-    <div class="pricing-plan col-md p-2">
+<div class="my-5">
+    <div class="pricing-plan col-md-4 p-2 mx-auto my-3">
       <div class="card h-100">
         {% if plan.primary_icon %}
-          <a href="#" class="plan-img-action" data-toggle="modal" data-target="#imgModal" data-highres="{{ plan.primary_icon }}">
+          
             <img src="{{ plan.primary_icon }}" class="plan-img card-img-top">
-          </a>
+          
         {% endif %}
         <div class="card-body">
           <h5 class="body-lg">{{ plan.title|safe }}</h5>
