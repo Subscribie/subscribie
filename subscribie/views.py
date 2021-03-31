@@ -284,8 +284,15 @@ def google_return():
             return f"User not found, try username/password please login instead of Google signin. <a href='{login_url}'>Login</a>"  # noqa: E501
 
 
-@bp.route("/plan/<uuid>")
-def view_plan(uuid):
+@bp.route("/plan/<uuid>", defaults={"plan_title": None})
+@bp.route("/plan/<uuid>/<plan_title>")
+def view_plan(uuid, plan_title=None):
+    """
+    Note: "plan_name" is not used, and is also
+          optional. It's just there to make
+          urls look 'pretty'
+          when humans share them.
+    """
     # fetch plan from db
     plan = Plan.query.filter_by(uuid=uuid).first()
     if plan is None:
