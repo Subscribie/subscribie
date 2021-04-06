@@ -44,3 +44,13 @@ VALUES
 INSERT INTO integration (
 tawk_active, tawk_property_id)
 VALUES (0, 'example');
+
+
+INSERT INTO module (name)
+VALUES ('builder');
+
+CREATE TABLE IF NOT EXISTS builder_sites
+    (
+      site_url text,
+      email text
+);
