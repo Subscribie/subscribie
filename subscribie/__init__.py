@@ -16,7 +16,6 @@ from .database import database
 import flask
 import datetime
 from base64 import b64encode
-import git
 from flask import (
     Flask,
     render_template,
@@ -30,7 +29,6 @@ from .Template import load_theme
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
 import importlib
-from importlib import reload
 import urllib
 from pathlib import Path
 import sqlalchemy
@@ -86,22 +84,7 @@ def create_app(test_config=None):
                 print("Attempting to importing module: {}".format(module.name))
                 importlib.import_module(module.name)
             except ModuleNotFoundError:
-                # Attempt to load module from src
-                dest = Path(app.config["MODULES_PATH"], module.name)
-                print("Cloning module into: {}".format(dest))
-                os.makedirs(str(dest), exist_ok=True)
-                try:
-                    git.Repo.clone_from(module.src, dest)
-                except git.exc.GitCommandError:
-                    pass
-                # Now re-try import
-                try:
-                    import site
-
-                    reload(site)
-                    importlib.import_module(module.name)
-                except ModuleNotFoundError:
-                    print("Error: Could not import module: {}".format(module.name))
+                print("Error: Could not import module: {}".format(module.name))
             # Register modules as blueprint (if it is one)
             try:
                 importedModule = importlib.import_module(module.name)
