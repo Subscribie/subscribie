@@ -33,6 +33,7 @@
 			<tr>
         <th>Date</th>
         <th>Status</th>
+        <th>Refund</th>
         <th>Payment id</th>
         <th>Amount</th>
         <th>Source</th>
@@ -45,6 +46,7 @@
 			<tr>
         <td>{{ transaction.created_at }}</td>
         <td>{{ transaction.payment_status }}</td>
+        <td><a href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id)}}">Refund</a></td> 
         <td>{{ transaction.external_id }}</td>
         <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
