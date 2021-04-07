@@ -132,9 +132,6 @@
                                                 confirm="") }}">
                                                     Cancel
                                                 </a> |
-                                                <a href="{{ url_for("admin.refund_stripe_subscription"),}}">
-                                                    Refund
-                                                </a> |
                                             {% endif %}
                                             {% if ns.stripe_subscription_status == 'Paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
