@@ -229,6 +229,12 @@ def resume_stripe_subscription(subscription_id):
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
 
 
+@admin.route("/stripe/subscriptions/refund/")
+@login_required
+def refund_stripe_subscription():
+    return "Refunding your subscription"
+
+
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/cancel")
 @login_required
 def cancel_stripe_subscription(subscription_id: str):
