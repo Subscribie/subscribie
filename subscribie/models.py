@@ -346,6 +346,7 @@ class Transaction(database.Model):
     external_id = database.Column(database.String())
     # Source of transaction e.g. Stripe or GoCardless
     external_src = database.Column(database.String())
+    external_refund_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey("person.id"))
     person = relationship("Person", back_populates="transactions")
     subscription_id = database.Column(
