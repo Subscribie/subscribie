@@ -232,8 +232,27 @@ def resume_stripe_subscription(subscription_id):
 @admin.route("/stripe/subscriptions/<payment_id>/actions/refund/")
 @login_required
 def refund_stripe_subscription(payment_id):
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+    try:
+        stripe_refund = stripe.Refund.create(
+            payment_intent=payment_id, stripe_account=connect_account_id
+        )
+        if Transaction.query.filter_by(external_id=payment_id).first() is None:
+            return "payment doesn't exist"
+        transaction = Transaction.query.filter_by(external_id=payment_id).first()
+        transaction.external_refund_id = stripe_refund.id
+        database.session.commit()
 
-    return payment_id
+    except stripe.error.InvalidRequestError as e:
+        if e.error.code == "charge_already_refunded":
+            flash("Charge already refunded")
+            return redirect(url_for("admin.transactions"))
+        else:
+            flash(e.error.code)
+            return redirect(url_for("admin.transactions"))
+    flash("Transaction refunded")
+    return redirect(url_for("admin.transactions"))
 
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/cancel")
