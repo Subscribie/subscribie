@@ -1,5 +1,5 @@
 {% extends "admin/layout.html" %}                                                
-{% block title %} Cancel a subscription {% endblock %}                                                                
+{% block title %} Refund a subscription {% endblock %}                                                                
                                                                                  
 {% block body %}
 
@@ -17,9 +17,9 @@
         <div class="container">
             <div class="card col-md-6 mx-auto my-3 py-3">
                 <h3 class="card-title mx-auto">Are you sure?</h3>
-                <p> If yes, the customer will get the refund from 3 to 10 business days
-                    but the subscription will kept. If you want to cancel the subscription 
-                    please go to the active subscriber in dashboard. 
+                <p>If yes, the customer will get the refund within 3 to 10 business days.
+                   Please note: If this is part of an active subscription, future payments will still be taken.
+                   If you want to cancel future subscription charges, please go to <a href="{{ url_for('admin.subscribers') }}">subscribers</a> and cancel their subscription.
                 </p>
                 <div class="mx-auto">
                     <a href="{{ url_for('admin.refund_stripe_subscription', payment_id=payment_id, confirm=1) }}" 
