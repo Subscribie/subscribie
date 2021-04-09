@@ -240,7 +240,10 @@ def refund_stripe_subscription(payment_id):
     if "confirm" in request.args and request.args["confirm"] == "1":
         try:
             stripe_refund = stripe.Refund.create(
-                payment_intent=payment_id, stripe_account=connect_account_id
+                payment_intent=payment_id,
+                stripe_account=connect_account_id,
+                # https://stripe.com/docs/api/refunds/create#create_refund-refund_application_fee
+                refund_application_fee=True,
             )
             if Transaction.query.filter_by(external_id=payment_id).first() is None:
                 return "payment doesn't exist"
