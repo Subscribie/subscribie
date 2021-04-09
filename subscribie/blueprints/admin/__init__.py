@@ -234,7 +234,10 @@ def resume_stripe_subscription(subscription_id):
 def refund_stripe_subscription(payment_id):
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
-    try:
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template("admin/refund_subscription.html", confirm=False, payment_id=payment_id,)
+    if "confirm" in request.args and request.args["confirm"] == "1":
+     try:
         stripe_refund = stripe.Refund.create(
             payment_intent=payment_id, stripe_account=connect_account_id
         )
@@ -244,14 +247,14 @@ def refund_stripe_subscription(payment_id):
         transaction.external_refund_id = stripe_refund.id
         database.session.commit()
 
-    except stripe.error.InvalidRequestError as e:
+     except stripe.error.InvalidRequestError as e:
         if e.error.code == "charge_already_refunded":
             flash("Charge already refunded")
             return redirect(url_for("admin.transactions"))
         else:
             flash(e.error.code)
             return redirect(url_for("admin.transactions"))
-    flash("Transaction refunded")
+     flash("Transaction refunded")
     return redirect(url_for("admin.transactions"))
 
 
