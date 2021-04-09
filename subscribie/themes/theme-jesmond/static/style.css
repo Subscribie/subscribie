@@ -23,18 +23,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@300;400;600;700&display=swap');
-
-.lobster {
-  font-family: 'Lobster', cursive;
-  font-weight: 600;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 24px;
-
-  color: #000000;
-}
 
 body {
   font-family: 'Poppins', sans-serif;

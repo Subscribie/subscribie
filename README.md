@@ -102,8 +102,7 @@ use in further requests.
 1. Install stripe cli https://stripe.com/docs/stripe-cli#install
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
 3. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
-4. Copy the webhook secret from the output "Ready! Your webhook signing secret is **whsec_abc123..**" into your `STRIPE_WEBHOOK_ENDPOINT_SECRET` inside `.env` file
-
+4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  https://github.com/Subscribie/stripe-connect-webhook-endpoint-router (you don't need this for local development).
 ```
 stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
 ```
