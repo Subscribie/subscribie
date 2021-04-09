@@ -104,8 +104,7 @@ def store_stripe_transaction(stripe_external_id):
     # First try fetching paid invoice
     try:
         invoice = stripe.Invoice.retrieve(
-            id=stripe_external_id,
-            stripe_account=stripe_connect_account_id,
+            id=stripe_external_id, stripe_account=stripe_connect_account_id
         )
     except stripe.error.InvalidRequestError as e:
         print(f"Cannot get stripe invoice subscription id: {stripe_external_id}")
@@ -234,24 +233,29 @@ def resume_stripe_subscription(subscription_id):
 def refund_stripe_subscription(payment_id):
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
-    try:
-        stripe_refund = stripe.Refund.create(
-            payment_intent=payment_id, stripe_account=connect_account_id
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/refund_subscription.html", confirm=False, payment_id=payment_id
         )
-        if Transaction.query.filter_by(external_id=payment_id).first() is None:
-            return "payment doesn't exist"
-        transaction = Transaction.query.filter_by(external_id=payment_id).first()
-        transaction.external_refund_id = stripe_refund.id
-        database.session.commit()
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe_refund = stripe.Refund.create(
+                payment_intent=payment_id, stripe_account=connect_account_id
+            )
+            if Transaction.query.filter_by(external_id=payment_id).first() is None:
+                return "payment doesn't exist"
+            transaction = Transaction.query.filter_by(external_id=payment_id).first()
+            transaction.external_refund_id = stripe_refund.id
+            database.session.commit()
 
-    except stripe.error.InvalidRequestError as e:
-        if e.error.code == "charge_already_refunded":
-            flash("Charge already refunded")
-            return redirect(url_for("admin.transactions"))
-        else:
-            flash(e.error.code)
-            return redirect(url_for("admin.transactions"))
-    flash("Transaction refunded")
+        except stripe.error.InvalidRequestError as e:
+            if e.error.code == "charge_already_refunded":
+                flash("Charge already refunded")
+                return redirect(url_for("admin.transactions"))
+            else:
+                flash(e.error.code)
+                return redirect(url_for("admin.transactions"))
+        flash("Transaction refunded")
     return redirect(url_for("admin.transactions"))
 
 
@@ -632,9 +636,7 @@ def category_assign_plan(category_id):
         return redirect(url_for("admin.category_assign_plan", category_id=category_id))
 
     return render_template(
-        "admin/categories/category_assign_plan.html",
-        category=category,
-        plans=plans,
+        "admin/categories/category_assign_plan.html", category=category, plans=plans
     )
 
 
@@ -950,9 +952,7 @@ def subscribers():
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
-        "admin/subscribers.html",
-        people=people.all(),
-        show_active=show_active,
+        "admin/subscribers.html", people=people.all(), show_active=show_active
     )
 
 
@@ -983,10 +983,7 @@ def un_archive_subscriber(subscriber_id):
 def archived_subscribers():
     # See models.py for archived filter
     people = database.session.query(Person).all()
-    return render_template(
-        "admin/subscribers-archived.html",
-        people=people,
-    )
+    return render_template("admin/subscribers-archived.html", people=people)
 
 
 @admin.route("/upcoming-invoices")
@@ -1000,9 +997,7 @@ def upcoming_invoices():
             subscriptions.append(subscription)
 
     return render_template(
-        "admin/upcoming_invoices.html",
-        subscriptions=subscriptions,
-        datetime=datetime,
+        "admin/upcoming_invoices.html", subscriptions=subscriptions, datetime=datetime
     )
 
 
@@ -1013,11 +1008,7 @@ def invoices():
     connect_account = get_stripe_connect_account()
     invoices = stripe.Invoice.list(stripe_account=connect_account.id)
 
-    return render_template(
-        "admin/invoices.html",
-        invoices=invoices,
-        datetime=datetime,
-    )
+    return render_template("admin/invoices.html", invoices=invoices, datetime=datetime)
 
 
 @admin.route("/transactions", methods=["GET"])
