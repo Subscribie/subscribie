@@ -226,6 +226,13 @@ Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is
 needs to be running locally if you're runnning browser automated tests
 locally.
 
+### Turn on headful mode
+
+So that you can see the browser tests, turn off headless mode. Edit `.env` and set
+```
+PLAYWRIGHT_HEADLESS=false
+```
+
 Run playwright tests:
 
 ```
