@@ -1,17 +1,20 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 
 # Subscribie  - Subscription Website Builder 
-#### variable subscription & recurring payments
+#### Open Source subscription billing website and management
 
-### What does this project do?                                                   
-
-Quickly build a subscription based website, taking variable monthly payments.
+## What does this project do?
+Quickly build a subscription based website, taking weekly/monthly/yearly payments.
 
 - You have a subscription service to sell
 - Each of your packages have unique selling points (USPs)
 - Each have a different reoccurring price
 
 Use Subscribie to build your subscription model business & test your market.
+
+# Demo
+
+https://subscriptionwebsitebuilder.co.uk
 
 # Why is this project useful?                                                    
 
@@ -21,15 +24,13 @@ to try the [subscription website hosting service](http://subscriptionwebsitebuil
 
 - Low risk (not very expensive)
 - No coding required
-- Simple: Just give us your USPs for each service & price
-- Upload your pictures
-- Stripe for subscriptions & one-off payments
+- Simple: Just enter your plans & prices
+- Upload a picture
+- Uses Stripe for subscriptions & one-off payments
 
-An abstraction layer for managing variable recurring subscriptions and billing. Abstracts direct debit and token based card payment providers or payment-institutions.
+# Contributing
 
-Keywords: subscriptions, payments, PS2, SEPA
-
-Want to be involved? See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
 
 # Quickstart (without Docker)
 
@@ -37,19 +38,36 @@ Want to be involved? See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
 cp .env.example .env # Copy default .env settings (read it)
-virtualenv -p python3 venv # Create a python3.x virtualenv
+```
+
+Set database path. Edit `.env` and set `DB_FULL_PATH` and `SQLALCHEMY_DATABASE_URI`. (optional but recommended- do not store data.db in /tmp).
+
+```
+# Open the .env file, and change the database path to store somewhere else (e.g. your `/home/Documents/data.db` folder):
+
+DB_FULL_PATH="/tmp/data.db"
+SQLALCHEMY_DATABASE_URI="sqlite:////tmp/data.db"
+```
+
+Create python environment and run flask:
+```
+python3 -m venv venv # Create a python3.x virtual environment
 . venv/bin/activate # Activate the virtualenv
 pip install -r requirements.txt # Install requirements
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask db upgrade
-# The database file will be called "data.db". It will be *above* your current directory
-flask initdb # This wil insert pretend data into your database.
-flask run # Run the app
+flask initdb # (optional)
+```
+
+The database file is called `data.db`. Note,
+`flask initdb` inserts pretend data into your database for testing. 
+```
+flask run
 ```
 Now visit http://127.0.0.1:5000
 
-# Quickstart (with Docker compose)
+# Quickstart (with Docker)
 
 If you like to use docker-compose workflow for local development:
 
@@ -59,17 +77,17 @@ cd subscribie
 cp .env.example .env
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
-# Build is only required if you want to force the image to be rebuilt
-# --force-recreate is for recreating the container (not the image)
-docker-compose up --build --force-recreate
+
+# Start the container
+docker-compose up
+
+# Wait for it to build...
 ```
 
 Then visit http://127.0.0.1:5000
 
 To go inside the container, you can do: `docker-compose exec web /bin/bash` 
 from the project root directory.
-
-To rebuild the latest container, stop docker compose then do: `docker-compose build`.
 
 # How to change theme (theme development)
 
@@ -96,18 +114,6 @@ subscribie root project.
 
 Provide the username & password in a POST request, and a jwt token is returned for 
 use in further requests. 
-
-# Testing Stripe webhooks locally
-
-1. Install stripe cli https://stripe.com/docs/stripe-cli#install
-2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
-3. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
-4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  https://github.com/Subscribie/stripe-connect-webhook-endpoint-router (you don't need this for local development).
-```
-stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
-```
-
-This will allow you to see/process webhook requests locally using test api keys. Note that in production, stripe webhooks are proxied via https://github.com/Subscribie/stripe-connect-webhook-endpoint-router which validates every webhook before it get forwarded.
 
 # API Basics
 
@@ -179,38 +185,48 @@ Example DELETE request:
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
-# Demo
+# How to test
 
-https://subscriptionwebsitebuilder.co.uk
+There are two types of test
+- Browser automated tests using [playwright](https://github.com/microsoft/playwright)
+- Basic Python tests
 
-# Tests
-
-To run tests:
+### Run Python tests:
 
 ```
 . venv/bin/activate # activate virtualenv
 python -m pytest --ignore=node_modules # run pytest
 ```
 
-## Automated browser testing with playright
+### Stripe webhooks locally
 
-Run npm install & pray to the npm gods.
+1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
+2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
+3. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
+4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development).
+```
+stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+```
+
+## Run browser automated tests with playright
+
+Run npm install.
 ```
 npm install
 ```
 
-Might see `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
+Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
 ```
   Install missing packages with:
       sudo apt-get install libgstreamer-plugins-bad1.0-0\
           libenchant1c2a
 ```
 
-The https://github.com/Subscribie/stripe-connect-account-announcer
+[Stripe-connect-account-announcer](https://github.com/Subscribie/stripe-connect-account-announcer)
 needs to be running locally if you're runnning browser automated tests
 locally.
 
-Then, to run playwright tests:
+Run playwright tests:
 
 ```
 npm test
@@ -239,3 +255,11 @@ Needed components / services. Check the `.env.example` for each of them.
 Read through the [docs](https://subscribie.readthedocs.io)
 Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
 
+
+## Docker help
+
+### How do I rebuild the container?
+Sometimes you need to rebuild the container if you've made changes to the `Dockerfile`.
+```
+docker-compose up --build --force-recreate
+```
