@@ -9,7 +9,7 @@ const fs = require('fs');
 const { devices } = require('playwright');
 const iPhone = devices['iPhone 11'];
 const assert = require('assert');
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 40000;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const videosDir = __dirname + '/videos/';
@@ -64,7 +64,7 @@ async function test_connect_to_stripe_connect()  {
   console.log("test_connect_to_stripe_connect");
   const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS});
   const context = await browser.newContext(browserContextOptions);
-  context.setDefaultTimeout(10000);
+  context.setDefaultTimeout(DEFAULT_TIMEOUT);
   const page = await context.newPage();
 
   // Login
@@ -99,25 +99,30 @@ async function test_connect_to_stripe_connect()  {
 
   // Start Stripe connect onboarding
   await page.click('.btn.btn-success');
-  await page.waitForNavigation({'timeout': 30000});
+  //await page.waitForNavigation({'timeout': 30000});
+  await detect_stripe_onboarding_page()
 
   async function detect_stripe_onboarding_page() {
+    console.log("Start Stripe connect onboarding")
     try {
       let contentStripePage = await page.evaluate(() => document.body.textContent);
  
       // Stripe onboarding login
-      if ( contentStripePage.indexOf("Subscribie partners with Stripe for fast") > -1 ) {
+      if ( contentStripePage.indexOf("Get paid by Subscribie") > -1 ) {
+        console.log("Detected stripe onboarding")
         // Use the text phone number for SMS verification
         await page.click('text="the test phone number"');
         await page.fill('#email', email);
         await page.click('text="Next"');
         await page.click('text="Use test code"'); //Use Test code for SMS
+      } else {
+        console.log("Could not detect stripe onboarding page")
       }
 
       // Stripe onboarding Business type
       if (contentStripePage.indexOf('Type of business') > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.selectOption('#Select17', 'individual');
+        await new Promise(x => setTimeout(x, 4000));
+        await page.selectOption('select', 'individual');
         await page.click('text="Next"');
       }
 
@@ -230,8 +235,6 @@ async function test_connect_to_stripe_connect()  {
         await detect_stripe_onboarding_page();
     }
   }
-
-  await detect_stripe_onboarding_page();
   
   console.log("Announce stripe account manually visiting announce url. In prod this is called via uwsgi cron");
   await page.goto(PLAYWRIGHT_HOST + '/admin/announce-stripe-connect');
