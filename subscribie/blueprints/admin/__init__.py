@@ -181,6 +181,90 @@ def update_payment_fulfillment(stripe_external_id):
     return redirect(request.referrer)
 
 
+@admin.route("/stripe/charge", methods=["POST", "GET"])
+# @login_required
+def stripe_create_charge():
+    """Charge an existing subscriber x ammount immediately
+
+    :param stripe_customer_id: Stripe customer id
+    :param amount: Positive integer amount to charge in smallest currency unit
+    :param currency: ISO currency code, defaults to [GBP]
+    :param statement_descriptor_suffix: What customers see on their statements. Maximum 22 characters # noqa
+
+    Example call:
+      curl http://127.0.0.1:5000/admin/stripe/charge -d '{"stripe_customer_id":"cus_JKJhGWrM7NMnj2", "amount": 2000, "currency": "GBP"}' # noqa
+    """
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+
+    try:
+        data = request.get_json(force=True)
+        amount = data["amount"]
+        currency = data["currency"]
+        statement_descriptor_suffix = data["statement_descriptor_suffix"]
+    except Exception:
+        # Assumme form submission
+        # Get stripe customer_id from subscribers subscription -> customer reference
+        person = Person.query.get(request.form.get("person_id"))
+        stripe_subscription_id = person.subscriptions[0].stripe_subscription_id
+        stripe_subscription = stripe.Subscription.retrieve(
+            stripe_subscription_id, stripe_account=connect_account_id
+        )
+        customer = stripe.Customer.retrieve(
+            id=stripe_subscription.customer, stripe_account=connect_account_id
+        )
+
+        amount = int(request.form.get("amount"))
+        currency = "GBP"
+        statement_descriptor_suffix = request.form.get("description")
+
+    try:
+        paymentMethods = stripe.PaymentMethod.list(
+            customer=customer, stripe_account=connect_account_id, type="card"
+        )
+
+        paymentIntent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency=currency,
+            payment_method_types=["card"],
+            application_fee_amount=int(amount * 0.025),
+            customer=customer,
+            description=statement_descriptor_suffix,
+            statement_descriptor_suffix=statement_descriptor_suffix,
+            stripe_account=connect_account_id,
+        )
+
+        # Confirm payment intent
+        stripe.PaymentIntent.confirm(
+            paymentIntent.id,
+            payment_method=paymentMethods["data"][0].id,
+            stripe_account=connect_account_id,
+        )
+
+        # Get latest paymentIntent status
+        paymentIntent = stripe.PaymentIntent.retrieve(
+            paymentIntent.id, stripe_account=connect_account_id
+        )
+        if paymentIntent.status == "succeeded":
+            # Store transaction
+            transaction = Transaction()
+            transaction.amount = amount
+            transaction.payment_status = "succeeded"
+            transaction.comment = statement_descriptor_suffix
+            transaction.external_id = paymentIntent.id
+            transaction.external_src = "stripe"
+            transaction.person = person
+            database.session.add(transaction)
+            database.session.commit()
+
+            flash("Charge was successful")
+            return redirect(url_for("admin.transactions"))
+    except stripe.error.InvalidRequestError as stripeError:
+        return jsonify(stripeError.error.message)
+
+    return jsonify(paymentIntent.status)
+
+
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/pause")
 @login_required
 def pause_stripe_subscription(subscription_id: str):

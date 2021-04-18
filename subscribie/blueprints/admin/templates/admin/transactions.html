@@ -39,6 +39,7 @@
         <th>Source</th>
         <th>Subscriber</th>
         <th>Subscription</th>
+        <th>Comment</th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -71,6 +72,9 @@
         <td> {% if transaction.subscription.plan %}
                {{ transaction.subscription.plan.title}}
              {% endif %}
+        </td>
+        <td>
+            {{ transaction.comment }}
         </td>
 			</tr>
 			{% endfor %}
