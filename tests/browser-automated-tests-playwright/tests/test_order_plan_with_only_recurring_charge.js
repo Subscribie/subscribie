@@ -32,7 +32,7 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     await page.click('#checkout-button');
 
     //Verify first payment is correct (recuring charge only)
-    const payment_content = await page.textContent('div.mr2.flex-item.mr2.width-fixed');
+    const payment_content = await page.textContent('div.mr2.flex-item.width-fixed');
     assert(payment_content === "£10.99");
     const recuring_charge_content = await page.textContent('.Text-fontSize--16');
     assert(recuring_charge_content === "Subscribe to Bath Soaps");
