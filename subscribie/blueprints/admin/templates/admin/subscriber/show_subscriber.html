@@ -32,6 +32,7 @@
               </address>
             </li>
           </ul>
+          <a class="btn btn-success mb-4" title="Instantly charge your subscriber a one-off amount" href="{{ url_for('admin.charge_subscriber', person_id = person.id) }}">Charge Subscriber</a>
           <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}">Archive Subscriber</a>
           <br />
         </div>
