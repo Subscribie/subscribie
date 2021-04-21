@@ -4,7 +4,6 @@
 {% block body %}
 
 <h2 class="text-center text-dark">Manage My Shop</h2>
-
     <div class="card" style="max-width:800px; margin:3rem auto;">
       <div class="card-body">
         <h3 class="card-title text-center my-3">Sign into your Subscribie account</h3>
@@ -20,7 +19,7 @@
 
         <form method="POST" action="{{ url_for('auth.login') }}">
           {{ form.csrf_token }}
-          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="">
+          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="{{ request.args.email }}">
           <input id="password" class="form-control form-control-lg mt-4" name="password" type="password" placeholder="Password" value="">
           <button type="submit" id="login" class="btn btn-success btn-lg btn-block my-3">
             <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Login</span>
@@ -37,7 +36,7 @@
         <p>Pop your email address that you signed up with in the box below and we'll send you an email, click the link in that email and you'll be securely logged in.</p>
         <form method="POST" action="{{ url_for('auth.login') }}">
           {{ form.csrf_token }}
-          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="">
+          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="{{ request.args.email }}">
           <button type="submit" class="btn btn-success btn-lg btn-block my-3">
             <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Magic Login</span>
           </button>
