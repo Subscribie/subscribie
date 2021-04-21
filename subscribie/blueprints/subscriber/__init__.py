@@ -27,6 +27,7 @@ from subscribie.models import (
     Option,
     ChosenOption,
     File,
+    User,
 )
 from flask_mail import Mail, Message
 from jinja2 import Template
@@ -72,6 +73,10 @@ def login():
         password = form.data["password"]
         subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
+            shopowner = User.query.filter_by(email=email).first()
+            if shopowner is not None:
+               flash("You are a shop admin, please login here")
+               return redirect(url_for('auth.login', email=email))
             flash("Person not found with that email")
             return redirect(url_for("subscriber.login"))
 
