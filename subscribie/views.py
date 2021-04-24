@@ -139,7 +139,7 @@ def custom_page(path):
         return redirect
     try:
         with open(
-            Path(str(current_app.config["THEME_PATH"]), page.template_file)
+            Path(str(current_app.config["CUSTOM_PAGES_PATH"]), page.template_file)
         ) as fh:
             body = fh.read()
     except FileNotFoundError as e:
