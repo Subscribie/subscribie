@@ -41,7 +41,14 @@ def load_theme(app):
     app.config["THEME_PATH"] = themePath
 
     my_loader = jinja2.ChoiceLoader(
-        [jinja2.FileSystemLoader(str(themePath)), app.jinja_loader]
+        [
+            # First attempt to get theme file from active theme
+            jinja2.FileSystemLoader(str(themePath)),
+            # Check if template is found in CUSTOM_PAGES_PATH
+            jinja2.FileSystemLoader(str(app.config.get("CUSTOM_PAGES_PATH", None))),
+            # Finally fallback to flask default template directory
+            app.jinja_loader,
+        ]
     )
     app.jinja_loader = my_loader
     app.static_folder = str(staticFolder)

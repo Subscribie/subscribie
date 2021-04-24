@@ -51,7 +51,7 @@ def delete_page_by_path(path):
         )
     # Perform template file deletion
     templateFile = path + ".html"
-    templateFilePath = Path(str(current_app.config["THEME_PATH"]), templateFile)
+    templateFilePath = Path(str(current_app.config["CUSTOM_PAGES_PATH"]), templateFile)
     try:
         templateFilePath.unlink()
     except FileNotFoundError:
@@ -81,7 +81,9 @@ def edit_page(path):
     if request.method == "GET":
         # Get page file contents
         template_file = page.template_file
-        with open(Path(str(current_app.config["THEME_PATH"]), template_file)) as fh:
+        with open(
+            Path(str(current_app.config["CUSTOM_PAGES_PATH"]), template_file)
+        ) as fh:
             rawPageContent = fh.read()
         return render_template(
             "edit_page.html", rawPageContent=rawPageContent, pageTitle=page.page_name
@@ -114,7 +116,7 @@ def edit_page(path):
             oldTemplateFile = path + ".html"
             # Rename old template file .old
             oldTemplatePath = Path(
-                str(current_app.config["THEME_PATH"]), oldTemplateFile
+                str(current_app.config["CUSTOM_PAGES_PATH"]), oldTemplateFile
             )
             oldTemplatePath.replace(
                 Path(str(current_app.config["THEME_PATH"]), oldTemplateFile + ".old")
@@ -168,7 +170,12 @@ def save_new_page():
     # Check page doesnt already exist
     page = Page.query.filter_by(path=pageName).first()
     if page is not None:
-        flash(Markup(f'The page <a href="/{pageName}">{pageName}</a> already exists'))
+        custom_page_url = url_for("views.custom_page", path=pageName)
+        flash(
+            Markup(
+                f"The page <a href='{custom_page_url}'>{pageName}</a> already exists"
+            )
+        )
         return redirect(url_for("pages.edit_pages_list"))
 
     # Add new page
@@ -181,7 +188,7 @@ def save_new_page():
 
     # Writeout template_file to file
     with open(
-        Path(str(current_app.config["THEME_PATH"]), template_file.lower()), "w"
+        Path(str(current_app.config["CUSTOM_PAGES_PATH"]), template_file.lower()), "w"
     ) as fh:
         full_page = page_body
         fh.write(full_page)
