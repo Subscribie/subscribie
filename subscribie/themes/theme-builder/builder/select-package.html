@@ -20,7 +20,7 @@
 
     <div class="container">
       <div class="card-deck mb-3 text-center">
-        {% for plan in plans %}
+        {% for plan in plans if plan.archived != 1 and plan.private is sameas false %}
         <div class="card mb-4 shadow-sm">
           <div class="card-header">
             <h4 class="my-0 font-weight-normal">
