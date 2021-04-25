@@ -622,6 +622,19 @@ def add_plan():
         else:
             draftPlan.private = 0
 
+        # If cancel_at_set is set,
+        # get date and time and convert to timestamp
+        if request.form.get("cancel_at_set-0", None):
+            cancel_at_date = datetime.strptime(
+                request.form.get("cancel_at_date", None), "%Y-%m-%d"
+            )
+            cancel_at_time = datetime.strptime(
+                request.form.get("cancel_at_time", None), "%H:%M"
+            )
+
+            cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
+            draftPlan.cancel_at = cancel_at.timestamp()
+
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))

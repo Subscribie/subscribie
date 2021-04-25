@@ -246,6 +246,7 @@ class Plan(database.Model, HasArchived):
     category_uuid = database.Column(database.Integer, ForeignKey("category.uuid"))
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
+    cancel_at = database.Column(database.String(), default=False)
 
 
 class Category(database.Model):

@@ -27,6 +27,7 @@ from subscribie.utils import (
     format_to_stripe_interval,
     create_stripe_tax_rate,
     get_stripe_livemode,
+    get_stripe_connect_account_id,
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
@@ -444,6 +445,22 @@ def create_subscription(
         database.session.add(subscription)
         database.session.commit()
         session["subscription_uuid"] = subscription.uuid
+
+        # If subscription plan has cancel_at set, modify Stripe subscription
+        # charge_at property
+        stripe.api_key = get_stripe_secret_key()
+        connect_account_id = get_stripe_connect_account_id()
+        if subscription.plan.cancel_at:
+            cancel_at = int(float(subscription.plan.cancel_at))
+            try:
+                stripe.Subscription.modify(
+                    sid=subscription.stripe_subscription_id,
+                    stripe_account=connect_account_id,
+                    metadata={"cancel_at": cancel_at},
+                )
+            except Exception as e:  # noqa
+                logging.error("Could not set cancel_at: {e}")
+
     return subscription
 
 
