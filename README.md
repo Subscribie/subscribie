@@ -112,6 +112,25 @@ subscribie root project.
 
 # API based authentication with jwt token
 
+#### Locally
+Locally you'll need to create public/private keys for secure
+jwt authentication.
+
+1) Create a public/private key
+
+Save the public/private key files to wherever you want, name whem whatever
+you want (normally .pub for public and without for private key).
+
+`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+
+2) Update .env file with PRIVATE_KEY and PUBLIC_KEY
+
+```
+PRIVATE_KEY="/home/Documents/id_rsa"
+PUBLIC_KEY="/home/documents/id_rsa.pub"
+```
+## Logging in via jwt or basic auth
+
 Provide the username & password in a POST request, and a jwt token is returned for 
 use in further requests. 
 
