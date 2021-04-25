@@ -121,7 +121,7 @@ jwt authentication.
 Save the public/private key files to wherever you want, name whem whatever
 you want (normally .pub for public and without for private key).
 
-`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"` (do *not* add a passphrase, and *dont* overwrite your existing keys, if you have one (choose a different name/path when saving))
 
 2) Update .env file with PRIVATE_KEY and PUBLIC_KEY
 
