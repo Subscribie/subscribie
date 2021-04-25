@@ -215,6 +215,29 @@
                               Then, you can send a link to your customer(s) to sign-up to the private plan.
                               </small>
             </div>
+
+            <div class="form-group ">
+                  <div class="form-check">
+                    <input type="checkbox" value="yes" class="form-check-input toggle" name="cancel_at_set-0" id="cancel_at_set-0">
+                    <label class="form-check-label font-weight-bolder" for="cancel_at_set-0">Cancel at</label>
+                  </div>
+                  <small class="form-text text-muted">
+                    Cancel all subscriptions to this plan at this date / time. This is useful if you run a
+                    membership style organisation with seasons (such as a Football club).
+                  </small>
+            </div>
+            <div class="form-group extra_fields" id="cancel_at" >
+              <label for="cancel_at-0" class="col-form-label font-weight-bolder">Date &amp; time to cancel</label>
+              <label class="form-check-label font-weight-bolder" for="cancel_at_date">Cancel at</label>
+              <input type="date" class="form-control" name="cancel_at_date" id="cancel_at_date">
+              <small class="form-text text-muted mb-2">
+                Date (e.g. 30th June 2022)
+              </small>
+              <input type="time" class="form-control" name="cancel_at_time" value="00:00" id="cancel_at_time">
+              <small class="form-text text-muted">
+                Time (e.g. midnight)
+              </small>
+            </div>
           </fieldset>
         
           <button type="submit" id="save" class="btn btn-primary btn-block my-3 mx-auto">Save</button>

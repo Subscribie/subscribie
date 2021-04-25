@@ -74,6 +74,9 @@ class PlansForm(StripWhitespaceForm):
         FileField(validators=[FileAllowed(images, "Images only!")]), min_entries=1
     )
     position = FieldList(IntegerField("Position", [validators.optional()], default=0))
+    cancel_at = FieldList(
+        StringField("Cancel at", [validators.optional()], default=False)
+    )
     description = FieldList(
         StringField("Description", [validators.optional()], default=False)
     )
