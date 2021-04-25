@@ -123,6 +123,19 @@ you want (normally .pub for public and without for private key).
 
 `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"` (do *not* add a passphrase, and *dont* overwrite your existing keys, if you have one (choose a different name/path when saving))
 
+Here's a complete example:
+```
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/fred/.ssh/id_rsa): /tmp/subscribie
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /tmp/subscribie
+Your public key has been saved in /tmp/subscribie.pub
+```
+In the above example, the keys were named 'subscribie' and saved in the `/tmp`
+directory. *Dont save in the tmp directory*, instead choose your project folder for example.
+
 2) Update .env file with PRIVATE_KEY and PUBLIC_KEY
 
 ```
