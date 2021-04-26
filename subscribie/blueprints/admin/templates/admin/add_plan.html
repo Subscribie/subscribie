@@ -227,7 +227,7 @@
                   </small>
             </div>
             <div class="form-group extra_fields" id="cancel_at" >
-              <label for="cancel_at-0" class="col-form-label font-weight-bolder">Date &amp; time to cancel</label>
+              <label for="cancel_at-0" class="col-form-label font-weight-bolder">Date &amp; time to</label>
               <label class="form-check-label font-weight-bolder" for="cancel_at_date">Cancel at</label>
               <input type="date" class="form-control" name="cancel_at_date" id="cancel_at_date">
               <small class="form-text text-muted mb-2">
@@ -248,5 +248,22 @@
 
     </div>
   </div><!-- end .section -->
+ <script>
+ var checkBox = document.querySelector('input[id="cancel_at_set-0"]');
+ var dateInput = document.querySelector('input[id="cancel_at_date"]');
+
+ function toggleRequired() {
+
+    if (dateInput.hasAttribute('required') !== true) {
+        dateInput.setAttribute('required','required');
+    }
+
+    else {
+        dateInput.removeAttribute('required');
+    }
+ }
+
+ checkBox.addEventListener('change',toggleRequired,false);
+</script>
 </main>
 {% endblock body %}
