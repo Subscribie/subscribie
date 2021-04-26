@@ -451,7 +451,7 @@ def create_subscription(
         stripe.api_key = get_stripe_secret_key()
         connect_account_id = get_stripe_connect_account_id()
         if subscription.plan.cancel_at:
-            cancel_at = int(float(subscription.plan.cancel_at))
+            cancel_at = subscription.plan.cancel_at
             try:
                 stripe.Subscription.modify(
                     sid=subscription.stripe_subscription_id,

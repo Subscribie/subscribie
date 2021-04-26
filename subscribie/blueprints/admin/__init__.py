@@ -633,7 +633,7 @@ def add_plan():
             )
 
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
-            draftPlan.cancel_at = cancel_at.timestamp()
+            draftPlan.cancel_at = int(float(cancel_at.timestamp()))
 
         database.session.commit()
         flash("Plan added.")

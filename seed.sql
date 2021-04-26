@@ -2,7 +2,7 @@ INSERT INTO user (id, email, password) VALUES
 (1, 'admin@example.com', 'pbkdf2:sha256:150000$w0mLxLJU$e6f21a4b45a0d10286766f33057834949148eb2b3ecc4ec1a136d619f82034d0'); -- password
 
 INSERT INTO company (id, created_at, name, slogan) VALUES 
-(1, datetime(), "Soap Subscription", "Sqeaky clean!");
+(1, datetime(), "Soap Subscription "|| DATE(), "Sqeaky clean!");
 
 INSERT INTO category(id, uuid, created_at, name) VALUES
 (1, "7085d61d-c84d-4951-a824-aa27c7e21086", datetime(), "Make your choice");
