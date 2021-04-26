@@ -139,8 +139,8 @@ directory. *Dont save in the tmp directory*, instead choose your project folder 
 2) Update .env file with PRIVATE_KEY and PUBLIC_KEY
 
 ```
-PRIVATE_KEY="/home/Documents/id_rsa"
-PUBLIC_KEY="/home/documents/id_rsa.pub"
+PRIVATE_KEY="<paste the content of id_rsa>"
+PUBLIC_KEY="<paste the content of id_rsa.pub>"
 ```
 ## Logging in via jwt or basic auth
 
