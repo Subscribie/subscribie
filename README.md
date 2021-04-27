@@ -141,7 +141,7 @@ use in further requests.
 ## Oauth style login:
 
 ```
-curl -v -d "username=me@example.com" -d "password=password" http://127.0.0.1:5000/auth/jwt-login
+curl -v -d "username=admin@example.com" -d "password=password" http://127.0.0.1:5000/auth/jwt-login
 ```
 ## Http Basic auth login:
 
