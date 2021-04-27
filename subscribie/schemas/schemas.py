@@ -24,7 +24,7 @@ class PlanRequirementsBase(OrmBase):
     created_at: datetime = datetime.utcnow()
     instant_payment: bool
     subscription: bool
-    note_to_seller_required: bool
+    note_to_seller_required: Optional[bool]
     note_to_buyer_message: Optional[str]
 
 
