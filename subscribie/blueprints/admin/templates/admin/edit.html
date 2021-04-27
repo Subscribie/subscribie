@@ -1,14 +1,14 @@
-{% extends "admin/layout.html" %}                                                
-{% block title %} Dashboard {% endblock %}                                                                
-                                                                                 
-{% block body %}  
+{% extends "admin/layout.html" %}
+{% block title %} Dashboard {% endblock %}
+
+{% block body %}
 
 <h2 class="text-center text-dark mb-3">Edit Plans</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
     <li class="breadcrumb-item active" aria-current="page">Edit Plans</li>
   </ul>
 </div>
@@ -22,20 +22,20 @@
     <div class="container">
       <div class="alert alert-danger col-md-6 mx-auto">
         <p><strong class="alert-heading">Oops, something is missing. Please take a look at:</strong></p>
-        <ul class=errors>                                                            
-          {% for error in form.errors %}                                              
-            <li>{{ error }}</li>                                                       
-          {% endfor %}                                                                 
-        </ul> 
-      </div>                                                        
-    </div>                                                                    
-      {% endif %} 
+        <ul class=errors>
+          {% for error in form.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+      {% endif %}
 
     <div class="container">
     <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
 
 	<div class="card mx-auto col-md-6 mb-3">
-        
+
         <fieldset>
           <legend>Shop details</legend>
           <div class="form-group">
@@ -54,6 +54,18 @@
 
         {% for plan in plans %}
 
+         <div id="accordion">
+          <div class="card">
+
+           <div class="card-header" id="heading-{{ loop.index0 }}">
+             <h5 class="mb-0">
+               <label class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ loop.index0 }}" aria-expanded="true" aria-controls="collapse-{{ loop.index0 }}">
+                 {{ plan.title }}
+               </label>
+             </h5>
+           </div>
+           <div id="collapse-{{ loop.index0 }}" class="collapse" aria-labelledby="heading-{{ loop.index0 }}" data-parent="#accordion">
+             <div class="card-body">
           <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
           <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
           <div class="card col-lg-5 mb-3 mx-auto">
@@ -78,7 +90,7 @@
 											<div class="invalid-feedback">
 												Please provide a selling point {{ ns.count }}
 											</div>
-                    </div> 
+                    </div>
                   {% endfor %}
               </fieldset>
 
@@ -99,7 +111,7 @@
                 <div class="form-group">
                   <div class="form-check">
                     <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
-                    <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" 
+                    <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}"
                       {% if plan.requirements.subscription  %}
                         checked
                       {% endif %}>
@@ -116,22 +128,22 @@
                       </div>
                       <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}"
                         {% if plan.interval_amount %}
-                        value="{{ plan.interval_amount/ 100 }}" 
+                        value="{{ plan.interval_amount/ 100 }}"
                         {% endif %}
                         class="form-control" type="number" step="0.01">
                     </div>
                   </div>
-                <div class="form-group">                                           
+                <div class="form-group">
                   <label for="interval_unit-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Interval Unit</label>
-                  <div class="input-group">                                        
+                  <div class="input-group">
                     <select name="interval_unit-{{ loop.index0 }}" id="interval_unit-{{ loop.index0 }}" class="form-control">
-                      <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>                     
-                      <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>                       
-                      <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>                       
-                    </select>                                                      
-                  </div>                                                           
+                      <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>
+                      <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>
+                      <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>
+                    </select>
+                  </div>
                 </div>
-      
+
                   <div class="form-group">
                     <label for="days_before_first_charge-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Days before the first charge</label>
                     <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ plan.days_before_first_charge }}" class="form-control" >
@@ -157,7 +169,7 @@
               <fieldset>
                 <div class="form-group form-check">
                   <input type="hidden" class="instant_payment-check" data-id="{{ loop.index0 }}" name="instant_payment-{{ loop.index0 }}" value="no">
-                  <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" 
+                  <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}"
                     {% if plan.requirements.instant_payment  %}
                       checked
                     {% endif %}>
@@ -258,13 +270,20 @@
                 <a href="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title)}}" target="_blank">Share URL<a>
               </fieldset>
 
-            
           </div>
+          <button type="submit" id="save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
+          <span id="error"></span>
+<!-- end accordion section -->
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- end accordion section -->
+
             {% endfor %}
         </div>
-        <button type="submit" id="save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
-        <span id="error"></span>
-        
+
+
       </div>
       </form>
     </div>
