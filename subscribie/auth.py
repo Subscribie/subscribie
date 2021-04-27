@@ -61,6 +61,11 @@ def token_required(f):
             return jsonify({"msg": "ExpiredSignatureError"}), 401
         except jwt.exceptions.InvalidAlgorithmError:
             return jsonify({"msg": "InvalidAlgorithmError"}), 401
+        except jwt.exceptions.DecodeError:
+            return jsonify({"msg": "DecodeError"}), 401
+        except Exception:
+            return jsonify({"msg": "Token could not be validated or was missing"})
+
         return f(*args, **kwds)
 
     return wrapper
@@ -99,8 +104,15 @@ def jwt_login():
             private_key,
             algorithm="RS256",
         )
-        return jsonify({"token": jwt_payload.decode("utf-8")})
+        return jsonify({"token": jwt_payload})
     return jsonify({"msg": "Bad credentials"})
+
+
+@bp.route("/protected")
+@token_required
+def protected():
+    """Verify token based authentication"""
+    return jsonify({"msg": "Success"})
 
 
 def check_password_login(email, password):
