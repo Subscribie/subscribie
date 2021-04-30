@@ -49,15 +49,15 @@
 
         </div>
 
-        <div class="container">
-          <div class="row">
+        <div class="container mb-auto mx-auto">
+
 
             {% for plan in plans %}
 
-            <div id="accordion">
-              <div class="card">
+            <div  class="accordion" id="accordion">
+              <div class="card mx-auto col-md-6 mb-3"">
 
-                <div class="card-header" id="heading-{{ loop.index0 }}">
+                <div id="heading-{{ loop.index0 }}">
                   <h5 class="mb-0">
                     <label class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ loop.index0 }}" aria-expanded="true" aria-controls="collapse-{{ loop.index0 }}">
                       {{ plan.title }}
@@ -68,7 +68,7 @@
                   <div class="card-body">
                     <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
                     <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
-                    <div class="card col-lg-5 mb-3 mx-auto">
+                    <div class="card col-lg-12">
                       {{ form.csrf_token }}
 
                       <div class="form-group">
