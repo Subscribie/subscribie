@@ -156,7 +156,14 @@
           elms[i].disabled = true;
         }
       }
+      saveButtons = document.getElementsByClassName('save-plan');
+      for (var i=0; i<saveButtons.length; i++) {
+        saveButtons[i].addEventListener('click', disableSubmit);
+       }
       document.getElementById('save').disabled=true;
+    }
+    function disableSubmit(e) {
+      e.target.disabled=true;
     }
     form = document.getElementById('plansForm');
     form.addEventListener('submit', handlePlansForm);
