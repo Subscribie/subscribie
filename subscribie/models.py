@@ -121,6 +121,7 @@ class Subscription(database.Model):
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
     stripe_external_id = database.Column(database.String())
+    stripe_status = database.Column(database.String())
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
