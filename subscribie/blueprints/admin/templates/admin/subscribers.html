@@ -23,6 +23,7 @@
           <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
       {%endif %}
       <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
+      <a href="{{url_for('admin.refresh_subscriptions')}}" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary">Refresh Subscriptions</a>
        </div>
       <table class="table mobile-optimised">
         <thead>
