@@ -1,6 +1,7 @@
 from flask import current_app, request, g
 import stripe
 from subscribie import database
+import logging
 
 
 def get_stripe_secret_key():
@@ -79,6 +80,21 @@ def get_stripe_connect_account_id():
         account_id = payment_provider.stripe_test_connect_account_id
 
     return account_id
+
+
+def stripe_connect_active():
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+    if stripe.api_key is None or stripe.api_key == "":
+        return False
+    if connect_account_id is None:
+        return False
+    try:
+        stripe.Balance.retrieve(stripe_account=connect_account_id)
+        return True
+    except Exception as e:
+        logging.info(e)
+        return False
 
 
 def format_to_stripe_interval(plan: str):

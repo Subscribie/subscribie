@@ -14,12 +14,10 @@ import stripe
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
-    get_stripe_connect_account,
 )
 from flask import request
 
 from .database import database
-import logging
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
@@ -129,21 +127,8 @@ class Subscription(database.Model):
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
-
-            stripe.api_key = get_stripe_secret_key()
-            connect_account = get_stripe_connect_account()
-            try:
-                subscription = stripe.Subscription.retrieve(
-                    stripe_account=connect_account.id, id=self.stripe_subscription_id
-                )
-                if subscription.pause_collection is not None:
-                    return False
-                elif subscription.status == "active":
-                    return True
-            except stripe.error.InvalidRequestError as e:
-                logging.error("Could not get stripe subscription status")
-                logging.error(e)
-
+            if self.stripe_status == "active":
+                return True
         return False
 
     def upcoming_invoice(self):
