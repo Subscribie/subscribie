@@ -158,8 +158,12 @@
       }
       document.getElementById('save').disabled=true;
     }
-    form = document.getElementById('plansForm');
-    form.addEventListener('submit', handlePlansForm);
+    try {
+      form = document.getElementById('plansForm');
+      form.addEventListener('submit', handlePlansForm);
+    } catch (error) {
+      console.log(error);
+    }
   </script>
   <!-- end plan add/edit validation -->
 
