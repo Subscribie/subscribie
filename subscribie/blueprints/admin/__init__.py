@@ -1042,10 +1042,10 @@ def subscribers():
 
 
 @admin.route("/refresh-subscription-statuses")
-@login_required
 def refresh_subscriptions():
     update_stripe_subscription_statuses()
-    return redirect(request.referrer)
+    if request.referrer is not None:
+        return redirect(request.referrer)
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
