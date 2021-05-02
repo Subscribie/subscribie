@@ -20,9 +20,10 @@
         {% if show_active %}
           <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
         {% else %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
+          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
       {%endif %}
       <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
+      <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
       <table class="table mobile-optimised">
         <thead>
@@ -60,10 +61,6 @@
               {% if person.subscriptions %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
-                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                    {# if plan is a subscription, get its live subscription status #}
-                      {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_subscription_id)) %}
-                    {% endif %}
                     <li>
                         <div class="card">
                             <ul class="list-unstyled px-2">
@@ -102,7 +99,7 @@
                                     </span>
                                     <li><strong>Status: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {{ ns.stripe_subscription_status }}
+                                            {{ subscription.stripe_status }}
                                         {% else %}
                                             Paid
                                         {% endif %}
@@ -121,7 +118,7 @@
                                     </li>
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if ns.stripe_subscription_status == 'Active' %}
+                                            {% if subscription.stripe_status|lower == 'active' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
@@ -133,7 +130,7 @@
                                                     Cancel
                                                 </a> |
                                             {% endif %}
-                                            {% if ns.stripe_subscription_status == 'Paused' %}
+                                            {% if subscription.stripe_status|lower == 'paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
@@ -161,6 +158,17 @@
 document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
   e.target.textContent = "Please wait...";
 });
+
+{# Refresh subscription statuses when button clicked #}
+btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
+
+btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
+
+function refreshSubscriptionStatuses() {
+  fetch("{{ url_for('admin.refresh_subscriptions') }}")
+  .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
+}
+{# End Refresh subscription statuses when button clicked #}
 
 </script>
 

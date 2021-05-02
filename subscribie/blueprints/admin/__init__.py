@@ -62,6 +62,7 @@ from subscribie.models import (
     TaxRate,
     Category,
 )
+from .subscription import update_stripe_subscription_statuses
 import stripe
 from werkzeug.utils import secure_filename
 
@@ -1038,6 +1039,17 @@ def subscribers():
     return render_template(
         "admin/subscribers.html", people=people.all(), show_active=show_active
     )
+
+
+@admin.route("/refresh-subscription-statuses")
+def refresh_subscriptions():
+    update_stripe_subscription_statuses()
+    if request.referrer is not None:
+        flash("Subscription statuses have been refreshed.")
+        flash(
+            "Note: This is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+        )
+        return redirect(request.referrer)
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")

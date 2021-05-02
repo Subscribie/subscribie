@@ -14,12 +14,10 @@ import stripe
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
-    get_stripe_connect_account,
 )
 from flask import request
 
 from .database import database
-import logging
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
@@ -29,7 +27,11 @@ def filter_archived(query):
         if desc["type"] is Person and "archived-subscribers" in request.path:
             query = query.filter(entity.archived == 1)
             return query
-        elif desc["type"] is Person and "un-archive" not in request.path and "/account/login" not in request.path:
+        elif (
+            desc["type"] is Person
+            and "un-archive" not in request.path
+            and "/account/login" not in request.path
+        ):
             query = query.filter(entity.archived == 0)
             return query
 
@@ -121,24 +123,12 @@ class Subscription(database.Model):
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
     stripe_external_id = database.Column(database.String())
+    stripe_status = database.Column(database.String())
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
-
-            stripe.api_key = get_stripe_secret_key()
-            connect_account = get_stripe_connect_account()
-            try:
-                subscription = stripe.Subscription.retrieve(
-                    stripe_account=connect_account.id, id=self.stripe_subscription_id
-                )
-                if subscription.pause_collection is not None:
-                    return False
-                elif subscription.status == "active":
-                    return True
-            except stripe.error.InvalidRequestError as e:
-                logging.error("Could not get stripe subscription status")
-                logging.error(e)
-
+            if self.stripe_status == "active":
+                return True
         return False
 
     def upcoming_invoice(self):
