@@ -1045,6 +1045,10 @@ def subscribers():
 def refresh_subscriptions():
     update_stripe_subscription_statuses()
     if request.referrer is not None:
+        flash("Subscription statuses have been refreshed.")
+        flash(
+            "Note: This is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+        )
         return redirect(request.referrer)
 
 
