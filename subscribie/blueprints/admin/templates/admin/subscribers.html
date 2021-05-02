@@ -20,10 +20,10 @@
         {% if show_active %}
           <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
         {% else %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
+          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
       {%endif %}
       <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
-      <a href="{{url_for('admin.refresh_subscriptions')}}" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary">Refresh Subscriptions</a>
+      <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
       <table class="table mobile-optimised">
         <thead>
@@ -158,6 +158,17 @@
 document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
   e.target.textContent = "Please wait...";
 });
+
+{# Refresh subscription statuses when button clicked #}
+btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
+
+btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
+
+function refreshSubscriptionStatuses() {
+  fetch("{{ url_for('admin.refresh_subscriptions') }}")
+  .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
+}
+{# End Refresh subscription statuses when button clicked #}
 
 </script>
 
