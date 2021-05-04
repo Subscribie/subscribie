@@ -104,6 +104,12 @@
                                             Paid
                                         {% endif %}
                                     </li>
+                                    {% if subscription.stripe_cancel_at %}
+                                      <strong>Automatically Cancels at:</strong>
+                                      {{ subscription.stripe_cancel_at | timestampToDate }}
+                                    {% endif %}
+                                    <li>
+                                    </li>
                                     <li>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.note_to_seller_required %}
                                             <details open>

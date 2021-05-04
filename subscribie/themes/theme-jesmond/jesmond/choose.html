@@ -85,6 +85,9 @@
                   <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
                 </div>
                 {% endfor %}
+                {% if plan.cancel_at %}
+                  <small>Automatically cancels on: {{ plan.cancel_at | timestampToDate }}</small>
+                {% endif %}
               </div>
 
               <div class="card-footer">
@@ -108,7 +111,6 @@
                     </div>
                   </div>
                 {% endif %}
-
                 {% if plan.choice_groups %}
                   <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block">
                     Choose

@@ -93,6 +93,11 @@ def currencyFormat(value):
     return "£{:,.2f}".format(value)
 
 
+@admin.app_template_filter()
+def timestampToDate(timestamp):
+    return datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+
+
 def store_stripe_transaction(stripe_external_id):
     """Store Stripe invoice payment in transactions table"""
     stripe.api_key = get_stripe_secret_key()
@@ -621,6 +626,19 @@ def add_plan():
             draftPlan.private = 1
         else:
             draftPlan.private = 0
+
+        # If cancel_at_set is set,
+        # get date and time and convert to timestamp
+        if request.form.get("cancel_at_set-0", None):
+            cancel_at_date = datetime.strptime(
+                request.form.get("cancel_at_date", None), "%Y-%m-%d"
+            )
+            cancel_at_time = datetime.strptime(
+                request.form.get("cancel_at_time", None), "%H:%M"
+            )
+
+            cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
+            draftPlan.cancel_at = int(float(cancel_at.timestamp()))
 
         database.session.commit()
         flash("Plan added.")
