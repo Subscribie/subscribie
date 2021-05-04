@@ -93,6 +93,11 @@ def currencyFormat(value):
     return "£{:,.2f}".format(value)
 
 
+@admin.app_template_filter()
+def timestampToDate(timestamp):
+    return datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+
+
 def store_stripe_transaction(stripe_external_id):
     """Store Stripe invoice payment in transactions table"""
     stripe.api_key = get_stripe_secret_key()

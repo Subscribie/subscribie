@@ -124,6 +124,11 @@ class Subscription(database.Model):
     stripe_subscription_id = database.Column(database.String())
     stripe_external_id = database.Column(database.String())
     stripe_status = database.Column(database.String())
+    # stripe_cancel_at is the 'live' setting (which may change)
+    # and must be checked via cron/webhooks. Plan.cancel_at allows
+    # a shop owner to set a cancel_at date before subscribers sign-up,
+    # which creates subscriptions.
+    stripe_cancel_at = database.Column(database.String(), default=False)
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:

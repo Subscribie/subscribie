@@ -297,7 +297,7 @@ def stripe_create_checkout_session():
         if plan.requirements.subscription:
             plan_name = "(Up-front fee) " + plan_name
 
-        tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat == True else []
+        tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
         line_items.append(
             {
                 "tax_rates": tax_rates,
@@ -456,8 +456,10 @@ def create_subscription(
                 stripe.Subscription.modify(
                     sid=subscription.stripe_subscription_id,
                     stripe_account=connect_account_id,
-                    metadata={"cancel_at": cancel_at},
+                    cancel_at=cancel_at,
                 )
+                subscription.stripe_cancel_at = cancel_at
+                database.session.commit()
             except Exception as e:  # noqa
                 logging.error("Could not set cancel_at: {e}")
 
