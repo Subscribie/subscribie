@@ -171,7 +171,6 @@
   elements = document.querySelectorAll('button.disable-on-click');
 
   function disableElement(e) {
-    e.target.disabled = true;
     window.setTimeout(enableElement, 10000, e);
     if (e.target.closest('form') !== null) {
       //If button click was inside a form, submit the form.
