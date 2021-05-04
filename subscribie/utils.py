@@ -26,11 +26,16 @@ def get_stripe_publishable_key():
 
 def create_stripe_connect_account(company):
     stripe.api_key = get_stripe_secret_key()
+    if "127.0.0.1" in request.host_url:
+        url = "blackhole-1.iana.org"
+    else:
+        url = request.host_url
+
     account = stripe.Account.create(
         type="express",
         email=g.user.email,
         default_currency="gbp",
-        business_profile={"url": request.host_url, "name": company.name},
+        business_profile={"url": url, "name": company.name},
         capabilities={
             "card_payments": {"requested": True},
             "transfers": {"requested": True},
