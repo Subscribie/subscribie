@@ -248,22 +248,12 @@
 
     </div>
   </div><!-- end .section -->
- <script>
- var checkBox = document.querySelector('input[id="cancel_at_set-0"]');
- var dateInput = document.querySelector('input[id="cancel_at_date"]');
+<script>
 
- function toggleRequired() {
-
-    if (dateInput.hasAttribute('required') !== true) {
-        dateInput.setAttribute('required','required');
-    }
-
-    else {
-        dateInput.removeAttribute('required');
-    }
- }
-
- checkBox.addEventListener('change',toggleRequired,false);
+checkbox = document.getElementById("cancel_at_set-0");
+dateId = document.getElementById("cancel_at_date");
+ 
+checkbox.addEventListener('click', function() { dateId.toggleAttribute('required'); })
 </script>
 </main>
 {% endblock body %}
