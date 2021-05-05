@@ -1394,7 +1394,9 @@ def announce_shop_stripe_connect_ids():
         )
         if req.status_code != 200:
             return jsonify(
-                {"msg": f"Error Announcing stripe account for: {account_id}"}
+                {
+                    "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
+                }
             )
         return req
 
