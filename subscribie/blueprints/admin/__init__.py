@@ -1425,7 +1425,7 @@ def announce_shop_stripe_connect_ids():
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
-            stripe_connect_account_id = stripe_test_connect_account_id
+            stripe_connect_account_id = stripe_live_connect_account_id
         elif stripe_test_connect_account_id is not None:
             stripe_connect_account_id = stripe_test_connect_account_id
 
