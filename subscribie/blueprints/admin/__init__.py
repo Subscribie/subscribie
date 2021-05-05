@@ -1366,13 +1366,25 @@ def announce_shop_stripe_connect_ids():
     msg = None
     ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
 
+    def stripe_livemode():
+        payment_provider = PaymentProvider.query.first()
+        if payment_provider.stripe_live_connect_account_id is not None:
+            return True
+        return False
+
+    def stripe_testmode():
+        payment_provider = PaymentProvider.query.first()
+        if payment_provider.stripe_test_connect_account_id is not None:
+            return True
+        return False
+
     payment_provider = PaymentProvider.query.first()
 
     def announce_stripe_connect_account(account_id, live_mode=0):
         logging.debug(
             f"Announcing stripe account to {url_for('index', _external=True)}"
         )
-        requests.post(
+        req = requests.post(
             ANNOUNCE_HOST,
             json={
                 "stripe_connect_account_id": account_id,
@@ -1380,20 +1392,36 @@ def announce_shop_stripe_connect_ids():
                 "site_url": url_for("index", _external=True),
             },
         )
+        if req.status_code != 200:
+            return jsonify(
+                {
+                    "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
+                }
+            )
+        return req
 
     try:
+
+        if stripe_testmode() is False and stripe_livemode() is False:
+            logging.info(msg)
+            return jsonify("Stripe is not setup yet.")
+
         if payment_provider.stripe_live_connect_account_id is not None:
             stripe_live_connect_account_id = (
                 payment_provider.stripe_live_connect_account_id
             )
-            announce_stripe_connect_account(stripe_live_connect_account_id, live_mode=1)
+            req = announce_stripe_connect_account(
+                stripe_live_connect_account_id, live_mode=1
+            )
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
             stripe_test_connect_account_id = (
                 payment_provider.stripe_test_connect_account_id
             )
-            announce_stripe_connect_account(stripe_test_connect_account_id, live_mode=0)
+            req = announce_stripe_connect_account(
+                stripe_test_connect_account_id, live_mode=0
+            )
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
@@ -1412,7 +1440,9 @@ WARNING: Check logs to verify recipt"
         msg = f"Failed to announce stripe connect id:\n{e}"
         logging.error(msg)
 
-    return Response(json.dumps(msg), status=200, mimetype="application/json")
+    return Response(
+        json.dumps(msg), status=req.status_code, mimetype="application/json"
+    )
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])
