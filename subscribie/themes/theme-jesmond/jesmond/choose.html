@@ -85,7 +85,7 @@
                   <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
                 </div>
                 {% endfor %}
-                {% if plan.cancel_at and plan.cancel_at is not sameas '0' %}
+                {% if plan.cancel_at %}
                   <small>Automatically cancels on: {{ plan.cancel_at | timestampToDate }}</small>
                 {% endif %}
               </div>
