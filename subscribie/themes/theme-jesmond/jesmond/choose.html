@@ -67,8 +67,6 @@
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
                       <span class="text">Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>
-                    {% else %}
-                      <span class="text">Upfront cost: None</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
