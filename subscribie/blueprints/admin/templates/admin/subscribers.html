@@ -125,11 +125,13 @@
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if subscription.stripe_status|lower in ['active', 'trialing'] %}
+                                                {% if subscription.stripe_status|lower != 'trialing' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
                                                     Pause
-                                                </a> | 
+                                                </a> |
+                                                {% endif %}
                                                 <a href="{{ url_for("admin.cancel_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 confirm="") }}">
