@@ -158,7 +158,7 @@ curl -v -H "Authorization: Bearer <token>" http://127.0.0.1:5000/auth/protected
 ## Get all plans
 
 ```
-curl -v -H "Content-Type: application/json" -H "Authorization: Bearer <token> "http://127.0.0.1:5000/api/plans
+curl -v -H "Content-Type: application/json" -H "Authorization: Bearer <token> " http://127.0.0.1:5000/api/plans
 ```
 
 ## Create Plan 
