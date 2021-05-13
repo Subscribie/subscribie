@@ -116,12 +116,12 @@ subscribie root project.
 Locally you'll need to create public/private keys for secure
 jwt authentication.
 
-1) Create a public/private key
+1) Generate public/private keys automatically
 
 ```
-# generate private key and create 'private.pem' file
+# Use the commands below to automaticaly create 'private.pem' file and key
 openssl genrsa -out private.pem 2048
-# extract public key from private.pem and create 'public.pem' file
+# Use this command to automatically generate your public.pem
 openssl rsa -in private.pem -pubout > public.pem
 ```
 
