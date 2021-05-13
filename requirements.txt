@@ -1,3 +1,4 @@
+wheel
 Werkzeug==1.0.1
 Flask>=1,<2
 flask_cors
