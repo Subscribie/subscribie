@@ -12,7 +12,9 @@
 {% if plan.requirements.subscription %}
     <p>Interval: {{ plan.interval_unit }}</p>
     <p>Amount: &pound;{{ plan.interval_amount|int /100 }}
-    <p>Your first payment will be taken on: {{ first_charge_date or 'To be confirmed' }}</p>
+    {% if first_charge_date %}
+      <p>Your first payment will be taken on: {{ first_charge_date }}</p>
+    {% endif %}
     <p>Each payment will be on the same day {{ plan.interval_unit }}</p>
 {% endif %}
 
