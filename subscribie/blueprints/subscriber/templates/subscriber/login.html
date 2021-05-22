@@ -12,7 +12,7 @@
         <p>Pop your email address that you signed up with in the box below and we'll send you an email, click the link in that email and you'll be securely logged in.</p>
         <form method="POST" action="{{ url_for('auth.login') }}">
           {{ form.csrf_token }}
-          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="">
+          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="{{ request.args.get("email") or '' }}">
           <button type="submit" class="btn btn-success btn-lg btn-block my-3">
             <span style="margin-right:1rem" class="icon"><i class="fas fa-magic"></i></span><span>Magic Login</span>
           </button>
@@ -25,7 +25,7 @@
       <div class="card-body">
         <form method="POST" action="{{ url_for('subscriber.login') }}">
           {{ form.csrf_token }}
-          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" required>
+          <input id="email" class="form-control form-control-lg mt-4" name="email" type="email" placeholder="Email Address" value="{{ request.args.get("email") or '' }}" required>
           <input id="password" class="form-control form-control-lg mt-4" name="password" type="password" placeholder="Password" required>
           
           <button type="submit" class="btn btn-success btn-lg btn-block my-3">

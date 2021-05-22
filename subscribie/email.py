@@ -56,6 +56,7 @@ def send_welcome_email():
         first_charge_date=first_charge_date,
         first_charge_amount=first_charge_amount,
         plan=plan,
+        subscriber_email=session.get("email"),
     )
 
     try:

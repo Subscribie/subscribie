@@ -123,6 +123,7 @@ def store_customer():
                 email=email,
                 mobile=mobile,
                 password=str(os.urandom(16)),
+                password_expired=1,
             )
             database.session.add(person)
             database.session.commit()
