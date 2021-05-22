@@ -29,8 +29,13 @@ def filter_archived(query):
             return query
         elif (
             desc["type"] is Person
+            and request.path != "/"
             and "un-archive" not in request.path
             and "/account/login" not in request.path
+            and "/auth/login" not in request.path
+            and "/account/forgot-password" not in request.path
+            and "account/password-reset" not in request.path
+            and "/account" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
@@ -55,6 +60,7 @@ class User(database.Model):
     active = database.Column(database.String)
     login_token = database.Column(database.String)
     password_reset_string = database.Column(database.String())
+    password_expired = database.Column(database.Boolean(), default=0)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -81,6 +87,7 @@ class Person(database.Model, HasArchived):
     email = database.Column(database.String())
     password = database.Column(database.String())  # Hash of password
     password_reset_string = database.Column(database.String())
+    password_expired = database.Column(database.Boolean(), default=1)
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
