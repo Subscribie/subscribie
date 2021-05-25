@@ -1,11 +1,20 @@
 from flask_mail import Mail, Message
-from flask import current_app, session, request, render_template
+from flask import (
+    current_app,
+    session,
+    request,
+    render_template,
+)
 import flask
+import binascii
+import os
 from subscribie.models import (
+    database,
     Setting,
     User,
     Company,
     Plan,
+    Person,
     EmailTemplate,
 )
 import logging
@@ -17,6 +26,7 @@ from threading import Thread
 def send_async_email(msg):
     try:
         from subscribie import create_app
+
     except Exception:
         pass
 
@@ -31,6 +41,13 @@ def send_welcome_email():
     Mail(current_app)
     company = Company.query.first()
     plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
+    email = session.get("email")
+    ### this part is having problems ### when I put .first() at the end.
+    subscriber = Person.query.filter_by(email=email)
+    # Generate password reset token
+    token = binascii.hexlify(os.urandom(32)).decode()
+    subscriber.password_reset_string = token
+    database.session.commit()
 
     # Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()
@@ -53,6 +70,10 @@ def send_welcome_email():
         first_name=session.get("given_name", None),
         company_name=company.name,
         subscriber_login_url=scheme + flask.request.host + "/account/login",
+        subscriber_passwd_reset=scheme
+        + flask.request.host
+        + "/account/password-reset?token="
+        + token,
         first_charge_date=first_charge_date,
         first_charge_amount=first_charge_amount,
         plan=plan,
