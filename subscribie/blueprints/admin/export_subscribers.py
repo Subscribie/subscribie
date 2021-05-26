@@ -16,7 +16,7 @@ def export_subscribers():
         return "You don't have any subscribers yet."
     subscribers = []
     for subscription in subscriptions:
-        if subscription.peson is not None:
+        if subscription.person is not None:
             subscribers.append(
                 {
                     "given_name": subscription.person.given_name,
