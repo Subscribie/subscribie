@@ -3,6 +3,7 @@ from subscribie.auth import login_required
 from subscribie.database import database
 from subscribie.models import Subscription
 from flask import request, Response, jsonify
+import logging
 
 
 @admin.route("/export-subscribers-email")
@@ -15,13 +16,18 @@ def export_subscribers():
         return "You don't have any subscribers yet."
     subscribers = []
     for subscription in subscriptions:
-        subscribers.append(
-            {
-                "given_name": subscription.person.given_name,
-                "family_name": subscription.person.family_name,
-                "email": subscription.person.email,
-            }
-        )
+        if subscription.peson is not None:
+            subscribers.append(
+                {
+                    "given_name": subscription.person.given_name,
+                    "family_name": subscription.person.family_name,
+                    "email": subscription.person.email,
+                }
+            )
+        else:
+            logging.info(
+                f"Excluding subscription {subscription.id} as no person attached"
+            )
 
     if "csv" in request.args:
         import csv
