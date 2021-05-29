@@ -1,3 +1,4 @@
+import logging
 from flask import (
     Blueprint,
     render_template,
@@ -12,6 +13,7 @@ from subscribie.auth import login_required
 from subscribie.models import database, Page
 from pathlib import Path
 
+log = logging.getLogger(__name__)
 module_pages = Blueprint(
     "pages", __name__, template_folder="templates", static_folder="static"
 )
@@ -129,7 +131,7 @@ def edit_page(path):
 
         flash(
             Markup(
-                f'Page edited. <a href="{url_for("views.custom_page", path=page.path)}">{page.page_name}</a> '
+                f'Page edited. <a href="{url_for("views.custom_page", path=page.path)}">{page.page_name}</a> '  # noqa: E501
             )
         )
 

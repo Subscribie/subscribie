@@ -1,3 +1,4 @@
+import logging
 import functools
 import binascii
 import os
@@ -33,6 +34,7 @@ from flask_mail import Mail, Message
 from jinja2 import Template
 import requests
 
+log = logging.getLogger(__name__)
 subscriber = Blueprint(
     "subscriber", __name__, template_folder="templates", url_prefix=None
 )
@@ -143,8 +145,7 @@ def forgot_password():
                 msg.html = html
                 mail.send(msg)
             except Exception as e:
-                print(e)
-                print("Failed to send subscriber password reset email")
+                log.error(f"Failed to send subscriber password reset email. {e}")
             flash(
                 "We've sent you an email with a password reset link, \
                     please check your spam/junk folder too"

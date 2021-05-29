@@ -1,3 +1,4 @@
+import logging
 from .auth import token_required
 from flask import Blueprint, jsonify, request, Response
 from .models import Plan, PlanRequirements, PlanSellingPoints
@@ -5,6 +6,7 @@ import pydantic
 from subscribie import schemas, database
 import json
 
+log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
 
 
@@ -73,6 +75,7 @@ def update_plan(plan_id):
     if plan is None:
         resp = {"msg": f"Plan {plan_id} not found"}
         return jsonify(resp), 404
+    log.info(f"Updating plan {plan_id}")
 
     # Perform update
     try:
@@ -83,7 +86,6 @@ def update_plan(plan_id):
         return resp
 
     for field in plan_in:
-        print(field)
         if field == "selling_points":
             selling_points = []
             for selling_point in plan_in[field]:
