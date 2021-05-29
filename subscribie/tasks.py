@@ -1,5 +1,8 @@
+import logging
 import queue
 import threading
+
+log = logging.getLogger(__name__)
 
 task_queue = queue.Queue()
 
@@ -14,13 +17,13 @@ def fifo_queue():
     def worker():
         while True:
             item = task_queue.get()
-            print("Working on task from task_queue")
+            log.info("Working on task from task_queue")
             try:
                 item()  # Execute task
                 task_queue.task_done()
-                print("Finished working on task from task_queue")
+                log.info("Finished working on task from task_queue")
             except Exception as e:
-                print(f"Error running task: {e}")
+                log.error(f"Error running task: {e}")
 
     # turn-on the worker thread
     threading.Thread(target=worker, daemon=True).start()

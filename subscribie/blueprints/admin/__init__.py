@@ -66,6 +66,7 @@ from .subscription import update_stripe_subscription_statuses
 import stripe
 from werkzeug.utils import secure_filename
 
+log = logging.getLogger(__name__)
 
 admin = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -113,20 +114,19 @@ def store_stripe_transaction(stripe_external_id):
             id=stripe_external_id, stripe_account=stripe_connect_account_id
         )
     except stripe.error.InvalidRequestError as e:
-        print(f"Cannot get stripe invoice subscription id: {stripe_external_id}")
-        print("This might be okay. Trying to fetch upcoming invoice with same id...")
-        print(e)
+        log.error(
+            f"Cannot get stripe invoice subscription id: {stripe_external_id}. This might be okay. Trying to fetch upcoming invoice with same id. {e}"  # noqa
+        )
         try:
             invoice = stripe.Invoice.upcoming(
                 subscription=stripe_external_id,
                 stripe_account=stripe_connect_account_id,
             )
         except stripe.error.InvalidRequestError as e:
-            print(
+            log.error(
                 f"Cannot get stripe upcoming invoice subscription id: \
-                  {stripe_external_id}"
+                  {stripe_external_id}. {e}"
             )
-            print(e)
             raise Exception(
                 f"Cannot locate Stripe subscription invoice {stripe_external_id}"
             )
@@ -286,8 +286,9 @@ def pause_stripe_subscription(subscription_id: str):
         )
         flash("Subscription paused")
     except Exception as e:
-        flash("Error pausing subscription")
-        print(e)
+        msg = "Error pausing subscription"
+        flash(msg)
+        log.error(f"{msg}. {e}")
 
     if "goback" in request.args:
         return redirect(request.referrer)
@@ -309,8 +310,9 @@ def resume_stripe_subscription(subscription_id):
         )
         flash("Subscription resumed")
     except Exception as e:
-        flash("Error resuming subscription")
-        print(e)
+        msg = "Error resuming subscription"
+        flash(f"{msg}. {e}")
+        log.error(e)
 
     if "goback" in request.args:
         return redirect(request.referrer)
@@ -369,8 +371,9 @@ def cancel_stripe_subscription(subscription_id: str):
             )
             flash("Subscription cancelled")
         except Exception as e:
-            flash("Error cancelling subscription")
-            print(e)
+            msg = "Error cancelling subscription"
+            flash(f"{msg}. {e}")
+            log.error("{msg}. {e}")
     return redirect(url_for("admin.subscribers"))
 
 
@@ -775,7 +778,7 @@ def stripe_connect():
         stripe.error.InvalidRequestError,
         AttributeError,
     ) as e:
-        print(e)
+        log.error(e)
         account = None
 
     # Setup Stripe webhook endpoint if it dosent already exist
@@ -785,8 +788,7 @@ def stripe_connect():
             account = get_stripe_connect_account()
             modify_stripe_account_capability(account.id)
         except Exception as e:
-            logging.info("Could not update card_payments capability for account")
-            logging.info(e)
+            log.error(f"Could not update card_payments capability for account. {e}")
 
         try:
             stripe_express_dashboard_url = stripe.Account.create_login_link(
@@ -816,15 +818,15 @@ def stripe_onboarding():
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
-        print("Trying if there's an existing stripe account")
+        log.info("Trying if there's an existing stripe account")
         account = get_stripe_connect_account()
-        print(f"Yes, stripe account found: {account.id}")
+        log.info(f"Yes, stripe account found: {account.id}")
     except (
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
         AttributeError,
     ):
-        print("Could not find a stripe account, Creating stripe account")
+        log.info("Could not find a stripe account, Creating stripe account")
         account = create_stripe_connect_account(company)
         if payment_provider.stripe_livemode:
             payment_provider.stripe_live_connect_account_id = account.id
@@ -964,10 +966,10 @@ def get_subscription_status(stripe_subscription_id: str) -> str:
         else:
             return subscription.status
     except stripe.error.InvalidRequestError as e:
-        print(e)
+        log.error(e)
         return status_on_error
     except ValueError as e:
-        print(e)
+        log.error(e)
         return status_on_error
 
 
@@ -995,7 +997,7 @@ def get_number_of_active_subscribers():
         # Check each subscibers subscriptions to see if they're active
         for subscription in subscriber.subscriptions:
             if subscription.stripe_subscription_active():
-                logging.info(
+                log.info(
                     f"Checking if subscription {subscription.stripe_subscription_id} is active"  # noqa: E501
                 )
                 count += 1
@@ -1381,9 +1383,7 @@ def announce_shop_stripe_connect_ids():
     payment_provider = PaymentProvider.query.first()
 
     def announce_stripe_connect_account(account_id, live_mode=0):
-        logging.debug(
-            f"Announcing stripe account to {url_for('index', _external=True)}"
-        )
+        log.debug(f"Announcing stripe account to {url_for('index', _external=True)}")
         req = requests.post(
             ANNOUNCE_HOST,
             json={
@@ -1403,7 +1403,7 @@ def announce_shop_stripe_connect_ids():
     try:
 
         if stripe_testmode() is False and stripe_livemode() is False:
-            logging.info(msg)
+            log.info(msg)
             return jsonify("Stripe is not setup yet.")
 
         if payment_provider.stripe_live_connect_account_id is not None:
@@ -1435,10 +1435,10 @@ for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
 {current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
 WARNING: Check logs to verify recipt"
         }
-        logging.info(msg)
+        log.info(msg)
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
-        logging.error(msg)
+        log.error(msg)
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"
@@ -1505,7 +1505,7 @@ def delete_file(uuid):
     try:
         os.unlink(current_app.config["UPLOADED_FILES_DEST"] + theFile.file_name)
     except Exception as e:
-        print(e)
+        log.error(e)
     flash(f"Deleted: {theFile.file_name}")
     return redirect(request.referrer)
 

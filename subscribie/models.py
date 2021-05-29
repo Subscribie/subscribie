@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
 from sqlalchemy import ForeignKey
@@ -18,6 +19,8 @@ from subscribie.utils import (
 from flask import request
 
 from .database import database
+
+log = logging.getLogger(__name__)
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
@@ -156,10 +159,9 @@ class Subscription(database.Model):
                 )
                 return upcoming_invoice
             except stripe.error.InvalidRequestError as e:
-                print(
-                    f"Cannot get stripe subscription id: {self.stripe_subscription_id}"
+                log.error(
+                    f"Cannot get stripe subscription id: {self.stripe_subscription_id}. {e}"  # noqa: E501
                 )
-                print(e)
         return None
 
     def next_date(self):
