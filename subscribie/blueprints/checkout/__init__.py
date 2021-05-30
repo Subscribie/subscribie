@@ -602,6 +602,6 @@ def stripe_webhook():
         return stripe_process_event_payment_intent_succeeded(event)
 
     msg = {"msg": "Unknown event", "event": event}
-    log.error(msg)
+    log.debug(msg)
 
     return jsonify(msg), 422
