@@ -966,10 +966,10 @@ def get_subscription_status(stripe_subscription_id: str) -> str:
         else:
             return subscription.status
     except stripe.error.InvalidRequestError as e:
-        log.error(e)
+        log.debug(e)
         return status_on_error
     except ValueError as e:
-        log.error(e)
+        log.debug(e)
         return status_on_error
 
 
