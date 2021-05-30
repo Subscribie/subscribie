@@ -35,7 +35,7 @@ def inject_custom_style():
             hsl_h=hsl_h, hsl_s=hsl_s, hsl_l=hsl_l
         )
     except Exception as e:
-        log.error(f"Could not load custom css properties. {e}")
+        log.warning(f"Could not load custom css properties. {e}")
     # Raw global css overrises
     custom_css = "".join([js_inject, '<style type="text/css">', global_css, "</style>"])
 
