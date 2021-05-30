@@ -1,7 +1,7 @@
 import logging
 import coloredlogs
 from logging.handlers import QueueHandler, QueueListener
-from TelegramHTTPHandler import TelegramHTTPHandler
+from subscribie.TelegramHTTPHandler import TelegramHTTPHandler
 import os
 import sys
 import queue
