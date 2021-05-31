@@ -52,21 +52,24 @@ sys.excepthook = handle_exception
 
 
 # Telegram logging
-# See https://docs.python.org/3/howto/logging-cookbook.html#dealing-with-handlers-that-block # noqa
-que = queue.Queue(-1)  # no limit on size
-queue_handler = QueueHandler(que)
+if os.getenv("FLASK_ENV", None) != "development":
+    # See https://docs.python.org/3/howto/logging-cookbook.html#dealing-with-handlers-that-block # noqa
+    que = queue.Queue(-1)  # no limit on size
+    queue_handler = QueueHandler(que)
 
-telegram_token = os.getenv("TELEGRAM_TOKEN", None)
-telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID", None)
-telegramHandlerHost = "api.telegram.org"
+    telegram_token = os.getenv("TELEGRAM_TOKEN", None)
+    telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID", None)
+    telegramHandlerHost = "api.telegram.org"
 
-telegramHandlerUrl = f"bot{telegram_token}/sendMessage?chat_id={telegram_chat_id}&text="
+    telegramHandlerUrl = (
+        f"bot{telegram_token}/sendMessage?chat_id={telegram_chat_id}&text="
+    )
 
-telegramHandler = TelegramHTTPHandler(
-    telegramHandlerHost, url=telegramHandlerUrl, secure=True
-)
-logger.info(f"Setting TELEGRAM_PYTHON_LOG_LEVEL to {TELEGRAM_PYTHON_LOG_LEVEL}")
-telegramHandler.setLevel(TELEGRAM_PYTHON_LOG_LEVEL)
-listener = QueueListener(que, telegramHandler, respect_handler_level=True)
-logger.addHandler(queue_handler)
-listener.start()
+    telegramHandler = TelegramHTTPHandler(
+        telegramHandlerHost, url=telegramHandlerUrl, secure=True
+    )
+    logger.info(f"Setting TELEGRAM_PYTHON_LOG_LEVEL to {TELEGRAM_PYTHON_LOG_LEVEL}")
+    telegramHandler.setLevel(TELEGRAM_PYTHON_LOG_LEVEL)
+    listener = QueueListener(que, telegramHandler, respect_handler_level=True)
+    logger.addHandler(queue_handler)
+    listener.start()
