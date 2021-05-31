@@ -22,23 +22,24 @@ li { list-style: none}
       <p>
       Subscriptions which have upcoming invoices.
       </p>
+      <p>
+      Note that when you are viewing an upcoming invoice, you are simply viewing a preview – the invoice has not yet been created.
+      </p>
+      <button id="fetch_upcoming_invoices" title="Get latest upcoming invoices" class="btn btn-primary disable-on-click">Fetch Upcoming Invoices</button>
       <table class="table table-hover table-scroll">
   
         <thead>
           <tr>
-            <th>Fulfillment State</th>
-            <th>Due Date</th>
             <th>Status</th>
-            <th>Amount</th>
-            <th>Name</th>
-            <th>Contacts</th>
-            <th>Address</th>
+            <th>Person</th>
+            <th>Due Date</th>
+            <th>Amount Due</th>
             <th>Subscription</th>
           </tr>
         </thead>
   
         <tbody>
-        {% if subscriptions|length == 0 %}
+        {% if upcomingInvoices|length == 0 %}
           <tr>
             <td colspan="9">
                No upcoming invoices yet. You can do it!
@@ -46,96 +47,72 @@ li { list-style: none}
           </td>
         {% endif %}
   
-        {% for subscription in subscriptions %}
-        {% set upcoming_invoice = subscription.upcoming_invoice() %}
+        {% for upcomingInvoice in upcomingInvoices %}
+          {% if upcomingInvoice.subscription.person %}
           <tr>
+            <td title="Valid states are: Draft, Deleted, Open, Paid, Uncollectible, Void">{{ upcomingInvoice.stripe_invoice_status }}</td>
             <td>
-              <form action="{{ url_for('admin.update_payment_fulfillment', stripe_external_id=upcoming_invoice.subscription) }}" method="GET">
-                <select class="form-control form-control-sm my-2" name="state">
-                  {% set fulfillment_state = get_transaction_fulfillment_state(upcoming_invoice.subscription) %}
-                  <option value="">-</option>
-                  <option value="complete"
-                    {% if fulfillment_state == "complete" %}
-                    selected
-                    {% endif %}>
-                    Complete
-                  </option>
-                </select>
-                <input type="submit" class="btn btn-primary btn-sm btn-block" value="Update" />
-              </form>
-            </td>
-            <td>{{ datetime.fromtimestamp(upcoming_invoice.next_payment_attempt).strftime("%d/%m/%Y") }}</td>
-            <td title="Valid states are: Draft, Deleted, Open, Paid, Uncollectible, Void">{{ upcoming_invoice.status }}</td>
-            <td class="upcoming-invoice-amount">{{ upcoming_invoice.amount_due|default(0)|currencyFormat }}</td>
-            {% if subscription.upcoming_invoice()  %}
-            <td>
-              <a href="{{ url_for('admin.show_subscriber', subscriber_id=subscription.person.id) }}">
-                {{ subscription.person.given_name }} {{ subscription.person.family_name }}
+              <a href="{{ url_for('admin.show_subscriber', subscriber_id=upcomingInvoice.subscription.person.id) }}">
+                {{ upcomingInvoice.subscription.person.given_name }} {{ upcomingInvoice.subscription.person.family_name }}
               </a>
             </td>
-            <td>
-              <strong>Email: </strong><a href="mailto:{{ subscription.person.email }}">{{ subscription.person.email }}</a><br>
-              <strong>Phone: </strong><a href="tel:{{ subscription.person.mobile}}">{{ subscription.person.mobile}}</a><br>
-            </td>
-            <td><address>
-                {{ subscription.person.address_line1 }}<br />
-                {{ subscription.person.city }}
-                {{ subscription.person.postal_code }}
-            </address></td>
+
+            <td>{{ upcomingInvoice.stripe_next_payment_attempt | timestampToDate }}</td>
+            <td class="upcoming-invoice-amount">{{ upcomingInvoice.stripe_amount_due|default(0)|currencyFormat }}</td>
             <td>
               <div class="content">
                 <ul class="is-unstyled-li">
                   <li>
                     <div class="card">
                       <ul class="list-unstyled px-2">
-                        <li><strong>Plan: </strong>{{ subscription.plan.title }}</li>
-                        {% if subscription.chosen_options %}
+                        <li><strong>Plan: </strong>{{ upcomingInvoice.subscription.plan.title }}</li>
+                        {% if upcomingInvoice.subscription.chosen_options %}
                         <li>
                             <details open>
                               <summary><strong>Chosen Options</strong></summary>
                               <ul>
-                              {% for choice in subscription.chosen_options %}
+                              {% for choice in upcomingInvoice.subscription.chosen_options %}
                                 <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
                               {% endfor %}
                               </ul>
                             </details>
                         </li>
                         {% endif %}
-                        <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
+                        <li><strong>Date started: </strong>{{ upcomingInvoice.subscription.created_at.strftime('%Y-%m-%d') }}</li>
                         <li>
-                            {% if subscription.plan.requirements.subscription %}
-                              <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
-                              <span class="plan-price-interval">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
+                            {% if upcomingInvoice.subscription.plan.requirements.subscription %}
+                              <strong>Price ({{ upcomingInvoice.subscription.plan.interval_unit }}): </strong>
+                              <span class="plan-price-interval">{{ upcomingInvoice.subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
                             {% else %}
                               (One-off. Not a subscription)
                             {% endif %}
                         </li>
                         <li><strong>Sell price: </strong>
-                            {% if subscription.plan.requirements.instant_payment %}
-                            <span class="plan-sell-price">{{ subscription.plan.sell_price|default(0)|currencyFormat }}</span>
+                            {% if upcomingInvoice.subscription.plan.requirements.instant_payment %}
+                            <span class="plan-sell-price">{{ upcomingInvoice.subscription.plan.sell_price|default(0)|currencyFormat }}</span>
                             {% else %}
                               <span class="upcoming-invoices-plan-no-sell_price">(No up-front cost)</span>
                             {% endif %}
                         </li>
                         <li><strong>Status: </strong>
-                            {% if subscription.plan.requirements.subscription %}
-                                {{subscription_status(subscription.stripe_external_id)}}
+                            {% if upcomingInvoice.subscription.plan.requirements.subscription %}
+                                {{ upcomingInvoice.subscription.stripe_status }}
                             {% else %}
                                 Paid
                             {% endif %}
                         </li>
                         <li><strong>Actions: </strong>
-                          {% if subscription.stripe_external_id %}
-                            {% if subscription_status(subscription.stripe_external_id) == 'Active' %}
+                          {% if upcomingInvoice.subscription.stripe_subscription_id%}
+                            {% if upcomingInvoice.subscription.stripe_status == 'active' %}
                             <a href="{{ url_for("admin.pause_stripe_subscription",
-                              subscription_id=subscription.stripe_external_id,
+                              subscription_id=upcomingInvoice.subscription.stripe_subscription_id,
                               goback=1) }}">
                             Pause
                             </a> | 
                             {% endif %}
-                            {% if subscription_status(subscription.stripe_external_id) == 'Paused' %}
+                            {% if upcomingInvoice.subscription.stripe_status == 'paused' %}
                             <a href="{{ url_for("admin.resume_stripe_subscription",
-                              subscription_id=subscription.stripe_external_id,
+                              subscription_id=upcomingInvoice.subscription.stripe_subscription_id,
                               goback=1) }}">
                             Resume
                             </a>
@@ -147,29 +124,32 @@ li { list-style: none}
                 </ul>
               </div>
             </td>
-            {% else %}
-            <td colspan="4"></td>
-            {% endif %}
           </tr>
+          {% endif %}
         {% endfor %}
         </tbody>
         
       </table>
 
-      <nav role="navigation" aria-label="pagination">
-        <ul class="pagination justify-content-start">
-          <li class="page-item">
-              <a class="page-link" href="{{ url_for('admin.upcoming_invoices', previous=previous_page_cursor) }}">Previous</a>
-          </li>
-          <li class="page-item">
-              <a class="page-link" href="{{ url_for('admin.upcoming_invoices', next=next_page_cursor) }}">Next page</a>
-          </li>
-        </ul>
-      </nav>
-
     </div><!-- end .container -->
   </div><!-- end .section -->
 </main>
+
+<script>
+
+{# Fetch upcoming invoices when button clicked #}
+btnFetchUpcomingInvoices = document.getElementById('fetch_upcoming_invoices');
+
+btnFetchUpcomingInvoices.addEventListener('click', fetchUpcomingInvoices);
+
+function fetchUpcomingInvoices(e) {
+  e.target.textContent = 'Refreshing Upcoming Payments';
+  fetch("{{ url_for('admin.fetch_upcoming_invoices') }}")
+  .then(response => { document.location = "{{ url_for('admin.upcoming_invoices') }}" });
+}
+{# End fetch upcoming invoices when button clicked #}
+
+</script>
 
 
 

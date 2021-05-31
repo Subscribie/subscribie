@@ -47,8 +47,6 @@ from .models import (
     Module,
 )
 
-from .blueprints.admin import get_subscription_status
-
 log = logging.getLogger(__name__)
 
 
@@ -219,10 +217,7 @@ def create_app(test_config=None):
 
         for person in people:
             for subscription in person.subscriptions:
-                if (
-                    get_subscription_status(subscription.gocardless_subscription_id)
-                    == "active"
-                ):
+                if subscription.stripe_status == "active":
                     # Check if x days until next subscription due, make configurable
                     today = datetime.date.today()
                     days_until = subscription.next_date().date() - today
