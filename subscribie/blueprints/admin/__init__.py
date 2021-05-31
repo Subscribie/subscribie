@@ -61,8 +61,11 @@ from subscribie.models import (
     PlanSellingPoints,
     TaxRate,
     Category,
+    UpcomingInvoice,
 )
 from .subscription import update_stripe_subscription_statuses
+from .invoice import fetch_stripe_upcoming_invoices
+
 import stripe
 from werkzeug.utils import secure_filename
 
@@ -951,38 +954,6 @@ def utility_get_transaction_fulfillment_state():
     return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
 
 
-def get_subscription_status(stripe_subscription_id: str) -> str:
-    status_on_error = "Unknown"
-    if stripe_subscription_id is None:
-        return status_on_error
-    try:
-        stripe.api_key = get_stripe_secret_key()
-        connect_account = get_stripe_connect_account()
-        subscription = stripe.Subscription.retrieve(
-            stripe_account=connect_account.id, id=stripe_subscription_id
-        )
-        if subscription.pause_collection is not None:
-            return "paused"
-        else:
-            return subscription.status
-    except stripe.error.InvalidRequestError as e:
-        log.debug(e)
-        return status_on_error
-    except ValueError as e:
-        log.debug(e)
-        return status_on_error
-
-
-@admin.context_processor
-def subscription_status():
-    def formatted_status(stripe_external_id):
-        return (
-            get_subscription_status(stripe_external_id).capitalize().replace("_", " ")
-        )
-
-    return dict(subscription_status=formatted_status)
-
-
 def get_number_of_active_subscribers():
     count = 0
     subscribers_with_subscriptions = (
@@ -1065,11 +1036,21 @@ def subscribers():
 def refresh_subscriptions():
     update_stripe_subscription_statuses()
     if request.referrer is not None:
-        flash("Subscription statuses have been refreshed.")
+        flash("subscription statuses have been refreshed.")
         flash(
-            "Note: This is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+            "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
         return redirect(request.referrer)
+
+
+@admin.route("/fetch-upcoming_invoices")
+def fetch_upcoming_invoices():
+    fetch_stripe_upcoming_invoices()
+    msg = "Upcoming invoices fetched."
+    flash(msg)
+    if request.referrer is not None:
+        return redirect(request.referrer)
+    return msg
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
@@ -1106,14 +1087,12 @@ def archived_subscribers():
 @login_required
 def upcoming_invoices():
     get_stripe_secret_key()
-    all_subscriptions = Subscription.query.all()
-    subscriptions = []
-    for subscription in all_subscriptions:
-        if subscription.upcoming_invoice() is not None:
-            subscriptions.append(subscription)
+    upcomingInvoices = UpcomingInvoice.query.all()
 
     return render_template(
-        "admin/upcoming_invoices.html", subscriptions=subscriptions, datetime=datetime
+        "admin/upcoming_invoices.html",
+        upcomingInvoices=upcomingInvoices,
+        datetime=datetime,
     )
 
 
