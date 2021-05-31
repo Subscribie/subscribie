@@ -1,5 +1,6 @@
 import logging
 import coloredlogs
+from flask import has_request_context, request
 from logging.handlers import QueueHandler, QueueListener
 from subscribie.TelegramHTTPHandler import TelegramHTTPHandler
 import os
@@ -12,13 +13,24 @@ load_dotenv(verbose=True)
 PYTHON_LOG_LEVEL = os.getenv("PYTHON_LOG_LEVEL", "DEBUG")
 TELEGRAM_PYTHON_LOG_LEVEL = os.getenv("TELEGRAM_PYTHON_LOG_LEVEL", "WARNING")
 
-
 logger = logging.getLogger()
-
 handler = logging.StreamHandler()  # sys.stderr will be used by default
 
-formatter = logging.Formatter(
-    "%(asctime)s %(name)-12s %(levelname)-8s %(message)s %(funcName)s %(pathname)s:%(lineno)d"  # noqa
+
+class RequestFormatter(coloredlogs.ColoredFormatter):
+    def format(self, record):
+        if has_request_context():
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+        else:
+            record.url = None
+            record.remote_addr = None
+
+        return super().format(record)
+
+
+formatter = RequestFormatter(
+    "[%(asctime)s] %(remote_addr)s requested %(url)s %(name)-12s %(levelname)-8s %(message)s %(funcName)s %(pathname)s:%(lineno)d"  # noqa
 )
 
 handler.setFormatter(formatter)
@@ -58,5 +70,3 @@ telegramHandler.setLevel(TELEGRAM_PYTHON_LOG_LEVEL)
 listener = QueueListener(que, telegramHandler, respect_handler_level=True)
 logger.addHandler(queue_handler)
 listener.start()
-
-coloredlogs.install(level=PYTHON_LOG_LEVEL)
