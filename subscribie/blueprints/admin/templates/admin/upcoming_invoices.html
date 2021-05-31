@@ -109,6 +109,11 @@ li { list-style: none}
                               goback=1) }}">
                             Pause
                             </a> | 
+                            <a href="{{ url_for("admin.cancel_stripe_subscription",
+                            subscription_id=upcomingInvoice.subscription.stripe_subscription_id,
+                            confirm="") }}">
+                                Cancel
+                            </a> |
                             {% endif %}
                             {% if upcomingInvoice.subscription.stripe_status == 'paused' %}
                             <a href="{{ url_for("admin.resume_stripe_subscription",
