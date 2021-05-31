@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 PYTHON_LOG_LEVEL = os.getenv("PYTHON_LOG_LEVEL", "DEBUG")
-TELEGRAM_PYTHON_LOG_LEVEL = os.getenv("TELEGRAM_PYTHON_LOG_LEVEL", "WARNING")
+TELEGRAM_PYTHON_LOG_LEVEL = os.getenv("TELEGRAM_PYTHON_LOG_LEVEL", "ERROR")
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()  # sys.stderr will be used by default
