@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
 from sqlalchemy import ForeignKey
@@ -10,14 +11,11 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
-import stripe
-from subscribie.utils import (
-    get_stripe_secret_key,
-    get_stripe_connect_account_id,
-)
 from flask import request
 
 from .database import database
+
+log = logging.getLogger(__name__)
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
@@ -121,6 +119,9 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
+    upcoming_invoice = relationship(
+        "UpcomingInvoice", back_populates="subscription", uselist=False
+    )
     note = relationship(
         "SubscriptionNote", back_populates="subscription", uselist=False
     )
@@ -142,25 +143,6 @@ class Subscription(database.Model):
             if self.stripe_status == "active":
                 return True
         return False
-
-    def upcoming_invoice(self):
-        """Return the upcoming invoice (if exists) associated with this Subscription"""
-        stripe.api_key = get_stripe_secret_key()
-        stripe_connect_account_id = get_stripe_connect_account_id()
-
-        if self.stripe_subscription_id is not None:
-            try:
-                upcoming_invoice = stripe.Invoice.upcoming(
-                    subscription=self.stripe_subscription_id,
-                    stripe_account=stripe_connect_account_id,
-                )
-                return upcoming_invoice
-            except stripe.error.InvalidRequestError as e:
-                print(
-                    f"Cannot get stripe subscription id: {self.stripe_subscription_id}"
-                )
-                print(e)
-        return None
 
     def next_date(self):
         """Return the next delivery date of this subscription
@@ -210,6 +192,34 @@ class SubscriptionNote(database.Model):
         database.Integer(), ForeignKey("subscription.id")
     )  # noqa
     subscription = relationship("Subscription", back_populates="note")
+
+
+class UpcomingInvoice(database.Model):
+    """
+    A temporary view of upcoming invoices.
+
+    The keys in this table must not be relied upon.
+    Entries in this table are *removed* and fetched again by
+    subscribie.invoice.fetch_stripe_upcoming_invoices
+
+    Requires syncing with stripe api as invoices transition
+    to paid (or failed).
+    """
+
+    __tablename__ = "upcoming_invoice"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    # Note, upcoming invoices do not have an id https://stripe.com/docs/api/invoices/upcoming # noqa
+    stripe_subscription_id = database.Column(database.String())
+    stripe_invoice_status = database.Column(database.String())
+    stripe_amount_due = database.Column(database.String())
+    stripe_amount_paid = database.Column(database.String())
+    stripe_currency = database.Column(database.String())
+    stripe_next_payment_attempt = database.Column(database.String())
+    subscription_uuid = database.Column(
+        database.Integer, ForeignKey("subscription.uuid")
+    )
+    subscription = relationship("Subscription", back_populates="upcoming_invoice")
 
 
 class Company(database.Model):

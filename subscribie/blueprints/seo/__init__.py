@@ -1,9 +1,12 @@
+import logging
 from flask import Blueprint, render_template, abort, url_for, request, flash, redirect
 from jinja2 import TemplateNotFound
 from subscribie import current_app
 from subscribie.auth import login_required
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 import sqlite3
+
+log = logging.getLogger(__name__)
 
 module_seo_page_title = Blueprint("seo", __name__, template_folder="templates")
 

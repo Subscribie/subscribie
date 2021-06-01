@@ -3,6 +3,8 @@ import stripe
 from subscribie import database
 import logging
 
+log = logging.getLogger(__name__)
+
 
 def get_stripe_secret_key():
     from .models import PaymentProvider
@@ -62,13 +64,13 @@ def get_stripe_connect_account():
     try:
         account = stripe.Account.retrieve(account_id)
     except stripe.error.PermissionError as e:
-        print(e)
+        log.error(f"Stripe PermissionError {e}")
         raise
     except stripe.error.InvalidRequestError as e:
-        print(e)
+        log.error(f"Stripe InvalidRequestError {e}")
         raise
     except Exception as e:
-        print(e)
+        log.info(f"Exception getting Stripe connect account {e}")
         account = None
 
     return account
@@ -98,7 +100,7 @@ def stripe_connect_active():
         stripe.Balance.retrieve(stripe_account=connect_account_id)
         return True
     except Exception as e:
-        logging.info(e)
+        log.info(f"Could not get Stripe balance {e}")
         return False
 
 

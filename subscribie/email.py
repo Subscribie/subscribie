@@ -1,3 +1,4 @@
+import logging
 from flask_mail import Mail, Message
 from flask import current_app, session, request, render_template
 import flask
@@ -8,10 +9,11 @@ from subscribie.models import (
     Plan,
     EmailTemplate,
 )
-import logging
 from pathlib import Path
 from jinja2 import Template
 from threading import Thread
+
+log = logging.getLogger(__name__)
 
 
 def send_async_email(msg):
@@ -23,7 +25,7 @@ def send_async_email(msg):
     app = create_app()
     with app.app_context():
         mail = Mail(app)
-        print("Sending async email")
+        log.info("Sending async email")
         mail.send(msg)
 
 
@@ -74,7 +76,6 @@ def send_welcome_email():
         msg.html = html
         Thread(target=send_async_email, args=(msg,)).start()
     except Exception as e:
-        print(e)
-        logging.warning("Failed to send welcome email")
+        log.warning(f"Failed to send welcome email. {e}")
     finally:
         return render_template("thankyou.html")
