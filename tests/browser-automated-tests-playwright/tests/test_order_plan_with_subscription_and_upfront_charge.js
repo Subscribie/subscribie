@@ -110,8 +110,8 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
     // Verify upcoming invoice has been generated for the subscription:
     await page.goto(PLAYWRIGHT_HOST + 'admin/upcoming-invoices')
     // Fetch Upcoming Invoices
-    await page.click('.btn-primary');
-    await page.textContent('.alert-heading') === "Notification";
+    await page.click('#fetch_upcoming_invoices');
+    await new Promise(x => setTimeout(x, 10000)); //10 secconds
     await page.screenshot({ path: `view-upcoming-invoices-${browserType}.png` });
     const content_upcoming_invoice_amount = await page.textContent('.upcoming-invoice-amount');
     assert(content_upcoming_invoice_amount === '£5.99')
