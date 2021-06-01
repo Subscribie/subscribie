@@ -21,3 +21,4 @@ pyjwt[crypto]
 py-auth-header-parser==1.0.2
 pydantic==1.6.2
 backoff==1.10.0
+coloredlogs==15.0

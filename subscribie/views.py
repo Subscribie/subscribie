@@ -1,3 +1,4 @@
+import logging
 from subscribie.auth import check_private_page, oauth_login_user, start_new_user_session
 from pathlib import Path
 import jinja2
@@ -22,13 +23,15 @@ from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
 import requests
 
+log = logging.getLogger(__name__)
+
 bp = Blueprint("views", __name__, url_prefix=None)
 
 
 @bp.before_app_first_request
 def migrate_database():
     """Migrate database when app first boots"""
-    print("#" * 233)
+    log.info("Migrating database")
     upgrade(
         directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
     )
@@ -59,7 +62,7 @@ def check_if_inside_iframe():
         or session.get("iframe_embeded") is True
         and request.headers.get("referer") is not None
     ):
-        print("Loading from within iframe")
+        log.info("Loading from within iframe")
         session["iframe_embeded"] = True
     else:
         session["iframe_embeded"] = False
@@ -143,7 +146,7 @@ def custom_page(path):
         ) as fh:
             body = fh.read()
     except FileNotFoundError as e:
-        print(e)
+        log.error(f"Template not found FileNotFoundError. {e}")
         return "Template not found for this page.", 404
 
     page_header = """
