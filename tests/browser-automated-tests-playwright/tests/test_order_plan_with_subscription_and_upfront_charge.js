@@ -70,6 +70,16 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
     await new Promise(x => setTimeout(x, 15000)); //15 secconds
     await page.goto(PLAYWRIGHT_HOST + 'admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
+    
+    // Click Refresh Subscription
+    await page.click('#refresh_subscriptions'); // this is the refresh subscription
+    await page.textContent('.alert-heading') === "Notification";
+    // screeshot to the active subscriber
+    await page.goto(PLAYWRIGHT_HOST + 'admin/dashboard');
+    await page.screenshot({ path: `active-subscribers-${browserType}.png` });
+    //go back to subscriptions
+    await page.goto(PLAYWRIGHT_HOST + 'admin/subscribers')
+    
     // Verify that subscriber is present in the list
     const subscriber_email_content = await page.textContent('.subscriber-email');
     assert(subscriber_email_content === 'john@example.com');
@@ -78,13 +88,6 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
     const subscriber_subscription_title_content = await page.textContent('.subscription-title');
     assert(subscriber_subscription_title_content === 'Hair Gel');
     
-    // Click Refresh Subscription
-    await page.click('#refresh_subscriptions'); // this is the refresh subscription
-    await page.textContent('.alert-heading') === "Notification";
-    // screeshot to the active subscriber
-    await page.goto(PLAYWRIGHT_HOST + 'admin/dashboard');
-    await page.screenshot({ path: `active-subscribers-${browserType}.png` });
-
     // Verify transaction is present in 'All transactions page'
     await page.goto(PLAYWRIGHT_HOST + 'admin/transactions')
     await page.screenshot({ path: `view-transactions-${browserType}.png` });
@@ -106,8 +109,9 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
 
     // Verify upcoming invoice has been generated for the subscription:
     await page.goto(PLAYWRIGHT_HOST + 'admin/upcoming-invoices')
-    // Fetch Upcoming Invoices 
-    await page.click('#fetch_upcoming_invoices');
+    // Fetch Upcoming Invoices
+    await page.click('.btn-primary');
+    await page.textContent('.alert-heading') === "Notification";
     await page.screenshot({ path: `view-upcoming-invoices-${browserType}.png` });
     const content_upcoming_invoice_amount = await page.textContent('.upcoming-invoice-amount');
     assert(content_upcoming_invoice_amount === '£5.99')
