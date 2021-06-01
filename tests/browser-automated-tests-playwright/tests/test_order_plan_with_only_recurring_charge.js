@@ -96,8 +96,8 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     // Go to upcoming payments and ensure plan is attached to upcoming invoice
     await page.goto(PLAYWRIGHT_HOST + '/admin/upcoming-invoices');
     // Fetch Upcoming Invoices
-    await page.click('.btn-primary');
-    await page.textContent('.alert-heading') === "Notification";
+    await page.click('#fetch_upcoming_invoices');
+    await new Promise(x => setTimeout(x, 10000)); //10 secconds
     const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
     assert(content_upcoming_invoice_plan_price_interval === '£10.99');
 
