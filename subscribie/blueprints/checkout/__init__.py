@@ -48,6 +48,11 @@ checkout = Blueprint("checkout", __name__, template_folder="templates")
 @checkout.route("/new_customer", methods=["GET"])
 def new_customer():
     plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
+    if plan is None:
+        log.warning(
+            f'Plan {request.args["plan"]} requested at /new_customer route but not found'  # noqa
+        )
+        return redirect(url_for("index"))
     session["plan"] = plan.uuid
 
     # Fetch selected options, if present
