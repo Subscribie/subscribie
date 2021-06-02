@@ -23,6 +23,7 @@ def export_subscribers():
                     "family_name": subscription.person.family_name,
                     "email": subscription.person.email,
                     "plan": subscription.plan.title,
+                    "subscription_status": subscription.stripe_status,
                 }
             )
         else:
