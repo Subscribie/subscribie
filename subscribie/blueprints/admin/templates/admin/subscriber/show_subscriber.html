@@ -47,6 +47,7 @@
             {% for subscription in person.subscriptions %}
               <li class="list-group-item">
                 <strong>{{ subscription.plan.title }}</strong><br />
+                <strong>Status:</strong> {{ subscription.stripe_status or 'Unknown' }} <br />
                 <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
                 <strong>Interval Unit:</strong> 
                         {% if subscription.plan.requirements.subscription %}
@@ -56,7 +57,9 @@
                         {% endif %}
                   <br />
                 {% if subscription.plan.requirements.subscription %}
+                  {% if subscription.stripe_status|lower == 'active' %}
                   <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
+                  {% endif %}
                 {% endif %}
                 {% if subscription.chosen_options %}
                 <strong>Choices:</strong>
