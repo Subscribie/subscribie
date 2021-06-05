@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
+from sqlalchemy.orm import with_loader_criteria
 from sqlalchemy import ForeignKey
 from sqlalchemy import event
 from sqlalchemy import Column
@@ -16,6 +17,23 @@ from flask import request
 from .database import database
 
 log = logging.getLogger(__name__)
+
+
+@event.listens_for(database.session, "do_orm_execute")
+def _do_orm_execute_hide_archived(orm_execute_state):
+    if (
+        orm_execute_state.is_select
+        and not orm_execute_state.is_column_load
+        and not orm_execute_state.is_relationship_load
+        and not orm_execute_state.execution_options.get("include_archived", False)
+    ):
+        orm_execute_state.statement = orm_execute_state.statement.options(
+            with_loader_criteria(
+                HasArchived,
+                lambda cls: cls.archived == False,  # noqa: E712
+                include_aliases=True,
+            )
+        )
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
