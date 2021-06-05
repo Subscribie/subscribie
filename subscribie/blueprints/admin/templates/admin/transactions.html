@@ -26,8 +26,19 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
-        <h1>All Transactions</h1>
+        {% if person %}
+          <h1>All transactions: {{ person.given_name }}</h1>
+        {% else %}
+          <h1>All Transactions</h1>
+        {% endif %}
+
         <p>Every transaction on your shop.</p>
+        {% if request.args.get("subscriber", None) %}
+              <div class="alert-info">
+              Filterd by Subscriber.
+              <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
+              </div>
+        {% endif %}
 		<table class="table">
 		  <thead>
 			<tr>

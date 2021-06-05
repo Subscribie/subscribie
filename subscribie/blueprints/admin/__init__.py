@@ -1111,13 +1111,23 @@ def invoices():
 def transactions():
 
     page = request.args.get("page", 1, type=int)
-    transactions = (
-        database.session.query(Transaction)
-        .order_by(desc(Transaction.created_at))
-        .paginate(page=page, per_page=10)
-    )
+    person = None
+    query = database.session.query(Transaction).order_by(desc(Transaction.created_at))
+    if request.args.get("subscriber", None):
+        person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
+        if person is not None:
+            query = query.join(Person, Transaction.person_id == Person.id).filter(
+                Person.uuid == person.uuid
+            )
+        else:
+            flash("Subscriber not found.")
+            query = query.filter(False)
 
-    return render_template("admin/transactions.html", transactions=transactions)
+    return render_template(
+        "admin/transactions.html",
+        transactions=query.paginate(page=page, per_page=10),
+        person=person,
+    )
 
 
 @admin.route("/order-notes", methods=["GET"])

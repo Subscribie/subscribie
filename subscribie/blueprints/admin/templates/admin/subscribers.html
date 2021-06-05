@@ -146,6 +146,11 @@
                                                 </a>
                                             {% endif %}
                                         {% endif %}</li>
+                                     <li class=mt-2><strong>History: </strong>
+                                      <a href="{{ url_for('admin.transactions',
+                                        subscriber=subscription.person.uuid) }}">View Transactions
+                                      </a>
+                                     </li>
                             </ul>
                         </div>
                     </li>
