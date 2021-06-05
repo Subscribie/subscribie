@@ -78,11 +78,11 @@ async function test_connect_to_stripe_connect()  {
   assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
 
   // Go to Stripe Connect payment gateways page
-  await page.goto(PLAYWRIGHT_HOST + '/admin/connect/stripe-connect');
+  await page.goto(PLAYWRIGHT_HOST + 'admin/connect/stripe-connect');
   await page.screenshot({ path: `connect-stripe-to-shop-dashboard-chromium.png` });
-
   // Check onboarding not already completed
   try {
+    context.setDefaultTimeout(3000);
     const contentSuccess = await page.textContent('.alert-success');
     if (contentSuccess.indexOf('Congrats!') > -1) {
       console.log("Already connected Stripe sucessfully, exiting test");
@@ -93,13 +93,12 @@ async function test_connect_to_stripe_connect()  {
     console.log("Exception checking if onboarding completed, looks like it's not complete");
     console.log("Continuing with Stripe Connect onboarding");
   }
-
   // Create shop owner stripe connect email address based on 'admin' + 'hostname'
   const email = await page.evaluate(() => 'admin@' + document.location.hostname);
-
+  context.setDefaultTimeout(5000);
   // Start Stripe connect onboarding
-  await page.click('.btn.btn-success');
-  //await page.waitForNavigation({'timeout': 30000});
+  await page.goto(PLAYWRIGHT_HOST + 'admin/connect/stripe-connect');
+  await page.click('.btn-success');
   await detect_stripe_onboarding_page()
 
   async function detect_stripe_onboarding_page() {
@@ -118,6 +117,13 @@ async function test_connect_to_stripe_connect()  {
       } else {
         console.log("Could not detect stripe onboarding page")
       }
+
+      // Use SME verify with test code
+      if ( contentStripePage.indexOf("Enter the verification code we sent") > -1 ) {
+        console.log("Clicking Use test code")
+        await page.click('text="Use test code"'); //Use Test code for SMS
+      }
+
 
       // Stripe onboarding Business type
       if (contentStripePage.indexOf('Type of business') > -1 ) {
@@ -167,7 +173,7 @@ async function test_connect_to_stripe_connect()  {
 
 
       // Stripe onboarding industry selection
-      if (contentStripePage.indexOf('Tell us about Soap Subscription.') > -1 ) {
+      if (contentStripePage.indexOf('Tell us about Soap Subscription') > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Please select your industry…"');
         await page.click('text="Software"');
@@ -183,14 +189,14 @@ async function test_connect_to_stripe_connect()  {
 
 
       // Stripe onboarding payouts bank details
-      if (contentStripePage.indexOf('Tell us where you’d like to receive your payouts.') > -1 ) {
+      if (contentStripePage.indexOf('Select an account for payouts') > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Use test account"');
       }
 
 
       // Stripe onboarding verification summary
-      if (contentStripePage.indexOf('almost ready to start getting paid by Subscribie.') > -1 ) {
+      if (contentStripePage.indexOf("Let's review those details") > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
         //await page.waitForNavigation({'timeout': 30000});

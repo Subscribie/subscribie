@@ -24,6 +24,16 @@
           will be paid out to your into your bank account via Stripe.
           </p>
 
+          <button id="submit" class="btn btn-success">
+          Setup payouts on Stripe
+          {% if payment_provider.stripe_livemode %}
+            (live mode)
+          {% else %}
+            (test mode)
+          {% endif %}
+          </button>
+
+
           {% if account.payouts_enabled is sameas False and payment_provider.stripe_livemode is sameas True %}
             <div class="alert alert-warning" role="alert">
               Please complete setting up Stripe in live mode.
