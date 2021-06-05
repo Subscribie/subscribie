@@ -16,7 +16,6 @@ setuptools.setup(
     install_requires=[
         "Flask>=1,<2",
         "flask_cors",
-        "flask_login",
         "Flask-Reuploaded==0.3.2",
         "flask_wtf",
         "wtforms[email]",
