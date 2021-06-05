@@ -111,14 +111,14 @@
                                     </li>
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if subscription.stripe_status|lower == 'Active' %}
+                                            {% if subscription.stripe_status|lower  == 'active' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_external_id,
                                                 goback=1) }}">
                                                     Pause
                                                 </a> | 
                                             {% endif %}
-                                            {% if subscription.stripe_status == 'Paused' %}
+                                            {% if subscription.stripe_status == 'paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
                                                 subscription_id=subscription.stripe_external_id,
                                                 goback=1) }}">

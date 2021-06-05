@@ -1020,10 +1020,10 @@ def subscribers():
     action = request.args.get("action")
     show_active = action == "show_active"
 
+    query = database.session.query(Person).execution_options(include_archived=True)
+
     if show_active:
-        query = database.session.query(Person).filter(Person.subscriptions.any())
-    else:
-        query = database.session.query(Person)
+        query = query.filter(Person.subscriptions.any())
 
     people = query.order_by(desc(Person.created_at))
 
@@ -1067,7 +1067,7 @@ def archive_subscriber(subscriber_id):
 @admin.route("/un-archive-subscriber/<subscriber_id>")
 @login_required
 def un_archive_subscriber(subscriber_id):
-    person = Person.query.get(subscriber_id)
+    person = Person.query.execution_options(include_archived=True).get(subscriber_id)
     if person:
         person.archived = 0
         database.session.commit()
@@ -1079,7 +1079,9 @@ def un_archive_subscriber(subscriber_id):
 @login_required
 def archived_subscribers():
     # See models.py for archived filter
-    people = database.session.query(Person).all()
+    people = (
+        database.session.query(Person).execution_options(include_archived=True).all()
+    )
     return render_template("admin/subscribers-archived.html", people=people)
 
 
@@ -1087,7 +1089,9 @@ def archived_subscribers():
 @login_required
 def upcoming_invoices():
     get_stripe_secret_key()
-    upcomingInvoices = UpcomingInvoice.query.all()
+    upcomingInvoices = UpcomingInvoice.query.execution_options(
+        include_archived=True
+    ).all()
 
     return render_template(
         "admin/upcoming_invoices.html",
@@ -1112,7 +1116,11 @@ def transactions():
 
     page = request.args.get("page", 1, type=int)
     person = None
-    query = database.session.query(Transaction).order_by(desc(Transaction.created_at))
+    query = (
+        database.session.query(Transaction)
+        .execution_options(include_archived=True)
+        .order_by(desc(Transaction.created_at))
+    )
     if request.args.get("subscriber", None):
         person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
         if person is not None:
@@ -1134,7 +1142,11 @@ def transactions():
 @login_required
 def order_notes():
     """Notes to seller given during subscription creation"""
-    subscriptions = Subscription.query.order_by(desc("created_at")).all()
+    subscriptions = (
+        Subscription.query.execution_options(include_archived=True)
+        .order_by(desc("created_at"))
+        .all()
+    )
     return render_template("admin/order-notes.html", subscriptions=subscriptions)
 
 
