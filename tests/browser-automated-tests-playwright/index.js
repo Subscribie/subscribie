@@ -56,7 +56,10 @@ async function saveVideo(filename) {
   //await fs.copyFileSync(videosDir + currentVideoFile, videosDir + filename + currentVideoFile);
 }
 
-
+async function handle_dialog(dialog) {
+    console.log(dialog.message);
+    await dialog.dismiss()
+}
 
 // Connect to stripe connect using test/fake sms as we're in test mode
 async function test_connect_to_stripe_connect()  {
@@ -66,6 +69,7 @@ async function test_connect_to_stripe_connect()  {
   const context = await browser.newContext(browserContextOptions);
   context.setDefaultTimeout(DEFAULT_TIMEOUT);
   const page = await context.newPage();
+  page.on("dialog", handle_dialog)
 
   // Login
   await page.goto(PLAYWRIGHT_HOST + 'auth/login');
