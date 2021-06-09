@@ -3,16 +3,16 @@ set -x # Prints each command before executing it
 set -e # Exit the script immidietly if an error happens
 
 # Usage:
-# ./rename-shop.sh <old-domain> <new-name>
+# ./rename-shop.sh <old-domain.subscriby.shop> <new-name>
 #
 
 OLD_DOMAIN=$1
 NEW_NAME=$2
 NEW_DOMAIN=$NEW_NAME".subscriby.shop"
 NEW_INI=$NEW_DOMAIN".ini"
+PATH_TO_SITES=$3
 
-echo Old name: $OLD_DOMAIN
-echo New name: $NEW_DOMAIN
+cd $PATH_TO_SITES
 
 # Check that the new-name does not already exist
 if [ -d $NEW_DOMAIN ]
@@ -20,12 +20,6 @@ then
   echo "$NEW_DOMAIN already exists"
   exit 1
 fi
-# this will only be uselfull for admins if not is useless OLD name will be requested
-#if [ ! -d $OLD_DOMAIN  ]
-#then
-#  echo "$OLD_DOMAIN may be misspelled"
-#  exit 1
-#fi
 
 # Rename the directory from old-name to new-name
 mv $OLD_DOMAIN  $NEW_DOMAIN #rename directory

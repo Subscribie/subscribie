@@ -1059,11 +1059,14 @@ def set_reply_to_email():
 @login_required
 def rename_shop():
     PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT")
+    PATH_TO_SITES = os.getenv("PATH_TO_SITES")
+    SERVER_NAME = os.getenv("SERVER_NAME")
     if request.method == "GET":
-        return render_template("admin/settings/rename_shop.html")
+        return render_template(
+            "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
+        )
     elif request.method == "POST":
-        # old_name = request.host #this will be active in the real environment
-        old_name = "yes.subscriby.shop"  # this will be for local development
+
         new_name = request.form.get("new_name", None)
         if new_name is None:
             return "You must provide a new valid name"
@@ -1071,7 +1074,7 @@ def rename_shop():
         if p is False:
             if new_name.isalnum() is True:
                 subprocess.run(
-                    f"{PATH_TO_RENAME_SCRIPT} {old_name} {new_name}",
+                    f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {new_name} {PATH_TO_SITES}",
                     shell=True,
                 )
                 return "This is your new address " + new_name + ".subscriby.shop"
