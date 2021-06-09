@@ -1,5 +1,6 @@
 import logging
 import json
+from dotenv import load_dotenv
 from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
@@ -61,6 +62,7 @@ from subscribie.models import (
 )
 import stripe
 from werkzeug.utils import secure_filename
+import subprocess
 
 
 admin = Blueprint(
@@ -72,6 +74,8 @@ from .choice_group import list_choice_groups  # noqa: F401, E402
 from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
+
+load_dotenv(verbose=True)  # get environment variables from .env
 
 
 def dec2pence(amount):
@@ -1049,6 +1053,33 @@ def set_reply_to_email():
     return render_template(
         "admin/settings/set_reply_to_email.html", form=form, current_email=current_email
     )
+
+
+@admin.route("/rename-shop", methods=["GET", "POST"])
+@login_required
+def rename_shop():
+    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT")
+    if request.method == "GET":
+        return render_template("admin/settings/rename_shop.html")
+    elif request.method == "POST":
+        # old_name = request.host #this will be active in the real environment
+        old_name = "yes.subscriby.shop"  # this will be for local development
+        new_name = request.form.get("new_name", None)
+        if new_name is None:
+            return "You must provide a new valid name"
+        p = Path(os.getenv("PATH_TO_SITES") + f"{new_name}.subscriby.shop").is_dir()
+        if p is False:
+            if new_name.isalnum() is True:
+                subprocess.run(
+                    f"{PATH_TO_RENAME_SCRIPT} {old_name} {new_name}",
+                    shell=True,
+                )
+                return "This is your new address " + new_name + ".subscriby.shop"
+            flash("please input a valid name")
+            return render_template("admin/settings/rename_shop.html")
+        else:
+            flash("This name already exists")
+            return render_template("admin/settings/rename_shop.html")
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])
