@@ -65,7 +65,7 @@ def uuid_string():
 class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
-    archived = Column(Boolean, nullable=False, default=False)
+    archived = Column(Boolean, nullable=False, default=0)
 
 
 class User(database.Model):
