@@ -146,7 +146,9 @@ def generate_login_token():
         password = password_login_form.data["password"]
         user = User.query.filter_by(email=email).first()
         if user is None:
-            flash("User not found with that email")
+            flash(
+                "Email address not found, did you sign-up with a different email address?"
+            )
             return redirect(url_for("auth.login"))
 
         if check_password_login(email, password):
@@ -158,6 +160,13 @@ def generate_login_token():
             return redirect(url_for("auth.login"))
 
     if magic_login_form.validate_on_submit():
+        email = magic_login_form.data["email"]
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            flash(
+                "Email address not found, did you sign-up with a different email address?"
+            )
+            return redirect(url_for("auth.login"))
         try:
             send_login_url(magic_login_form.data["email"])
             source = ' \
