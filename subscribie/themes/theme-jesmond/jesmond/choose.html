@@ -86,7 +86,7 @@
                 {% if plan.cancel_at %}
                   <small>Automatically cancels on: {{ plan.cancel_at | timestampToDate }}</small>
                 {% endif %}
-              </div>
+              </div> <!-- end card-body -->
 
               <div class="card-footer">
 
@@ -119,13 +119,13 @@
                   </a>
                 {% endif %}
 
-              </div>
-            </div>
-          </div>
+              </div> <!-- end card-footer -->
+            </div> <!-- end card -->
+          </div> <!-- end pricing plan -->
         {% endfor %}
-      </div>
+      </div> <!-- end plans-row -->
+    </div> <!-- plans -->
     {% endfor %} {# end categories loop #}
-    </div>
   </div>
 </div>
 
