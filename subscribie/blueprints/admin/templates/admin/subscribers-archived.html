@@ -9,7 +9,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Subscribers</li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('admin.subscribers') }}">Subscribers</a></li>
   </ul>
 </div>
 
@@ -54,10 +54,6 @@
               {% if person.subscriptions %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
-                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                    {# if plan is a subscription, get its live subscription status #}
-                      {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_external_id)) %}
-                    {% endif %}
                     <li>
                         <div class="card">
                             <ul class="list-unstyled px-2">
@@ -96,7 +92,7 @@
                                     </span>
                                     <li><strong>Status: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {{ ns.stripe_subscription_status }}
+                                            {{ subscription.stripe_status }}
                                         {% else %}
                                             Paid
                                         {% endif %}
@@ -115,14 +111,14 @@
                                     </li>
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if ns.stripe_subscription_status == 'Active' %}
+                                            {% if subscription.stripe_status|lower  == 'active' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_external_id,
                                                 goback=1) }}">
                                                     Pause
                                                 </a> | 
                                             {% endif %}
-                                            {% if ns.stripe_subscription_status == 'Paused' %}
+                                            {% if subscription.stripe_status == 'paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
                                                 subscription_id=subscription.stripe_external_id,
                                                 goback=1) }}">

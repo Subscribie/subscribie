@@ -3,26 +3,22 @@
 
 
 {% block body %}
-
-<div class="jumbotron jumbotron-fluid kcBlue text-white">
-    <div class="container">                                                      
-        <div class="row">                                                        
-            <div class="col-sm">                                                 
-            <h1 class="display-4">Start Selling Today</h1>                 
-            </h2>                                                                
-            <h2 class="display-6">Join the many other business owners, like you, 
-                        who chose subscription website builder.
-            </h2>
-            <hr class="my-4">                                                    
-             <div class="flashy-container"><div class="flashy"></div></div>      
-            </div>                                                               
-            <div class="col-sm">
-                <img src="/static/happy-shopper.svg" 
-                    class="d-sm-none d-md-block img-fluid" />
-            </div>
-        </div>                                                                   
-    </div>                                                                       
+<div class="header-content py-4">
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h1>Start Selling Today</h1>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h3>Your shop is ready. Afer sign-up, you'll get your shop login and welcome email</h3>
+      </div>
+      <img src="/static/happy-shopper.svg" />
+  </div>
 </div>
+</div>
+            <div class="col-sm">
+            </div>
 
 <div class="container">
 
@@ -91,11 +87,14 @@
             </ul>
           </div>
           <div>
+          {% if plan.trial_period_days > 0 %}
+          <p class="py-3 body-lg"><b>{{ plan.trial_period_days }} days free</b>, then</p>
+          {% endif %}
           {% if plan.requirements.instant_payment == True %}
             <p><b>Pay today:</b> &pound;{{ "%.2f"|format(plan.sell_price/100) }}</p>
           {% endif %}
           {% if plan.requirements.subscription == True %}
-            <p><b>Price:</b> &pound;{{ "%.2f"|format(plan.interval_amount/100) }} / {{ plan.interval_unit }}</p>
+            <p>Price: &pound;{{ "%.2f"|format(plan.interval_amount/100) }} / {{ plan.interval_unit }}</p>
           {% endif %}
           </div>
           <div>

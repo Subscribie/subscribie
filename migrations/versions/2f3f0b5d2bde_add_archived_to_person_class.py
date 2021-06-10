@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("person") as batch_op:
         batch_op.add_column(
-            sa.Column("archived", sa.Boolean(), nullable=False, default=False)
+            sa.Column("archived", sa.Boolean(), nullable=True, default=0)
         )
 
 

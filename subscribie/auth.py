@@ -1,3 +1,4 @@
+import logging
 import functools
 
 from flask import (
@@ -31,10 +32,8 @@ import jwt
 from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
-import logging
 
-logger = logging
-
+log = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
@@ -61,6 +60,11 @@ def token_required(f):
             return jsonify({"msg": "ExpiredSignatureError"}), 401
         except jwt.exceptions.InvalidAlgorithmError:
             return jsonify({"msg": "InvalidAlgorithmError"}), 401
+        except jwt.exceptions.DecodeError:
+            return jsonify({"msg": "DecodeError"}), 401
+        except Exception:
+            return jsonify({"msg": "Token could not be validated or was missing"})
+
         return f(*args, **kwds)
 
     return wrapper
@@ -99,8 +103,15 @@ def jwt_login():
             private_key,
             algorithm="RS256",
         )
-        return jsonify({"token": jwt_payload.decode("utf-8")})
+        return jsonify({"token": jwt_payload})
     return jsonify({"msg": "Bad credentials"})
+
+
+@bp.route("/protected")
+@token_required
+def protected():
+    """Verify token based authentication"""
+    return jsonify({"msg": "Success"})
 
 
 def check_password_login(email, password):
@@ -135,7 +146,9 @@ def generate_login_token():
         password = password_login_form.data["password"]
         user = User.query.filter_by(email=email).first()
         if user is None:
-            flash("User not found with that email")
+            flash(
+                "Email address not found, did you sign-up with a different email address?"
+            )
             return redirect(url_for("auth.login"))
 
         if check_password_login(email, password):
@@ -147,6 +160,13 @@ def generate_login_token():
             return redirect(url_for("auth.login"))
 
     if magic_login_form.validate_on_submit():
+        email = magic_login_form.data["email"]
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            flash(
+                "Email address not found, did you sign-up with a different email address?"
+            )
+            return redirect(url_for("auth.login"))
         try:
             send_login_url(magic_login_form.data["email"])
             source = ' \
@@ -161,8 +181,7 @@ def generate_login_token():
                 {% endblock body %} '
             return render_template_string(source)
         except Exception as e:
-            logger.error(e)
-            logger.error("Failed to generate login email.")
+            log.error(f"Failed to generate login email. {e}")
             return "Failed to generate login email."
 
 
@@ -237,7 +256,7 @@ def generate_login_url(email):
 
     database.session.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
-    print("One-time login url: {}".format(login_url))
+    log.info("One-time login url: {login_url}")
     return login_url
 
 
@@ -250,8 +269,8 @@ def send_login_url(email):
         <p>Login to your Subscribie account using the link below:</p>
     """
     html = "".join([html, '<a href="', login_url, '">Login now</a>', "</body></html>"])
-    logger.info("Generated login url: %s", login_url)
-    logger.info("Sending login email to: %s", email)
+    log.info("Generated login url: %s", login_url)
+    log.info("Sending login email to: %s", email)
     mail = Mail(current_app)
     msg = Message("Subscribie Magic Login")
     msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
@@ -283,7 +302,7 @@ def forgot_password():
         password_reset_url = (
             "https://" + flask.request.host + "/auth/password-reset?token=" + token
         )
-        print(f"password_reset_url: {password_reset_url}")
+        log.info(f"password_reset_url: {password_reset_url}")
 
         with open(email_template) as file_:
             template = Template(file_.read())
@@ -300,8 +319,7 @@ def forgot_password():
                 msg.html = html
                 mail.send(msg)
             except Exception as e:
-                print(e)
-                print("Failed to send user password reset email")
+                log.error(f"Failed to send user password reset email. {e}")
             flash(
                 "We've sent you an email with a password reset link, \
                 please check your spam/junk folder too"

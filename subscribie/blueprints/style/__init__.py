@@ -1,9 +1,11 @@
+import logging
 from flask import Blueprint, request, render_template, abort, redirect
 from subscribie.auth import login_required
 from subscribie.models import database, ModuleStyle
 from jinja2 import TemplateNotFound
 import json
 
+log = logging.getLogger(__name__)
 module_style_shop = Blueprint("style", __name__, template_folder="templates")
 
 
@@ -33,8 +35,7 @@ def inject_custom_style():
             hsl_h=hsl_h, hsl_s=hsl_s, hsl_l=hsl_l
         )
     except Exception as e:
-        print(e)
-        print("Could not load custom css properties")
+        log.warning(f"Could not load custom css properties. {e}")
     # Raw global css overrises
     custom_css = "".join([js_inject, '<style type="text/css">', global_css, "</style>"])
 
@@ -67,8 +68,7 @@ def style_shop():
                 parts = css_properties["primary"].split(",")
                 css_primary = f"hsl({parts[0]}, {parts[1]}, {parts[2]})"
             except Exception as e:
-                print(e)
-                print("Could not load css_style.css_properties_json")
+                log.error(f"Could not load css_style.css_properties_json. {e}")
         else:
             customCSS = ""
             css_properties = ""

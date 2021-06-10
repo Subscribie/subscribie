@@ -32,7 +32,7 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     await page.click('#checkout-button');
 
     //Verify first payment is correct (recuring charge only)
-    const payment_content = await page.textContent('div.mr2.flex-item.mr2.width-fixed');
+    const payment_content = await page.textContent('div.mr2.flex-item.width-fixed');
     assert(payment_content === "£10.99");
     const recuring_charge_content = await page.textContent('.Text-fontSize--16');
     assert(recuring_charge_content === "Subscribe to Bath Soaps");
@@ -69,7 +69,16 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
     await new Promise(x => setTimeout(x, 15000)); //15 secconds
     await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
-
+	 
+    // Click Refresh Subscription
+    await page.click('#refresh_subscriptions'); // this is the refresh subscription
+    await page.textContent('.alert-heading') === "Notification";
+    // screeshot to the active subscriber
+    await page.goto(PLAYWRIGHT_HOST + 'admin/dashboard');
+    await page.screenshot({ path: `active-subscribers-${browserType}.png` });
+    // go back to subscriptions
+    await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
+    
     // Verify that subscriber is present in the list
     const subscriber_email_content = await page.textContent('.subscriber-email');
     assert(subscriber_email_content === 'john@example.com');
@@ -83,16 +92,17 @@ async function test_order_plan_with_only_recurring_charge(browsers, browserConte
 
     const subscriber_plan_sell_price_content = await page.evaluate(() => document.querySelector('.subscribers-plan-sell-price').textContent.indexOf("(No up-front fee)"));
     assert(subscriber_plan_sell_price_content > -1)
-
+    
     // Go to upcoming payments and ensure plan is attached to upcoming invoice
     await page.goto(PLAYWRIGHT_HOST + '/admin/upcoming-invoices');
+    // Fetch Upcoming Invoices
+    await page.click('#fetch_upcoming_invoices');
+    await new Promise(x => setTimeout(x, 10000)); //10 secconds
     const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
     assert(content_upcoming_invoice_plan_price_interval === '£10.99');
 
     const content_upcoming_invoice_plan_sell_price = await page.textContent('.upcoming-invoices-plan-no-sell_price');
     assert(content_upcoming_invoice_plan_sell_price === '(No up-front cost)');
-
-    
 
     // Logout of shop owners admin dashboard
     await page.goto(PLAYWRIGHT_HOST + '/auth/logout');

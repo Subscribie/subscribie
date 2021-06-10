@@ -7,7 +7,7 @@
 
     <div class="container">
       <div class="hero-content py-5 px-0 px-sm-4 ">
-        <h2 class="title-1">{{ company.name }}</h2>
+        <h1 class="title-1">{{ company.name }}</h1>
         {% if company.slogan is sameas None or company.slogan == "None"  %}
             <p></p>
         {% else %}
@@ -16,7 +16,7 @@
         <a class="btn-outlined-lg" href="#plans" title="Subscriber login">Choose plan</a>
       </div>
     </div>
-    
+
   </div>
 </div>
 
@@ -27,12 +27,13 @@
 <!-- Plans -->
 <div class="plans-section mx-2 mb-5 py-2 py-md-4">
   <div class="wrapper mx-auto">
+    {% for category in categories %}
     <div id="plans" class="container mx-auto py-5 px-4">
       <div class="plans-section-header text-center my-4">
-        <h4 class="title-1">Make your choice</h4>
+        <h4 class="title-1">{{ category.name }}</h4>
       </div>
       <div class="plans-row row row-cols-1 row-cols-md-2 row-cols-lg-3">
-        {% for plan in plans %}
+        {% for plan in category.plans if plan.archived != 1 and plan.private is sameas false %}
           <div class="pricing-plan col-md p-2">
             <div class="card h-100">
               {% if plan.primary_icon %}
@@ -44,20 +45,28 @@
                 <h5 class="body-lg">{{ plan.title|safe }}</h5>
 
                 {% if plan.description is not sameas None %}
-                  <p class="text mb-0">{{ plan.description }}</p>
+                  <div>
+                    <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
+                      More details
+                    </div>
+                    <div class="collapse" id="collapse-{{ plan.id }}">
+                      <p class="text mb-0 pt-2">{{ plan.description }}</p>
+                    </div>
+                  </div>
                 {% endif %}
 
                 <hr class="my-4">
-
+                {% if plan.trial_period_days > 0 %}
+                <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
+                {% endif %}
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
+                      {% if plan.trial_period_days > 0 %}Then {% endif %}
                       <span class="price">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
                       <span class="text">Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>
-                    {% else %}
-                      <span class="text">Upfront cost: None</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
@@ -74,16 +83,19 @@
                   <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
                 </div>
                 {% endfor %}
-              </div>
+                {% if plan.cancel_at %}
+                  <small>Automatically cancels on: {{ plan.cancel_at | timestampToDate }}</small>
+                {% endif %}
+              </div> <!-- end card-body -->
 
               <div class="card-footer">
 
                 {% if plan.choice_groups %}
-                  <div id="accordion">
-                    <div class="btn-link-lg btn-block mb-1 collapsed acc">
+                  <div>
+                    <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
                       See choice options
                     </div>
-                    <div class="collapse" >
+                    <div class="collapse mb-4" id="collapse-choise-{{ plan.id }}" >
                       {% for choice_group in plan.choice_groups %}
                       <details>
                         <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
@@ -97,7 +109,6 @@
                     </div>
                   </div>
                 {% endif %}
-
                 {% if plan.choice_groups %}
                   <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block">
                     Choose
@@ -108,12 +119,13 @@
                   </a>
                 {% endif %}
 
-              </div>
-            </div>
-          </div>
+              </div> <!-- end card-footer -->
+            </div> <!-- end card -->
+          </div> <!-- end pricing plan -->
         {% endfor %}
-      </div>
-    </div>
+      </div> <!-- end plans-row -->
+    </div> <!-- plans -->
+    {% endfor %} {# end categories loop #}
   </div>
 </div>
 
@@ -161,12 +173,6 @@
     $(".modal-img").attr("src", imgURL);
   });
 
-  // Show choose options 
-  for (var i = 0; i < $(".acc").length; i++) {
-    $(".acc")[i].addEventListener("click", function() {
-      this.nextElementSibling.classList.toggle("show")
-    });
-  }
 </script>
 
 {% endblock %}

@@ -1,0 +1,58 @@
+{% extends "admin/layout.html" %}
+{% block title %} VAT Settings {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">VAT Settings</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">VAT Settings</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Charge VAT</h2>
+          <p>Charge 20% VAT to your customers if you are VAT registered</p>
+          <p>
+            VAT is added at the checkout when customers click 'view details'.
+            The VAT charged also appears on the auto generated pdf invoice.
+          </p>
+
+          <form action="" method="POST" action="/">
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="chargeVAT" value="1" id="yes" {% if settings.charge_vat is sameas True %}checked {% endif %}>
+                <label class="form-check-label" for="yes">
+                  Yes. Charge VAT at 20%
+                </label>
+              </div>
+              <br />
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="chargeVAT" value="0" id="no" {% if settings.charge_vat is sameas False %}checked {% endif %}>
+                <label class="form-check-label" for="no">
+                  No. Don't charge VAT
+                </label>
+              </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

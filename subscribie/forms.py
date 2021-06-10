@@ -41,6 +41,7 @@ class PlansForm(StripWhitespaceForm):
     )
     uuid = FieldList(StringField(), min_entries=1)
     subscription = FieldList(TextField("Subscription", default=False), min_entries=1)
+    private = FieldList(TextField("Private Plan", default=False), min_entries=1)
     note_to_seller_required = FieldList(
         TextField("Require note from customer", default=False), min_entries=1
     )
@@ -51,6 +52,7 @@ class PlansForm(StripWhitespaceForm):
         )
     )
     days_before_first_charge = FieldList(StringField("Days before first charge"))
+    trial_period_days = FieldList(StringField("Trial number of days"))
     sell_price = FieldList(
         FloatField("Up-front Price", [validators.optional()]), min_entries=1
     )
@@ -72,6 +74,9 @@ class PlansForm(StripWhitespaceForm):
         FileField(validators=[FileAllowed(images, "Images only!")]), min_entries=1
     )
     position = FieldList(IntegerField("Position", [validators.optional()], default=0))
+    cancel_at = FieldList(
+        StringField("Cancel at", [validators.optional()], default=False)
+    )
     description = FieldList(
         StringField("Description", [validators.optional()], default=False)
     )

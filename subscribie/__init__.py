@@ -7,8 +7,11 @@
 
     :copyright: (c) 2018 by Karma Computing Ltd
 """
-import logging
 from dotenv import load_dotenv
+
+load_dotenv(verbose=True)
+from .logger import logger  # noqa: F401
+import logging
 import os
 import sys
 import sqlite3
@@ -16,7 +19,6 @@ from .database import database
 import flask
 import datetime
 from base64 import b64encode
-import git
 from flask import (
     Flask,
     render_template,
@@ -30,7 +32,6 @@ from .Template import load_theme
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
 import importlib
-from importlib import reload
 import urllib
 from pathlib import Path
 import sqlalchemy
@@ -46,11 +47,7 @@ from .models import (
     Module,
 )
 
-from .blueprints.admin import get_subscription_status
-
-load_dotenv(verbose=True)
-PYTHON_LOG_LEVEL = os.environ.get("PYTHON_LOG_LEVEL", "WARNING")
-logging.basicConfig(level=PYTHON_LOG_LEVEL)
+log = logging.getLogger(__name__)
 
 
 def seed_db():
@@ -71,7 +68,7 @@ def create_app(test_config=None):
             session["sid"]
         except KeyError:
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
-            print("Starting with sid {}".format(session["sid"]))
+            log.info(f"Starting with sid {session['sid']}")
 
     @app.before_first_request
     def register_modules():
@@ -79,29 +76,14 @@ def create_app(test_config=None):
         # Set custom modules path
         sys.path.append(app.config["MODULES_PATH"])
         modules = Module.query.all()
-        print("sys.path contains: {}".format(sys.path))
+        log.info(f"sys.path contains: {sys.path}")
         for module in modules:
             # Assume standard python module
             try:
-                print("Attempting to importing module: {}".format(module.name))
+                log.info("Attempting to importing module: {module.name}")
                 importlib.import_module(module.name)
             except ModuleNotFoundError:
-                # Attempt to load module from src
-                dest = Path(app.config["MODULES_PATH"], module.name)
-                print("Cloning module into: {}".format(dest))
-                os.makedirs(str(dest), exist_ok=True)
-                try:
-                    git.Repo.clone_from(module.src, dest)
-                except git.exc.GitCommandError:
-                    pass
-                # Now re-try import
-                try:
-                    import site
-
-                    reload(site)
-                    importlib.import_module(module.name)
-                except ModuleNotFoundError:
-                    print("Error: Could not import module: {}".format(module.name))
+                log.debug("Error: Could not import module: {module.name}")
             # Register modules as blueprint (if it is one)
             try:
                 importedModule = importlib.import_module(module.name)
@@ -112,14 +94,10 @@ def create_app(test_config=None):
                     app.config.from_pyfile(blueprintConfig, silent=True)
                     # Register the Blueprint
                     app.register_blueprint(getattr(importedModule, module.name))
-                    print(f"Imported {module.name} as flask Blueprint")
+                    log.info(f"Imported {module.name} as flask Blueprint")
 
             except (ModuleNotFoundError, AttributeError):
-                print(
-                    "Error: Could not import module as blueprint: {}".format(
-                        module.name
-                    )
-                )
+                log.debug("Error: Could not import module as blueprint: {module.name}")
 
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     CORS(app, resources={r"/auth/jwt-login/*": {"origins": "*"}})
@@ -166,7 +144,7 @@ def create_app(test_config=None):
                 database.session.commit()
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations run (flask upgrade requires app reboot)
-            print(e)
+            log.debug(e)
 
         load_theme(app)
 
@@ -195,7 +173,7 @@ def create_app(test_config=None):
             if cur.fetchone() is None:
                 cur.executescript(fp.read())
             else:
-                print("Database already seeded.")
+                log.info("Database already seeded.")
             con.close()
 
     @app.cli.command()
@@ -233,22 +211,18 @@ def create_app(test_config=None):
                         msg.html = html
                         mail.send(msg)
                     except Exception as e:
-                        print(e)
-                        print("Failed to send update choices email")
+                        log.error(f"Failed to send update choices email. {e}")
 
         people = Person.query.all()
 
         for person in people:
             for subscription in person.subscriptions:
-                if (
-                    get_subscription_status(subscription.gocardless_subscription_id)
-                    == "active"
-                ):
+                if subscription.stripe_status == "active":
                     # Check if x days until next subscription due, make configurable
                     today = datetime.date.today()
                     days_until = subscription.next_date().date() - today
                     if days_until.days == 8:
-                        print(
+                        log.info(
                             f"Sending alert for subscriber '{person.id}' on \
                               plan: {subscription.plan.title}"
                         )

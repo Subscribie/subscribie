@@ -1,3 +1,4 @@
+import logging
 from flask import (
     Blueprint,
     render_template,
@@ -18,11 +19,16 @@ from subscribie.models import (
     Subscription,
     Transaction,
     SubscriptionNote,
+    Setting,
+    TaxRate,
 )
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     format_to_stripe_interval,
+    create_stripe_tax_rate,
+    get_stripe_livemode,
+    get_stripe_connect_account_id,
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
@@ -32,16 +38,21 @@ import stripe
 import backoff
 import os
 import json
-import logging
 from uuid import uuid4
 import sqlalchemy
 
+log = logging.getLogger(__name__)
 checkout = Blueprint("checkout", __name__, template_folder="templates")
 
 
 @checkout.route("/new_customer", methods=["GET"])
 def new_customer():
     plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
+    if plan is None:
+        log.warning(
+            f'Plan {request.args["plan"]} requested at /new_customer route but not found'  # noqa
+        )
+        return redirect(url_for("index"))
     session["plan"] = plan.uuid
 
     # Fetch selected options, if present
@@ -57,7 +68,7 @@ def new_customer():
                 chosen_option.choice_group_title = option.choice_group.title
                 chosen_options.append(chosen_option)
             else:
-                logging.error(f"Failed to get Open from session option_id: {option_id}")
+                log.error(f"Failed to get Open from session option_id: {option_id}")
 
     package = request.args.get("plan", "not set")
     session["package"] = package
@@ -103,6 +114,8 @@ def store_customer():
             person = Person.query.filter_by(email=email).one()
         except sqlalchemy.orm.exc.NoResultFound:
             person = None
+        except sqlalchemy.orm.exc.MultipleResultsFound:
+            person = Person.query.filter_by(email=email).all()[0]
 
         if person is None:
             # Store person, with randomly generated password
@@ -116,6 +129,7 @@ def store_customer():
                 email=email,
                 mobile=mobile,
                 password=str(os.urandom(16)),
+                password_expired=1,
             )
             database.session.add(person)
             database.session.commit()
@@ -202,6 +216,18 @@ def thankyou():
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     data = request.json
+
+    # If VAT tax is enabled, get stripe tax id
+    settings = Setting.query.first()
+    if settings is not None:
+        charge_vat = settings.charge_vat
+        create_stripe_tax_rate()
+        tax_rate = TaxRate.query.filter_by(
+            stripe_livemode=get_stripe_livemode()
+        ).first()
+    else:
+        charge_vat = False
+
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
@@ -246,6 +272,11 @@ def stripe_create_checkout_session():
                 ),
             },
         }
+        if plan.trial_period_days > 0:
+            subscription_data["trial_period_days"] = plan.trial_period_days
+
+        if charge_vat:
+            subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
         # Add note to seller if present on subscription_data metadata
         if session.get("note_to_seller", False):
             subscription_data["metadata"]["note_to_seller"] = session.get(
@@ -273,8 +304,10 @@ def stripe_create_checkout_session():
         if plan.requirements.subscription:
             plan_name = "(Up-front fee) " + plan_name
 
+        tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
         line_items.append(
             {
+                "tax_rates": tax_rates,
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
@@ -346,7 +379,7 @@ def create_subscription(
     the storing of chosen options againt their plan choice.
     Chosen option ids may be passed via webhook or through session
     """
-    print("Creating Subscription model if needed")
+    log.info("Creating Subscription model if needed")
     subscription = None  # Initalize subscription model to None
 
     # Store Subscription against Person locally
@@ -364,7 +397,7 @@ def create_subscription(
         subscribie_checkout_session_id = session.get(
             "subscribie_checkout_session_id", None
         )
-    print(f"subscribie_checkout_session_id is: {subscribie_checkout_session_id}")
+    log.info(f"subscribie_checkout_session_id is: {subscribie_checkout_session_id}")
 
     # Verify Subscription not already created (e.g. stripe payment webhook)
     # another hook or mandate only payment may have already created the Subscription
@@ -379,7 +412,7 @@ def create_subscription(
         )
 
     if subscription is None:
-        print("No existing subscription model found, creating Subscription model")
+        log.info("No existing subscription model found, creating Subscription model")
         # Create new subscription model
         subscription = Subscription(
             sku_uuid=package,
@@ -393,10 +426,10 @@ def create_subscription(
             chosen_option_ids = session.get("chosen_option_ids", None)
 
         if chosen_option_ids:
-            print(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
+            log.info(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
             chosen_options = []
             for option_id in chosen_option_ids:
-                print(f"Locating option id: {option_id}")
+                log.info(f"Locating option id: {option_id}")
                 option = Option.query.get(option_id)
                 # Store as ChosenOption because options may change after the order
                 # has processed. This preserves integrity of the actual chosen options
@@ -409,16 +442,32 @@ def create_subscription(
                     )  # Used for grouping latest choice
                     chosen_options.append(chosen_option)
                 else:
-                    logging.error(
-                        f"Failed to get Open from session option_id: {option_id}"
-                    )
+                    log.error(f"Failed to get Open from session option_id: {option_id}")
             subscription.chosen_options = chosen_options
         else:
-            print("No chosen_option_ids were found or applied.")
+            log.info("No chosen_option_ids were found or applied.")
 
         database.session.add(subscription)
         database.session.commit()
         session["subscription_uuid"] = subscription.uuid
+
+        # If subscription plan has cancel_at set, modify Stripe subscription
+        # charge_at property
+        stripe.api_key = get_stripe_secret_key()
+        connect_account_id = get_stripe_connect_account_id()
+        if subscription.plan.cancel_at:
+            cancel_at = subscription.plan.cancel_at
+            try:
+                stripe.Subscription.modify(
+                    sid=subscription.stripe_subscription_id,
+                    stripe_account=connect_account_id,
+                    cancel_at=cancel_at,
+                )
+                subscription.stripe_cancel_at = cancel_at
+                database.session.commit()
+            except Exception as e:  # noqa
+                log.error("Could not set cancel_at: {e}")
+
     return subscription
 
 
@@ -430,7 +479,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
     We use backoff because webhook event order is not guaranteed
     """
-    logging.info("Processing payment_intent.succeeded")
+    log.info("Processing payment_intent.succeeded")
 
     data = event["data"]["object"]
     stripe.api_key = get_stripe_secret_key()
@@ -457,7 +506,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         ]
     except Exception as e:
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
-        logging.error(msg)
+        log.error(msg)
         return msg, 500
 
     # Locate the Subscribie subscription by its subscribie_checkout_session_id
@@ -484,15 +533,14 @@ def stripe_process_event_payment_intent_succeeded(event):
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
         elif data["metadata"] == {}:
-            logging.warn("Empty metadata")
-            logging.ward(data)
+            log.warn(f"Empty metadata: {data}")
             return "Empty metadata", 422
         else:
-            print(
-                "WARNING: subscribie_subscription not found for this\
+            log.error(
+                "subscribie_subscription not found for this\
               payment_intent.succeeded. The metadata was:"
             )
-            print(data["metadata"])
+            log.error(data["metadata"])
             raise Exception
         database.session.add(transaction)
         database.session.commit()
@@ -511,11 +559,11 @@ def stripe_webhook():
     """
     event = request.json
 
-    logging.info(f"Received stripe webhook event type {event['type']}")
+    log.info(f"Received stripe webhook event type {event['type']}")
 
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
-        logging.info("Processing checkout.session.completed event")
+        log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
         subscribie_checkout_session_id = session["metadata"][
             "subscribie_checkout_session_id"
@@ -559,6 +607,6 @@ def stripe_webhook():
         return stripe_process_event_payment_intent_succeeded(event)
 
     msg = {"msg": "Unknown event", "event": event}
-    logging.debug(msg)
+    log.debug(msg)
 
     return jsonify(msg), 422

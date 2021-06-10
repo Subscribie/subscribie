@@ -20,9 +20,10 @@
         {% if show_active %}
           <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
         {% else %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary">Show Active</a>
+          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
       {%endif %}
       <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
+      <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
       <table class="table mobile-optimised">
         <thead>
@@ -40,7 +41,6 @@
             <td data-th="Name">
               <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
               <br />
-              <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}" title="Remove subscriber from view">Archive</a>
             </td>
             <td data-th="Date">{% if person.created_at %} 
               {{ person.created_at.strftime('%Y-%m-%d') }}
@@ -61,10 +61,6 @@
               {% if person.subscriptions %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
-                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                    {# if plan is a subscription, get its live subscription status #}
-                      {% set ns = namespace(stripe_subscription_status = subscription_status(subscription.stripe_external_id)) %}
-                    {% endif %}
                     <li>
                         <div class="card">
                             <ul class="list-unstyled px-2">
@@ -103,10 +99,16 @@
                                     </span>
                                     <li><strong>Status: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {{ ns.stripe_subscription_status }}
+                                            {{ subscription.stripe_status }}
                                         {% else %}
                                             Paid
                                         {% endif %}
+                                    </li>
+                                    {% if subscription.stripe_cancel_at %}
+                                      <strong>Automatically Cancels at:</strong>
+                                      {{ subscription.stripe_cancel_at | timestampToDate }}
+                                    {% endif %}
+                                    <li>
                                     </li>
                                     <li>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.note_to_seller_required %}
@@ -122,21 +124,33 @@
                                     </li>
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if ns.stripe_subscription_status == 'Active' %}
+                                            {% if subscription.stripe_status|lower in ['active', 'trialing'] %}
+                                                {% if subscription.stripe_status|lower != 'trialing' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
-                                                subscription_id=subscription.stripe_external_id,
+                                                subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
                                                     Pause
-                                                </a> | 
+                                                </a> |
+                                                {% endif %}
+                                                <a href="{{ url_for("admin.cancel_stripe_subscription",
+                                                subscription_id=subscription.stripe_subscription_id,
+                                                confirm="") }}">
+                                                    Cancel
+                                                </a> |
                                             {% endif %}
-                                            {% if ns.stripe_subscription_status == 'Paused' %}
+                                            {% if subscription.stripe_status|lower == 'paused' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
-                                                subscription_id=subscription.stripe_external_id,
+                                                subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
                                                     Resume
                                                 </a>
                                             {% endif %}
                                         {% endif %}</li>
+                                     <li class=mt-2><strong>History: </strong>
+                                      <a href="{{ url_for('admin.transactions',
+                                        subscriber=subscription.person.uuid) }}">View Transactions
+                                      </a>
+                                     </li>
                             </ul>
                         </div>
                     </li>
@@ -157,6 +171,17 @@
 document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
   e.target.textContent = "Please wait...";
 });
+
+{# Refresh subscription statuses when button clicked #}
+btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
+
+btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
+
+function refreshSubscriptionStatuses() {
+  fetch("{{ url_for('admin.refresh_subscriptions') }}")
+  .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
+}
+{# End Refresh subscription statuses when button clicked #}
 
 </script>
 

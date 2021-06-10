@@ -1,3 +1,4 @@
+import logging
 from subscribie.auth import check_private_page, oauth_login_user, start_new_user_session
 from pathlib import Path
 import jinja2
@@ -14,16 +15,15 @@ from flask import (
     current_app,
     g,
     send_from_directory,
+    Markup,
 )
-from .models import (
-    Company,
-    Plan,
-    Integration,
-    Page,
-)
+from .models import Company, Plan, Integration, Page, Category, Setting
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
+from subscribie.database import database
 import requests
+
+log = logging.getLogger(__name__)
 
 bp = Blueprint("views", __name__, url_prefix=None)
 
@@ -31,10 +31,23 @@ bp = Blueprint("views", __name__, url_prefix=None)
 @bp.before_app_first_request
 def migrate_database():
     """Migrate database when app first boots"""
-    print("#" * 233)
+    log.info("Migrating database")
     upgrade(
         directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
     )
+
+
+@bp.before_app_request
+def on_each_request():
+    # Add all plans to one
+    if Category.query.count() == 0:  # If no categories, create default
+        category = Category()
+        category.name = "Make your choice"
+        # Add all plans to this category
+        plans = Plan.query.all()
+        for plan in plans:
+            plan.category = category
+        database.session.add(category)
 
 
 @bp.before_app_request
@@ -49,7 +62,7 @@ def check_if_inside_iframe():
         or session.get("iframe_embeded") is True
         and request.headers.get("referer") is not None
     ):
-        print("Loading from within iframe")
+        log.info("Loading from within iframe")
         session["iframe_embeded"] = True
     else:
         session["iframe_embeded"] = False
@@ -61,7 +74,19 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    return dict(company=company, integration=integration, plans=plans, pages=pages)
+    setting = Setting.query.first()
+    if setting is None:
+        setting = Setting()
+        database.session.add(setting)
+        database.session.commit()
+    custom_code = Setting.query.first().custom_code
+    return dict(
+        company=company,
+        integration=integration,
+        plans=plans,
+        pages=pages,
+        custom_code=Markup(custom_code),
+    )
 
 
 @bp.route("/cdn/<path:filename>")
@@ -85,8 +110,9 @@ def show_500():
 
 @bp.route("/choose")
 def choose():
-    plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
-    return render_template("choose.html", plans=plans)
+    # Note: Categories link to plans (via category.plans)
+    categories = Category.query.order_by(Category.position).all()
+    return render_template("choose.html", categories=categories)
 
 
 @bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
@@ -108,17 +134,19 @@ def set_options(plan_uuid):
 @bp.route("/page/<path>", methods=["GET"])
 def custom_page(path):
     page = Page.query.filter_by(path=path).first()
+    if page is None:
+        return "Page not found", 404
     # Check if private page & enforce
     blocked, redirect = check_private_page(page.id)
     if blocked:
         return redirect
     try:
         with open(
-            Path(str(current_app.config["THEME_PATH"]), page.template_file)
+            Path(str(current_app.config["CUSTOM_PAGES_PATH"]), page.template_file)
         ) as fh:
             body = fh.read()
     except FileNotFoundError as e:
-        print(e)
+        log.error(f"Template not found FileNotFoundError. {e}")
         return "Template not found for this page.", 404
 
     page_header = """
@@ -126,13 +154,12 @@ def custom_page(path):
         {% block title %} {{ title }} {% endblock title %}
 
         {% block hero %}
-
-            <div class="container">
-              <div class="row">
-                <div class="col-md-8 pl-0">
-                  <h1 class="h1 text-white font-weight-bold">{{ title }}</h1>
+            <div class="section-hero px-2 mb-4">
+                <div class="wrapper mx-auto">
+                    <div class="container py-5">
+                        <h2 class="title-1">{{ title }}</h2>
+                    </div>
                 </div>
-              </div>
             </div>
 
         {% endblock %}
@@ -258,3 +285,22 @@ def google_return():
         else:
             login_url = url_for("auth.login")
             return f"User not found, try username/password please login instead of Google signin. <a href='{login_url}'>Login</a>"  # noqa: E501
+
+
+@bp.route("/plan/<uuid>", defaults={"plan_title": None})
+@bp.route("/plan/<uuid>/<plan_title>")
+def view_plan(uuid, plan_title=None):
+    """
+    Note: "plan_name" is not used, and is also
+          optional. It's just there to make
+          urls look 'pretty'
+          when humans share them.
+    """
+    # fetch plan from db
+    plan = Plan.query.filter_by(uuid=uuid).first()
+    if plan is None:
+        return "Plan not found. Visit <a href='/'>home</a>"
+    elif plan.archived:
+        return "This plan has been archived. Visit <a href='/'>home</a>"
+
+    return render_template("view-plan.html", plan=plan)

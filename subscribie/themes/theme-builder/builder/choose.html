@@ -2,7 +2,6 @@
 {% block title %}Subscription Website Builder for Subscription Billing{% endblock %}
 
 {% block body %}
-
 {# Template for google signin. This gets shown by using the <google-signin></google_signin> html tag #}
 <script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
 <template id="google-signin-template">
@@ -11,185 +10,220 @@
 </template>
 {# End template for google signin #}
 
-<div class="jumbotron jumbotron-fluid kcBlue text-white">
-	<div class="container">
-		<div class="row">
-            <div class="col-sm banner-container">
-        	<h1 class="display-4 banner-title">Subscription Website Builder</h1>
-		  	<p class="lead slogan-title">
-			{{ company.slogan }}
-            <i class="fas fa-clock"></i>
-            </p>
-		  	<hr class="my-4 divider-line">
-		  	<p>Easily take recurring payments online and create unlimited subscription packages at no extra cost.</p>
-                        <div class="form-group">
-            <google-signin></google-signin>
-                        </div>
-            <form action="/start-building">
-            <div class="form-group">
-            <input type="email" name="email" placeholder="Enter your email" class="form-control email-input" />
-            </div>
-			<button class="btn btn-success btn-lg mr-3" href="/start-building"
-                role="button">Start now</button>
-			<a href="#content" class="btn btn-secondary btn-lg"
-                role="button" >Learn more</a>
-            </form>
-			</div>
-            <div class="col-sm banner-image-container">
-		  	<img src="/static/start2.svg" class="d-sm-none d-md-block img-fluid"/>
-            </div>
-		</div>
-	</div>
-</div>
-
-<div class="container feature-container" id="content">
-
-
-  <div class="three-item-container">
-
-  <div class="three-item">
-
-    <h2><i class="fas fa-redo-alt"></i> Create a Subscription Service</h3>
-	<p class="lead">Create a subscription website in minutes.</p>
-    <p>Produce any subscription service you want using Subscribie to
-	generate an entire subscription website from scratch. 
-	Whatever you’re selling, from club memberships to dog treats,
-	simply tell us what is in your subscription and Subscribie 
-	will build your site.
-       <a href="https://subscriptionwebsitebuilder.co.uk/start-building">Start building now.</a>
-    </p>
+<div class="header-content py-4">
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h1>Subscription Website Builder</h1>
+      </div>
   </div>
-
-  <div class="three-item">
-    <h2><i class="fas fa-money-bill-wave"></i> Take recurring payments online</h3>
-	<p class="lead">Accept payments without lifting a finger.</p>
-    <p>Easily accept one-off, recurring payments online using our subscription 
-       website builder.
-    </p>
-    <p>We integrate with Stripe which allows customers to pay for your 
-       subscription service on a recurring basis, or one-off if you have on-time plans. 
-       This gives great flexibility to you and your customers. 
-       You can take recurring payments online, and change subscriptions plans as needed.</p>
-    </div>
-
-    <div class="three-item">
-	<h2><span class="fa-stack">
-        <i class="fas fa-chart-line fa-stack-1x"></i>
-	    </span>
-	Unlimited plans, no extra cost
-    </h2>
-	<p class="lead">Rest easy knowing your costs won’t change.</p>
-  <p>Create unlimited subscription packages and no matter how many you sell,
-	  your basic Subscribie cost and the percentage taken will remain the same.
-	  We offer a free shop web address, or Subscribie can be embedded into an 
-	  existing website.
-  </p>
-    </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h3>For subscription billing &amp; recurring payments</h3>
+      </div>
   </div>
-
 
   <div class="row">
-      <iframe id="revenue-calculator" src="https://subscribie.github.io/subscriber-revenue-calculator/"
-      style="width: 100%;min-height: 730px;overflow:hidden;border-width:0px;" scrolling="no">
-      </iframe>
+      <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+          <h3>14 Days Free Trial</h3>
+      </div>
   </div>
 
-  <div class="row mt-4" style="justify-content:center">
-    <a href="/start-building" class="btn btn-success btn-lg" role="button">Start now</a>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center">
+          <span class="description text-center py-4">
+              Easily take recurring payments online and create unlimited subscription plans at no extra cost.<br>
+          </span>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center my-3">
+        <google-signin></google-signin>
+      </div>
   </div>
 
-	<h2><i class="fas fa-smile"></i>
-	Simple Customer Flow
-	</h2>
-	<p class="lead">We’ve created a simple 3-step process for your customers 
-		to sign up to your subscription quickly and easy.</a>
-
-<div class="card-group">
-  <div class="card zoom">
-    <img class="card-img-top" src="/static/steps/1.svg" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">1. Customer chooses a package</h5>
-      <p class="card-text">
-  Use our easy website builder to create unlimited subscription packages for your customers to choose from.
-      <p>
-      <p class="card-text">
-      <small class="text-muted">
-    Add as many or as few as you like at no extra cost!
-      </small></p>
-    </div>
-  </div>
-  <div class="card zoom">
-    <img class="card-img-top" src="/static/steps/2.svg" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">2. Customer enters contact info</h5>
-      <p class="card-text">The simple customer form collects all the information 
-	      you require, including name, address and contact information. </p>
-      <p class="card-text">
-	  <small class="text-muted">
-      The form is customisable so you only collect information you need. 
-      </small>
-      </p>
-    </div>
-  </div>
-  <div class="card zoom">
-    <img class="card-img-top" src="/static/steps/3.svg" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">3. A subscription is set-up!</h5>
-      <p class="card-text">
-      The customer is set-up with a recurring payment for the package 
-	they choose, with payments automatically going into your account.
-      </p>
-      <p class="card-text">
-      <small class="text-muted">
-     You can additionally set up one-off payments and packages.
-      </small>
-      </p>
-    </div>
-  </div>
-</div>
-
-<br />
-
- <h3 class="display-5">Start your subscription based website today and begin
- gaining customers</h3>
-
-    <p class="lead">In just ten minutes you'll have your own subscription website
-    started. What are you waiting for?</p>
-    <a href="/start-building" class="btn btn-success btn-lg banner-btn mr-3"
-    role="button" aria-pressed="true">Start now</a>
-
-<br />
-<h2><i class="fas fa-laptop"></i>Example Sites</h2>
-
-  <div>
-      <style>
-        .demo-sites img {
-           box-shadow: 3px 3px 5px 6px #ccc;
-           margin-bottom: 20px;
-        }
-        .zoom {
-          transition: transform .2s; /* Animation */
-        }
-
-        .zoom:hover {
-          transform: scale(1.01);
-        }
-      </style>
-      <div class="demo-sites">
-      <a href="https://halleandharpertreats.co.uk/" target="_blank">
-        <h3>Halle and Harper Treats</h3>
-        <img src="/static/sell-dog-treats-subscription.png" width="250px" class="zoom" />
-      </a>
-      <a href="https://eyelashclub.subscriby.shop/" target="_blank">
-        <h3>Eyelash Club</h3>
-        <img src="/static/eyelash-subscription-business.png" width="250px" class="zoom" />
-      </a>
-      <a href="https://karmabroadband.subscriby.shop/" target="_blank">
-        <h3>Broadband Subscription</h3>
-        <img src="/static/start-a-subscription-website-example.png" width="250px" class="zoom" />
-      </a>
+  <div class="row">
+      <div class="col-sm-12 d-flex justify-content-center align-items-center">
+          <a href="/start-building"  class="get-started-btn">Get Started</a>
       </div>
   </div>
 </div>
+</div><!-- end header header-bg -->
 
-{% endblock %}
+<section class="features">
+    <div class="row">
+        <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+            <span class="feature-section-title">Features</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+            <span class="feature-section-description">Easy Subscription billing &amp; website sign-up flow for your customers</span>
+        </div>
+    </div>
+
+    <div class="row features-container">
+        <div class="col-sm-12 col-md-4">
+            <div class="row">
+                <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/1.svg') }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="feature-description">Customer chooses package</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <span class="customer-description">
+                        Use our easy builder to setup unlimited subscription plans for your customers to choose from.
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="row">
+                <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/2.svg') }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="feature-description">Customer enters info</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <span class="customer-description">
+                        A simple customer form takes all the required information, such as name and address.
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="row">
+                <div class="col-sm-12 feature-icon d-flex justify-content-center align-items-center text-center">
+                    <img class="feature-img" alt="" src="{{ url_for('static', filename='steps/3.svg') }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="feature-description">Recurring subscription is set-up!</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <span class="customer-description">
+                        The customer is setup with automatic recurring payments going into your account for the package they choose.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features payment-section position-relative">
+    <div class="payment-bg"></div>
+    <div class="row d-flex justify-content-between flex-wrap align-items-center">
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-title">
+                     Create a Subscription Service
+                </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-desc">Create a subscription website in minutes.</span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-icon">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='credit.png') }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-description">
+                        <p class="payment-p">Produce any subscription service you want using Subscribie to generate an entire subscription website from scratch. Whatever you’re selling, from club memberships to dog treats, simply tell us what is in your subscription and Subscribie will build your site. Start building now.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-title">
+                    Take recurring payments online
+                </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-desc">Accept payments without lifting a finger. </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-icon">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='no-credit.png') }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-description">
+                        <p class="payment-p">Easily accept one-off, recurring payments online using our subscription website builder.<br>
+                            We integrate with Stripe which allows customers to pay for your subscription service on a recurring basis, or one-off if you have on-time plans.
+                            This gives great flexibility to you and your customers.<br><br>
+                            You can take recurring payments online, and change subscriptions plans as needed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 mb-2 mt-2 p-2 col-md-4 d-flex flex-wrap justify-content-center align-items-center text-center">
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-title">
+                    Unlimited plans, no extra cost
+                </span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="row-sm-12 d-flex justify-content-center align-items-center text-center">
+                    <span class="payment-desc">Rest easy knowing your costs won’t change.</span>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-icon">
+                        <img class="feature-img" alt="" src="{{ url_for('static', filename='/steps/1.svg') }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div class="col-sm-12 col-md-6 d-flex justify-content-center align-items-center text-center">
+                    <div class="payment-description">
+                        <p class="payment-p">Create unlimited subscription packages and no matter how many you sell,
+                            your basic Subscribie cost and the percentage taken will remain the same.
+                            We offer a free shop web address, or Subscribie can be embedded into an existing website.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+        <iframe id="revenue-calculator" src="https://subscribie.github.io/subscriber-revenue-calculator/" style="width: 100%;min-height: 730px;overflow:hidden;border-width:0px;" scrolling="no">
+      </iframe>
+        </div>
+
+    </div>
+</section>
+{% endblock %} {# end of body block #}

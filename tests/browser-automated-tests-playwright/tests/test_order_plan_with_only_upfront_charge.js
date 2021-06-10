@@ -71,6 +71,14 @@ async function test_order_plan_with_only_upfront_charge(browsers, browserContext
     await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     await page.screenshot({ path: `view-subscribers-${browserType}.png` });
 
+    // Click Refresh Subscription
+    await page.click('#refresh_subscriptions'); // this is the refresh subscription
+    await page.textContent('.alert-heading') === "Notification";
+    // screeshot to the active subscriber
+    await page.goto(PLAYWRIGHT_HOST + 'admin/dashboard');
+    await page.screenshot({ path: `active-subscribers-${browserType}.png` });
+    // go back to subscriptions
+    await page.goto(PLAYWRIGHT_HOST + '/admin/subscribers')
     // Verify that subscriber is present in the list
     const subscriber_email_content = await page.textContent('.subscriber-email');
     assert(subscriber_email_content === 'john@example.com');
@@ -78,7 +86,7 @@ async function test_order_plan_with_only_upfront_charge(browsers, browserContext
     // Verify that plan is attached to subscriber
     const subscriber_plan_title_content = await page.textContent('.subscription-title');
     assert(subscriber_plan_title_content === 'One-Off Soaps');
-
+   
     // Logout of shop owners admin dashboard
     await page.goto(PLAYWRIGHT_HOST + '/auth/logout');
     await page.screenshot({ path: `logged-out-${browserType}.png` });

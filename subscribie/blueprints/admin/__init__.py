@@ -24,6 +24,7 @@ from subscribie.utils import (
     create_stripe_connect_account,
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
+    create_stripe_tax_rate,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -59,11 +60,18 @@ from subscribie.models import (
     Plan,
     PlanRequirements,
     PlanSellingPoints,
+    TaxRate,
+    Category,
+    UpcomingInvoice,
 )
+from .subscription import update_stripe_subscription_statuses
+from .invoice import fetch_stripe_upcoming_invoices
+
 import stripe
 from werkzeug.utils import secure_filename
 import subprocess
 
+log = logging.getLogger(__name__)
 
 admin = Blueprint(
     "admin", __name__, template_folder="templates", static_folder="static"
@@ -93,6 +101,11 @@ def currencyFormat(value):
     return "£{:,.2f}".format(value)
 
 
+@admin.app_template_filter()
+def timestampToDate(timestamp):
+    return datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+
+
 def store_stripe_transaction(stripe_external_id):
     """Store Stripe invoice payment in transactions table"""
     stripe.api_key = get_stripe_secret_key()
@@ -105,24 +118,22 @@ def store_stripe_transaction(stripe_external_id):
     # First try fetching paid invoice
     try:
         invoice = stripe.Invoice.retrieve(
-            id=stripe_external_id,
-            stripe_account=stripe_connect_account_id,
+            id=stripe_external_id, stripe_account=stripe_connect_account_id
         )
     except stripe.error.InvalidRequestError as e:
-        print(f"Cannot get stripe invoice subscription id: {stripe_external_id}")
-        print("This might be okay. Trying to fetch upcoming invoice with same id...")
-        print(e)
+        log.error(
+            f"Cannot get stripe invoice subscription id: {stripe_external_id}. This might be okay. Trying to fetch upcoming invoice with same id. {e}"  # noqa
+        )
         try:
             invoice = stripe.Invoice.upcoming(
                 subscription=stripe_external_id,
                 stripe_account=stripe_connect_account_id,
             )
         except stripe.error.InvalidRequestError as e:
-            print(
+            log.error(
                 f"Cannot get stripe upcoming invoice subscription id: \
-                  {stripe_external_id}"
+                  {stripe_external_id}. {e}"
             )
-            print(e)
             raise Exception(
                 f"Cannot locate Stripe subscription invoice {stripe_external_id}"
             )
@@ -183,6 +194,90 @@ def update_payment_fulfillment(stripe_external_id):
     return redirect(request.referrer)
 
 
+@admin.route("/stripe/charge", methods=["POST", "GET"])
+# @login_required
+def stripe_create_charge():
+    """Charge an existing subscriber x ammount immediately
+
+    :param stripe_customer_id: Stripe customer id
+    :param amount: Positive integer amount to charge in smallest currency unit
+    :param currency: ISO currency code, defaults to [GBP]
+    :param statement_descriptor_suffix: What customers see on their statements. Maximum 22 characters # noqa
+
+    Example call:
+      curl http://127.0.0.1:5000/admin/stripe/charge -d '{"stripe_customer_id":"cus_JKJhGWrM7NMnj2", "amount": 2000, "currency": "GBP"}' # noqa
+    """
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+
+    try:
+        data = request.get_json(force=True)
+        amount = data["amount"]
+        currency = data["currency"]
+        statement_descriptor_suffix = data["statement_descriptor_suffix"]
+    except Exception:
+        # Assumme form submission
+        # Get stripe customer_id from subscribers subscription -> customer reference
+        person = Person.query.get(request.form.get("person_id"))
+        stripe_subscription_id = person.subscriptions[0].stripe_subscription_id
+        stripe_subscription = stripe.Subscription.retrieve(
+            stripe_subscription_id, stripe_account=connect_account_id
+        )
+        customer = stripe.Customer.retrieve(
+            id=stripe_subscription.customer, stripe_account=connect_account_id
+        )
+
+        amount = int(request.form.get("amount"))
+        currency = "GBP"
+        statement_descriptor_suffix = request.form.get("description")
+
+    try:
+        paymentMethods = stripe.PaymentMethod.list(
+            customer=customer, stripe_account=connect_account_id, type="card"
+        )
+
+        paymentIntent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency=currency,
+            payment_method_types=["card"],
+            application_fee_amount=int(amount * 0.025),
+            customer=customer,
+            description=statement_descriptor_suffix,
+            statement_descriptor_suffix=statement_descriptor_suffix,
+            stripe_account=connect_account_id,
+        )
+
+        # Confirm payment intent
+        stripe.PaymentIntent.confirm(
+            paymentIntent.id,
+            payment_method=paymentMethods["data"][0].id,
+            stripe_account=connect_account_id,
+        )
+
+        # Get latest paymentIntent status
+        paymentIntent = stripe.PaymentIntent.retrieve(
+            paymentIntent.id, stripe_account=connect_account_id
+        )
+        if paymentIntent.status == "succeeded":
+            # Store transaction
+            transaction = Transaction()
+            transaction.amount = amount
+            transaction.payment_status = "succeeded"
+            transaction.comment = statement_descriptor_suffix
+            transaction.external_id = paymentIntent.id
+            transaction.external_src = "stripe"
+            transaction.person = person
+            database.session.add(transaction)
+            database.session.commit()
+
+            flash("Charge was successful")
+            return redirect(url_for("admin.transactions"))
+    except stripe.error.InvalidRequestError as stripeError:
+        return jsonify(stripeError.error.message)
+
+    return jsonify(paymentIntent.status)
+
+
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/pause")
 @login_required
 def pause_stripe_subscription(subscription_id: str):
@@ -198,8 +293,9 @@ def pause_stripe_subscription(subscription_id: str):
         )
         flash("Subscription paused")
     except Exception as e:
-        flash("Error pausing subscription")
-        print(e)
+        msg = "Error pausing subscription"
+        flash(msg)
+        log.error(f"{msg}. {e}")
 
     if "goback" in request.args:
         return redirect(request.referrer)
@@ -221,13 +317,73 @@ def resume_stripe_subscription(subscription_id):
         )
         flash("Subscription resumed")
     except Exception as e:
-        flash("Error resuming subscription")
-        print(e)
+        msg = "Error resuming subscription"
+        flash(f"{msg}. {e}")
+        log.error(e)
 
     if "goback" in request.args:
         return redirect(request.referrer)
 
     return jsonify(message="Subscription resumed", subscription_id=subscription_id)
+
+
+@admin.route("/stripe/subscriptions/<payment_id>/actions/refund/")
+@login_required
+def refund_stripe_subscription(payment_id):
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/refund_subscription.html", confirm=False, payment_id=payment_id
+        )
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe_refund = stripe.Refund.create(
+                payment_intent=payment_id,
+                reverse_transfer=True,
+                stripe_account=connect_account_id,
+            )
+            if Transaction.query.filter_by(external_id=payment_id).first() is None:
+                return "payment doesn't exist"
+            transaction = Transaction.query.filter_by(external_id=payment_id).first()
+            transaction.external_refund_id = stripe_refund.id
+            database.session.commit()
+
+        except stripe.error.InvalidRequestError as e:
+            if e.error.code == "charge_already_refunded":
+                flash("Charge already refunded")
+                return redirect(url_for("admin.transactions"))
+            else:
+                flash(e.error.code)
+                return redirect(url_for("admin.transactions"))
+        flash("Transaction refunded")
+    return redirect(url_for("admin.transactions"))
+
+
+@admin.route("/stripe/subscriptions/<subscription_id>/actions/cancel")
+@login_required
+def cancel_stripe_subscription(subscription_id: str):
+    """Cancel a Stripe subscription"""
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/cancel_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
+        )
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe.Subscription.delete(
+                subscription_id, stripe_account=connect_account_id
+            )
+            flash("Subscription cancelled")
+        except Exception as e:
+            msg = "Error cancelling subscription"
+            flash(f"{msg}. {e}")
+            log.error("{msg}. {e}")
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/dashboard")
@@ -304,6 +460,9 @@ def edit():
             # Preserve choice_groups
             draftPlan.choice_groups = plan.choice_groups
 
+            # Preserve category
+            draftPlan.category_uuid = plan.category_uuid
+
             draftPlan.title = getPlan(form.title.data, index, default="").strip()
 
             draftPlan.position = getPlan(form.position.data, index)
@@ -353,6 +512,13 @@ def edit():
 
             draftPlan.days_before_first_charge = days_before_first_charge
 
+            try:
+                trial_period_days = int(form.trial_period_days[index].data)
+            except ValueError:
+                trial_period_days = 0
+
+            draftPlan.trial_period_days = trial_period_days
+
             if getPlan(form.sell_price.data, index, default=0) is None:
                 sell_price = 0
             else:
@@ -363,6 +529,11 @@ def edit():
             points = getPlan(form.selling_points.data, index, default="")
             for point in points:
                 draftPlan.selling_points.append(PlanSellingPoints(point=point))
+
+            if request.form.get("private-" + str(index)) is not None:
+                draftPlan.private = 1
+            else:
+                draftPlan.private = 0
 
             # Primary icon image storage
             f = getPlan(form.image.data, index)
@@ -420,6 +591,13 @@ def add_plan():
 
         draftPlan.days_before_first_charge = days_before_first_charge
 
+        try:
+            trial_period_days = int(form.trial_period_days.data[0])
+        except ValueError:
+            trial_period_days = 0
+
+        draftPlan.trial_period_days = trial_period_days
+
         if form.interval_amount.data[0] is None:
             draftPlan.interval_amount = 0
         else:
@@ -447,6 +625,32 @@ def add_plan():
             filename = images.save(f)
             src = url_for("views.custom_static", filename=filename)
             draftPlan.primary_icon = src
+
+        # Add plan to a category
+        if Category.query.count() == 0:  # If no categories, create default
+            category = Category()
+            category.name = "Make your choice"
+            database.session.add(category)
+        # Assign plan to first category by default
+        draftPlan.category = Category.query.order_by("id").first()
+
+        if request.form.get("private") is not None:
+            draftPlan.private = 1
+        else:
+            draftPlan.private = 0
+
+        # If cancel_at_set is set,
+        # get date and time and convert to timestamp
+        if request.form.get("cancel_at_set-0", None):
+            cancel_at_date = datetime.strptime(
+                request.form.get("cancel_at_date", None), "%Y-%m-%d"
+            )
+            cancel_at_time = datetime.strptime(
+                request.form.get("cancel_at_time", None), "%H:%M"
+            )
+
+            cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
+            draftPlan.cancel_at = int(float(cancel_at.timestamp()))
 
         database.session.commit()
         flash("Plan added.")
@@ -481,6 +685,76 @@ def delete_plan_by_uuid(uuid):
     return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
+@admin.route("/list-categories", methods=["get"])
+@login_required
+def list_categories():
+    categories = Category.query.order_by(Category.position).all()
+    return render_template(
+        "admin/categories/list_categories.html", categories=categories
+    )
+
+
+@admin.route("/add-category", methods=["get", "post"])
+@login_required
+def add_category():
+    if request.method == "POST":
+        category_name = request.form.get("category", None)
+        if category_name:
+            category = Category()
+            category.name = category_name
+            database.session.add(category)
+            database.session.commit()
+            flash(f"added new category: {category_name}")
+            return redirect(url_for("admin.list_categories"))
+    return render_template("admin/categories/add_category.html")
+
+
+@admin.route("/edit-category", methods=["get", "post"])
+@login_required
+def edit_category():
+    category_id = request.args.get("id", None)
+    category = Category.query.get(category_id)
+    if request.method == "POST":
+        category.name = request.form.get("name")
+        category.position = request.form.get("position")
+        database.session.commit()
+        flash("Category name updated")
+        return redirect(url_for("admin.list_categories"))
+    return render_template("admin/categories/edit_category.html", category=category)
+
+
+@admin.route("/delete-category", methods=["get", "post"])
+@login_required
+def delete_category():
+    category_id = request.args.get("id", None)
+    category = Category.query.get(category_id)
+    if category is not None:
+        database.session.delete(category)
+        database.session.commit()
+    flash("Category deleted")
+
+    return redirect(url_for("admin.list_categories"))
+
+
+@admin.route("/assign-plan-to-category/<category_id>", methods=["GET", "POST"])
+@login_required
+def category_assign_plan(category_id):
+    category = Category.query.get(category_id)
+    plans = Plan.query.filter_by(archived=0)
+
+    if request.method == "POST":
+        for plan_id in request.form.getlist("assign"):
+            plan = Plan.query.get(plan_id)
+            plan.category = category
+        database.session.commit()
+        flash("Plan category has been updated for selected plan")
+        return redirect(url_for("admin.category_assign_plan", category_id=category_id))
+
+    return render_template(
+        "admin/categories/category_assign_plan.html", category=category, plans=plans
+    )
+
+
 @admin.route("/connect/stripe-set-livemode", methods=["POST"])
 @login_required
 def set_stripe_livemode():
@@ -513,7 +787,7 @@ def stripe_connect():
         stripe.error.InvalidRequestError,
         AttributeError,
     ) as e:
-        print(e)
+        log.error(e)
         account = None
 
     # Setup Stripe webhook endpoint if it dosent already exist
@@ -523,8 +797,7 @@ def stripe_connect():
             account = get_stripe_connect_account()
             modify_stripe_account_capability(account.id)
         except Exception as e:
-            logging.info("Could not update card_payments capability for account")
-            logging.info(e)
+            log.error(f"Could not update card_payments capability for account. {e}")
 
         try:
             stripe_express_dashboard_url = stripe.Account.create_login_link(
@@ -554,15 +827,15 @@ def stripe_onboarding():
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
-        print("Trying if there's an existing stripe account")
+        log.info("Trying if there's an existing stripe account")
         account = get_stripe_connect_account()
-        print(f"Yes, stripe account found: {account.id}")
+        log.info(f"Yes, stripe account found: {account.id}")
     except (
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
         AttributeError,
     ):
-        print("Could not find a stripe account, Creating stripe account")
+        log.info("Could not find a stripe account, Creating stripe account")
         account = create_stripe_connect_account(company)
         if payment_provider.stripe_livemode:
             payment_provider.stripe_live_connect_account_id = account.id
@@ -646,6 +919,33 @@ def connect_tawk_manually():
         )
 
 
+@admin.route("/add/custom/code", methods=["GET", "POST"])
+@login_required
+def add_custom_code():
+    setting = Setting.query.first()
+    if setting is None:
+        setting = Setting()
+        database.session.add(setting)
+
+    if request.method == "POST":
+        custom_code = request.form.get("code", None)
+        if custom_code is not None:
+            setting = Setting.query.first()
+            if setting is None:
+                setting = Setting()
+                database.session.add(setting)
+            setting.custom_code = custom_code
+            database.session.commit()
+            flash("Custom code added")
+        return redirect(
+            url_for("admin.add_custom_code", custom_code=setting.custom_code)
+        )
+    else:
+        return render_template(
+            "admin/add_custom_code.html", custom_code=setting.custom_code
+        )
+
+
 @admin.context_processor
 def utility_get_transaction_fulfillment_state():
     """return fulfullment_state of transaction"""
@@ -658,38 +958,6 @@ def utility_get_transaction_fulfillment_state():
             return None
 
     return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
-
-
-def get_subscription_status(stripe_subscription_id: str) -> str:
-    status_on_error = "Unknown"
-    if stripe_subscription_id is None:
-        return status_on_error
-    try:
-        stripe.api_key = get_stripe_secret_key()
-        connect_account = get_stripe_connect_account()
-        subscription = stripe.Subscription.retrieve(
-            stripe_account=connect_account.id, id=stripe_subscription_id
-        )
-        if subscription.pause_collection is not None:
-            return "paused"
-        else:
-            return "active"
-    except stripe.error.InvalidRequestError as e:
-        print(e)
-        return status_on_error
-    except ValueError as e:
-        print(e)
-        return status_on_error
-
-
-@admin.context_processor
-def subscription_status():
-    def formatted_status(stripe_external_id):
-        return (
-            get_subscription_status(stripe_external_id).capitalize().replace("_", " ")
-        )
-
-    return dict(subscription_status=formatted_status)
 
 
 def get_number_of_active_subscribers():
@@ -706,7 +974,7 @@ def get_number_of_active_subscribers():
         # Check each subscibers subscriptions to see if they're active
         for subscription in subscriber.subscriptions:
             if subscription.stripe_subscription_active():
-                logging.info(
+                log.info(
                     f"Checking if subscription {subscription.stripe_subscription_id} is active"  # noqa: E501
                 )
                 count += 1
@@ -758,18 +1026,37 @@ def subscribers():
     action = request.args.get("action")
     show_active = action == "show_active"
 
+    query = database.session.query(Person).execution_options(include_archived=True)
+
     if show_active:
-        query = database.session.query(Person).filter(Person.subscriptions.any())
-    else:
-        query = database.session.query(Person)
+        query = query.filter(Person.subscriptions.any())
 
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
-        "admin/subscribers.html",
-        people=people.all(),
-        show_active=show_active,
+        "admin/subscribers.html", people=people.all(), show_active=show_active
     )
+
+
+@admin.route("/refresh-subscription-statuses")
+def refresh_subscriptions():
+    update_stripe_subscription_statuses()
+    if request.referrer is not None:
+        flash("subscription statuses have been refreshed.")
+        flash(
+            "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+        )
+        return redirect(request.referrer)
+
+
+@admin.route("/fetch-upcoming_invoices")
+def fetch_upcoming_invoices():
+    fetch_stripe_upcoming_invoices()
+    msg = "Upcoming invoices fetched."
+    flash(msg)
+    if request.referrer is not None:
+        return redirect(request.referrer)
+    return msg
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
@@ -786,7 +1073,7 @@ def archive_subscriber(subscriber_id):
 @admin.route("/un-archive-subscriber/<subscriber_id>")
 @login_required
 def un_archive_subscriber(subscriber_id):
-    person = Person.query.get(subscriber_id)
+    person = Person.query.execution_options(include_archived=True).get(subscriber_id)
     if person:
         person.archived = 0
         database.session.commit()
@@ -798,26 +1085,23 @@ def un_archive_subscriber(subscriber_id):
 @login_required
 def archived_subscribers():
     # See models.py for archived filter
-    people = database.session.query(Person).all()
-    return render_template(
-        "admin/subscribers-archived.html",
-        people=people,
+    people = (
+        database.session.query(Person).execution_options(include_archived=True).all()
     )
+    return render_template("admin/subscribers-archived.html", people=people)
 
 
 @admin.route("/upcoming-invoices")
 @login_required
 def upcoming_invoices():
     get_stripe_secret_key()
-    all_subscriptions = Subscription.query.all()
-    subscriptions = []
-    for subscription in all_subscriptions:
-        if subscription.upcoming_invoice() is not None:
-            subscriptions.append(subscription)
+    upcomingInvoices = UpcomingInvoice.query.execution_options(
+        include_archived=True
+    ).all()
 
     return render_template(
         "admin/upcoming_invoices.html",
-        subscriptions=subscriptions,
+        upcomingInvoices=upcomingInvoices,
         datetime=datetime,
     )
 
@@ -829,11 +1113,7 @@ def invoices():
     connect_account = get_stripe_connect_account()
     invoices = stripe.Invoice.list(stripe_account=connect_account.id)
 
-    return render_template(
-        "admin/invoices.html",
-        invoices=invoices,
-        datetime=datetime,
-    )
+    return render_template("admin/invoices.html", invoices=invoices, datetime=datetime)
 
 
 @admin.route("/transactions", methods=["GET"])
@@ -841,20 +1121,38 @@ def invoices():
 def transactions():
 
     page = request.args.get("page", 1, type=int)
-    transactions = (
+    person = None
+    query = (
         database.session.query(Transaction)
+        .execution_options(include_archived=True)
         .order_by(desc(Transaction.created_at))
-        .paginate(page=page, per_page=10)
     )
+    if request.args.get("subscriber", None):
+        person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
+        if person is not None:
+            query = query.join(Person, Transaction.person_id == Person.id).filter(
+                Person.uuid == person.uuid
+            )
+        else:
+            flash("Subscriber not found.")
+            query = query.filter(False)
 
-    return render_template("admin/transactions.html", transactions=transactions)
+    return render_template(
+        "admin/transactions.html",
+        transactions=query.paginate(page=page, per_page=10),
+        person=person,
+    )
 
 
 @admin.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
     """Notes to seller given during subscription creation"""
-    subscriptions = Subscription.query.order_by(desc("created_at")).all()
+    subscriptions = (
+        Subscription.query.execution_options(include_archived=True)
+        .order_by(desc("created_at"))
+        .all()
+    )
     return render_template("admin/order-notes.html", subscriptions=subscriptions)
 
 
@@ -1112,13 +1410,23 @@ def announce_shop_stripe_connect_ids():
     msg = None
     ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
 
+    def stripe_livemode():
+        payment_provider = PaymentProvider.query.first()
+        if payment_provider.stripe_live_connect_account_id is not None:
+            return True
+        return False
+
+    def stripe_testmode():
+        payment_provider = PaymentProvider.query.first()
+        if payment_provider.stripe_test_connect_account_id is not None:
+            return True
+        return False
+
     payment_provider = PaymentProvider.query.first()
 
     def announce_stripe_connect_account(account_id, live_mode=0):
-        logging.debug(
-            f"Announcing stripe account to {url_for('index', _external=True)}"
-        )
-        requests.post(
+        log.debug(f"Announcing stripe account to {url_for('index', _external=True)}")
+        req = requests.post(
             ANNOUNCE_HOST,
             json={
                 "stripe_connect_account_id": account_id,
@@ -1126,24 +1434,40 @@ def announce_shop_stripe_connect_ids():
                 "site_url": url_for("index", _external=True),
             },
         )
+        if req.status_code != 200:
+            return jsonify(
+                {
+                    "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
+                }
+            )
+        return req
 
     try:
+
+        if stripe_testmode() is False and stripe_livemode() is False:
+            log.info(msg)
+            return jsonify("Stripe is not setup yet.")
+
         if payment_provider.stripe_live_connect_account_id is not None:
             stripe_live_connect_account_id = (
                 payment_provider.stripe_live_connect_account_id
             )
-            announce_stripe_connect_account(stripe_live_connect_account_id, live_mode=1)
+            req = announce_stripe_connect_account(
+                stripe_live_connect_account_id, live_mode=1
+            )
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
             stripe_test_connect_account_id = (
                 payment_provider.stripe_test_connect_account_id
             )
-            announce_stripe_connect_account(stripe_test_connect_account_id, live_mode=0)
+            req = announce_stripe_connect_account(
+                stripe_test_connect_account_id, live_mode=0
+            )
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
-            stripe_connect_account_id = stripe_test_connect_account_id
+            stripe_connect_account_id = stripe_live_connect_account_id
         elif stripe_test_connect_account_id is not None:
             stripe_connect_account_id = stripe_test_connect_account_id
 
@@ -1153,12 +1477,14 @@ for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
 {current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
 WARNING: Check logs to verify recipt"
         }
-        logging.info(msg)
+        log.info(msg)
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
-        logging.error(msg)
+        log.error(msg)
 
-    return Response(json.dumps(msg), status=200, mimetype="application/json")
+    return Response(
+        json.dumps(msg), status=req.status_code, mimetype="application/json"
+    )
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])
@@ -1221,7 +1547,7 @@ def delete_file(uuid):
     try:
         os.unlink(current_app.config["UPLOADED_FILES_DEST"] + theFile.file_name)
     except Exception as e:
-        print(e)
+        log.error(e)
     flash(f"Deleted: {theFile.file_name}")
     return redirect(request.referrer)
 
@@ -1245,3 +1571,30 @@ def getPlan(container, i, default=None):
         return container[i]
     except IndexError:
         return default
+
+
+@admin.route("/vat-settings", methods=["GET", "POST"])
+@login_required
+def vat_settings():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings is None:
+        settings = Setting()
+        database.session.add(settings)
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("chargeVAT", 0)) == 1:
+            settings.charge_vat = 1
+            # Check if already have a stripe tax_rate
+            tax_rate = TaxRate.query.first()
+            if tax_rate is None:
+                # Create stripe tax rate
+                stripe.api_key = get_stripe_secret_key()
+                create_stripe_tax_rate()
+        else:
+            settings.charge_vat = 0
+        flash("VAT settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.vat_settings", settings=settings))
+
+    return render_template("admin/settings/vat_settings.html", settings=settings)

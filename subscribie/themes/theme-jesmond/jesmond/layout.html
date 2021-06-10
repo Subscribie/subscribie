@@ -3,12 +3,17 @@
 <head>
 <title>{% block title %}{% endblock %} | {{ company.name }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <link rel="stylesheet" href="/static/style.css">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
+
+{% if custom_code != "None" %}
+<!-- custom code -->
+  {{ custom_code }}
+<!-- end custom code -->
+{% endif %}
 
 {% if integration.google_tag_manager_container_id
    and integration.google_tag_manager_active
@@ -72,9 +77,9 @@
       {% if company.logo_src is not sameas None %}
         <img src="{{ company.logo_src }}" id="logo" alt="{{ company.name }} logo">
       {% else %}
-        <h1 class="lobster m-0">
+        <span class="m-0" style="color: var(--grey-900)">
           {{ company.name }}
-        </h1>
+        </span>
 
       {% endif %}
     </a>
@@ -84,6 +89,9 @@
 
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
       <ul class="navbar-nav mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="btn-link" href="/">Home</a>
+        </li>
         {% for page in pages %}
           {% if page.private is sameas False %}
             <!-- this should be the public only menu-->
@@ -153,7 +161,7 @@
 
   <footer class="container-fluid text-center py-3 footer mt-auto" >
     <p> By <a href="/" class="body-lg">{{ company['name'] }}</a>. </p>
-    <p> Made with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder" class="body-lg">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+    <p> <a href="https://subscriptionwebsitebuilder.co.uk" title="Subscription Website Builder" class="body-lg">Collect payments easily with Subscribie</a> - Made in Newcastle Upon Tyne</p>
     
     {% if g.user %}
       <a class="body-lg" href="/auth/logout">Logout</a>

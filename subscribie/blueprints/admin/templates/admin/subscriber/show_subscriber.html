@@ -32,6 +32,7 @@
               </address>
             </li>
           </ul>
+          <a class="btn btn-success mb-4" title="Instantly charge your subscriber a one-off amount" href="{{ url_for('admin.charge_subscriber', person_id = person.id) }}">Charge Subscriber</a>
           <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}">Archive Subscriber</a>
           <br />
         </div>
@@ -46,6 +47,7 @@
             {% for subscription in person.subscriptions %}
               <li class="list-group-item">
                 <strong>{{ subscription.plan.title }}</strong><br />
+                <strong>Status:</strong> {{ subscription.stripe_status or 'Unknown' }} <br />
                 <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
                 <strong>Interval Unit:</strong> 
                         {% if subscription.plan.requirements.subscription %}
@@ -55,7 +57,9 @@
                         {% endif %}
                   <br />
                 {% if subscription.plan.requirements.subscription %}
+                  {% if subscription.stripe_status|lower == 'active' %}
                   <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
+                  {% endif %}
                 {% endif %}
                 {% if subscription.chosen_options %}
                 <strong>Choices:</strong>
@@ -71,7 +75,7 @@
 
                 {% endif %}
 
-                <a href="{{ url_for('admin.transactions') }}" title="View transactions">View Transactions</a>
+                <a href="{{ url_for('admin.transactions', subscriber=person.uuid) }}" title="View transactions">View Transactions</a>
               </li>
             {% endfor %}
           </ul>

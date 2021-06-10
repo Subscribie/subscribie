@@ -1,3 +1,4 @@
+import logging
 import functools
 import binascii
 import os
@@ -27,10 +28,13 @@ from subscribie.models import (
     Option,
     ChosenOption,
     File,
+    User,
 )
 from flask_mail import Mail, Message
 from jinja2 import Template
+import requests
 
+log = logging.getLogger(__name__)
 subscriber = Blueprint(
     "subscriber", __name__, template_folder="templates", url_prefix=None
 )
@@ -66,12 +70,28 @@ def check_password_login(email, password):
 
 @subscriber.route("/account/login", methods=["GET", "POST"])
 def login():
+    if request.method == "GET":
+        if request.args.get("email"):
+            email = request.args.get("email")
+            # Check if password expired, send password reset email if expired.
+            subscriber = Person.query.filter_by(email=email).first()
+            if subscriber is not None and subscriber.password_expired:
+                requests.post(
+                    url_for("subscriber.forgot_password", _external=True),
+                    data={"email": email},
+                )
+                flash("Please check your email & spam for a password reset email")
+
     form = PasswordLoginForm()
     if form.validate_on_submit():
         email = form.data["email"]
         password = form.data["password"]
         subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
+            shopowner = User.query.filter_by(email=email).first()
+            if shopowner is not None:
+                flash("You are a shop admin, please login here")
+                return redirect(url_for("auth.login", email=email))
             flash("Person not found with that email")
             return redirect(url_for("subscriber.login"))
 
@@ -89,7 +109,7 @@ def login():
 @subscriber.route("/account/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     form = SubscriberForgotPasswordForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() or form.data.get("email"):
         email = form.data["email"]
         subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
@@ -125,8 +145,7 @@ def forgot_password():
                 msg.html = html
                 mail.send(msg)
             except Exception as e:
-                print(e)
-                print("Failed to send subscriber password reset email")
+                log.error(f"Failed to send subscriber password reset email. {e}")
             flash(
                 "We've sent you an email with a password reset link, \
                     please check your spam/junk folder too"
@@ -151,9 +170,10 @@ def password_reset():
             password_reset_string=form.data["token"]
         ).first()
         person.set_password(form.data["password"])
+        person.password_expired = False
         database.session.commit()
         flash("Your password has been reset")
-        return redirect(url_for("subscriber.login"))
+        return redirect(url_for("subscriber.login", email=person.email))
 
     if (
         request.args.get("token", None) is None

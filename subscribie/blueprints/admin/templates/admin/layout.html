@@ -3,44 +3,43 @@
 <head>
 <title>{% block title %}{% endblock %} | {{ company['name'] }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='custom_style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 
-{% if integration.google_tag_manager_container_id                                
-   and integration.google_tag_manager_active                                     
-%}                                                                               
-    <!-- Google Tag Manager -->                                                  
-    <script>                                                                     
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':                   
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],    
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=        
+{% if integration.google_tag_manager_container_id
+   and integration.google_tag_manager_active
+%}
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer',                                     
-    '{{ integration.google_tag_manager_container_id }}');                        
-    </script>                                                                    
-    <!-- End Google Tag Manager -->                                              
+    })(window,document,'script','dataLayer',
+    '{{ integration.google_tag_manager_container_id }}');
+    </script>
+    <!-- End Google Tag Manager -->
 {% endif %}
 
-{% if integration.tawk_property_id                                               
-   and integration.tawk_active                                                   
-%}                                                                               
-    <!-- Tawk Chat -->                                                           
-    <script type="text/javascript">                                              
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();                    
-        (function(){                                                             
-        var                                                                      
+{% if integration.tawk_property_id
+   and integration.tawk_active
+%}
+    <!-- Tawk Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var
         s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;                                                           
+        s1.async=true;
         s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
-        s1.charset='UTF-8';                                                      
-        s1.setAttribute('crossorigin','*');                                      
-        s0.parentNode.insertBefore(s1,s0);                                       
-        })();                                                                    
-        </script>                                                                
-    <!-- End Tawk Chat -->                                                       
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+    <!-- End Tawk Chat -->
 {% endif %}
 
 <meta name="theme-color" content="#1e88e5">
@@ -120,14 +119,74 @@
             if (form.checkValidity() === false) {
               event.preventDefault();
               event.stopPropagation();
+              document.getElementById('save').disabled=false;
+              document.getElementById('error').textContent = "Please check for errors above";
             }
             form.classList.add('was-validated');
           }, false);
         });
       }, false);
     })();
+
+    function handlePlansForm(e) {
+      // Remove hidden subscription inputs if subscription is checked
+      elms = document.querySelectorAll('.subscription-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with subscription=no
+        if (document.getElementById('subscription-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+      // Remove hidden instant_payment inputs if instant_payment is checked
+      elms = document.querySelectorAll('.instant_payment-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with instant_payment=no
+        if (document.getElementById('instant_payment-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+      // Remove hidden note_to_seller_required inputs if note_to_seller_required is checked
+      elms = document.querySelectorAll('.note_to_seller_required-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with note_to_seller_required=no
+        if (document.getElementById('note_to_seller_required-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+    }
+    try {
+      form = document.getElementById('plansForm');
+      form.addEventListener('submit', handlePlansForm);
+    } catch (error) {
+      console.log(error);
+    }
   </script>
   <!-- end plan add/edit validation -->
+
+  <script>
+  <!-- disable on click handler -->
+  elements = document.querySelectorAll('button.disable-on-click');
+
+  function disableElement(e) {
+    window.setTimeout(enableElement, 10000, e);
+    if (e.target.closest('form') !== null) {
+      //If button click was inside a form, submit the form.
+      e.target.closest('form').submit();
+    }
+  }
+
+  function enableElement(e) {
+    e.target.disabled = false;
+  }
+
+  for (var i=0;i<elements.length;i++) {
+    elements[i].addEventListener('click', disableElement);
+  }
+  </script>
+  <!-- end disable-on-click handler -->
 
   <!-- Bootstrap jQuery scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

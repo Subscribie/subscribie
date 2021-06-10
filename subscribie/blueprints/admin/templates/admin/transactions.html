@@ -26,25 +26,54 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
-        <h1>All Transactions</h1>
+        {% if person %}
+          <h1>All transactions: {{ person.given_name }}</h1>
+        {% else %}
+          <h1>All Transactions</h1>
+        {% endif %}
+
         <p>Every transaction on your shop.</p>
+        {% if request.args.get("subscriber", None) %}
+              <div class="alert-info">
+              Filterd by Subscriber.
+              <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
+              </div>
+        {% endif %}
 		<table class="table">
 		  <thead>
 			<tr>
         <th>Date</th>
         <th>Status</th>
+        <th>Refund</th>
         <th>Payment id</th>
         <th>Amount</th>
         <th>Source</th>
         <th>Subscriber</th>
         <th>Subscription</th>
+        <th>Comment</th>
 			</tr>
 		  </thead>
 		  <tbody>
 			{% for transaction in transactions.items %}
 			<tr>
         <td>{{ transaction.created_at }}</td>
-        <td>{{ transaction.payment_status }}</td>
+
+        <td> 
+             {% if transaction.external_refund_id is sameas None %}
+                      {{ transaction.payment_status }}
+             {% else %}
+                      Refunded
+             {% endif %}
+        </td>
+        <td>
+            <!-- if there is a external_refund id then don't show refund button -->
+            {% if transaction.external_refund_id is sameas None %}
+                <a href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id, confirm="") }}">Refund</a>
+
+            {% endif %}
+
+
+        </td> 
         <td>{{ transaction.external_id }}</td>
         <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
@@ -54,6 +83,9 @@
         <td> {% if transaction.subscription.plan %}
                {{ transaction.subscription.plan.title}}
              {% endif %}
+        </td>
+        <td>
+            {{ transaction.comment }}
         </td>
 			</tr>
 			{% endfor %}

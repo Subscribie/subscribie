@@ -64,6 +64,12 @@
                       href="{{ url_for('admin.delete_plan') }}">
                     Delete plans
                   </a>
+                  <hr />
+                  <p>Optionally group plans into categories</p>
+                  <a class="btn btn-success btn-block"
+                      href="{{ url_for('admin.list_categories') }}">
+                    Manage Categories
+                  </a>
               </div>
         </div>
       </div>
@@ -180,18 +186,18 @@
       <div class="card">
         <div class="card-header" id="headingSix">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-              All Transactions 
+              All Transactions / Manage Refunds 
             </button>
         </div>
         <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
 
           <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
-                  View all transactions.
+                  View all transactions / Manage Refunds
               </p>
               <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.transactions') }}">
-                  View Transactions 
+                  View Transactions / Manage Refunds 
               </a>
               <br />
               <p class="card-subtitle mb-3 text-muted">
@@ -241,7 +247,7 @@
       <div class="card">
         <div class="card-header" id="headingNine">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-              Integrations (Online Chat &amp; Analytics)
+              Integrations (Online Chat, Analytics &amp; inject custom code)
             </button>
         </div>
         <div id="collapseNine" class="collapse" aria-labelledby="headingNine">
@@ -273,6 +279,21 @@
             </div> <!--end card-->
           </div>
           <!-- End Tawk Integrations -->
+          <!-- Inject Code -->
+          <div class="px-3 py-3 my-3">
+
+            <div class="card col-lg shadow-sm" >
+              <div class="card-body">
+                <h5 class="card-title">Inject Code</h5>
+                <p class="card-text">Inject custom code into your shop. E.g. javascript</p>
+                <a href="{{ url_for('admin.add_custom_code') }}"
+                    class="btn btn-block btn-info">
+                      Add custom code
+                </a>
+              </div>
+            </div> <!--end card-->
+          </div>
+          <!-- End add custom code -->
 
           <!-- Analytics Integrations -->
           <div class="px-3 py-3 my-3">
@@ -463,25 +484,31 @@
                 </a>
             </div>
         </div>
-      </div><!--end of email settings -->
 
+      </div><!-- end Upload Files -->
       <div class="card">
         <div class="card-header" id="headingShopSettings">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
-            Shop Settings
+            Shop Settings (TAX, VAT &amp; rename)
+             
             </button>
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
           <div class="px-3 py-3 my-3">
+            
               <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.rename_shop') }}">
               Rename shop web address
               </a>
           </div>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.vat_settings') }}">
+              VAT Settings
+              </a>
+          </div>
 
         </div>
       </div>
-    </div>
 
 </div>
 

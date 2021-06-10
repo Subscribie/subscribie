@@ -1,5 +1,7 @@
+import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
+from sqlalchemy.orm import with_loader_criteria
 from sqlalchemy import ForeignKey
 from sqlalchemy import event
 from sqlalchemy import Column
@@ -10,28 +12,50 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
-import stripe
-from subscribie.utils import (
-    get_stripe_secret_key,
-    get_stripe_connect_account_id,
-    get_stripe_connect_account,
-)
 from flask import request
 
 from .database import database
-import logging
+
+log = logging.getLogger(__name__)
+
+
+@event.listens_for(database.session, "do_orm_execute")
+def _do_orm_execute_hide_archived(orm_execute_state):
+    if (
+        orm_execute_state.is_select
+        and not orm_execute_state.is_column_load
+        and not orm_execute_state.is_relationship_load
+        and not orm_execute_state.execution_options.get("include_archived", False)
+    ):
+        orm_execute_state.statement = orm_execute_state.statement.options(
+            with_loader_criteria(
+                HasArchived,
+                lambda cls: cls.archived == False,  # noqa: E712
+                include_aliases=True,
+            )
+        )
 
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
 def filter_archived(query):
-
     for desc in query.column_descriptions:
         entity = desc["entity"]
-        if desc["type"] is Person and "archive" not in request.path:
-            query = query.filter(entity.archived == 0)
-        elif desc["type"] is Person and "archived-subscribers" in request.path:
+        if desc["type"] is Person and "archived-subscribers" in request.path:
             query = query.filter(entity.archived == 1)
-    return query
+            return query
+        elif (
+            desc["type"] is Person
+            and request.path != "/"
+            and "un-archive" not in request.path
+            and "/account/login" not in request.path
+            and "/auth/login" not in request.path
+            and "/account/forgot-password" not in request.path
+            and "account/password-reset" not in request.path
+            and "/account" not in request.path
+            and "/admin/transactions" not in request.path
+        ):
+            query = query.filter(entity.archived == 0)
+            return query
 
 
 def uuid_string():
@@ -41,7 +65,7 @@ def uuid_string():
 class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
-    archived = Column(Boolean, nullable=False, default=False)
+    archived = Column(Boolean, nullable=False, default=0)
 
 
 class User(database.Model):
@@ -53,6 +77,7 @@ class User(database.Model):
     active = database.Column(database.String)
     login_token = database.Column(database.String)
     password_reset_string = database.Column(database.String())
+    password_expired = database.Column(database.Boolean(), default=0)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -79,6 +104,7 @@ class Person(database.Model, HasArchived):
     email = database.Column(database.String())
     password = database.Column(database.String())  # Hash of password
     password_reset_string = database.Column(database.String())
+    password_expired = database.Column(database.Boolean(), default=1)
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
@@ -112,6 +138,9 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
+    upcoming_invoice = relationship(
+        "UpcomingInvoice", back_populates="subscription", uselist=False
+    )
     note = relationship(
         "SubscriptionNote", back_populates="subscription", uselist=False
     )
@@ -121,44 +150,18 @@ class Subscription(database.Model):
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
     stripe_external_id = database.Column(database.String())
+    stripe_status = database.Column(database.String())
+    # stripe_cancel_at is the 'live' setting (which may change)
+    # and must be checked via cron/webhooks. Plan.cancel_at allows
+    # a shop owner to set a cancel_at date before subscribers sign-up,
+    # which creates subscriptions.
+    stripe_cancel_at = database.Column(database.Integer(), default=0)
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
-
-            stripe.api_key = get_stripe_secret_key()
-            connect_account = get_stripe_connect_account()
-            try:
-                subscription = stripe.Subscription.retrieve(
-                    stripe_account=connect_account.id, id=self.stripe_subscription_id
-                )
-                if subscription.pause_collection is not None:
-                    return False
-                elif subscription.status == "active":
-                    return True
-            except stripe.error.InvalidRequestError as e:
-                logging.error("Could not get stripe subscription status")
-                logging.error(e)
-
+            if self.stripe_status == "active":
+                return True
         return False
-
-    def upcoming_invoice(self):
-        """Return the upcoming invoice (if exists) associated with this Subscription"""
-        stripe.api_key = get_stripe_secret_key()
-        stripe_connect_account_id = get_stripe_connect_account_id()
-
-        if self.stripe_subscription_id is not None:
-            try:
-                upcoming_invoice = stripe.Invoice.upcoming(
-                    subscription=self.stripe_subscription_id,
-                    stripe_account=stripe_connect_account_id,
-                )
-                return upcoming_invoice
-            except stripe.error.InvalidRequestError as e:
-                print(
-                    f"Cannot get stripe subscription id: {self.stripe_subscription_id}"
-                )
-                print(e)
-        return None
 
     def next_date(self):
         """Return the next delivery date of this subscription
@@ -210,6 +213,34 @@ class SubscriptionNote(database.Model):
     subscription = relationship("Subscription", back_populates="note")
 
 
+class UpcomingInvoice(database.Model):
+    """
+    A temporary view of upcoming invoices.
+
+    The keys in this table must not be relied upon.
+    Entries in this table are *removed* and fetched again by
+    subscribie.invoice.fetch_stripe_upcoming_invoices
+
+    Requires syncing with stripe api as invoices transition
+    to paid (or failed).
+    """
+
+    __tablename__ = "upcoming_invoice"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    # Note, upcoming invoices do not have an id https://stripe.com/docs/api/invoices/upcoming # noqa
+    stripe_subscription_id = database.Column(database.String())
+    stripe_invoice_status = database.Column(database.String())
+    stripe_amount_due = database.Column(database.String())
+    stripe_amount_paid = database.Column(database.String())
+    stripe_currency = database.Column(database.String())
+    stripe_next_payment_attempt = database.Column(database.String())
+    subscription_uuid = database.Column(
+        database.Integer, ForeignKey("subscription.uuid")
+    )
+    subscription = relationship("Subscription", back_populates="upcoming_invoice")
+
+
 class Company(database.Model):
     __tablename__ = "company"
     id = database.Column(database.Integer(), primary_key=True)
@@ -240,6 +271,7 @@ class Plan(database.Model, HasArchived):
     monthly_price = database.Column(database.Integer())
     sell_price = database.Column(database.Integer())  # Upfront price
     days_before_first_charge = database.Column(database.Integer(), default=0)
+    trial_period_days = database.Column(database.Integer(), default=0)
     primary_icon = database.Column(database.String())
     requirements = relationship(
         "PlanRequirements", uselist=False, back_populates="plan"
@@ -250,6 +282,21 @@ class Plan(database.Model, HasArchived):
         secondary=association_table_plan_choice_group,
         backref=database.backref("plans", lazy="dynamic"),
     )
+    position = database.Column(database.Integer(), default=0)
+
+    category_uuid = database.Column(database.Integer, ForeignKey("category.uuid"))
+    category = relationship("Category", back_populates="plans")
+    private = database.Column(database.Boolean(), default=0)
+    cancel_at = database.Column(database.Integer(), default=0)
+
+
+class Category(database.Model):
+    __tablename__ = "category"
+    id = database.Column(database.Integer(), primary_key=True)
+    uuid = database.Column(database.String(), default=uuid_string)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    name = database.Column(database.String())
+    plans = relationship("Plan", back_populates="category")
     position = database.Column(database.Integer(), default=0)
 
 
@@ -330,6 +377,7 @@ class Transaction(database.Model):
     external_id = database.Column(database.String())
     # Source of transaction e.g. Stripe or GoCardless
     external_src = database.Column(database.String())
+    external_refund_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey("person.id"))
     person = relationship("Person", back_populates="transactions")
     subscription_id = database.Column(
@@ -407,6 +455,8 @@ class Setting(database.Model):
     __tablename__ = "setting"
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
+    charge_vat = database.Column(database.Boolean(), default=False)
+    custom_code = database.Column(database.String(), default=None)
 
 
 class File(database.Model):
@@ -417,3 +467,13 @@ class File(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
     file_name = database.Column(database.String())
+
+
+class TaxRate(database.Model):
+    """Stripe Tax Rate ids"""
+
+    __tablename__ = "tax_rate"
+    id = database.Column(database.Integer(), primary_key=True)
+    stripe_tax_rate_id = database.Column(database.String())
+    stripe_livemode = database.Column(database.Boolean())
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
