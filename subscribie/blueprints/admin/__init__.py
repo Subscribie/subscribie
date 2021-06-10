@@ -1060,24 +1060,31 @@ def set_reply_to_email():
 def rename_shop():
     PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT")
     PATH_TO_SITES = os.getenv("PATH_TO_SITES")
+    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN")
     SERVER_NAME = os.getenv("SERVER_NAME")
+    SERVER_NAME = "hello.subscriby.shop"
     if request.method == "GET":
         return render_template(
             "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
         )
     elif request.method == "POST":
-
-        new_name = request.form.get("new_name", None)
+        breakpoint()
+        new_name = (
+            request.form.get("new_name", None)
+            .replace(SUBSCRIBIE_DOMAIN, "")
+            .replace(".", "")
+        )
+        NEW_DOMAIN = new_name + "." + SUBSCRIBIE_DOMAIN
         if new_name is None:
             return "You must provide a new valid name"
-        p = Path(os.getenv("PATH_TO_SITES") + f"{new_name}.subscriby.shop").is_dir()
+        p = Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}").is_dir()
         if p is False:
             if new_name.isalnum() is True:
                 subprocess.run(
-                    f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {new_name} {PATH_TO_SITES}",
+                    f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
                     shell=True,
                 )
-                return "This is your new address " + new_name + ".subscriby.shop"
+                return redirect("http://" + NEW_DOMAIN, code=302)
             flash("please input a valid name")
             return render_template("admin/settings/rename_shop.html")
         else:
