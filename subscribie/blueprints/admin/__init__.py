@@ -1062,13 +1062,11 @@ def rename_shop():
     PATH_TO_SITES = os.getenv("PATH_TO_SITES")
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN")
     SERVER_NAME = os.getenv("SERVER_NAME")
-    SERVER_NAME = "hello.subscriby.shop"
     if request.method == "GET":
         return render_template(
             "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
         )
     elif request.method == "POST":
-        breakpoint()
         new_name = (
             request.form.get("new_name", None)
             .replace(SUBSCRIBIE_DOMAIN, "")
