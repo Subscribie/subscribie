@@ -489,7 +489,11 @@
       <div class="card">
         <div class="card-header" id="headingShopSettings">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
+              {% if PATH_TO_SITES and PATH_TO_RENAME_SCRIPT and SUBSCRIBIE_DOMAIN and SERVER_NAME %}
             Shop Settings (TAX, VAT &amp; Rename shop)
+              {% else %}
+            Shop Settings (TAX &amp; VAT)
+              {% endif %}
              
             </button>
         </div>
