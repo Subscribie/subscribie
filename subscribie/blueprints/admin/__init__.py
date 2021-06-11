@@ -389,8 +389,17 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
+    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
+    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
+    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    if (
+        SUBSCRIBIE_DOMAIN is False
+        or PATH_TO_SITES is False
+        or PATH_TO_RENAME_SCRIPT is False
+    ):
+        log.error("Missing 1 or more RENAME env settings")
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()
@@ -416,6 +425,9 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
+        PATH_TO_SITES=PATH_TO_SITES,
+        PATH_TO_RENAME_SCRIPT=PATH_TO_RENAME_SCRIPT,
+        SUBSCRIBIE_DOMAIN=SUBSCRIBIE_DOMAIN,
     )
 
 
@@ -1356,10 +1368,11 @@ def set_reply_to_email():
 @admin.route("/rename-shop", methods=["GET", "POST"])
 @login_required
 def rename_shop():
-    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT")
-    PATH_TO_SITES = os.getenv("PATH_TO_SITES")
-    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN")
+    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
+    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
+    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
     SERVER_NAME = os.getenv("SERVER_NAME")
+
     if request.method == "GET":
         return render_template(
             "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
