@@ -1,5 +1,6 @@
 import logging
 import json
+from dotenv import load_dotenv
 from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
@@ -68,6 +69,7 @@ from .invoice import fetch_stripe_upcoming_invoices
 
 import stripe
 from werkzeug.utils import secure_filename
+import subprocess
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +82,8 @@ from .choice_group import list_choice_groups  # noqa: F401, E402
 from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
+
+load_dotenv(verbose=True)  # get environment variables from .env
 
 
 def dec2pence(amount):
@@ -385,8 +389,19 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
+    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
+    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
+    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
+    SERVER_NAME = os.getenv("SERVER_NAME", False)
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    if (
+        SUBSCRIBIE_DOMAIN is False
+        or PATH_TO_SITES is False
+        or PATH_TO_RENAME_SCRIPT is False
+        or SERVER_NAME is False
+    ):
+        log.error("Missing 1 or more RENAME env settings")
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()
@@ -412,6 +427,10 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
+        PATH_TO_SITES=PATH_TO_SITES,
+        PATH_TO_RENAME_SCRIPT=PATH_TO_RENAME_SCRIPT,
+        SUBSCRIBIE_DOMAIN=SUBSCRIBIE_DOMAIN,
+        SERVER_NAME=SERVER_NAME,
     )
 
 
@@ -1347,6 +1366,42 @@ def set_reply_to_email():
     return render_template(
         "admin/settings/set_reply_to_email.html", form=form, current_email=current_email
     )
+
+
+@admin.route("/rename-shop", methods=["GET", "POST"])
+@login_required
+def rename_shop():
+    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
+    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
+    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
+    SERVER_NAME = os.getenv("SERVER_NAME")
+
+    if request.method == "GET":
+        return render_template(
+            "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
+        )
+    elif request.method == "POST":
+        new_name = (
+            request.form.get("new_name", None)
+            .replace(SUBSCRIBIE_DOMAIN, "")
+            .replace(".", "")
+        )
+        NEW_DOMAIN = new_name + "." + SUBSCRIBIE_DOMAIN
+        if new_name is None:
+            return "You must provide a new valid name"
+        p = Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}").is_dir()
+        if p is False:
+            if new_name.isalnum() is True:
+                subprocess.run(
+                    f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
+                    shell=True,
+                )
+                return redirect("http://" + NEW_DOMAIN, code=302)
+            flash("please input a valid name")
+            return render_template("admin/settings/rename_shop.html")
+        else:
+            flash("This name already exists")
+            return render_template("admin/settings/rename_shop.html")
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])

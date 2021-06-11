@@ -1,0 +1,45 @@
+{% extends "admin/layout.html" %}
+{% block title %} Rename Shop Address{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Rename Shop Address</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Rename Shop Address</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Change Your Shop Web Address</h2>
+          <p>The URL of your shop will be changed as long as the name is available
+              and the name contains only letters and numbers</p>
+	  <p> Your current web address is: {{ SERVER_NAME }}</p>	
+          <form action="" method="POST" action="/">
+            <div class="form-group">
+     
+              <label for="shop">New name:</label>
+              <input type="text" name="new_name" class="form-control" id="shop" 
+                     aria-describedby="shopHelp" placeholder="Enter new shop name"  required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
