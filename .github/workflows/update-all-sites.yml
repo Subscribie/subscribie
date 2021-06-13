@@ -27,4 +27,4 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
-        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ALL_SITES_PATH }}; find . -maxdepth 2 -mindepth 2 -name '*.ini' -exec touch {} + -print -exec sleep 3 \; "
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ALL_SITES_PATH }}; find . -maxdepth 2 -mindepth 2 -name '*.ini' -exec touch '{}' +"
