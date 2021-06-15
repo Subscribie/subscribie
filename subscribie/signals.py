@@ -5,7 +5,8 @@
 
     Implements signals using blinker.
 
-    Influenced by Flask framework signals (c) 2015 by Armin Ronacher.
+    See also subscribie.receivers
+      which lists receivers which connect to the signals
 """
 from blinker import signal
 
