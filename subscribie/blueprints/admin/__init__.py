@@ -1,5 +1,6 @@
 import logging
 import json
+import time
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
 from flask import (
@@ -1375,6 +1376,7 @@ def rename_shop():
     PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
     SERVER_NAME = os.getenv("SERVER_NAME")
+    SERVER_NAME = "test.subscriby.shop"
 
     if request.method == "GET":
         return render_template(
@@ -1396,7 +1398,8 @@ def rename_shop():
                     f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
                     shell=True,
                 )
-                return redirect("http://" + NEW_DOMAIN, code=302)
+                time.sleep(5)
+                return redirect("http://" + SERVER_NAME, code=302)
             flash("please input a valid name")
             return render_template("admin/settings/rename_shop.html")
         else:

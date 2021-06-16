@@ -7,8 +7,7 @@ set -e # Exit the script immidietly if an error happens
 #
 
 OLD_DOMAIN=$1
-NEW_NAME=$2
-NEW_DOMAIN=$NEW_NAME".subscriby.shop"
+NEW_DOMAIN=$2
 NEW_INI=$NEW_DOMAIN".ini"
 PATH_TO_SITES=$3
 
@@ -22,7 +21,7 @@ then
 fi
 
 # Rename the directory from old-name to new-name
-mv $OLD_DOMAIN  $NEW_DOMAIN #rename directory
+cp -r $OLD_DOMAIN  $NEW_DOMAIN #rename directory
 mv $NEW_DOMAIN/$OLD_DOMAIN.ini $NEW_DOMAIN/$NEW_INI #rename ini file
 
 # Update the .ini file
@@ -33,3 +32,5 @@ sed -i.bk "s/$OLD_DOMAIN/$NEW_DOMAIN/g" $NEW_DOMAIN/.env
 mv $NEW_DOMAIN/$NEW_INI $NEW_DOMAIN/$NEW_NAME.disabled
 mv $NEW_DOMAIN/$NEW_NAME.disabled $NEW_DOMAIN/$NEW_INI
 
+# delete old site (the data.db will stay because is being used)
+rm -r $OLD_DOMAIN
