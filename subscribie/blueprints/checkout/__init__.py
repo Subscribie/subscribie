@@ -187,6 +187,9 @@ def instant_payment_complete():
 
 @checkout.route("/thankyou", methods=["GET"])
 def thankyou():
+    if session.get("plan") is None:
+        log.warn("Visit to /thankyou with no plan in session")
+        return redirect("/")
     # Remove subscribie_checkout_session_id from session
     session.pop("subscribie_checkout_session_id", None)
     subscription = (
