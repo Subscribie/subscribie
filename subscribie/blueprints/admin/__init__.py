@@ -1,6 +1,6 @@
 import logging
 import json
-import time
+from time import sleep
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
 from flask import (
@@ -1389,34 +1389,53 @@ def rename_shop():
         )
         NEW_DOMAIN = new_name + "." + SUBSCRIBIE_DOMAIN
         if new_name is None:
-            return "You must provide a new valid name"
-        p = Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}").is_dir()
-        if p is False:
-            if new_name.isalnum() is True:
-                subprocess.run(
-                    f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
-                    shell=True,
-                )
-                counter = 1
-                maxCount = 60
-                response = requests.get("http://" + SERVER_NAME)
-                while response.status_code != 200:
-                    time.sleep(1)
-                    if counter <= maxCount:
-                        counter = counter + 1
-                        print(counter)
-                        log.info("waiting for 200 response")
-                        response
-                    else:
-                        flash("something went wrong, please try again")
-                        log.error("rename-timeout")
-                        return render_template("admin/settings/rename_shop.html")
-                return redirect("http://" + SERVER_NAME, code=302)
+            return "You must provide a new name"
+        if new_name.isalnum() is False:
+            return "Shop name can only contain letters and numbers"
 
-            flash("please input a valid name")
+        if Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}").is_dir():
+            flash("This name already exists")
+            log.debug(
+                f"Attempt to rename site {NEW_DOMAIN} but dir {os.getenv('PATH_TO_SITES')} already exists"  # noqa
+            )
             return render_template("admin/settings/rename_shop.html")
         else:
-            flash("This name already exists")
+            subprocess.run(
+                f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",  # noqa
+                shell=True,
+            )
+            counter = 1
+            maxCount = 10
+            waiting = True
+            rename_unsuccessful_msg = (
+                "Unable to rename site, we'll investigate for you automatically."
+            )
+            while waiting and counter <= maxCount:
+                try:
+                    new_shop_url = "http://" + SERVER_NAME
+                    response = requests.get(new_shop_url)
+                    while response.status_code != 200:
+                        sleep(1)
+                        if counter <= maxCount:
+                            counter = counter + 1
+                            log.info("waiting for 200 response. Attempt {counter}")
+                        else:
+                            waiting = False
+                            flash(rename_unsuccessful_msg)
+                            log.error(
+                                f"Timeout when renaming shop from {flask.request.host} to {SERVER_NAME}"  # noqa
+                            )
+                            return render_template("admin/settings/rename_shop.html")
+                    return redirect("http://" + SERVER_NAME, code=302)
+                except requests.exceptions.ConnectionError as e:  # noqa
+                    sleep(1.5)
+                    counter += 1
+                    log.warn(
+                        """requests.exceptions.ConnectionError.\n
+                      Could not connect to renamed shop {new_shop_url}: {e}"""
+                    )
+
+            flash(rename_unsuccessful_msg)
             return render_template("admin/settings/rename_shop.html")
 
 
