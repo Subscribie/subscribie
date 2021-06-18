@@ -39,35 +39,5 @@
     </div> <!-- end container-->
   </div> <!-- end section-->
 </main>
- <script>
- button = document.getElementById("submit");
- site_redirect="https://" + {{ SERVER_NAME }};
-  
-  maxAttempts = 10;
-  attempts = 0;
-  function checkResponse(response) {
-  if (attempts >= maxAttempts) {
-    console.error("Too many attempts!");
-    return;
-  }
-  if (response.status == 200) {
-    console.log("it's 200");
-    data = response.json().then(result => document.location=site_redirect)
-   } else {
-    attempts++
-    console.log("nooo 500");
-    checkResponse();
-   }
-}
- function waitForSiteToBeReady(event) {
-   alert("i'm working");
-   fetch(site_redirect)
-   .then(response => checkResponse(response))
-   .catch((error) => { console.error(error)});
-}
-
- button.addEventListener("click", waitForSiteToBeReady)
- </script>
-
 
 {% endblock %}
