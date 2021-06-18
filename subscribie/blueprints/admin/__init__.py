@@ -1398,8 +1398,10 @@ def rename_shop():
                     f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
                     shell=True,
                 )
-                time.sleep(5)
-                return redirect("http://" + SERVER_NAME, code=302)
+                return render_template(
+                    "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
+                )
+                # return redirect("http://" + SERVER_NAME, code=302)
             flash("please input a valid name")
             return render_template("admin/settings/rename_shop.html")
         else:
