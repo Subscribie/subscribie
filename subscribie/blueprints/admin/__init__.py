@@ -1376,7 +1376,6 @@ def rename_shop():
     PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
     SERVER_NAME = os.getenv("SERVER_NAME")
-    SERVER_NAME = "test.subscriby.shop"
 
     if request.method == "GET":
         return render_template(
@@ -1398,10 +1397,22 @@ def rename_shop():
                     f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",
                     shell=True,
                 )
-                return render_template(
-                    "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
-                )
-                # return redirect("http://" + SERVER_NAME, code=302)
+                counter = 1
+                maxCount = 60
+                response = requests.get("http://" + SERVER_NAME)
+                while response.status_code != 200:
+                    time.sleep(1)
+                    if counter <= maxCount:
+                        counter = counter + 1
+                        print(counter)
+                        log.info("waiting for 200 response")
+                        response
+                    else:
+                        flash("something went wrong, please try again")
+                        log.error("rename-timeout")
+                        return render_template("admin/settings/rename_shop.html")
+                return redirect("http://" + SERVER_NAME, code=302)
+
             flash("please input a valid name")
             return render_template("admin/settings/rename_shop.html")
         else:
