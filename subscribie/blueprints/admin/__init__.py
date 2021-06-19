@@ -1398,7 +1398,9 @@ def rename_shop():
             log.debug(
                 f"Attempt to rename site {NEW_DOMAIN} but dir {os.getenv('PATH_TO_SITES')} already exists"  # noqa
             )
-            return render_template("admin/settings/rename_shop.html")
+            return render_template(
+                "admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME
+            )
         else:
             subprocess.run(
                 f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",  # noqa
