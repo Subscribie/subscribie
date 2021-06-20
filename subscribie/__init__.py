@@ -8,8 +8,10 @@
     :copyright: (c) 2018 by Karma Computing Ltd
 """
 from dotenv import load_dotenv
+from env_validate import validate_env
 
 load_dotenv(verbose=True)
+validate_env()
 from .logger import logger  # noqa: F401
 import logging
 import os
