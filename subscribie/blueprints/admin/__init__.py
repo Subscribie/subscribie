@@ -390,19 +390,8 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
-    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
-    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
-    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
-    SERVER_NAME = os.getenv("SERVER_NAME", False)
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
-    if (
-        SUBSCRIBIE_DOMAIN is False
-        or PATH_TO_SITES is False
-        or PATH_TO_RENAME_SCRIPT is False
-        or SERVER_NAME is False
-    ):
-        log.error("Missing 1 or more RENAME env settings")
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()
@@ -428,10 +417,6 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
-        PATH_TO_SITES=PATH_TO_SITES,
-        PATH_TO_RENAME_SCRIPT=PATH_TO_RENAME_SCRIPT,
-        SUBSCRIBIE_DOMAIN=SUBSCRIBIE_DOMAIN,
-        SERVER_NAME=SERVER_NAME,
     )
 
 
@@ -1414,7 +1399,7 @@ def rename_shop():
             )
             while waiting and counter <= maxCount:
                 try:
-                    new_shop_url = "http://" + SERVER_NAME
+                    new_shop_url = "http://" + NEW_DOMAIN
                     response = requests.get(new_shop_url)
                     while response.status_code != 200:
                         sleep(1)
@@ -1425,10 +1410,10 @@ def rename_shop():
                             waiting = False
                             flash(rename_unsuccessful_msg)
                             log.error(
-                                f"Timeout when renaming shop from {flask.request.host} to {SERVER_NAME}"  # noqa
+                                f"Timeout when renaming shop from {flask.request.host} to {NEW_DOMAIN}"  # noqa
                             )
                             return render_template("admin/settings/rename_shop.html")
-                    return redirect("http://" + SERVER_NAME, code=302)
+                    return redirect("http://" + NEW_DOMAIN, code=302)
                 except requests.exceptions.ConnectionError as e:  # noqa
                     sleep(1.5)
                     counter += 1
