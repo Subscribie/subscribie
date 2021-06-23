@@ -26,6 +26,7 @@ from subscribie.signals import journey_complete
 from subscribie.receivers import (
     receiver_send_shop_owner_new_subscriber_notification_email,
 )
+from subscribie.blueprints.admin.stats import get_number_of_active_subscribers
 
 log = logging.getLogger(__name__)
 
@@ -114,6 +115,12 @@ def index():
 def show_500():
     """Force 500 error"""
     return abort(500)
+
+
+@bp.route("/open")
+def open():
+    """Open stats"""
+    return {"active_subscribers": get_number_of_active_subscribers()}
 
 
 @bp.route("/choose")
