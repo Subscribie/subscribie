@@ -26,6 +26,14 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
+        <form action="#" method="GET">
+        <h4>Search...</h4>
+        <div class="form-group">
+          <label for="plan_title">Plan title:</label>
+          <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
+          <input type="submit" class="btn btn-primary mt-4" />
+        </div>
+        </form>
         {% if person %}
           <h1>All transactions: {{ person.given_name }}</h1>
         {% else %}
@@ -34,8 +42,14 @@
 
         <p>Every transaction on your shop.</p>
         {% if request.args.get("subscriber", None) %}
-              <div class="alert-info">
-              Filterd by Subscriber.
+              <div class="alert-warning">
+              Filtered by Subscriber.
+              <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
+              </div>
+        {% endif %}
+        {% if request.args.get("plan_title", None) %}
+              <div class="alert-warning" style="padding:5px;">
+              Filtered by plan title: "{{ request.args.get("plan_title") }}". <br />
               <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
               </div>
         {% endif %}
