@@ -32,7 +32,7 @@ jobs:
       - name: Set subdomain (ensure is lowercase for dokku)
         run: |
           set -x
-          echo SUBDOMAIN=`echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]'` | cut -c -200 >> $GITHUB_ENV
+          echo SUBDOMAIN=`echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]' | cut -c -200` >> $GITHUB_ENV
           echo $GITHUB_ENV
       - name: Create dokku app for pr branch if dosent already exist using dokku apps:create
         env:
