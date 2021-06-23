@@ -110,7 +110,7 @@
       <ul class="pagination justify-content-start">
         <li class="page-item">
           {% if transactions.has_prev %}
-            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1) }}">Previous</a>
+            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1, plan_title=request.args.get    ("plan_title")) }}">Previous</a>
           {% endif %}</li>
 
         {% for page_num in transactions.iter_pages() %}
@@ -121,7 +121,7 @@
               </li>
             {% else %}
               <li class="page-item ">
-                <a class="page-link" href="{{ url_for('admin.transactions', page=page_num) }}">{{ page_num }}</a>
+                <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title")) }}">{{ page_num }}</a>
               </li>
     
             {% endif %}
@@ -132,7 +132,7 @@
       
         <li class="page-item">
           {% if transactions.has_next %}
-            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1) }}">Next page</a>
+            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1, plan_title=request.args.get("plan_title")) }}">Next page</a>
           {% endif %}</li>
       </ul>
     </nav>
