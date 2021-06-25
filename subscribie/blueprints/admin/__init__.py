@@ -15,6 +15,7 @@ from flask import (
     request,
     session,
     Response,
+    Markup,
 )
 import jinja2
 import requests
@@ -1122,21 +1123,33 @@ def invoices():
 def transactions():
 
     page = request.args.get("page", 1, type=int)
+    plan_title = request.args.get("plan_title", "")
     person = None
     query = (
         database.session.query(Transaction)
-        .execution_options(include_archived=True)
+        .join(Person, Transaction.person_id == Person.id)
+        .join(Subscription, Transaction.subscription_id == Subscription.id)
+        .join(Plan, Subscription.plan)
+        .where(Plan.title.like(f"%{plan_title}%"))
         .order_by(desc(Transaction.created_at))
+        .group_by(Transaction.id, Person.id)
+        .execution_options(include_archived=True)
     )
+
     if request.args.get("subscriber", None):
         person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
         if person is not None:
-            query = query.join(Person, Transaction.person_id == Person.id).filter(
-                Person.uuid == person.uuid
-            )
+            query = query.filter(Person.uuid == person.uuid)
         else:
             flash("Subscriber not found.")
             query = query.filter(False)
+
+    transactions = query.paginate(page=page, per_page=10)
+    if transactions.total == 0:
+        msg = Markup(
+            f"No transactions found. <a href='{url_for('admin.transactions')}'>View all transactions</a>"  # noqa: E501
+        )
+        flash(msg)
 
     return render_template(
         "admin/transactions.html",
