@@ -3,6 +3,7 @@
 
 {% block body %}
 
+
 <h2 class="text-center text-dark mb-3">Rename Shop Address</h2>
 
 <div class="container">
@@ -23,21 +24,69 @@
           <p>The URL of your shop will be changed as long as the name is available
               and the name contains only letters and numbers</p>
 	  <p> Your current web address is: {{ SERVER_NAME }}</p>	
-          <form action="" method="POST" action="/">
+          <div>
             <div class="form-group">
      
               <label for="shop">New name:</label>
-              <input type="text" name="new_name" class="form-control" id="shop" 
+              <input type="text" name="new_name" class="form-control" id="new_name"
                      aria-describedby="shopHelp" placeholder="{{ SERVER_NAME }}"  required>
             </div>
             <button type="submit" id="submit" class="btn btn-primary btn-block mb-3">Save</button>
-          </form>
+          </div>
         </div>
 
       </div>
 
     </div> <!-- end container-->
   </div> <!-- end section-->
+
+<script>
+  maxAttempts = 10;
+  attempts = 0;
+  function checkResponse(response, new_name) {
+    if (attempts >= maxAttempts) {
+      alert("Failed to rename site.");
+      return;
+    }
+    if (response.status == 200) {
+      console.log("Rename site success");
+      document.location = "https://" + new_name + '.subscriby.shop';
+     } else {
+      attempts++
+      console.log("Waiting for rename..");
+      setTimeout(() => waitForSiteToBeReady(new_name), 2000);
+     }
+  }
+
+ function waitForSiteToBeReady(new_name) {
+   console.log("waitForSiteToBeReady...")
+   fetch("https://" + new_name + ".subscriby.shop")
+   .then(response => checkResponse(response, new_name))
+   .catch((error) => { console.error(error)});
+ }
+
+  function rename_site(e) {
+    let new_name = document.getElementById("new_name").value;
+    document.getElementById('submit').textContent = "Please wait...";
+    console.log("Renaming shop...");
+    const data = { new_name: new_name };
+    fetch("/admin/rename-shop", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+       console.log(data);
+    })
+    .then(waitForSiteToBeReady(new_name))
+  }
+
+  // When the user clicks save, try to rename the site
+  document.getElementById('submit').addEventListener('click', rename_site);
+</script>
 </main>
 
 {% endblock %}
