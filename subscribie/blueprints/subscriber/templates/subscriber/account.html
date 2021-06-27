@@ -2,6 +2,10 @@
 {% block title %} Account - {{ company.name }} {% endblock %}
 
 {% block body %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+var stripe = Stripe('{{ stripe_publishable_key }}');
+</script>
 
 <h2 class="text-center text-dark mb-3">{{ company.name }}</h2>
 
@@ -40,12 +44,45 @@
     <p>Some subscriptions may give you access to private pages. If they do, they will appear below</p>
     <ul>
       {% for page in pages if page.private %}
-      <li><a href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name }}</li>
+      <li><a href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name }}</a></li>
       {% endfor %}
     </ul>
   </div>
 
+
+  <div class="card px-3 py-3 my-3">
+    <h3 class="card-title">Payment Settings</h3>
+    <p>If you have changed banks, you can update your payment
+       method here.<p>
+    {% if stripe_default_payment_method %}
+      <h4>Current payment method: Card</h4>
+      {% if stripe_default_payment_method.type == 'card' %}
+        Brand: {{ stripe_default_payment_method['card']['brand']|title }} <br />
+        Last four digits: {{ stripe_default_payment_method['card']['last4'] }}
+      {% endif %}
+    <hr />
+    {% endif %}
+
+    <p><em>Note:</em> You don't need to do anything if your card has
+        expired or you have a new card, the details are automatically updated.
+        You only need to update payment details if you have changed banks or
+        have a new card account.
+    </p>
+    <button id="checkout-button" class="btn btn-success mb-2 mt-2">
+      Update Payment Method
+    </button>
+  </div>
+
+
 </div>
+
+<script>
+var checkoutButton = document.getElementById('checkout-button');
+
+checkoutButton.addEventListener('click', function() {
+    document.location.href = '{{ stripe_session.url }}';
+});
+</script>
 
 
 {% endblock %}
