@@ -221,7 +221,7 @@ def account():
         subscription = (
             Person.query.filter_by(email=session["subscriber_id"])
             .first()
-            .subscriptions[2]
+            .subscriptions[0]
         )
         try:
             stripe_subscription = stripe.Subscription.retrieve(
