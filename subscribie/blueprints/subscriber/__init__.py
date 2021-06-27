@@ -1,4 +1,5 @@
 import logging
+import stripe
 import functools
 import binascii
 import os
@@ -30,6 +31,11 @@ from subscribie.models import (
     ChosenOption,
     File,
     User,
+)
+from subscribie.utils import (
+    get_stripe_secret_key,
+    get_stripe_connect_account_id,
+    get_stripe_publishable_key,
 )
 from flask_mail import Mail, Message
 from jinja2 import Template
@@ -97,7 +103,7 @@ def login():
             return redirect(url_for("subscriber.login"))
         if subscriber.password is None:
             msg = Markup(
-                f"Password not set. Please <a href='{url_for('subscriber.forgot_password')}'>change your password.</a>"
+                f"Password not set. Please <a href='{url_for('subscriber.forgot_password')}'>change your password.</a>"  # noqa: E501
             )
             flash(msg)
             return redirect(url_for("subscriber.login"))
@@ -199,7 +205,73 @@ def password_reset():
 @subscriber_login_required
 def account():
     "A subscribers account home screen"
-    return render_template("subscriber/account.html")
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    stripe_publishable_key = get_stripe_publishable_key()
+
+    # Get subscribers first subscription to determine stripe customer id
+    subscription = (
+        Person.query.filter_by(email=session["subscriber_id"])
+        .first()
+        .subscriptions[0]  # TODO TODO change to 0
+    )
+    stripe_subscription = stripe.Subscription.retrieve(
+        subscription.stripe_subscription_id, stripe_account=stripe_connect_account_id
+    )
+    stripe_customer_id = stripe_subscription.customer
+    stripe_customer = stripe.Customer.retrieve(
+        stripe_customer_id, stripe_account=stripe_connect_account_id
+    )
+
+    stripe_session = stripe.checkout.Session.create(
+        stripe_account=stripe_connect_account_id,
+        payment_method_types=["card"],
+        mode="setup",
+        customer=stripe_customer_id,
+        setup_intent_data={
+            "metadata": {
+                "subscription_id": stripe_subscription.id,
+            },
+        },
+        success_url=url_for("subscriber.account", _external=True)
+        + "?stripe_session_id={CHECKOUT_SESSION_ID}",
+        cancel_url=url_for("subscriber.account", _external=True),
+    )
+    if request.args.get("stripe_session_id"):
+        # Process stripe update payment request
+        # Get Stripe checkout session
+        stripe_session = stripe.checkout.Session.retrieve(
+            request.args.get("stripe_session_id"),
+            stripe_account=stripe_connect_account_id,
+        )
+        # Get setup_intent id from stripe session
+        stripe_setup_intent_id = stripe_session.setup_intent
+        stripe_setup_intent = stripe.SetupIntent.retrieve(
+            stripe_setup_intent_id, stripe_account=stripe_connect_account_id
+        )
+        # Update default payment method
+        stripe.Customer.modify(
+            stripe_customer.id,
+            stripe_account=stripe_connect_account_id,
+            invoice_settings={
+                "default_payment_method": stripe_setup_intent.payment_method
+            },
+        )
+        flash("Default payment method updated")
+        return redirect(url_for("subscriber.account"))
+
+    # Try to get existing default payment method
+    stripe_default_payment_method = stripe.PaymentMethod.retrieve(
+        stripe_customer.invoice_settings.default_payment_method,
+        stripe_account=stripe_connect_account_id,
+    )
+
+    return render_template(
+        "subscriber/account.html",
+        stripe_session=stripe_session,
+        stripe_publishable_key=stripe_publishable_key,
+        stripe_default_payment_method=stripe_default_payment_method,
+    )
 
 
 @subscriber.route("/account/subscriptions")
