@@ -16,6 +16,7 @@
 
     <h3 class="card-title">Your Subscriptions</h3>
     {% for subscription in g.subscriber.subscriptions %}
+      {% if subscription.plan %}
       <div class="card px-3 py-3 my-3">
         <h4>{{ subscription.plan.title }}</h4>
         <ul>
@@ -49,6 +50,7 @@
         {% endfor %}
         </ul>
       </div>
+      {% endif %}
     {% endfor %}
 </div>
 
