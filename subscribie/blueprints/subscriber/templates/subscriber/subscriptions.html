@@ -18,37 +18,76 @@
     {% for subscription in g.subscriber.subscriptions %}
       {% if subscription.plan %}
       <div class="card px-3 py-3 my-3">
-        <h4>{{ subscription.plan.title }}</h4>
-        <ul>
-          <li><strong>Created at:</strong> {{ subscription.created_at.strftime('%d/%m/%Y') }}</li>
-          <li><strong>Price:</strong> &pound;{{ "%.2f"|format(subscription.plan.interval_amount/100) }}</li>
-          <li><strong>Interval Unit:</strong> {{ subscription.plan.interval_unit|capitalize }}</li>
-          <li><strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} </li>
+        <ul class="list-unstyled px-2">
+            <li><strong>Title: </strong>
+                <span class="subscription-title">{{ subscription.plan.title }}</span>
+            </li>
+            {% if subscription.chosen_options %}
+                <li>
+                    <details open>
+                        <summary><strong>Chosen Options</strong></summary>
+                        <ul>
+                            {% for choice in subscription.chosen_options %}
+                                <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                    <a href="{{ url_for('subscriber.update_subscription_choices', subscription_id=subscription.id) }}" class="btn btn-success">
+                      Update Choices
+                    </a>
+                </li>
+            {% endif %}
+            <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
+            <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
+            <li>
+                {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+                    <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
+                    <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
+                {% else %}
+                    (One-off. Not a subscription)
+                {% endif %}
+            </li>
+            <li><strong>Sell price: </strong>
+                <span class="subscribers-plan-sell-price">
+                    {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
+                        {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                    {% else %}
+                        (No up-front fee)
+                    {% endif %}
+                </span>
+                <li><strong>Status: </strong>
+                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+                        {{ subscription.stripe_status }}
+                    {% else %}
+                        Paid
+                    {% endif %}
+                </li>
+                {% if subscription.stripe_cancel_at %}
+                  <strong>Automatically Cancels at:</strong>
+                  {{ subscription.stripe_cancel_at | timestampToDate }}
+                {% endif %}
+                <li>
+                </li>
+                <li>
+                    {% if subscription.plan.requirements and subscription.plan.requirements.note_to_seller_required %}
+                        <details open>
+                            <summary><strong>Order Note</strong></summary>
+                            {% if subscription.note %}
+                                {{ subscription.note.note }}
+                            {% else %}
+                                No note was given.
+                            {% endif %}
+                        </details>
+                    {% endif %}
+                </li>
         </ul>
-        {% if subscription.chosen_options %}
-        <strong>Chosen Options:</strong>
-
-          {% for chosen_option in subscription.chosen_options %}
-            <details open>
-              <summary>
-                {{ chosen_option.choice_group_title }}:
-              </summary>
-              {{ chosen_option.option_title }}
-            </details>
-          {% endfor %}
-
-          <a href="{{ url_for('subscriber.update_subscription_choices', subscription_id=subscription.id) }}" class="btn btn-success">
-            Update Choices
-          </a>
-        {% endif %}
-
-
         <h5>Details</h5>
         <ul>
         {% for selling_point in subscription.plan.selling_points  %}
           <li>{{ selling_point.point }}</li>
         {% endfor %}
         </ul>
+
       </div>
       {% endif %}
     {% endfor %}
