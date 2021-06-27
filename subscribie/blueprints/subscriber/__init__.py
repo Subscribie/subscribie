@@ -14,6 +14,7 @@ from flask import (
     g,
     current_app,
     request,
+    Markup,
 )
 from subscribie.forms import (
     PasswordLoginForm,
@@ -93,6 +94,12 @@ def login():
                 flash("You are a shop admin, please login here")
                 return redirect(url_for("auth.login", email=email))
             flash("Person not found with that email")
+            return redirect(url_for("subscriber.login"))
+        if subscriber.password is None:
+            msg = Markup(
+                f"Password not set. Please <a href='{url_for('subscriber.forgot_password')}'>change your password.</a>"
+            )
+            flash(msg)
             return redirect(url_for("subscriber.login"))
 
         if check_password_login(email, password):
