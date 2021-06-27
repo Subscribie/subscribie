@@ -49,7 +49,8 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
     </ul>
   </div>
 
-
+{% if stripe_session %}
+{# can only update payment settings if has a subscription and stripe session #}
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Payment Settings</h3>
     <p>If you have changed banks, you can update your payment
@@ -72,6 +73,7 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
       Update Payment Method
     </button>
   </div>
+{% endif %}
 
 
 </div>
