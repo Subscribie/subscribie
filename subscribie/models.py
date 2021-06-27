@@ -53,6 +53,7 @@ def filter_archived(query):
             and "account/password-reset" not in request.path
             and "/account" not in request.path
             and "/admin/transactions" not in request.path
+            and "/admin/static" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
