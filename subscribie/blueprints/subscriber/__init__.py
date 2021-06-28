@@ -227,7 +227,6 @@ def account():
         .first()
     )
     if subscription:
-        breakpoint()
         try:
             stripe_subscription = stripe.Subscription.retrieve(
                 subscription.stripe_subscription_id,
