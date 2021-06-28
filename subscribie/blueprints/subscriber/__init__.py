@@ -31,6 +31,8 @@ from subscribie.models import (
     ChosenOption,
     File,
     User,
+    Plan,
+    PlanRequirements,
 )
 from subscribie.utils import (
     get_stripe_secret_key,
@@ -212,17 +214,19 @@ def account():
     stripe_session = None
 
     # Get subscribers first subscription to determine stripe customer id
-    if (
-        len(
-            Person.query.filter_by(email=session["subscriber_id"]).first().subscriptions
-        )
-        > 0
-    ):
-        subscription = (
-            Person.query.filter_by(email=session["subscriber_id"])
-            .first()
-            .subscriptions[0]
-        )
+    # excluding one-off plans.
+    subscription = (
+        database.session.query(Subscription)
+        .execution_options(include_archived=True)
+        .join(Person, Subscription.person_id == Person.id)
+        .join(Plan, Subscription.sku_uuid == Plan.uuid)
+        .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .where(Person.email == session["subscriber_id"])
+        .where(PlanRequirements.subscription == 1)
+        .order_by(Subscription.id.desc())
+        .first()
+    )
+    if subscription:
         try:
             stripe_subscription = stripe.Subscription.retrieve(
                 subscription.stripe_subscription_id,
@@ -271,10 +275,11 @@ def account():
                 return redirect(url_for("subscriber.account"))
 
             # Try to get existing default payment method
-            stripe_default_payment_method = stripe.PaymentMethod.retrieve(
-                stripe_customer.invoice_settings.default_payment_method,
-                stripe_account=stripe_connect_account_id,
-            )
+            if stripe_customer.invoice_settings.default_payment_method:
+                stripe_default_payment_method = stripe.PaymentMethod.retrieve(
+                    stripe_customer.invoice_settings.default_payment_method,
+                    stripe_account=stripe_connect_account_id,
+                )
         except stripe.error.InvalidRequestError as e:
             log.error(f"stripe.error.InvalidRequestError: {e}")
 
