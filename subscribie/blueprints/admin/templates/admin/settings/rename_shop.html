@@ -59,7 +59,8 @@
   }
 
  function waitForSiteToBeReady(new_name) {
-   console.log("waitForSiteToBeReady...")
+   console.log("waitForSiteToBeReady...");
+   new_name = name.replace("subscriby.shop", "").replace(".","");
    fetch("https://" + new_name + ".subscriby.shop")
    .then(response => checkResponse(response, new_name))
    .catch((error) => { console.error(error)});
