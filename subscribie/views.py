@@ -118,7 +118,7 @@ def show_500():
 
 
 @bp.route("/open")
-def open():
+def stats():
     """Open stats"""
     return {"active_subscribers": get_number_of_active_subscribers()}
 
