@@ -1,5 +1,6 @@
 from subscribie.database import database
 from subscribie.models import Person, Subscription, Plan, PlanRequirements
+from sqlalchemy.sql import func
 import logging
 
 
@@ -25,6 +26,17 @@ def get_number_of_active_subscribers():
                 )
                 count += 1
     return count
+
+
+def get_monthly_revenue():
+    query = (
+        database.session.query(func.sum(Plan.interval_amount))
+        .join(Subscription, Plan.uuid == Subscription.sku_uuid)
+        .where(Subscription.stripe_status == "active")
+        .where(Plan.interval_unit == "monthly")
+        .execution_options(include_archived=True)
+    )
+    return query.first()[0] / 100
 
 
 def get_number_of_subscribers():
