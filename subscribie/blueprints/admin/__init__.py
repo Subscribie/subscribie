@@ -1071,22 +1071,17 @@ def transactions():
     plan_title = request.args.get("plan_title", "")
     subscriber_name = request.args.get("subscriber_name", "")
     person = None
-    queryByPlan = (
+    if plan_title != "":
+        filterBy = Plan.title.like(f"%{plan_title}%")
+    if subscriber_name != "":
+        filterBy = Person.given_name.like(f"%{subscriber_name}%")
+
+    query = (
         database.session.query(Transaction)
         .join(Person, Transaction.person_id == Person.id)
         .join(Subscription, Transaction.subscription_id == Subscription.id)
         .join(Plan, Subscription.plan)
-        .where(Plan.title.like(f"%{plan_title}%"))
-        .order_by(desc(Transaction.created_at))
-        .group_by(Transaction.id, Person.id)
-        .execution_options(include_archived=True)
-    )
-    queryByName = (
-        database.session.query(Transaction)
-        .join(Person, Transaction.person_id == Person.id)
-        .join(Subscription, Transaction.subscription_id == Subscription.id)
-        .join(Plan, Subscription.plan)
-        .where(Person.given_name.like(f"%{subscriber_name}%"))
+        .where(filterBy)
         .order_by(desc(Transaction.created_at))
         .group_by(Transaction.id, Person.id)
         .execution_options(include_archived=True)
@@ -1094,26 +1089,21 @@ def transactions():
     if request.args.get("subscriber", None):
         person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
         if person is not None:
-            queryByPlan = queryByPlan.filter(Person.uuid == person.uuid)
+            query = query.filter(Person.uuid == person.uuid)
         else:
             flash("Subscriber not found.")
-            queryByPlan = queryByPlan.filter(False)
+            query = query.filter(False)
 
-    transactionsByPlan = queryByPlan.paginate(page=page, per_page=10)
-    transactionsByName = queryByName.paginate(page=page, per_page=10)
-    if transactionsByPlan.total == 0 or transactionsByName == 0:
+    transactions = query.paginate(page=page, per_page=10)
+    if transactions.total == 0:
         msg = Markup(
             f"No transactions found. <a href='{url_for('admin.transactions')}'>View all transactions</a>"  # noqa: E501
         )
         flash(msg)
-    if plan_title != "":
-        transactions = queryByPlan.paginate(page=page, per_page=10)
-    if subscriber_name != "":
-        transactions = queryByName.paginate(page=page, per_page=10)
 
     return render_template(
         "admin/transactions.html",
-        transactions=transactions,
+        transactions=query.paginate(page=page, per_page=10),
         person=person,
     )
 
