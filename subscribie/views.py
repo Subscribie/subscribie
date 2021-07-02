@@ -26,7 +26,10 @@ from subscribie.signals import journey_complete
 from subscribie.receivers import (
     receiver_send_shop_owner_new_subscriber_notification_email,
 )
-from subscribie.blueprints.admin.stats import get_number_of_active_subscribers
+from subscribie.blueprints.admin.stats import (
+    get_number_of_active_subscribers,
+    get_monthly_revenue,
+)
 
 log = logging.getLogger(__name__)
 
@@ -120,7 +123,10 @@ def show_500():
 @bp.route("/open")
 def stats():
     """Open stats"""
-    return {"active_subscribers": get_number_of_active_subscribers()}
+    return {
+        "active_subscribers": get_number_of_active_subscribers(),
+        "monthly_revenue": get_monthly_revenue(),
+    }
 
 
 @bp.route("/choose")
