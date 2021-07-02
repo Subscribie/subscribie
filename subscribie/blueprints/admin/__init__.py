@@ -1070,7 +1070,7 @@ def transactions():
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", "")
     person = None
-    query = (
+    queryByPlan = (
         database.session.query(Transaction)
         .join(Person, Transaction.person_id == Person.id)
         .join(Subscription, Transaction.subscription_id == Subscription.id)
@@ -1082,14 +1082,16 @@ def transactions():
     )
 
     if request.args.get("subscriber", None):
-        person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
+        person = Person.queryByPlan.filter_by(
+            uuid=request.args.get("subscriber")
+        ).first()
         if person is not None:
-            query = query.filter(Person.uuid == person.uuid)
+            queryByPlan = queryByPlan.filter(Person.uuid == person.uuid)
         else:
             flash("Subscriber not found.")
-            query = query.filter(False)
+            queryByPlan = queryByPlan.filter(False)
 
-    transactions = query.paginate(page=page, per_page=10)
+    transactions = queryByPlan.paginate(page=page, per_page=10)
     if transactions.total == 0:
         msg = Markup(
             f"No transactions found. <a href='{url_for('admin.transactions')}'>View all transactions</a>"  # noqa: E501
@@ -1098,7 +1100,7 @@ def transactions():
 
     return render_template(
         "admin/transactions.html",
-        transactions=query.paginate(page=page, per_page=10),
+        transactions=queryByPlan.paginate(page=page, per_page=10),
         person=person,
     )
 
