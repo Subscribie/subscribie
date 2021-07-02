@@ -1068,12 +1068,14 @@ def invoices():
 def transactions():
 
     page = request.args.get("page", 1, type=int)
-    plan_title = request.args.get("plan_title", "")
-    subscriber_name = request.args.get("subscriber_name", "")
+    plan_title = request.args.get("plan_title", None)
+    subscriber_name = request.args.get("subscriber_name", None)
     person = None
-    if plan_title != "":
+    filterBy = None
+
+    if plan_title:
         filterBy = Plan.title.like(f"%{plan_title}%")
-    if subscriber_name != "":
+    if subscriber_name:
         filterBy = Person.full_name.like(f"%{subscriber_name}%")
 
     query = (
@@ -1081,11 +1083,13 @@ def transactions():
         .join(Person, Transaction.person_id == Person.id)
         .join(Subscription, Transaction.subscription_id == Subscription.id)
         .join(Plan, Subscription.plan)
-        .where(filterBy)
         .order_by(desc(Transaction.created_at))
         .group_by(Transaction.id, Person.id)
         .execution_options(include_archived=True)
     )
+    if filterBy is not None:
+        query = query.where(filterBy)
+
     if request.args.get("subscriber", None):
         person = Person.query.filter_by(uuid=request.args.get("subscriber")).first()
         if person is not None:
