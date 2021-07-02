@@ -34,8 +34,15 @@
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
         </form>
+        <form action="#" method="GET">
+        <div class="form-group">
+          <label for="subscriber_name">Subscriber:</label>
+          <input type="text" name="subscriber_name" id="subscriber_name" class="form-control" placeholder="Enter subscriber's name...">
+          <input type="submit" class="btn btn-primary mt-4" />
+        </div>
+        </form>
         {% if person %}
-          <h1>All transactions: {{ person.given_name }}</h1>
+          <h1>All transactions: {{ person.given_name }} {{ person.family_name }}</h1>
         {% else %}
           <h1>All Transactions</h1>
         {% endif %}
@@ -43,7 +50,12 @@
         <p>Every transaction on your shop.</p>
         {% if request.args.get("subscriber", None) %}
               <div class="alert-warning">
-              Filtered by Subscriber.
+              <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
+              </div>
+        {% endif %}
+        {% if request.args.get("subscriber_name", None) %}
+              <div class="alert-warning" style="padding:5px;">
+              Filtered by Subscriber: "{{ request.args.get("subscriber_name") }}". <br />
               <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
               </div>
         {% endif %}
