@@ -100,6 +100,7 @@ class Person(database.Model, HasArchived):
     ts = database.Column(database.DateTime, default=datetime.utcnow)
     given_name = database.Column(database.String())
     family_name = database.Column(database.String())
+    full_name = database.column_property(given_name + " " + family_name)
     address_line1 = database.Column(database.String())
     city = database.Column(database.String())
     postal_code = database.Column(database.String())

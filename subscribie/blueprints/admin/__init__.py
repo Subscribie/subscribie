@@ -1074,7 +1074,7 @@ def transactions():
     if plan_title != "":
         filterBy = Plan.title.like(f"%{plan_title}%")
     if subscriber_name != "":
-        filterBy = Person.given_name.like(f"%{subscriber_name}%")
+        filterBy = Person.full_name.like(f"%{subscriber_name}%")
 
     query = (
         database.session.query(Transaction)
