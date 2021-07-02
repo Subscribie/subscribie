@@ -37,7 +37,7 @@
         </div>
         </form>
         {% if person %}
-          <h1>All transactions: {{ person.given_name }} {{ person.family_name }}</h1>
+          <h1>All transactions: {{ full_name|capitalize }}</h1>
         {% else %}
           <h1>All Transactions</h1>
         {% endif %}
@@ -99,7 +99,7 @@
         <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
         <td>
-          <a class="transaction-subscriber" href="{{ url_for('admin.show_subscriber', subscriber_id=transaction.person.id)}}">{{ transaction.person.given_name }} {{transaction.person.family_name }}</a>
+          <a class="transaction-subscriber" href="{{ url_for('admin.show_subscriber', subscriber_id=transaction.person.id)}}">{{ transaction.person.full_name|capitalize }}</a>
         </td>
         <td> {% if transaction.subscription.plan %}
                {{ transaction.subscription.plan.title}}
