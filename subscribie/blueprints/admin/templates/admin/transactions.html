@@ -117,7 +117,16 @@
       <ul class="pagination justify-content-start">
         <li class="page-item">
           {% if transactions.has_prev %}
-            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1, plan_title=request.args.get    ("plan_title")) }}">Previous</a>
+              {% if request.args.get("plan_title") and request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1, plan_title=request.args.get("plan_title"), subscriber_name=request.args.get("subscriber_name")) }}">Previous</a>
+              {% else %}
+                  {% if request.args.get("plan_title") %}
+                    <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1, plan_title=request.args.get("plan_title")) }}">Previous</a>
+                  {% endif %}
+                  {% if request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page - 1, subscriber_name=request.args.get("subscriber_name")) }}">Previous</a>
+                  {% endif %}
+              {% endif %}
           {% endif %}</li>
 
         {% for page_num in transactions.iter_pages() %}
@@ -128,7 +137,16 @@
               </li>
             {% else %}
               <li class="page-item ">
-                <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title")) }}">{{ page_num }}</a>
+              {% if request.args.get("plan_title") and request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title"), subscriber_name=request.args.get("subscriber_name")) }}">{{ page_num }}</a>
+              {% else %}
+                  {% if request.args.get("plan_title") %}
+                    <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title")) }}">{{ page_num }}</a>
+                  {% endif %}
+                  {% if request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=page_num , subscriber_name=request.args.get("subscriber_name")) }}">{{ page_num }}</a>
+                  {% endif %}
+              {% endif %}
               </li>
     
             {% endif %}
@@ -139,8 +157,18 @@
       
         <li class="page-item">
           {% if transactions.has_next %}
-            <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1, plan_title=request.args.get("plan_title")) }}">Next page</a>
-          {% endif %}</li>
+              {% if request.args.get("plan_title") and request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1, plan_title=request.args.get("plan_title"), subscriber_name=request.args.get("subscriber_name")) }}">Next page</a>
+              {% else %}
+                  {% if request.args.get("plan_title") %}
+                    <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1, plan_title=request.args.get("plan_title")) }}">Next page</a>
+                  {% endif %}
+                  {% if request.args.get("subscriber_name") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=transactions.page + 1, subscriber_name=request.args.get("subscriber_name")) }}">Next page</a>
+                  {% endif %}
+              {% endif %}
+          {% endif %}
+        </li>
       </ul>
     </nav>
 
