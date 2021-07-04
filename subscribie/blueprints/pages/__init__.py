@@ -121,11 +121,14 @@ def edit_page(path):
                 str(current_app.config["CUSTOM_PAGES_PATH"]), oldTemplateFile
             )
             oldTemplatePath.replace(
-                Path(str(current_app.config["THEME_PATH"]), oldTemplateFile + ".old")
+                Path(
+                    str(current_app.config["CUSTOM_PAGES_PATH"]),
+                    oldTemplateFile + ".old",
+                )
             )
         # Writeout new template_file to file
         with open(
-            Path(str(current_app.config["THEME_PATH"]), template_file), "w"
+            Path(str(current_app.config["CUSTOM_PAGES_PATH"]), template_file), "w"
         ) as fh:
             fh.write(page_body)
 
