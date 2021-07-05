@@ -28,7 +28,7 @@ to try the [subscription website hosting service](http://subscriptionwebsitebuil
 - Upload a picture
 - Uses Stripe for subscriptions & one-off payments
 
-# Contributing
+# Contributing & Help finding things: Where do I find x? Where is file y?
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
 

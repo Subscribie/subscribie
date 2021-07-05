@@ -1,11 +1,133 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+When contributing to this repository, please first discuss the change you wish to make via an issue.
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
-## Git Pull Request Process
+- [Project Folder Structure](#Project-folder-structure)
+- [Blueprints Organise Things](#blueprints-organise-things)
+- [Logging](#Logging)
+- [Debugging](#Debugging)
+## How to I made a change to the template?
+
+
+
+First you need to find the template, so [read Project folder structure first](#project-folder-structure).
+
+Once you've found the `@route` for the page you want to update (e.g. `/admin/dashboard`) then, you'll see a call to `render_template` e.g:
+
+```
+return render_template(
+        "admin/dashboard.html", ...
+```
+
+
+
+If you're [editing a blueprint](#blueprints-organise-things) then the template will be inside a subfolder called `templates` below the blueprint (e.g. `subscribie/blueprints/admin/templates/admin/dashboard.html`).
+
+When editing a template locally, to make flask automatically reload you needed to `export FLASK_DEBUG=1` otherwise flask won't reload and you don't see the changes (unless you manually restart (`Ctl+c` and `flask run`).  
+
+## Project folder structure
+### Help finding things: Where do I find x? Where is file y?
+
+
+### `./subscribie/views.py` - Defines the public routes e.g. homepage & most public routes
+
+For example the route `/choose` (e.g. `http://127.0.0.1/choose`) is defined in: `./subscribie/views.py` for example:
+
+```
+@bp.route("/choose")
+def choose():
+    # ...
+    return render_template("choose.html")
+```
+
+### `./subscribie/blueprints/admin/` - Defines the admin routes e.g. the dashboard
+
+For example `http://127.0.0.1:5000/admin/dashboard` is defined in:
+`subscribie/blueprints/admin/__init__.py`:
+
+```
+@admin.route("/dashboard")
+@login_required
+def dashboard():
+    #...
+    render_template("admin/dashboard.html")
+```
+
+`admin` is a [Flask blueprint](https://flask.palletsprojects.com/en/2.0.x/blueprints/) which is a way to orgnise things.
+
+
+### `./migrations` is the database migrations folder
+
+All the database migrations (changes to the database schema) are in `./migrations`. You never create these files manually, but you do *edit* them after you've created a database migration if it needs adjustment.
+
+## Blueprints organise things into modules
+
+`admin` is a [Flask blueprint](https://flask.palletsprojects.com/en/2.0.x/blueprints/) which is a way to orgnise things.
+
+Inside each blueprint there are `@route` decorators for each of the paths the blueprint provides. 
+
+Subscribie has multiple blueprints:
+
+- `admin` - For the shop owner admin routes (e.g. `/dashboard`)
+  - subscribie/blueprints/admin/ 
+- `checkout` - The checkout / sign-up & payment process (e.g. `/new_customer` and begins Stripe checkout)
+  - subscribie/blueprints/checkout/
+- `subscriber` - Subscribers can login and see their subscriptions (e.g. `/account/subscriptions`)
+  - subscribie/blueprints/subscriber/
+- `style` - Shop owners can change the colour shade of their shop
+  - subscribie/blueprints/style/
+- `pages` - Allows shop owners to create custom pages
+  - subscribie/blueprints/pages/
+- `iframe` - Allows shop owners to copy/paste iframe code to embed their shop in another website. 
+  - subscribie/blueprints/iframe/
+- `seo` - Allows shop owners to provide search engine friendly page titles/names
+  - subscribie/blueprints/seo/
+ 
+## Logging
+### Debugging without logging is a bad experience. Turn on logging!
+
+To increase or decrease the amount of logs you see change the `PYTHON_LOG_LEVEL` setting:
+
+```
+export PYTHON_LOG_LEVEL=DEBUG
+flask run
+# .. now more logs will show
+```
+
+These are all the options from [python docs](https://docs.python.org/3/library/logging.html#logging-levels)
+```
+CRITICAL
+ERROR # Only show Errors and critical
+WARNING
+INFO
+DEBUG # Show everything and above
+NOTSET # Turn off logging
+```
+
+Logs only show if you write them! If you see code which has no useful logging consider adding some. The logger automatically include the line number, filename, and function being called, so you don't need to mention that. Here's an [example of writing a useful error message](https://github.com/Subscribie/subscribie/blob/9b19d59812f62dd9e72f9022f3a7853e44d9f08b/subscribie/blueprints/checkout/__init__.py#L71).
+
+## Debugging
+### Something is broken/not working, how do I investigate?
+
+See also [Logging](#Logging)
+
+See also very cool [Wizard Zine for debugging tips!](https://wizardzines.com/zines/wizard/)
+
+
+Python has a built in debugger called `pdb`. To use it, 
+
+1. put `breakpoint()` in your code. 
+
+2. Refresh/restart the application (`e.g. flask run`),  
+3. Go to / visit the page which has the error
+4. Python will pause at that line in
+your code so you can inspect what's happening
+5. Press `n` to go to the next line, and `l` to see the lined around the code your at and `ll` to see all the code.
+6. Try typing in the variables into the terminal when paused and press enter, and following the code step-by step- is the code going where you expect?
+
+# Git Pull Request Process- how do I raise a pull request?
 
 Question:
 > I would like to ask for an explanation about git best practices. Like naming branches etc, I was in most cases working alone on projects so things like this were not important to me but now I need some guidance about these things. 
