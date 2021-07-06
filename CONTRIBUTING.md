@@ -4,10 +4,10 @@ When contributing to this repository, please first discuss the change you wish t
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
-- [Project Folder Structure](#Project-folder-structure)
+- [Project Folder Structure](#project-folder-structure)
 - [Blueprints Organise Things](#blueprints-organise-things)
-- [Logging](#Logging)
-- [Debugging](#Debugging)
+- [Logging](#logging)
+- [Debugging](#debugging)
 ## How to I made a change to the template?
 
 
@@ -62,7 +62,7 @@ def dashboard():
 
 All the database migrations (changes to the database schema) are in `./migrations`. You never create these files manually, but you do *edit* them after you've created a database migration if it needs adjustment.
 
-## Blueprints organise things into modules
+## Blueprints organise things
 
 `admin` is a [Flask blueprint](https://flask.palletsprojects.com/en/2.0.x/blueprints/) which is a way to orgnise things.
 
