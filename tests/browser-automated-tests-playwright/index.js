@@ -184,28 +184,48 @@ async function test_connect_to_stripe_connect()  {
         await page.click('text="Next"');
       }
 
-
-      // Stripe onboarding identify verification step
-      if (contentStripePage.indexOf('ID verification for Sam Smith') > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('text="Use test document"');
-      }
-
-
       // Stripe onboarding payouts bank details
       if (contentStripePage.indexOf('Select an account for payouts') > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Use test account"');
       }
 
-
+      // Stripe ID & Home Address verification
+      if (contentStripePage.indexOf("Missing required information") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Update"');
+      }
+       
+      // Stripe onboarding identify verification step
+      if (contentStripePage.indexOf('ID verification') > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_documentTrigger_button"]');
+      }
+      //this step is not working
+      if (contentStripePage.indexOf("Sam Smith") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Use test document"');
+      }
+      //Stripe onboarding address verification step
+      if (contentStripePage.indexOf("Verify home address") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_documentTrigger_button"]');
+      }
+      if (contentStripePage.indexOf("Proof of address document") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Use test document"');
+      }
+      //Stripe Done ID & Home verification (this step is not working)
+      if (contentStripePage.indexOf("Additional information") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_personFormSubmit_button"]');
+      }
       // Stripe onboarding verification summary
-      if (contentStripePage.indexOf("Let's review those details") > -1 ) {
+      if (contentStripePage.indexOf("Let's review your details") > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
         //await page.waitForNavigation({'timeout': 30000});
       }
-
 
       // Stripe onboarding verification complete
       if (contentStripePage.indexOf('Your verification is complete') > -1 ) {
@@ -213,21 +233,6 @@ async function test_connect_to_stripe_connect()  {
         await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
         //await page.waitForNavigation({'timeout': 30000});
       }
-
-
-      // Stripe onboarding proof of address
-      if (contentStripePage.indexOf('Proof of address') > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-
-      }
-
-
-      // Stripe onboarding go back to onboarding if incomplete
-      if (contentStripePage.indexOf('Payouts to your bank account are not active yet') > -1 ) {
-        await page.click('.btn.btn-success');
-        await page.waitForNavigation({'timeout': 30000});
-      }
-
     } catch (e) { 
       console.log(e);
       console.log("Retrying onboarding steps");
