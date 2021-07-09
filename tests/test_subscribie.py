@@ -132,6 +132,12 @@ def test_shop_owner_forgot_password_submission(session, client, with_shop_owner)
     assert b"We&#39;ve sent you an email with a password reset link" in req.data
 
 
+def test_apiv1_pages(session, client):
+    req = client.get("/api/v1/pages")
+    assert req.status_code == 200
+    assert req.json == []
+
+
 def test_user_model(session):
     user = User()
     user.email = "test@example.com"
