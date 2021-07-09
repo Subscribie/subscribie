@@ -3,10 +3,10 @@ const assert = require('assert');
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 
-/* Test an order can be placed for a plan with subscription & upfront payment */
-async function test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions) {
+/* Test transactions can be query by plan title and name */
+async function test_transaction_filter_by_name_and_by_plan_title(browsers, browserContextOptions) {
   for (const browserType of browsers) {
-    console.log("test_order_plan_with_subscription_and_upfront_charge");
+    console.log("test_transaction_filter_by_name_and_by_plan_title");
     const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(15000);
@@ -59,4 +59,4 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
   }
 };
 
-module.exports = test_order_plan_with_subscription_and_upfront_charge
+module.exports = test_transaction_filter_by_name_and_by_plan_title
