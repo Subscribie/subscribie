@@ -159,6 +159,7 @@ class Subscription(database.Model):
     # a shop owner to set a cancel_at date before subscribers sign-up,
     # which creates subscriptions.
     stripe_cancel_at = database.Column(database.Integer(), default=0)
+    stripe_pause_collection = database.Column(database.String())
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
