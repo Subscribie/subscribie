@@ -24,11 +24,11 @@
                 <div class="mx-auto">
                     <a href="{{ url_for('admin.cancel_stripe_subscription', subscription_id=subscription_id, confirm=1) }}" 
                         class="btn btn-danger mx-3 px-5" role="button">
-                        Yes
+                       <span class="cancel-yes">Yes</span>
                     </a>
                     <a href="{{ url_for('admin.subscribers', cancel=1)}}" 
                         class="btn btn-success mx-3 px-5" role="button">
-                        No
+                    <span class="cancel-no">No</span>
                     </a>
                 </div>
             </div>

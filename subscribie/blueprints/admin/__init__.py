@@ -404,6 +404,9 @@ def cancel_stripe_subscription(subscription_id: str):
             stripe.Subscription.delete(
                 subscription_id, stripe_account=connect_account_id
             )
+            # instead of inserting cancel directly into the db,
+            # it refresh status after cancellation
+            update_stripe_subscription_statuses()
             flash("Subscription cancelled")
         except Exception as e:
             msg = "Error cancelling subscription"
