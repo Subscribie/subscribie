@@ -358,6 +358,7 @@ def resume_stripe_subscription(subscription_id):
 def refund_stripe_subscription(payment_id):
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
+
     if "confirm" in request.args and request.args["confirm"] != "1":
         return render_template(
             "admin/refund_subscription.html", confirm=False, payment_id=payment_id
@@ -366,7 +367,6 @@ def refund_stripe_subscription(payment_id):
         try:
             stripe_refund = stripe.Refund.create(
                 payment_intent=payment_id,
-                reverse_transfer=True,
                 stripe_account=connect_account_id,
             )
             if Transaction.query.filter_by(external_id=payment_id).first() is None:
