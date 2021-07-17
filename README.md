@@ -265,6 +265,12 @@ Run playwright tests:
 ```
 npm test
 ```
+Something not working?
+Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
+```
+PWDEBUG=1 npm run test
+```
+If you don't see the playwright inspector, make sure you have an up to date version of playwright.
 
 # Saas Deployment
 

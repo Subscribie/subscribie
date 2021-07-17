@@ -198,14 +198,11 @@ async function test_connect_to_stripe_connect()  {
        
       // Stripe onboarding identify verification step
       if (contentStripePage.indexOf('ID verification') > -1 ) {
+        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
-        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_documentTrigger_button"]');
+        await page.click('button:has-text("Use test document")');
       }
-      //this step is not working
-      if (contentStripePage.indexOf("Sam Smith") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('text="Use test document"');
-      }
+
       //Stripe onboarding address verification step
       if (contentStripePage.indexOf("Verify home address") > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
@@ -215,16 +212,32 @@ async function test_connect_to_stripe_connect()  {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Use test document"');
       }
-      //Stripe Done ID & Home verification (this step is not working)
+
+      //Stripe Done ID & Home verification
       if (contentStripePage.indexOf("Additional information") > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('button[data-db-analytics-name="connect_light_onboarding_action_personFormSubmit_button"]');
       }
-      // Stripe onboarding verification summary
-      if (contentStripePage.indexOf("Let's review your details") > -1 ) {
+
+      // Verify now in first flow
+      if (contentStripePage.indexOf("Verify now") > -1 ) {
+        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
-        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
-        //await page.waitForNavigation({'timeout': 30000});
+        await page.waitForNavigation({'timeout': 3000});
+      }
+
+      // ID verification use test document
+      if (contentStripePage.indexOf("ID verification for Sam Smith") > -1 ) {
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('text="Use test document"');
+        await page.waitForNavigation({'timeout': 3000});
+      }
+      // Stripe onboarding verification summary
+      if (contentStripePage.indexOf("Please double-check that this information is correct") > -1 ) {
+        console.log("On the Let's review your details page");
+        await new Promise(x => setTimeout(x, 1000));
+        await page.click('button:has-text("Done")');
+        await page.waitForNavigation({'timeout': 3000});
       }
 
       // Stripe onboarding verification complete
