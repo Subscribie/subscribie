@@ -293,11 +293,22 @@ def pause_stripe_subscription(subscription_id: str):
     connect_account_id = get_stripe_connect_account_id()
 
     try:
-        stripe.Subscription.modify(
+        stripe_pause = stripe.Subscription.modify(
             subscription_id,
             stripe_account=connect_account_id,
             pause_collection={"behavior": "void"},
         )
+        # filtering for the pause_collection value
+        stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
+
+        # adding the pause_collection status to the stripe_pause_collection column
+        pause_collection = Subscription.query.filter_by(
+            stripe_subscription_id=subscription_id
+        ).first()
+
+        pause_collection.stripe_pause_collection = stripe_pause_filter
+        database.session.commit()
+
         flash("Subscription paused")
     except Exception as e:
         msg = "Error pausing subscription"
@@ -322,6 +333,14 @@ def resume_stripe_subscription(subscription_id):
             stripe_account=connect_account_id,
             pause_collection="",  # passing empty string unpauses the subscription
         )
+
+        # adding the pause_collection status to the stripe_pause_collection column
+        pause_collection = Subscription.query.filter_by(
+            stripe_subscription_id=subscription_id
+        ).first()
+        pause_collection.stripe_pause_collection = ""
+        database.session.commit()
+
         flash("Subscription resumed")
     except Exception as e:
         msg = "Error resuming subscription"
@@ -385,6 +404,9 @@ def cancel_stripe_subscription(subscription_id: str):
             stripe.Subscription.delete(
                 subscription_id, stripe_account=connect_account_id
             )
+            # instead of inserting cancel directly into the db,
+            # it refresh status after cancellation
+            update_stripe_subscription_statuses()
             flash("Subscription cancelled")
         except Exception as e:
             msg = "Error cancelling subscription"

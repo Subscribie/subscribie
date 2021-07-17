@@ -99,9 +99,13 @@
                                     </span>
                                     <li><strong>Status: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {{ subscription.stripe_status }}
+                                           {% if subscription.stripe_pause_collection == "void" %}
+                                              <span class="subscription-status">Paused</span>
+                                           {% else %}
+                                              <span class="subscription-status">{{ subscription.stripe_status }}</span>
+                                           {% endif %}
                                         {% else %}
-                                            Paid
+                                           <span class="subscription-status">Paid</span>
                                         {% endif %}
                                     </li>
                                     {% if subscription.stripe_cancel_at %}
@@ -125,24 +129,24 @@
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if subscription.stripe_status|lower in ['active', 'trialing'] %}
-                                                {% if subscription.stripe_status|lower != 'trialing' %}
+                                                {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
-                                                    Pause
+                                                    <span class="pause-action">Pause</span>
                                                 </a> |
                                                 {% endif %}
                                                 <a href="{{ url_for("admin.cancel_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 confirm="") }}">
-                                                    Cancel
+                                                    <span class="cancel-action">Cancel</span>
                                                 </a> |
                                             {% endif %}
-                                            {% if subscription.stripe_status|lower == 'paused' %}
+                                            {% if subscription.stripe_pause_collection|lower == 'void' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 goback=1) }}">
-                                                    Resume
+                                                    <span class="resume-action">Resume</span>
                                                 </a>
                                             {% endif %}
                                         {% endif %}</li>

@@ -96,7 +96,7 @@ async function test_order_plan_with_subscription_and_upfront_charge(browsers, br
 
     // Verify subscriber is linked to the transaction:
     const transaction_subscriber_content = await page.textContent('.transaction-subscriber');
-    assert (transaction_subscriber_content === 'John');
+    assert (transaction_subscriber_content === 'John smith');
 
     // Verify paid invoice has been generated & marked "paid":
     await page.goto(PLAYWRIGHT_HOST + 'admin/invoices')

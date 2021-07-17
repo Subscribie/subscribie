@@ -234,7 +234,11 @@ python -m pytest --ignore=node_modules # run pytest
 ```
 stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
 ```
+Remember Stripe will give you a key valid for 90 days, if you get the following error you will need to do step 2 again:
 
+```
+Error while authenticating with Stripe: Authorization failed, status=401
+```
 ## Run browser automated tests with playright
 
 Run npm install.
