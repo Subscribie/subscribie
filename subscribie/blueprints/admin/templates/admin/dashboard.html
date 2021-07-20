@@ -207,6 +207,14 @@
                   href="{{ url_for('admin.invoices') }}">
                   View Invoices
               </a>
+              <br />
+              <p class="card-subtitle mb-3 text-muted">
+                  Get a csv export of your subscribers name &amp; email address
+              </p>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.export_transactions', csv="") }}">
+                  Export Transactions
+              </a>
           </div>
         </div>
       </div>
