@@ -1,6 +1,5 @@
 from . import admin
 from subscribie.auth import login_required
-from subscribie.database import database
 from subscribie.models import Subscription
 from flask import request, Response, jsonify
 import logging
@@ -10,7 +9,6 @@ import logging
 @login_required
 def export_subscribers():
 
-    subscriptions = database.session.query(Subscription).all()
     subscriptions = Subscription.query.execution_options(include_archived=True).all()
 
     if len(subscriptions) == 0:
