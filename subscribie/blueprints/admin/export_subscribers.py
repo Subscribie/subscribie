@@ -11,6 +11,7 @@ import logging
 def export_subscribers():
 
     subscriptions = database.session.query(Subscription).all()
+    subscriptions = Subscription.query.execution_options(include_archived=True).all()
 
     if len(subscriptions) == 0:
         return "You don't have any subscribers yet."
