@@ -6,6 +6,7 @@ test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_wi
 test_transaction_filter_by_name_and_by_plan_title = require('./tests/test_transaction_filter_by_name_and_by_plan_title');
 test_add_free_trial_plan = require('./tests/test_add_free_trial_plan');
 test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
+test_delay_number_of_days_before_the_first_payment = require('./tests/test_delay_number_of_days_before_the_first_payment');
 const playwright = require('playwright');
 const fs = require('fs');
 const { devices } = require('playwright');
@@ -291,7 +292,8 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_add_free_trial_plan(browsers, browserContextOptions);
   await test_set_a_cancel_at_plan(browsers, browserContextOptions);
-
+  await test_delay_number_of_days_before_the_first_payment(browsers, browserContextOptions);
+  
   await clearDB();
   await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
   await clearDB();

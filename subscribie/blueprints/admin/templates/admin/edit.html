@@ -52,9 +52,7 @@
             {% for plan in plans %}
             <div class="card">
               <div class="card-header" id="{{ plan.uuid }}">
-                  <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">
-                  {{ plan.title }}
-                  </button>
+                  <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">{{ plan.title }}</button>
               </div>
               <div id="collapse-{{ plan.uuid }}" class="collapse" aria-labelledby="{{ plan.uuid }}">
                 <!-- individual plan form -->
