@@ -32,9 +32,9 @@
 
     <div class="container mb-3">
 
-      <div class="card mx-auto col-md-6">
-        <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate>
-          {{ form.csrf_token }}
+      <div class="card mx-auto col-md-6"> 
+       <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate>
+           {{ form.csrf_token }}
 
           <div style="display:none">
             {{ render_field(form.company_name, value=company.name ) }}
@@ -57,19 +57,19 @@
           <fieldset class="form-group">
             <legend class="col-form-label font-weight-bolder">Plan selling points</legend>
               <div>
-                <input name="selling_points-0-0"  class="form-control mb-2 col-md" required>
+                <input name="selling_points-0-0" id="selling_points-0-0" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
 									Please provide a selling point.
 								</div>
               </div>
               <div>
-                <input name="selling_points-0-1"  class="form-control mb-2 col-md" required>
+                <input name="selling_points-0-1"  id="selling_points-0-1" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
 									Please provide a seccond selling point.
 								</div>
               </div>
               <div>
-                <input name="selling_points-0-3"  class="form-control mb-2 col-md" required>
+                <input name="selling_points-0-3"  id="selling_points-0-3" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
 									Please provide a third selling point.
 								</div>
@@ -77,12 +77,13 @@
           </fieldset>
 
           <div class="form-group">
+
             <label for="image-0" class="col-form-label font-weight-bolder">Product image</label>
             <input type="file" name="image-0" id="image-0" class="form-control-file">
           </div>
           
           <hr>
-
+         
           <fieldset>
             <div class="form-group">
               <div class="form-check">
@@ -90,19 +91,21 @@
                 <label class="form-check-label font-weight-bolder" for="subscription-0">Recurring Charge?</label>
               </div>
             </div>
-
-            <div class="extra_fields">
+       
+            <div class="extra_fields"> 
+              
               <div class="form-group">
-                <label for="interval_amount-0" class="col-form-label font-weight-bolder">Recurring Amount</label>
+                <label for="interval_amount-0" id="interval_amount_label" class="col-form-label font-weight-bolder">Recurring Amount</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
                   <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01">
                 </div>
-              </div>
-
+              </div> 
+            
               <div class="form-group">
+               
                 <label for="interval_unit-0" class="col-form-label font-weight-bolder">Interval Unit</label>
                 <div class="input-group">
                   <select name="interval_unit-0" id="interval_unit-0" class="form-control">
@@ -111,15 +114,16 @@
                     <option value="yearly">Yearly</option>
                   </select>
                 </div>
-              </div>
+              </div> 
 
-              <div class="form-group">
+             <div class="form-group">
                 <label for="days_before_first_charge-0" class="col-form-label font-weight-bolder">Days before the first charge</label>
                 <input id="days_before_first_charge-0" name="days_before_first_charge-0" type="number" value="0" class="form-control" >
                 <small class="form-text text-muted">
                   "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
                 </small>
               </div>
+            
               <div class="form-group">
                 <label for="trial_period_days-0" class="col-form-label font-weight-bolder">Free trial period number of days</label>
                 <input id="trial_period_days-0" name="trial_period_days-0" type="number" value="0" class="form-control" >
@@ -130,6 +134,7 @@
                 An immediate invoice is still created, but for a zero amount.
                 </small>
               </div>
+            
             </div>
           </fieldset>
 
@@ -149,7 +154,7 @@
                 </div>
                 <input type="number" step="0.01" name="sell_price-0" id="sell_price-0" class="form-control">
               </div>
-            </div>
+            </div> 
           </fieldset>
 
           <hr>
@@ -240,7 +245,7 @@
             </div>
           </fieldset>
         
-          <button type="submit" class="disable-on-click btn btn-primary btn-block my-3 mx-auto">Save</button>
+          <button type="submit" id="submit" class="disable-on-click btn btn-primary btn-block my-3 mx-auto">Save</button>
           <span id="error"></span>
 
         </form>
