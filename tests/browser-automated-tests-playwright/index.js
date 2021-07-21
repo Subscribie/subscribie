@@ -285,6 +285,8 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
   await test_transaction_filter_by_name_and_by_plan_title(browsers, browserContextOptions);
+  //Note: test_transaction_refund requires a non refunded transaction to be created prior to
+  // this test.
   await test_transaction_refund(browsers, browserContextOptions);
 
   await clearDB();
