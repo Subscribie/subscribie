@@ -4,9 +4,9 @@ const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 
 /* Test transactions can be query by plan title and name */
-async function test_add_free_trial_plan(browsers, browserContextOptions) {
+async function test_set_a_cancel_at_plan(browsers, browserContextOptions) {
   for (const browserType of browsers) {
-    console.log("test_add_free_trial_plan");
+    console.log("test_set_a_cancel_at_plan");
     const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(15000);
@@ -64,4 +64,4 @@ async function test_add_free_trial_plan(browsers, browserContextOptions) {
   }
 };
 
-module.exports = test_add_free_trial_plan
+module.exports = test_set_a_cancel_at_plan
