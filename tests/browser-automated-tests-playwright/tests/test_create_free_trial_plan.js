@@ -4,9 +4,9 @@ const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 
 /* Test transactions can be query by plan title and name */
-async function test_add_free_trial_plan(browsers, browserContextOptions) {
+async function test_create_free_trial_plan(browsers, browserContextOptions) {
   for (const browserType of browsers) {
-    console.log("test_add_free_trial_plan");
+    console.log("test_create_free_trial_plan");
     const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(15000);
@@ -20,7 +20,7 @@ async function test_add_free_trial_plan(browsers, browserContextOptions) {
     await page.click('#login');
     await page.screenshot({ path: `logged-in-${browserType}.png` });
     // Assert logged in OK
-    const content = await page.textContent('.card-title')
+    const content = await page.textContent('.card-title');
     assert(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
     
     // Go to My Subscribers page
@@ -61,4 +61,4 @@ async function test_add_free_trial_plan(browsers, browserContextOptions) {
   }
 };
 
-module.exports = test_add_free_trial_plan
+module.exports = test_create_free_trial_plan
