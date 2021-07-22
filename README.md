@@ -276,6 +276,20 @@ PWDEBUG=1 npm run test
 ```
 If you don't see the playwright inspector, make sure you have an up to date version of playwright.
 
+Alternative debugging with breakpoints
+
+- Set breakpoint(s) by typing `debugger;` anywhere you want a breakpoint in a test.
+Then run with the node debugger active:
+```
+unset PWDEBUG
+node inspect index.js
+```
+Useful node debug commands:
+- `help` # shows help
+- `n` # go to next line
+- `list()` # show code where paused
+- `cont` # continue execution until next breakpoint
+
 # Saas Deployment
 
 Needed components / services. Check the `.env.example` for each of them.
