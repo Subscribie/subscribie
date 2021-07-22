@@ -9,7 +9,8 @@ test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
 test_delay_number_of_days_before_the_first_payment = require('./tests/test_delay_number_of_days_before_the_first_payment');
 test_transaction_refund = require('./tests/test_transaction_refund');
 test_order_plan_with_cooling_off_period = require('./tests/test_order_plan_with_cooling_off_period');
-
+test_order_plan_with_free_trial = require('./tests/test_order_plan_with_free_trial');
+test_order_plan_with_cancel_at = require('./tests/test_order_plan_with_cancel_at');
 const playwright = require('playwright');
 const fs = require('fs');
 const { devices } = require('playwright');
@@ -306,6 +307,12 @@ async function test_connect_to_stripe_connect()  {
 
   await clearDB();
   await test_order_plan_with_cooling_off_period(browsers, browserContextOptions);
+
+  await clearDB();
+  await test_order_plan_with_free_trial(browsers, browserContextOptions);
+
+  await clearDB();
+  await test_order_plan_with_cancel_at(browsers, browserContextOptions);
 
   //the end
   await clearDB();
