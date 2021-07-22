@@ -7,6 +7,8 @@ test_transaction_filter_by_name_and_by_plan_title = require('./tests/test_transa
 test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
 test_transaction_refund = require('./tests/test_transaction_refund');
 test_create_free_trial_plan = require('./tests/test_create_free_trial_plan');
+test_pause_resume_active_subscriptions = require('./tests/test_pause_resume_active_subscriptions');
+test_cancel_active_subscriptions = require('./tests/test_cancel_active_subscriptions');
 const playwright = require('playwright');
 const fs = require('fs');
 const { devices } = require('playwright');
@@ -288,11 +290,12 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
   await test_transaction_filter_by_name_and_by_plan_title(browsers, browserContextOptions);
+  await test_transaction_refund(browsers, browserContextOptions);
+  await test_pause_resume_active_subscriptions(browsers, browserContextOptions);
+  await test_cancel_active_subscriptions(browsers, browserContextOptions);
+
   await clearDB();
   await test_set_a_cancel_at_plan(browsers, browserContextOptions);
-  //Note: test_transaction_refund requires a non refunded transaction to be created prior to
-  // this test.
-  await test_transaction_refund(browsers, browserContextOptions);
 
   await clearDB();
   await test_create_free_trial_plan(browsers, browserContextOptions);
