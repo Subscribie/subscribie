@@ -18,15 +18,14 @@ const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() 
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
 const videoHeight = 720;
-const browserContextOptions = {...iPhone, recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight} }}
+const browserContextOptions = {...iPhone, recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight}}}
 
 //const browsers = ['chromium', 'webkit'];
 const browsers = ['chromium'];
 
-
 // Delete any existing persons & subscriptions from the database
 async function clearDB() {
-  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS});
+  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS, slowMo: 500});
   const context = await browser.newContext(browserContextOptions);
   const page = await context.newPage();
 
@@ -48,15 +47,15 @@ async function clearDB() {
   const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
   assert(contentTransactions > -1);
 
-  await browser.close();
-}
+  //const clearDbCurrentVideoFile = fs.readdirSync(videosDir).find(name => name.endsWith('^.{32}.webm'));
+  CurrentVideoFile = await page.video().path();
+  //console.log(CurrentVideoFile);
+  fs.renameSync(CurrentVideoFile, videosDir + "clearDB.webm");
+  //const clearDb_videoName = await page.video().path();
+  videoName = fs.readdirSync(videosDir).find(name => name.endsWith('clearDB.webm'));
+  console.log(videoName);
 
-async function saveVideo(filename) {
-  const currentVideoFile = fs.readdirSync(videosDir).find(name => name.endsWith('webm'));
-  console.log("The current file is:");
-  console.log(currentVideoFile);
-  await new Promise(x => setTimeout(x, 1000));
-  //await fs.copyFileSync(videosDir + currentVideoFile, videosDir + filename + currentVideoFile);
+  await browser.close();
 }
 
 async function handle_dialog(dialog) {
@@ -68,7 +67,7 @@ async function handle_dialog(dialog) {
 async function test_connect_to_stripe_connect()  {
 
   console.log("test_connect_to_stripe_connect");
-  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS});
+  const browser = await playwright['chromium'].launch({headless: PLAYWRIGHT_HEADLESS, slowMo: 1000});
   const context = await browser.newContext(browserContextOptions);
   context.setDefaultTimeout(DEFAULT_TIMEOUT);
   const page = await context.newPage();
@@ -89,10 +88,17 @@ async function test_connect_to_stripe_connect()  {
   await page.screenshot({ path: `connect-stripe-to-shop-dashboard-chromium.png` });
   // Check onboarding not already completed
   try {
-    context.setDefaultTimeout(3000);
+    context.setDefaultTimeout(5000);
     const contentSuccess = await page.textContent('.alert-success');
-    if (contentSuccess.indexOf('Congrats!') > -1) {
+    if (contentSuccess.indexOf("Congrats!") > -1) {
       console.log("Already connected Stripe sucessfully, exiting test");
+
+      // renaming video file
+      currentVideoFile= await page.video().path();
+      fs.renameSync(currentVideoFile, videosDir + "test_stripe_connected.webm");
+      videoName = fs.readdirSync(videosDir).find(name => name.endsWith('test_stripe_connected.webm'));
+      console.log(videoName);
+      
       await browser.close();
       return 0;
     }
@@ -249,6 +255,8 @@ async function test_connect_to_stripe_connect()  {
         await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
         //await page.waitForNavigation({'timeout': 30000});
       }
+
+
     } catch (e) { 
       console.log(e);
       console.log("Retrying onboarding steps");
@@ -265,23 +273,29 @@ async function test_connect_to_stripe_connect()  {
         console.log(e);
         await detect_stripe_onboarding_page();
     }
+
   }
-  
+
   console.log("Announce stripe account manually visiting announce url. In prod this is called via uwsgi cron");
   await page.goto(PLAYWRIGHT_HOST + '/admin/announce-stripe-connect');
   const contentStripeAccountAnnounced = await page.evaluate(() => document.body.textContent.indexOf("Announced Stripe connect account"));
   assert(contentStripeAccountAnnounced > -1);
 
+  // renaming video file
+  currentVideoFile= await page.video().path();
+  fs.renameSync(currentVideoFile, videosDir + "test_stripe_connect.webm");
+  videoName = fs.readdirSync(videosDir).find(name => name.endsWith('test_stripe_connect.webm'));
+  console.log(videoName);
+
   await browser.close();
 
 }
-
 
 (async() => {
 
   await clearDB();
   await test_connect_to_stripe_connect();
-
+  /*
   await clearDB();
   await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
 
@@ -301,5 +315,6 @@ async function test_connect_to_stripe_connect()  {
   await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
 
   await clearDB();
+  */
 
 })();
