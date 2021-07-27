@@ -37,9 +37,9 @@
         </div>
         </form>
         {% if person %}
-          <h1>All transactions: {{ full_name|capitalize }}</h1>
+          <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
         {% else %}
-          <h1>All Transactions</h1>
+          <h1>All Transactions ({{ transactions.total }})</h1>
         {% endif %}
 
         <p>Every transaction on your shop.</p>
@@ -137,17 +137,16 @@
               <li class="page-item ">
               {% if request.args.get("plan_title") and request.args.get("subscriber_name") %}
                  <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title"), subscriber_name=request.args.get("subscriber_name")) }}">{{ page_num }}</a>
-              {% else %}
-                  {% if request.args.get("plan_title") %}
-                    <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title")) }}">{{ page_num }}</a>
-                  {% endif %}
-                  {% if request.args.get("subscriber_name") %}
+              {% elif request.args.get("plan_title") %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=page_num, plan_title=request.args.get("plan_title")) }}">{{ page_num }}</a>
+              {% elif request.args.get("subscriber_name") %}
                  <a class="page-link" href="{{ url_for('admin.transactions', page=page_num , subscriber_name=request.args.get("subscriber_name")) }}">{{ page_num }}</a>
-                  {% endif %}
+              {% else %}
+                 <a class="page-link" href="{{ url_for('admin.transactions', page=page_num) }}">{{ page_num }}</a>
               {% endif %}
+            {% endif %}
               </li>
     
-            {% endif %}
           {% else %}
             ...
           {% endif %}
