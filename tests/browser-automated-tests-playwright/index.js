@@ -284,8 +284,10 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_connect_to_stripe_connect();
 
-  //First you will need to create all plans,
-  //Then you can run any test individually.
+  // Database not cleared since active plans needed for
+  // - test_delay_number_of_days_before_the_first_payment
+  // - test_create_free_trial_plan
+  // - test_set_a_cancel_at_plan
   await test_delay_number_of_days_before_the_first_payment(browsers, browserContextOptions);
   await test_create_free_trial_plan(browsers, browserContextOptions);
   await test_set_a_cancel_at_plan(browsers, browserContextOptions);
