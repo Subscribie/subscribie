@@ -4,9 +4,12 @@ test_order_plan_with_subscription_and_upfront_charge = require('./tests/test_ord
 test_order_plan_with_only_upfront_charge = require('./tests/test_order_plan_with_only_upfront_charge');
 test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_with_only_recurring_charge');
 test_transaction_filter_by_name_and_by_plan_title = require('./tests/test_transaction_filter_by_name_and_by_plan_title');
-test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
-test_transaction_refund = require('./tests/test_transaction_refund');
 test_create_free_trial_plan = require('./tests/test_create_free_trial_plan');
+test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
+test_delay_number_of_days_before_the_first_payment = require('./tests/test_delay_number_of_days_before_the_first_payment');
+test_transaction_refund = require('./tests/test_transaction_refund');
+test_order_plan_with_cooling_off_period = require('./tests/test_order_plan_with_cooling_off_period');
+
 const playwright = require('playwright');
 const fs = require('fs');
 const { devices } = require('playwright');
@@ -207,7 +210,6 @@ async function test_connect_to_stripe_connect()  {
        
       // Stripe onboarding identify verification step
       if (contentStripePage.indexOf('ID verification') > -1 ) {
-        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
         await page.click('button:has-text("Use test document")');
       }
@@ -230,7 +232,6 @@ async function test_connect_to_stripe_connect()  {
 
       // Verify now in first flow
       if (contentStripePage.indexOf("Verify now") > -1 ) {
-        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
         await page.waitForNavigation({'timeout': 3000});
       }
@@ -293,27 +294,35 @@ async function test_connect_to_stripe_connect()  {
 
 (async() => {
 
+  //start
   await clearDB();
   await test_connect_to_stripe_connect();
+
+
+  // Database not cleared since active plans needed for
+  // - test_delay_number_of_days_before_the_first_payment
+  // - test_create_free_trial_plan
+  // - test_set_a_cancel_at_plan
+  await test_delay_number_of_days_before_the_first_payment(browsers, browserContextOptions);
+  await test_create_free_trial_plan(browsers, browserContextOptions);
+  await test_set_a_cancel_at_plan(browsers, browserContextOptions);
   /*
   await clearDB();
   await test_order_plan_with_only_recurring_charge(browsers, browserContextOptions);
 
   await clearDB();
+  await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
+
+  await clearDB();
   await test_order_plan_with_subscription_and_upfront_charge(browsers, browserContextOptions);
   await test_transaction_filter_by_name_and_by_plan_title(browsers, browserContextOptions);
-  await clearDB();
-  await test_set_a_cancel_at_plan(browsers, browserContextOptions);
-  //Note: test_transaction_refund requires a non refunded transaction to be created prior to
-  // this test.
+  //Note: test_transaction_refund requires a non refunded transaction to be created prior to this test.
   await test_transaction_refund(browsers, browserContextOptions);
 
   await clearDB();
-  await test_create_free_trial_plan(browsers, browserContextOptions);
-  
-  await clearDB();
-  await test_order_plan_with_only_upfront_charge(browsers, browserContextOptions);
+  await test_order_plan_with_cooling_off_period(browsers, browserContextOptions);
 
+  //the end
   await clearDB();
   */
 
