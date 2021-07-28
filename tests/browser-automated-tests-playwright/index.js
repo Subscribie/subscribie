@@ -201,7 +201,6 @@ async function test_connect_to_stripe_connect()  {
        
       // Stripe onboarding identify verification step
       if (contentStripePage.indexOf('ID verification') > -1 ) {
-        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
         await page.click('button:has-text("Use test document")');
       }
@@ -224,7 +223,6 @@ async function test_connect_to_stripe_connect()  {
 
       // Verify now in first flow
       if (contentStripePage.indexOf("Verify now") > -1 ) {
-        await page.pause();
         await new Promise(x => setTimeout(x, 1000));
         await page.waitForNavigation({'timeout': 3000});
       }
