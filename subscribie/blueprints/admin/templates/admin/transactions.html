@@ -79,21 +79,19 @@
 			<tr>
         <td>{{ transaction.created_at }}</td>
 
-        <td> 
+        <td>
              {% if transaction.external_refund_id is sameas None %}
-                      {{ transaction.payment_status }}
+                <span class="payment-status">{{ transaction.payment_status }}</span>
              {% else %}
-                      Refunded
+                <span class="refund-status">Refunded</span>
              {% endif %}
         </td>
         <td>
             <!-- if there is a external_refund id then don't show refund button -->
             {% if transaction.external_refund_id is sameas None %}
-                <a href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id, confirm="") }}">Refund</a>
+                <a class="refund-action" href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id, confirm="") }}">Refund</a>
 
             {% endif %}
-
-
         </td> 
         <td>{{ transaction.external_id }}</td>
         <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
