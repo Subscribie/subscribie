@@ -298,7 +298,6 @@ async function test_connect_to_stripe_connect()  {
   await clearDB();
   await test_connect_to_stripe_connect();
 
-
   // Database not cleared since active plans needed for
   // - test_delay_number_of_days_before_the_first_payment
   // - test_create_free_trial_plan
@@ -324,6 +323,6 @@ async function test_connect_to_stripe_connect()  {
 
   //the end
   await clearDB();
-  */
+  */  
 
 })();

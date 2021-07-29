@@ -1,5 +1,7 @@
 const playwright = require('playwright');
 const assert = require('assert');
+const fs = require('fs');
+const videosDir = __dirname + '/videos/';
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 
@@ -7,7 +9,8 @@ const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() 
 async function test_delay_number_of_days_before_the_first_payment(browsers, browserContextOptions) {
   for (const browserType of browsers) {
     console.log("test_delay_number_of_days_before_the_first_payment");
-    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
+    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS, slowMo: 1000});
+
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(15000);
     const page = await context.newPage();
@@ -63,6 +66,11 @@ async function test_delay_number_of_days_before_the_first_payment(browsers, brow
     // Assert logged out OK
     const logged_out_content = await page.textContent('.text-center');
     assert(logged_out_content === "You have logged out");
+
+    currentVideoFile= await page.video().path();
+    fs.renameSync(currentVideoFile, videosDir + "test_delay_number_of_days_before_the_first_payment.webm");
+    videoName = fs.readdirSync(videosDir).find(name => name.endsWith('test_delay_number_of_days_before_the_first_payment.webm'));
+    console.log(videoName);
  
     await browser.close();
   }

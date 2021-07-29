@@ -2,12 +2,13 @@ const playwright = require('playwright');
 const assert = require('assert');
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
-
+const fs = require('fs');
+const videosDir = __dirname + '/videos/';
 /* Test transactions can be query by plan title and name */
 async function test_set_a_cancel_at_plan(browsers, browserContextOptions) {
   for (const browserType of browsers) {
     console.log("test_set_a_cancel_at_plan");
-    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
+    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS, slowMo: 1000});
     const context = await browser.newContext(browserContextOptions);
     context.setDefaultTimeout(15000);
     const page = await context.newPage();
@@ -59,6 +60,12 @@ async function test_set_a_cancel_at_plan(browsers, browserContextOptions) {
     // Assert logged out OK
     const logged_out_content = await page.textContent('.text-center');
     assert(logged_out_content === "You have logged out");
+
+    // renaming video file
+    currentVideoFile= await page.video().path();
+    fs.renameSync(currentVideoFile, videosDir + "test_set_a_cancel_at_plan.webm");
+    videoName = fs.readdirSync(videosDir).find(name => name.endsWith('test_set_a_cancel_at_plan.webm'));
+    console.log(videoName);
  
     await browser.close();
   }
