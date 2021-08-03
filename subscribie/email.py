@@ -1,5 +1,6 @@
 import logging
-from flask_mail import Mail, Message
+
+from email.message import EmailMessage
 from flask import current_app, session, request, render_template
 import flask
 from subscribie.models import (
@@ -11,26 +12,11 @@ from subscribie.models import (
 )
 from pathlib import Path
 from jinja2 import Template
-from threading import Thread
 
 log = logging.getLogger(__name__)
 
 
-def send_async_email(msg):
-    try:
-        from subscribie import create_app
-    except Exception:
-        pass
-
-    app = create_app()
-    with app.app_context():
-        mail = Mail(app)
-        log.info("Sending async email")
-        mail.send(msg)
-
-
 def send_welcome_email():
-    Mail(current_app)
     company = Company.query.first()
     plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
 
@@ -62,19 +48,19 @@ def send_welcome_email():
     )
 
     try:
-        msg = Message()
-        msg.subject = company.name + " " + "Subscription Confirmation"
-        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-        msg.recipients = [session["email"]]
+        msg = EmailMessage()
+        msg["Subject"] = company.name + " " + "Subscription Confirmation"
+        msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
+        msg["To"] = session["email"]
+        msg.set_content("Subscription confirmation")
+        msg.add_alternative(html).format(subtype="html")
         setting = Setting.query.first()
         if setting is not None:
-            msg.reply_to = setting.reply_to_email_address
+            msg["Reply-To"] = setting.reply_to_email_address
         else:
-            msg.reply_to = (
-                User.query.first().email
-            )  # Fallback to first shop admin email
-        msg.html = html
-        Thread(target=send_async_email, args=(msg,)).start()
+            msg[
+                "Reply-To"
+            ] = User.query.first().email  # Fallback to first shop admin email
     except Exception as e:
         log.warning(f"Failed to send welcome email. {e}")
     finally:
