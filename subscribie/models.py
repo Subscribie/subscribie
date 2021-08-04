@@ -172,7 +172,7 @@ class Subscription(database.Model):
         Based on the created_at date, divided by number of intervals since
         + days remaining.
         """
-        from datetime import date
+        from datetime import datetime
         from dateutil import rrule
 
         if self.plan.interval_unit == "yearly":
@@ -180,7 +180,7 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.YEARLY,
                     interval=1,
-                    until=date.today() + relativedelta(years=+2),
+                    until=datetime.utcnow() + relativedelta(years=+1),
                     dtstart=self.created_at,
                 )
             )[-1]
@@ -189,7 +189,7 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.WEEKLY,
                     interval=1,
-                    until=date.today() + relativedelta(weeks=+2),
+                    until=datetime.utcnow() + relativedelta(weeks=+1),
                     dtstart=self.created_at,
                 )
             )[-1]
@@ -198,7 +198,7 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.MONTHLY,
                     interval=1,
-                    until=date.today() + relativedelta(months=+2),
+                    until=datetime.utcnow() + relativedelta(months=+1),
                     dtstart=self.created_at,
                 )
             )[-1]
