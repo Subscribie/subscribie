@@ -27,7 +27,7 @@ from flask import (
     current_app,
     Blueprint,
 )
-
+from subscribie.email import EmailMessageQueue
 from .Template import load_theme
 from flask_cors import CORS
 from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class

@@ -1,5 +1,4 @@
 import logging
-
 from email.message import EmailMessage
 from flask import current_app, session, request, render_template
 import flask
@@ -12,8 +11,17 @@ from subscribie.models import (
 )
 from pathlib import Path
 from jinja2 import Template
+import time
+import os
 
 log = logging.getLogger(__name__)
+
+
+class EmailMessageQueue(EmailMessage):
+    def queue(self):
+        fileName = time.time_ns()
+        with open(f"{os.getenv['EMAIL_QUEUE_FOLDER']}/{fileName}", "wb") as f:
+            f.write(self.as_bytes())
 
 
 def send_welcome_email():
