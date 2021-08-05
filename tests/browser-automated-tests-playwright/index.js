@@ -1,20 +1,21 @@
 require('dotenv').config()
 
-test_order_plan_with_subscription_and_upfront_charge = require('./tests/test_order_plan_with_subscription_and_upfront_charge');
-test_order_plan_with_only_upfront_charge = require('./tests/test_order_plan_with_only_upfront_charge');
-test_order_plan_with_only_recurring_charge = require('./tests/test_order_plan_with_only_recurring_charge');
-test_transaction_filter_by_name_and_by_plan_title = require('./tests/test_transaction_filter_by_name_and_by_plan_title');
-test_create_free_trial_plan = require('./tests/test_create_free_trial_plan');
-test_set_a_cancel_at_plan = require('./tests/test_set_a_cancel_at_plan');
-test_delay_number_of_days_before_the_first_payment = require('./tests/test_delay_number_of_days_before_the_first_payment');
-test_transaction_refund = require('./tests/test_transaction_refund');
-test_order_plan_with_cooling_off_period = require('./tests/test_order_plan_with_cooling_off_period');
+test_order_plan_with_subscription_and_upfront_charge = require('./old-tests/test_order_plan_with_subscription_and_upfront_charge');
+test_order_plan_with_only_upfront_charge = require('./old-tests/test_order_plan_with_only_upfront_charge');
+test_order_plan_with_only_recurring_charge = require('./old-tests/test_order_plan_with_only_recurring_charge');
+test_transaction_filter_by_name_and_by_plan_title = require('./old-tests/test_transaction_filter_by_name_and_by_plan_title');
+test_create_free_trial_plan = require('./old-tests/test_create_free_trial_plan');
+test_set_a_cancel_at_plan = require('./old-tests/test_set_a_cancel_at_plan');
+test_delay_number_of_days_before_the_first_payment = require('./old-tests/test_delay_number_of_days_before_the_first_payment');
+test_transaction_refund = require('./old-tests/test_transaction_refund');
+test_order_plan_with_cooling_off_period = require('./old-tests/test_order_plan_with_cooling_off_period');
 
 const playwright = require('playwright');
 const fs = require('fs');
 const { devices } = require('playwright');
 const iPhone = devices['iPhone 11'];
 const assert = require('assert');
+const { cpuUsage } = require('process');
 const DEFAULT_TIMEOUT = 40000;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
@@ -122,8 +123,7 @@ async function test_connect_to_stripe_connect()  {
         // Use the text phone number for SMS verification
         await page.click('text="the test phone number"');
         await page.fill('#email', email);
-        await page.click('text="Next"');
-        await page.click('text="Use test code"'); //Use Test code for SMS
+        await page.click('text="Continue"');
       } else {
         console.log("Could not detect stripe onboarding page")
       }
@@ -134,12 +134,11 @@ async function test_connect_to_stripe_connect()  {
         await page.click('text="Use test code"'); //Use Test code for SMS
       }
 
-
       // Stripe onboarding Business type
-      if (contentStripePage.indexOf('Type of business') > -1 ) {
+      if (contentStripePage.indexOf('Tell us about your business') > -1 ) {
         await new Promise(x => setTimeout(x, 4000));
         await page.selectOption('select', 'individual');
-        await page.click('text="Next"');
+        await page.click('text="Continue"');
       }
 
       // Stripe onboarding Type of entity
@@ -157,7 +156,7 @@ async function test_connect_to_stripe_connect()  {
       {
         let numInputs = await page.evaluate(() => document.forms[0].querySelectorAll('input').length);
         if (numInputs == 2) {
-            await page.click('text="Next"');
+            await page.click('text="Continue"');
         }
       }
 
@@ -178,76 +177,52 @@ async function test_connect_to_stripe_connect()  {
         await page.fill('input[name=address]', "123 Tree Lane");
         await page.fill('input[name=locality]', "123 Tree Lane");
         await page.fill('input[name=zip]', "SW1A 1AA");
-        await page.click('text="Next"');
+        await page.click('text="Continue"');
       }
 
 
       // Stripe onboarding industry selection
-      if (contentStripePage.indexOf('Tell us about Soap Subscription') > -1 ) {
+      if (contentStripePage.indexOf('Business') > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Please select your industry…"');
         await page.click('text="Software"');
-        await page.click('text="Next"');
+        await page.click('text="Continue"');
       }
-
+    
       // Stripe onboarding payouts bank details
       if (contentStripePage.indexOf('Select an account for payouts') > -1 ) {
         await new Promise(x => setTimeout(x, 1000));
         await page.click('text="Use test account"');
       }
-
-      // Stripe ID & Home Address verification
-      if (contentStripePage.indexOf("Missing required information") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('text="Update"');
-      }
-       
-      // Stripe onboarding identify verification step
-      if (contentStripePage.indexOf('ID verification') > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('button:has-text("Use test document")');
-      }
-
-      //Stripe onboarding address verification step
-      if (contentStripePage.indexOf("Verify home address") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_documentTrigger_button"]');
-      }
-      if (contentStripePage.indexOf("Proof of address document") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('text="Use test document"');
-      }
-
-      //Stripe Done ID & Home verification
-      if (contentStripePage.indexOf("Additional information") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_personFormSubmit_button"]');
-      }
-
-      // Verify now in first flow
-      if (contentStripePage.indexOf("Verify now") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.waitForNavigation({'timeout': 3000});
-      }
-
-      // ID verification use test document
-      if (contentStripePage.indexOf("ID verification for Sam Smith") > -1 ) {
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('text="Use test document"');
-        await page.waitForNavigation({'timeout': 3000});
-      }
+      missingInfoStepCompleted = false;
       // Stripe onboarding verification summary
-      if (contentStripePage.indexOf("Please double-check that this information is correct") > -1 ) {
+      if (contentStripePage.indexOf('Missing required information')) {
         console.log("On the Let's review your details page");
-        await new Promise(x => setTimeout(x, 1000));
-        await page.click('button:has-text("Done")');
-        await page.waitForNavigation({'timeout': 3000});
+        await new Promise(x => setTimeout(x, 2000));
+        await page.click('button:has-text("Update")');
       }
-
+      // Stripe onboarding identify verification step
+      if (contentStripePage.indexOf('Additional information')) {
+        await new Promise(x => setTimeout(x, 5000));
+        await page.click('button:has-text("Verify now")');
+        if (contentStripePage.indexOf("ID verification for Sam Smith")) {
+          await new Promise(x => setTimeout(x, 1000));
+          await page.click('text="Use test document"');
+        }
+        await page.click('button:has-text("Verify now")');
+        if (contentStripePage.indexOf("Proof of address document")) {
+          await new Promise(x => setTimeout(x, 1000));
+          await page.click('text="Use test document"');
+        }
+        if (contentStripePage.indexOf(":nth-match(:text('Provided'), 0)") && contentStripePage.indexOf(":nth-match(:text('Provided'), 1)")) {
+          await page.click('button:has-text("Submit")');
+          await new Promise(x => setTimeout(x, 5000));
+        }
+      }
       // Stripe onboarding verification complete
-      if (contentStripePage.indexOf('Your verification is complete') > -1 ) {
+      if (contentStripePage.indexOf("You’re almost ready to get started with Subscribie. Please double-check")) {
         await new Promise(x => setTimeout(x, 1000));
-        await page.click('button[data-db-analytics-name="connect_light_onboarding_action_requirementsIndexDone_button"]');
+        await page.click('button:has-text("Submit")');
         //await page.waitForNavigation({'timeout': 30000});
       }
     } catch (e) { 
@@ -285,9 +260,7 @@ async function test_connect_to_stripe_connect()  {
   await test_connect_to_stripe_connect();
 
   // Database not cleared since active plans needed for
-  // - test_delay_number_of_days_before_the_first_payment
-  // - test_create_free_trial_plan
-  // - test_set_a_cancel_at_plan
+
   await test_delay_number_of_days_before_the_first_payment(browsers, browserContextOptions);
   await test_create_free_trial_plan(browsers, browserContextOptions);
   await test_set_a_cancel_at_plan(browsers, browserContextOptions);
