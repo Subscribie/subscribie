@@ -187,9 +187,10 @@ test.describe("Subscribie tests:", () => {
 plan_creation = require('./tests/plan_creation.js');
 order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge.js');
 order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge.js');
-
+order_plan_with_cancel_at = require('./tests/order_plan_with_cancel_at.js');
+order_plan_cooling_off = require('./tests/order_plan_with_cooling_off.js');
+order_plan_with_free_trial = require('./tests/order_plan_with_free_trial.js');
 // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
 // 1. Transacion filter by name and plan title
 // 2. pause, resume and cancel subscription test. 
-
 order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge.js');
