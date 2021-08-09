@@ -5,6 +5,7 @@ const { devices } = require('@playwright/test');
 const config = {
   testDir: 'tests',
   testDir: '../browser-automated-tests-playwright',
+  timeout: 240000,
   //retries: 2,
   use: {
     baseURL: 'http://127.0.0.1:5000',
