@@ -33,12 +33,12 @@ test.describe("order plan with only recurring charge test:", () => {
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
         await page.fill('#postcode', 'L01 T3U');
-        expect(await page.screenshot()).toMatchSnapshot('new-customer-form.png');
+        expect(await page.screenshot()).toMatchSnapshot('recurring-new-customer-form.png');
         await page.click('.btn-primary-lg');
         // Begin stripe checkout
         const order_summary_content = await page.textContent(".title-1");
         expect(order_summary_content === "Order Summary");
-        expect(await page.screenshot()).toMatchSnapshot('pre-stripe-checkout.png');
+        expect(await page.screenshot()).toMatchSnapshot('recurring-pre-stripe-checkout.png');
         await page.click('#checkout-button');
 
         //Verify first payment is correct (recuring charge only)
@@ -54,37 +54,27 @@ test.describe("order plan with only recurring charge test:", () => {
         await page.fill('#billingName', 'John Smith');
         await page.selectOption('select#billingCountry', 'GB');
         await page.fill('#billingPostalCode', 'LN1 7FH');
-        expect(await page.screenshot()).toMatchSnapshot('stripe-checkout-filled.png');
+        expect(await page.screenshot()).toMatchSnapshot('recurring-stripe-checkout-filled.png');
         await page.click('.SubmitButton');
     
         // Verify get to the thank you page order complete
         await new Promise(x => setTimeout(x, 5000)); //5 secconds
         const order_complete_content = await page.textContent('.title-1');
         expect(order_complete_content === "Order Complete!");
-        expect(await page.screenshot()).toMatchSnapshot('order-complete.png');
-        
-        // Login and verify order appears in admin dashboard
-        // Login
-        await page.goto('/auth/login');
-        await page.fill('#email', 'admin@example.com');
-        await page.fill('#password', 'password');
-        await page.click('#login');
-        // expect logged in OK
-        const content = await page.textContent('.card-title')
-        expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
+        expect(await page.screenshot()).toMatchSnapshot('recurring-order-complete.png');
 
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
         await new Promise(x => setTimeout(x, 5000)); //5 secconds
         await page.goto('/admin/subscribers')
-        expect(await page.screenshot()).toMatchSnapshot('view-subscribers.png');
+        expect(await page.screenshot()).toMatchSnapshot('recurring-view-subscribers.png');
         
         // Click Refresh Subscription
         await page.click('#refresh_subscriptions'); // this is the refresh subscription
         await page.textContent('.alert-heading') === "Notification";
         // screeshot to the active subscriber
         await page.goto('admin/dashboard');
-        expect(await page.screenshot()).toMatchSnapshot('active-subscribers.png');
+        expect(await page.screenshot()).toMatchSnapshot('recurring-active-subscribers.png');
         // go back to subscriptions
         await page.goto('/admin/subscribers')
         
