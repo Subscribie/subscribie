@@ -30,6 +30,7 @@ test.describe("Subscribie tests:", () => {
     const content = await page.textContent('.card-title')
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
+  
   //Stripe Test
   test("Stripe Test", async ({ page }) => {
 
@@ -64,9 +65,6 @@ test.describe("Subscribie tests:", () => {
       // Create shop owner stripe connect email address based on 'admin' + 'hostname'
       const email = await page.evaluate(() => 'admin@' + document.location.hostname);
       await new Promise(x => setTimeout(x, 5000));
-
-      //async function detect_stripe_onboarding_page() {
-
 
       console.log("Start Stripe connect onboarding")
 
@@ -187,4 +185,5 @@ test.describe("Subscribie tests:", () => {
 });
     
 //plan_creation = require('./tests/plan_creation.js');
+order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge.js');
 
