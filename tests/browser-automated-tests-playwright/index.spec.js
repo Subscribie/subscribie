@@ -1,6 +1,5 @@
 const { test, expect } = require('@playwright/test');
 
-
 //Subscribie tests
 test.describe("Subscribie tests:", () => {
   // Clear DB before each test.
@@ -188,5 +187,9 @@ test.describe("Subscribie tests:", () => {
 plan_creation = require('./tests/plan_creation.js');
 order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge.js');
 order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge.js');
-order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge');
 
+// When you run order subscription and upfront charge, it will run 2 more tests that are inside:
+// 1. Transacion filter by name and plan title
+// 2. pause, resume and cancel subscription test. 
+
+order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge.js');
