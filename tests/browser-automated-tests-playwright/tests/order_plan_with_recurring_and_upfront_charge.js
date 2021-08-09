@@ -35,6 +35,8 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         expect(await page.screenshot()).toMatchSnapshot('new-customer-form.png');
         await page.click('.btn-primary-lg');
         // Begin stripe checkout
+        const order_summary_content = await page.textContent(".title-1");
+        expect(order_summary_content === "Order Summary");
         expect(await page.screenshot()).toMatchSnapshot('pre-stripe-checkout.png');
         await page.click('#checkout-button');
 
@@ -119,5 +121,5 @@ test.describe("order plan with recurring and upfront charge test:", () => {
   });
 });
 
-//transaction_filter_by_name_and_by_plan_title = require('./transaction_filter_by_name_and_by_plan_title');
+transaction_filter_by_name_and_by_plan_title = require('./transaction_filter_by_name_and_by_plan_title.js');
 pause_resume_and_cancel_subscriptions = require('./pause_resume_and_cancel_subscriptions.js');
