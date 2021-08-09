@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
+
 //Subscribie tests
 test.describe("Subscribie tests:", () => {
   // Clear DB before each test.
@@ -187,4 +188,5 @@ test.describe("Subscribie tests:", () => {
 plan_creation = require('./tests/plan_creation.js');
 order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge.js');
 order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge.js');
+order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge');
 
