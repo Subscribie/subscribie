@@ -1,24 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe("order plan with recurring and upfront charge test:", () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto('/auth/login');
-        await page.fill('#email', 'admin@example.com');
-        await page.fill('#password', 'password');
-        await page.click('#login');
-        
-        await page.goto('/admin/remove-subscriptions');
-        const contentSubscriptions = await page.evaluate(() => document.body.textContent.indexOf("all subscriptions deleted"));
-        expect(contentSubscriptions > -1);
-        
-        await page.goto('/admin/remove-people');
-        const contentPeople = await page.evaluate(() => document.body.textContent.indexOf("all people deleted"));
-        expect(contentPeople > -1);
-    
-        await page.goto('/admin/remove-transactions');
-        const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
-        expect(contentTransactions > -1);
-    });
     test("Ordering recurring and upfront plan", async ({ page }) => {
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
@@ -118,8 +100,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         expect(content_upcoming_invoice_plan_recuring_amount === '£5.99')
         const content_upcoming_invoice_plan_upfront_amount = await page.textContent('.plan-sell-price');
         expect(content_upcoming_invoice_plan_upfront_amount === '£1.00')
-  });
+    });
+    transaction_filter_by_name_and_by_plan_title = require('./transaction_filter_by_name_and_by_plan_title.js');
+    pause_resume_and_cancel_subscriptions = require('./pause_resume_and_cancel_subscriptions.js');
 });
-
-transaction_filter_by_name_and_by_plan_title = require('./transaction_filter_by_name_and_by_plan_title.js');
-pause_resume_and_cancel_subscriptions = require('./pause_resume_and_cancel_subscriptions.js');
