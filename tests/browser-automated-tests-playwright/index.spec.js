@@ -2,25 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Subscribie tests:", () => {
-  // Clear DB before each test.
   test.beforeEach(async ({ page }) => {
-    await page.goto('/auth/login');
-    await page.fill('#email', 'admin@example.com');
-    await page.fill('#password', 'password');
-    await page.click('#login');
-    
-    await page.goto('/admin/remove-subscriptions');
-    const contentSubscriptions = await page.evaluate(() => document.body.textContent.indexOf("all subscriptions deleted"));
-    expect(contentSubscriptions > -1);
-    
-    await page.goto('/admin/remove-people');
-    const contentPeople = await page.evaluate(() => document.body.textContent.indexOf("all people deleted"));
-    expect(contentPeople > -1);
-
-    await page.goto('/admin/remove-transactions');
-    const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
-    expect(contentTransactions > -1);
-    
     //Login
     await page.goto('/auth/login');
     await page.fill('#email', 'admin@example.com');
@@ -30,10 +12,8 @@ test.describe("Subscribie tests:", () => {
     const content = await page.textContent('.card-title')
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
-  
   //Stripe Test
   test("Stripe Test", async ({ page }) => {
-
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
@@ -51,6 +31,7 @@ test.describe("Subscribie tests:", () => {
     }
   });
   test("detect stripe onboarding page", async ({ page }) => {
+
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');
       //page.setDefaultTimeout(3000);
@@ -182,15 +163,22 @@ test.describe("Subscribie tests:", () => {
       const contentStripeAccountAnnounced = await page.evaluate(() => document.body.textContent.indexOf("Announced Stripe connect account"));
       expect(contentStripeAccountAnnounced > -1);
   }); 
+  plan_creation = require('./tests/plan_creation');
+
+  order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge');
+
+  order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge');
+
+  order_plan_with_cancel_at = require('./tests/order_plan_with_cancel_at');
+
+  order_plan_cooling_off = require('./tests/order_plan_with_cooling_off');
+
+  order_plan_with_free_trial = require('./tests/order_plan_with_free_trial');
+  // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
+  // 1. Transacion filter by name and plan title
+  // 2. 2.A pause, resume and 2.B cancel subscription test. 
+  order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge');
+
+  clear_DB = require('./tests/clear_db');
 });
-    
-plan_creation = require('./tests/plan_creation.js');
-order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge.js');
-order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge.js');
-order_plan_with_cancel_at = require('./tests/order_plan_with_cancel_at.js');
-order_plan_cooling_off = require('./tests/order_plan_with_cooling_off.js');
-order_plan_with_free_trial = require('./tests/order_plan_with_free_trial.js');
-// When you run order subscription and upfront charge, it will run 2 more tests that are inside:
-// 1. Transacion filter by name and plan title
-// 2. pause, resume and cancel subscription test. 
-order_plan_with_subscription_and_upfront_charge = require('./tests/order_plan_with_recurring_and_upfront_charge.js');
+

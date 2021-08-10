@@ -2,18 +2,6 @@ const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test.beforeEach(async ({ page }) => {
-        // Login
-        await page.goto('/auth/login');
-        await page.fill('#email', 'admin@example.com');
-        await page.fill('#password', 'password');
-        await page.click('#login');
-        // Assert logged in OK
-        const content = await page.textContent('.card-title');
-        expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
-        
-    });
-
     test("Pause and Resume transaction", async ({ page }) => {        
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time

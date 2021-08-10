@@ -1,26 +1,7 @@
-const { test, expect, context } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Plan Creation tests:", () => {
-  test.beforeEach(async ({ page }) => {
-      // Login
-      await page.goto('/auth/login');
-      await page.fill('#email', 'admin@example.com');
-      await page.fill('#password', 'password');
-      await page.click('#login');
-      // Assert logged in OK
-      const content = await page.textContent('.card-title');
-      expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
-      
-  });
-  test.afterAll(async () => {
-    // Logout of shop owners admin dashboard
-    await page.goto('/auth/logout');
-    await page.screenshot({ path: `logged-out-${browserType}.png` });
-    // Assert logged out OK
-    const logged_out_content = await page.textContent('.text-center');
-    expect(logged_out_content === "You have logged out");
-  });
       // Create cooling off plan
   test("Create cooling off plan", async ({ page }) => {
     await page.goto('/');
