@@ -158,10 +158,11 @@ test.describe("Subscribie tests:", () => {
           await page.click('button:has-text("Submit")');
         }
 
-      console.log("Announce stripe account manually visiting announce url. In prod this is called via uwsgi cron");
-      await page.goto('/admin/announce-stripe-connect');
-      const contentStripeAccountAnnounced = await page.evaluate(() => document.body.textContent.indexOf("Announced Stripe connect account"));
-      expect(contentStripeAccountAnnounced > -1);
+      console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
+      await new Promise(x => setTimeout(x, 2000));
+      const stripe_connected = await page.textContent(".alert-success");
+      expect(stripe_connected === "Congrats!");
+      console.log("Stripe Connected");
   }); 
   plan_creation = require('./tests/plan_creation');
 
