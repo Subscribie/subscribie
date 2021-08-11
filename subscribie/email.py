@@ -20,8 +20,14 @@ log = logging.getLogger(__name__)
 class EmailMessageQueue(EmailMessage):
     def queue(self):
         fileName = time.time_ns()
-        with open(f"{os.getenv['EMAIL_QUEUE_FOLDER']}/{fileName}", "wb") as f:
-            f.write(self.as_bytes())
+        try:
+            email_queue_folder = os.environ.get("EMAIL_QUEUE_FOLDER")
+            with open(f"{email_queue_folder}/{fileName}", "wb") as f:
+                f.write(self.as_bytes())
+        except Exception as e:
+            log.error(
+                f"Error when writing EmailMessageQueue folder: {email_queue_folder}. {e}"  # noqa
+            )
 
 
 def send_welcome_email():
