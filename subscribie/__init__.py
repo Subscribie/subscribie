@@ -38,7 +38,6 @@ import sqlalchemy
 from flask_migrate import Migrate
 import click
 from jinja2 import Template
-from flask_mail import Mail, Message
 
 from .models import (
     PaymentProvider,
@@ -205,13 +204,13 @@ def create_app(test_config=None):
                         update_options_url=update_options_url, company=company
                     )
                     try:
-                        mail = Mail(current_app)
-                        msg = Message()
-                        msg.subject = company.name + " " + "Update Options"
-                        msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-                        msg.recipients = [person.email]
-                        msg.html = html
-                        mail.send(msg)
+                        msg = EmailMessageQueue()
+                        msg["Subject"] = company.name + " " + "Update Options"
+                        msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                        msg["To"] = person.email
+                        msg.set_content(update_options_url)
+                        msg.add_alternative(html, subtype="html")
+                        msg.queue()
                     except Exception as e:
                         log.error(f"Failed to send update choices email. {e}")
 
