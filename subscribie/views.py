@@ -1,6 +1,5 @@
 import logging
 from subscribie.auth import check_private_page, oauth_login_user, start_new_user_session
-from subscribie.notifications import newSubscriberEmailNotification
 from pathlib import Path
 import jinja2
 import os
@@ -132,7 +131,6 @@ def stats():
 
 @bp.route("/choose")
 def choose():
-    newSubscriberEmailNotification()
     # Note: Categories link to plans (via category.plans)
     categories = Category.query.order_by(Category.position).all()
     return render_template("choose.html", categories=categories)

@@ -19,7 +19,7 @@ def newSubscriberEmailNotification():
         msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
         shopAdmins = User.query.all()  # All shop admins
         msg["To"] = [user.email for user in shopAdmins]  # All shop admins
-        msg.set_content("You have a new subscriber on your shop!")
+        msg.set_content("You have a new subscriber!")
         setting = Setting.query.first()
         if setting is not None:
             msg["Reply-To"] = setting.reply_to_email_address
