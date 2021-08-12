@@ -24,6 +24,7 @@ class EmailMessageQueue(EmailMessage):
             email_queue_folder = os.environ.get("EMAIL_QUEUE_FOLDER")
             with open(f"{email_queue_folder}/{fileName}", "wb") as f:
                 f.write(self.as_bytes())
+                log.debug(f"Written email to queue folder {email_queue_folder}")
         except Exception as e:
             log.error(
                 f"Error when writing EmailMessageQueue folder: {email_queue_folder}. {e}"  # noqa
