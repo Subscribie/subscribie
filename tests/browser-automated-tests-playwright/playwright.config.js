@@ -24,17 +24,17 @@ const config = {
     video:"on",
     },
   projects: [
-   // {
-   //  name: 'Desktop Chromium',
-   //   use: {
-   //     browserName: 'chromium',
-   //   },
-   // },
-    // Test against mobile viewports.
-    {
-      name: 'Mobile Safari',
-      use: devices['iPhone 12'],
+   {
+     name: 'Desktop Chromium',
+      use: {
+        browserName: 'chromium',
+      },
     },
+   // Test against mobile viewports.
+   // {
+   //   name: 'Mobile Safari',
+   //   use: devices['iPhone 12'],
+   // },
   ],
 };
 
