@@ -34,6 +34,7 @@ from subscribie.forms import CustomerForm
 from subscribie.database import database
 from subscribie.signals import journey_complete
 from subscribie.email import send_welcome_email
+from subscribie.notifications import newSubscriberEmailNotification
 import stripe
 import backoff
 import os
@@ -471,6 +472,7 @@ def create_subscription(
             except Exception as e:  # noqa
                 log.error("Could not set cancel_at: {e}")
 
+    newSubscriberEmailNotification()
     return subscription
 
 

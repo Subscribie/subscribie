@@ -39,7 +39,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_stripe_publishable_key,
 )
-from flask_mail import Mail, Message
+from subscribie.email import EmailMessageQueue
 from jinja2 import Template
 import requests
 
@@ -152,13 +152,13 @@ def forgot_password():
             )
 
             try:
-                mail = Mail(current_app)
-                msg = Message()
-                msg.subject = company.name + " " + "Password Reset"
-                msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-                msg.recipients = [email]
-                msg.html = html
-                mail.send(msg)
+                msg = EmailMessageQueue()
+                msg["Subject"] = company.name + " " + "Password Reset"
+                msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                msg["TO"] = email
+                msg.set_content(password_reset_url)
+                msg.add_alternative(html, subtype="html")
+                msg.queue()
             except Exception as e:
                 log.error(f"Failed to send subscriber password reset email. {e}")
             flash(

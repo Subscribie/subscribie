@@ -13,6 +13,7 @@ from flask import (
     current_app,
     render_template_string,
 )
+from subscribie.email import EmailMessageQueue
 from base64 import urlsafe_b64encode
 import os
 from .forms import (
@@ -21,7 +22,6 @@ from .forms import (
     ForgotPasswordForm,
     ForgotPasswordResetPasswordForm,
 )
-from flask_mail import Mail, Message
 from .models import database, User, Person, Company, Page, LoginToken
 import binascii
 from pathlib import Path
@@ -271,14 +271,13 @@ def send_login_url(email):
     html = "".join([html, '<a href="', login_url, '">Login now</a>', "</body></html>"])
     log.info("Generated login url: %s", login_url)
     log.info("Sending login email to: %s", email)
-    mail = Mail(current_app)
-    msg = Message("Subscribie Magic Login")
-    msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-    msg.recipients = [email]
-    msg.body = login_url
-    msg.html = html
-    # Send email with token link
-    mail.send(msg)
+    msg = EmailMessageQueue()
+    msg["Subject"] = "Subscribie Magic Login"
+    msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+    msg["To"] = email
+    msg.set_content = login_url
+    msg.add_alternative(html, subtype="html")
+    msg.queue()
 
 
 @bp.route("/forgot-password", methods=["GET", "POST"])
@@ -311,13 +310,13 @@ def forgot_password():
             )
 
             try:
-                mail = Mail(current_app)
-                msg = Message()
-                msg.subject = company.name + " " + "Password Reset"
-                msg.sender = current_app.config["EMAIL_LOGIN_FROM"]
-                msg.recipients = [email]
-                msg.html = html
-                mail.send(msg)
+                msg = EmailMessageQueue()
+                msg["Subject"] = company.name + " " + "Password Reset"
+                msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
+                msg["To"] = email
+                msg.set_content(password_reset_url)
+                msg.add_alternative(html, subtype="html")
+                msg.queue()
             except Exception as e:
                 log.error(f"Failed to send user password reset email. {e}")
             flash(
