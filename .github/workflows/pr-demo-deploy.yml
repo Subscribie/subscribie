@@ -88,7 +88,7 @@ jobs:
       - uses: microsoft/playwright-github-action@v1
 
       - name: Install node dependencies needed for Playwright browser tests
-        run: | 
+        run: |
           npm i -D @playwright/test
           npx playwright install
           sudo npx playwright install-deps 
@@ -97,6 +97,7 @@ jobs:
         env:
           PLAYWRIGHT_HOST: http://${{ github.event.pull_request.user.login }}-${{ github.head_ref }}.pcpink.co.uk/
           PLAYWRIGHT_SLOWMO: 500
+          PLAYWRIGHT_HEADLESS: true
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
