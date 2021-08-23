@@ -30,7 +30,7 @@ const config = {
         browserName: 'chromium',
       },
     },
-    // Test against mobile viewports.
+   // Test against mobile viewports.
    // {
    //   name: 'Mobile Safari',
    //   use: devices['iPhone 12'],
