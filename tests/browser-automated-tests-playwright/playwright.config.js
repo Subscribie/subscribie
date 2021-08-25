@@ -38,8 +38,4 @@ const config = {
   ],
 };
 
-console.log(PLAYWRIGHT_HOST)
-console.log(PLAYWRIGHT_HEADLESS)
-console.log(PLAYWRIGHT_SLOWMO)
-
 module.exports = config;

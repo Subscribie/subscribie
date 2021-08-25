@@ -2,7 +2,8 @@ const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test("Pause and Resume transaction", async ({ page }) => {        
+    test("Pause and Resume transaction", async ({ page }) => {  
+        console.log("Pause and Resume transaction");      
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
         await new Promise(x => setTimeout(x, 1000)); // 5 secconds

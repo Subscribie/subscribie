@@ -4,6 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe("Plan Creation tests:", () => {
       // Create cooling off plan
   test("Create cooling off plan", async ({ page }) => {
+    console.log("Starting plan creations...");
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);
