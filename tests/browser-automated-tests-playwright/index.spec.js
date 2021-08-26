@@ -163,6 +163,10 @@ test.describe("Subscribie tests:", () => {
       const stripe_connected = await page.textContent(".alert-success");
       expect(stripe_connected === "Congrats!");
       console.log("Stripe Connected");
+      await page.goto('/admin/announce-stripe-connect'); 
+      await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";
+      console.log("Announced to Stripe connect account");
+
   }); 
   plan_creation = require('./tests/plan_creation');
 

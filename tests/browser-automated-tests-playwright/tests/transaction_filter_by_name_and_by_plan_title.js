@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 test("transaction filter by name and by plan title", async ({ page }) => {
+    console.log("transaction filter by name and by plan title");
     //Login
     await page.goto('/auth/login');
     await page.fill('#email', 'admin@example.com');

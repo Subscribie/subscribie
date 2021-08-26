@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe("order plan with recurring and upfront charge test:", () => {
     test("Ordering recurring and upfront plan", async ({ page }) => {
+        console.log("Ordering Plan with subscription and upfront charge");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
         await page.goto('new_customer?plan=840500cb-c663-43e6-a632-d8521bb14c42');
