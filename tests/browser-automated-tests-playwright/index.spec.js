@@ -165,7 +165,7 @@ test.describe("Subscribie tests:", () => {
       console.log("Stripe Connected");
       await page.goto('/admin/announce-stripe-connect'); 
       await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";
-      console.log("Announced to Stripe");
+      console.log("Announced to Stripe connect account");
 
   }); 
   plan_creation = require('./tests/plan_creation');
