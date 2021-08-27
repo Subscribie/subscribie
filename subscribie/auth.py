@@ -126,16 +126,6 @@ def start_new_user_session(email):
     session["user_id"] = email
 
 
-def oauth_login_user(email):
-    """Log user in based on email address
-    email must only be provided after a valid oauth
-    flow completion"""
-    user = User.query.filter_by(email=email).first()
-    if user is not None:
-        return True
-    return False
-
-
 @bp.route("/login", methods=["POST"])
 def generate_login_token():
     magic_login_form = LoginForm()
