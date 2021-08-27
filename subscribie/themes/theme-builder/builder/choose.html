@@ -2,13 +2,6 @@
 {% block title %}Subscription Website Builder for Subscription Billing{% endblock %}
 
 {% block body %}
-{# Template for google signin. This gets shown by using the <google-signin></google_signin> html tag #}
-<script src="{{ url_for('static', filename="google-signin-component.js") }}"></script>
-<template id="google-signin-template">
-  <link rel="stylesheet" href="{{url_for('static', filename="google-signin-template.css")}}">
-  <a href="{{ url_for('views.google_signin') }}" class="btn-google">Continue with Google</a>
-</template>
-{# End template for google signin #}
 
 <div class="header-content py-4">
   <div class="row">
@@ -33,11 +26,6 @@
           <span class="description text-center py-4">
               Easily take recurring payments online and create unlimited subscription plans at no extra cost.<br>
           </span>
-      </div>
-  </div>
-  <div class="row">
-      <div class="col-sm-12 d-flex justify-content-center align-items-center my-3">
-        <google-signin></google-signin>
       </div>
   </div>
 
