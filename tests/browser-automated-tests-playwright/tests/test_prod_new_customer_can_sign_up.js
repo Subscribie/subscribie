@@ -41,10 +41,6 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
 
     // Enter a plan
     await page.fill('#title-0', 'prod-test-' + epoch);
-    await page.fill('#interval_amount-0', "5.99");
-    await page.fill('#selling_points-0-0', "A. The best");
-    await page.fill('input[name=selling_points-0-1]', "B. New every month");
-    await page.fill('input[name=selling_points-0-2]', "C. Fast");
 
     await page.screenshot({ path: `prod-sign-up-entered-plan-${browserType}.png` });
 

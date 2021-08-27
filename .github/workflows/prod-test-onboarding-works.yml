@@ -2,8 +2,8 @@
 name: Verify Prod Onbording
 on: 
   schedule:
-  - cron: "0 9 * * *"
-  - cron: "0 19 * * *"
+  - cron: "0 9 * * *" # 9am
+  - cron: "0 19 * * *" # 7pm
   workflow_dispatch:
 jobs:
   deploy-pr:
