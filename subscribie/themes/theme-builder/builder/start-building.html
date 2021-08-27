@@ -37,8 +37,6 @@
                   required>
               </div>
             </div>
-            {# dont ask for password if using google signin/up #}
-            {% if session.get('token_type', None) is sameas None %}
             <div class="row mt-3">
               <div class="col">
                 <label for="password">Password</label>
@@ -47,8 +45,6 @@
                   required>
               </div>
             </div>
-            {# End dont ask for password if using google signin/up #}
-            {% endif %}
         </div>
       </div>
     </div>
