@@ -1,8 +1,7 @@
 import logging
-from subscribie.auth import check_private_page, oauth_login_user, start_new_user_session
+from subscribie.auth import check_private_page
 from pathlib import Path
 import jinja2
-import os
 from jinja2 import Environment, FileSystemLoader
 from flask import (
     abort,
@@ -21,7 +20,6 @@ from .models import Company, Plan, Integration, Page, Category, Setting
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
-import requests
 from subscribie.signals import journey_complete
 from subscribie.receivers import (
     receiver_send_shop_owner_new_subscriber_notification_email,
@@ -220,92 +218,6 @@ def custom_page(path):
     )
 
     return template
-
-
-@bp.route("/withgoogle")
-def google_signin():
-
-    state = str(os.urandom(12))
-    session["state"] = state
-    client_id = current_app.config["GOOGLE_CLIENT_ID"]
-    redirect_uri = current_app.config["GOOGLE_REDIRECT_URI"]
-    scope = current_app.config["GOOGLE_SCOPE"]
-
-    redirect_url = f"https://accounts.google.com/o/oauth2/v2/auth?scope={scope}&\
-access_type=offline&\
-include_granted_scopes=true&\
-response_type=code&\
-state={state}&\
-redirect_uri={redirect_uri}&\
-client_id={client_id}"
-    return redirect(redirect_url)
-
-
-@bp.route("/google-oauth2callback/")
-def google_return():
-    client_id = current_app.config["GOOGLE_CLIENT_ID"]
-    redirect_uri = current_app.config["GOOGLE_REDIRECT_URI"]
-    client_secret = current_app.config["GOOGLE_CLIENT_SECRET"]
-
-    # Verify state token
-    if request.args["state"] != session["state"]:
-        login_url = url_for("auth.login")
-        msg = f"Google could not sign you in. Try loging in with email and password: <a href='{login_url}'>Login</a>. The error was Invalid state token"  # noqa: E501
-        return msg, 403
-
-    # From the returned url, exchange authorization code for an access token
-    authorization_code = request.args.get("code", None)
-
-    if authorization_code is None:
-        return "Error: Google did not give authorization_code"
-
-    # Get an access token by calling https://oauth2.googleapis.com/token,
-    # passing the authorization_code.
-    data = {
-        "code": authorization_code,
-        "client_id": client_id,
-        "client_secret": client_secret,
-        "redirect_uri": redirect_uri,
-        "grant_type": "authorization_code",
-    }
-    resp = requests.post("https://oauth2.googleapis.com/token", data=data)
-    if resp.status_code != 200:
-        login_url = url_for("auth.login")
-        return f"Google signin didn't signin didn't work. Please login with your email/password instead: <a href='{login_url}'>Login</a>"  # noqa: E501
-
-    # Try and get access token from the response
-    access_token = resp.json().get("access_token", None)
-    refresh_token = resp.json().get("refresh_token", None)
-    scopes_permitted = resp.json().get("scope", None)
-    token_type = resp.json().get("token_type", None)
-
-    # Put access token and refresh_token in session (normally would store in database) # noqa
-    session["access_token"] = access_token
-    session["refresh_token"] = refresh_token
-    session["scope"] = scopes_permitted
-    session["token_type"] = token_type
-
-    # Get user profile information (name, email)
-    headers = {"Authorization": "Bearer " + access_token}
-    resp = requests.get(
-        "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
-        headers=headers,  # noqa
-    )
-    data = resp.json()
-    email = data["email"]
-    session["email"] = data["email"]
-    session["family_name"] = data["family_name"]
-    session["given_name"] = data["given_name"]
-
-    if current_app.config["THEME_NAME"] == "builder":
-        return redirect(url_for("builder.start_building", email=email))
-    else:
-        if oauth_login_user(email):
-            start_new_user_session(email)
-            return redirect(url_for("admin.dashboard"))
-        else:
-            login_url = url_for("auth.login")
-            return f"User not found, try username/password please login instead of Google signin. <a href='{login_url}'>Login</a>"  # noqa: E501
 
 
 @bp.route("/plan/<uuid>", defaults={"plan_title": None})
