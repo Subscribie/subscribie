@@ -1,4 +1,4 @@
-name: Verify Docker Container Builds
+name: Verify Container Builds
 on:
   workflow_dispatch:
   push:
