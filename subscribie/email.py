@@ -63,7 +63,7 @@ def send_welcome_email():
     )
 
     try:
-        msg = EmailMessage()
+        msg = EmailMessageQueue()
         msg["Subject"] = company.name + " " + "Subscription Confirmation"
         msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
         msg["To"] = session["email"]
@@ -76,7 +76,8 @@ def send_welcome_email():
             msg[
                 "Reply-To"
             ] = User.query.first().email  # Fallback to first shop admin email
+        msg.queue()
     except Exception as e:
-        log.warning(f"Failed to send welcome email. {e}")
+        log.error(f"Failed to send welcome email. {e}")
     finally:
         return render_template("thankyou.html")
