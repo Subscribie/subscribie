@@ -179,6 +179,18 @@
 
           <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
+                  See which payments have failed, and what (if anything)
+                  you can do about it.
+                  Failed payments may be one of: requires_payment_method,
+                  requires_confirmation, requires_action, requires_capture,
+                  or canceled.
+              </p>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.failing_payments') }}">
+                  Failing Payments
+              </a>
+              <br />
+              <p class="card-subtitle mb-3 text-muted">
                   View all transactions / Manage Refunds
               </p>
               <a class="btn btn-success btn-block" 
