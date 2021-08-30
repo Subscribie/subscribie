@@ -1135,6 +1135,14 @@ def transactions():
     )
 
 
+@admin.route("/failing-payments", methods=["GET"])
+@login_required
+def failing_payments():
+    # https://stripe.com/docs/api/payment_intents/object#payment_intent_object-status
+    # https://stripe.com/docs/api/payment_intents/object#payment_intent_object-status
+    return "Failing payments"
+
+
 @admin.route("/order-notes", methods=["GET"])
 @login_required
 def order_notes():
