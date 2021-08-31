@@ -132,6 +132,53 @@ test.describe("Plan Creation tests:", () => {
     expect(await page.screenshot()).toMatchSnapshot('add-cancel-at-plan.png');
 
   });
+  test.only("Create Private Plan", async ({ page }) => {
+    console.log("Creating Private Plan");
+    await page.goto('/admin/edit');
+    try {
+      page.setDefaultTimeout(3000);
+      const private_plan__already_exist = await page.textContent('text="Private plan"');
+      if (private_plan__already_exist === 'Private plan') {
+        await new Promise(x => setTimeout(x, 1000));
+        expect(await page.screenshot()).toMatchSnapshot('Private-plan-already-created.png');
+        console.log("Private plan already created, exiting test");
+        return 0;
+      }
+    } catch (e) {
+      console.log("Continuing with Private plan creation");
+    }
+     // Go to add plan page
+     await page.goto('/admin/add');
+
+     //Fill plan 
+     await page.fill('#title-0', 'Private plan');
+     await page.fill('#selling_points-0-0', 'This is a');
+     await page.fill('#selling_points-0-1', 'Private');
+     await page.fill('#selling_points-0-3', 'plan');
+     await page.click('.form-check-input');
+
+     //wait for the recurring charge to expand
+     const monthly_content = await page.textContent('#interval_amount_label');
+     expect(monthly_content === "Recurring Amount");
+     await page.fill('#interval_amount-0', '15');
+
+     await page.click('#private');
+     await page.click('text="Save"');
+
+     await page.goto('/admin/edit');
+     page.setDefaultTimeout(3000);
+     const private_plan_exist = await page.textContent('text="Private plan"');
+     if (private_plan_exist === 'Private plan') {
+         await new Promise(x => setTimeout(x, 1000));
+         expect(await page.screenshot()).toMatchSnapshot('Private-plan-was-created.png');
+         console.log("Private plan was created, exiting test");
+     }
+     await page.goto('/');
+     let private_plan_content = await page.evaluate(() => document.body.textContent);
+     if (private_plan_content != "Private plan") {
+       console.log("Private plan is not in home page (Success)")
+     }
+  });
 
 });
 
