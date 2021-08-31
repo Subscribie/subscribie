@@ -132,7 +132,7 @@ test.describe("Plan Creation tests:", () => {
     expect(await page.screenshot()).toMatchSnapshot('add-cancel-at-plan.png');
 
   });
-  test.only("Create Private Plan", async ({ page }) => {
+  test("Create Private Plan", async ({ page }) => {
     console.log("Creating Private Plan");
     await page.goto('/admin/edit');
     try {

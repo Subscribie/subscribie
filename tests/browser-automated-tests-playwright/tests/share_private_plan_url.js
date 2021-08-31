@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Looking for Private plan share URL:", () => {
-    test.only("Create Private Plan", async ({ page }) => {
+    test("Create Private Plan", async ({ page }) => {
         await page.goto('/admin/edit');
         page.setDefaultTimeout(3000);
         const private_plan__already_exist = await page.textContent('text="Private plan"');
