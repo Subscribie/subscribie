@@ -175,8 +175,11 @@ test.describe("Plan Creation tests:", () => {
      }
      await page.goto('/');
      let private_plan_content = await page.evaluate(() => document.body.textContent);
-     if (private_plan_content != "Private plan") {
-       console.log("Private plan is not in home page (Success)")
+     if (private_plan_content.indexOf("Private plan") > 1) {
+      console.log("ERROR: Private plan is not Private")
+     }
+     else {
+      console.log("Private plan is not in home page (Success)")
      }
   });
 
