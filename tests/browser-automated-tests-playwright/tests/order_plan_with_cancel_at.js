@@ -74,8 +74,11 @@ test.describe("order plan with cancel at:", () => {
         const subscriber_plan_sell_price_content = await page.evaluate(() => document.querySelector('.subscribers-plan-sell-price').textContent.indexOf("(No up-front fee)"));
         expect(subscriber_plan_sell_price_content > -1)
         
-        const subscriber_plan_cancel_at_content = await page.textContent('text="Automatically Cancels at:"');
-        expect(subscriber_plan_cancel_at_content === "Automatically Cancels at:");
+        //const subscriber_plan_cancel_at_content = await page.textContent('text="Automatically Cancels at:"');
+        //expect(subscriber_plan_cancel_at_content === "Automatically Cancels at:");
+          //temporary fix
+        const subscriber_plan_title_upcoming_payment = await page.textContent('text="cancel at plan"');
+        expect(subscriber_plan_title_upcoming_payment === "Plan: cancel at plan");
     
         // Go to upcoming payments and ensure plan is attached to upcoming invoice
         await page.goto('/admin/upcoming-invoices');
