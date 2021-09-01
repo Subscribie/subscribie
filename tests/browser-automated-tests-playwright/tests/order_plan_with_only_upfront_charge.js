@@ -5,7 +5,7 @@ test.describe("order plan with only upfront charge tests:", () => {
         console.log("Ordering plan with only upfront charge...");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
-        await page.goto('/new_customer?plan=58921f7a-3371-4ccf-aeee-e2b8af5cca3a');
+        await page.click(":nth-match(:text('Choose'), 4)");
 
         // Fill in order form
         await page.fill('#given_name', 'John');

@@ -5,7 +5,7 @@ test.describe("order plan with only recurring charge test:", () => {
         console.log("Ordering plan with only recurring charge...");
         // Buy item with subscription & upfront fee
         await page.goto("/"); // Go to home before selecting product
-        await page.goto('/new_customer?plan=5813b05b-9031-45b3-b120-8fc6b1b3082e');
+        await page.click(":nth-match(:text('Choose'), 3)");
 
         // Fill in order form
         await page.fill('#given_name', 'John');

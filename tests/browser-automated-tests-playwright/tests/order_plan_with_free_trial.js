@@ -66,7 +66,7 @@ test.describe("order plan with free-trial:", () => {
 
         // Verify that plan is attached to subscriber
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
-        expect(subscriber_plan_title_content === 'Free Trial');
+        expect(subscriber_plan_title_content === 'Free Trial plan');
 
         const content_subscriber_plan_interval_amount = await page.textContent('.subscribers-plan-interval_amount');
         expect(content_subscriber_plan_interval_amount === '£10.00');

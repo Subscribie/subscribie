@@ -170,6 +170,8 @@ test.describe("Subscribie tests:", () => {
   }); 
   plan_creation = require('./tests/plan_creation');
 
+  changing_plans_order = require('./tests/changing_plans_order');
+
   private_page_creation = require('./tests/private_page_creation');
 
   share_private_plan_url = require('./tests/share_private_plan_url');
