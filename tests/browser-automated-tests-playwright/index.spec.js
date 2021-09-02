@@ -176,6 +176,8 @@ test.describe("Subscribie tests:", () => {
 
   share_private_plan_url = require('./tests/share_private_plan_url');
 
+  order_plan_with_choice_options_and_required_note = require('./tests/order_plan_with_choice_options_and_required_note');
+
   order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge');
 
   order_plan_with_only_upfront_charge = require('./tests/order_plan_with_only_upfront_charge');
