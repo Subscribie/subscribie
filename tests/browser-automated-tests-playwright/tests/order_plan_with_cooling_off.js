@@ -5,7 +5,7 @@ test.describe("order plan with cooling off:", () => {
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
         // Choosing plan with Cooling off period
-        await page.click(":nth-match(:text('Choose'), 5)");
+        await page.click('[name="Cooling off plan"]');
 
         // Fill in order form
         await page.fill('#given_name', 'John');

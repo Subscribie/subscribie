@@ -1,11 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
-test.only("order plan with choice, option and required note", async ({ page }) => {
+test("order plan with choice, option and required note", async ({ page }) => {
         console.log("order plan with choice, option and required note");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
         // Choosing plan with Cooling off period
-        await page.click(":nth-match(:text('Choose'), 8)");
+        await page.click('[name="Plan with choice and options"]');
 
         // Choose Options
         const choose_option = await page.textContent("text=Choose your options");

@@ -215,7 +215,7 @@
                       <div class="form-group">
                         <label for="position-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Position</label>
                         <div class="input-group">
-                          <input type="number" step="1" name="position-{{ loop.index0 }}" {% if plan.position %} value="{{ plan.position }}" {% else %} value="0" {% endif %} id="position-{{ loop.index0 }}" class="form-control" placeholder="0">
+                          <input type="number" step="1" plan-name-position="{{ plan.title|safe }}" name="position-{{ loop.index0 }}" {% if plan.position %} value="{{ plan.position }}" {% else %} value="0" {% endif %} id="position-{{ loop.index0 }}" class="form-control" placeholder="0">
                         </div>
                         <small class="form-text text-muted">
                           Control the order in which plans appear. Lower number appears first
