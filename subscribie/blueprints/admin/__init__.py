@@ -475,13 +475,14 @@ def edit():
             # (remember, edits create new plans because
             # plans are immutable)
             plan = Plan.query.filter_by(uuid=form.uuid.data[index]).first()
+            cancel_at = plan.cancel_at
             plan.archived = True
 
             # Build new plan
             draftPlan = Plan()
             database.session.add(draftPlan)
             plan_requirements = PlanRequirements()
-
+            draftPlan.cancel_at = cancel_at
             draftPlan.uuid = str(uuid.uuid4())
             draftPlan.requirements = plan_requirements
             # Preserve primary icon if exists
