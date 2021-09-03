@@ -84,9 +84,9 @@ test("order plan with choice, option and required note", async ({ page }) => {
         
         const subscriber_plan_choice_content = await page.textContent('text="Red"');
         expect(subscriber_plan_choice_content === "Red");
-        //temporary fix
-        const subscriber_plan_note_content = await page.textContent('text="No note was given."');
-        expect(subscriber_plan_note_content === "No note was given.");
+
+        const subscriber_plan_note_content = await page.textContent('text="Purple"');
+        expect(subscriber_plan_note_content === "Purple");
 
         // Go to upcoming payments and ensure plan is attached to upcoming invoice
         await page.goto('/admin/upcoming-invoices');

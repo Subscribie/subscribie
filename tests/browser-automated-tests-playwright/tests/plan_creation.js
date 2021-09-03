@@ -92,11 +92,8 @@ test.describe("Plan Creation tests:", () => {
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);
-      //const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
-      //if (free_trial === "Automatically cancels on: 2025-09-07") {
-        //temporary fix
-      const check_cancel_at_plan = await page.textContent('text="cancel at plan"');
-      if (check_cancel_at_plan === "cancel at plan") {
+      const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
+      if (free_trial === "Automatically cancels on: 2025-09-07") {
         await new Promise(x => setTimeout(x, 1000));
         expect(await page.screenshot()).toMatchSnapshot('cancel-at-plan-already-created.png');
         console.log("Cancel At plan already created, exiting test");
@@ -128,11 +125,9 @@ test.describe("Plan Creation tests:", () => {
     await page.click('text="Save"');
     await page.goto('/');
 
-    //const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
-    //expect(free_trial === "Automatically cancels on: 2025-09-07");
-        //temporary fix
-    const check_cancel_at_plan = await page.textContent('text="cancel at plan"');
-    expect(check_cancel_at_plan === "cancel at plan")
+    const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
+    expect(free_trial === "Automatically cancels on: 2025-09-07");
+    
     //screenshot
     await new Promise(x => setTimeout(x, 1000));
     expect(await page.screenshot()).toMatchSnapshot('add-cancel-at-plan.png');
