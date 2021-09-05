@@ -31,6 +31,7 @@ jobs:
           email_host: ${{ secrets.EMAIL_HOST_ISSUE_704 }}
           email_user: ${{ secrets.EMAIL_USER_ISSUE_704 }}
           email_password: ${{ secrets.EMAIL_PASSWORD_ISSUE_704 }}
+          email_search_api_host: ${{ secrets.EMAIL_SEARCH_API_HOST_ISSUE_704 }}
           imap_search_subject: "Subscribie Magic Login"
           imap_search_unseen: "1"
           imap_search_since_date: "01-Sep-2021"
