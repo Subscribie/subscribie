@@ -9,6 +9,10 @@ jobs:
     timeout-minutes: 60
     environment: production
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v1
 
       - uses: microsoft/playwright-github-action@v1
@@ -22,9 +26,17 @@ jobs:
       - name: Run & Record browser automated tests (Playwright)
         env:
           PLAYWRIGHT_HEADLESS: true
+          TEST_SHOP_OWNER_LOGIN_URL_ISSUE_704: ${{ secrets.SHOP_OWNER_LOGIN_URL_ISSUE_704 }}
+          TEST_SHOP_OWNER_EMAIL_ISSUE_704: ${{ secrets.SHOP_OWNER_EMAIL_ISSUE_704 }}
+          email_host: ${{ secrets.EMAIL_HOST_ISSUE_704 }}
+          email_user: ${{ secrets.EMAIL_USER_ISSUE_704 }}
+          email_password: ${{ secrets.EMAIL_PASSWORD_ISSUE_704 }}
+          imap_search_subject: "Subscribie Magic Login"
+          imap_search_unseen: "1"
+          imap_search_since_date: "01-Sep-2021"
         run: |
           set -x
-          cd tests/browser-automated-tests-playwright; npx playwright test test/704_shop_owner_magic_login_receives_email.js
+          cd tests/browser-automated-tests-playwright; npx playwright test tests/704_shop_owner_magic_login_receives_email.js
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
