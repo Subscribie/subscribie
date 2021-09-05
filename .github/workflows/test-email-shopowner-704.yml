@@ -2,7 +2,10 @@
 
 name: Login Emails Sending
 on: 
-  - pull_request
+  schedule:
+  - cron: "0 9 * * *" # 9am
+  - cron: "0 19 * * *" # 7pm
+  workflow_dispatch:
 jobs:
   test-login-emails-sending:
     runs-on: ubuntu-20.04
