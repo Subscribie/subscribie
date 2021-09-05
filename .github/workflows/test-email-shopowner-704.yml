@@ -23,7 +23,7 @@ jobs:
           npx playwright install
           sudo npx playwright install-deps 
 
-      - name: Run & Record browser automated tests (Playwright)
+      - name: Run test shop owner email magic login received
         env:
           PLAYWRIGHT_HEADLESS: true
           TEST_SHOP_OWNER_LOGIN_URL_ISSUE_704: ${{ secrets.SHOP_OWNER_LOGIN_URL_ISSUE_704 }}
@@ -36,7 +36,7 @@ jobs:
           imap_search_since_date: "01-Sep-2021"
         run: |
           set -x
-          cd tests/browser-automated-tests-playwright; npx playwright test tests/704_shop_owner_magic_login_receives_email.js
+          cd tests/browser-automated-tests-playwright; npx playwright test tests/704_shop_owner_magic_login_receives_email.spec.js
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
