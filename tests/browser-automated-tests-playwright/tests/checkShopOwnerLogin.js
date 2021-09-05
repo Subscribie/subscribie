@@ -33,7 +33,10 @@ function checkShopOwnerLogin() {
 
   const req = https.request(options, res => {
     console.log(`statusCode: ${res.statusCode}`)
-
+    if ( res.statusCode != 200 ) {
+      console.error("Non 200 statusCode received");
+      process.exit(-5);
+    }
     res.on('data', resp => {
       process.stdout.write(resp)
       emails = JSON.parse(resp.toString())
