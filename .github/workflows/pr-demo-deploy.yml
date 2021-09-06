@@ -10,9 +10,10 @@ on:
   # - pull_request_target
 jobs:
   deploy-pr:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    environment: testing
+   runs-on: ubuntu-20.04
+   timeout-minutes: 60
+   environment: testing
+   build:
     steps:
       - name: Dump context
         env:
