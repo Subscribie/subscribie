@@ -111,36 +111,3 @@ jobs:
           path: |
             ./index.spec.js-snapshots/*
             ./tests/browser-automated-tests-playwright/test-results/*
-  notify:
-    needs: build
-  - name: uploading videos
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    environment: testing
-    steps:
-      - name: Dump context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: |
-          echo $GITHUB_CONTEXT
-      - name: Prepare runner with ssh keys
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
-        run: |
-          set -x
-          eval `ssh-agent -s`
-          ssh-add - <<< "$SSH_PRIVATE_KEY"
-          ssh-keyscan $DOKKU_HOST >> ~/.ssh/known_hosts
-      - name: Run & Record browser automated tests (Playwright)
-        env:
-          PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
-          PLAYWRIGHT_SLOWMO: 2000
-          PLAYWRIGHT_HEADLESS: true
-        run: |
-          set -x
-          cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
-          cp .env.example .env
-          cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
-          touch private_key << {{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
-          scp -Cr -i ./private_key ./tests/browser-automated-tests-playwright/test-results/* subwebbuild@138.201.59.208:/www/subscriptionwebsitebuilder.co.uk/videos/
