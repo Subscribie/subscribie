@@ -5,7 +5,7 @@
 
 name: recording demo videos
 on: 
-  - wordflow_run:
+   workflow_run:
       workflows: ["Deploy pr preview"]
       types:
         - completed
