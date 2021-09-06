@@ -111,7 +111,9 @@ jobs:
           path: |
             ./index.spec.js-snapshots/*
             ./tests/browser-automated-tests-playwright/test-results/*
-  upload-demos:
+  notify:
+    needs: build
+    -name: uploading videos
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
