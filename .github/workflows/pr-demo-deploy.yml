@@ -111,8 +111,7 @@ jobs:
           path: |
             ./index.spec.js-snapshots/*
             ./tests/browser-automated-tests-playwright/test-results/*
-jobs:
-  deploy-pr:
+  upload-demos:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
