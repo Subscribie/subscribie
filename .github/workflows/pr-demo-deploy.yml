@@ -9,11 +9,10 @@ on:
   # (pull_request_target get fired on external contributer pull requests)
   # - pull_request_target
 jobs:
-  deploy-pr:
-   runs-on: ubuntu-20.04
-   timeout-minutes: 60
-   environment: testing
-   build:
+  build:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    environment: testing
     steps:
       - name: Dump context
         env:
