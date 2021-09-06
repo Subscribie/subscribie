@@ -3,14 +3,16 @@
 # that branch. 
 # The deployed url will be <branchname>.<domain>
 
-name: Deploy pr preview
+name: recording demo videos
 on: 
   - wordflow_run:
       workflows: ["Deploy pr preview"]
+      types:
+        - completed
   # (pull_request_target get fired on external contributer pull requests)
   # - pull_request_target
+jobs:
   record_videos:
-    needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
