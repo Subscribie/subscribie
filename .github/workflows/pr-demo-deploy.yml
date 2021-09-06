@@ -113,7 +113,7 @@ jobs:
             ./tests/browser-automated-tests-playwright/test-results/*
   notify:
     needs: build
-    -name: uploading videos
+  - name: uploading videos
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
