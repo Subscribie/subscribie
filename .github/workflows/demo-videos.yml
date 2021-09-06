@@ -7,13 +7,13 @@ name: recording demo videos
 on: 
   workflow_run:
     workflows: ["Deploy pr preview"]
-    types:
-        - completed
+    types: [completed]
 jobs:
   record_videos:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Dump context
         env:
