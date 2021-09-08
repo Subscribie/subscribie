@@ -208,5 +208,5 @@ jobs:
             cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
         - name: upload videos to site
           run: |
-            echo " ${{ secrets.SUBWEBBUILD_PRIVATE_KEY }} " >> private_key 
+            echo "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}" >> private_key 
             scp -Cr -i ./private_key ./tests/browser-automated-tests-playwright/test-results/* subwebbuild@138.201.59.208:www/subscriptionwebsitebuilder.co.uk/videos/
