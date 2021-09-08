@@ -196,15 +196,15 @@ jobs:
             npm i -D @playwright/test@1.14.0
             npx playwright install
             sudo npx playwright install-deps 
-            env:
+        - name: Run & Record browser automated tests (Playwright)
+          env:
               PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
               PLAYWRIGHT_SLOWMO: 2000
               PLAYWRIGHT_HEADLESS: true
-        - name: Run & Record browser automated tests (Playwright)
-            run: |
-              set -x
-              cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
-              cp .env.example .env
-              cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
-              touch private_key << {{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
-              scp -Cr -i ./private_key ./tests/browser-automated-tests-playwright/test-results/* subwebbuild@138.201.59.208:/www/subscriptionwebsitebuilder.co.uk/videos/
+          run: |
+            set -x
+            cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
+            cp .env.example .env
+            cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
+            touch private_key << {{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
+            scp -Cr -i ./private_key ./tests/browser-automated-tests-playwright/test-results/* subwebbuild@138.201.59.208:/www/subscriptionwebsitebuilder.co.uk/videos/
