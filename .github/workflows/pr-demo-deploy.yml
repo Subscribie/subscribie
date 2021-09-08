@@ -206,5 +206,5 @@ jobs:
             cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
             cp .env.example .env
             cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
-            touch private_key << {{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
+            touch private_key << ${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
             scp -Cr -i ./private_key ./tests/browser-automated-tests-playwright/test-results/* subwebbuild@138.201.59.208:/www/subscriptionwebsitebuilder.co.uk/videos/
