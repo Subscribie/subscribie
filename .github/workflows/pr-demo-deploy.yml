@@ -209,7 +209,7 @@ jobs:
         - name: upload videos to site
           run: |
             mkdir -p ~/.ssh
-            eval ssh-agent -s
+            eval `ssh-agent -s`
             ssh-add - <<< ${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}
             ssh-keyscan $DOKKU_HOST >> ~/.ssh/known_hosts
             scp -Cr ./tests/browser-automated-tests-playwright/test-results/* ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}}:${{secrets.ONBOARDING_VIDEOS_PATH}}
