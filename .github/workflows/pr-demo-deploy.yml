@@ -207,6 +207,8 @@ jobs:
             cp .env.example .env
             cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
         - name: upload videos to site
+          env: 
+            DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
           run: |
             set -x
             mkdir -p ~/.ssh
