@@ -208,6 +208,7 @@ jobs:
             cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
         - name: upload videos to site
           run: |
+            set -x
             mkdir -p ~/.ssh
             eval `ssh-agent -s`
             ssh-add - <<< "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}"
