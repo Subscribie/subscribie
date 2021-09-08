@@ -207,12 +207,10 @@ jobs:
             cp .env.example .env
             cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
         - name: upload videos to site
-          env: 
-            DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
           run: |
             set -x
             mkdir -p ~/.ssh
             eval `ssh-agent -s`
             ssh-add - <<< "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}"
-            ssh-keyscan $DOKKU_HOST >> ~/.ssh/known_hosts
+            ssh-keyscan ${{secrets.ONBOARDING_HOST}} >> ~/.ssh/known_hosts
             scp -Cr ./tests/browser-automated-tests-playwright/test-results/* ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}}:${{secrets.ONBOARDING_VIDEOS_PATH}}
