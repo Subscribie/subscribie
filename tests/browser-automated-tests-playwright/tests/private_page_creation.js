@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test("Creating Private Page", async ({ page }) => {
+test("334_shop-owner_Creating Private Page", async ({ page }) => {
 
         await page.goto('/page/privatetestpage');
         await new Promise(x => setTimeout(x, 5000));

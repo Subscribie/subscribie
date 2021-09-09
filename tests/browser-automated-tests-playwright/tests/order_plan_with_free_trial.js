@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 test.describe("order plan with free-trial:", () => {
-    test("Ordering plan with free-trial feature", async ({ page }) => {
+    test("475_subscriber_Ordering plan with free-trial feature", async ({ page }) => {
         console.log("Ordering Plan with free trial");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
