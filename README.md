@@ -141,6 +141,20 @@ Then visit http://127.0.0.1:5000
 To go inside the container, you can do: `docker-compose exec web /bin/bash` 
 from the project root directory.
 
+# Logging & Debugging - How to change the logLevel
+Quick: edit your `.env` file and set `PYTHON_LOG_LEVEL=DEBUG`.
+
+E.g. to reduce the amount of logs, to `WARNING` or `CRITICAL`.
+
+The default log level is `DEBUG` which means show as much logging
+information as possible.
+
+The possible values are DEBUG, INFO, WARNING, ERROR, CRITICAL
+See https://docs.python.org/3/howto/logging.html
+
+Flask *does* need to be restarted for the log level to change.
+
+
 # How to change theme (theme development)
 
 ### How to change from the default jesmond theme to the builder theme.
