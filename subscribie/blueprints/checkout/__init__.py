@@ -570,9 +570,16 @@ def stripe_webhook():
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
-        subscribie_checkout_session_id = session["metadata"][
-            "subscribie_checkout_session_id"
-        ]
+        try:
+            subscribie_checkout_session_id = session["metadata"][
+                "subscribie_checkout_session_id"
+            ]
+        except KeyError as e:
+            subscribie_checkout_session_id = None
+            log.warning(
+                f"Could not get subscribie_checkout_session_id from session metadata in webhook checkout.session.completed: {e}"  # noqa: E501
+            )
+            log.warning(f"The provided metadata (if any) was: {session['metadata']}")
 
         if session["mode"] == "subscription":
             stripe_subscription_id = session["subscription"]
