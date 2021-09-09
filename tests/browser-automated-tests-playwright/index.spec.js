@@ -13,7 +13,7 @@ test.describe("Subscribie tests:", () => {
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
   //Stripe Test
-  test("293_shop-owner_Stripe Test", async ({ page }) => {
+  test.only("293_shop-owner_Stripe Test", async ({ page }) => {
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
@@ -30,7 +30,7 @@ test.describe("Subscribie tests:", () => {
       console.log("Continuing with Stripe Connect onboarding");
     }
   });
-  test("293_shop-owner_detect stripe onboarding page", async ({ page }) => {
+  test.only("293_shop-owner_detect stripe onboarding page", async ({ page }) => {
 
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');
@@ -159,8 +159,8 @@ test.describe("Subscribie tests:", () => {
         }
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
-      await new Promise(x => setTimeout(x, 2000));
-      const stripe_connected = await page.textContent(".alert-success");
+      await new Promise(x => setTimeout(x, 5000));
+      const stripe_connected = await page.textContent("text=Congrats!");
       expect(stripe_connected === "Congrats!");
       console.log("Stripe Connected");
       await page.goto('/admin/announce-stripe-connect'); 
