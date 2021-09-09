@@ -184,7 +184,7 @@ test.describe("Plan Creation tests:", () => {
      }
   });
 
-  test("Create plan with options, choice, required description", async ({ page }) => {
+  test("264_shop-owner_Create plan with options, choice, required description", async ({ page }) => {
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);

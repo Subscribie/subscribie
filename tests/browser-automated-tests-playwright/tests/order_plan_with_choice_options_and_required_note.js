@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test("order plan with choice, option and required note", async ({ page }) => {
+test("264_subscriber_order plan with choice, option and required note", async ({ page }) => {
         console.log("order plan with choice, option and required note");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
