@@ -1,17 +1,19 @@
 // playwright.config.js
 // @ts-check
 require('dotenv').config()
+import { PlaywrightTestConfig } from '@playwright/test';
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_SLOWMO = parseInt(process.env.PLAYWRIGHT_SLOWMO);
 
 const { devices } = require('@playwright/test');
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
-const config = {
+const config: PlaywrightTestConfig = {
   testDir: 'tests',
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
   retries: 2,
+  workers: 3, 
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
@@ -30,7 +32,7 @@ const config = {
         browserName: 'chromium',
       },
     },
-   // Test against mobile viewports.
+   //Test against mobile viewports.
    // {
    //   name: 'Mobile Safari',
    //   use: devices['iPhone 12'],
