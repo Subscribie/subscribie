@@ -7,7 +7,7 @@ name: Recording demo videos
 on: 
   push:
     branches:
-      - ${{ github.default_branch }}
+      - master
   workflow_dispatch:
 jobs:
   demo-videos:
