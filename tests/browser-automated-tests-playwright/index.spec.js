@@ -159,8 +159,8 @@ test.describe("Subscribie tests:", () => {
         }
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
-      await new Promise(x => setTimeout(x, 2000));
-      const stripe_connected = await page.textContent(".alert-success");
+      await new Promise(x => setTimeout(x, 5000));
+      const stripe_connected = await page.textContent("text=Congrats!");
       expect(stripe_connected === "Congrats!");
       console.log("Stripe Connected");
       await page.goto('/admin/announce-stripe-connect'); 
@@ -170,9 +170,13 @@ test.describe("Subscribie tests:", () => {
   }); 
   plan_creation = require('./tests/plan_creation');
 
+  changing_plans_order = require('./tests/changing_plans_order');
+
   private_page_creation = require('./tests/private_page_creation');
 
   share_private_plan_url = require('./tests/share_private_plan_url');
+
+  order_plan_with_choice_options_and_required_note = require('./tests/order_plan_with_choice_options_and_required_note');
 
   order_plan_with_only_recurring_charge = require('./tests/order_plan_with_only_recurring_charge');
 

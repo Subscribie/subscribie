@@ -110,11 +110,11 @@
                   </div>
                 {% endif %}
                 {% if plan.choice_groups %}
-                  <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block">
+                  <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
                     Choose
                   </a>
                 {% else %}
-                  <a href="/new_customer?plan={{ plan.uuid }}" class="btn-outlined-lg btn-block">
+                  <a href="/new_customer?plan={{ plan.uuid }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
                     Choose
                   </a>
                 {% endif %}

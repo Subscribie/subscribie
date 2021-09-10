@@ -5,7 +5,7 @@ test.describe("order plan with free-trial:", () => {
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
         // Choosing plan with Cooling off period
-        await page.click(":nth-match(:text('Choose'), 6)");
+        await page.click('[name="Free Trial plan"]');
 
         // Fill in order form
         await page.fill('#given_name', 'John');
@@ -22,7 +22,6 @@ test.describe("order plan with free-trial:", () => {
         expect(order_summary_content === "Order Summary");
         expect(await page.screenshot()).toMatchSnapshot('free-trial-pre-stripe-checkout.png');
         await page.click('#checkout-button');
-
         //Verify first payment is correct (recuring charge only)
         const payment_content = await page.textContent('#ProductSummary-totalAmount');
         expect(payment_content === "10 days free");
@@ -66,7 +65,7 @@ test.describe("order plan with free-trial:", () => {
 
         // Verify that plan is attached to subscriber
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
-        expect(subscriber_plan_title_content === 'Free Trial');
+        expect(subscriber_plan_title_content === 'Free Trial plan');
 
         const content_subscriber_plan_interval_amount = await page.textContent('.subscribers-plan-interval_amount');
         expect(content_subscriber_plan_interval_amount === '£10.00');

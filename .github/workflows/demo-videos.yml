@@ -10,11 +10,9 @@ on:
       - main
 jobs:
   demo-videos:
-      needs: deploy-pr
       runs-on: ubuntu-20.04
       timeout-minutes: 60
       environment: testing
-      if: ${{ success() }}
       steps: 
         - name: Dump context
           env:

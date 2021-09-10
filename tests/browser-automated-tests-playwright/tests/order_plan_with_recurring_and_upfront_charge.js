@@ -5,7 +5,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         console.log("Ordering Plan with subscription and upfront charge");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
-        await page.goto('new_customer?plan=840500cb-c663-43e6-a632-d8521bb14c42');
+        await page.click('[name="Hair Gel"]');
 
         // Fill in order form
         await page.fill('#given_name', 'John');
@@ -25,7 +25,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
 
         //Verify first payment is correct (upfront charge + first recuring charge)
         const first_payment_content = await page.textContent('#ProductSummary-totalAmount');
-        expect(first_payment_content === "£6.99");
+        expect(first_payment_content === "£5.99");
         const recuring_charge_content = await page.textContent('.ProductSummaryDescription');
         expect(recuring_charge_content === "Then £5.99 per week");
 
@@ -72,7 +72,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         await page.goto('admin/transactions')
         expect(await page.screenshot()).toMatchSnapshot('view-transactions.png');
         const transaction_content = await page.textContent('.transaction-amount');
-        expect (transaction_content == '£6.99');
+        expect (transaction_content == '£5.99');
 
         // Verify subscriber is linked to the transaction:
         const transaction_subscriber_content = await page.textContent('.transaction-subscriber');
@@ -85,7 +85,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         expect(content_paid_invoice_status === 'paid')
 
         const content_paid_invoice_amount = await page.textContent('.invoice-amount-paid');
-        expect(content_paid_invoice_amount === '£6.99')
+        expect(content_paid_invoice_amount === '£5.99')
 
         // Verify upcoming invoice has been generated for the subscription:
         await page.goto('admin/upcoming-invoices')

@@ -5,7 +5,7 @@ test.describe("order plan with cancel at:", () => {
         // Go to home before selecting product
         await page.goto('/'); 
         // Choosing plan with cancel at 
-        await page.click(":nth-match(:text('Choose'), 7)");
+        await page.click('[name="cancel at plan"]');
 
         // Fill in order form
         await page.fill('#given_name', 'John');
@@ -76,6 +76,7 @@ test.describe("order plan with cancel at:", () => {
         
         const subscriber_plan_cancel_at_content = await page.textContent('text="Automatically Cancels at:"');
         expect(subscriber_plan_cancel_at_content === "Automatically Cancels at:");
+
     
         // Go to upcoming payments and ensure plan is attached to upcoming invoice
         await page.goto('/admin/upcoming-invoices');
