@@ -393,6 +393,7 @@ class Transaction(database.Model):
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
+    stripe_payment_intent_id = database.Column(database.String())
 
 
 class SeoPageTitle(database.Model):
