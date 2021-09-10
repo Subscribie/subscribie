@@ -3,12 +3,12 @@
 # that branch. 
 # The deployed url will be <branchname>.<domain>
 
-name: recording demo videos
+name: Recording demo videos
 on: 
   push:
     branches:
       - ${{ github.default_branch }}
-    workflow_dispatch:
+  workflow_dispatch:
 jobs:
   demo-videos:
       runs-on: ubuntu-20.04
