@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test("334_shop-owner_Creating Private Page", async ({ page }) => {
-
+        page.setDefaultTimeout(5000);
         await page.goto('/page/privatetestpage');
         await new Promise(x => setTimeout(x, 5000));
         let checking_private_page_content = await page.evaluate(() => document.body.textContent);

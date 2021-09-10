@@ -4,7 +4,7 @@ const checkShopOwnerLogin = require('./checkShopOwnerLogin.js');
 const TEST_SHOP_OWNER_LOGIN_URL = process.env.TEST_SHOP_OWNER_LOGIN_URL_ISSUE_704
 const TEST_SHOP_OWNER_EMAIL = process.env.TEST_SHOP_OWNER_EMAIL_ISSUE_704
 
-test.skip('basic test', async ({ page }) => {
+test('basic test', async ({ page }) => {
   await page.goto(TEST_SHOP_OWNER_LOGIN_URL);
   await page.fill('#email', TEST_SHOP_OWNER_EMAIL);
   await page.click('#login');
