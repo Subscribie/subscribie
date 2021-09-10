@@ -7,7 +7,7 @@ name: recording demo videos
 on: 
   push:
     branches:
-      - main
+      - master
 jobs:
   demo-videos:
       runs-on: ubuntu-20.04
