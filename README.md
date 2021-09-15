@@ -307,9 +307,12 @@ Error while authenticating with Stripe: Authorization failed, status=401
 ```
 ## Run browser automated tests with playright
 
-Run npm install.
+### Install test dependencies
 ```
-npm install
+npm install.
+npm i -D @playwright/test
+npx playwright install
+npx playwright install-deps
 ```
 
 Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
@@ -330,15 +333,16 @@ So that you can see the browser tests, turn off headless mode. Edit `.env` and s
 PLAYWRIGHT_HEADLESS=false
 ```
 
-Run playwright tests:
+### Run playwright tests:
 
 ```
-npm test
+cd tests/browser-automated-tests-playwright
+npx playwright test
 ```
 Something not working?
 Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
 ```
-PWDEBUG=1 npm run test
+PWDEBUG=1 npx playwright test
 ```
 If you don't see the playwright inspector, make sure you have an up to date version of playwright.
 
