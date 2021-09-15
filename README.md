@@ -287,38 +287,53 @@ Example DELETE request:
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
-# How to test
+# Testing
+
+### How to setup/run tests
 
 There are two types of test
 - Browser automated tests using [playwright](https://github.com/microsoft/playwright)
 - Basic Python tests
 
-### Run Python tests:
+### Run Basic Python Tests:
 
 ```
-. venv/bin/activate # activate virtualenv
+. venv/bin/activate # activates venv
 python -m pytest --ignore=node_modules # run pytest
 ```
 
-### Stripe webhooks locally
+# Stripe webhooks
+Stripe webhooks needs
+
+## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
+> Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
+If you're doing local development, then you need Stripe to send *you* the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
+
 
 1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
 3. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
-4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development).
-```
-stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
-```
+   ```
+   ⢿ Getting ready... > Ready! 
+   ```
+4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development). 
+  ```
+  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+  ```
 Remember Stripe will give you a key valid for 90 days, if you get the following error you will need to do step 2 again:
 
 ```
 Error while authenticating with Stripe: Authorization failed, status=401
 ```
 ## Run browser automated tests with playright
+> **Important:** Stripe cli must be running locally to recieve payment events:
+>`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
 
-### Install test dependencies
+<br />
+
+### Install Playweright dependencies
 ```
-npm install.
+npm install
 npm i -D @playwright/test
 npx playwright install
 npx playwright install-deps
@@ -335,11 +350,11 @@ Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is
 needs to be running locally if you're runnning browser automated tests
 locally.
 
-### Turn on headful mode
+### Turn on headful mode & set Playwright host
 
-So that you can see the browser tests, turn off headless mode. Edit `.env` and set
 ```
-PLAYWRIGHT_HEADLESS=false
+export PLAYWRIGHT_HEADLESS=false
+export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 ```
 
 ### Run playwright tests:
