@@ -63,7 +63,7 @@
             </td>
             <td>
               <a href="{{ url_for('admin.category_assign_plan', category_id=category.id) }}" 
-              class="btn btn-success btn-block" style="display: inline-block" role="button">
+              class="btn btn-success btn-block" name= "{{ category.name }}-category"style="display: inline-block" role="button">
               Put Plans in this category
               </a>
             </td>

@@ -30,7 +30,7 @@
     {% for category in categories %}
     <div id="plans" class="container mx-auto py-5 px-4">
       <div class="plans-section-header text-center my-4">
-        <h4 class="title-1">{{ category.name }}</h4>
+        <h4 class="title-1" name="{{ category.name }}-category">{{ category.name }}</h4>
       </div>
       <div class="plans-row row row-cols-1 row-cols-md-2 row-cols-lg-3">
         {% for plan in category.plans if plan.archived != 1 and plan.private is sameas false %}
