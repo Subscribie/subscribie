@@ -4,15 +4,16 @@
 #### Open Source subscription billing website and management
 
 ## What does this project do?
-Quickly build a subscription based website, taking weekly/monthly/yearly payments.
+Use Subscribie to collect recurring payments online.
 
-- You have a subscription service to sell
-- Each of your packages have unique selling points (USPs)
-- Each have a different reoccurring price
+Quickly build a subscription based website, taking weekly/monthly/yearly payments- including one-off charges.
 
-Use Subscribie to build your subscription model business & test your market.
+- You have subscription service(s) to sell (plans)
+- Each of your plans have unique selling points (USPs)
+- Each have a different recurring price, and/or an up-front charge
 
-# Demo
+# Hosting
+Don't want/know how to code? Pay for the hosted service.
 
 https://subscriptionwebsitebuilder.co.uk
 
@@ -90,9 +91,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
 cp .env.example .env # Copy default .env settings (read it)
+# Read the .env file so you're familiar with the env variables
 ```
 
-Set database path. Edit `.env` and set `DB_FULL_PATH` and `SQLALCHEMY_DATABASE_URI`. (optional but recommended- do not store data.db in /tmp).
+(Optional) Set database path. Edit `.env` and set `DB_FULL_PATH` and `SQLALCHEMY_DATABASE_URI`. (optional but recommended- do not store data.db in /tmp).
+
+> Notice that `sqlite:///` starts with *three* forward slashes. So, if you want to store the database in `/home/sam/data.db` then,
+you should put `sqlite:////home/sam/data.db` (note four `/`'s)
 
 ```
 # Open the .env file, and change the database path to store somewhere else (e.g. your `/home/Documents/data.db` folder):
@@ -109,12 +114,16 @@ pip install -r requirements.txt # Install requirements
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask db upgrade
-flask initdb # (optional)
+flask initdb # (recommended- gives you some example data)
 ```
 
 The database file is called `data.db`. Note,
-`flask initdb` inserts pretend data into your database for testing. 
+`flask initdb` inserts pretend data into your database for testing.
+
+## Start Subscribie
 ```
+export FLASK_APP=subscribie
+export FLASK_DEBUG=1
 flask run
 ```
 Now visit http://127.0.0.1:5000
