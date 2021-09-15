@@ -120,6 +120,20 @@ flask initdb # (recommended- gives you some example data)
 The database file is called `data.db`. Note,
 `flask initdb` inserts pretend data into your database for testing.
 
+### Set Stripe API key
+You need a Stripe api key.
+
+1. Create a stripe account
+2. Go to api keys https://dashboard.stripe.com/test/apikeys (test mode)
+3. Copy `Publishable key` and `Secret key`
+4. Paste the keys into your `.env` file:
+
+Edit your .env file
+```
+STRIPE_TEST_PUBLISHABLE_KEY=pk_test_<your-Publishable-key>
+STRIPE_TEST_SECRET_KEY=sk_test_<your-Secret-key>
+```
+
 ## Start Subscribie
 ```
 export FLASK_APP=subscribie
@@ -357,7 +371,7 @@ export PLAYWRIGHT_HEADLESS=false
 export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 ```
 
-### Run playwright tests:
+## Run playwright tests:
 
 ```
 cd tests/browser-automated-tests-playwright
