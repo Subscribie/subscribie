@@ -203,7 +203,7 @@ def do_login(login_token):
             database.session.commit()
 
     if user is None:
-        return "Invalid valid user"
+        return "User not found"
 
     start_new_user_session(user.email)
 
