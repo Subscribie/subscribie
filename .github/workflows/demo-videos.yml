@@ -94,4 +94,17 @@ jobs:
             ssh-add - <<< "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}"
             ssh-keyscan ${{secrets.ONBOARDING_HOST}} >> ~/.ssh/known_hosts
             scp -Cr ./tests/browser-automated-tests-playwright/test-results/* ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}}:${{secrets.ONBOARDING_VIDEOS_PATH}}
+        - name: Organise videos into list on webpage
+          run: |
+            # Organise playwright videos into a single
+            # directory list of webm videos with name:
+            #  <issue-number>-<usertype>-<description>.webm
+            #  Video may be seen at https://subscriptionwebsitebuilder.co.uk/videos/output/
+            set -x
+            mkdir -p ~/.ssh
+            eval `ssh-agent -s`
+            ssh-add - <<< "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}"
+            ssh-keyscan ${{secrets.ONBOARDING_HOST}} >> ~/.ssh/known_hosts
+            ssh ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}} -C "cd ${{secrets.ONBOARDING_VIDEOS_PATH}};./process.py"
+            echo "🙌 Videos available: https://subscriptionwebsitebuilder.co.uk/videos/output/"
 
