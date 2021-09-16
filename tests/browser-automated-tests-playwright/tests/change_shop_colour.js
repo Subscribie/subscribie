@@ -7,8 +7,7 @@ test("387_show-owner_change_shop_colour", async ({ page }) => {
     await page.goto('/style/style-shop');
     const style_shop = await page.content("text=Style Your Shop");
     expect(style_shop === "Style Your Shop");
-     //creating category
-    console.log("creating category");
+
     await page.fill('input[name="primary"]', "0b5394");
     await page.click('text="Save"');
     expect(await page.screenshot()).toMatchSnapshot('changing-shop-colour.png');
