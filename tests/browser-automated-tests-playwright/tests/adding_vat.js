@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 //Subscribie tests
 test("463_show-owner_adding_VAT", async ({ page }) => {
-    console.log("changing shop colour...");
+    console.log("enabling VAT...");
      // Go to style your shop
     await page.goto('/admin/vat-settings');
     const style_shop = await page.content("text=VAT Settings");
