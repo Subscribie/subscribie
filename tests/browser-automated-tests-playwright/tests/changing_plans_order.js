@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test("275_shop-owner_Changing Plans order", async ({ page }) => {
+test("@275@shop-owner@Changing Plans order", async ({ page }) => {
     console.log("Changing plans order...");
     await page.goto("/admin/edit")
     const check_plan_with_choice_and_options = await page.textContent('text="Edit Plans"');

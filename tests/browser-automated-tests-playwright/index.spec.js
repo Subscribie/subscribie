@@ -13,7 +13,7 @@ test.describe("Subscribie tests:", () => {
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
   //Stripe Test
-  test("293_shop-owner_Stripe Test", async ({ page }) => {
+  test("@293@shop-owner@Stripe Test", async ({ page }) => {
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
@@ -30,7 +30,7 @@ test.describe("Subscribie tests:", () => {
       console.log("Continuing with Stripe Connect onboarding");
     }
   });
-  test("293_shop-owner_detect stripe onboarding page", async ({ page }) => {
+  test("@293@shop-owner@detect stripe onboarding page", async ({ page }) => {
 
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');
