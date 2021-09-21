@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test("121_shop-owner_Creating Public Page", async ({ page }) => {
+test("@121@shop-owner@Creating Public Page", async ({ page }) => {
         page.setDefaultTimeout(5000);
         await page.goto('/page/contactus');
         await new Promise(x => setTimeout(x, 5000));

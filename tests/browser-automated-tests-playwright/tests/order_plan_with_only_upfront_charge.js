@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe("order plan with only upfront charge tests:", () => {
-    test("293_subscriber_Ordering upfront plan", async ({ page }) => {
+    test("@293@subscriber@Ordering upfront plan", async ({ page }) => {
         console.log("Ordering plan with only upfront charge...");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product

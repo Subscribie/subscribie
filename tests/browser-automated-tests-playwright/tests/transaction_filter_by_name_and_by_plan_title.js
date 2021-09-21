@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-test("619_shop-owner_transaction filter by name and by plan title", async ({ page }) => {
+test("@619@shop-owner@transaction filter by name and by plan title", async ({ page }) => {
     console.log("transaction filter by name and by plan title");
     //Login
     await page.goto('/auth/login');

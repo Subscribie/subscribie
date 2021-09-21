@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 //Subscribie tests
 test.describe("Plan Creation tests:", () => {
       // Create cooling off plan
-  test("133_show-owner_Create cooling off plan", async ({ page }) => {
+  test("@133@show-owner@Create cooling off plan", async ({ page }) => {
     console.log("Starting plan creations...");
     await page.goto('/');
     try {
@@ -46,7 +46,7 @@ test.describe("Plan Creation tests:", () => {
      expect(await page.screenshot()).toMatchSnapshot('add-cooling-off-plan.png');
 
   });
-  test("475_shop-owner_Create free trial plan", async ({ page }) => {
+  test("@475@shop-owner@Create free trial plan", async ({ page }) => {
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);
@@ -88,7 +88,7 @@ test.describe("Plan Creation tests:", () => {
     expect(await page.screenshot()).toMatchSnapshot('add-free-trial-plan.png');
 
   });
-  test("516_shop-owner_Create cancel at plan", async ({ page }) => {
+  test("@516@shop-owner@Create cancel at plan", async ({ page }) => {
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);
@@ -133,7 +133,7 @@ test.describe("Plan Creation tests:", () => {
     expect(await page.screenshot()).toMatchSnapshot('add-cancel-at-plan.png');
 
   });
-  test("491_show-owner_Create Private Plan", async ({ page }) => {
+  test("@491@shop-owner@Create Private Plan", async ({ page }) => {
     console.log("Creating Private Plan");
     await page.goto('/admin/edit');
     try {
@@ -184,7 +184,7 @@ test.describe("Plan Creation tests:", () => {
      }
   });
 
-  test("264_shop-owner_Create plan with options, choice, required description", async ({ page }) => {
+  test("@264@shop-owner@Create plan with options, choice, required description", async ({ page }) => {
     await page.goto('/');
     try {
       page.setDefaultTimeout(3000);

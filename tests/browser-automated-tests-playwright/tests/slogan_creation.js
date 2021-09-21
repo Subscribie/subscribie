@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
-test("212_show-owner_slogan creation", async ({ page }) => {
+test("@212@shop-owner@slogan creation", async ({ page }) => {
     console.log("checking if slogan is already created...");
     await page.goto('/');
     page.setDefaultTimeout(3000);

@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test("147_shop-owner_Pause and Resume transaction", async ({ page }) => {  
+    test("@147@shop-owner@Pause and Resume transaction", async ({ page }) => {  
         console.log("Pause and Resume transaction");      
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
@@ -35,7 +35,7 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         expect(await page.screenshot()).toMatchSnapshot('resume-plan.png');
 
     });
-    test("479_shop-owner_Cancel transaction", async ({ page }) => {
+    test("479@shop-owner@Cancel transaction", async ({ page }) => {
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
         await new Promise(x => setTimeout(x, 1000)); // 5 secconds
