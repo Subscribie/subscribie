@@ -40,7 +40,7 @@ jobs:
           imap_search_since_date: "01-Sep-2021"
         run: |
           set -x
-          cd tests/browser-automated-tests-playwright; npx playwright test tests/704_shop_owner_magic_login_receives_email.spec.js
+          cd tests/browser-automated-tests-playwright; npx playwright test --grep @704
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
