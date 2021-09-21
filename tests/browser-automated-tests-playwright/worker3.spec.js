@@ -12,16 +12,16 @@ test.beforeEach(async ({ page }) => {
   }); 
   clear_DB = require('./tests/clear_db');
 
-  categories_creation = require('./tests/categories_creation');
+  categories_creation = require('./tests/452_shop_owner_categories_creation');
 
-  private_page_creation = require('./tests/private_page_creation');
+  private_page_creation = require('./tests/334_shop_owner_private_page_creation');
 
-  public_page_creation = require('./tests/public_page_creation');
+  public_page_creation = require('./tests/121_shop_owner_public_page_creation');
 
-  slogan_creation = require('./tests/slogan_creation');
+  slogan_creation = require('./tests/212_shop_owner_slogan_creation');
 
-  change_shop_colour = require('./tests/change_shop_colour');
+  change_shop_colour = require('./tests/387_shop_owner_change_shop_colour');
 
-  adding_vat = require('./tests/adding_vat');
+  adding_vat = require('./tests/463_shop_owner_adding_vat');
 
-  ordering_plan_with_VAT = require('./tests/ordering_plan_with_VAT');
+  ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
