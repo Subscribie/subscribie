@@ -85,7 +85,7 @@ jobs:
             set -x
             cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
             cp .env.example .env
-            cd tests/browser-automated-tests-playwright; npx playwright test --update-snapshots
+            cd tests/browser-automated-tests-playwright; npx playwright test --grep-invert @704 --update-snapshots
         - name: upload videos to site
           run: |
             set -x
