@@ -97,7 +97,9 @@ Why these tests? plan creation, changing plans order, and sharing private plan u
 
 Worker 3 mostly contains tests that don't require stripe to be connected, only the last one (ordering plan with vat) requires Stripe to be connected. 
 
+# TEST RELATIONSHIP
 
+<img width="799" alt="Screen Shot 2021-09-20 at 11 53 29 PM" src="https://user-images.githubusercontent.com/76879536/134396271-f4382aba-50ca-47e7-b2e0-1dbae51397e4.png">
 
 
 
