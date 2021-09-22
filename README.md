@@ -398,7 +398,7 @@ Useful node debug commands:
 - `list()` # show code where paused
 - `cont` # continue execution until next breakpoint
 - 
-##### For more information about test dependecies and how they work please go to "testing.md"
+##### For more information about test dependecies and how they work please go to [testing.md](https://github.com/Subscribie/subscribie/blob/master/testing.md)
 
 # Saas Deployment
 
