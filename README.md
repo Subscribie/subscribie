@@ -397,6 +397,8 @@ Useful node debug commands:
 - `n` # go to next line
 - `list()` # show code where paused
 - `cont` # continue execution until next breakpoint
+- 
+##### For more information about test dependecies and how they work please go to "testing.md"
 
 # Saas Deployment
 
