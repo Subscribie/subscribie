@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const TEST_SUBSCRIBER_EMAIL = process.env.subscriber_email_user;
 
 test.describe("order plan with only recurring charge test:", () => {
     test("@293@subscriber@Ordering recurring plan", async ({ page }) => {
@@ -10,7 +11,7 @@ test.describe("order plan with only recurring charge test:", () => {
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', 'john@example.com');
+        await page.fill('#email', TEST_SUBSCRIBER_EMAIL);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');

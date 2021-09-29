@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const TEST_SUBSCRIBER_EMAIL = process.env.subscriber_email_user;
 
 test("@264@subscriber@order plan with choice, option and required note", async ({ page }) => {
         console.log("order plan with choice, option and required note");
@@ -16,7 +17,7 @@ test("@264@subscriber@order plan with choice, option and required note", async (
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', 'john@example.com');
+        await page.fill('#email', TEST_SUBSCRIBER_EMAIL);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');

@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const TEST_SUBSCRIBER_EMAIL = process.env.subscriber_email_user;
 
 test("@463@subscriber@Ordering plan with VAT", async ({ page }) => {
         console.log("Ordering plan with only recurring charge + VAT...");
@@ -7,9 +8,9 @@ test("@463@subscriber@Ordering plan with VAT", async ({ page }) => {
         await page.click('[name="Bath Soaps"]');
 
         // Fill in order form
-        await page.fill('#given_name', 'Paul');
-        await page.fill('#family_name', 'Man');
-        await page.fill('#email', 'paul@example.com');
+        await page.fill('#given_name', 'John');
+        await page.fill('#family_name', 'Smith');
+        await page.fill('#email', TEST_SUBSCRIBER_EMAIL);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
