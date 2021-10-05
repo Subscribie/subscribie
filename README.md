@@ -326,7 +326,11 @@ If you're doing local development, then you need Stripe to send *you* the test p
 
 1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
-3. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
+3. Run
+  ``` 
+  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+   ```
+   You will see:
    ```
    ⢿ Getting ready... > Ready! 
    ```
