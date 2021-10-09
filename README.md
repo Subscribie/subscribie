@@ -1,7 +1,7 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 
-# Subscribie  - Subscription Website Builder 
-#### Open Source subscription billing website and management
+# Subscribie  - Collect recurring payments easily 
+#### Open Source subscription billing and management
 
 ## What does this project do?
 Use Subscribie to collect recurring payments online.
