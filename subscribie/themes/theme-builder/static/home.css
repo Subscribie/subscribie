@@ -51,7 +51,7 @@ button {
 
 .navbar-brand, .nav-link {
     color: white;
-    font-size: 14px;
+    font-size: 1.15em;
 }
 
 .get-started-btn {
@@ -136,7 +136,19 @@ button {
 .payment-p {
     color: white;
     min-width: 250px;
+    font-size: 1.1em;
 }
+
+.quote::first-letter {
+    font-size: 130%;
+}
+
+.quote {
+    border-bottom: 4px solid white;
+    border-left: 4px solid white;
+    padding: 0 0 15px 15px;
+}
+
 
 .footer-section {
     padding: 4rem 0;
@@ -351,6 +363,7 @@ footer img {
     .nav-link {
         font-weight: 500;
         margin: 0.2rem 0;
+        font-size: 1.15em;
     }
 
     .nav-link:focus {
