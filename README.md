@@ -15,7 +15,7 @@ Quickly build a subscription based website, taking weekly/monthly/yearly payment
 # Hosting
 Don't want/know how to code? Pay for the hosted service.
 
-https://subscriptionwebsitebuilder.co.uk
+https://subscribie.co.uk
 
 # Features
 Quickly set-up a subscription site which can:
