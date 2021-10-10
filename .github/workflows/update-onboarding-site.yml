@@ -21,10 +21,4 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
-        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; git fetch; git rebase origin/master; "
-    - name: Reload apache
-      run: |
-        set -x
-        eval `ssh-agent -s`
-        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
-        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "sudo /etc/init.d/apache2 reload"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; touch *.ini; "
