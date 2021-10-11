@@ -16,9 +16,10 @@ jobs:
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
         ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
-    - name: Pull new site
+    - name: Pull new site & reload
       run: |
         set -x
         eval `ssh-agent -s`
-        ssh-add - <<< "${{ secrets.ONBOARDING_PRIVATE_KEY }}"
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; touch *.ini; "
