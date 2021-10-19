@@ -141,9 +141,8 @@ def forgot_password():
             )
         )
         company = Company.query.first()
-
         password_reset_url = (
-            flask.request.host_url + "/account/password-reset?token=" + token
+            "https://" + flask.request.host + "/account/password-reset?token=" + token
         )
 
         with open(email_template) as file_:
