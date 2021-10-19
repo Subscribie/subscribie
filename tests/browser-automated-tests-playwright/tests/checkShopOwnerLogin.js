@@ -1,4 +1,4 @@
-const https = require('https');
+const https = require('https')
 
 function checkShopOwnerLogin() {
   email_host = process.env.email_host
@@ -18,6 +18,7 @@ function checkShopOwnerLogin() {
     imap_search_unseen: imap_search_unseen,
     imap_search_since_date: imap_search_since_date
   })
+
 
   const options = {
     hostname: email_search_api_host,
@@ -44,14 +45,7 @@ function checkShopOwnerLogin() {
         process.exit(5)
       }
       lastEmail = emails[emails.length -1]['email_body']
-      if ( lastEmail.includes('/auth/login/')) {
-        //json to string
-        jsonToString = JSON.stringify(lastEmail);
-
-        // filter email magic login url
-        const regex = /href=\\"(http.*)(?:\\">)/gm;
-        magic_login_url = regex.exec(jsonToString)[1];
-        module.exports.magic_login_url = magic_login_url;
+      if ( lastEmail.includes('/auth/login/') ) {
         return true
       } else {
         console.error("Could not find login text in email")
@@ -67,5 +61,6 @@ function checkShopOwnerLogin() {
   req.write(data)
   req.end()
 }
+
 exports.checkShopOwnerLogin = checkShopOwnerLogin;
 
