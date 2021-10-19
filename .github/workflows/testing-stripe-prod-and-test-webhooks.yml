@@ -1,0 +1,46 @@
+---
+
+name: testing stripe prod and test webhooks
+on: 
+  schedule:
+  - cron: "0 9 * * *" # 9am
+  - cron: "0 19 * * *" # 7pm
+  workflow_dispatch:
+jobs:
+  testing-stripe-prod-and-test-webhooks:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v1
+
+      - name: testing stripe production webhooks
+        run: |
+          set -x 
+          set -e
+          curl -v -H 'Content-Type: application/json' ${{ secrets.PROD_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
+          if [ $? == '0' ]
+          then 
+            echo "production stripe webhook is working"
+          else 
+            echo "production stripe webhook not working"
+            exit 1 
+          fi
+
+      - name: testing stripe test webhooks
+        run: |
+          set -x 
+          set -e
+          curl -v -H 'Content-Type: application/json' ${{ secrets.TEST_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
+          if [ $? == '0' ]
+          then 
+            echo "testing stripe webhook is working"
+          else 
+            echo "testing stripe webhook not working"
+            exit 1 
+          fi
+
