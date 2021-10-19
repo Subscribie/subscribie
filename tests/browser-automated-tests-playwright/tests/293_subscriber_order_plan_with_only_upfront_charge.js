@@ -1,5 +1,4 @@
 const { test, expect } = require('@playwright/test');
-const TEST_SUBSCRIBER_EMAIL = process.env.subscriber_email_user;
 
 test.describe("order plan with only upfront charge tests:", () => {
     test("@293@subscriber@Ordering upfront plan", async ({ page }) => {
@@ -11,7 +10,7 @@ test.describe("order plan with only upfront charge tests:", () => {
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', TEST_SUBSCRIBER_EMAIL);
+        await page.fill('#email', 'john@example.com');
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
@@ -68,5 +67,4 @@ test.describe("order plan with only upfront charge tests:", () => {
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
         expect(subscriber_plan_title_content === 'One-Off Soaps');
     });
-    subscriber_magic_login = require('./subscriber_magic_login');
 });
