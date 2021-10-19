@@ -20,7 +20,6 @@ jobs:
 
       - name: testing stripe production webhooks
         run: |
-          set -x 
           set -e
           curl -v -H 'Content-Type: application/json' ${{ secrets.PROD_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
           if [ $? == '0' ]
@@ -33,7 +32,6 @@ jobs:
 
       - name: testing stripe test webhooks
         run: |
-          set -x 
           set -e
           curl -v -H 'Content-Type: application/json' ${{ secrets.TEST_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
           if [ $? == '0' ]
