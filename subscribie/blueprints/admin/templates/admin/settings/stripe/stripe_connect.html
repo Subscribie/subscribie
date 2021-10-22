@@ -23,6 +23,16 @@
           <p>Connect to Stripe below. When your subscribers pay one-off amounts, they 
           will be paid out to your into your bank account via Stripe.
           </p>
+          <select id="country_code"> 
+            <option value="UK" data-currency="GBP" selected>United Kingdom</option>
+            <option value="US" data-currency="USD">United States</option>
+            <option value="MX">Mexico</option>
+            <option value="AU">Australia</option>
+            <option value="AT">Austria</option>
+            <option value="BE">Belgium</option>
+            <option value="HU">Hungary</option>
+            
+          </select>
 
           <button id="submit" class="btn btn-success">
           Setup payouts on Stripe
@@ -155,35 +165,40 @@
 
 <script>
 let elmButton = document.querySelector("#submit");
-  
-if (elmButton) {
-  elmButton.addEventListener(
-    "click",
-    e => {
-      elmButton.setAttribute("disabled", "disabled");
-      elmButton.textContent = "Opening please wait...";
 
-      fetch("{{ stripe_onboard_path }}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.url) {
-            window.location = data.url;
-          } else {
-            elmButton.removeAttribute("disabled");
-            elmButton.textContent = "<Something went wrong>";
-            console.log("data", data);
-          }
-        });
-    },
-    false
-  );
-}
 
+      if (elmButton) {
+        elmButton.addEventListener(
+          "click",
+          e => {
+            let country_code = document.querySelector("#country_code");
+            let data = {};
+            data['country_code'] = country_code.value;
+            data['default_currency'] = country_code[country_code.selectedIndex].dataset.currency;
+            elmButton.setAttribute("disabled", "disabled");
+            elmButton.textContent = "Opening please wait...";
+
+            fetch('{{ stripe_onboard_path }}', {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(data),
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.url) {
+                  window.location = data.url;
+                } else {
+                  elmButton.removeAttribute("disabled");
+                  elmButton.textContent = "<Something went wrong>";
+                  console.log("data", data);
+                }
+              });
+          },
+          false
+        );
+      }
 /* Toggle stripe live mode */
 elms = document.querySelectorAll('.stripe-change-live-mode');
 

@@ -853,8 +853,9 @@ def stripe_onboarding():
     # Determine if in live or test mode
     payment_provider = PaymentProvider.query.first()
     stripe.api_key = get_stripe_secret_key()
-
     company = Company.query.first()
+    country_code = request.json["country_code"]
+    default_currency = request.json["default_currency"]
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
@@ -867,7 +868,7 @@ def stripe_onboarding():
         AttributeError,
     ):
         log.info("Could not find a stripe account, Creating stripe account")
-        account = create_stripe_connect_account(company)
+        account = create_stripe_connect_account(company, country_code, default_currency)
         if payment_provider.stripe_livemode:
             payment_provider.stripe_live_connect_account_id = account.id
         else:
