@@ -128,7 +128,7 @@
                                     </li>
                                     <li><strong>Actions: </strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if subscription.stripe_status|lower in ['active', 'trialing'] %}
+                                            {% if subscription.stripe_status|lower in ['active', 'trialing', 'past_due', 'unpaid'] %}
                                                 {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
