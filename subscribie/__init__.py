@@ -46,6 +46,19 @@ from .models import (
     Module,
 )
 
+from .utils import (
+    get_stripe_secret_key,
+    get_stripe_connect_account,
+    get_stripe_connect_completed_status,
+    set_stripe_connect_completed_status,
+    get_stripe_livemode,
+    set_stripe_livemode,
+    get_stripe_business_profile,
+    get_stripe_connect_account_id,
+    set_stripe_connect_account_id,
+)
+from flask_saas import Flask_SaaS
+
 log = logging.getLogger(__name__)
 
 
@@ -60,6 +73,19 @@ def create_app(test_config=None):
 
     if test_config is not None:
         app.config.update(test_config)
+
+    Flask_SaaS(
+        app,
+        get_stripe_secret_key=get_stripe_secret_key,
+        get_stripe_business_profile=get_stripe_business_profile,
+        get_stripe_connect_account=get_stripe_connect_account,
+        get_stripe_livemode=get_stripe_livemode,
+        set_stripe_livemode=set_stripe_livemode,
+        get_stripe_connect_account_id=get_stripe_connect_account_id,
+        set_stripe_connect_account_id=set_stripe_connect_account_id,
+        get_stripe_connect_completed_status=get_stripe_connect_completed_status,
+        set_stripe_connect_completed_status=set_stripe_connect_completed_status,
+    )
 
     @app.before_request
     def start_session():
