@@ -199,6 +199,18 @@ If you're creating a *new* theme, then change `TEMPLATE_BASE_DIR` to a directory
 subscribie root project.
 
 
+#### Stripe onboarding
+
+Subscribie uses Stripe connect (google it) for connecting to Stripe, which allows the platform to take a % of sales (aka `application_fee`).
+
+The code for this is a python package called `flask_sass`, which adds the Stripe Connect workflow to Subscribie, which is:
+
+```
+1. (after logging in) Click 'connect to Stripe'
+2. User is directed to Stripe onboarding (a sign-up process which automatically redirects the user back to this app)
+3. User's account is connected to Stripe
+```
+
 # API based authentication with jwt token
 
 #### Locally

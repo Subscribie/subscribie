@@ -1,7 +1,7 @@
 import logging
 from subscribie.database import database
 from subscribie.models import UpcomingInvoice, Subscription
-from subscribie.utils import (
+from subscribie.stripe_utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
 )

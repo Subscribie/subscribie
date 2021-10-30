@@ -1,5 +1,9 @@
-from flask import current_app, request, g
+from subscribie import database
+from flask import current_app, request, g, session
 import stripe
+
+from flask_saas import StripeBusinessProfile
+
 from subscribie import database
 import logging
 
@@ -89,6 +93,22 @@ def get_stripe_connect_account_id():
     return account_id
 
 
+def set_stripe_connect_account_id(account_id: str) -> str:
+    """Set stripe connect account id locally without querying Stripe api"""
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_livemode:
+        payment_provider.stripe_live_connect_account_id = account_id
+    else:
+        payment_provider.stripe_test_connect_account_id = account_id
+
+    database.session.commit()
+    session["account_id"] = account_id
+
+    return account_id
+
+
 def stripe_connect_active():
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
@@ -119,12 +139,6 @@ def format_to_stripe_interval(plan: str):
     else:
         return ""
     return plan
-
-
-def modify_stripe_account_capability(account_id):
-    """Request (again) card_payments capability after kyc onboarding
-    is complete"""
-    stripe.Account.modify_capability(account_id, "card_payments", requested=True)
 
 
 def create_stripe_tax_rate():
@@ -165,3 +179,40 @@ def get_stripe_livemode():
     if payment_provider.stripe_livemode:
         return True
     return False
+
+
+def set_stripe_livemode(livemode: int) -> bool:
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    payment_provider.stripe_livemode = livemode
+    database.session.commit()
+    return bool(livemode)
+
+
+def get_stripe_connect_completed_status() -> bool:
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    return payment_provider.stripe_active
+
+
+def set_stripe_connect_completed_status(status: bool) -> bool:
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    payment_provider.stripe_active = status
+    database.session.commit()
+
+
+def get_stripe_business_profile():
+    """
+    Return dict valid for Stripe acounnt business_profile
+    See:
+    https://stripe.com/docs/api/accounts/object#account_object-business_profile
+    """
+    from .models import Company
+
+    company = Company.query.first()
+
+    return {"name": company.name, "email": g.user.email}
