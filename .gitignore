@@ -30,3 +30,4 @@ node_modules
 .env
 .env.docker
 *.webm
+tests/browser-automated-tests-playwright/*snapshots/*

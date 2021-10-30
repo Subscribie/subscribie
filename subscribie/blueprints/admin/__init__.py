@@ -19,12 +19,10 @@ from flask import (
 import jinja2
 import requests
 from jinja2 import Environment
-from subscribie.utils import (
+from subscribie.stripe_utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
-    create_stripe_connect_account,
     get_stripe_connect_account_id,
-    modify_stripe_account_capability,
     create_stripe_tax_rate,
 )
 from subscribie.forms import (
@@ -784,134 +782,6 @@ def category_assign_plan(category_id):
     return render_template(
         "admin/categories/category_assign_plan.html", category=category, plans=plans
     )
-
-
-@admin.route("/connect/stripe-set-livemode", methods=["POST"])
-@login_required
-def set_stripe_livemode():
-    livemode = request.data.decode("utf-8")
-    if livemode == "0" or livemode == "1":
-        payment_provider = PaymentProvider.query.first()
-        payment_provider.stripe_livemode = int(livemode)
-        database.session.commit()
-        return redirect("/admin/connect/stripe-connect")
-
-    return jsonify("Invalid request, valid values: 'live' or 'test'"), 500
-
-
-@admin.route("/connect/stripe-connect", methods=["GET"])
-@login_required
-def stripe_connect():
-    account = None
-    stripe_express_dashboard_url = None
-    stripe.api_key = get_stripe_secret_key()
-    payment_provider = PaymentProvider.query.first()
-
-    try:
-        account = get_stripe_connect_account()
-        if account is not None and account.charges_enabled and account.payouts_enabled:
-            payment_provider.stripe_active = True
-        else:
-            payment_provider.stripe_active = False
-    except (
-        stripe.error.PermissionError,
-        stripe.error.InvalidRequestError,
-        AttributeError,
-    ) as e:
-        log.error(e)
-        account = None
-
-    # Setup Stripe webhook endpoint if it dosent already exist
-    if account:
-        # Attempt to Updates an existing Account Capability to accept card payments
-        try:
-            account = get_stripe_connect_account()
-            modify_stripe_account_capability(account.id)
-        except Exception as e:
-            log.error(f"Could not update card_payments capability for account. {e}")
-
-        try:
-            stripe_express_dashboard_url = stripe.Account.create_login_link(
-                account.id
-            ).url
-        except stripe.error.InvalidRequestError:
-            stripe_express_dashboard_url = None
-
-    database.session.commit()
-    return render_template(
-        "admin/settings/stripe/stripe_connect.html",
-        stripe_onboard_path=url_for("admin.stripe_onboarding"),
-        account=account,
-        payment_provider=payment_provider,
-        stripe_express_dashboard_url=stripe_express_dashboard_url,
-    )
-
-
-@admin.route("/stripe-onboard", methods=["POST"])
-@login_required
-def stripe_onboarding():
-    # Determine if in live or test mode
-    payment_provider = PaymentProvider.query.first()
-    stripe.api_key = get_stripe_secret_key()
-
-    company = Company.query.first()
-
-    # Use existing stripe_connect_account_id, otherwise create stripe connect account
-    try:
-        log.info("Trying if there's an existing stripe account")
-        account = get_stripe_connect_account()
-        log.info(f"Yes, stripe account found: {account.id}")
-    except (
-        stripe.error.PermissionError,
-        stripe.error.InvalidRequestError,
-        AttributeError,
-    ):
-        log.info("Could not find a stripe account, Creating stripe account")
-        account = create_stripe_connect_account(company)
-        if payment_provider.stripe_livemode:
-            payment_provider.stripe_live_connect_account_id = account.id
-        else:
-            payment_provider.stripe_test_connect_account_id = account.id
-
-    database.session.commit()
-
-    session["account_id"] = account.id
-    account_link_url = _generate_account_link(account.id)
-    try:
-        return jsonify({"url": account_link_url})
-    except Exception as e:
-        return jsonify(error=str(e)), 403
-
-
-def _generate_account_link(account_id):
-    """
-    From the Stripe Docs:
-    A user that is redirected to your return_url might not have completed the
-    onboarding process. Use the /v1/accounts endpoint to retrieve the user’s
-    account and check for charges_enabled. If the account is not fully onboarded,
-    provide UI prompts to allow the user to continue onboarding later. The user
-    can complete their account activation through a new account link (generated
-    by your integration). You can check the state of the details_submitted
-    parameter on their account to see if they’ve completed the onboarding process.
-    """
-    account_link = stripe.AccountLink.create(
-        type="account_onboarding",
-        account=account_id,
-        refresh_url=url_for("admin.stripe_connect", refresh="refresh", _external=True),
-        return_url=url_for("admin.stripe_connect", success="success", _external=True),
-    )
-    return account_link.url
-
-
-@admin.route("/stripe-onboard/refresh", methods=["GET"])
-def onboard_user_refresh():
-    if "account_id" not in session:
-        return redirect(url_for("admin.stripe_onboarding"))
-
-    account_id = session["account_id"]
-
-    account_link_url = _generate_account_link(account_id)
-    return redirect(account_link_url)
 
 
 @admin.route("/connect/google_tag_manager/manually", methods=["GET", "POST"])

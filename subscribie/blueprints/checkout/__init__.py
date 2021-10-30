@@ -22,7 +22,7 @@ from subscribie.models import (
     Setting,
     TaxRate,
 )
-from subscribie.utils import (
+from subscribie.stripe_utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
     format_to_stripe_interval,

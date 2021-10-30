@@ -46,7 +46,7 @@ from .models import (
     Module,
 )
 
-from .utils import (
+from .stripe_utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
     get_stripe_connect_completed_status,

@@ -1,6 +1,6 @@
 from subscribie.models import Subscription
 from subscribie.database import database
-from subscribie.utils import (
+from subscribie.stripe_utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
     stripe_connect_active,

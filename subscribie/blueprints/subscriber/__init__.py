@@ -34,7 +34,7 @@ from subscribie.models import (
     Plan,
     PlanRequirements,
 )
-from subscribie.utils import (
+from subscribie.stripe_utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
     get_stripe_publishable_key,
