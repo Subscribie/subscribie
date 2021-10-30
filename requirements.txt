@@ -1,6 +1,5 @@
 wheel
-Werkzeug==1.0.1
-Flask>=1,<2
+Flask>=2,<3
 flask_cors
 Flask-Reuploaded==0.3.2
 Flask-WTF==0.14.3
