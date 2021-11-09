@@ -4,7 +4,7 @@ Flask>=1,<2
 flask_cors
 Flask-Reuploaded==0.3.2
 Flask-WTF==0.14.3
-wtforms[email]==3.0.0
+wtforms[email]==2.3.3
 Flask-Mail>=0.9.1
 requests==2.25.0
 blinker==1.4
