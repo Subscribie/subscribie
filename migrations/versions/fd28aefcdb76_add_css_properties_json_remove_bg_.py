@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("module_style") as batch_op:
         batch_op.add_column(
-            sa.Column("css_properties_json", sa.String(), nullable=True)
+            sa.Column("css_properties_json", sa.String(255), nullable=True)
         )
         batch_op.drop_column("bg_primary")
 

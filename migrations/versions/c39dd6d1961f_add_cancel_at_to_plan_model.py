@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table("plan") as batch_op:
-        batch_op.add_column(sa.Column("cancel_at", sa.String(), nullable=True))
+        batch_op.add_column(sa.Column("cancel_at", sa.String(255), nullable=True))
 
 
 def downgrade():

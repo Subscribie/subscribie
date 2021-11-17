@@ -21,9 +21,9 @@ def upgrade():
     op.create_table(
         "category",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("uuid", sa.String(), nullable=True),
+        sa.Column("uuid", sa.String(255), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("name", sa.String(255), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     with op.batch_alter_table("plan") as batch_op:

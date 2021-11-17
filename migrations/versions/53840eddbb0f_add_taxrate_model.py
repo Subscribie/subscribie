@@ -20,7 +20,7 @@ def upgrade():
     op.create_table(
         "tax_rate",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("stripe_tax_rate_id", sa.String(), nullable=True),
+        sa.Column("stripe_tax_rate_id", sa.String(255), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )

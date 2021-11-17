@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.add_column(
-        "subscription", sa.Column("stripe_pause_collection", sa.String(), nullable=True)
+        "subscription", sa.Column("stripe_pause_collection", sa.String(255), nullable=True)
     )
 
 
