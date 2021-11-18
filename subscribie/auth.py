@@ -70,6 +70,18 @@ def token_required(f):
     return wrapper
 
 
+def get_magic_login_link(email, password, skip_password_check=False):
+    login_url = generate_login_url(email)
+    if skip_password_check:
+        resp = {"login_url": login_url}
+        return resp
+
+    if check_password_login(email, password):
+        resp = {"login_url": login_url}
+        return resp
+    raise
+
+
 @bp.route("/jwt-login", methods=["GET", "POST"])
 def jwt_login():
 
@@ -127,7 +139,7 @@ def start_new_user_session(email):
 
 
 @bp.route("/login", methods=["POST"])
-def generate_login_token():
+def send_login_token_email():
     magic_login_form = LoginForm()
     password_login_form = PasswordLoginForm()
 
@@ -225,9 +237,14 @@ def load_logged_in_user():
         g.user = User.query.filter_by(email=user_id).first()
 
 
+def generate_login_token():
+    login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
+    return login_token
+
+
 def generate_login_url(email):
     # Generate login token
-    login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
+    login_token = generate_login_token()
     user = User.query.filter_by(email=email.lower()).first()
 
     if user is not None:

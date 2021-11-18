@@ -57,6 +57,7 @@ def filter_archived(query):
             and "/admin/dashboard" not in request.path
             and "/page" not in request.path
             and "/new_customer" not in request.path
+            and "/start-building" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
