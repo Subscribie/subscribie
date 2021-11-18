@@ -70,11 +70,8 @@ def token_required(f):
     return wrapper
 
 
-def get_magic_login_link(email, password, skip_password_check=False):
+def get_magic_login_link(email, password):
     login_url = generate_login_url(email)
-    if skip_password_check:
-        resp = {"login_url": login_url}
-        return resp
 
     if check_password_login(email, password):
         resp = {"login_url": login_url}
