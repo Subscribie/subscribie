@@ -1,13 +1,39 @@
 import logging
 from .auth import token_required
 from flask import Blueprint, jsonify, request, Response
-from .models import Plan, PlanRequirements, PlanSellingPoints
+from .models import Plan, PlanRequirements, PlanSellingPoints, User
+from .auth import generate_login_url
+from .auth import get_magic_login_link
 import pydantic
 from subscribie import schemas, database
 import json
 
 log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
+
+
+@api.route("/magic-login-link", methods=["POST"])
+def api_get_magic_login_link():
+    email = request.form.get("email", None)
+    if email is not None:
+        user = User.query.filter_by(email=email).first()
+        if user is not None:
+            login_url = generate_login_url(email)
+            resp = {"login_url": login_url}
+            return resp
+    return {"msg": "Could not generate login url"}
+
+
+@api.route("/get-login-link", methods=["POST"])
+def get_login_link():
+    email = request.form.get("email", None)
+    password = request.form.get("password", None)
+    try:
+        login_link = get_magic_login_link(email, password)
+        return login_link
+    except Exception as e:
+        log.error(f"Could not get_login_link: {e}")
+        return {"msg": "Could not generate login link"}
 
 
 @api.route("/plans")
