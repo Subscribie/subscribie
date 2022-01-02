@@ -79,6 +79,52 @@
               </li>
             {% endfor %}
           </ul>
+          <!-- invoices list -->
+          <div class="card-body">
+            <h3>Invoices</h3>
+            <style>
+            #subscriber-invoices th {
+              padding: 8px;
+            }
+            #subscriber-invoices td {
+              text-align: center;
+            }
+            </style>
+            <table id="subscriber-invoices">
+            <tr>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Payment Attempts</th>
+            </tr>
+              <tbody>
+              {% for invoice in person.invoices() %}
+              <tr>
+                <td>{{ invoice['total'] | currencyFormat }}</td>
+                <td>{{ invoice['status'] }}</td>
+                <td>{{ invoice['created']| timestampToDate }}</td>
+                <td>{{ invoice['attempt_count'] }}</td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <hr />
+            <h4>Invoice heading explanations</h4>
+            <dl>
+                <dt>open</dt>
+                <dd>The invoice has been finalised, and is awaiting customer payment.</dd>
+
+                <dt>paid</dt>
+                <dd>The invoice was paid.</dd>
+
+                <dt>uncollectible</dt>
+                <dd>The customer is unlikely to pay this invoice (treat it as bad debt in your accounting process).</dd>
+
+                <dt>Payment attempts</dt>
+                <dd>Number of payment attempts made for this invoice, from the perspective of the payment retry schedule. Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count.</dd>
+            </dl>
+          </div>
+          <!-- end invoices list -->
         </div>
       </div>
 

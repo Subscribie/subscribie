@@ -13,6 +13,8 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
 from flask import request
+from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account_id
+import stripe
 
 from .database import database
 
@@ -114,6 +116,53 @@ class Person(database.Model, HasArchived):
     mobile = database.Column(database.String())
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
+
+    def invoices(self):
+        """Get all invoices for a given person
+
+        Note a person may have zero or more subscriptions,
+        with each subscription having zero or more invoices
+
+        For Stripe invoices, the stripe customer id is needed,
+        note it is possible (though rare) for one Subscribie customer id
+        to have multiple Stripe customer ids. This is not as issue
+        since we store the Stripe subscription id, and, if needed, can
+        query the Stripe customer id from the Subscription object.
+        See:
+        - this file class "Subscription" with colum "stripe_subscription_id"
+        - https://stripe.com/docs/api/subscriptions/object?lang=python#subscription_object-customer # noqa: E501
+        """
+        invoices = []
+        stripe.api_key = get_stripe_secret_key()
+        stripe_account_id = get_stripe_connect_account_id()
+
+        # Get Stripe invoices
+        for subscription in self.subscriptions:
+            if subscription.stripe_subscription_id != "":
+                try:
+                    stripe_subscription = stripe.Subscription.retrieve(
+                        subscription.stripe_subscription_id,
+                        stripe_account=stripe_account_id,
+                    )
+                    # Get Stripe customer id
+                    stripe_customer_id = stripe_subscription.customer
+                    # Get Stripe invoices for this customer/subscriber
+                    stripe_invoices = stripe.Invoice.list(
+                        stripe_account=stripe_account_id,
+                        customer=stripe_customer_id,
+                    )
+                    # loop over all invoices
+                    for invoice in stripe_invoices.auto_paging_iter():
+                        invoices.append(invoice)
+                except stripe.error.InvalidRequestError as e:
+                    log.error(
+                        f"Unable to retrieve stripe subscription by id: {subscription.stripe_subscription_id}. {e}"  # noqa: E501
+                    )
+            else:
+                log.debug(
+                    f"Skipping fetching invoice for subscription.uuid {subscription.uuid}"  # noqa: E501
+                )
+        return invoices
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

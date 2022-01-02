@@ -2,6 +2,9 @@ from . import admin
 from subscribie.auth import login_required
 from subscribie.models import Person
 from flask import render_template
+import logging
+
+log = logging.getLogger(__name__)
 
 
 @admin.route("/show-subscriber/<subscriber_id>", methods=["GET", "POST"])
