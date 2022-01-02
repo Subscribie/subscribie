@@ -24,11 +24,15 @@ def export_transactions():
                     "transaction_date": transaction.created_at,
                     "amount": transaction.amount / 100,
                     "currency": "GBP",
+                    "payment_status": transaction.payment_status,
                     "subscription_status": transaction.subscription.stripe_status,
                     "plan_title": transaction.subscription.plan.title,
                     "given_name": transaction.person.given_name,
                     "family_name": transaction.person.family_name,
                     "email": transaction.person.email,
+                    "subscribie_transaction_reference": transaction.uuid,
+                    "subscribie_external_src": transaction.external_src,
+                    "subscribie_external_id": transaction.external_id
                 }
             )
         else:
