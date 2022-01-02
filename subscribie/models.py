@@ -152,7 +152,22 @@ class Person(database.Model, HasArchived):
                         customer=stripe_customer_id,
                     )
                     # loop over all invoices
+                    # See https://stripe.com/docs/api/pagination/auto
                     for invoice in stripe_invoices.auto_paging_iter():
+                        # If invoice is not paid, check for any payment errors
+                        if invoice.status != "paid":
+                            try:
+                                stripe_decline_code = stripe.PaymentIntent.retrieve(
+                                    invoice.payment_intent,
+                                    stripe_account=stripe_account_id,
+                                ).last_payment_error.decline_code
+                                invoice["stripe_decline_code"] = stripe_decline_code
+                            except Exception as e:
+                                log.warning(
+                                    f"Could not get Stripe Invoice PaymentIntent last_payment_error decline_code: {e}"  # noqa: E501
+                                )
+                        else:
+                            invoice["stripe_decline_code"] = None
                         invoices.append(invoice)
                 except stripe.error.InvalidRequestError as e:
                     log.error(

@@ -110,7 +110,9 @@ def currencyFormat(value):
 
 
 @admin.app_template_filter()
-def timestampToDate(timestamp):
+def timestampToDate(timestamp: str):
+    if timestamp is None:
+        return None
     return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
 
 
