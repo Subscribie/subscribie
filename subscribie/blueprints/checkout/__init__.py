@@ -633,17 +633,6 @@ def stripe_webhook():
     if event["type"] == "payment_intent.succeeded":
         return stripe_process_event_payment_intent_succeeded(event)
 
-    if event["type"] == "payment_intent.payment_failed":
-        intent = event["data"]["object"]
-        error_message = (
-            intent["last_payment_error"]["message"]
-            if intent.get("last_payment_error")
-            else None
-        )
-        log.warning(f"Payment intent failed: {intent['id']}, {error_message}")
-        # TODO Notify the customer that payment failed
-        return "OK", 200
-
     msg = {"msg": "Unknown event", "event": event}
     log.debug(msg)
 
