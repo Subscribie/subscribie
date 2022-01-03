@@ -110,8 +110,10 @@ def currencyFormat(value):
 
 
 @admin.app_template_filter()
-def timestampToDate(timestamp):
-    return datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+def timestampToDate(timestamp: str):
+    if timestamp is None:
+        return None
+    return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
 
 
 def store_stripe_transaction(stripe_external_id):

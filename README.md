@@ -349,7 +349,7 @@ Error while authenticating with Stripe: Authorization failed, status=401
 
 <br />
 
-### Install Playweright dependencies
+### Install Playwright dependencies
 ```
 npm install
 npm i -D @playwright/test
@@ -375,7 +375,7 @@ export PLAYWRIGHT_HEADLESS=false
 export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 ```
 
-## Run playwright tests:
+### Run playwright tests:
 
 ```
 cd tests/browser-automated-tests-playwright
