@@ -103,7 +103,7 @@
               <th>Created</th>
               <th>Attempts</th>
               <th>Errors</th>
-              <th>Next attempt</th>
+              <th>Next retry</th>
             </tr>
               {% for invoice in person.invoices() %}
               <tr>
@@ -130,6 +130,11 @@
 
                 <dt>Attempts</dt>
                 <dd>Number of payment attempts made for this invoice, from the perspective of the payment retry schedule. Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count.</dd>
+
+                <dt>Next Retry</dt>
+                <dd>If a charge fails for a given invoice, and it can be retried, then "next retry" is the date when
+                    another attempt to charge the subscriber will be made to collect that outstanding charge. Note
+                    that new invoices will still be raised for a subscription if the subscription is still active.</dd>
             </dl>
 
             <details>
