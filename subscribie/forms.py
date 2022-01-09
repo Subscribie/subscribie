@@ -5,7 +5,7 @@ from wtforms import (
     FieldList,
     validators,
     BooleanField,
-    TextField,
+    StringField,
     HiddenField,
     TextAreaField,
     IntegerField,
@@ -32,18 +32,18 @@ def strip_whitespace(value):
 
 
 class PlansForm(StripWhitespaceForm):
-    email = TextField("Email", [validators.Email(), validators.DataRequired()])
+    email = StringField("Email", [validators.Email(), validators.DataRequired()])
     title = FieldList(StringField("Title", [validators.DataRequired()]), min_entries=1)
-    company_name = TextField("Company Name")
-    slogan = TextField("Slogan")
+    company_name = StringField("Company Name")
+    slogan = StringField("Slogan")
     instant_payment = FieldList(
-        TextField("Up-Front Payment", default=False), min_entries=1
+        StringField("Up-Front Payment", default=False), min_entries=1
     )
     uuid = FieldList(StringField(), min_entries=1)
-    subscription = FieldList(TextField("Subscription", default=False), min_entries=1)
-    private = FieldList(TextField("Private Plan", default=False), min_entries=1)
+    subscription = FieldList(StringField("Subscription", default=False), min_entries=1)
+    private = FieldList(StringField("Private Plan", default=False), min_entries=1)
     note_to_seller_required = FieldList(
-        TextField("Require note from customer", default=False), min_entries=1
+        StringField("Require note from customer", default=False), min_entries=1
     )
     # Allow seller to say what additional information they need
     note_to_buyer_message = FieldList(
