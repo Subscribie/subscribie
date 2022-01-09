@@ -1,6 +1,13 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 
 # Subscribie  - Collect recurring payments easily 
+
+- [Features](#features)
+- [Demo & Hosting](#demo--hosting)
+- [Demo](#demo)
+- [Quickstart](#quickstart-without-docker)
+- [Testing](#testing)
+- [Deployment](#saas-deployment)
 #### Open Source subscription billing and management
 
 ## What does this project do?
@@ -12,7 +19,7 @@ Quickly build a subscription based website, taking weekly/monthly/yearly payment
 - Each of your plans have unique selling points (USPs)
 - Each have a different recurring price, and/or an up-front charge
 
-# Hosting
+# Demo & Hosting
 Don't want/know how to code? Pay for the hosted service.
 
 https://subscribie.co.uk
@@ -317,13 +324,18 @@ There are two types of test
 python -m pytest --ignore=node_modules # run pytest
 ```
 
-# Stripe webhooks
-Stripe webhooks needs
+#### Receive Stripe webhooks locally whilst testing
+
+Stripe webhooks are recieved when payment events occur.
+The test suite needs to listen to these events locally when running tests.
+
+tldr: 
+1. Install the stripe cli
+2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
 
 ## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
 > Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
-If you're doing local development, then you need Stripe to send *you* the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
-
+If you're doing local development, then you need Stripe to send you the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
 
 1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
@@ -344,13 +356,13 @@ Remember Stripe will give you a key valid for 90 days, if you get the following 
 ```
 Error while authenticating with Stripe: Authorization failed, status=401
 ```
-## Run browser automated tests with playright
+### Run browser automated tests with playright
 > **Important:** Stripe cli must be running locally to recieve payment events:
 >`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
 
 <br />
 
-### Install Playwright dependencies
+#### Install Playwright dependencies
 ```
 npm install
 npm i -D @playwright/test
@@ -369,14 +381,14 @@ Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is
 needs to be running locally if you're runnning browser automated tests
 locally.
 
-### Turn on headful mode & set Playwright host
+#### Turn on headful mode & set Playwright host
 
 ```
 export PLAYWRIGHT_HEADLESS=false
 export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 ```
 
-### Run playwright tests:
+#### Run playwright tests:
 
 ```
 cd tests/browser-automated-tests-playwright
@@ -425,8 +437,8 @@ Needed components / services. Check the `.env.example` for each of them.
 
 # Where can I get more help, if I need it?
 
-Read through the [docs](https://subscribie.readthedocs.io)
-Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
+- Read through all these docs
+- Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
 
 
 ## Docker help

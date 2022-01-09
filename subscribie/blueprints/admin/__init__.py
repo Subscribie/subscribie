@@ -1449,18 +1449,32 @@ def announce_shop_stripe_connect_ids():
             stripe_live_connect_account_id = (
                 payment_provider.stripe_live_connect_account_id
             )
-            req = announce_stripe_connect_account(
-                stripe_live_connect_account_id, live_mode=1
-            )
+            try:
+                req = announce_stripe_connect_account(
+                    stripe_live_connect_account_id, live_mode=1
+                )
+            except requests.exceptions.ConnectionError as e:
+                msg = f"Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
+                log.error(msg)
+                return Response(
+                    json.dumps(msg), status=500, mimetype="application/json"
+                )
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
             stripe_test_connect_account_id = (
                 payment_provider.stripe_test_connect_account_id
             )
-            req = announce_stripe_connect_account(
-                stripe_test_connect_account_id, live_mode=0
-            )
+            try:
+                req = announce_stripe_connect_account(
+                    stripe_test_connect_account_id, live_mode=0
+                )
+            except requests.exceptions.ConnectionError as e:
+                msg = f"Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
+                log.error(msg)
+                return Response(
+                    json.dumps(msg), status=500, mimetype="application/json"
+                )
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
@@ -1478,6 +1492,7 @@ WARNING: Check logs to verify recipt"
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
+        return Response(json.dumps(msg), status=500, mimetype="application/json")
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"

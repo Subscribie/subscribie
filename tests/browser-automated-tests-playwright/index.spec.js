@@ -13,13 +13,12 @@ test.describe("Subscribie tests:", () => {
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
   //Stripe Test
-  test("@293@shop-owner@Stripe Test", async ({ page }) => {
+  test("@293@connect-to-stripe@shop-owner@Stripe Test", async ({ page }) => {
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
     try {
       let connectYourShopContent = await page.evaluate(() => document.body.textContent);
-      //const contentSuccess = await page.textContent('.alert-success');
       if (connectYourShopContent.indexOf("Congrats!") > -1) {
         expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
         console.log("Already connected Stripe sucessfully, exiting test");
@@ -30,7 +29,7 @@ test.describe("Subscribie tests:", () => {
       console.log("Continuing with Stripe Connect onboarding");
     }
   });
-  test("@293@shop-owner@detect stripe onboarding page", async ({ page }) => {
+  test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
 
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');
@@ -155,7 +154,15 @@ test.describe("Subscribie tests:", () => {
         const stripe_completion_content = await page.textContent('text="Other information provided"');
         if (expect(stripe_completion_content === "Other information provided")) {
           await new Promise(x => setTimeout(x, 1000));
-          await page.click('button:has-text("Submit")');
+
+          // Dont wait too long to click either Submit or Done
+          try {
+            await page.click('button:has-text("Submit")', { timeout: 10000 })
+            console.log("Clicking Submit");
+          } catch (e) {
+            await page.click('button:has-text("Done")');
+            console.log("Clicking Done");
+          }
         }
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
