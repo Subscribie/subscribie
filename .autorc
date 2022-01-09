@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    "git-tag",
+    "released"
+  ],
+  "owner": "karmacomputing",
+  "repo": "subscribie",
+  "name": "karmacomputing",
+  "email": "oss@karmacomputing.co.uk"
+}
