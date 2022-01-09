@@ -856,8 +856,8 @@ def stripe_onboarding():
     payment_provider = PaymentProvider.query.first()
     stripe.api_key = get_stripe_secret_key()
     company = Company.query.first()
-    country_code = request.json["country_code"]
-    default_currency = request.json["default_currency"]
+    country_code = request.json.get("country_code")
+    default_currency = request.json.get("default_currency")
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
