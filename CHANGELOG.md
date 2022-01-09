@@ -1,3 +1,16 @@
+# v0.1.3 (Sun Jan 09 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Merge branch 'master' of github.com:Subscribie/subscribie ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #754 set auto release user to subscribie-bot ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.2 (Sun Jan 09 2022)
 
 #### 🐛 Bug Fix
