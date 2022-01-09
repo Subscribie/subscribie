@@ -511,19 +511,28 @@ def stripe_process_event_payment_intent_succeeded(event):
             "subscribie_checkout_session_id"
         ]
     except KeyError:
-        # There is no metadata on the event if its an upfront payment
+        # There is no subscribie metadata on the event if its an upfront payment
         # So try and get it via the data['invoice'] attribute
         invoice_id = data["invoice"]
-        invoice = stripe.Invoice.retrieve(
-            stripe_account=event["account"], id=invoice_id
-        )
-        # Fetch subscription via its invoice
-        subscription = stripe.Subscription.retrieve(
-            stripe_account=event["account"], id=invoice.subscription
-        )
-        subscribie_checkout_session_id = subscription.metadata[
-            "subscribie_checkout_session_id"
-        ]
+
+        # Stripe payment_intent invoice attribute may be null if
+        # the payment intent is an instant charge (meaning not part of a
+        # subscrtiption or plan).
+        if invoice_id is not None:
+            invoice = stripe.Invoice.retrieve(
+                stripe_account=event["account"], id=invoice_id
+            )
+            # Fetch subscription via its invoice
+            subscription = stripe.Subscription.retrieve(
+                stripe_account=event["account"], id=invoice.subscription
+            )
+            subscribie_checkout_session_id = subscription.metadata[
+                "subscribie_checkout_session_id"
+            ]
+        else:
+            # If instance charge (not a subscription)
+            # there is no checkout session (instant charge)
+            subscribie_checkout_session_id = data["id"]
     except Exception as e:
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
         log.error(msg)
