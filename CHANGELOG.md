@@ -1,3 +1,16 @@
+# v0.1.4 (Sun Jan 09 2022)
+
+#### 🐛 Bug Fix
+
+- ref #746 display ad-hoc charges on transactions dashboard & transactions export [#747](https://github.com/Subscribie/subscribie/pull/747) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #746 stripe webhook when ad-hoc charge is made, dont try and retrieve invice from stripe because there is none [#747](https://github.com/Subscribie/subscribie/pull/747) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.3 (Sun Jan 09 2022)
 
 #### ⚠️ Pushed to `master`
