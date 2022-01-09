@@ -1,14 +1,12 @@
 """compact all migrations
 
 Revision ID: 702d6ee9b14f
-Revises: 
+Revises:
 Create Date: 2020-09-21 21:11:08.854792
 
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.engine.reflection import Inspector
-
 
 
 # revision identifiers, used by Alembic.
@@ -20,7 +18,7 @@ depends_on = None
 
 def upgrade():
     conn = op.get_bind()
-    inspector = Inspector.from_engine(conn)
+    inspector = sa.inspect(conn)
     tables = inspector.get_table_names()
 
     if 'choice_group' not in tables:

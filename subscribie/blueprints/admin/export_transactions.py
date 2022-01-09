@@ -19,16 +19,34 @@ def export_transactions():
     rows = []
     for transaction in transactions:
         if transaction.person is not None:
+            # Transactions without an associated subscription (e.g.
+            # a manual charge to a customer, will not have an associated
+            # subscription.
+            if transaction.subscription:
+                plan_title = transaction.subscription.plan.title
+                subscription_uuid = transaction.subscription.uuid
+                subscription_status = transaction.subscription.stripe_status
+            else:
+                plan_title = None
+                subscription_uuid = None
+                subscription_status = None
+
             rows.append(
                 {
                     "transaction_date": transaction.created_at,
+                    "plan_title": plan_title,
                     "amount": transaction.amount / 100,
                     "currency": "GBP",
-                    "subscription_status": transaction.subscription.stripe_status,
-                    "plan_title": transaction.subscription.plan.title,
+                    "payment_status": transaction.payment_status,
                     "given_name": transaction.person.given_name,
                     "family_name": transaction.person.family_name,
                     "email": transaction.person.email,
+                    "subscription_status": subscription_status,
+                    "comment": transaction.comment,
+                    "subscription_uuid": subscription_uuid,
+                    "subscribie_transaction_uuid": transaction.uuid,
+                    "subscribie_external_src": transaction.external_src,
+                    "subscribie_external_id": transaction.external_id,
                 }
             )
         else:

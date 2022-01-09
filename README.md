@@ -1,6 +1,13 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 
 # Subscribie  - Collect recurring payments easily 
+
+- [Features](#features)
+- [Demo & Hosting](#demo--hosting)
+- [Demo](#demo)
+- [Quickstart](#quickstart-without-docker)
+- [Testing](#testing)
+- [Deployment](#saas-deployment)
 #### Open Source subscription billing and management
 
 ## What does this project do?
@@ -12,7 +19,7 @@ Quickly build a subscription based website, taking weekly/monthly/yearly payment
 - Each of your plans have unique selling points (USPs)
 - Each have a different recurring price, and/or an up-front charge
 
-# Hosting
+# Demo & Hosting
 Don't want/know how to code? Pay for the hosted service.
 
 https://subscribie.co.uk
@@ -27,6 +34,7 @@ Quickly set-up a subscription site which can:
 - Pause subscriptions ✔️
 - Cancel active subscriptions ✔️
 - Refund individual transactions ✔️
+- Charge customers ad-hoc outside of their subscription (e.g. chrage for ad-hoc additonal support) ✔️ 
 - Create private plans which are hidden from the main shop ✔️
 - Create subscription payment links which I can send to people to sign up to ✔️
 - Recieve payments to my bank account daily from my subscribers ✔️
@@ -163,6 +171,114 @@ Then visit http://127.0.0.1:5000
 
 To go inside the container, you can do: `docker-compose exec web /bin/bash` 
 from the project root directory.
+
+# Testing
+
+### How to setup/run tests
+
+There are two types of test
+- Browser automated tests using [playwright](https://github.com/microsoft/playwright)
+- Basic Python tests
+
+### Run Basic Python Tests:
+
+```
+. venv/bin/activate # activates venv
+python -m pytest --ignore=node_modules # run pytest
+```
+
+#### Receive Stripe webhooks locally whilst testing
+
+Stripe webhooks are recieved when payment events occur.
+The test suite needs to listen to these events locally when running tests.
+
+tldr: 
+1. Install the stripe cli
+2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
+
+## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
+> Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
+If you're doing local development, then you need Stripe to send you the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
+
+1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
+2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
+3. Run
+  ``` 
+  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+   ```
+   You will see:
+   ```
+   ⢿ Getting ready... > Ready! 
+   ```
+4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development). 
+  ```
+  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+  ```
+Remember Stripe will give you a key valid for 90 days, if you get the following error you will need to do step 2 again:
+
+```
+Error while authenticating with Stripe: Authorization failed, status=401
+```
+### Run browser automated tests with playright
+> **Important:** Stripe cli must be running locally to recieve payment events:
+>`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
+
+<br />
+
+#### Install Playwright dependencies
+```
+npm install
+npm i -D @playwright/test
+npx playwright install
+npx playwright install-deps
+```
+
+Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
+```
+  Install missing packages with:
+      sudo apt-get install libgstreamer-plugins-bad1.0-0\
+          libenchant1c2a
+```
+
+[Stripe-connect-account-announcer](https://github.com/Subscribie/stripe-connect-account-announcer)
+needs to be running locally if you're runnning browser automated tests
+locally.
+
+#### Turn on headful mode & set Playwright host
+
+```
+export PLAYWRIGHT_HEADLESS=false
+export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
+```
+
+#### Run playwright tests:
+
+```
+cd tests/browser-automated-tests-playwright
+npx playwright test
+```
+Something not working?
+Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
+```
+PWDEBUG=1 npx playwright test
+```
+If you don't see the playwright inspector, make sure you have an up to date version of playwright.
+
+Alternative debugging with breakpoints
+
+- Set breakpoint(s) by typing `debugger;` anywhere you want a breakpoint in a test.
+Then run with the node debugger active:
+```
+unset PWDEBUG
+node inspect index.js
+```
+Useful node debug commands:
+- `help` # shows help
+- `n` # go to next line
+- `list()` # show code where paused
+- `cont` # continue execution until next breakpoint
+- 
+##### For more information about test dependecies and how they work please go to [testing.md](https://github.com/Subscribie/subscribie/blob/master/testing.md)
 
 # Logging & Debugging - How to change the logLevel
 Quick: edit your `.env` file and set `PYTHON_LOG_LEVEL=DEBUG`.
@@ -301,109 +417,6 @@ Example DELETE request:
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
-# Testing
-
-### How to setup/run tests
-
-There are two types of test
-- Browser automated tests using [playwright](https://github.com/microsoft/playwright)
-- Basic Python tests
-
-### Run Basic Python Tests:
-
-```
-. venv/bin/activate # activates venv
-python -m pytest --ignore=node_modules # run pytest
-```
-
-# Stripe webhooks
-Stripe webhooks needs
-
-## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
-> Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
-If you're doing local development, then you need Stripe to send *you* the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
-
-
-1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
-2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
-3. Run
-  ``` 
-  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
-   ```
-   You will see:
-   ```
-   ⢿ Getting ready... > Ready! 
-   ```
-4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development). 
-  ```
-  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
-  ```
-Remember Stripe will give you a key valid for 90 days, if you get the following error you will need to do step 2 again:
-
-```
-Error while authenticating with Stripe: Authorization failed, status=401
-```
-## Run browser automated tests with playright
-> **Important:** Stripe cli must be running locally to recieve payment events:
->`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
-
-<br />
-
-### Install Playweright dependencies
-```
-npm install
-npm i -D @playwright/test
-npx playwright install
-npx playwright install-deps
-```
-
-Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
-```
-  Install missing packages with:
-      sudo apt-get install libgstreamer-plugins-bad1.0-0\
-          libenchant1c2a
-```
-
-[Stripe-connect-account-announcer](https://github.com/Subscribie/stripe-connect-account-announcer)
-needs to be running locally if you're runnning browser automated tests
-locally.
-
-### Turn on headful mode & set Playwright host
-
-```
-export PLAYWRIGHT_HEADLESS=false
-export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
-```
-
-## Run playwright tests:
-
-```
-cd tests/browser-automated-tests-playwright
-npx playwright test
-```
-Something not working?
-Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
-```
-PWDEBUG=1 npx playwright test
-```
-If you don't see the playwright inspector, make sure you have an up to date version of playwright.
-
-Alternative debugging with breakpoints
-
-- Set breakpoint(s) by typing `debugger;` anywhere you want a breakpoint in a test.
-Then run with the node debugger active:
-```
-unset PWDEBUG
-node inspect index.js
-```
-Useful node debug commands:
-- `help` # shows help
-- `n` # go to next line
-- `list()` # show code where paused
-- `cont` # continue execution until next breakpoint
-- 
-##### For more information about test dependecies and how they work please go to [testing.md](https://github.com/Subscribie/subscribie/blob/master/testing.md)
-
 # Saas Deployment
 
 Needed components / services. Check the `.env.example` for each of them.
@@ -424,8 +437,8 @@ Needed components / services. Check the `.env.example` for each of them.
 
 # Where can I get more help, if I need it?
 
-Read through the [docs](https://subscribie.readthedocs.io)
-Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
+- Read through all these docs
+- Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
 
 
 ## Docker help

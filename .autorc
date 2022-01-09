@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "git-tag",
+    "conventional-commits",
+    "first-time-contributor",
+    "released"
+  ],
+  "owner": "subscribie",
+  "repo": "subscribie",
+  "name": "subscribie-bot",
+  "email": "noreply@subscribie.co.uk"
+}
