@@ -1107,8 +1107,10 @@ def transactions():
     query = (
         database.session.query(Transaction)
         .join(Person, Transaction.person_id == Person.id)
-        .join(Subscription, Transaction.subscription_id == Subscription.id)
-        .join(Plan, Subscription.plan)
+        .join(
+            Subscription, Transaction.subscription_id == Subscription.id, isouter=True
+        )
+        .join(Plan, Subscription.plan, isouter=True)
         .order_by(desc(Transaction.created_at))
         .group_by(Transaction.id, Person.id)
         .execution_options(include_archived=True)
