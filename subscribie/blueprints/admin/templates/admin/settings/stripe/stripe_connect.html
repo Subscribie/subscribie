@@ -23,8 +23,13 @@
           <p>Connect to Stripe below. When your subscribers pay one-off amounts, they 
           will be paid out to your into your bank account via Stripe.
           </p>
-          <select id="country_code"> 
-            <option value="GB" data-currency="GBP" selected>United Kingdom</option>
+          <p>The country in which the account holder resides, or in which the business is legally established:</p>
+          <select id="country_code" style="display: block; margin-bottom: 2em;">
+            {% if default_currency %}
+              <option value="GB" data-currency="GBP" selected>{{ default_currency }}</option>
+            {% else %}
+              <option value="GB" data-currency="GBP" selected>United Kingdom</option>
+            {% endif %}
             <option value="US" data-currency="USD">United States</option>
             <option value="MX" data-currency="MXN" >Mexico</option>
             <option value="AU" data-currency="AUD"  >Australia</option>
