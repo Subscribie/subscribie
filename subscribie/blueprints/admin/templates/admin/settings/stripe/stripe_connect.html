@@ -24,7 +24,7 @@
           will be paid out to your into your bank account via Stripe.
           </p>
           <p>The country in which the account holder resides, or in which the business is legally established:</p>
-          <select id="country_code" style="display: block; margin-bottom: 2em;">
+          <select id="country_code" class="form-control" style="margin-bottom: 2em">
             {% if default_currency %}
               <option value="GB" data-currency="GBP" selected>{{ default_currency }}</option>
             {% else %}
@@ -70,7 +70,7 @@
             <option value="AE" data-currency="AED" >United Arab Emirates</option>
           </select>
 
-          <button id="submit" class="btn btn-success">
+          <button id="submit" class="btn btn-success mb-4">
           Setup payouts on Stripe
           {% if payment_provider.stripe_livemode %}
             (live mode)
