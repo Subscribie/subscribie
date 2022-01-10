@@ -215,7 +215,6 @@ def stripe_create_charge():
 
     :param stripe_customer_id: Stripe customer id
     :param amount: Positive integer amount to charge in smallest currency unit
-    :param currency: ISO currency code, defaults to [GBP]
     :param statement_descriptor_suffix: What customers see on their statements. Maximum 22 characters # noqa
 
     Example call:
@@ -242,7 +241,7 @@ def stripe_create_charge():
         )
 
         amount = int(request.form.get("amount"))
-        currency = "GBP"
+        currency = get_currency_code()
         statement_descriptor_suffix = request.form.get("description")
 
     try:
