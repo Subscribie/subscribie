@@ -91,10 +91,10 @@
           <p class="py-3 body-lg"><b>{{ plan.trial_period_days }} days free</b>, then</p>
           {% endif %}
           {% if plan.requirements.instant_payment == True %}
-            <p><b>Pay today:</b> &pound;{{ "%.2f"|format(plan.sell_price/100) }}</p>
+            <p><b>Pay today:</b> {{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</p>
           {% endif %}
           {% if plan.requirements.subscription == True %}
-            <p>Price: &pound;{{ "%.2f"|format(plan.interval_amount/100) }} / {{ plan.interval_unit }}</p>
+            <p>Price: {{ currency_code }}{{ "%.2f"|format(plan.interval_amount/100) }} / {{ plan.interval_unit }}</p>
           {% endif %}
           </div>
           <div>

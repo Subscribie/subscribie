@@ -26,6 +26,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
+    get_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -106,7 +107,10 @@ def dec2pence(amount):
 @admin.app_template_filter()
 def currencyFormat(value):
     value = float(value) / 100
-    return "£{:,.2f}".format(value)
+    units = "{:,.2f}".format(value)
+    currency_code = get_currency_code()
+    formatted_currency = f"{currency_code}{units}"
+    return formatted_currency
 
 
 @admin.app_template_filter()
@@ -847,7 +851,7 @@ def stripe_connect():
         account=account,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
-        default_currency=setting.default_currency
+        default_currency=setting.default_currency,
     )
 
 

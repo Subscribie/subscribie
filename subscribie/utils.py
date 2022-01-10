@@ -1,9 +1,21 @@
 from flask import current_app, request, g
 import stripe
 from subscribie import database
+from currency_symbols import CurrencySymbols
 import logging
 
 log = logging.getLogger(__name__)
+
+
+def get_currency_code():
+    from subscribie.models import Setting
+
+    setting = Setting.query.first()
+    default_currency = setting.default_currency
+    if default_currency is None:
+        default_currency = "GBP"
+    currency_code = CurrencySymbols.get_symbol(default_currency)
+    return currency_code
 
 
 def get_stripe_secret_key():

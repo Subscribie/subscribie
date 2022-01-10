@@ -28,6 +28,7 @@ from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
+from subscribie.utils import get_currency_code
 
 log = logging.getLogger(__name__)
 
@@ -89,13 +90,16 @@ def inject_template_globals():
         setting = Setting()
         database.session.add(setting)
         database.session.commit()
-    custom_code = Setting.query.first().custom_code
+    custom_code = setting.custom_code
+    currency_code = get_currency_code()
+
     return dict(
         company=company,
         integration=integration,
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
+        currency_code=currency_code,
     )
 
 

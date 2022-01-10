@@ -51,9 +51,9 @@
             Download PDF
           </a>
         </td>
-        <td>&pound;{{ "%.2f"|format(invoice.amount_due/100) }}</td>
-        <td class="invoice-amount-paid">&pound;{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
-        <td>&pound;{{ "%.2f"|format(invoice.amount_remaining/100) }}</td>
+        <td>{{ currency_code }}{{ "%.2f"|format(invoice.amount_due/100) }}</td>
+        <td class="invoice-amount-paid">{{ currency_code }}{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
+        <td>{{ currency_code }}{{ "%.2f"|format(invoice.amount_remaining/100) }}</td>
 			</tr>
 			{% endfor %}
 		  </tbody>

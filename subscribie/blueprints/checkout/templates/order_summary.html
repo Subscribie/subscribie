@@ -47,14 +47,14 @@
                 {% if plan.requirements.instant_payment %}
                 <p class="py-3 h5">
                     <b>Pay today:</b>
-                    <span class="p-1 bg-success text-white rounded ml-2">&pound; {{ "%.2f"|format(plan.sell_price/100) }}</span>
+                    <span class="p-1 bg-success text-white rounded ml-2">{{ currency_code }} {{ "%.2f"|format(plan.sell_price/100) }}</span>
                 </p>
                 {% endif %}
 
                 {% if plan.requirements.subscription %}
                 <p class="py-3 h5">
                     <b>Price ({{ plan.interval_unit }})</b>
-                    <span class="p-2 bg-primary text-white rounded ml-2">&pound; {{ "%.2f"|format(plan.interval_amount/100) }}</span>
+                    <span class="p-2 bg-primary text-white rounded ml-2">{{ currency_code }} {{ "%.2f"|format(plan.interval_amount/100) }}</span>
                 </p>
                 {% endif %}
             </div>
