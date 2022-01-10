@@ -808,6 +808,7 @@ def stripe_connect():
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
     payment_provider = PaymentProvider.query.first()
+    setting = Setting.query.first()
 
     try:
         account = get_stripe_connect_account()
@@ -846,6 +847,7 @@ def stripe_connect():
         account=account,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
+        default_currency=setting.default_currency
     )
 
 
@@ -858,6 +860,11 @@ def stripe_onboarding():
     company = Company.query.first()
     country_code = request.json.get("country_code")
     default_currency = request.json.get("default_currency")
+
+    # Set shop's default currency
+    setting = Setting.query.first()
+    setting.default_currency = str(default_currency)
+    database.session.commit()
 
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
