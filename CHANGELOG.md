@@ -1,3 +1,15 @@
+# v0.1.5 (Tue Jan 11 2022)
+
+#### 🐛 Bug Fix
+
+- adding timeout to stripe announcer [#760](https://github.com/Subscribie/subscribie/pull/760) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.4 (Sun Jan 09 2022)
 
 #### 🐛 Bug Fix
