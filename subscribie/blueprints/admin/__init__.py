@@ -1432,6 +1432,7 @@ def announce_shop_stripe_connect_ids():
                 "live_mode": live_mode,
                 "site_url": url_for("index", _external=True),
             },
+            timeout=10,
         )
         if req.status_code != 200:
             return jsonify(
