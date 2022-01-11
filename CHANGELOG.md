@@ -1,3 +1,17 @@
+# v0.1.6 (Tue Jan 11 2022)
+
+#### 🐛 Bug Fix
+
+- removing dokku apps every merge [#761](https://github.com/Subscribie/subscribie/pull/761) ([@joeltejeda](https://github.com/joeltejeda))
+- adding concurrency github group [#761](https://github.com/Subscribie/subscribie/pull/761) ([@joeltejeda](https://github.com/joeltejeda))
+- #748 stopping any workflow running and deleting dokku app [#761](https://github.com/Subscribie/subscribie/pull/761) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.5 (Tue Jan 11 2022)
 
 #### 🐛 Bug Fix
