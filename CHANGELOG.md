@@ -1,3 +1,15 @@
+# v0.1.7 (Thu Jan 13 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch '752-update-wtf-forms' [#753](https://github.com/Subscribie/subscribie/pull/753) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.6 (Tue Jan 11 2022)
 
 #### 🐛 Bug Fix
