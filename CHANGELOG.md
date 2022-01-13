@@ -1,3 +1,15 @@
+# v0.1.8 (Thu Jan 13 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #763 update requirements from requirements.txt during update all sites [#764](https://github.com/Subscribie/subscribie/pull/764) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.7 (Thu Jan 13 2022)
 
 #### 🐛 Bug Fix
