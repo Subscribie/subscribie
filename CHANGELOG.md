@@ -1,3 +1,15 @@
+# v0.1.9 (Tue Jan 18 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #766 show shops list [#767](https://github.com/Subscribie/subscribie/pull/767) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.8 (Thu Jan 13 2022)
 
 #### 🐛 Bug Fix
