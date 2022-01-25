@@ -206,11 +206,21 @@ def thankyou():
             f"{scheme}://{sitename}/api/v1/activate-shop?SAAS_API_KEY={SAAS_API_KEY}"
         )
         # Activate the shop by calling the activate shop api request
-        req = requests.get(activate_shop_url, timeout=1)
-        log.info(f"Activating shop {sitename}")
-        log.info(f"Result of activating shop status_code: {req.status_code}")
-        if req.status_code != 200:
-            log.error(f"Unable to activate shop {sitename}.")
+        try:
+            req = requests.get(activate_shop_url, timeout=1)
+            log.info(f"Activating shop {sitename}")
+            if req.status_code == 200:
+                log.info(f"Succedd activating shop. status_code: {req.status_code}")
+            # Set site url for login button on thank you page
+            session["site-url"] = f"{scheme}://{sitename}"
+            # Remove sitename from session as no longer needed
+            session.pop("sitename")
+        except requests.exceptions.ConnectionError as e:
+            log.error(f"Unable to activate shop {sitename}. Could not make api request to activate: {e}.")  # noqa: E501
+        except requests.HTTPError as e:
+            log.error(f"Unable to activate shop {sitename}. HTTPError: {e}.")  # noqa: E501
+        except Exception as e:
+            log.error(f"Unable to activate shop {sitename}. Unhandled reason: {e}.")  # noqa: E501
 
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
