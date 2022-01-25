@@ -23,15 +23,22 @@
           <p>Connect to Stripe below. When your subscribers pay one-off amounts, they 
           will be paid out to your into your bank account via Stripe.
           </p>
+          {# Only allow activated shops to activate Stripe
+             in live mode #}
+          {% if shop_activated %}
 
-          <button id="submit" class="btn btn-success">
-          Setup payouts on Stripe
-          {% if payment_provider.stripe_livemode %}
-            (live mode)
+            <button id="submit" class="btn btn-success">
+            Setup payouts on Stripe
+            {% if payment_provider.stripe_livemode %}
+              (live mode)
+            {% else %}
+              (test mode)
+            {% endif %}
+            </button>
+
           {% else %}
-            (test mode)
+            <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
           {% endif %}
-          </button>
 
 
           {% if account.payouts_enabled is sameas False and payment_provider.stripe_livemode is sameas True %}
