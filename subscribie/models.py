@@ -528,6 +528,7 @@ class Setting(database.Model):
     reply_to_email_address = database.Column(database.String())
     charge_vat = database.Column(database.Boolean(), default=False)
     custom_code = database.Column(database.String(), default=None)
+    shop_activated = database.Column(database.Boolean(), default=False)
 
 
 class File(database.Model):
