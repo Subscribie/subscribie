@@ -186,6 +186,10 @@ def send_login_token_email():
 
 @bp.route("/login", methods=["GET"])
 def login():
+    # If already logged in, redirect to admin dashboard
+    if g.user is not None:
+        return redirect(url_for("admin.dashboard"))
+    # Otherwise present login form
     form = LoginForm()
     return render_template("/admin/login.html", form=form)
 
