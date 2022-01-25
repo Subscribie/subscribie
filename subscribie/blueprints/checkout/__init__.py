@@ -1,4 +1,5 @@
 import logging
+import requests
 from flask import (
     Blueprint,
     render_template,
@@ -191,6 +192,26 @@ def thankyou():
     if session.get("plan") is None:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
+
+    # Activate shop if session["sitename"] present
+    if session.get("sitename"):
+        # Build activation api request
+        sitename = session.get("sitename")
+        SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
+        if "127.0.0.1" in request.remote_addr and not request.is_secure:
+            scheme = "http"  # allow local development
+        else:
+            scheme = "https"
+        activate_shop_url = (
+            f"{scheme}://{sitename}/api/v1/activate-shop?SAAS_API_KEY={SAAS_API_KEY}"
+        )
+        # Activate the shop by calling the activate shop api request
+        req = requests.get(activate_shop_url, timeout=1)
+        log.info(f"Activating shop {sitename}")
+        log.info(f"Result of activating shop status_code: {req.status_code}")
+        if req.status_code != 200:
+            log.error(f"Unable to activate shop {sitename}.")
+
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
     subscription = (
