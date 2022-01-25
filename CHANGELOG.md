@@ -1,3 +1,15 @@
+# v0.1.10 (Tue Jan 25 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #771 auto redirect to shop owner dashboard from login page if already logged in [#772](https://github.com/Subscribie/subscribie/pull/772) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.9 (Tue Jan 18 2022)
 
 #### 🐛 Bug Fix
