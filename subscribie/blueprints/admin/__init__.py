@@ -804,6 +804,12 @@ def set_stripe_livemode():
 @admin.route("/connect/stripe-connect", methods=["GET"])
 @login_required
 def stripe_connect():
+    setting = Setting.query.first()
+    shop_activated = setting.shop_activated
+    SERVER_NAME = os.getenv("SERVER_NAME")
+    saas_url = current_app.config.get('SAAS_URL')
+    saas_activate_account_path = current_app.config.get('SAAS_ACTIVATE_ACCOUNT_PATH')
+    saas_activate_account_url = saas_url + saas_activate_account_path + f'/{SERVER_NAME}'  # noqa: E501
     account = None
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
@@ -838,7 +844,6 @@ def stripe_connect():
             ).url
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
-
     database.session.commit()
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
@@ -846,6 +851,8 @@ def stripe_connect():
         account=account,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
+        shop_activated=shop_activated,
+        saas_activate_account_url=saas_activate_account_url
     )
 
 

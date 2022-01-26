@@ -37,6 +37,36 @@ log = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
+def saas_api_only(f):
+    """Allow or deny requests if they providate a
+    valid SAAS_API_KEY
+
+    The SAAS_API_KEY api is used for Subscribie to
+    communicate with shops created by the shop builder.
+    For example, for activating/deactivating a shop,
+    Subscribie can make an authenticated api request
+    to a shop to activate or deactivate a shop when
+    also providing a valid SAAS_API_KEY.
+    """
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
+        if request.args.get("SAAS_API_KEY") and SAAS_API_KEY == request.args.get("SAAS_API_KEY"):  # noqa: E501
+            pass  # Authenticated, allow request
+
+        if request.args.get("SAAS_API_KEY") is None:
+            resp = jsonify({"error": "SAAS_API_KEY required"})
+            return resp, 401
+        if SAAS_API_KEY != request.args.get("SAAS_API_KEY"):
+
+            resp = jsonify({"error": "Invalid SAAS_API_KEY"})
+
+            return resp, 401
+        return f(*args, **kwds)
+
+    return wrapper
+
+
 def token_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
