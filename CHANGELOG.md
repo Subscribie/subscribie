@@ -1,3 +1,15 @@
+# v0.1.11 (Wed Jan 26 2022)
+
+#### 🐛 Bug Fix
+
+- 769 shop owner can activate their own shop [#770](https://github.com/Subscribie/subscribie/pull/770) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.10 (Tue Jan 25 2022)
 
 #### 🐛 Bug Fix
