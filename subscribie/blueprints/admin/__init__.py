@@ -110,8 +110,10 @@ def currencyFormat(value):
 
 
 @admin.app_template_filter()
-def timestampToDate(timestamp):
-    return datetime.fromtimestamp(int(timestamp)).strftime("%Y-%m-%d")
+def timestampToDate(timestamp: str):
+    if timestamp is None:
+        return None
+    return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
 
 
 def store_stripe_transaction(stripe_external_id):
@@ -802,6 +804,12 @@ def set_stripe_livemode():
 @admin.route("/connect/stripe-connect", methods=["GET"])
 @login_required
 def stripe_connect():
+    setting = Setting.query.first()
+    shop_activated = setting.shop_activated
+    SERVER_NAME = os.getenv("SERVER_NAME")
+    saas_url = current_app.config.get('SAAS_URL')
+    saas_activate_account_path = current_app.config.get('SAAS_ACTIVATE_ACCOUNT_PATH')
+    saas_activate_account_url = saas_url + saas_activate_account_path + f'/{SERVER_NAME}'  # noqa: E501
     account = None
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
@@ -836,7 +844,6 @@ def stripe_connect():
             ).url
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
-
     database.session.commit()
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
@@ -844,6 +851,8 @@ def stripe_connect():
         account=account,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
+        shop_activated=shop_activated,
+        saas_activate_account_url=saas_activate_account_url
     )
 
 
@@ -1105,8 +1114,10 @@ def transactions():
     query = (
         database.session.query(Transaction)
         .join(Person, Transaction.person_id == Person.id)
-        .join(Subscription, Transaction.subscription_id == Subscription.id)
-        .join(Plan, Subscription.plan)
+        .join(
+            Subscription, Transaction.subscription_id == Subscription.id, isouter=True
+        )
+        .join(Plan, Subscription.plan, isouter=True)
         .order_by(desc(Transaction.created_at))
         .group_by(Transaction.id, Person.id)
         .execution_options(include_archived=True)
@@ -1428,6 +1439,7 @@ def announce_shop_stripe_connect_ids():
                 "live_mode": live_mode,
                 "site_url": url_for("index", _external=True),
             },
+            timeout=10,
         )
         if req.status_code != 200:
             return jsonify(
@@ -1447,18 +1459,32 @@ def announce_shop_stripe_connect_ids():
             stripe_live_connect_account_id = (
                 payment_provider.stripe_live_connect_account_id
             )
-            req = announce_stripe_connect_account(
-                stripe_live_connect_account_id, live_mode=1
-            )
+            try:
+                req = announce_stripe_connect_account(
+                    stripe_live_connect_account_id, live_mode=1
+                )
+            except requests.exceptions.ConnectionError as e:
+                msg = f"Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
+                log.error(msg)
+                return Response(
+                    json.dumps(msg), status=500, mimetype="application/json"
+                )
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
             stripe_test_connect_account_id = (
                 payment_provider.stripe_test_connect_account_id
             )
-            req = announce_stripe_connect_account(
-                stripe_test_connect_account_id, live_mode=0
-            )
+            try:
+                req = announce_stripe_connect_account(
+                    stripe_test_connect_account_id, live_mode=0
+                )
+            except requests.exceptions.ConnectionError as e:
+                msg = f"Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
+                log.error(msg)
+                return Response(
+                    json.dumps(msg), status=500, mimetype="application/json"
+                )
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
@@ -1476,6 +1502,7 @@ WARNING: Check logs to verify recipt"
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
+        return Response(json.dumps(msg), status=500, mimetype="application/json")
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"

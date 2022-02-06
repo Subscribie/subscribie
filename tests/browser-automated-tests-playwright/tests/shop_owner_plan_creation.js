@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const TIMEOUT = 5000;
 
 //Subscribie tests
 test.describe("Plan Creation tests:", () => {
@@ -7,7 +8,7 @@ test.describe("Plan Creation tests:", () => {
     console.log("Starting plan creations...");
     await page.goto('/');
     try {
-      page.setDefaultTimeout(3000);
+      page.setDefaultTimeout(TIMEOUT);
       const cooling_off_plan_exist = await page.textContent('text="Cooling off plan"');
       if (cooling_off_plan_exist === 'Cooling off plan') {
         await new Promise(x => setTimeout(x, 1000));
@@ -49,7 +50,7 @@ test.describe("Plan Creation tests:", () => {
   test("@475@shop-owner@Create free trial plan", async ({ page }) => {
     await page.goto('/');
     try {
-      page.setDefaultTimeout(3000);
+      page.setDefaultTimeout(TIMEOUT);
       const free_trial = await page.textContent('text="Free Trial plan"');
       if (free_trial === 'Free Trial plan') {
         await new Promise(x => setTimeout(x, 1000));
@@ -91,9 +92,9 @@ test.describe("Plan Creation tests:", () => {
   test("@516@shop-owner@Create cancel at plan", async ({ page }) => {
     await page.goto('/');
     try {
-      page.setDefaultTimeout(3000);
-      const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
-      if (free_trial === "Automatically cancels on: 2025-09-07") {
+      page.setDefaultTimeout(TIMEOUT);
+      const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"');
+      if (free_trial === "Automatically cancels on: 09-07-2025") {
         await new Promise(x => setTimeout(x, 1000));
         expect(await page.screenshot()).toMatchSnapshot('cancel-at-plan-already-created.png');
         console.log("Cancel At plan already created, exiting test");
@@ -119,14 +120,16 @@ test.describe("Plan Creation tests:", () => {
 
     // wait for the cancel at to expand
     await page.click('#cancel_at_set-0');
+    await new Promise(x => setTimeout(x, 1000));
+
     // filling cancel at
-    await page.fill('[type=date]', '2025-09-07');
+    await page.fill('[type=date]', '2025-07-09');
 
     await page.click('text="Save"');
     await page.goto('/');
 
-    const free_trial = await page.textContent('text="Automatically cancels on: 2025-09-07"');
-    expect(free_trial === "Automatically cancels on: 2025-09-07");
+    const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"');
+    expect(free_trial === "Automatically cancels on: 07-09-2025");
     
     //screenshot
     await new Promise(x => setTimeout(x, 1000));
@@ -137,7 +140,7 @@ test.describe("Plan Creation tests:", () => {
     console.log("Creating Private Plan");
     await page.goto('/admin/edit');
     try {
-      page.setDefaultTimeout(3000);
+      page.setDefaultTimeout(TIMEOUT);
       const private_plan__already_exist = await page.textContent('text="First Private plan"');
       if (private_plan__already_exist === 'First Private plan') {
         await new Promise(x => setTimeout(x, 1000));
@@ -167,7 +170,7 @@ test.describe("Plan Creation tests:", () => {
      await page.click('text="Save"');
 
      await page.goto('/admin/edit');
-     page.setDefaultTimeout(3000);
+     page.setDefaultTimeout(TIMEOUT);
      const private_plan_exist = await page.textContent('text="First Private plan"');
      if (private_plan_exist === 'FIrst Private plan') {
          await new Promise(x => setTimeout(x, 1000));
@@ -187,7 +190,7 @@ test.describe("Plan Creation tests:", () => {
   test("@264@shop-owner@Create plan with options, choice, required description", async ({ page }) => {
     await page.goto('/');
     try {
-      page.setDefaultTimeout(3000);
+      page.setDefaultTimeout(TIMEOUT);
       const check_plan_with_choice_and_options = await page.textContent('text="Plan with choice and options"');
       expect(check_plan_with_choice_and_options === "Plan with choice and options");
       await page.click("text=See choice options");

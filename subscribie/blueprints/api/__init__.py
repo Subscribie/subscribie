@@ -1,6 +1,8 @@
 import logging
 from flask import Blueprint, url_for, jsonify
-from subscribie.models import Page
+from subscribie.models import Page, Setting
+from subscribie.database import database
+from subscribie.auth import saas_api_only
 
 log = logging.getLogger(__name__)
 
@@ -20,3 +22,21 @@ def apiv1_list_pages():
             }
         )
     return jsonify(urls)
+
+
+@apiv1.route("/activate-shop", methods=["GET"])
+@saas_api_only
+def apiv1_activate_shop():
+    setting = Setting.query.first()
+    setting.shop_activated = 1
+    database.session.commit()
+    return jsonify({"msg": "shop activated"})
+
+
+@apiv1.route("/deactivate-shop", methods=["GET"])
+@saas_api_only
+def apiv1_deativate_account():
+    setting = Setting.query.first()
+    setting.shop_activated = 0
+    database.session.commit()
+    return jsonify({"msg": "shop deactivated"})

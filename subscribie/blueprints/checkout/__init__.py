@@ -1,4 +1,5 @@
 import logging
+import requests
 from flask import (
     Blueprint,
     render_template,
@@ -191,6 +192,36 @@ def thankyou():
     if session.get("plan") is None:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
+
+    # Activate shop if session["sitename"] present
+    if session.get("sitename"):
+        # Build activation api request
+        sitename = session.get("sitename")
+        SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
+        if "127.0.0.1" in request.remote_addr and not request.is_secure:
+            scheme = "http"  # allow local development
+        else:
+            scheme = "https"
+        activate_shop_url = (
+            f"{scheme}://{sitename}/api/v1/activate-shop?SAAS_API_KEY={SAAS_API_KEY}"
+        )
+        # Activate the shop by calling the activate shop api request
+        try:
+            req = requests.get(activate_shop_url, timeout=1)
+            log.info(f"Activating shop {sitename}")
+            if req.status_code == 200:
+                log.info(f"Succedd activating shop. status_code: {req.status_code}")
+            # Set site url for login button on thank you page
+            session["site-url"] = f"{scheme}://{sitename}"
+            # Remove sitename from session as no longer needed
+            session.pop("sitename")
+        except requests.exceptions.ConnectionError as e:
+            log.error(f"Unable to activate shop {sitename}. Could not make api request to activate: {e}.")  # noqa: E501
+        except requests.HTTPError as e:
+            log.error(f"Unable to activate shop {sitename}. HTTPError: {e}.")  # noqa: E501
+        except Exception as e:
+            log.error(f"Unable to activate shop {sitename}. Unhandled reason: {e}.")  # noqa: E501
+
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
     subscription = (
@@ -479,10 +510,25 @@ def create_subscription(
 @backoff.on_exception(backoff.expo, Exception, max_tries=20)
 def stripe_process_event_payment_intent_succeeded(event):
     """Store suceeded payment_intents as transactions
-    These events will fire both at the begining of a subscription,
+    Stripe sends Subscribie events of different types.
+    This metod processes the payment_intent_succeeded event.
+    This event will fire both at the begining of a subscription,
     and also at each successful recuring billing cycle.
 
-    We use backoff because webhook event order is not guaranteed
+    We use backoff because webhook event order from Stripe is not guaranteed,
+    for example a `payment_intent_succeeded` event can be received before a
+    `checkout.session.completed` event. If that happens, then the associated
+    subscription may not be created yet in Subscribie database.
+    Therefore the @backoff.on_exception allows processing of the
+    payment_intent_succeeded event to retry until the
+    checkout.session.completed event is processed.
+    If the backoff fails (max_tries is exceeded) then Stripe will
+    retry the event at a later time.
+
+    See also
+    - https://stripe.com/docs/api/events/types#event_types-checkout.session.completed
+    - https://stripe.com/docs/api/events/types#event_types-payment_intent.succeeded
+
     """
     log.info("Processing payment_intent.succeeded")
 
@@ -496,19 +542,28 @@ def stripe_process_event_payment_intent_succeeded(event):
             "subscribie_checkout_session_id"
         ]
     except KeyError:
-        # There is no metadata on the event if its an upfront payment
+        # There is no subscribie metadata on the event if its an upfront payment
         # So try and get it via the data['invoice'] attribute
         invoice_id = data["invoice"]
-        invoice = stripe.Invoice.retrieve(
-            stripe_account=event["account"], id=invoice_id
-        )
-        # Fetch subscription via its invoice
-        subscription = stripe.Subscription.retrieve(
-            stripe_account=event["account"], id=invoice.subscription
-        )
-        subscribie_checkout_session_id = subscription.metadata[
-            "subscribie_checkout_session_id"
-        ]
+
+        # Stripe payment_intent invoice attribute may be null if
+        # the payment intent is an instant charge (meaning not part of a
+        # subscrtiption or plan).
+        if invoice_id is not None:
+            invoice = stripe.Invoice.retrieve(
+                stripe_account=event["account"], id=invoice_id
+            )
+            # Fetch subscription via its invoice
+            subscription = stripe.Subscription.retrieve(
+                stripe_account=event["account"], id=invoice.subscription
+            )
+            subscribie_checkout_session_id = subscription.metadata[
+                "subscribie_checkout_session_id"
+            ]
+        else:
+            # If instance charge (not a subscription)
+            # there is no checkout session (instant charge)
+            subscribie_checkout_session_id = data["id"]
     except Exception as e:
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
         log.error(msg)
