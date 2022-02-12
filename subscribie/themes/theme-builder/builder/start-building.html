@@ -19,7 +19,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm">
-          <form enctype="multipart/form-data" action="/start-building" method="POST">
+          <form enctype="multipart/form-data" action="/start-building" method="POST" id="start-building">
             {{ form.csrf_token }}
             <div class="row">
               <div class="col mr-2">
@@ -183,6 +183,87 @@
   }
 </style>
 <script>
+  // Hook into form submission
+  document.getElementById("start-building").addEventListener("submit", redirectToShop);
+  function redirectToShop(event) {
+    console.log("Caught new shop submission");
+    event.preventDefault();
+    sendData();
+  }
+
+  function sendData() {
+    const XHR = new XMLHttpRequest();
+
+    // Bind the FormData object and the form element
+    const form = document.getElementById("start-building");
+    const FD = new FormData( form );
+
+    // Determine what the shop url will be
+    const regex = /[\W_]+/gm;
+    const company_name = document.getElementById("company_name").value;
+    const subst = ``;
+    const scheme = document.location.protocol;
+    const port = document.location.port;
+    const shop_url = scheme + "//" + company_name.replace(regex, subst).toLowerCase() + ".subscriby.shop:" + port;
+    localStorage.setItem("shop_url", shop_url);
+    console.log('The shop_url will be: ', shop_url);
+
+    // Define what happens on successful data submission
+    XHR.addEventListener( "load", function(event) {
+      console.log("New shop request submitted ", event.target.responseText);
+    } );
+
+    // Define what happens in case of error
+    XHR.addEventListener( "error", function( event ) {
+      console.log( '...start polling new shop' );
+    } );
+
+    // Set up our request
+    XHR.open( "POST", "/start-building" );
+
+    // The data sent is what the user provided in the form
+    XHR.send( FD );
+
+    waitForSiteToBeReady(shop_url + "/health", goToNewShopAddress);
+  }
+
+
+  maxAttempts = 10000;
+  attempts = 0;
+
+  function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function checkResponse(response, url, callback) {
+    if (attempts >= maxAttempts) {
+      alert("Failed to connect to url.");
+      return;
+    }
+    if (response.status == 200) {
+      console.log("status: ", response.status, " fetch success for ", url);
+      callback();
+     } else {
+      attempts++
+      console.log("status: ", response.status, " fetch fail for ", url, "...retrying");
+      setTimeout(() => waitForSiteToBeReady(url, callback), getRandomNumber(0,1000));
+     }
+  }
+
+ function waitForSiteToBeReady(url, callback) {
+   console.log("waitForSiteToBeReady...");
+   fetch(url)
+   .then(response => checkResponse(response, url, callback))
+   .catch((error) => { console.error(error)});
+ }
+
+ function goToNewShopAddress() {
+  let shop_url = localStorage.getItem("shop_url");
+  console.log("redirecting to: ", shop_url);
+  document.location = shop_url;
+ }
+
+
   // Wrapper
   
   const check_input = document.querySelectorAll('.toggle');                        
