@@ -1,3 +1,15 @@
+# v0.1.13 (Mon Feb 14 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Revert "adding jinjax reverse (#776)" ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.12 (Mon Feb 14 2022)
 
 #### 🐛 Bug Fix
