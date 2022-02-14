@@ -1,3 +1,15 @@
+# v0.1.12 (Mon Feb 14 2022)
+
+#### 🐛 Bug Fix
+
+- adding jinjax reverse [#776](https://github.com/Subscribie/subscribie/pull/776) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.11 (Wed Jan 26 2022)
 
 #### 🐛 Bug Fix
