@@ -1,7 +1,7 @@
 <table>
 <tbody>
   {% for shop in shops %}
-  {% if 'prodtest' not in shop['site_url']|reverse %}
+  {% if 'prodtest' not in shop['site_url'] %}
   <tr>
     <td>{{ shop['email'] }}</td>
     <td><a href="{{ shop['site_url'] }}">{{ shop['site_url'] }}</a></td>
