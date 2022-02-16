@@ -1,3 +1,15 @@
+# v0.1.14 (Wed Feb 16 2022)
+
+#### 🐛 Bug Fix
+
+- 680 instant onboarding [#774](https://github.com/Subscribie/subscribie/pull/774) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.13 (Mon Feb 14 2022)
 
 #### ⚠️ Pushed to `master`
