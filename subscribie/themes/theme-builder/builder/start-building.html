@@ -205,12 +205,13 @@
     const scheme = document.location.protocol;
     const port = document.location.port;
     const shop_url = scheme + "//" + company_name.replace(regex, subst).toLowerCase() + ".subscriby.shop:" + port;
-    localStorage.setItem("shop_url", shop_url);
     console.log('The shop_url will be: ', shop_url);
 
     // Define what happens on successful data submission
     XHR.addEventListener( "load", function(event) {
       console.log("New shop request submitted ", event.target.responseText);
+      const shop_onetime_login_url = event.target.responseText;
+      localStorage.setItem("shop_onetime_login_url", shop_onetime_login_url);
     } );
 
     // Define what happens in case of error
@@ -267,9 +268,9 @@
   }
 
  function goToNewShopAddress() {
-  let shop_url = localStorage.getItem("shop_url");
-  console.log("redirecting to: ", shop_url);
-  document.location = shop_url;
+  let shop_onetime_login_url = localStorage.getItem("shop_onetime_login_url");
+  console.log("redirecting to: ", shop_onetime_login_url);
+  document.location = shop_onetime_login_url;
  }
 
 
