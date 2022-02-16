@@ -1027,6 +1027,7 @@ def refresh_subscriptions():
             "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
         return redirect(request.referrer)
+    return "Subscription statuses refreshed", 200
 
 
 @admin.route("/fetch-upcoming_invoices")
