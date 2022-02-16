@@ -99,6 +99,11 @@ def inject_template_globals():
     )
 
 
+@bp.route("/health")
+def health():
+    return "OK", 200
+
+
 @bp.route("/cdn/<path:filename>")
 def custom_static(filename):
     return send_from_directory(current_app.config["UPLOADED_IMAGES_DEST"], filename)

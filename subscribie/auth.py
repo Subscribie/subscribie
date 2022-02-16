@@ -48,10 +48,13 @@ def saas_api_only(f):
     to a shop to activate or deactivate a shop when
     also providing a valid SAAS_API_KEY.
     """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
-        if request.args.get("SAAS_API_KEY") and SAAS_API_KEY == request.args.get("SAAS_API_KEY"):  # noqa: E501
+        if request.args.get("SAAS_API_KEY") and SAAS_API_KEY == request.args.get(
+            "SAAS_API_KEY"
+        ):  # noqa: E501
             pass  # Authenticated, allow request
 
         if request.args.get("SAAS_API_KEY") is None:
