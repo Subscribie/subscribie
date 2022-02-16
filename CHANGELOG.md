@@ -1,3 +1,15 @@
+# v0.1.19 (Wed Feb 16 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #787 return 200 after refreshing subscriptions [#788](https://github.com/Subscribie/subscribie/pull/788) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.18 (Wed Feb 16 2022)
 
 #### 🐛 Bug Fix
