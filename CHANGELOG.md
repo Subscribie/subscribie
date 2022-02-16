@@ -1,3 +1,20 @@
+# v0.1.16 (Wed Feb 16 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Elliott Sabin-Motson ([@elliottmotson](https://github.com/elliottmotson)), for all your work!
+
+#### 🐛 Bug Fix
+
+- Edited navbar element to include "/" char divider [#780](https://github.com/Subscribie/subscribie/pull/780) ([@elliottmotson](https://github.com/elliottmotson))
+- Added navbar element "Register" with hardcoded subscribie.co.uk link [#780](https://github.com/Subscribie/subscribie/pull/780) ([@elliottmotson](https://github.com/elliottmotson))
+
+#### Authors: 1
+
+- Elliott Sabin-Motson ([@elliottmotson](https://github.com/elliottmotson))
+
+---
+
 # v0.1.15 (Wed Feb 16 2022)
 
 #### 🐛 Bug Fix
