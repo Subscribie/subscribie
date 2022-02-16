@@ -1,3 +1,15 @@
+# v0.1.21 (Wed Feb 16 2022)
+
+#### 🐛 Bug Fix
+
+- changing variable naame to new_name [#792](https://github.com/Subscribie/subscribie/pull/792) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.20 (Wed Feb 16 2022)
 
 #### 🐛 Bug Fix
