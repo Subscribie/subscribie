@@ -1,3 +1,15 @@
+# v0.1.17 (Wed Feb 16 2022)
+
+#### 🐛 Bug Fix
+
+- 778 add navbar register button [#781](https://github.com/Subscribie/subscribie/pull/781) ([@elliottmotson](https://github.com/elliottmotson))
+
+#### Authors: 1
+
+- Elliott Sabin-Motson ([@elliottmotson](https://github.com/elliottmotson))
+
+---
+
 # v0.1.16 (Wed Feb 16 2022)
 
 :tada: This release contains work from a new contributor! :tada:
