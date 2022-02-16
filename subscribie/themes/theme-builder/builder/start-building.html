@@ -250,12 +250,21 @@
      }
   }
 
- function waitForSiteToBeReady(url, callback) {
-   console.log("waitForSiteToBeReady...");
-   fetch(url)
-   .then(response => checkResponse(response, url, callback))
-   .catch((error) => { console.error(error)});
- }
+  function waitForSiteToBeReady(url, callback) {
+    console.log("waitForSiteToBeReady...");
+    fetch(url)
+    .then(response => checkResponse(response, url, callback))
+    .catch((error) => {
+      console.error(error)
+      if ( attempts < maxAttempts ) {
+        console.log("General network error, retrying");
+        attempts++;
+        setTimeout(() => waitForSiteToBeReady(url, callback), getRandomNumber(0,1000));
+      } else {
+        console.error("Max retries to reach ", url, " exceeded");
+      }
+    });
+  }
 
  function goToNewShopAddress() {
   let shop_url = localStorage.getItem("shop_url");
