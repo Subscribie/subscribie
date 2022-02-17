@@ -1,3 +1,15 @@
+# v0.1.22 (Thu Feb 17 2022)
+
+#### 🐛 Bug Fix
+
+- adding rename script into deploy template [#795](https://github.com/Subscribie/subscribie/pull/795) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.21 (Wed Feb 16 2022)
 
 #### 🐛 Bug Fix
