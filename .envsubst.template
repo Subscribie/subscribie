@@ -70,8 +70,8 @@ PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 PLAYWRIGHT_HEADLESS=true
 
 #rename shop variables
-PATH_TO_SITES="/path/to/sites/subscribie/"
-PATH_TO_RENAME_SCRIPT="/path/to/sites/subscribie/rename-shop.sh"
+PATH_TO_SITES=${PATH_TO_SITES}
+PATH_TO_RENAME_SCRIPT=${PATH_TO_RENAME_SCRIPT}
 SUBSCRIBIE_DOMAIN="subscriby.shop"
 
 PRIVATE_KEY="/tmp/private.pem"
