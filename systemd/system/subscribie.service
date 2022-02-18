@@ -1,5 +1,5 @@
 [Unit]
-Description=manage subscribie vassels
+Description=manage subscribie uwsgi vassals
 After=network.target
 
 [Service]
