@@ -1,3 +1,15 @@
+# v0.1.24 (Fri Feb 18 2022)
+
+#### 🐛 Bug Fix
+
+- #798 fixing stripe test mode to skip subscribing to a plan [#799](https://github.com/Subscribie/subscribie/pull/799) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.23 (Fri Feb 18 2022)
 
 #### 🐛 Bug Fix
