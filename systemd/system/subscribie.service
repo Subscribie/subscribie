@@ -1,0 +1,15 @@
+[Unit]
+Description=manage subscribie vassels
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=true
+PIDFile=/path/to/uwsgi.pid
+WorkingDirectory=/path/to/subscribie/
+ExecStart=/path/to/venv/bin/uwsgi --enable-threads --daemonize --ini config.ini
+ExecStop= /usr/bin/kill 15 $MAINPID
+KillSignal=SIGQUIT
+Restart=on-abort
+[Install]
+WantedBy=multi-user.target
