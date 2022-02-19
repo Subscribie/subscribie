@@ -1,3 +1,15 @@
+# v0.1.25 (Sat Feb 19 2022)
+
+#### 🐛 Bug Fix
+
+- Ref #796 systemd journalctl logging subscribie [#800](https://github.com/Subscribie/subscribie/pull/800) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.24 (Fri Feb 18 2022)
 
 #### 🐛 Bug Fix
