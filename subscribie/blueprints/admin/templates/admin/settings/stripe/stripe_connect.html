@@ -36,9 +36,12 @@
             {% endif %}
             </button>
 
-          {% elif account.payouts_enabled is not sameas True %}
+          {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
             {# Only require non-already stripe connected sites to activate via human operator #}
             <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
+
+          {% else %}
+            <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
           {% endif %}
 
 
