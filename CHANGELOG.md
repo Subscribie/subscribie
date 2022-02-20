@@ -1,3 +1,20 @@
+# v0.1.26 (Sun Feb 20 2022)
+
+#### 🐛 Bug Fix
+
+- #801 enable ondemand and socket activation uwsgi [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #801 document socket activation and onDemandVassals [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #801 document systemd and uwsgi emperor usage [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #801 set subscribie systemd emperor config to emperor.ini [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #801 add common vassal config to vassals-inject-config.ini [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #801 wip document socket activation [#802](https://github.com/Subscribie/subscribie/pull/802) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.25 (Sat Feb 19 2022)
 
 #### 🐛 Bug Fix
