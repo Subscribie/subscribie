@@ -472,10 +472,32 @@ uWSGI **Emperor mode** starts and manages all running Subscribie shops as `uWSGI
 <summary>subscribie-deployer</summary>
   Responsible for listening for new Shop requests, and creating the Shop config which uWSGI needs to spawn a new Shop (aka uwsgi vassal).
 </details>
-
-
 <br />
 <br />
+
+### Optimisation
+
+*Problem*: Every shop uses ~45mb of RAM. With lots of Shops the RAM usage can be high. Since shops are not receiving web traffic all the time we can stop them to reduce RAM usage.
+
+*Solution*: uWSGI vassals are configured to be `OnDemandVassals` see [OnDemandVassals](https://uwsgi-docs.readthedocs.io/en/latest/OnDemandVassals.html)
+and also socket-activated (note that's *two* different things):
+
+*Result*: A reduction of > 17Gb of ram observed on a busy node.
+
+- OnDemandVassals: The application is not started until the first request is received.
+- Socket-activation: If running idle with no requests after x secconds, the shop is stoped- but is re-activated when a request comes in for the shop
+
+Socker activation is enabled by using the uWSGI feature `emperor-on-demand-extension = .socket` in the `emperor.ini` config.
+
+OnDemandVassals is enable by using the following config in the injected vassal config for every shop:
+
+```
+# idle time in seconds
+idle = 60
+# kill the application after idle time is reached
+die-on-idle = true
+```
+See: [Combining on demand vassals with `--idle` and `--die-on-idle`](https://uwsgi-docs.readthedocs.io/en/latest/OnDemandVassals.html#combining-on-demand-vassals-with-idle-and-die-on-idle)
 
 ### Subscribie Saas other services
 
