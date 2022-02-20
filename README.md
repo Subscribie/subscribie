@@ -8,6 +8,7 @@
 - [Quickstart](#quickstart-without-docker)
 - [Testing](#testing)
 - [Deployment](#saas-deployment)
+  - [Application server](#application-server-uwsgi)
 #### Open Source subscription billing and management
 
 ## What does this project do?
@@ -417,7 +418,66 @@ Example DELETE request:
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
+
+# How new shops are created
+
+1. New shop owner submits a form to create a new shop which hits `/start-building` endpoint
+2. Shop is created and a new shop is started (Shop owner sees *"Please wait"*)
+3. New Shop is ready
+4. Shop owner is automatically redirected to the new shop, loged in using automated one-time login
+
+
 # Saas Deployment
+
+## Application server: uwsgi
+
+[uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) is used to run the application services.
+
+Subscribie Saas uses the following key compoent of uwsgi: [Emperor mode](https://uwsgi-docs.readthedocs.io/en/latest/Emperor.html).
+
+uWSGI **Emperor mode** starts and manages all running Subscribie shops as `uWSGI` vassals.
+
+> "If the emperor dies, all the vassals die."<br />
+   -[Emperor mode](https://uwsgi-docs.readthedocs.io/en/latest/Emperor.html)
+
+<br />
+
+
+<details>
+  <summary>uWSGI - Emperor</summary>
+  - When a new shop is created, the emperor notices a new shop, and starts it as a vassal.
+  - Every Subscribie shop is a vassal of the emperor
+
+</details>
+
+<details>
+  <summary>uWSGI - vassal-template</summary>
+  - A vassal template is injected into every new shop by the emporor.
+    - This avoids having to copy and paste the same config for every new shop.
+    - It also means vassal config is in one place.
+</details>
+<br />
+<br />
+
+
+### Systemd services
+
+<details>
+<summary>subscribie</summary>
+  The uWSGI emperor and the vassals it sawns is defined as a single systemd service called `subscribie`.
+</details>
+
+
+<details>
+<summary>subscribie-deployer</summary>
+  Responsible for listening for new Shop requests, and creating the Shop config which uWSGI needs to spawn a new Shop (aka uwsgi vassal).
+</details>
+
+
+<br />
+<br />
+
+### Subscribie Saas other services
 
 Needed components / services. Check the `.env.example` for each of them.
 
