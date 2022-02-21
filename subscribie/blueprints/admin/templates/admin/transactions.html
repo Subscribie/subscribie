@@ -1,27 +1,27 @@
-{% extends "admin/layout.html" %}                                                
-{% block title %} Payments {% endblock %}                                
-                                                                                 
-{% block hero %}                                                                 
-                                                                                 
+{% extends "admin/layout.html" %}
+{% block title %} Payments {% endblock %}
+
+{% block hero %}
+
 <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
     Payments
-</h1>                                                                        
-                                                                                 
-{% endblock hero %} 
-                                                                                 
+</h1>
+
+{% endblock hero %}
+
 {% block body %}
-<div style="padding: 1rem 1.5rem 0 1.5rem;">                                     
-  <div class="container">                                                        
-    <nav class="breadcrumb" aria-label="breadcrumbs">                            
-      <ul>                                                                       
-        <li><a href="/">Shop</a></li>                                            
-        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>   
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="/">Shop</a></li>
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
         <li class="is-active"><a href="#" aria-current="page">
             View Payments</a>
-        </li>                                                                    
-      </ul>                                                                      
-    </nav>                                                                       
-  </div>                                                                         
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>
 
 <div class="section">
@@ -35,6 +35,7 @@
           <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
+        <button class="btn btn-warning" onclick="window.location.href='/admin/issues'">Pay issues</button>
         </form>
         {% if person %}
           <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
@@ -92,7 +93,7 @@
                 <a class="refund-action" href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id, confirm="") }}">Refund</a>
 
             {% endif %}
-        </td> 
+        </td>
         <td>{{ transaction.external_id }}</td>
         <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
         <td>{{ transaction.external_src }}</td>
@@ -146,12 +147,12 @@
               {% endif %}
             {% endif %}
               </li>
-    
+
           {% else %}
             ...
           {% endif %}
         {% endfor %}
-      
+
         <li class="page-item">
           {% if transactions.has_next %}
               {% if request.args.get("plan_title") and request.args.get("subscriber_name") %}
@@ -172,6 +173,4 @@
 	</div><!-- end .container -->
 </div><!-- end .section -->
 
-{% endblock body %} 
-
-
+{% endblock body %}

@@ -1147,6 +1147,16 @@ def transactions():
         person=person,
     )
 
+@admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
+@login_required
+def outstanding_payments():
+    outstanding_number = "1" # Number of outstanding payments overdue/not paid
+    customer = "John Doe" # Example customer
+    debt = "1000" # £10.00
+    missed = "1" # 1 missed payment
+    # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
+    return render_template("admin/issues.html",customer=customer,debt=debt,outstanding_number=outstanding_number, missed=missed)
+
 
 @admin.route("/order-notes", methods=["GET"])
 @login_required

@@ -1,0 +1,46 @@
+{% extends "admin/layout.html" %}
+{% block title %} Payments {% endblock %}
+
+{% block hero %}
+
+<h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">
+    Payments
+</h1>
+
+{% endblock hero %}
+
+{% block body %}
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="/">Shop</a></li>
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('admin.transactions') }}">Transactions</a></li>
+        <li class="is-active"><a href="#" aria-current="page">
+            Issues</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="section">
+	<div class="container" style="overflow-x:auto">
+    <div class="d-flex justify-content-center">
+      <div class="alert alert-danger" role="alert">
+        There are {{ outstanding_number }} outstanding payments!
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <h3>Outstanding Payments</h3>
+    </div>
+    <br/>
+    <div class="d-flex justify-content-center">
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-warning">{{ customer }} - {{ debt }} - Missed {{ missed }} payments.</li>
+    </div>
+	</div><!-- end .container -->
+</div><!-- end .section -->
+
+{% endblock body %}
