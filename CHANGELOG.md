@@ -1,3 +1,15 @@
+# v0.1.31 (Tue Feb 22 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.30 (Tue Feb 22 2022)
 
 #### ⚠️ Pushed to `master`
