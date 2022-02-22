@@ -132,22 +132,27 @@
                                                 {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
                                                 <a href="{{ url_for("admin.pause_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
-                                                goback=1) }}">
+                                                confirm="") }}">
                                                     <span class="pause-action">Pause</span>
                                                 </a> |
-                                                {% endif %}
                                                 <a href="{{ url_for("admin.cancel_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
                                                 confirm="") }}">
                                                     <span class="cancel-action">Cancel</span>
                                                 </a> |
+                                                {% endif %}
                                             {% endif %}
                                             {% if subscription.stripe_pause_collection|lower == 'void' %}
                                                 <a href="{{ url_for("admin.resume_stripe_subscription",
                                                 subscription_id=subscription.stripe_subscription_id,
-                                                goback=1) }}">
+                                                confirm="") }}">
                                                     <span class="resume-action">Resume</span>
-                                                </a>
+                                                </a> |
+                                                <a href="{{ url_for("admin.cancel_stripe_subscription",
+                                                subscription_id=subscription.stripe_subscription_id,
+                                                confirm="") }}">
+                                                    <span class="cancel-action">Cancel</span>
+                                                </a> |
                                             {% endif %}
                                         {% endif %}</li>
                                      <li class=mt-2><strong>History: </strong>

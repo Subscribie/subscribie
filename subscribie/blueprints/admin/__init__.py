@@ -295,32 +295,37 @@ def pause_stripe_subscription(subscription_id: str):
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
 
-    try:
-        stripe_pause = stripe.Subscription.modify(
-            subscription_id,
-            stripe_account=connect_account_id,
-            pause_collection={"behavior": "void"},
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/pause_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
         )
-        # filtering for the pause_collection value
-        stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe_pause = stripe.Subscription.modify(
+                subscription_id,
+                stripe_account=connect_account_id,
+                pause_collection={"behavior": "void"},
+            )
+            # filtering for the pause_collection value
+            stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
 
-        # adding the pause_collection status to the stripe_pause_collection column
-        pause_collection = Subscription.query.filter_by(
-            stripe_subscription_id=subscription_id
-        ).first()
+            # adding the pause_collection status to the stripe_pause_collection column
+            pause_collection = Subscription.query.filter_by(
+                stripe_subscription_id=subscription_id
+            ).first()
 
-        pause_collection.stripe_pause_collection = stripe_pause_filter
-        database.session.commit()
+            pause_collection.stripe_pause_collection = stripe_pause_filter
+            database.session.commit()
 
-        flash("Subscription paused")
-    except Exception as e:
-        msg = "Error pausing subscription"
-        flash(msg)
-        log.error(f"{msg}. {e}")
+            flash("Subscription paused")
+        except Exception as e:
+            msg = "Error pausing subscription"
+            flash(msg)
+            log.error(f"{msg}. {e}")
 
-    if "goback" in request.args:
-        return redirect(request.referrer)
-    return jsonify(message="Subscription paused", subscription_id=subscription_id)
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/resume")
@@ -329,31 +334,35 @@ def resume_stripe_subscription(subscription_id):
     """Resume a Stripe subscription"""
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
-
-    try:
-        stripe.Subscription.modify(
-            subscription_id,
-            stripe_account=connect_account_id,
-            pause_collection="",  # passing empty string unpauses the subscription
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/resume_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
         )
 
-        # adding the pause_collection status to the stripe_pause_collection column
-        pause_collection = Subscription.query.filter_by(
-            stripe_subscription_id=subscription_id
-        ).first()
-        pause_collection.stripe_pause_collection = ""
-        database.session.commit()
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe.Subscription.modify(
+                subscription_id,
+                stripe_account=connect_account_id,
+                pause_collection="",  # passing empty string unpauses the subscription
+            )
 
-        flash("Subscription resumed")
-    except Exception as e:
-        msg = "Error resuming subscription"
-        flash(f"{msg}. {e}")
-        log.error(e)
+            # adding the pause_collection status to the stripe_pause_collection column
+            pause_collection = Subscription.query.filter_by(
+                stripe_subscription_id=subscription_id
+            ).first()
+            pause_collection.stripe_pause_collection = ""
+            database.session.commit()
 
-    if "goback" in request.args:
-        return redirect(request.referrer)
+            flash("Subscription resumed")
+        except Exception as e:
+            msg = "Error resuming subscription"
+            flash(f"{msg}. {e}")
+            log.error(e)
 
-    return jsonify(message="Subscription resumed", subscription_id=subscription_id)
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/stripe/subscriptions/<payment_id>/actions/refund/")
@@ -807,9 +816,11 @@ def stripe_connect():
     setting = Setting.query.first()
     shop_activated = setting.shop_activated
     SERVER_NAME = os.getenv("SERVER_NAME")
-    saas_url = current_app.config.get('SAAS_URL')
-    saas_activate_account_path = current_app.config.get('SAAS_ACTIVATE_ACCOUNT_PATH')
-    saas_activate_account_url = saas_url + saas_activate_account_path + f'/{SERVER_NAME}'  # noqa: E501
+    saas_url = current_app.config.get("SAAS_URL")
+    saas_activate_account_path = current_app.config.get("SAAS_ACTIVATE_ACCOUNT_PATH")
+    saas_activate_account_url = (
+        saas_url + saas_activate_account_path + f"/{SERVER_NAME}"
+    )  # noqa: E501
     account = None
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
@@ -852,7 +863,7 @@ def stripe_connect():
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
         shop_activated=shop_activated,
-        saas_activate_account_url=saas_activate_account_url
+        saas_activate_account_url=saas_activate_account_url,
     )
 
 
