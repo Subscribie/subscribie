@@ -1,3 +1,15 @@
+# v0.1.27 (Tue Feb 22 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #808 bump flask to version 2 [#809](https://github.com/Subscribie/subscribie/pull/809) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.26 (Sun Feb 20 2022)
 
 #### 🐛 Bug Fix
