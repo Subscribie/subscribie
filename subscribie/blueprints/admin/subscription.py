@@ -29,10 +29,6 @@ def update_stripe_subscription_statuses():
             )
             for stripeSubscription in stripeSubscriptions.auto_paging_iter():
 
-                print(stripeSubscription.id)
-                print(stripeSubscription.status)
-                # SELECT * FROM subscription WHERE stripe_subscription_id =
-                # stripeSubscription.id
                 subscription = (
                     database.session.query(Subscription)
                     .where(Subscription.stripe_subscription_id == stripeSubscription.id)
