@@ -190,6 +190,14 @@ class Person(database.Model, HasArchived):
         return "<Person {}>".format(self.given_name)
 
 
+class Balance(database.Model):
+    __tablename__ = "balance"
+    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    available_amount = database.Column(database.Integer(), nullable=True)
+    available_currency = database.Column(database.String(), nullable=True)
+    stripe_livemode = database.Column(database.Boolean(), default=False)
+
+
 class LoginToken(database.Model):
     __tablename__ = "login_token"
     user_uuid = database.Column(database.String, primary_key=True)
