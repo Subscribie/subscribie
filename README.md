@@ -4,7 +4,6 @@
 
 - [Features](#features)
 - [Demo & Hosting](#demo--hosting)
-- [Demo](#demo)
 - [Quickstart](#quickstart-without-docker)
 - [Testing](#testing)
 - [Deployment](#saas-deployment)
@@ -26,6 +25,14 @@ Don't want/know how to code? Pay for the hosted service.
 https://subscribie.co.uk
 
 # Developer Quickstart
+Quickly run Subscribie from a container:
+
+If you use `podman`:
+```
+podman run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
+```
+
+Or, if you prefer Docker:
 ```
 docker run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
 ```
@@ -34,6 +41,8 @@ Then visit: http://127.0.0.1:8082/auth/login
 Username: admin@example.com
 
 Password: password
+
+[More about containers](https://mkdev.me/en/posts/the-tool-that-really-runs-your-containers-deep-dive-into-runc-and-oci-specifications).
 
 # Features
 Quickly set-up a subscription site which can:
