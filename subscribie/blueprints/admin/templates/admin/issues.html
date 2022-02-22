@@ -29,7 +29,7 @@
 	<div class="container" style="overflow-x:auto">
     <div class="d-flex justify-content-center">
       <div class="alert alert-danger" role="alert">
-        There are {{ outstanding_number }} outstanding payments!
+        There are {{ pay_issues["outstanding_number"] }} outstanding payments!
       </div>
     </div>
     <div class="d-flex justify-content-center">
@@ -38,7 +38,7 @@
     <br/>
     <div class="d-flex justify-content-center">
     <ul class="list-group">
-      <li class="list-group-item list-group-item-warning">{{ customer }} - {{ debt | currencyFormat }} - Missed {{ missed }} payments.</li>
+      <li class="list-group-item list-group-item-warning">{{ customer["name"] }} -  {{ customer["debt"] | currencyFormat }} - Missed {{ customer["missed"] }} payments. <span class="badge badge-warning">Balance: {{ customer["balance"] | currencyFormat }}</span></li>
     </div>
 	</div><!-- end .container -->
 </div><!-- end .section -->

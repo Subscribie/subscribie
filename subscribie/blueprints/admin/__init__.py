@@ -1101,6 +1101,10 @@ def invoices():
 @login_required
 def transactions():
 
+    pay_issues = {
+    "outstanding_number": "1", # Placeholder
+    }
+
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1142,7 +1146,7 @@ def transactions():
         flash(msg)
 
     return render_template(
-        "admin/transactions.html",
+        "admin/transactions.html",pay_issues=pay_issues,
         transactions=query.paginate(page=page, per_page=10),
         person=person,
     )
@@ -1150,12 +1154,21 @@ def transactions():
 @admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
 @login_required
 def outstanding_payments():
-    outstanding_number = "1" # Number of outstanding payments overdue/not paid
-    customer = "John Doe" # Example customer
-    debt = "1000" # £10.00
-    missed = "1" # 1 missed payment
+    pay_issues = {
+        "outstanding_number": "1", # Number of outstanding payments overdue/not paid - Will be calculated from DB
+    }
+
+    customer = {
+        "name": "John Doe", # Example customer
+        "debt": "1000", # £10.00
+        "missed": "1", # 1 missed payment
+        "balance": "0"
+    }
     # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
-    return render_template("admin/issues.html",customer=customer,debt=debt,outstanding_number=outstanding_number, missed=missed)
+    customer["balance"] = int(customer["balance"])-int(customer["debt"])
+
+
+    return render_template("admin/issues.html",customer=customer,pay_issues=pay_issues)
 
 
 @admin.route("/order-notes", methods=["GET"])

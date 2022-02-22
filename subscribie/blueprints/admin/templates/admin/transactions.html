@@ -35,8 +35,12 @@
           <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
-        <button class="btn btn-warning" onclick="window.location.href='/admin/issues'">Pay issues</button>
         </form>
+        <div class="container" style="overflow-x:auto">
+          <button class="btn btn-warning" onclick="window.location.href='/admin/issues'">Pay issues
+            <span class="badge badge-light">{{ pay_issues["outstanding_number"] }}</span>
+          </button>  
+        </div>
         {% if person %}
           <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
         {% else %}
