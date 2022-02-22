@@ -1,3 +1,16 @@
+# v0.1.29 (Tue Feb 22 2022)
+
+#### 🐛 Bug Fix
+
+- modifying feature playwright test [#810](https://github.com/Subscribie/subscribie/pull/810) ([@joeltejeda](https://github.com/joeltejeda))
+- fix #803 adding pause and resume confirmation [#810](https://github.com/Subscribie/subscribie/pull/810) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.28 (Tue Feb 22 2022)
 
 #### 🐛 Bug Fix
