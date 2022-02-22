@@ -8,6 +8,8 @@ from subscribie.utils import (
 import stripe
 import logging
 
+log = logging.getLogger(__name__)
+
 
 def update_stripe_subscription_statuses():
     """Update Stripe subscriptions with their current status
@@ -15,23 +17,40 @@ def update_stripe_subscription_statuses():
     stripe.api_key = get_stripe_secret_key()
     connect_account = get_stripe_connect_account()
     if stripe.api_key is None:
-        logging.error("Stripe api key not set refusing to update subscription statuses")
+        log.error("Stripe api key not set refusing to update subscription statuses")
     if connect_account is None:
-        logging.error(
+        log.error(
             "Stripe connect account not set. Refusing to update subscription statuses"
         )
     if stripe_connect_active():
-        for subscription in Subscription.query.all():
-            try:
-                stripeSubscription = stripe.Subscription.retrieve(
-                    stripe_account=connect_account.id,
-                    id=subscription.stripe_subscription_id,
+        try:
+            stripeSubscriptions = stripe.Subscription.list(
+                stripe_account=connect_account.id, limit=100
+            )
+            for stripeSubscription in stripeSubscriptions.auto_paging_iter():
+
+                print(stripeSubscription.id)
+                print(stripeSubscription.status)
+                # SELECT * FROM subscription WHERE stripe_subscription_id =
+                # stripeSubscription.id
+                subscription = (
+                    database.session.query(Subscription)
+                    .where(Subscription.stripe_subscription_id == stripeSubscription.id)
+                    .first()
                 )
-                subscription.stripe_status = stripeSubscription.status
-                database.session.commit()
-            except Exception as e:
-                logging.warning(f"Could not update stripe subscription status: {e}")
+                if subscription:
+
+                    subscription.stripe_status = stripeSubscription.status
+                    log.info(subscription.stripe_status)
+                    log.info(subscription.stripe_subscription_id)
+                    database.session.commit()
+                else:
+                    log.warning(
+                        "subscription is in stripe but not in the subscribie database"
+                    )
+        except Exception as e:
+            log.warning(f"Could not update stripe subscription status: {e}")
     else:
-        logging(
+        log.warning(
             "Refusing to update subscription status since Stripe connect is not active"
         )
