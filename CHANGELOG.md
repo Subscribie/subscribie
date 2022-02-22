@@ -1,3 +1,17 @@
+# v0.1.28 (Tue Feb 22 2022)
+
+#### 🐛 Bug Fix
+
+- removing logging in because test is already logged in [#807](https://github.com/Subscribie/subscribie/pull/807) ([@joeltejeda](https://github.com/joeltejeda))
+- removing debugging code [#807](https://github.com/Subscribie/subscribie/pull/807) ([@joeltejeda](https://github.com/joeltejeda))
+- fix #806 upgrading refresh subscriptions feature [#807](https://github.com/Subscribie/subscribie/pull/807) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.27 (Tue Feb 22 2022)
 
 #### 🐛 Bug Fix
