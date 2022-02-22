@@ -1161,14 +1161,13 @@ def outstanding_payments():
     customer = {
         "name": "John Doe", # Example customer
         "debt": "1000", # £10.00
-        "missed": "1", # 1 missed payment
+        "missed": int(1), # 1 missed payment
         "balance": "0"
     }
+    list_control_number=int(1) # This variable controls how many missed payments are considered critical (Card changes to red in list)
     # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
     customer["balance"] = int(customer["balance"])-int(customer["debt"])
-
-
-    return render_template("admin/issues.html",customer=customer,pay_issues=pay_issues)
+    return render_template("admin/issues.html",customer=customer,pay_issues=pay_issues,list_control_number=list_control_number)
 
 
 @admin.route("/order-notes", methods=["GET"])
