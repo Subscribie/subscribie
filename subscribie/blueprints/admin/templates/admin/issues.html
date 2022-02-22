@@ -38,7 +38,16 @@
     <br/>
     <div class="d-flex justify-content-center">
     <ul class="list-group">
-      <li class="list-group-item list-group-item-warning">{{ customer["name"] }} -  {{ customer["debt"] | currencyFormat }} - Missed {{ customer["missed"] }} payments. <span class="badge badge-warning">Balance: {{ customer["balance"] | currencyFormat }}</span></li>
+      <li>
+        {% if customer["missed"] > list_control_number %}
+        <div class="card text-center text-white bg-danger mb-3" style="width: 18rem;">
+        {% else %}
+        <div class="card text-center text-white bg-warning mb-3" style="width: 18rem;">
+        {% endif %}
+        <h5 class="card-title">{{ customer["name"] }}</h5>
+        <div class="card-header">Missed {{ customer["missed"] }} payments worth {{ customer["debt"] | currencyFormat }} </div>
+        <span class="badge badge-warning">Balance: {{ customer["balance"] | currencyFormat }}</span>
+      </li>
     </div>
 	</div><!-- end .container -->
 </div><!-- end .section -->
