@@ -1,3 +1,15 @@
+# v0.1.30 (Tue Feb 22 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Add developer container quickstart example ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.29 (Tue Feb 22 2022)
 
 #### 🐛 Bug Fix
