@@ -25,6 +25,16 @@ Don't want/know how to code? Pay for the hosted service.
 
 https://subscribie.co.uk
 
+# Developer Quickstart
+```
+docker run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
+```
+Then visit: http://127.0.0.1:8082/auth/login
+
+Username: admin@example.com
+
+Password: password
+
 # Features
 Quickly set-up a subscription site which can:
 
