@@ -5,6 +5,27 @@
 
 <h2 class="text-center text-dark mb-3">Manage My Shop</h2>
 
+{% if pay_issues["outstanding_number"] == "0" %}
+<div class="alert alert-success" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments
+</div>
+{% elif pay_issues["outstanding_number"] == "1" %}
+<div class="alert alert-warning" style="text-align: center;" role="alert">
+  There is {{ pay_issues["outstanding_number"] }} outstanding payment!
+  <button type="button" class="btn btn-warning ml-3" onclick="window.location.href='/admin/issues'">Action</button>
+</div>
+</div>
+{% else %}
+<div class="alert alert-danger" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments!
+  <button type="button" class="btn btn-danger ml-3" onclick="window.location.href='/admin/issues'">Action</button>
+</div>
+{% endif %}
+
+
+
+
+
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
@@ -13,7 +34,6 @@
 </div>
 
 <div class="container">
-
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Checklist</h3>
       <p class="card-subtitle mb-3 text-muted">
@@ -24,7 +44,7 @@
           {% if stripe_connected is sameas False %}
           <li>
           Stripe connection is not yet complete.
-          <a class="btn btn-warning" 
+          <a class="btn btn-warning"
               href="{{ url_for('admin.stripe_connect') }}">
               Review Stripe
           </a>
@@ -52,15 +72,15 @@
 
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
               <div class="px-3 py-3 my-3">
-                  <a class="btn btn-success btn-block" 
+                  <a class="btn btn-success btn-block"
                       href="{{ url_for('admin.edit') }}">
                     Edit plans
                   </a>
-                  <a class="btn btn-success btn-block" 
+                  <a class="btn btn-success btn-block"
                       href="{{ url_for('admin.add_plan') }}">
                     Add plan
                   </a>
-                  <a class="btn btn-danger btn-block" 
+                  <a class="btn btn-danger btn-block"
                       href="{{ url_for('admin.delete_plan') }}">
                     Delete plans
                   </a>
@@ -76,7 +96,7 @@
       <div class="card">
         <div class="card-header" id="headingTwo">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-             My Subscribers 
+             My Subscribers
             </button>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
@@ -84,7 +104,7 @@
                   <p class="card-subtitle mb-3 text-muted">
                       View your subscribers.
                   </p>
-                  <a class="btn btn-success btn-block" 
+                  <a class="btn btn-success btn-block"
                       href="{{ url_for('admin.subscribers') }}">
                       View Subscribers
                   </a>
@@ -111,9 +131,9 @@
                   <p class="card-subtitle mb-3 text-muted">
                       View upcoming payments from your subscribers.
                   </p>
-                  <a class="btn btn-success btn-block" 
+                  <a class="btn btn-success btn-block"
                       href="{{ url_for('admin.upcoming_invoices') }}">
-                      View Upcoming Payments 
+                      View Upcoming Payments
                   </a>
               </div>
         </div>
@@ -132,9 +152,9 @@
               <div class="row justify-content-around">
 
                 <div class="card col-lg my-3 mx-1 shadow-sm" >
-                  <img src="{{ url_for('admin.static', filename='stripe.svg') }}"  
-                        class="card-img-top" 
-                        alt="..." 
+                  <img src="{{ url_for('admin.static', filename='stripe.svg') }}"
+                        class="card-img-top"
+                        alt="..."
                         style="width:50%; display:block; margin:auto">
                   <div class="card-body">
                     <h5 class="card-title">Stripe</h5>
@@ -159,10 +179,10 @@
         <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
           <div class="px-3 py-3 my-3">
             <p>
-              Create choice groups. Offer a choice between a selection 
-              of products. E.g. Shampoo A or Shampoo B.  
+              Create choice groups. Offer a choice between a selection
+              of products. E.g. Shampoo A or Shampoo B.
             </p>
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.list_choice_groups') }}">
                 Add / Edit / Delete Choice Groups
               </a>
@@ -172,7 +192,7 @@
       <div class="card">
         <div class="card-header" id="headingSix">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-              All Transactions / Manage Refunds 
+              All Transactions / Manage Refunds
             </button>
         </div>
         <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
@@ -181,15 +201,15 @@
               <p class="card-subtitle mb-3 text-muted">
                   View all transactions / Manage Refunds
               </p>
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.transactions') }}">
-                  View Transactions / Manage Refunds 
+                  View Transactions / Manage Refunds
               </a>
               <br />
               <p class="card-subtitle mb-3 text-muted">
                   View all Invoices (excluding upcoming).
               </p>
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.invoices') }}">
                   View Invoices
               </a>
@@ -213,10 +233,10 @@
         <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven">
           <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
-                  View (optional) notes customers may give you when starting their 
+                  View (optional) notes customers may give you when starting their
                   subscription.
               </p>
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.order_notes') }}">
                   View Notes
               </a>
@@ -249,9 +269,9 @@
           <div class="px-3 py-3 my-3">
 
             <div class="card col-lg shadow-sm" >
-              <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"  
-                    class="card-img-top" 
-                    alt="Tawk logo" 
+              <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"
+                    class="card-img-top"
+                    alt="Tawk logo"
                     style="width:auto; display:block; margin:1rem auto 0 auto">
               <div class="card-body">
                 <h5 class="card-title">Tawk Online Chat</h5>
@@ -292,9 +312,9 @@
           <!-- Analytics Integrations -->
           <div class="px-3 py-3 my-3">
             <div class="card col-lg shadow-sm" >
-              <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"  
-                    class="card-img-top" 
-                    alt="Google Tag Manager logo"  
+              <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"
+                    class="card-img-top"
+                    alt="Google Tag Manager logo"
                     style="width:25%; display:block; margin:1rem auto 0 auto">
               <div class="card-body">
                 <h5 class="card-title">Google Tag Manager</h5>
@@ -337,7 +357,7 @@
               embed your Subscription website into another website if you have an existing
               website you want to keep using, but use Subscribie for your subscriptions.
             </p>
-            
+
             {% for moduleName in loadedModules %}
               {% if loadedModules[moduleName]['links']|length != 0 %}
                 <div class="card col-lg my-3 shadow-sm">
@@ -355,14 +375,14 @@
                 <div class="card-body">
                   <h5 class="card-title">Pages</h5>
                   <p class="card-subtitle mb-3 text-muted">Create pages on your shop.</p>
-                  <a class="btn btn-block btn-success" 
-                    href="{{ url_for('pages.get_module_pages_index') }}"> 
+                  <a class="btn btn-block btn-success"
+                    href="{{ url_for('pages.get_module_pages_index') }}">
                   List pages
                   </a>
                   <br />
                   <p class="card-subtitle mb-3 text-muted">Mark pages as private, visible only to your subscribers.</p>
-                  <a class="btn btn-block btn-success" 
-                    href="{{ url_for('pages.update_private_pages') }}"> 
+                  <a class="btn btn-block btn-success"
+                    href="{{ url_for('pages.update_private_pages') }}">
                   Set private pages
                   </a>
                 </div>
@@ -397,7 +417,7 @@
                  <div class="card-body">
                     <h5 class="card-title">SEO Titles</h5>
                     <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
-                    <a class="btn btn-block btn-success" 
+                    <a class="btn btn-block btn-success"
                       href="{{ url_for('seo.list_pages') }}">
                     Manage pages
                     </a>
@@ -416,11 +436,11 @@
         </div>
         <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven">
           <div class="px-3 py-3 my-3">
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.add_shop_admin') }}">
                 Add Shop Admin
               </a>
-              <a class="btn btn-warning btn-block" 
+              <a class="btn btn-warning btn-block"
                   href="{{ url_for('admin.change_password') }}">
                 Change my password
               </a>
@@ -454,7 +474,7 @@
             <h3 class="card-title">Templates</h3>
               <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
               to a plan.</p>
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.edit_welcome_email') }}">
                 Customer Signup Confirmation
               </a>
@@ -488,7 +508,7 @@
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
           <div class="px-3 py-3 my-3">
-              <a class="btn btn-success btn-block" 
+              <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.rename_shop') }}">
               Rename shop web address
               </a>

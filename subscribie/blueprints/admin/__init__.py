@@ -453,7 +453,7 @@ def dashboard():
 
 def getpaymentissues():
     pay_issues = {
-    "outstanding_number": "1", # Placeholder
+    "outstanding_number": "2", # Placeholder
     }
     return pay_issues
 
