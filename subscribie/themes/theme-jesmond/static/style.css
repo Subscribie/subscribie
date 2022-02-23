@@ -14,6 +14,20 @@
   --grey-300: #DADEE0;
   --grey-600: #74787A;
   --grey-900: #1C1E1F;
+
+  --font-color-hs: 200, 5%;
+  --font-color-l: 12%;
+  --font-color-hsl-full: var(--font-color-hs), var(--font-color-l);
+
+  --font-color: hsl(var(--font-color-hs), var(--font-color-l));
+  --font-color-lighten-15: hsl(var(--font-color-hs),calc(var(--font-color-l) + 15%));
+  --font-color-lighten-50: hsl(var(--font-color-hs),calc(var(--font-color-l) + 50%));
+  --font-color-darken: hsl(var(--font-color-hs),calc(var(--font-color-l) - 15%));
+
+  --font: var(--font-color);
+  --font-dark: var(--font-color-darken);
+  --font-light: var(--font-color-lighten-15);
+  --font-lighter: var(--font-color-lighten-50);
 }
 
 /* --------------- typografy --------------- */
@@ -58,7 +72,7 @@ p {
   font-weight: 600;
   font-size: 32px;
   line-height: 40px;
-
+  color: var(--font);
   margin-bottom: 1rem;
 }
 

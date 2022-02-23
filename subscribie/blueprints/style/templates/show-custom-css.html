@@ -38,10 +38,10 @@
     <label for="primary">Primary</label>
     <input name="primary" value="{{ primary }}" id="primary" autocomplete="off" />
     <br />
-    <div style="display:none">
-    <label for="secondary">Secondary</label>
-    <input name="secondary" value="{{ secondary }}" id="secondary" autocomplete="off" />
+    <label for="font">Font</label>
+    <input name="font" value="{{ font }}" id="font" autocomplete="off" />
     <br />
+    <div style="display:none">
     <label for="info">Info</label>
     <input name="info" value="{{ info }}" id="info" autocomplete="off" />
     <br />
@@ -109,7 +109,36 @@
       move: function(color) { saveColor(color)},
       change: function(color) { saveColor(color)},
   });
+  function saveFontColor(fontColor) {
+    // Get the chosen values for font colours
+    var hsl = fontColor.toHsl()
+    var font = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
+    var http = new XMLHttpRequest();
+    var url = '/style/style-shop';
+    var params = 'font=' + font;
+    http.open('POST', url, true);
+
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
+          console.log("Saved chosen colour");
+        }
+    }
+    http.send(params);
+    document.getElementById('style-preview').contentWindow.location.reload();
+  }
+
+  $('#font').spectrum({
+      type: "component",
+      preferredFormat: "hex",
+      fontColor: "{{  css_font }}", /* default to current colour */
+      showInput: "true",
+      showInitial: "true",
+      move: function(fontColor) { saveFontColor(fontColor)},
+      change: function(fontColor) { saveFontColor(fontColor)},
+  });
   </script>
 
 
