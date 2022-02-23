@@ -31,6 +31,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
+    get_payment_issues
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -443,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
+
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
     num_donations = 0
@@ -478,6 +480,7 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
+        pay_issues=get_payment_issues()
     )
 
 
@@ -1409,8 +1412,10 @@ def transactions():
         flash(msg)
 
     return render_template(
-        "admin/transactions.html",pay_issues=pay_issues,
-        transactions=query.paginate(page=page, per_page=10),
+        "admin/transactions.html",
+        transactions=query.paginate(page=page,per_page=10),
+        person=person,
+        pay_issues=get_payment_issues(),
         person=person,
         action=action,
     )
@@ -1418,10 +1423,6 @@ def transactions():
 @admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
 @login_required
 def outstanding_payments():
-    pay_issues = {
-        "outstanding_number": "1", # Number of outstanding payments overdue/not paid - Will be calculated from DB
-    }
-
     customer = {
         "name": "John Doe", # Example customer
         "debt": "1000", # £10.00
@@ -1431,7 +1432,7 @@ def outstanding_payments():
     list_control_number=int(1) # This variable controls how many missed payments are considered critical (Card changes to red in list)
     # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
     customer["balance"] = int(customer["balance"])-int(customer["debt"])
-    return render_template("admin/issues.html",customer=customer,pay_issues=pay_issues,list_control_number=list_control_number)
+    return render_template("admin/issues.html",customer=customer,pay_issues=get_payment_issues(),list_control_number=list_control_number)
 
 
 @admin.route("/order-notes", methods=["GET"])

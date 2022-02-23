@@ -541,3 +541,8 @@ def get_discount_code():
     :rtype: str
     """
     return session.get("discount_code", None)
+
+
+def get_payment_issues():
+    pay_issues = {"outstanding_number": "1"}
+    return pay_issues

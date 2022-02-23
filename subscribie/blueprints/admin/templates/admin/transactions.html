@@ -10,6 +10,22 @@
 {% endblock hero %}
 
 {% block body %}
+
+
+{% if pay_issues["outstanding_number"] == "0" %}
+<div class="alert alert-success" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments
+</div>
+{% elif pay_issues["outstanding_number"] == "1" %}
+<div class="alert alert-warning" style="text-align: center;" role="alert">
+  There is {{ pay_issues["outstanding_number"] }} outstanding payment!
+</div>
+{% else %}
+<div class="alert alert-danger" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments!
+</div>
+{% endif %}
+
 <div style="padding: 1rem 1.5rem 0 1.5rem;">
   <div class="container">
     <nav class="breadcrumb" aria-label="breadcrumbs">
@@ -48,11 +64,9 @@
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
         </form>
-        <div class="container" style="overflow-x:auto">
-          <button class="btn btn-warning" onclick="window.location.href='/admin/issues'">Pay issues
-            <span class="badge badge-light">{{ pay_issues["outstanding_number"] }}</span>
-          </button>  
+
         </div>
+        <div class="container" style="overflow-x:auto">
         {% if person %}
           <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
         {% else %}
@@ -77,6 +91,7 @@
               <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
               </div>
         {% endif %}
+
 		<table class="table">
 		  <thead>
 			<tr>
