@@ -421,6 +421,7 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
+
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
     if payment_provider is None:
@@ -447,8 +448,14 @@ def dashboard():
         num_active_subscribers=num_active_subscribers,
         num_subscribers=num_subscribers,
         num_signups=num_signups,
-        num_one_off_purchases=num_one_off_purchases,
+        num_one_off_purchases=num_one_off_purchases,pay_issues=getpaymentissues()
     )
+
+def getpaymentissues():
+    pay_issues = {
+    "outstanding_number": "1", # Placeholder
+    }
+    return pay_issues
 
 
 @admin.route("/edit", methods=["GET", "POST"])
@@ -1101,9 +1108,6 @@ def invoices():
 @login_required
 def transactions():
 
-    pay_issues = {
-    "outstanding_number": "1", # Placeholder
-    }
 
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
@@ -1146,18 +1150,14 @@ def transactions():
         flash(msg)
 
     return render_template(
-        "admin/transactions.html",pay_issues=pay_issues,
-        transactions=query.paginate(page=page, per_page=10),
-        person=person,
+        "admin/transactions.html",
+        transactions=query.paginate(page=page,per_page=10),
+        person=person,pay_issues=getpaymentissues()
     )
 
 @admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
 @login_required
 def outstanding_payments():
-    pay_issues = {
-        "outstanding_number": "1", # Number of outstanding payments overdue/not paid - Will be calculated from DB
-    }
-
     customer = {
         "name": "John Doe", # Example customer
         "debt": "1000", # £10.00
@@ -1167,7 +1167,7 @@ def outstanding_payments():
     list_control_number=int(1) # This variable controls how many missed payments are considered critical (Card changes to red in list)
     # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
     customer["balance"] = int(customer["balance"])-int(customer["debt"])
-    return render_template("admin/issues.html",customer=customer,pay_issues=pay_issues,list_control_number=list_control_number)
+    return render_template("admin/issues.html",customer=customer,pay_issues=getpaymentissues(),list_control_number=list_control_number)
 
 
 @admin.route("/order-notes", methods=["GET"])

@@ -10,6 +10,22 @@
 {% endblock hero %}
 
 {% block body %}
+
+
+{% if pay_issues["outstanding_number"] == "0" %}
+<div class="alert alert-success" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments
+</div>
+{% elif pay_issues["outstanding_number"] == "1" %}
+<div class="alert alert-warning" style="text-align: center;" role="alert">
+  There is {{ pay_issues["outstanding_number"] }} outstanding payment!
+</div>
+{% else %}
+<div class="alert alert-danger" style="text-align: center;" role="alert">
+  There are {{ pay_issues["outstanding_number"] }} outstanding payments!
+</div>
+{% endif %}
+
 <div style="padding: 1rem 1.5rem 0 1.5rem;">
   <div class="container">
     <nav class="breadcrumb" aria-label="breadcrumbs">
@@ -26,21 +42,27 @@
 
 <div class="section">
 	<div class="container" style="overflow-x:auto">
-        <form action="#" method="GET">
-        <h4>Search...</h4>
-        <div class="form-group">
-          <label for="subscriber_name">Subscriber name:</label>
-          <input type="text" name="subscriber_name" id="subscriber_name" class="form-control mb-2" placeholder="Enter subscriber's name...">
-          <label for="plan_title">Plan title:</label>
-          <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
-          <input type="submit" class="btn btn-primary mt-4" />
-        </div>
+          <form action="#" method="GET">
+          <h4>Search...</h4>
+          <div class="form-group">
+            <label for="subscriber_name">Subscriber name:</label>
+            <input type="text" name="subscriber_name" id="subscriber_name" class="form-control mb-2" placeholder="Enter subscriber's name...">
+            <label for="plan_title">Plan title:</label>
+            <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
+            <div class="container" style="overflow-x:auto">
+            <div class="button-divider" style="display:flex; justify-content: center; align-items: center">
+              <div class="block"><input type="submit" class="btn btn-primary mt-4" /></div>
+
+              <div class="block"><button class="btn btn-warning ml-3" onclick="window.location.href='/admin/issues'">Pay issues
+                <span class="badge badge-light">{{ pay_issues["outstanding_number"] }}</span>
+              </button></div>
+
+            </div>
+          </div>
         </form>
-        <div class="container" style="overflow-x:auto">
-          <button class="btn btn-warning" onclick="window.location.href='/admin/issues'">Pay issues
-            <span class="badge badge-light">{{ pay_issues["outstanding_number"] }}</span>
-          </button>  
+
         </div>
+        <div class="container" style="overflow-x:auto">
         {% if person %}
           <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
         {% else %}
@@ -65,6 +87,7 @@
               <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
               </div>
         {% endif %}
+
 		<table class="table">
 		  <thead>
 			<tr>
