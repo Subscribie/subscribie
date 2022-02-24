@@ -109,13 +109,13 @@
       move: function(color) { saveColor(color)},
       change: function(color) { saveColor(color)},
   });
-  function saveFontColor(fontColor) {
+  function saveFontColor(color) {
     // Get the chosen values for font colours
-    var hsl = fontColor.toHsl()
+    var hsl = color.toHsl()
     var font = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
     var http = new XMLHttpRequest();
-    var url = '/style/style-shop';
+    var url = '/style/style-shop-font';
     var params = 'font=' + font;
     http.open('POST', url, true);
 
@@ -133,11 +133,11 @@
   $('#font').spectrum({
       type: "component",
       preferredFormat: "hex",
-      fontColor: "{{  css_font }}", /* default to current colour */
+      color: "{{  css_font }}", /* default to current colour */
       showInput: "true",
       showInitial: "true",
-      move: function(fontColor) { saveFontColor(fontColor)},
-      change: function(fontColor) { saveFontColor(fontColor)},
+      move: function(color) { saveFontColor(color)},
+      change: function(color) { saveFontColor(color)},
   });
   </script>
 
