@@ -35,11 +35,11 @@
     <h2>Choose your default colour</h2>
     <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
 
-    <label for="primary">Primary</label>
-    <input name="primary" value="{{ primary }}" id="primary" autocomplete="off" />
+    <label for="primary-background-colour">Background Colour</label>
+    <input name="primary" value="{{ primary_background_colour }}" id="primary-background-colour" autocomplete="off" />
     <br />
-    <label for="font">Font</label>
-    <input name="font" value="{{ font }}" id="font" autocomplete="off" />
+    <label for="primary-font-colour">Font Colour</label>
+    <input name="font" value="{{ primary_font_colour }}" id="primary-font-colour" autocomplete="off" />
     <br />
     <div style="display:none">
     <label for="info">Info</label>
@@ -85,8 +85,8 @@
     var primary = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
     var http = new XMLHttpRequest();
-    var url = '/style/style-shop';
-    var params = 'primary=' + primary;
+    var url = '/style/style-shop-background-colour';
+    var params = 'primary-background-colour=' + primary;
     http.open('POST', url, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -100,7 +100,7 @@
     document.getElementById('style-preview').contentWindow.location.reload();
   }
 
-  $('#primary').spectrum({
+  $('#primary-background-colour').spectrum({
       type: "component",
       preferredFormat: "hex",
       color: "{{  css_primary }}", /* default to current colour */
@@ -115,8 +115,8 @@
     var font = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
     var http = new XMLHttpRequest();
-    var url = '/style/style-shop-font';
-    var params = 'font=' + font;
+    var url = '/style/style-shop-font-colour';
+    var params = 'primary-font-colour=' + font;
     http.open('POST', url, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -130,7 +130,7 @@
     document.getElementById('style-preview').contentWindow.location.reload();
   }
 
-  $('#font').spectrum({
+  $('#primary-font-colour').spectrum({
       type: "component",
       preferredFormat: "hex",
       color: "{{  css_font }}", /* default to current colour */

@@ -15,7 +15,7 @@
   --grey-600: #74787A;
   --grey-900: #1C1E1F;
 
-  --font-color-hs: 200, 5%;
+  --font-color-hs: white;
   --font-color-l: 12%;
   --font-color-hsl-full: var(--font-color-hs), var(--font-color-l);
 
