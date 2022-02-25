@@ -19,7 +19,10 @@ def inject_custom_style():
     # Set default colours
     styles = ModuleStyle.query.first()
     if styles is not None:
-        global_css = styles.css
+        if styles.css is None:
+            global_css = ""
+        else:
+            global_css = styles.css
 
     # Js primary colours injection via javascript
     try:
@@ -132,8 +135,13 @@ def save_custom_background_colour():
     styles = ModuleStyle.query.first()
     backgroundCssProperties = {}
     try:
+        if styles is None:
+            styles = ModuleStyle()
         backgroundCssProperties = json.loads(styles.css_properties_json)
-    except AttributeError:
+        backgroundCssProperties["primary-background-colour"] = request.form.to_dict()[
+            "primary-background-colour"
+        ]
+    except TypeError:
         log.info("First time getting backgroud color")
 
         backgroundCssProperties["primary-background-colour"] = request.form.to_dict()[
@@ -152,10 +160,16 @@ def save_custom_background_colour():
 def save_custom_font():
     """Remove all old css, and replace with submitted css"""
     styles = ModuleStyle.query.first()
+    fontCssProperties = {}
     try:
-        json.loads(styles.css_properties_json)
-    except AttributeError:
-        fontCssProperties = {}
+        if styles is None:
+            styles = ModuleStyle()
+        fontCssProperties = json.loads(styles.css_properties_json)
+        fontCssProperties["primary-font-colour"] = request.form.to_dict()[
+            "primary-font-colour"
+        ]
+
+    except TypeError:
         log.info("First time getting font colour")
 
         fontCssProperties["primary-font-colour"] = request.form.to_dict()[
