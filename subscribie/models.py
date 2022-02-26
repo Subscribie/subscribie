@@ -222,6 +222,9 @@ class Subscription(database.Model):
     note = relationship(
         "SubscriptionNote", back_populates="subscription", uselist=False
     )
+
+    # List of associated Stripe Invoices (may not be live synced)
+    stripe_invoices = relationship("StripeInvoice")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
@@ -318,6 +321,45 @@ class UpcomingInvoice(database.Model):
         database.Integer, ForeignKey("subscription.uuid")
     )
     subscription = relationship("Subscription", back_populates="upcoming_invoice")
+
+
+class StripeInvoice(database.Model):
+    """
+    Reflection of Stripe Invoices
+
+    Not a live in-sync view of Stripe created invoices
+
+    Purpose: To reduce round trip time fetching invoice information
+    from Stripe each time (cache).
+
+    Note: not all invoices have to originate from Stripe,
+          this models table name is named stripe_invoice for
+          that reason.
+
+    Note: Inserts are upsert-ed to preserve keys
+    """
+
+    __tablename__ = "stripe_invoice"
+    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    id = database.Column(database.String(), nullable=True)
+    status = database.Column(database.String(), nullable=True)
+    amount_due = database.Column(database.Integer(), nullable=True)
+    amount_paid = database.Column(database.Integer(), nullable=True)
+    amount_remaining = database.Column(database.Integer(), nullable=True)
+    application_fee_amount = database.Column(database.Integer(), nullable=True)
+    attempt_count = database.Column(database.Integer(), nullable=True)
+    billing_reason = database.Column(database.String(), nullable=True)
+    collection_method = database.Column(database.String(), nullable=True)
+    currency = database.Column(database.String(), nullable=True)
+    next_payment_attempt = database.Column(database.Integer(), nullable=True)
+    stripe_subscription_id = database.Column(database.String(), nullable=True)
+    subscribie_subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id"), nullable=True
+    )
+    subscribie_subscription = relationship(
+        "Subscription", back_populates="stripe_invoices"
+    )
+    stripe_invoice_raw_json = database.Column(database.JSON(), nullable=True)
 
 
 class Company(database.Model):
