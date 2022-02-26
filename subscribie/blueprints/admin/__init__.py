@@ -90,7 +90,7 @@ from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
 from .export_transactions import export_transactions  # noqa: F401, E402a
-from .invoice import show_failed_invoices  # noqa: F401
+from .invoice import failed_invoices  # noqa: F401
 
 load_dotenv(verbose=True)  # get environment variables from .env
 
