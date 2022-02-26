@@ -7,7 +7,10 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
 )
-from subscribie.utils import get_stripe_failed_subscription_invoices
+from subscribie.utils import (
+    get_stripe_failed_subscription_invoices,
+    get_stripe_invoices,
+)
 from flask import render_template, flash, request, redirect
 import stripe
 
@@ -17,7 +20,12 @@ log = logging.getLogger(__name__)
 @admin.route("/invoices/failed/", methods=["GET"])
 @login_required
 def failed_invoices():
-    failedInvoices = get_stripe_failed_subscription_invoices()
+    if "refreshFailedInvoices" in request.args:
+        get_stripe_invoices()
+
+    failedInvoices = get_stripe_failed_subscription_invoices(
+        refetchCachedStripeInvoices=False
+    )
     return render_template(
         "admin/invoice/failed_invoices.html", failedInvoices=failedInvoices
     )

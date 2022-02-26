@@ -33,6 +33,17 @@
                 to get the money</li>
               <li>Collect the payment by another means (e.g. in cash directly)</li>
             </ul>
+            <button id="refresh_failed_invoices" title="Refresh failed invoices" class="btn btn-primary disable-on-click">Refresh failed invoices</button>
+            <script>
+            btnRefreshFailedInvoices = document.getElementById('refresh_failed_invoices');
+            btnRefreshFailedInvoices.addEventListener('click', refreshFailedInvoices);
+
+            function refreshFailedInvoices() {
+              btnRefreshFailedInvoices.textContent = "Please wait...";
+              fetch('/admin/invoices/failed/?refreshFailedInvoices')
+                .then(response => { document.location = "/admin/invoices/failed/"});
+            }
+            </script>
           </div>
           <ul class="list-group list-group-flush">
           </ul>
