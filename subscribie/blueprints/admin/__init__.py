@@ -66,7 +66,6 @@ from subscribie.models import (
     UpcomingInvoice,
 )
 from .subscription import update_stripe_subscription_statuses
-from .invoice import fetch_stripe_upcoming_invoices
 from .stats import (
     get_number_of_active_subscribers,
     get_number_of_subscribers,
@@ -90,6 +89,7 @@ from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
 from .export_transactions import export_transactions  # noqa: F401, E402a
+from .invoice import show_failed_invoices  # noqa: F401
 
 load_dotenv(verbose=True)  # get environment variables from .env
 
@@ -1041,16 +1041,6 @@ def refresh_subscriptions():
     return "Subscription statuses refreshed", 200
 
 
-@admin.route("/fetch-upcoming_invoices")
-def fetch_upcoming_invoices():
-    fetch_stripe_upcoming_invoices()
-    msg = "Upcoming invoices fetched."
-    flash(msg)
-    if request.referrer is not None:
-        return redirect(request.referrer)
-    return msg
-
-
 @admin.route("/archive-subscriber/<subscriber_id>")
 @login_required
 def archive_subscriber(subscriber_id):
@@ -1103,6 +1093,14 @@ def upcoming_invoices():
 def invoices():
     stripe.api_key = get_stripe_secret_key()
     connect_account = get_stripe_connect_account()
+    if connect_account is None:
+        stripe_connect_url = url_for("admin.stripe_connect")
+        flash(
+            Markup(
+                f"You must <a href='{ stripe_connect_url }'>connect Stripe first.</a>"
+            )
+        )
+        return redirect(url_for("admin.dashboard"))
     invoices = stripe.Invoice.list(stripe_account=connect_account.id)
 
     return render_template("admin/invoices.html", invoices=invoices, datetime=datetime)
