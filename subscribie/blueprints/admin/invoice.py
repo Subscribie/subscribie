@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 @admin.route("/invoices/failed/", methods=["GET"])
 @login_required
-def show_failed_invoices():
+def failed_invoices():
     failedInvoices = get_stripe_failed_subscription_invoices()
     return render_template(
         "admin/invoice/failed_invoices.html", failedInvoices=failedInvoices
