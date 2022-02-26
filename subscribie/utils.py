@@ -165,3 +165,100 @@ def get_stripe_livemode():
     if payment_provider.stripe_livemode:
         return True
     return False
+
+
+def get_stripe_failed_subscription_invoices():
+    """Return Stripe invoices which have failed, and
+    were generated via a Stripe Subscription.
+
+    An Stripe Invoice may reach this stage when
+
+    - All automatic payment rety attempts have failed
+    - Failed Stripe Invoices have a null value for "next_payment_attempt"
+    - Failed Stripe Invoices payment `attempt_count` is *often*
+        equal to the max retry attempts + 1
+        (first attempt + max number of retries).
+    - Note `attempt_count` could be less than max number of retries if the
+        connected account goes away, gets disconnected, other reasons),
+        do not rely on it as a metric for failed.
+
+    NOTE: Stripe has no formal definition of a "failed"
+         status for an Invoice (even though in the
+         Stripe UI the word 'failed' is displayed to the
+         user). The official Stripe Subscription statuses
+         are documented here:
+         https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses
+
+         In the context of Subscribie: A failed invoice
+         is an Invoice for which no further automatic charge will
+         be attempted for *that* Invoice.
+
+         "No further automatic charge" is *very* important
+         given if a Shop owner decides to collect money owed
+         outside of the platform, it is beneficial for the
+         shop owner to know that no further automatic charge will
+         be taken for *that* invoice.
+
+         Remember, however, that if
+         a Subscription is still active, then *new* invoices,
+         and therefore new charge attempts will be generated for the
+         active Subscription as expected.
+
+
+    NOTE: Stripe Invoices which are generated via a
+    Stripe Subscription are generated automatically
+    by Stripe and therefore have different properties
+    to manually created invoices, most notably the
+    'collection_method' field'.
+    See https://stripe.com/docs/billing/subscriptions/overview
+    """
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    invoices = stripe.Invoice.list(
+        collection_method="charge_automatically",
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+    )
+
+    failedInvoices = []
+    for invoice in invoices.auto_paging_iter():
+        if (
+            invoice.status == "open"
+            and invoice.next_payment_attempt is None
+            and invoice.status != "paid"
+        ):
+            # Means invoice is no longer being auto collected,
+            failedInvoices.append(invoice)
+    return failedInvoices
+
+
+def get_stripe_void_subscription_invoices():
+    """Return Stripe invoices which are in Stripe Invoice state "void"
+    See also get_stripe_failed_subscription_invoices for detail.
+
+    NOTES:
+
+    A 'void' Stripe Subscription can be due to many reasons
+    here are some possible reasons:
+
+    - a Subscription expired before payment was taken
+    - Read get_stripe_failed_subscription_invoices method doc block
+    - See also https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses # noqa
+    """
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    invoices = stripe.Invoice.list(
+        collection_method="charge_automatically",
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+    )
+
+    voidInvoices = []
+    for invoice in invoices.auto_paging_iter():
+        if (
+            invoice.status == "void"
+            and invoice.next_payment_attempt is None
+            and invoice.status != "paid"
+        ):
+            voidInvoices.append(invoice)
+    return voidInvoices

@@ -1,13 +1,36 @@
+from . import admin
 import logging
+from subscribie.auth import login_required
 from subscribie.database import database
 from subscribie.models import UpcomingInvoice, Subscription
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
 )
+from subscribie.utils import get_stripe_failed_subscription_invoices
+from flask import render_template, flash, request, redirect
 import stripe
 
 log = logging.getLogger(__name__)
+
+
+@admin.route("/invoices/failed/", methods=["GET"])
+@login_required
+def show_failed_invoices():
+    failedInvoices = get_stripe_failed_subscription_invoices()
+    return render_template(
+        "admin/invoice/failed_invoices.html", failedInvoices=failedInvoices
+    )
+
+
+@admin.route("/fetch-upcoming_invoices")
+def fetch_upcoming_invoices():
+    fetch_stripe_upcoming_invoices()
+    msg = "Upcoming invoices fetched."
+    flash(msg)
+    if request.referrer is not None:
+        return redirect(request.referrer)
+    return msg
 
 
 def fetch_stripe_upcoming_invoices():
