@@ -216,11 +216,17 @@ def thankyou():
             # Remove sitename from session as no longer needed
             session.pop("sitename")
         except requests.exceptions.ConnectionError as e:
-            log.error(f"Unable to activate shop {sitename}. Could not make api request to activate: {e}.")  # noqa: E501
+            log.error(
+                f"Unable to activate shop {sitename}. Could not make api request to activate: {e}."  # noqa: E501
+            )  # noqa: E501
         except requests.HTTPError as e:
-            log.error(f"Unable to activate shop {sitename}. HTTPError: {e}.")  # noqa: E501
+            log.error(
+                f"Unable to activate shop {sitename}. HTTPError: {e}."
+            )  # noqa: E501
         except Exception as e:
-            log.error(f"Unable to activate shop {sitename}. Unhandled reason: {e}.")  # noqa: E501
+            log.error(
+                f"Unable to activate shop {sitename}. Unhandled reason: {e}."
+            )  # noqa: E501
 
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
@@ -620,6 +626,15 @@ def stripe_webhook():
     event = request.json
 
     log.info(f"Received stripe webhook event type {event['type']}")
+    # Handle the payment_intent.payment_failed
+    if event["type"] == "payment_intent.payment_failed":
+        log.error("Stripe webhook event: payment_intent.payment_failed")
+        try:
+            eventObj = event["data"]["object"]
+            log.error(eventObj)
+        except Exception as e:
+            log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
+        return "OK", 200
 
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
