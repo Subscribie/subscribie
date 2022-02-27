@@ -39,7 +39,7 @@
             btnRefreshFailedInvoices.addEventListener('click', refreshFailedInvoices);
 
             function refreshFailedInvoices() {
-              btnRefreshFailedInvoices.textContent = "Please wait...";
+              btnRefreshFailedInvoices.textContent = "Please wait...this may take a while if you have lots of invoices";
               fetch('/admin/invoices/failed/?refreshFailedInvoices')
                 .then(response => { document.location = "/admin/invoices/failed/"});
             }
@@ -57,6 +57,8 @@
               <div class="failed-invoice-container">
                 ID: {{ failedInvoice.id }} <br />
                 Status: {{ failedInvoice.status }} <br />
+                Subscription to plan: {{ failedInvoice.subscribie_subscription.plan.title }} <br />
+                Subscriber: <a href="{{ url_for('admin.show_subscriber', subscriber_id=failedInvoice.subscribie_subscription.person.id) }}">{{ failedInvoice.subscribie_subscription.person.given_name }} {{ failedInvoice.subscribie_subscription.person.family_name }}</a><br />
                 Amount due: {{ failedInvoice.amount_due | currencyFormat }} <br />
                 Amount paid: {{ failedInvoice.amount_paid| currencyFormat }} <br />
                 Amount remaining: {{ failedInvoice.amount_remaining| currencyFormat }} <br />
