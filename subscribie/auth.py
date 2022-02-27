@@ -12,8 +12,10 @@ from flask import (
     url_for,
     current_app,
     render_template_string,
+    Markup,
 )
 from subscribie.email import EmailMessageQueue
+from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account
 from base64 import urlsafe_b64encode
 import os
 from .forms import (
@@ -32,6 +34,7 @@ import jwt
 from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
+import stripe
 
 log = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -416,6 +419,39 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for("auth.login"))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def stripe_connect_id_required(view):
+    """Redirect away from route if requires a Stripe Connect id
+
+    NOTE:
+    - Does *not* require Stripe Connect process is completed
+    - Does require that a Stripe Connect id has been generated
+    - e.g. The shop owner may have started the process but not yet
+           finished Stripe onboarding
+
+
+    Used to redirect views when Stripe Connect is required
+    but there is a request to visit a page which needs Stripe
+    connect to be completed.
+    """
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        stripe.api_key = get_stripe_secret_key()
+        connect_account = get_stripe_connect_account()
+        if connect_account is None:
+            stripe_connect_url = url_for("admin.stripe_connect")
+            flash(
+                Markup(
+                    f"You must <a href='{ stripe_connect_url }'>connect Stripe first.</a>"  # noqa: E501
+                )
+            )
+            return redirect(url_for("admin.dashboard"))
 
         return view(**kwargs)
 
