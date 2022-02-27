@@ -642,7 +642,7 @@ def stripe_webhook():
                 The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
                 The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
                 Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
-                log.error(emailBody)
+                log.info(emailBody)
                 email = User.query.first().email
                 company = Company.query.first()
                 msg = EmailMessageQueue()
