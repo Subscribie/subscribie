@@ -39,7 +39,11 @@ from subscribie.forms import (
     SetReplyToEmailForm,
     UploadFilesForm,
 )
-from subscribie.auth import login_required, protected_download
+from subscribie.auth import (
+    login_required,
+    protected_download,
+    stripe_connect_id_required,
+)
 from flask_uploads import UploadSet, IMAGES
 import os
 from pathlib import Path
@@ -1090,17 +1094,10 @@ def upcoming_invoices():
 
 @admin.route("/invoices")
 @login_required
+@stripe_connect_id_required
 def invoices():
     stripe.api_key = get_stripe_secret_key()
     connect_account = get_stripe_connect_account()
-    if connect_account is None:
-        stripe_connect_url = url_for("admin.stripe_connect")
-        flash(
-            Markup(
-                f"You must <a href='{ stripe_connect_url }'>connect Stripe first.</a>"
-            )
-        )
-        return redirect(url_for("admin.dashboard"))
     invoices = stripe.Invoice.list(stripe_account=connect_account.id)
 
     return render_template("admin/invoices.html", invoices=invoices, datetime=datetime)
