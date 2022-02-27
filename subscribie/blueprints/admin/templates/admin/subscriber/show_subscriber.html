@@ -16,8 +16,9 @@
       
 <main>
   <div class="container">
+      {# subscriber basic details #}
       <div class="row">
-        <div class="card col-md-4" style="width: 18rem;">
+        <div class="card col-md-12">
           <div class="card-body">
             <h3 class="card-title">{{ person.given_name }} {{ person.family_name }}</h3>
           </div>
@@ -36,10 +37,10 @@
           <a class="btn btn-danger" href="{{ url_for('admin.archive_subscriber', subscriber_id = person.id) }}">Archive Subscriber</a>
           <br />
         </div>
-
-        <div class="col-md-1"></div>
-
-        <div class="card col-md-7" style="width: 18rem;">
+      </div>
+      {# end subscriber basic details #}
+      <div class="row mt-5">
+        <div class="card col-md-12">
           <div class="card-body">
             <h3>Subscriptions</h3>
           </div>
@@ -82,9 +83,30 @@
           <!-- invoices list -->
           <div class="card-body">
             <h3>Invoices</h3>
+            <div id="scroll-alert" class="alert alert-info" style="display:none;">
+              <em>&lt;---- Swipe invoice table to the left to see all</em>
+            </div>
             <style>
             #subscriber-invoices {
               border-collapse: collapse;
+            }
+            #subscriber-invoices tbody {
+              display: block;
+              overflow-x: scroll;
+            }
+            @media (max-width: 850px) {
+              /* Scroll invoices table on mobile */
+              #scroll-alert {
+                display: block !important;
+              }
+              #subscriber-invoices tbody {
+                max-width: 450px;
+              }
+            }
+            @media (max-width: 400px) {
+              #subscriber-invoices tbody {
+                max-width: 265px;
+              }
             }
             #subscriber-invoices th {
               padding: 8px;
