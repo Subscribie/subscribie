@@ -630,10 +630,10 @@ def stripe_webhook():
     log.info(f"Received stripe webhook event type {event['type']}")
     # Handle the payment_intent.payment_failed
     if event["type"] == "payment_intent.payment_failed":
-        log.error("Stripe webhook event: payment_intent.payment_failed")
+        log.info("Stripe webhook event: payment_intent.payment_failed")
         try:
             eventObj = event["data"]["object"]
-            log.error(eventObj)
+            log.info(eventObj)
             personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
             personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
             # Notify if payment_failed event was related to a Subscription charge
