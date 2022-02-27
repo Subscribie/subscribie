@@ -179,7 +179,10 @@ def get_stripe_invoices():
 
     - See also models.StripeInvoice
     """
-    from subscribie.models import StripeInvoice
+
+    # Remember: "Subscription" is a Subscribie model, not a Stripe one
+    # because Subscribie does not assume all Subscriptions are from Stripe
+    from subscribie.models import StripeInvoice, Subscription
 
     stripe.api_key = get_stripe_secret_key()
     stripe_connect_account_id = get_stripe_connect_account_id()
@@ -237,6 +240,11 @@ def get_stripe_invoices():
             stripeInvoice.stripe_subscription_id = latest_stripe_invoice.subscription
             stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
             # Attach Subscribie subscription relationship if subscription it not None
+            subscribieSubscription = Subscription.query.where(
+                Subscription.stripe_subscription_id
+                == latest_stripe_invoice.subscription
+            ).first()
+            stripeInvoice.subscribie_subscription = subscribieSubscription
             database.session.add(stripeInvoice)
             database.session.commit()
 
