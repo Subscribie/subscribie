@@ -191,7 +191,7 @@ def send_login_token_email():
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash(
-                "Email address not found, did you sign-up with a different email address?"
+                "Email address not found, did you sign-up with a different email address?"  # noqa: E501
             )
             return redirect(url_for("auth.login"))
 
@@ -208,7 +208,7 @@ def send_login_token_email():
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash(
-                "Email address not found, did you sign-up with a different email address?"
+                "Email address not found, did you sign-up with a different email address?"  # noqa: E501
             )
             return redirect(url_for("auth.login"))
         try:
