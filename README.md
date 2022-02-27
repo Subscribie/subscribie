@@ -214,7 +214,7 @@ The test suite needs to listen to these events locally when running tests.
 
 tldr: 
 1. Install the stripe cli
-2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
+2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
 
 ## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
 > Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
