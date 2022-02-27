@@ -1,3 +1,15 @@
+# v0.1.32 (Sun Feb 27 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #813 show subscriber mobile friendly [#814](https://github.com/Subscribie/subscribie/pull/814) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.31 (Tue Feb 22 2022)
 
 #### ⚠️ Pushed to `master`
