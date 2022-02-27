@@ -1,3 +1,15 @@
+# v0.1.33 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Hotfix - don't attempt to get Stripe Subscription if subscription.stripe_subscription_id is None ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.32 (Sun Feb 27 2022)
 
 #### 🐛 Bug Fix
