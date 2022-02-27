@@ -1,3 +1,15 @@
+# v0.1.35 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README stripe cli include payment_intent.payment_failed ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.34 (Sun Feb 27 2022)
 
 #### 🐛 Bug Fix
