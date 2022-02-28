@@ -1,3 +1,52 @@
+# v0.1.35 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README stripe cli include payment_intent.payment_failed ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.34 (Sun Feb 27 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #815 email notify shop owner when a subscription payment collection fails [#816](https://github.com/Subscribie/subscribie/pull/816) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #815 log payment_intent.payment_failed events [#816](https://github.com/Subscribie/subscribie/pull/816) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.33 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Hotfix - don't attempt to get Stripe Subscription if subscription.stripe_subscription_id is None ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.32 (Sun Feb 27 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #813 show subscriber mobile friendly [#814](https://github.com/Subscribie/subscribie/pull/814) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.31 (Tue Feb 22 2022)
 
 #### ⚠️ Pushed to `master`
