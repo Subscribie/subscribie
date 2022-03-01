@@ -1,3 +1,16 @@
+# v0.1.36 (Tue Mar 01 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #815 email notify shop owner when a subscription payment collection fails [#817](https://github.com/Subscribie/subscribie/pull/817) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #815 log payment_intent.payment_failed events [#817](https://github.com/Subscribie/subscribie/pull/817) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.35 (Sun Feb 27 2022)
 
 #### ⚠️ Pushed to `master`
