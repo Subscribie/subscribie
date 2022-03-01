@@ -9,6 +9,8 @@ test("@387@shop-owner@change_shop_colour", async ({ page }) => {
     expect(style_shop === "Style Your Shop");
 
     await page.fill('input[name="primary"]', "0b5394");
+    await new Promise(x => setTimeout(x, 3000));
+    await page.fill('input[name="font"]', "000000");
     await page.click('text="Save"');
     expect(await page.screenshot()).toMatchSnapshot('changing-shop-colour.png');
 
