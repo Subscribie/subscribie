@@ -15,8 +15,8 @@
   --grey-600: #74787A;
   --grey-900: #1C1E1F;
 
-  --font-color-hs: white;
-  --font-color-l: 12%;
+  --font-color-hs: 0, 0%;
+  --font-color-l: 100%;
   --font-color-hsl-full: var(--font-color-hs), var(--font-color-l);
 
   --font-color: hsl(var(--font-color-hs), var(--font-color-l));
@@ -164,7 +164,7 @@ p {
   
   padding: 8px 16px;
   background-color: white;
-  color: var(--font);
+  color: black;
   border: 1px solid var(--primary-color-darken);
   font-weight: 400;
 }
@@ -174,7 +174,7 @@ p {
   
   padding: 12px 16px;
   background-color: white;
-  color: var(--font);
+  color: var(--primary-color-darken);
   border: 2px solid var(--primary-color-darken);
   font-weight: 700;
   letter-spacing: 4%;
@@ -209,7 +209,7 @@ p {
 }
 
 .btn-link-lg {
-  color: var(--font);
+  color: var(--primary-color-darken);
   font-weight: 700;
   letter-spacing: 4%;
   padding: 12px 16px;
@@ -288,7 +288,6 @@ body {
 
 
 /* --------------- plans section --------------- */
-
 .plans-section .wrapper{
   max-width: 1280px;
   width: 100%;
