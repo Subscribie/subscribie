@@ -6,7 +6,8 @@
 - [Demo & Hosting](#demo--hosting)
 - [Quickstart](#quickstart-without-docker)
 - [Testing](#testing)
-- [Deployment](#saas-deployment)
+- [SaaS Deployment](#saas-deployment)
+  - [Architecture Overview](#architecture)
   - [Application server](#application-server-uwsgi)
 #### Open Source subscription billing and management
 
@@ -447,6 +448,35 @@ curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/p
 
 
 # Saas Deployment
+
+## Architecture
+
+### Subscribie `shop`
+
+Every shop owner gets a deployed flask application, with its own database.
+
+### [`stripe-connect-account-announcer`](https://github.com/Subscribie/stripe-connect-account-announcer)
+
+If a Subscribie `shop` connects to Stripe (it does not have to), then the `shop` will announce it's [Stripe connect id](https://stripe.com/docs/connect/authentication#stripe-account-header) to the `stripe-connect-account-announcer`.
+
+The `stripe-connect-account-announcer` stores the Stripe connect id, so that when Stripe webhook events
+arrive, the `stripe-connect-webhook-endpoint-router` knows which `shop` to send the events to. 
+
+### [`stripe-connect-webhook-endpoint-router`](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router)
+
+A Stripe webhook endpoint.
+Receives [Stripe webhook events](https://stripe.com/docs/webhooks#webhooks-def), which,
+
+1. Inspects the [Stripe connect id](https://stripe.com/docs/connect/authentication#stripe-account-header) from the webhook request
+2. Looks up the Stripe connect id (which has been stored by the `stripe-connect-account-announcer`)
+3. Forwards the webhook event (e.g. [checkout-session-completed](stripe-connect-account-announcer)) to the correct Subscribie `shop`
+4. The `shop` [verifies the webhook from Stripe](https://stripe.com/docs/webhooks/signatures), and processes the event.
+
+> Note, in previous implementations there was one webhook endpoint per shop- this isn't compatible with Stripe when using Stripe Connect because there's a limmit on the number of webhooks, and connect events need to be routed based on their Stripe connect id anyway, hence the `stripe-connect-webhook-endpoint-router` performs this role.
+
+#### Failure modes:
+
+If the `stripe-connect-account-announcer` suffers an outage, this means new shops can't announce their Stripe account to `stripe-connect-webhook-endpoint-router` meaning, when a new Stripe event arrives from Stripe, then, Subscribie's `stripe-connect-webhook-endpoint-router` would not know which shop to send it to. Stripe [automatically retries the delivery of events](https://stripe.com/docs/webhooks/best-practices#retry-logic) which allows time for the system to recover in an outage.
 
 ## Application server: uwsgi
 
