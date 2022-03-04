@@ -1,3 +1,15 @@
+# v0.1.37 (Fri Mar 04 2022)
+
+#### ⚠️ Pushed to `master`
+
+- document stripe-connect-account-announcer and stripe-connect-account-announcer ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.36 (Tue Mar 01 2022)
 
 #### 🐛 Bug Fix
