@@ -1,3 +1,16 @@
+# v0.1.38 (Sat Mar 05 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #818 remove old kubernetes manifests [#819](https://github.com/Subscribie/subscribie/pull/819) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #818 remove jenkinsx [#819](https://github.com/Subscribie/subscribie/pull/819) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.37 (Fri Mar 04 2022)
 
 #### ⚠️ Pushed to `master`
