@@ -1,3 +1,21 @@
+# v0.1.43 (Tue Mar 08 2022)
+
+#### 🐛 Bug Fix
+
+- fixing font color headers [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding test font color [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding css font colors from homepage [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- changing colors and background [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- wip changing background and color [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- wip changing font colors [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding font colours [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.42 (Tue Mar 08 2022)
 
 #### ⚠️ Pushed to `master`
