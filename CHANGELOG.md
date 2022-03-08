@@ -1,3 +1,15 @@
+# v0.1.40 (Tue Mar 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- #820 handle case where api token not yet set ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.39 (Tue Mar 08 2022)
 
 #### 🐛 Bug Fix
