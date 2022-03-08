@@ -1639,8 +1639,12 @@ def vat_settings():
 @login_required
 def show_api_keys():
     settings = Setting.query.first()  # Get current shop settings
-    live_api_key = decrypt_secret(settings.api_key_secret_live).decode("utf-8")
-    test_api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+    try:
+        live_api_key = decrypt_secret(settings.api_key_secret_live).decode("utf-8")
+        test_api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+    except Exception as e:
+        log.warning("Exception {e} getting live/test api keys")
+
     return render_template(
         "admin/settings/api_keys.html",
         live_api_key=live_api_key,
