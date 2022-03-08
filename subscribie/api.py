@@ -1,7 +1,7 @@
 import logging
 from .auth import token_required, login_required
 from flask import Blueprint, jsonify, request, Response
-from .models import Plan, PlanRequirements, PlanSellingPoints, User
+from .models import Plan, PlanRequirements, PlanSellingPoints, User, Setting
 from .auth import generate_login_url
 from .auth import get_magic_login_link
 import pydantic
@@ -41,10 +41,15 @@ def get_login_link():
 @api.route("/generate-live-api-key", methods=["GET"])
 @login_required
 def apiv1_generate_api_key():
+    setting = Setting.query.first()
     if "test" in request.path:
         api_key = f"subscribie_test_{secrets.token_urlsafe(255)}"
+        setting.api_key_secret_test = api_key
     elif "live" in request.path:
         api_key = f"subscribie_live_{secrets.token_urlsafe(255)}"
+        setting.api_key_secret_live = api_key
+
+    database.session.commit()
 
     return jsonify(api_key)
 
