@@ -1,3 +1,16 @@
+# v0.1.41 (Tue Mar 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Merge branch 'master' of github.com:Subscribie/subscribie ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- default api keys to none in template #820 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.40 (Tue Mar 08 2022)
 
 #### ⚠️ Pushed to `master`
