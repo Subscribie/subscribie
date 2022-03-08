@@ -1,5 +1,5 @@
 import logging
-from .auth import token_required
+from .auth import token_required, login_required
 from flask import Blueprint, jsonify, request, Response
 from .models import Plan, PlanRequirements, PlanSellingPoints, User
 from .auth import generate_login_url
@@ -7,6 +7,7 @@ from .auth import get_magic_login_link
 import pydantic
 from subscribie import schemas, database
 import json
+import secrets
 
 log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -34,6 +35,18 @@ def get_login_link():
     except Exception as e:
         log.error(f"Could not get_login_link: {e}")
         return {"msg": "Could not generate login link"}
+
+
+@api.route("/generate-test-api-key", methods=["GET"])
+@api.route("/generate-live-api-key", methods=["GET"])
+@login_required
+def apiv1_generate_api_key():
+    if "test" in request.path:
+        api_key = f"subscribie_test_{secrets.token_urlsafe(255)}"
+    elif "live" in request.path:
+        api_key = f"subscribie_live_{secrets.token_urlsafe(255)}"
+
+    return jsonify(api_key)
 
 
 @api.route("/plans")
