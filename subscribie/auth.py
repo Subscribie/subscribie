@@ -22,7 +22,7 @@ from .forms import (
     ForgotPasswordForm,
     ForgotPasswordResetPasswordForm,
 )
-from .models import database, User, Person, Company, Page, LoginToken
+from .models import database, User, Person, Company, Page, LoginToken, Setting
 import binascii
 from pathlib import Path
 import flask
@@ -83,7 +83,19 @@ def token_required(f):
             return resp, 401
 
         auth_header = parse_auth_header(request.headers["Authorization"])
-        # Validate & decode jwt
+
+        # Attempt api token authentication
+        settings = Setting.query.first()
+
+        from subscribie.api import decrypt_secret
+
+        api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+        if auth_header["access_token"] == api_key:
+            assert api_key is not None
+            assert api_key != ""
+            return f(*args, **kwds)
+
+        # Check if jtw based auth, Validate & decode jwt
         public_key = open(current_app.config["PUBLIC_KEY"]).read()
         try:
             jwt.decode(auth_header["access_token"], public_key, algorithms=["RS256"])
