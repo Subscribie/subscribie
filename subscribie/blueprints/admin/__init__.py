@@ -1643,6 +1643,8 @@ def show_api_keys():
         live_api_key = decrypt_secret(settings.api_key_secret_live).decode("utf-8")
         test_api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
     except Exception as e:
+        live_api_key = None
+        test_api_key = None
         log.warning("Exception {e} getting live/test api keys")
 
     return render_template(
