@@ -1,3 +1,22 @@
+# v0.1.39 (Tue Mar 08 2022)
+
+#### 🐛 Bug Fix
+
+- #820 remove unused var [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #820 #820 allow api token authentication [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 as shop owner/developer I can see the shop api keys and re-generate them #821 [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- ref #820 return fetch-live-api-key/fetch-test-api-key after generation [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #820 encrypt api key storage at rest [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 store api keys in Settings [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #820 generate test/live api key [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 add api_key_secret_live & api_key_secret_test to Setting model [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.38 (Sat Mar 05 2022)
 
 #### 🐛 Bug Fix
