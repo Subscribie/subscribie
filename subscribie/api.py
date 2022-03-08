@@ -8,6 +8,9 @@ import pydantic
 from subscribie import schemas, database
 import json
 import secrets
+from Crypto.Cipher import AES
+import os
+import base64
 
 log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -37,21 +40,83 @@ def get_login_link():
         return {"msg": "Could not generate login link"}
 
 
+def encrypt_secret(data=None, key=os.getenv("SECRET_KEY")):
+    assert data is not None
+    data = data.encode("utf-8")
+    key = key[:16].encode("utf-8")
+    cipher = AES.new(key, AES.MODE_EAX)
+    nonce = cipher.nonce
+    ciphertext, tag = cipher.encrypt_and_digest(data)
+    return nonce, ciphertext, tag
+
+
+def decrypt_secret(data, key=os.getenv("SECRET_KEY")):
+    nonce = base64.b64decode(data.split(":")[0])
+    ciphertext = base64.b64decode(data.split(":")[1])
+    tag = base64.b64decode(data.split(":")[2])
+    key = key[:16].encode("utf-8")
+    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+    plaintext = cipher.decrypt(ciphertext)
+    cipher.verify(tag)
+
+    return plaintext
+
+
+def save_api_key(api_key, mode):
+    setting = Setting.query.first()
+    nonce, ciphertext, tag = encrypt_secret(data=api_key)
+
+    nonce = base64.b64encode(nonce).decode("utf-8")
+    ciphertext = base64.b64encode(ciphertext).decode("utf-8")
+    tag = base64.b64encode(tag).decode("utf-8")
+    if mode == "test":
+        setting.api_key_secret_test = f"{nonce}:{ciphertext}:{tag}"
+        api_key = setting.api_key_secret_test
+    elif mode == "live":
+        setting.api_key_secret_live = f"{nonce}:{ciphertext}:{tag}"
+        api_key = setting.api_key_secret_live
+
+    database.session.commit()
+
+    return api_key
+
+
 @api.route("/generate-test-api-key", methods=["GET"])
 @api.route("/generate-live-api-key", methods=["GET"])
 @login_required
 def apiv1_generate_api_key():
     setting = Setting.query.first()
     if "test" in request.path:
+        # Generate api key
         api_key = f"subscribie_test_{secrets.token_urlsafe(255)}"
-        setting.api_key_secret_test = api_key
+        # Store api key
+        api_key = save_api_key(api_key, mode="test")
+        # Decrypt
+        api_key = decrypt_secret(data=setting.api_key_secret_test)
+
     elif "live" in request.path:
+        # Generate api key
         api_key = f"subscribie_live_{secrets.token_urlsafe(255)}"
-        setting.api_key_secret_live = api_key
+        # Store api key
+        api_key = save_api_key(api_key, mode="live")
+        # Decrypt
+        api_key = decrypt_secret(data=setting.api_key_secret_live)
 
-    database.session.commit()
-
+    api_key = api_key.decode("utf-8")
     return jsonify(api_key)
+
+
+@api.route("/fetch-test-api-key", methods=["GET"])
+@api.route("/fetch-live-api-key", methods=["GET"])
+@login_required
+def apiv1_fetch_api_key():
+    # setting = Setting.query.first()
+    if "test" in request.path:
+        pass
+    elif "live" in request.path:
+        pass
+
+    return jsonify("")
 
 
 @api.route("/plans")
