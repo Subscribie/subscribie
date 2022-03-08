@@ -102,7 +102,6 @@ def apiv1_generate_api_key():
         # Decrypt
         api_key = decrypt_secret(data=setting.api_key_secret_live)
 
-    api_key = api_key.decode("utf-8")
     if "live" in request.path:
         return redirect("/api/fetch-live-api-key")
     elif "test" in request.path:
