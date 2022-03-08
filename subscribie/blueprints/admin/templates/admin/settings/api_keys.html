@@ -1,0 +1,51 @@
+{% extends "admin/layout.html" %}
+{% block title %} API Keys {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">API Keys</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">API Keys</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>API Keys</h2>
+          <hr />
+          <h3>Live</h3>
+          <details class="mb-4">
+          <summary>Show</summary>
+            <p>{{ live_api_key }}</p>
+          </details>
+
+
+          <h3>Test</h3>
+          <details class="mb-4">
+          <summary>Show</summary>
+            <p>{{ test_api_key }}</p>
+          </details>
+          <br />
+
+          <a href="/api/generate-test-api-key" class="btn btn-success">Re-generate <em>test</em> API Keys</a>
+          <hr />
+          <a href="/api/generate-live-api-key" onclick="return window.confirm('Are you sure? This will change any existing API live key');" class="btn btn-warning">Re-generate <em>live</em> API Keys</a>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
