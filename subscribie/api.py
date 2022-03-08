@@ -1,6 +1,6 @@
 import logging
 from .auth import token_required, login_required
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, jsonify, request, Response, redirect
 from .models import Plan, PlanRequirements, PlanSellingPoints, User, Setting
 from .auth import generate_login_url
 from .auth import get_magic_login_link
@@ -103,20 +103,23 @@ def apiv1_generate_api_key():
         api_key = decrypt_secret(data=setting.api_key_secret_live)
 
     api_key = api_key.decode("utf-8")
-    return jsonify(api_key)
+    if "live" in request.path:
+        return redirect("/api/fetch-live-api-key")
+    elif "test" in request.path:
+        return redirect("/api/fetch-test-api-key")
 
 
 @api.route("/fetch-test-api-key", methods=["GET"])
 @api.route("/fetch-live-api-key", methods=["GET"])
 @login_required
 def apiv1_fetch_api_key():
-    # setting = Setting.query.first()
+    setting = Setting.query.first()
     if "test" in request.path:
-        pass
+        api_key = decrypt_secret(data=setting.api_key_secret_test)
     elif "live" in request.path:
-        pass
+        api_key = decrypt_secret(data=setting.api_key_secret_live)
 
-    return jsonify("")
+    return jsonify(api_key.decode("utf-8"))
 
 
 @api.route("/plans")
