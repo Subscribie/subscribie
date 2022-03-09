@@ -35,13 +35,13 @@
     <h2>Choose your default colour</h2>
     <p class="card-subtitle mb-3 text-muted">Primary Colour is used for header, and buttons</p>
 
-    <label for="primary">Primary</label>
-    <input name="primary" value="{{ primary }}" id="primary" autocomplete="off" />
+    <label for="primary-background-colour">Background Colour</label>
+    <input name="primary" value="{{ primary_background_colour }}" id="primary-background-colour" autocomplete="off" />
+    <br />
+    <label for="primary-font-colour">Font Colour</label>
+    <input name="font" value="{{ primary_font_colour }}" id="primary-font-colour" autocomplete="off" />
     <br />
     <div style="display:none">
-    <label for="secondary">Secondary</label>
-    <input name="secondary" value="{{ secondary }}" id="secondary" autocomplete="off" />
-    <br />
     <label for="info">Info</label>
     <input name="info" value="{{ info }}" id="info" autocomplete="off" />
     <br />
@@ -85,8 +85,8 @@
     var primary = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
     var http = new XMLHttpRequest();
-    var url = '/style/style-shop';
-    var params = 'primary=' + primary;
+    var url = '/style/style-shop-background-colour';
+    var params = 'primary-background-colour=' + primary;
     http.open('POST', url, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -100,7 +100,7 @@
     document.getElementById('style-preview').contentWindow.location.reload();
   }
 
-  $('#primary').spectrum({
+  $('#primary-background-colour').spectrum({
       type: "component",
       preferredFormat: "hex",
       color: "{{  css_primary }}", /* default to current colour */
@@ -109,7 +109,36 @@
       move: function(color) { saveColor(color)},
       change: function(color) { saveColor(color)},
   });
+  function saveFontColor(color) {
+    // Get the chosen values for font colours
+    var hsl = color.toHsl()
+    var font = hsl.h + ',' + hsl.s + ',' + hsl.l;
 
+    var http = new XMLHttpRequest();
+    var url = '/style/style-shop-font-colour';
+    var params = 'primary-font-colour=' + font;
+    http.open('POST', url, true);
+
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
+          console.log("Saved chosen colour");
+        }
+    }
+    http.send(params);
+    document.getElementById('style-preview').contentWindow.location.reload();
+  }
+
+  $('#primary-font-colour').spectrum({
+      type: "component",
+      preferredFormat: "hex",
+      color: "{{  css_font }}", /* default to current colour */
+      showInput: "true",
+      showInitial: "true",
+      move: function(color) { saveFontColor(color)},
+      change: function(color) { saveFontColor(color)},
+  });
   </script>
 
 

@@ -1,3 +1,164 @@
+# v0.1.43 (Tue Mar 08 2022)
+
+#### 🐛 Bug Fix
+
+- fixing font color headers [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding test font color [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding css font colors from homepage [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- changing colors and background [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- wip changing background and color [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- wip changing font colors [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+- adding font colours [#812](https://github.com/Subscribie/subscribie/pull/812) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.42 (Tue Mar 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.41 (Tue Mar 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Merge branch 'master' of github.com:Subscribie/subscribie ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- default api keys to none in template #820 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.40 (Tue Mar 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- #820 handle case where api token not yet set ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.39 (Tue Mar 08 2022)
+
+#### 🐛 Bug Fix
+
+- #820 remove unused var [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #820 #820 allow api token authentication [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 as shop owner/developer I can see the shop api keys and re-generate them #821 [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- ref #820 return fetch-live-api-key/fetch-test-api-key after generation [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #820 encrypt api key storage at rest [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 store api keys in Settings [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #820 generate test/live api key [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #820 add api_key_secret_live & api_key_secret_test to Setting model [#822](https://github.com/Subscribie/subscribie/pull/822) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.38 (Sat Mar 05 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #818 remove old kubernetes manifests [#819](https://github.com/Subscribie/subscribie/pull/819) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #818 remove jenkinsx [#819](https://github.com/Subscribie/subscribie/pull/819) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.37 (Fri Mar 04 2022)
+
+#### ⚠️ Pushed to `master`
+
+- document stripe-connect-account-announcer and stripe-connect-account-announcer ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.36 (Tue Mar 01 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #815 email notify shop owner when a subscription payment collection fails [#817](https://github.com/Subscribie/subscribie/pull/817) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #815 log payment_intent.payment_failed events [#817](https://github.com/Subscribie/subscribie/pull/817) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.35 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README stripe cli include payment_intent.payment_failed ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.34 (Sun Feb 27 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #815 email notify shop owner when a subscription payment collection fails [#816](https://github.com/Subscribie/subscribie/pull/816) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip #815 log payment_intent.payment_failed events [#816](https://github.com/Subscribie/subscribie/pull/816) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.33 (Sun Feb 27 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Hotfix - don't attempt to get Stripe Subscription if subscription.stripe_subscription_id is None ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.32 (Sun Feb 27 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #813 show subscriber mobile friendly [#814](https://github.com/Subscribie/subscribie/pull/814) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.31 (Tue Feb 22 2022)
 
 #### ⚠️ Pushed to `master`

@@ -80,6 +80,7 @@ from .stats import (
 import stripe
 from werkzeug.utils import secure_filename
 import subprocess
+from subscribie.api import decrypt_secret
 
 log = logging.getLogger(__name__)
 
@@ -1627,3 +1628,22 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/api-keys", methods=["GET", "POST"])
+@login_required
+def show_api_keys():
+    settings = Setting.query.first()  # Get current shop settings
+    try:
+        live_api_key = decrypt_secret(settings.api_key_secret_live).decode("utf-8")
+        test_api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+    except Exception as e:
+        live_api_key = None
+        test_api_key = None
+        log.warning("Exception {e} getting live/test api keys")
+
+    return render_template(
+        "admin/settings/api_keys.html",
+        live_api_key=live_api_key,
+        test_api_key=test_api_key,
+    )
