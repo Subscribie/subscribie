@@ -8,9 +8,9 @@ on:
   pull_request:
   # (pull_request_target get fired on external contributer pull requests)
   #pull_request_target
-  paths-ignore:
-    - '**/README.md'
-    - '**/TESTING.md'
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
