@@ -8,9 +8,9 @@ on:
   push:
     branches:
       - master
-  paths-ignore:
-    - '**/README.md'
-    - '**/TESTING.md'
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
   workflow_dispatch:
 jobs:
   demo-videos:
