@@ -1,3 +1,15 @@
+# v0.1.46 (Sat Mar 12 2022)
+
+#### ⚠️ Pushed to `master`
+
+- #829 correct paths-ignore indentation ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.45 (Sat Mar 12 2022)
 
 #### 🐛 Bug Fix
