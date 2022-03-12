@@ -4,10 +4,13 @@
 # The deployed url will be <branchname>.<domain>
 
 name: Deploy pr preview
-on: 
-  - pull_request
+on:
+  pull_request:
   # (pull_request_target get fired on external contributer pull requests)
-  # - pull_request_target
+  #pull_request_target
+  paths-ignore:
+    - '**/README.md'
+    - '**/TESTING.md'
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
