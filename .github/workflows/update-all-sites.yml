@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
-  paths-ignore:
-    - '**/README.md'
-    - '**/TESTING.md'
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   update_all_sites:
     name: Update all sites
