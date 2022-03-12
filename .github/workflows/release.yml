@@ -5,9 +5,6 @@ on:
     branches:
       - master
   workflow_dispatch:
-  paths-ignore:
-    - '**/README.md'
-    - '**/TESTING.md'
 
 jobs:
   release:
