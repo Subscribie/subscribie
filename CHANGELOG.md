@@ -1,3 +1,19 @@
+# v0.1.45 (Sat Mar 12 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #829 Dont rebuild on readme changes [#830](https://github.com/Subscribie/subscribie/pull/830) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `master`
+
+- Ref #829 to tag a new release when the readme changes ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.44 (Sat Mar 12 2022)
 
 #### 🐛 Bug Fix
