@@ -1,3 +1,17 @@
+# v0.1.44 (Sat Mar 12 2022)
+
+#### 🐛 Bug Fix
+
+- #826 Bump playwright to ^1.19.2 [#827](https://github.com/Subscribie/subscribie/pull/827) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- lint F841 [#827](https://github.com/Subscribie/subscribie/pull/827) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #826 include cancelled Stripe subscriptions in update_stripe_subscription_statuses [#827](https://github.com/Subscribie/subscribie/pull/827) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.43 (Tue Mar 08 2022)
 
 #### 🐛 Bug Fix
