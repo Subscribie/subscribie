@@ -24,10 +24,14 @@ def update_stripe_subscription_statuses():
         )
     if stripe_connect_active():
         try:
+            # See https://stripe.com/docs/api/subscriptions/list#list_subscriptions-status # noqa: E501
             stripeSubscriptions = stripe.Subscription.list(
-                stripe_account=connect_account.id, limit=100
+                stripe_account=connect_account.id, status="all", limit=100
             )
             for stripeSubscription in stripeSubscriptions.auto_paging_iter():
+                log.debug(
+                    f"processing subscription status for Stripe subscription: {stripeSubscription.id}"  # noqa: E501
+                )
 
                 subscription = (
                     database.session.query(Subscription)
@@ -35,6 +39,9 @@ def update_stripe_subscription_statuses():
                     .first()
                 )
                 if subscription:
+                    log.debug(
+                        f"setting Subscribie subscription {subscription.uuid} status to: {stripeSubscription.status} for Stripe subscription: {stripeSubscription.id}"  # noqa: E501
+                    )
 
                     subscription.stripe_status = stripeSubscription.status
                     log.info(subscription.stripe_status)
