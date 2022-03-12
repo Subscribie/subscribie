@@ -10,6 +10,9 @@ on:
     tags:
       - v*
 
+  paths-ignore:
+    - '**/README.md'
+    - '**/TESTING.md'
   # Run tests for any PRs.
   pull_request:
 
