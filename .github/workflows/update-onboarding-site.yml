@@ -4,9 +4,9 @@ on:
   push:
     paths:
     - 'subscribie/themes/theme-builder/**'
-  paths-ignore:
-    - '**/README.md'
-    - '**/TESTING.md'
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   update_onboarding:
     name: Update onboarding
