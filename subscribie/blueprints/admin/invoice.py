@@ -1,6 +1,6 @@
 from . import admin
 import logging
-from subscribie.auth import login_required
+from subscribie.auth import login_required, stripe_connect_id_required
 from subscribie.database import database
 from subscribie.models import UpcomingInvoice, Subscription
 from subscribie.utils import (
@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 
 @admin.route("/invoices/failed/", methods=["GET"])
 @login_required
+@stripe_connect_id_required
 def failed_invoices():
     if "refreshFailedInvoices" in request.args:
         get_stripe_invoices()
