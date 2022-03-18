@@ -140,35 +140,36 @@ class Person(database.Model, HasArchived):
         for subscription in self.subscriptions:
             if subscription.stripe_subscription_id != "":
                 try:
-                    stripe_subscription = stripe.Subscription.retrieve(
-                        subscription.stripe_subscription_id,
-                        stripe_account=stripe_account_id,
-                    )
-                    # Get Stripe customer id
-                    stripe_customer_id = stripe_subscription.customer
-                    # Get Stripe invoices for this customer/subscriber
-                    stripe_invoices = stripe.Invoice.list(
-                        stripe_account=stripe_account_id,
-                        customer=stripe_customer_id,
-                    )
-                    # loop over all invoices
-                    # See https://stripe.com/docs/api/pagination/auto
-                    for invoice in stripe_invoices.auto_paging_iter():
-                        # If invoice is not paid, check for any payment errors
-                        if invoice.status != "paid":
-                            try:
-                                stripe_decline_code = stripe.PaymentIntent.retrieve(
-                                    invoice.payment_intent,
-                                    stripe_account=stripe_account_id,
-                                ).last_payment_error.decline_code
-                                invoice["stripe_decline_code"] = stripe_decline_code
-                            except Exception as e:
-                                log.warning(
-                                    f"Could not get Stripe Invoice PaymentIntent last_payment_error decline_code: {e}"  # noqa: E501
-                                )
-                        else:
-                            invoice["stripe_decline_code"] = None
-                        invoices.append(invoice)
+                    if subscription.stripe_subscription_id is not None:
+                        stripe_subscription = stripe.Subscription.retrieve(
+                            subscription.stripe_subscription_id,
+                            stripe_account=stripe_account_id,
+                        )
+                        # Get Stripe customer id
+                        stripe_customer_id = stripe_subscription.customer
+                        # Get Stripe invoices for this customer/subscriber
+                        stripe_invoices = stripe.Invoice.list(
+                            stripe_account=stripe_account_id,
+                            customer=stripe_customer_id,
+                        )
+                        # loop over all invoices
+                        # See https://stripe.com/docs/api/pagination/auto
+                        for invoice in stripe_invoices.auto_paging_iter():
+                            # If invoice is not paid, check for any payment errors
+                            if invoice.status != "paid":
+                                try:
+                                    stripe_decline_code = stripe.PaymentIntent.retrieve(
+                                        invoice.payment_intent,
+                                        stripe_account=stripe_account_id,
+                                    ).last_payment_error.decline_code
+                                    invoice["stripe_decline_code"] = stripe_decline_code
+                                except Exception as e:
+                                    log.warning(
+                                        f"Could not get Stripe Invoice PaymentIntent last_payment_error decline_code: {e}"  # noqa: E501
+                                    )
+                            else:
+                                invoice["stripe_decline_code"] = None
+                            invoices.append(invoice)
                 except stripe.error.InvalidRequestError as e:
                     log.error(
                         f"Unable to retrieve stripe subscription by id: {subscription.stripe_subscription_id}. {e}"  # noqa: E501
@@ -529,6 +530,9 @@ class Setting(database.Model):
     charge_vat = database.Column(database.Boolean(), default=False)
     custom_code = database.Column(database.String(), default=None)
     default_currency = database.Column(database.String(), default=None)
+    shop_activated = database.Column(database.Boolean(), default=False)
+    api_key_secret_live = database.Column(database.String(), default=None)
+    api_key_secret_test = database.Column(database.String(), default=None)
 
 
 class File(database.Model):

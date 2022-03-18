@@ -98,8 +98,7 @@ def create_app(test_config=None):
             except (ModuleNotFoundError, AttributeError):
                 log.debug("Error: Could not import module as blueprint: {module.name}")
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-    CORS(app, resources={r"/auth/jwt-login/*": {"origins": "*"}})
+    CORS(app)
     images = UploadSet("images", IMAGES)
     patch_request_class(app, int(app.config.get("MAX_CONTENT_LENGTH", 2 * 1024 * 1024)))
     configure_uploads(app, images)

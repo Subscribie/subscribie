@@ -1,0 +1,20 @@
+[Unit]
+Description=Subscribie uWSGI Emperor which manages vassals
+After=network.target
+
+[Service]
+# Remember to ensure enable-threads = true in your emperor config.ini
+ExecStart=/path-to/venv/bin/uwsgi --ini emperor.ini
+RuntimeDirectory=uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+WorkingDirectory=/path/to/subscribie/
+
+[Install]
+WantedBy=multi-user.target
+
+# See https://uwsgi-docs.readthedocs.io/en/latest/Systemd.html#systemd
+

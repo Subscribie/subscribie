@@ -22,6 +22,9 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         
         //Pause Subscription
         await page.click('.pause-action');
+        await new Promise(x => setTimeout(x, 3000)); // 3 seconds
+        await page.click('.pause-yes');
+        await new Promise(x => setTimeout(x, 3000)); // 3 seconds
         const subscription_pause_notification = await page.textContent('text="Subscription paused"');
         expect(subscription_pause_notification === "Subscription paused");
         expect(await page.screenshot()).toMatchSnapshot('paused-plan.png');
@@ -30,6 +33,9 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         
         //Resume Subscription
         await page.click('.resume-action');
+        await new Promise(x => setTimeout(x, 3000)); // 3 secconds
+        await page.click('.resume-yes');
+        await new Promise(x => setTimeout(x, 3000)); // 3 seconds
         const subscription_resume_notification = await page.textContent('text="Subscription resumed"');
         expect(subscription_resume_notification === "Subscription resumed");
         expect(await page.screenshot()).toMatchSnapshot('resume-plan.png');

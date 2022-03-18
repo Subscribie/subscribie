@@ -74,10 +74,27 @@
           Setup payouts on Stripe
           {% if payment_provider.stripe_livemode %}
             (live mode)
+          {# Only allow activated shops to activate Stripe
+             in live mode #}
+          {% if shop_activated %}
+
+            <button id="submit" class="btn btn-success">
+            Setup payouts on Stripe
+            {% if payment_provider.stripe_livemode %}
+              (live mode)
+            {% else %}
+              (test mode)
+            {% endif %}
+            </button>
+
+          {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
+            {# Only require non-already stripe connected sites to activate via human operator #}
+            <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
+
+>>>>>>> 43e0bd9108b2c98b2d36b6a856244c516bbce632
           {% else %}
-            (test mode)
+            <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
           {% endif %}
-          </button>
 
 
           {% if account.payouts_enabled is sameas False and payment_provider.stripe_livemode is sameas True %}

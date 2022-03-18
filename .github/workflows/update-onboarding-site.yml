@@ -4,6 +4,9 @@ on:
   push:
     paths:
     - 'subscribie/themes/theme-builder/**'
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   update_onboarding:
     name: Update onboarding
@@ -23,3 +26,4 @@ jobs:
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.ONBOARDING_WEBSITE_PATH }}; touch *.ini; "
+

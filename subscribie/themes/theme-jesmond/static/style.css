@@ -14,6 +14,20 @@
   --grey-300: #DADEE0;
   --grey-600: #74787A;
   --grey-900: #1C1E1F;
+
+  --font-color-hs: 0, 0%;
+  --font-color-l: 100%;
+  --font-color-hsl-full: var(--font-color-hs), var(--font-color-l);
+
+  --font-color: hsl(var(--font-color-hs), var(--font-color-l));
+  --font-color-lighten-15: hsl(var(--font-color-hs),calc(var(--font-color-l) + 15%));
+  --font-color-lighten-50: hsl(var(--font-color-hs),calc(var(--font-color-l) + 50%));
+  --font-color-darken: hsl(var(--font-color-hs),calc(var(--font-color-l) - 15%));
+
+  --font: var(--font-color);
+  --font-dark: var(--font-color-darken);
+  --font-light: var(--font-color-lighten-15);
+  --font-lighter: var(--font-color-lighten-50);
 }
 
 /* --------------- typografy --------------- */
@@ -58,7 +72,7 @@ p {
   font-weight: 600;
   font-size: 32px;
   line-height: 40px;
-
+  color: var(--font);
   margin-bottom: 1rem;
 }
 
@@ -66,7 +80,6 @@ p {
   font-weight: 600;
   font-size: 18px;
   line-height: 24px;
-
   margin-bottom: .5rem;
 }
 
@@ -76,7 +89,7 @@ p {
 }
 
 .text-light {
-  color: var(--grey-300);
+  color: var(--font)!important;
   margin-bottom: 40px;
 }
 
@@ -122,7 +135,7 @@ p {
 
 .btn-primary,
 .btn-primary-lg {
-  color: white;
+  color: var(--font);
   background-color: var(--primary);
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
   border-width: 0;
@@ -151,8 +164,8 @@ p {
   
   padding: 8px 16px;
   background-color: white;
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  color: black;
+  border: 1px solid var(--primary-color-darken);
   font-weight: 400;
 }
 
@@ -161,8 +174,8 @@ p {
   
   padding: 12px 16px;
   background-color: white;
-  color: var(--primary);
-  border: 2px solid var(--primary);
+  color: var(--primary-color-darken);
+  border: 2px solid var(--primary-color-darken);
   font-weight: 700;
   letter-spacing: 4%;
 }
@@ -196,7 +209,7 @@ p {
 }
 
 .btn-link-lg {
-  color: var(--primary);
+  color: var(--primary-color-darken);
   font-weight: 700;
   letter-spacing: 4%;
   padding: 12px 16px;
@@ -275,7 +288,6 @@ body {
 
 
 /* --------------- plans section --------------- */
-
 .plans-section .wrapper{
   max-width: 1280px;
   width: 100%;
@@ -288,7 +300,7 @@ body {
 }
 
 .plans-section-header h4 {
-  color: var(--secondary);
+  color: var(--font);
 }
 
 .plans-row {
@@ -318,7 +330,7 @@ body {
 }
 
 .plan-selling-points i, .fa-check-circle {
-  color: var(--primary);
+  color: var(--primary-color-darken);
 }
 
 .pricing-plan .card-footer {

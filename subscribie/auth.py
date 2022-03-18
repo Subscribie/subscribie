@@ -22,7 +22,7 @@ from .forms import (
     ForgotPasswordForm,
     ForgotPasswordResetPasswordForm,
 )
-from .models import database, User, Person, Company, Page, LoginToken
+from .models import database, User, Person, Company, Page, LoginToken, Setting
 import binascii
 from pathlib import Path
 import flask
@@ -35,6 +35,39 @@ import datetime
 
 log = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+
+def saas_api_only(f):
+    """Allow or deny requests if they providate a
+    valid SAAS_API_KEY
+
+    The SAAS_API_KEY api is used for Subscribie to
+    communicate with shops created by the shop builder.
+    For example, for activating/deactivating a shop,
+    Subscribie can make an authenticated api request
+    to a shop to activate or deactivate a shop when
+    also providing a valid SAAS_API_KEY.
+    """
+
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
+        if request.args.get("SAAS_API_KEY") and SAAS_API_KEY == request.args.get(
+            "SAAS_API_KEY"
+        ):  # noqa: E501
+            pass  # Authenticated, allow request
+
+        if request.args.get("SAAS_API_KEY") is None:
+            resp = jsonify({"error": "SAAS_API_KEY required"})
+            return resp, 401
+        if SAAS_API_KEY != request.args.get("SAAS_API_KEY"):
+
+            resp = jsonify({"error": "Invalid SAAS_API_KEY"})
+
+            return resp, 401
+        return f(*args, **kwds)
+
+    return wrapper
 
 
 def token_required(f):
@@ -50,7 +83,19 @@ def token_required(f):
             return resp, 401
 
         auth_header = parse_auth_header(request.headers["Authorization"])
-        # Validate & decode jwt
+
+        # Attempt api token authentication
+        settings = Setting.query.first()
+
+        from subscribie.api import decrypt_secret
+
+        api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+        if auth_header["access_token"] == api_key:
+            assert api_key is not None
+            assert api_key != ""
+            return f(*args, **kwds)
+
+        # Check if jtw based auth, Validate & decode jwt
         public_key = open(current_app.config["PUBLIC_KEY"]).read()
         try:
             jwt.decode(auth_header["access_token"], public_key, algorithms=["RS256"])
@@ -186,6 +231,10 @@ def send_login_token_email():
 
 @bp.route("/login", methods=["GET"])
 def login():
+    # If already logged in, redirect to admin dashboard
+    if g.user is not None:
+        return redirect(url_for("admin.dashboard"))
+    # Otherwise present login form
     form = LoginForm()
     return render_template("/admin/login.html", form=form)
 

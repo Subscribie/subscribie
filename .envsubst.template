@@ -1,53 +1,54 @@
 #Only values in uppercase are actually stored in the config object later on. So make sure to use uppercase letters for your config keys.
 
 # Change FLASK_ENV=live for live
-FLASK_ENV=development
+FLASK_ENV=${FLASK_ENV}
 
 # Software as a service (SAAS)
-SAAS_URL=https://subscribie.co.uk/
+SAAS_URL=${SAAS_URL}
 # SAAS_API_KEY is to allow subscribie platform to send authenticated
 # api requests to subscribie shops created by the shop builder.
-SAAS_API_KEY=changeme
-SAAS_ACTIVATE_ACCOUNT_PATH=/activate
+SAAS_API_KEY=${SAAS_API_KEY}
+SAAS_ACTIVATE_ACCOUNT_PATH=${SAAS_ACTIVATE_ACCOUNT_PATH}
 
 # For testing this repo in isolation, SUBSCRIBIE_REPO_DIRECTORY can be './'
 # for production, SUBSCRIBIE_REPO_DIRECTORY should be wherever the repo
 # is cloned to
-SUBSCRIBIE_REPO_DIRECTORY=./
+SUBSCRIBIE_REPO_DIRECTORY=${SUBSCRIBIE_REPO_DIRECTORY}
 SQLALCHEMY_TRACK_MODIFICATIONS=False
-SQLALCHEMY_DATABASE_URI="sqlite:////tmp/data.db"
+SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
 SECRET_KEY="random string. e.g. echo -e 'from os import urandom\\nprint urandom(25)' | python"
-DB_FULL_PATH="/tmp/data.db"
+DB_FULL_PATH=${DB_FULL_PATH}
 MODULES_PATH="./modules/"
-TEMPLATE_BASE_DIR="./subscribie/themes/"
+TEMPLATE_BASE_DIR=${TEMPLATE_BASE_DIR}
 THEME_NAME="jesmond"
-CUSTOM_PAGES_PATH="./subscribie/custom_pages/"
-UPLOADED_IMAGES_DEST="./subscribie/static/"
-UPLOADED_FILES_DEST="./subscribie/uploads/"
+CUSTOM_PAGES_PATH=${CUSTOM_PAGES_PATH}
+UPLOADED_IMAGES_DEST=${UPLOADED_IMAGES_DEST}
+UPLOADED_FILES_DEST=${UPLOADED_FILES_DEST}
 # Default 50Mb upload limit
 MAX_CONTENT_LENGTH="52428800"
-SUCCESS_REDIRECT_URL="http://127.0.0.1:5000/complete_mandate"
-THANKYOU_URL="http://127.0.0.1:5000/thankyou"
-EMAIL_LOGIN_FROM="hello@example.com"
-EMAIL_QUEUE_FOLDER="/var/email-queue/"
+SUCCESS_REDIRECT_URL=${SUCCESS_REDIRECT_URL}
+THANKYOU_URL=${THANKYOU_URL}
+EMAIL_LOGIN_FROM=${EMAIL_LOGIN_FROM}
+EMAIL_QUEUE_FOLDER=${EMAIL_QUEUE_FOLDER}
 
-SERVER_NAME="127.0.0.1:5000"
+
+SERVER_NAME=${SERVER_NAME}
 
 # Cookie policies
 #SESSION_COOKIE_SECURE=True
 #SESSION_COOKIE_HTTPONLY=True
 #SESSION_COOKIE_SAMESITE=None
 
-MAIL_DEFAULT_SENDER="noreply@example.com"
+MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
 
-STRIPE_LIVE_PUBLISHABLE_KEY=
-STRIPE_LIVE_SECRET_KEY=
+STRIPE_LIVE_PUBLISHABLE_KEY=${STRIPE_LIVE_PUBLISHABLE_KEY}
+STRIPE_LIVE_SECRET_KEY=${STRIPE_LIVE_SECRET_KEY}
 
-STRIPE_TEST_PUBLISHABLE_KEY=
-STRIPE_TEST_SECRET_KEY=
+STRIPE_TEST_PUBLISHABLE_KEY=${STRIPE_TEST_PUBLISHABLE_KEY}
+STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY}
 
 # Internal server where shop should send its stripe connect account id to. See https://github.com/Subscribie/subscribie/issues/352
-STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=http://127.0.0.1:8001
+STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=${STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST}
 
 # Google oauth (signin / up with Google
 GOOGLE_CLIENT_ID=???.apps.googleusercontent.com
@@ -69,8 +70,8 @@ PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 PLAYWRIGHT_HEADLESS=true
 
 #rename shop variables
-PATH_TO_SITES="/path/to/sites/subscribie/"
-PATH_TO_RENAME_SCRIPT="/path/to/sites/subscribie/rename-shop.sh"
+PATH_TO_SITES=${PATH_TO_SITES}
+PATH_TO_RENAME_SCRIPT=${PATH_TO_RENAME_SCRIPT}
 SUBSCRIBIE_DOMAIN="subscriby.shop"
 
 PRIVATE_KEY="/tmp/private.pem"
@@ -80,7 +81,7 @@ PUBLIC_KEY="/tmp/public.pem"
 # Optional
 TELEGRAM_TOKEN=
 TELEGRAM_CHAT_ID=
-TELEGRAM_PYTHON_LOG_LEVEL=ERROR
+TELEGRAM_PYTHON_LOG_LEVEL="ERROR"
 
 
 # Environment Settings for tests

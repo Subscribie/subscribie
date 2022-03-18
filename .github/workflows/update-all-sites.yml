@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   update_all_sites:
     name: Update all sites
@@ -21,6 +24,13 @@ jobs:
         set -x
         eval `ssh-agent -s`
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        cat << EOF > update-requirements.sh
+        cd ${{ secrets.SHAREDREPO_PATH }}
+        . venv/bin/activate
+        pip install -r requirements.txt
+        EOF
+        scp update-requirements.sh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }}:~/
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "bash update-requirements.sh"
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "cd ${{ secrets.SHAREDREPO_PATH }}; git fetch; git rebase origin/master;"
     - name: Reload all uwsgi vassals, one by one
       run: |

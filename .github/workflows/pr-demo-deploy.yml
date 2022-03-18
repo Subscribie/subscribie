@@ -4,15 +4,21 @@
 # The deployed url will be <branchname>.<domain>
 
 name: Deploy pr preview
-on: 
-  - pull_request
+on:
+  pull_request:
   # (pull_request_target get fired on external contributer pull requests)
-  # - pull_request_target
+  #pull_request_target
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     environment: testing
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Dump context
         env:
@@ -43,6 +49,8 @@ jobs:
           echo The PR was raised by: ${{ github.event.pull_request.user.login }}
           eval `ssh-agent -s`
           ssh-add - <<< "$SSH_PRIVATE_KEY"
+          echo deleting dokku app ${{ github.head_ref }}
+          ssh dokku@$DOKKU_HOST -C "dokku apps:destroy --force ${{ env.SUBDOMAIN }}" | true
           echo Creating dokku app ${{ github.head_ref }}
           ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
           echo The url will be ${{ github.head_ref }}.pcpink.co.uk

@@ -8,6 +8,9 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
   workflow_dispatch:
 jobs:
   demo-videos:
@@ -44,6 +47,8 @@ jobs:
             echo The PR was raised by: ${{ github.event.pull_request.user.login }}
             eval `ssh-agent -s`
             ssh-add - <<< "$SSH_PRIVATE_KEY"
+            echo Deleting dokku app ${{ github.event.repository.default_branch }}
+            ssh dokku@$DOKKU_HOST -C "dokku --force apps:destroy ${{ env.SUBDOMAIN }}" | true
             echo Creating dokku app ${{ github.event.repository.default_branch }}
             ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
             echo The url will be ${{ github.event.repository.default_branch }}.pcpink.co.uk

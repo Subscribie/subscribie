@@ -60,7 +60,7 @@
 
  function waitForSiteToBeReady(new_name) {
    console.log("waitForSiteToBeReady...");
-   new_name = name.replace("subscriby.shop", "").replace(".","");
+   new_name = new_name.replace("subscriby.shop", "").replace(".","");
    fetch("https://" + new_name + ".subscriby.shop")
    .then(response => checkResponse(response, new_name))
    .catch((error) => { console.error(error)});
@@ -70,7 +70,7 @@
     let new_name = document.getElementById("new_name").value;
     document.getElementById('submit').textContent = "Please wait...";
     console.log("Renaming shop...");
-    const data = { new_name: new_name };
+    const data = { "new_name": new_name };
     fetch("/admin/rename-shop", {
       method: 'POST',
       headers: {
@@ -82,7 +82,7 @@
     .then(data => {
        console.log(data);
     })
-    .then(waitForSiteToBeReady(new_name))
+    .then(waitForSiteToBeReady(new_name));
   }
 
   // When the user clicks save, try to rename the site

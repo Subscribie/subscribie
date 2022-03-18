@@ -1,4 +1,5 @@
 import logging
+import requests
 from flask import (
     Blueprint,
     render_template,
@@ -10,6 +11,7 @@ from flask import (
     current_app,
 )
 from subscribie.models import (
+    User,
     Plan,
     Option,
     ChosenOption,
@@ -22,6 +24,7 @@ from subscribie.models import (
     Setting,
     TaxRate,
 )
+from subscribie.email import EmailMessageQueue
 from subscribie.utils import (
     get_stripe_publishable_key,
     get_stripe_secret_key,
@@ -192,6 +195,42 @@ def thankyou():
     if session.get("plan") is None:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
+
+    # Activate shop if session["sitename"] present
+    if session.get("sitename"):
+        # Build activation api request
+        sitename = session.get("sitename")
+        SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
+        if "127.0.0.1" in request.remote_addr and not request.is_secure:
+            scheme = "http"  # allow local development
+        else:
+            scheme = "https"
+        activate_shop_url = (
+            f"{scheme}://{sitename}/api/v1/activate-shop?SAAS_API_KEY={SAAS_API_KEY}"
+        )
+        # Activate the shop by calling the activate shop api request
+        try:
+            req = requests.get(activate_shop_url, timeout=1)
+            log.info(f"Activating shop {sitename}")
+            if req.status_code == 200:
+                log.info(f"Succedd activating shop. status_code: {req.status_code}")
+            # Set site url for login button on thank you page
+            session["site-url"] = f"{scheme}://{sitename}"
+            # Remove sitename from session as no longer needed
+            session.pop("sitename")
+        except requests.exceptions.ConnectionError as e:
+            log.error(
+                f"Unable to activate shop {sitename}. Could not make api request to activate: {e}."  # noqa: E501
+            )  # noqa: E501
+        except requests.HTTPError as e:
+            log.error(
+                f"Unable to activate shop {sitename}. HTTPError: {e}."
+            )  # noqa: E501
+        except Exception as e:
+            log.error(
+                f"Unable to activate shop {sitename}. Unhandled reason: {e}."
+            )  # noqa: E501
+
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
     subscription = (
@@ -590,6 +629,32 @@ def stripe_webhook():
     event = request.json
 
     log.info(f"Received stripe webhook event type {event['type']}")
+    # Handle the payment_intent.payment_failed
+    if event["type"] == "payment_intent.payment_failed":
+        log.info("Stripe webhook event: payment_intent.payment_failed")
+        try:
+            eventObj = event["data"]["object"]
+            log.info(eventObj)
+            personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
+            personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
+            # Notify if payment_failed event was related to a Subscription charge
+            if eventObj["charges"]["data"][0]["description"] == "Subscription update":
+                emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
+                The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
+                The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
+                Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
+                log.info(emailBody)
+                email = User.query.first().email
+                company = Company.query.first()
+                msg = EmailMessageQueue()
+                msg["Subject"] = company.name + " " + "A payment collection failed"
+                msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                msg["TO"] = email
+                msg.set_content(emailBody)
+                msg.queue()
+        except Exception as e:
+            log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
+        return "OK", 200
 
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":

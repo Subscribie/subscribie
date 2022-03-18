@@ -78,6 +78,7 @@ from .stats import (
 import stripe
 from werkzeug.utils import secure_filename
 import subprocess
+from subscribie.api import decrypt_secret
 
 log = logging.getLogger(__name__)
 
@@ -298,32 +299,37 @@ def pause_stripe_subscription(subscription_id: str):
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
 
-    try:
-        stripe_pause = stripe.Subscription.modify(
-            subscription_id,
-            stripe_account=connect_account_id,
-            pause_collection={"behavior": "void"},
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/pause_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
         )
-        # filtering for the pause_collection value
-        stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe_pause = stripe.Subscription.modify(
+                subscription_id,
+                stripe_account=connect_account_id,
+                pause_collection={"behavior": "void"},
+            )
+            # filtering for the pause_collection value
+            stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
 
-        # adding the pause_collection status to the stripe_pause_collection column
-        pause_collection = Subscription.query.filter_by(
-            stripe_subscription_id=subscription_id
-        ).first()
+            # adding the pause_collection status to the stripe_pause_collection column
+            pause_collection = Subscription.query.filter_by(
+                stripe_subscription_id=subscription_id
+            ).first()
 
-        pause_collection.stripe_pause_collection = stripe_pause_filter
-        database.session.commit()
+            pause_collection.stripe_pause_collection = stripe_pause_filter
+            database.session.commit()
 
-        flash("Subscription paused")
-    except Exception as e:
-        msg = "Error pausing subscription"
-        flash(msg)
-        log.error(f"{msg}. {e}")
+            flash("Subscription paused")
+        except Exception as e:
+            msg = "Error pausing subscription"
+            flash(msg)
+            log.error(f"{msg}. {e}")
 
-    if "goback" in request.args:
-        return redirect(request.referrer)
-    return jsonify(message="Subscription paused", subscription_id=subscription_id)
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/resume")
@@ -332,31 +338,35 @@ def resume_stripe_subscription(subscription_id):
     """Resume a Stripe subscription"""
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
-
-    try:
-        stripe.Subscription.modify(
-            subscription_id,
-            stripe_account=connect_account_id,
-            pause_collection="",  # passing empty string unpauses the subscription
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/resume_subscription.html",
+            confirm=False,
+            subscription_id=subscription_id,
         )
 
-        # adding the pause_collection status to the stripe_pause_collection column
-        pause_collection = Subscription.query.filter_by(
-            stripe_subscription_id=subscription_id
-        ).first()
-        pause_collection.stripe_pause_collection = ""
-        database.session.commit()
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe.Subscription.modify(
+                subscription_id,
+                stripe_account=connect_account_id,
+                pause_collection="",  # passing empty string unpauses the subscription
+            )
 
-        flash("Subscription resumed")
-    except Exception as e:
-        msg = "Error resuming subscription"
-        flash(f"{msg}. {e}")
-        log.error(e)
+            # adding the pause_collection status to the stripe_pause_collection column
+            pause_collection = Subscription.query.filter_by(
+                stripe_subscription_id=subscription_id
+            ).first()
+            pause_collection.stripe_pause_collection = ""
+            database.session.commit()
 
-    if "goback" in request.args:
-        return redirect(request.referrer)
+            flash("Subscription resumed")
+        except Exception as e:
+            msg = "Error resuming subscription"
+            flash(f"{msg}. {e}")
+            log.error(e)
 
-    return jsonify(message="Subscription resumed", subscription_id=subscription_id)
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/stripe/subscriptions/<payment_id>/actions/refund/")
@@ -807,6 +817,14 @@ def set_stripe_livemode():
 @admin.route("/connect/stripe-connect", methods=["GET"])
 @login_required
 def stripe_connect():
+    setting = Setting.query.first()
+    shop_activated = setting.shop_activated
+    SERVER_NAME = os.getenv("SERVER_NAME")
+    saas_url = current_app.config.get("SAAS_URL")
+    saas_activate_account_path = current_app.config.get("SAAS_ACTIVATE_ACCOUNT_PATH")
+    saas_activate_account_url = (
+        saas_url + saas_activate_account_path + f"/{SERVER_NAME}"
+    )  # noqa: E501
     account = None
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
@@ -842,7 +860,6 @@ def stripe_connect():
             ).url
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
-
     database.session.commit()
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
@@ -851,6 +868,8 @@ def stripe_connect():
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
         default_currency=setting.default_currency,
+        shop_activated=shop_activated,
+        saas_activate_account_url=saas_activate_account_url,
     )
 
 
@@ -1031,6 +1050,7 @@ def refresh_subscriptions():
             "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
         return redirect(request.referrer)
+    return "Subscription statuses refreshed", 200
 
 
 @admin.route("/fetch-upcoming_invoices")
@@ -1443,6 +1463,7 @@ def announce_shop_stripe_connect_ids():
                 "live_mode": live_mode,
                 "site_url": url_for("index", _external=True),
             },
+            timeout=10,
         )
         if req.status_code != 200:
             return jsonify(
@@ -1623,3 +1644,22 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/api-keys", methods=["GET", "POST"])
+@login_required
+def show_api_keys():
+    settings = Setting.query.first()  # Get current shop settings
+    try:
+        live_api_key = decrypt_secret(settings.api_key_secret_live).decode("utf-8")
+        test_api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
+    except Exception as e:  # noqa: F841
+        live_api_key = None
+        test_api_key = None
+        log.warning("Exception {e} getting live/test api keys")
+
+    return render_template(
+        "admin/settings/api_keys.html",
+        live_api_key=live_api_key,
+        test_api_key=test_api_key,
+    )
