@@ -76,6 +76,7 @@
             (live mode)
           {# Only allow activated shops to activate Stripe
              in live mode #}
+          {% endif %}
           {% if shop_activated %}
 
             <button id="submit" class="btn btn-success">
@@ -91,7 +92,6 @@
             {# Only require non-already stripe connected sites to activate via human operator #}
             <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
 
->>>>>>> 43e0bd9108b2c98b2d36b6a856244c516bbce632
           {% else %}
             <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
           {% endif %}
