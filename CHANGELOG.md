@@ -1,3 +1,15 @@
+# v0.1.54 (Fri Mar 25 2022)
+
+#### ⚠️ Pushed to `master`
+
+- updating update-onboarding-sites ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.53 (Fri Mar 25 2022)
 
 #### 🐛 Bug Fix
