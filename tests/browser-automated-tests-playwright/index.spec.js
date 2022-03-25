@@ -21,7 +21,11 @@ test.describe("Subscribie tests:", () => {
       let connectYourShopContent = await page.evaluate(() => document.body.textContent);
       if (connectYourShopContent.indexOf("Congrats!") > -1) {
         expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
-        console.log("Already connected Stripe sucessfully, exiting test");
+        return 0;
+      }
+      if (connectYourShopContent.indexOf("Payouts to your bank account are not active yet.") > -1) {
+        expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
+        console.log("Already connected Stripe sucessfully, but still pending. exiting test");
         return 0;
       }
     } catch (e) {
@@ -36,7 +40,7 @@ test.describe("Subscribie tests:", () => {
       //page.setDefaultTimeout(3000);
       let contentStripeConnect = await page.evaluate(() => document.body.textContent);
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
-
+      test.skip(contentStripeConnect.indexOf("Payouts to your bank account are not active yet.") > -1);
       // Start Stripe connect onboarding
       expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
       await page.goto('/admin/connect/stripe-connect');
@@ -163,13 +167,33 @@ test.describe("Subscribie tests:", () => {
             await page.click('button:has-text("Done")');
             console.log("Clicking Done");
           }
+          try{
+              const confirm_terms_of_service = await page.textContent('text="Submit before verification is complete?"');
+              if (expect(confirm_terms_of_service === "Submit before verification is complete?")){
+                  await page.click('div[role="dialog"] button:has-text("Submit")');
+              }
+          } catch (e) {
+              console.log("no verification needed")
+          }
         }
-
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
       await new Promise(x => setTimeout(x, 5000));
-      const stripe_connected = await page.textContent("text=Congrats!");
-      expect(stripe_connected === "Congrats!");
-      console.log("Stripe Connected");
+      try {
+        let connectYourShopContent = await page.evaluate(() => document.body.textContent);
+        if (connectYourShopContent.indexOf("Congrats!") > -1) {
+          expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
+          console.log("Already connected Stripe sucessfully, exiting test");
+          return 0;
+        }
+        if (connectYourShopContent.indexOf("Payouts to your bank account are not active yet.") > -1) {
+          expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
+          console.log("Already connected Stripe sucessfully, but still pending. exiting test");
+          return 0;
+        }
+      } catch (e) {
+          console.log("Exception checking if onboarding completed, looks like it's not complete");
+          return 1;
+      }
       await page.goto('/admin/announce-stripe-connect'); 
       await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";
       console.log("Announced to Stripe connect account");
