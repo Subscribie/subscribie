@@ -2,8 +2,10 @@ import os
 from . import admin
 from subscribie.auth import login_required
 from subscribie.database import database
-from subscribie.models import Subscription, Person, Transaction
+from subscribie.models import Subscription, Person, Transaction, PaymentProvider
 from flask import jsonify
+from subscribie.utils import get_stripe_connect_account_id, get_stripe_secret_key
+import stripe
 
 
 @admin.route("/remove-subscriptions", methods=["GET"])
@@ -46,3 +48,24 @@ def remove_transactions():
     msg = {"msg": "all transactions deleted"}
 
     return jsonify(msg)
+
+
+@admin.route("/delete-connect-account", methods=["GET"])
+@login_required
+def delete_connect_account():
+    if os.getenv("FLASK_ENV") != "development":
+        msg = {"msg": "Error. Only possible in development mode"}
+        return jsonify(msg), 403
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+    if connect_account_id:
+        stripe.Account.delete(get_stripe_connect_account_id())
+        database.session.query(PaymentProvider).delete()
+        database.session.commit()
+        msg = {"msg": "stripe connect accound id deleted"}
+        return jsonify(msg)
+    else:
+
+        msg = {"msg": "please connect to stripe"}
+
+        return jsonify(msg)
