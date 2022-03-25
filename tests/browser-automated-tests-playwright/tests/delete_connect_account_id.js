@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 // Clear connect account id after all tests are completed
-test("@831@Clearing-connect-account-id", async ({ page }) => {
+test("@831@delete-connect-account-id", async ({ page }) => {
 
     await page.goto('/admin/delete-connect-account');
     await new Promise(x => setTimeout(x, 2000)); //2 secconds
