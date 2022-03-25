@@ -185,6 +185,6 @@ test.describe("Subscribie tests:", () => {
   // 2. 2.A pause, resume and 2.B cancel subscription test. 
   order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
 
-  clearing_connect_account_id = require('./tests/clear_connect_account_id.js');
+  delete_connect_account_id = require('./tests/delete_connect_account_id.js');
 });
 
