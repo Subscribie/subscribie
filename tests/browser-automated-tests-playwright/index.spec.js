@@ -29,6 +29,7 @@ test.describe("Subscribie tests:", () => {
         return 0;
       }
     } catch (e) {
+      delete_connect_account_id = require('./tests/delete_connect_account_id.js');
       console.log("Exception checking if onboarding completed, looks like it's not complete");
       console.log("Continuing with Stripe Connect onboarding");
     }
