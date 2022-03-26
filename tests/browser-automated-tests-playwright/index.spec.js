@@ -29,9 +29,8 @@ test.describe("Subscribie tests:", () => {
         return 0;
       }
     } catch (e) {
-      delete_connect_account_id = require('./tests/delete_connect_account_id.js');
-      console.log("Exception checking if onboarding completed, looks like it's not complete");
-      console.log("Continuing with Stripe Connect onboarding");
+          console.log("Exception checking if onboarding completed, looks like it's not complete");
+          console.log("Continuing with Stripe Connect onboarding");
     }
   });
   test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
@@ -42,6 +41,9 @@ test.describe("Subscribie tests:", () => {
       let contentStripeConnect = await page.evaluate(() => document.body.textContent);
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
       test.skip(contentStripeConnect.indexOf("Payouts to your bank account are not active yet.") > -1);
+      await page.goto('/admin/delete-connect-account');
+      await new Promise(x => setTimeout(x, 5000));
+      await page.goto('/admin/dashboard');
       // Start Stripe connect onboarding
       expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
       await page.goto('/admin/connect/stripe-connect');
@@ -169,7 +171,7 @@ test.describe("Subscribie tests:", () => {
             console.log("Clicking Done");
           }
           try{
-              const confirm_terms_of_service = await page.textContent('text="Submit before verification is complete?"');
+              const confirm_terms_of_service = await page.textContent('text="Submit before verification is complete?"', { timeout: 10000 });
               if (expect(confirm_terms_of_service === "Submit before verification is complete?")){
                   await page.click('div[role="dialog"] button:has-text("Submit")');
               }
