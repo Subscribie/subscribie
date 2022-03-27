@@ -1,3 +1,29 @@
+# v0.1.54 (Fri Mar 25 2022)
+
+#### ⚠️ Pushed to `master`
+
+- updating update-onboarding-sites ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.53 (Fri Mar 25 2022)
+
+#### 🐛 Bug Fix
+
+- #831 reducing naming ambiguity [#832](https://github.com/Subscribie/subscribie/pull/832) ([@joeltejeda](https://github.com/joeltejeda))
+- adding connect-account-id deletion after the test ends [#832](https://github.com/Subscribie/subscribie/pull/832) ([@joeltejeda](https://github.com/joeltejeda))
+- adding delete-connect-account url [#832](https://github.com/Subscribie/subscribie/pull/832) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.52 (Sat Mar 12 2022)
 
 #### ⚠️ Pushed to `master`
