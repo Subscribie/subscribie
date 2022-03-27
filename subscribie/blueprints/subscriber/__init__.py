@@ -356,3 +356,25 @@ def subscriber_view_failed_invoices():
     return render_template(
         "subscriber/subscriber_failed_invoices.html", failed_invoices=failed_invoices
     )
+
+
+@subscriber.route("/account/pay-invoice")
+@subscriber.route("/account/pay-invoice/<invoice_reference>")
+@subscriber_login_required
+def subscriber_pay_invoice(invoice_reference=None):
+    """As a subscriber I can pay an invoice (including failed invoices)"""
+    if invoice_reference is not None:
+        # Try and get Stripe hosted url invoice payment page
+        try:
+            stripe.api_key = get_stripe_secret_key()
+            stripe_connect_account_id = get_stripe_connect_account_id()
+            invoice = stripe.Invoice.retrieve(
+                invoice_reference, stripe_account=stripe_connect_account_id
+            )
+            return redirect(invoice.hosted_invoice_url)
+        except Exception as e:
+            log.error(
+                "Subscriber tried byt unable to complete pay-invoice due to error {e}. Invoice reference: {invoice_reference}"
+            )
+    flash("No payment reference was given")
+    return redirect(url_for("subscriber.subscriber_view_failed_invoices"))

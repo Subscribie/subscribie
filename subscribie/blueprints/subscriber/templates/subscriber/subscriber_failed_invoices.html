@@ -31,6 +31,7 @@
     </style>
     <table class="table">
     <thead>
+        <th>Action</th>
         <th>Amount</th>
         <th>Charge Date</th>
         <th>Status</th>
@@ -39,6 +40,7 @@
     </thead>
     {% for failed_invoice in failed_invoices %}
     <tr>
+        <td><a href="{{ url_for("subscriber.subscriber_pay_invoice", invoice_reference=failed_invoice.id) }}">Pay Now</a></td>
         <td>{{ failed_invoice.amount_due | currencyFormat }}</td>
         <td>{{ failed_invoice['created']| timestampToDate }}</td>
         <td>{{ failed_invoice.status }}</td>
