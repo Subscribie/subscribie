@@ -72,6 +72,13 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
     <button id="checkout-button" class="btn btn-success mb-2 mt-2">
       Update Payment Method
     </button>
+
+    <hr />
+
+    <p>View &amp; manage failed payments.</p>
+      <a class="btn btn-success mb-3" href="{{ url_for("subscriber.subscriber_view_failed_invoices") }}">
+        Failed Invoices
+      </a>
   </div>
 {% endif %}
 

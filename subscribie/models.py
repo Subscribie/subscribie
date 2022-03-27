@@ -13,8 +13,14 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
 from flask import request
-from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account_id
+from subscribie.utils import (
+    get_stripe_secret_key,
+    get_stripe_connect_account_id,
+    stripe_invoice_failed_all_automated_collection_attempts,
+    get_stripe_invoices,
+)
 import stripe
+import json
 
 from .database import database
 
@@ -117,10 +123,14 @@ class Person(database.Model, HasArchived):
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
 
-    def invoices(self):
-        """Get all invoices for a given person
+    def invoices(self, refetchCachedStripeInvoices=False):
+        """Get all cached Stripe invoices for a given person
 
-        Note a person may have zero or more subscriptions,
+        NOTE: This is a **cached** view of Stripe invoices,
+        to refresh and get the latest Stripe invoices, set refetchCachedStripeInvoices
+        to True.
+
+        NOTE: a person may have zero or more subscriptions,
         with each subscription having zero or more invoices
 
         For Stripe invoices, the stripe customer id is needed,
@@ -132,53 +142,57 @@ class Person(database.Model, HasArchived):
         - this file class "Subscription" with colum "stripe_subscription_id"
         - https://stripe.com/docs/api/subscriptions/object?lang=python#subscription_object-customer # noqa: E501
         """
-        invoices = []
+        if refetchCachedStripeInvoices:
+            # TODO optimise to only refetch invoices for this Subscriber
+            get_stripe_invoices()
+
         stripe.api_key = get_stripe_secret_key()
         stripe_account_id = get_stripe_connect_account_id()
-
-        # Get Stripe invoices
-        for subscription in self.subscriptions:
-            if subscription.stripe_subscription_id != "":
-                try:
-                    if subscription.stripe_subscription_id is not None:
-                        stripe_subscription = stripe.Subscription.retrieve(
-                            subscription.stripe_subscription_id,
-                            stripe_account=stripe_account_id,
-                        )
-                        # Get Stripe customer id
-                        stripe_customer_id = stripe_subscription.customer
-                        # Get Stripe invoices for this customer/subscriber
-                        stripe_invoices = stripe.Invoice.list(
-                            stripe_account=stripe_account_id,
-                            customer=stripe_customer_id,
-                        )
-                        # loop over all invoices
-                        # See https://stripe.com/docs/api/pagination/auto
-                        for invoice in stripe_invoices.auto_paging_iter():
-                            # If invoice is not paid, check for any payment errors
-                            if invoice.status != "paid":
-                                try:
-                                    stripe_decline_code = stripe.PaymentIntent.retrieve(
-                                        invoice.payment_intent,
-                                        stripe_account=stripe_account_id,
-                                    ).last_payment_error.decline_code
-                                    invoice["stripe_decline_code"] = stripe_decline_code
-                                except Exception as e:
-                                    log.warning(
-                                        f"Could not get Stripe Invoice PaymentIntent last_payment_error decline_code: {e}"  # noqa: E501
-                                    )
-                            else:
-                                invoice["stripe_decline_code"] = None
-                            invoices.append(invoice)
-                except stripe.error.InvalidRequestError as e:
-                    log.error(
-                        f"Unable to retrieve stripe subscription by id: {subscription.stripe_subscription_id}. {e}"  # noqa: E501
-                    )
-            else:
+        query = database.session.query(StripeInvoice)
+        query = query.join(
+            Subscription, StripeInvoice.subscribie_subscription_id == Subscription.id
+        )
+        query = query.join(Person, Subscription.person_id == Person.id)
+        query = query.filter(Person.id == self.id)
+        invoices = query.all()
+        for invoice in invoices:
+            stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
+            setattr(
+                invoice,
+                "created",
+                stripeRawInvoice["created"],
+            )
+            # Get stripe_decline_code if possible
+            try:
+                payment_intent_id = stripeRawInvoice["payment_intent"]
+                stripe_decline_code = stripe.PaymentIntent.retrieve(
+                    payment_intent_id,
+                    stripe_account=stripe_account_id,
+                ).last_payment_error.decline_code
+                setattr(invoice, "stripe_decline_code", stripe_decline_code)
+            except Exception as e:
                 log.debug(
-                    f"Skipping fetching invoice for subscription.uuid {subscription.uuid}"  # noqa: E501
+                    f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"
                 )
+            # Get next payment attempt date if possible
+            try:
+                next_payment_attempt = stripeRawInvoice["next_payment_attempt"]
+                setattr(invoice, "next_payment_attempt", next_payment_attempt)
+            except Exception as e:
+                log.debug(
+                    f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"
+                )
+
         return invoices
+
+    def failed_invoices(self):
+        """List Subscribers failed invoices"""
+        failed_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failed_all_automated_collection_attempts(invoice):
+                failed_invoices.append(invoice)
+        return failed_invoices
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

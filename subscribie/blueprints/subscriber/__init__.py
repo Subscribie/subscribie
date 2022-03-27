@@ -341,3 +341,18 @@ def list_files():
     "View files"
     files = File.query.order_by(File.id.desc()).all()
     return render_template("subscriber/list_files.html", files=files)
+
+
+@subscriber.route("/account/failed-invoices")
+@subscriber_login_required
+def subscriber_view_failed_invoices():
+    """As a subscriber I can view my failed invoices
+    (ref issue #805)
+    A failed invoice means that all *automated* payment collection
+    attemps for a given invoice has failed, **and** there wll be
+    no further *automated* payment collections for this invoice.
+    """
+    failed_invoices = g.subscriber.failed_invoices()
+    return render_template(
+        "subscriber/subscriber_failed_invoices.html", failed_invoices=failed_invoices
+    )

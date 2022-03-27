@@ -249,6 +249,19 @@ def get_stripe_invoices():
             database.session.commit()
 
 
+def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
+    """Returns true/false if a Stripe Invoice has failed all collection attemts
+    and no further *automated* collection will take place."""
+    if (
+        stripeInvoice.status == "open"
+        and stripeInvoice.next_payment_attempt is None
+        and stripeInvoice.status != "paid"
+    ):
+        return True
+    else:
+        return False
+
+
 def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
     """Return Stripe invoices which have failed, and
     were generated via a Stripe Subscription.
@@ -296,7 +309,6 @@ def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
     """
 
     failedInvoices = []
-
     # Default to getting Stripe Failed Invoices from local database cache
     if refetchCachedStripeInvoices is False:
         from subscribie.models import StripeInvoice
@@ -305,11 +317,7 @@ def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
 
         stripeInvoices = StripeInvoice.query.all()
         for stripeInvoice in stripeInvoices:
-            if (
-                stripeInvoice.status == "open"
-                and stripeInvoice.next_payment_attempt is None
-                and stripeInvoice.status != "paid"
-            ):
+            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
                 log.info(
                     f"appending failed Stripe Invoice {stripeInvoice.id} to failedInvoices from cache"  # noqa: E501
                 )
@@ -328,11 +336,7 @@ def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
         )
 
         for stripeInvoice in stripeInvoices.auto_paging_iter():
-            if (
-                stripeInvoice.status == "open"
-                and stripeInvoice.next_payment_attempt is None
-                and stripeInvoice.status != "paid"
-            ):
+            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
                 # Means invoice is no longer being auto collected
                 failedInvoices.append(stripeInvoice)
     return failedInvoices
