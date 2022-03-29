@@ -212,7 +212,7 @@ def account():
     stripe_publishable_key = get_stripe_publishable_key()
     stripe_default_payment_method = None
     stripe_session = None
-
+    failed_invoices = g.subscriber.failed_invoices()
     # Get subscribers first subscription to determine stripe customer id
     # excluding one-off plans.
     subscription = (
@@ -282,12 +282,12 @@ def account():
                 )
         except stripe.error.InvalidRequestError as e:
             log.error(f"stripe.error.InvalidRequestError: {e}")
-
     return render_template(
         "subscriber/account.html",
         stripe_session=stripe_session,
         stripe_publishable_key=stripe_publishable_key,
         stripe_default_payment_method=stripe_default_payment_method,
+        failed_invoices=failed_invoices,
     )
 
 
