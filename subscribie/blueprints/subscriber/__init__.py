@@ -38,6 +38,7 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
     get_stripe_publishable_key,
+    get_stripe_invoices,
 )
 from subscribie.email import EmailMessageQueue
 from jinja2 import Template
@@ -352,6 +353,7 @@ def subscriber_view_failed_invoices():
     attemps for a given invoice has failed, **and** there wll be
     no further *automated* payment collections for this invoice.
     """
+    get_stripe_invoices()
     failed_invoices = g.subscriber.failed_invoices()
     return render_template(
         "subscriber/subscriber_failed_invoices.html", failed_invoices=failed_invoices
