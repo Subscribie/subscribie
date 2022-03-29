@@ -26,6 +26,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
+    get_stripe_invoices,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -1044,6 +1045,12 @@ def refresh_subscriptions():
         )
         return redirect(request.referrer)
     return "Subscription statuses refreshed", 200
+
+
+@admin.route("/refresh-invoices")
+def refresh_invoices():
+    get_stripe_invoices()
+    return "Invoices refreshed", 200
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
