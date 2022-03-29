@@ -1,3 +1,20 @@
+# v0.1.55 (Tue Mar 29 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch 'master' of github.com:Subscribie/subscribie [#811](https://github.com/Subscribie/subscribie/pull/811) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Bump minimist from 1.2.5 to 1.2.6 [#833](https://github.com/Subscribie/subscribie/pull/833) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v0.1.54 (Fri Mar 25 2022)
 
 #### ⚠️ Pushed to `master`
