@@ -215,6 +215,33 @@ def get_stripe_invoices():
         ).first()
         if cachedStripeInvoice is not None:
             # Perform update, Stripe Invoice already present
+            stripeInvoice = StripeInvoice.query.filter_by(
+                id=latest_stripe_invoice.id
+            ).first()
+            stripeInvoice.id = latest_stripe_invoice.id
+            stripeInvoice.status = latest_stripe_invoice.status
+            stripeInvoice.amount_due = latest_stripe_invoice.amount_due
+            stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
+            stripeInvoice.amount_remaining = latest_stripe_invoice.amount_remaining
+            stripeInvoice.application_fee_amount = (
+                latest_stripe_invoice.application_fee_amount
+            )
+            stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
+            stripeInvoice.next_payment_attempt = (
+                latest_stripe_invoice.next_payment_attempt
+            )
+            stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
+            stripeInvoice.collection_method = latest_stripe_invoice.collection_method
+            stripeInvoice.currency = latest_stripe_invoice.currency
+            stripeInvoice.stripe_subscription_id = latest_stripe_invoice.subscription
+            stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
+            # Attach Subscribie subscription relationship if subscription it not None
+            subscribieSubscription = Subscription.query.where(
+                Subscription.stripe_subscription_id
+                == latest_stripe_invoice.subscription
+            ).first()
+            stripeInvoice.subscribie_subscription = subscribieSubscription
+            database.session.commit()
             log.info(
                 f"Updating existing new cachedStripeInvoice {latest_stripe_invoice.id}"
             )
@@ -252,12 +279,13 @@ def get_stripe_invoices():
 def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
     """Returns true/false if a Stripe Invoice has failed all collection attemts
     and no further *automated* collection will take place."""
-    if (
-        stripeInvoice.status == "open"
-        and stripeInvoice.next_payment_attempt is None
-        and stripeInvoice.status != "paid"
-    ):
-        return True
+    if stripeInvoice.subscribie_subscription_id:
+        if (
+            stripeInvoice.status == "open"
+            and stripeInvoice.next_payment_attempt is None
+            and stripeInvoice.status != "paid"
+        ):
+            return True
     else:
         return False
 
