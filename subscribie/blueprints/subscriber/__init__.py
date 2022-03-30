@@ -380,3 +380,9 @@ def subscriber_pay_invoice(invoice_reference=None):
             )
     flash("No payment reference was given")
     return redirect(url_for("subscriber.subscriber_view_failed_invoices"))
+
+
+@subscriber.route("/account/logout")
+def subscriber_logout():
+    session.clear()
+    return render_template("admin/logout.html")
