@@ -96,9 +96,14 @@
   <footer class="container-fluid bg-light text-center py-5" >
     <p> By <a href="/">{{ company['name'] }}</a>. </p>
     <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
-    <a href="{{ url_for('auth.login') }}">Shop owner login</a>
+
     {% if g.user %}
+      <a href="{{ url_for('auth.login') }}">Shop owner login</a>
       <a class="nav-link" href="/auth/logout">Logout</a>
+    {% elif g.subscriber %}
+      <a class="nav-link" href="/account/logout">Logout</a>
+    {% else %}
+        <p><a href="{{ url_for('auth.login') }}">Shop owner login</a> or <a href="{{ url_for('subscriber.login') }}">Subscriber Login</a></p>
     {% endif %}
     <br />
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
