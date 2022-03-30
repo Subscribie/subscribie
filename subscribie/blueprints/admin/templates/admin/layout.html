@@ -103,7 +103,9 @@
     {% elif g.subscriber %}
       <a class="nav-link" href="/account/logout">Logout</a>
     {% else %}
-        <p><a href="{{ url_for('auth.login') }}">Shop owner login</a> or <a href="{{ url_for('subscriber.login') }}">Subscriber Login</a></p>
+      <a href="{{ url_for('auth.login') }}">Shop owner login</a>
+      or 
+      <a href="{{ url_for('subscriber.login') }}">Subscriber Login</a>
     {% endif %}
     <br />
     <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
