@@ -66,6 +66,10 @@ def filter_archived(query):
             and "/page" not in request.path
             and "/new_customer" not in request.path
             and "/start-building" not in request.path
+            and "/order-summary" not in request.path
+            and "/stripe-create-checkout-session" not in request.path
+            and "instant_payment_complete" not in request.path
+            and "thankyou" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
