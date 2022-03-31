@@ -1,0 +1,26 @@
+<p>Hello {{ first_name or ''}},</p>
+
+<p>Thanks for adquiring a new plan with us, {{ company_name or '' }}.</p>
+
+<p>Plan name: {{ plan.title }}</p>
+
+
+{% if plan.requirements.instant_payment %}
+    <p>Upfront payment: &pound;{{ plan.sell_price|int /100 }}</p>
+{% endif %}
+
+{% if plan.requirements.subscription %}
+    <p>Interval: {{ plan.interval_unit }}</p>
+    <p>Amount: &pound;{{ plan.interval_amount|int /100 }}
+    {% if first_charge_date %}
+      <p>Your first payment will be taken on: {{ first_charge_date }}</p>
+    {% endif %}
+    <p>Each payment will be on the same day {{ plan.interval_unit }}</p>
+{% endif %}
+
+
+<p>You can login to manage your account at:
+    <a href="{{ subscriber_login_url }}?email={{ subscriber_email }}">My account</a>
+</p>
+
+<p>Once again welcome to {{ company_name }}.</p>
