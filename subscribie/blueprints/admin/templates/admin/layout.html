@@ -98,7 +98,6 @@
     <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
 
     {% if g.user %}
-      <a href="{{ url_for('auth.login') }}">Shop owner login</a>
       <a class="nav-link" href="/auth/logout">Logout</a>
     {% elif g.subscriber %}
       <a class="nav-link" href="/account/logout">Logout</a>
