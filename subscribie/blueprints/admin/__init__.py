@@ -1,4 +1,5 @@
 import logging
+import threading
 import json
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
@@ -1049,7 +1050,11 @@ def refresh_subscriptions():
 
 @admin.route("/refresh-invoices")
 def refresh_invoices():
-    get_stripe_invoices()
+    bgInvoices = threading.Thread(
+        target=get_stripe_invoices, kwargs={"app": current_app._get_current_object()}
+    )
+    bgInvoices.daemon = True
+    bgInvoices.start()
     return "Invoices refreshed", 200
 
 

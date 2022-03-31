@@ -9,6 +9,7 @@ log = logging.getLogger(__name__)
 def get_stripe_secret_key():
     from .models import PaymentProvider
 
+    print(PaymentProvider.query.first())
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
         return current_app.config.get("STRIPE_LIVE_SECRET_KEY", None)
@@ -167,7 +168,7 @@ def get_stripe_livemode():
     return False
 
 
-def get_stripe_invoices():
+def get_stripe_invoices(app=None):
     """Upsert Stripe invoices into stripe_invoices
 
     Fetches all Stripe Invoices for a given connect customer,
@@ -179,101 +180,222 @@ def get_stripe_invoices():
 
     - See also models.StripeInvoice
     """
-
-    # Remember: "Subscription" is a Subscribie model, not a Stripe one
-    # because Subscribie does not assume all Subscriptions are from Stripe
     from subscribie.models import StripeInvoice, Subscription
 
-    stripe.api_key = get_stripe_secret_key()
-    stripe_connect_account_id = get_stripe_connect_account_id()
-    invoices = stripe.Invoice.list(
-        stripe_account=stripe_connect_account_id,
-        limit=100,
-    )
-    for latest_stripe_invoice in invoices.auto_paging_iter():
-        # Upsert each Stripe Invoice into stripe_invoice.
-        # Check if invoice already exists, if it does, update the
-        # record, else insert new row.
-        # We perform the upsert operation manually because the primary key
-        # is a uuid controlled by Subscribie, therefore the uuid will not
-        # be present in the uuid from Stripe, however the Stripe controlled
-        # Invoice.id will be, so we use that to query, then update or insert
-        # based on if the invoice is already present or not.
-        #
-        # latestStripeInvoice - A invoice record from Stripe, this will be the
-        #   most up to date.
-        #
-        # cachedStripeInvoice - The copy of the Stripe Invoice record in
-        #   Subscribie's database, which may be out of date. We overwrite this with
-        #   latestStripeInvoice.
-        #
-        # NOTE: Do not rely upon next_payment_attempt without checking the data
-        # is not stale by performing a fetch from Stripe.
-        #
-        cachedStripeInvoice = StripeInvoice.query.where(
-            StripeInvoice.id == latest_stripe_invoice.id
-        ).first()
-        if cachedStripeInvoice is not None:
-            # Perform update, Stripe Invoice already present
-            stripeInvoice = StripeInvoice.query.filter_by(
-                id=latest_stripe_invoice.id
+    if app is not None:
+        with app.app_context():
+            print("inside get_stripe_invoices")
+            stripe.api_key = get_stripe_secret_key()
+            stripe_connect_account_id = get_stripe_connect_account_id()
+            invoices = stripe.Invoice.list(
+                stripe_account=stripe_connect_account_id,
+                limit=100,
+            )
+            for latest_stripe_invoice in invoices.auto_paging_iter():
+                # Upsert each Stripe Invoice into stripe_invoice.
+                # Check if invoice already exists, if it does, update the
+                # record, else insert new row.
+                # We perform the upsert operation manually because the primary key
+                # is a uuid controlled by Subscribie, therefore the uuid will not
+                # be present in the uuid from Stripe, however the Stripe controlled
+                # Invoice.id will be, so we use that to query, then update or insert
+                # based on if the invoice is already present or not.
+                #
+                # latestStripeInvoice - A invoice record from Stripe, this will be the
+                #   most up to date.
+                #
+                # cachedStripeInvoice - The copy of the Stripe Invoice record in
+                #   Subscribie's database, which may be out of date. We overwrite this with
+                #   latestStripeInvoice.
+                #
+                # NOTE: Do not rely upon next_payment_attempt without checking the data
+                # is not stale by performing a fetch from Stripe.
+                #
+                cachedStripeInvoice = StripeInvoice.query.where(
+                    StripeInvoice.id == latest_stripe_invoice.id
+                ).first()
+                if cachedStripeInvoice is not None:
+                    # Perform update, Stripe Invoice already present
+                    stripeInvoice = StripeInvoice.query.filter_by(
+                        id=latest_stripe_invoice.id
+                    ).first()
+                    stripeInvoice.id = latest_stripe_invoice.id
+                    stripeInvoice.status = latest_stripe_invoice.status
+                    stripeInvoice.amount_due = latest_stripe_invoice.amount_due
+                    stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
+                    stripeInvoice.amount_remaining = (
+                        latest_stripe_invoice.amount_remaining
+                    )
+                    stripeInvoice.application_fee_amount = (
+                        latest_stripe_invoice.application_fee_amount
+                    )
+                    stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
+                    stripeInvoice.next_payment_attempt = (
+                        latest_stripe_invoice.next_payment_attempt
+                    )
+                    stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
+                    stripeInvoice.collection_method = (
+                        latest_stripe_invoice.collection_method
+                    )
+                    stripeInvoice.currency = latest_stripe_invoice.currency
+                    stripeInvoice.stripe_subscription_id = (
+                        latest_stripe_invoice.subscription
+                    )
+                    stripeInvoice.stripe_invoice_raw_json = (
+                        latest_stripe_invoice.__str__()
+                    )
+                    # Attach Subscribie subscription relationship if subscription it not None
+                    subscribieSubscription = Subscription.query.where(
+                        Subscription.stripe_subscription_id
+                        == latest_stripe_invoice.subscription
+                    ).first()
+                    stripeInvoice.subscribie_subscription = subscribieSubscription
+                    database.session.commit()
+                    log.info(
+                        f"Updating existing new cachedStripeInvoice {latest_stripe_invoice.id}"
+                    )
+                elif cachedStripeInvoice is None:
+                    # Perform StripeInvoice insert, must be first time caching Stripe Invoice
+                    log.info(
+                        f"Storing new cachedStripeInvoice {latest_stripe_invoice.id}"
+                    )
+                    stripeInvoice = StripeInvoice()
+                    stripeInvoice.id = latest_stripe_invoice.id
+                    stripeInvoice.status = latest_stripe_invoice.status
+                    stripeInvoice.amount_due = latest_stripe_invoice.amount_due
+                    stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
+                    stripeInvoice.amount_remaining = (
+                        latest_stripe_invoice.amount_remaining
+                    )
+                    stripeInvoice.application_fee_amount = (
+                        latest_stripe_invoice.application_fee_amount
+                    )
+                    stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
+                    stripeInvoice.next_payment_attempt = (
+                        latest_stripe_invoice.next_payment_attempt
+                    )
+                    stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
+                    stripeInvoice.collection_method = (
+                        latest_stripe_invoice.collection_method
+                    )
+                    stripeInvoice.currency = latest_stripe_invoice.currency
+                    stripeInvoice.stripe_subscription_id = (
+                        latest_stripe_invoice.subscription
+                    )
+                    stripeInvoice.stripe_invoice_raw_json = (
+                        latest_stripe_invoice.__str__()
+                    )
+                    # Attach Subscribie subscription relationship if subscription it not None
+                    subscribieSubscription = Subscription.query.where(
+                        Subscription.stripe_subscription_id
+                        == latest_stripe_invoice.subscription
+                    ).first()
+                    stripeInvoice.subscribie_subscription = subscribieSubscription
+                    database.session.add(stripeInvoice)
+                    database.session.commit()
+    else:
+        # Remember: "Subscription" is a Subscribie model, not a Stripe one
+        # because Subscribie does not assume all Subscriptions are from Stripe
+
+        print("inside get_stripe_invoices")
+        stripe.api_key = get_stripe_secret_key()
+        stripe_connect_account_id = get_stripe_connect_account_id()
+        invoices = stripe.Invoice.list(
+            stripe_account=stripe_connect_account_id,
+            limit=100,
+        )
+        for latest_stripe_invoice in invoices.auto_paging_iter():
+            # Upsert each Stripe Invoice into stripe_invoice.
+            # Check if invoice already exists, if it does, update the
+            # record, else insert new row.
+            # We perform the upsert operation manually because the primary key
+            # is a uuid controlled by Subscribie, therefore the uuid will not
+            # be present in the uuid from Stripe, however the Stripe controlled
+            # Invoice.id will be, so we use that to query, then update or insert
+            # based on if the invoice is already present or not.
+            #
+            # latestStripeInvoice - A invoice record from Stripe, this will be the
+            #   most up to date.
+            #
+            # cachedStripeInvoice - The copy of the Stripe Invoice record in
+            #   Subscribie's database, which may be out of date. We overwrite this with
+            #   latestStripeInvoice.
+            #
+            # NOTE: Do not rely upon next_payment_attempt without checking the data
+            # is not stale by performing a fetch from Stripe.
+            #
+            cachedStripeInvoice = StripeInvoice.query.where(
+                StripeInvoice.id == latest_stripe_invoice.id
             ).first()
-            stripeInvoice.id = latest_stripe_invoice.id
-            stripeInvoice.status = latest_stripe_invoice.status
-            stripeInvoice.amount_due = latest_stripe_invoice.amount_due
-            stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
-            stripeInvoice.amount_remaining = latest_stripe_invoice.amount_remaining
-            stripeInvoice.application_fee_amount = (
-                latest_stripe_invoice.application_fee_amount
-            )
-            stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
-            stripeInvoice.next_payment_attempt = (
-                latest_stripe_invoice.next_payment_attempt
-            )
-            stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
-            stripeInvoice.collection_method = latest_stripe_invoice.collection_method
-            stripeInvoice.currency = latest_stripe_invoice.currency
-            stripeInvoice.stripe_subscription_id = latest_stripe_invoice.subscription
-            stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
-            # Attach Subscribie subscription relationship if subscription it not None
-            subscribieSubscription = Subscription.query.where(
-                Subscription.stripe_subscription_id
-                == latest_stripe_invoice.subscription
-            ).first()
-            stripeInvoice.subscribie_subscription = subscribieSubscription
-            database.session.commit()
-            log.info(
-                f"Updating existing new cachedStripeInvoice {latest_stripe_invoice.id}"
-            )
-        elif cachedStripeInvoice is None:
-            # Perform StripeInvoice insert, must be first time caching Stripe Invoice
-            log.info(f"Storing new cachedStripeInvoice {latest_stripe_invoice.id}")
-            stripeInvoice = StripeInvoice()
-            stripeInvoice.id = latest_stripe_invoice.id
-            stripeInvoice.status = latest_stripe_invoice.status
-            stripeInvoice.amount_due = latest_stripe_invoice.amount_due
-            stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
-            stripeInvoice.amount_remaining = latest_stripe_invoice.amount_remaining
-            stripeInvoice.application_fee_amount = (
-                latest_stripe_invoice.application_fee_amount
-            )
-            stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
-            stripeInvoice.next_payment_attempt = (
-                latest_stripe_invoice.next_payment_attempt
-            )
-            stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
-            stripeInvoice.collection_method = latest_stripe_invoice.collection_method
-            stripeInvoice.currency = latest_stripe_invoice.currency
-            stripeInvoice.stripe_subscription_id = latest_stripe_invoice.subscription
-            stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
-            # Attach Subscribie subscription relationship if subscription it not None
-            subscribieSubscription = Subscription.query.where(
-                Subscription.stripe_subscription_id
-                == latest_stripe_invoice.subscription
-            ).first()
-            stripeInvoice.subscribie_subscription = subscribieSubscription
-            database.session.add(stripeInvoice)
-            database.session.commit()
+            if cachedStripeInvoice is not None:
+                # Perform update, Stripe Invoice already present
+                stripeInvoice = StripeInvoice.query.filter_by(
+                    id=latest_stripe_invoice.id
+                ).first()
+                stripeInvoice.id = latest_stripe_invoice.id
+                stripeInvoice.status = latest_stripe_invoice.status
+                stripeInvoice.amount_due = latest_stripe_invoice.amount_due
+                stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
+                stripeInvoice.amount_remaining = latest_stripe_invoice.amount_remaining
+                stripeInvoice.application_fee_amount = (
+                    latest_stripe_invoice.application_fee_amount
+                )
+                stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
+                stripeInvoice.next_payment_attempt = (
+                    latest_stripe_invoice.next_payment_attempt
+                )
+                stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
+                stripeInvoice.collection_method = (
+                    latest_stripe_invoice.collection_method
+                )
+                stripeInvoice.currency = latest_stripe_invoice.currency
+                stripeInvoice.stripe_subscription_id = (
+                    latest_stripe_invoice.subscription
+                )
+                stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
+                # Attach Subscribie subscription relationship if subscription it not None
+                subscribieSubscription = Subscription.query.where(
+                    Subscription.stripe_subscription_id
+                    == latest_stripe_invoice.subscription
+                ).first()
+                stripeInvoice.subscribie_subscription = subscribieSubscription
+                database.session.commit()
+                log.info(
+                    f"Updating existing new cachedStripeInvoice {latest_stripe_invoice.id}"
+                )
+            elif cachedStripeInvoice is None:
+                # Perform StripeInvoice insert, must be first time caching Stripe Invoice
+                log.info(f"Storing new cachedStripeInvoice {latest_stripe_invoice.id}")
+                stripeInvoice = StripeInvoice()
+                stripeInvoice.id = latest_stripe_invoice.id
+                stripeInvoice.status = latest_stripe_invoice.status
+                stripeInvoice.amount_due = latest_stripe_invoice.amount_due
+                stripeInvoice.amount_paid = latest_stripe_invoice.amount_paid
+                stripeInvoice.amount_remaining = latest_stripe_invoice.amount_remaining
+                stripeInvoice.application_fee_amount = (
+                    latest_stripe_invoice.application_fee_amount
+                )
+                stripeInvoice.attempt_count = latest_stripe_invoice.attempt_count
+                stripeInvoice.next_payment_attempt = (
+                    latest_stripe_invoice.next_payment_attempt
+                )
+                stripeInvoice.billing_reason = latest_stripe_invoice.billing_reason
+                stripeInvoice.collection_method = (
+                    latest_stripe_invoice.collection_method
+                )
+                stripeInvoice.currency = latest_stripe_invoice.currency
+                stripeInvoice.stripe_subscription_id = (
+                    latest_stripe_invoice.subscription
+                )
+                stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
+                # Attach Subscribie subscription relationship if subscription it not None
+                subscribieSubscription = Subscription.query.where(
+                    Subscription.stripe_subscription_id
+                    == latest_stripe_invoice.subscription
+                ).first()
+                stripeInvoice.subscribie_subscription = subscribieSubscription
+                database.session.add(stripeInvoice)
+                database.session.commit()
 
 
 def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
