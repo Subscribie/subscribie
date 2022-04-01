@@ -1050,12 +1050,18 @@ def refresh_subscriptions():
 
 @admin.route("/refresh-invoices")
 def refresh_invoices():
+    """
+    Request to refresh all Stripe invoices
+    in background thread.
+
+    https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202
+    """
     bgInvoices = threading.Thread(
         target=get_stripe_invoices, kwargs={"app": current_app._get_current_object()}
     )
     bgInvoices.daemon = True
     bgInvoices.start()
-    return "Invoices refreshed", 200
+    return "Refresh invoices request accepted.", 202
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
