@@ -1,10 +1,8 @@
 <p>Hello {{ first_name or ''}},</p>
 
-<p>Thanks for adquiring a new plan with us, {{ company_name or '' }}.</p>
+<p>Thanks for chosing your plan: {{ plan.title }}</p>
 
-<p>Plan name: {{ plan.title }}</p>
-
-
+<p>Plan details:</p>
 {% if plan.requirements.instant_payment %}
     <p>Upfront payment: &pound;{{ plan.sell_price|int /100 }}</p>
 {% endif %}
@@ -23,4 +21,4 @@
     <a href="{{ subscriber_login_url }}?email={{ subscriber_email }}">My account</a>
 </p>
 
-<p>Once again welcome to {{ company_name }}.</p>
+<p>Thank you for choosing {{ company_name }}.</p>
