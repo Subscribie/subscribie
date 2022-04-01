@@ -1,3 +1,56 @@
+# v0.1.57 (Fri Apr 01 2022)
+
+#### 🐛 Bug Fix
+
+- removing shopowner login when they already are in [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting unnecesary <p> tags [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- #836 adding account and logout buttons for subscribers template [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.56 (Fri Apr 01 2022)
+
+#### 🐛 Bug Fix
+
+- #841 add logging to get_stripe_invoices [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 pass current_app to get_stripe_invoices [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- remove duplication in get_stripe_invoices by making app context required #841 [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Set http response code to 202 for /admin/refresh-invoices #841 [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 remove debug statement [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 putting refresh-invoices path to use threads [#842](https://github.com/Subscribie/subscribie/pull/842) ([@joeltejeda](https://github.com/joeltejeda))
+- #837 keep fix for when logged in subscriber subscribes to new plan- but remove additional email "newplan.jinja2.html" as not needed [#843](https://github.com/Subscribie/subscribie/pull/843) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #837 spelling + wording newplan.jinja2.html [#843](https://github.com/Subscribie/subscribie/pull/843) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- filtering paths to let subscribers buy plans while logged in [#843](https://github.com/Subscribie/subscribie/pull/843) ([@joeltejeda](https://github.com/joeltejeda))
+- creating a new email template for logged subscribers [#843](https://github.com/Subscribie/subscribie/pull/843) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.55 (Tue Mar 29 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch 'master' of github.com:Subscribie/subscribie [#811](https://github.com/Subscribie/subscribie/pull/811) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Bump minimist from 1.2.5 to 1.2.6 [#833](https://github.com/Subscribie/subscribie/pull/833) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v0.1.54 (Fri Mar 25 2022)
 
 #### ⚠️ Pushed to `master`

@@ -1,4 +1,5 @@
 import logging
+import threading
 import json
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
@@ -26,6 +27,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
+    get_stripe_invoices,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -39,7 +41,11 @@ from subscribie.forms import (
     SetReplyToEmailForm,
     UploadFilesForm,
 )
-from subscribie.auth import login_required, protected_download
+from subscribie.auth import (
+    login_required,
+    protected_download,
+    stripe_connect_id_required,
+)
 from flask_uploads import UploadSet, IMAGES
 import os
 from pathlib import Path
@@ -66,7 +72,6 @@ from subscribie.models import (
     UpcomingInvoice,
 )
 from .subscription import update_stripe_subscription_statuses
-from .invoice import fetch_stripe_upcoming_invoices
 from .stats import (
     get_number_of_active_subscribers,
     get_number_of_subscribers,
@@ -91,6 +96,7 @@ from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
 from .export_transactions import export_transactions  # noqa: F401, E402a
+from .invoice import failed_invoices  # noqa: F401
 
 load_dotenv(verbose=True)  # get environment variables from .env
 
@@ -1042,14 +1048,20 @@ def refresh_subscriptions():
     return "Subscription statuses refreshed", 200
 
 
-@admin.route("/fetch-upcoming_invoices")
-def fetch_upcoming_invoices():
-    fetch_stripe_upcoming_invoices()
-    msg = "Upcoming invoices fetched."
-    flash(msg)
-    if request.referrer is not None:
-        return redirect(request.referrer)
-    return msg
+@admin.route("/refresh-invoices")
+def refresh_invoices():
+    """
+    Request to refresh all Stripe invoices
+    in background thread.
+
+    https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202
+    """
+    bgInvoices = threading.Thread(
+        target=get_stripe_invoices, kwargs={"app": current_app._get_current_object()}
+    )
+    bgInvoices.daemon = True
+    bgInvoices.start()
+    return "Refresh invoices request accepted.", 202
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
@@ -1101,6 +1113,7 @@ def upcoming_invoices():
 
 @admin.route("/invoices")
 @login_required
+@stripe_connect_id_required
 def invoices():
     stripe.api_key = get_stripe_secret_key()
     connect_account = get_stripe_connect_account()

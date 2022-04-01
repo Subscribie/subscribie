@@ -18,8 +18,12 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 <div class="container">
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Your subscriptions</h3>
+    {% if failed_invoices  %}
+    <h3 class="card-title">Your subscriptions <a style="color: red" href="{{ url_for('subscriber.subscriber_view_failed_invoices')}}"> payment is pending </a></h3>
+    {% else %}
 
+    <h3 class="card-title">Your subscriptions</h3>
+    {% endif %}
     <p>View your subscriptions.</p>
     <p>Please contact {{ company.name }} if you wish to alter your subscription.</p>
       <a class="btn btn-success mb-3" 
@@ -72,6 +76,13 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
     <button id="checkout-button" class="btn btn-success mb-2 mt-2">
       Update Payment Method
     </button>
+
+    <hr />
+
+    <p>View &amp; manage failed payments.</p>
+      <a class="btn btn-success mb-3" href="{{ url_for("subscriber.subscriber_view_failed_invoices") }}">
+        Failed Invoices
+      </a>
   </div>
 {% endif %}
 

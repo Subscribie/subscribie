@@ -68,7 +68,7 @@ def send_welcome_email():
         msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
         msg["To"] = session["email"]
         msg.set_content("Subscription confirmation")
-        msg.add_alternative(html).format(subtype="html")
+        msg.add_alternative(html, subtype="html")
         setting = Setting.query.first()
         if setting is not None:
             msg["Reply-To"] = setting.reply_to_email_address
