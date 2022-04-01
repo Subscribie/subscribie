@@ -9,7 +9,6 @@ log = logging.getLogger(__name__)
 def get_stripe_secret_key():
     from .models import PaymentProvider
 
-    print(PaymentProvider.query.first())
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
         return current_app.config.get("STRIPE_LIVE_SECRET_KEY", None)
