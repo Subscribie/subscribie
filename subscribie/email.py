@@ -1,6 +1,6 @@
 import logging
 from email.message import EmailMessage
-from flask import current_app, session, request, render_template, g
+from flask import current_app, session, request, render_template
 import flask
 from subscribie.models import (
     Setting,
@@ -42,14 +42,9 @@ def send_welcome_email():
         template = custom_template.custom_welcome_email_template
     else:
         # Load default welcome email from template folder
-        if g.subscriber:
-            welcome_template = str(
-                Path(current_app.root_path + "/emails/newplan.jinja2.html")
-            )
-        else:
-            welcome_template = str(
-                Path(current_app.root_path + "/emails/welcome.jinja2.html")
-            )
+        welcome_template = str(
+            Path(current_app.root_path + "/emails/welcome.jinja2.html")
+        )
         fp = open(welcome_template)
         template = fp.read()
         fp.close()
