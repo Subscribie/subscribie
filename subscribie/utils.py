@@ -184,6 +184,7 @@ def get_stripe_invoices(app):
     Currently this requires an app context, it is preferable to
     remove this dependency.
     """
+    log.debug("get_stripe_invoices called")
     from subscribie.models import StripeInvoice, Subscription
 
     # Remember: "Subscription" is a Subscribie model, not a Stripe one
@@ -287,6 +288,7 @@ def get_stripe_invoices(app):
                 stripeInvoice.subscribie_subscription = subscribieSubscription
                 database.session.add(stripeInvoice)
                 database.session.commit()
+    log.debug("Finished get_stripe_invoices")
 
 
 def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
