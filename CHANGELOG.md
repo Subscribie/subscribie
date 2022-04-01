@@ -1,3 +1,17 @@
+# v0.1.57 (Fri Apr 01 2022)
+
+#### 🐛 Bug Fix
+
+- removing shopowner login when they already are in [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting unnecesary <p> tags [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- #836 adding account and logout buttons for subscribers template [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.56 (Fri Apr 01 2022)
 
 #### 🐛 Bug Fix
