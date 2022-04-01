@@ -12,7 +12,7 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
-from flask import request
+from flask import request, current_app
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
@@ -148,7 +148,7 @@ class Person(database.Model, HasArchived):
         """
         if refetchCachedStripeInvoices:
             # TODO optimise to only refetch invoices for this Subscriber
-            get_stripe_invoices()
+            get_stripe_invoices(app=current_app)
 
         stripe.api_key = get_stripe_secret_key()
         stripe_account_id = get_stripe_connect_account_id()
@@ -176,7 +176,7 @@ class Person(database.Model, HasArchived):
                 setattr(invoice, "stripe_decline_code", stripe_decline_code)
             except Exception as e:
                 log.debug(
-                    f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"
+                    f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
                 )
             # Get next payment attempt date if possible
             try:
@@ -184,7 +184,7 @@ class Person(database.Model, HasArchived):
                 setattr(invoice, "next_payment_attempt", next_payment_attempt)
             except Exception as e:
                 log.debug(
-                    f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"
+                    f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
                 )
 
         return invoices

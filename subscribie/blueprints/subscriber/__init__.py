@@ -353,7 +353,7 @@ def subscriber_view_failed_invoices():
     attemps for a given invoice has failed, **and** there wll be
     no further *automated* payment collections for this invoice.
     """
-    get_stripe_invoices()
+    get_stripe_invoices(app=current_app)
     failed_invoices = g.subscriber.failed_invoices()
     return render_template(
         "subscriber/subscriber_failed_invoices.html", failed_invoices=failed_invoices
@@ -374,9 +374,9 @@ def subscriber_pay_invoice(invoice_reference=None):
                 invoice_reference, stripe_account=stripe_connect_account_id
             )
             return redirect(invoice.hosted_invoice_url)
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             log.error(
-                "Subscriber tried byt unable to complete pay-invoice due to error {e}. Invoice reference: {invoice_reference}"
+                "Subscriber tried byt unable to complete pay-invoice due to error {e}. Invoice reference: {invoice_reference}"  # noqa: E501
             )
     flash("No payment reference was given")
     return redirect(url_for("subscriber.subscriber_view_failed_invoices"))
