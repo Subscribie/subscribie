@@ -1,3 +1,15 @@
+# v0.1.60 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #214 Shop owner can "View my shop" from dashboard" [#850](https://github.com/Subscribie/subscribie/pull/850) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.59 (Sat Apr 02 2022)
 
 #### 🐛 Bug Fix
