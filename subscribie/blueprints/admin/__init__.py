@@ -1038,14 +1038,16 @@ def subscribers():
 
 @admin.route("/refresh-subscription-statuses")
 def refresh_subscriptions():
+
     update_stripe_subscription_statuses()
+
     if request.referrer is not None:
-        flash("subscription statuses have been refreshed.")
+        flash("We've started refreshing all subscription statuses for you right away.")
         flash(
-            "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+            "Note: Subscription statuses are refreshed automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
         return redirect(request.referrer)
-    return "Subscription statuses refreshed", 200
+    return "Refresh Subscription statuses requested", 202
 
 
 @admin.route("/refresh-invoices")
