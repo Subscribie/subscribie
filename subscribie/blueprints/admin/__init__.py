@@ -19,7 +19,6 @@ from flask import (
 )
 import jinja2
 import requests
-from jinja2 import Environment
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
@@ -1333,7 +1332,7 @@ def edit_welcome_email():
 
         new_custom_template = form.template.data
         # Validate template syntax
-        env = Environment()
+        env = jinja2.Environment()
         try:
             env.parse(new_custom_template)
             # Store the validated template
@@ -1494,8 +1493,9 @@ def announce_shop_stripe_connect_ids():
             except requests.exceptions.ConnectionError as e:
                 msg = f"Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
                 log.error(msg)
-                return Response(
-                    json.dumps(msg), status=500, mimetype="application/json"
+                return (
+                    jsonify("Failed to announce stripe connect account in live mode."),
+                    500,
                 )
 
         if payment_provider.stripe_test_connect_account_id is not None:
@@ -1510,8 +1510,9 @@ def announce_shop_stripe_connect_ids():
             except requests.exceptions.ConnectionError as e:
                 msg = f"Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
                 log.error(msg)
-                return Response(
-                    json.dumps(msg), status=500, mimetype="application/json"
+                return (
+                    jsonify("Failed to announce stripe connect account in test mode."),
+                    500,
                 )
 
         stripe_connect_account_id = None
@@ -1530,7 +1531,7 @@ WARNING: Check logs to verify recipt"
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
-        return Response(json.dumps(msg), status=500, mimetype="application/json")
+        return jsonify("Failed to account stripe connect id"), 500
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"
