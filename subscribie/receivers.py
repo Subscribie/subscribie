@@ -81,6 +81,9 @@ def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
     messageKwArgs["subscriber_email"] = stripe_event["charges"]["data"][0][
         "billing_details"
     ]["email"]
+    messageKwArgs["subscriber_name"] = stripe_event["charges"]["data"][0][
+        "billing_details"
+    ]["name"]
     messageKwArgs["app"] = kwargs["app"]
 
     # Send email notification to subscriber

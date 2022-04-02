@@ -3,6 +3,8 @@ import logging
 from flask import current_app
 from .email import EmailMessageQueue
 from subscribie.models import Company, Setting, User
+from jinja2 import Template
+from pathlib import Path
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +34,11 @@ def newSubscriberEmailNotification():
 
 
 def subscriberPaymentFailedNotification(
-    subscriber_email=None, failure_message=None, failure_code=None, **kwargs
+    subscriber_email=None,
+    subscriber_name=None,
+    failure_message=None,
+    failure_code=None,
+    **kwargs,
 ):
     """As a Subscriber I am notified if I owe money
     to the shop plan I'm subscribed to (e.g if I
@@ -44,13 +50,31 @@ def subscriberPaymentFailedNotification(
         app = kwargs["app"]
         with app.app_context():
             company = Company.query.first()
+            kwargs["company"] = company
+            kwargs["subscriber_email"] = subscriber_email
+            kwargs["subscriber_name"] = subscriber_name
+            kwargs["subscriber_first_name"] = subscriber_name.split(" ")[0]
+            kwargs["failure_message"] = failure_message
+            kwargs["failure_code"] = failure_code
+            kwargs[
+                "subscriber_login_url"
+            ] = f"https://{app.config['SERVER_NAME']}/account/login"
             msg = EmailMessageQueue()
             msg["subject"] = f"{company.name} - A payment collection failed"
             msg["from"] = current_app.config["EMAIL_LOGIN_FROM"]
             msg["to"] = [subscriber_email]  # all shop admins
-            msg.set_content(
-                f'A payment collection failed for {company.name}\nThe bank gave the following reason: "{failure_message} / {failure_code}."\nPlease could you log into your account and check your payment details?\nYou can also retry payments from there too.\n Thank you!'  # noqa: E501
+            # use subscriber-payment-failed-notification.jinja2.html
+            email_template = str(
+                Path(
+                    app.root_path
+                    + "/emails/subscriber-payment-failed-notification.jinja2.html"
+                )
             )
+            with open(email_template) as file_:
+                template = Template(file_.read())
+                html = template.render(**kwargs)
+                msg.add_alternative(html, subtype="html")
+
             setting = Setting.query.first()
             if setting.reply_to_email_address is not None:
                 msg["reply-to"] = Setting.reply_to_email_address
