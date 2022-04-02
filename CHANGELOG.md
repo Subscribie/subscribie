@@ -1,3 +1,15 @@
+# v0.1.59 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #201 faq page typos [#847](https://github.com/Subscribie/subscribie/pull/847) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.58 (Sat Apr 02 2022)
 
 #### 🐛 Bug Fix
