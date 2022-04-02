@@ -1,3 +1,16 @@
+# v0.1.58 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- #845 dont redirect using request.referrer, send to well known path admin.subscribers [#846](https://github.com/Subscribie/subscribie/pull/846) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #845 introduce background_task decorator & make update_stripe_subscription_statuses non blocking [#846](https://github.com/Subscribie/subscribie/pull/846) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.57 (Fri Apr 01 2022)
 
 #### 🐛 Bug Fix
