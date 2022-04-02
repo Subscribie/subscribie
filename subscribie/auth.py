@@ -27,11 +27,9 @@ from .forms import (
 from .models import database, User, Person, Company, Page, LoginToken, Setting
 import binascii
 from pathlib import Path
-import flask
 from jinja2 import Template
 from flask import jsonify
 import jwt
-from functools import wraps
 from py_auth_header_parser import parse_auth_header
 import datetime
 import stripe
@@ -52,7 +50,7 @@ def saas_api_only(f):
     also providing a valid SAAS_API_KEY.
     """
 
-    @wraps(f)
+    @functools.wraps(f)
     def wrapper(*args, **kwds):
         SAAS_API_KEY = current_app.config.get("SAAS_API_KEY")
         if request.args.get("SAAS_API_KEY") and SAAS_API_KEY == request.args.get(
@@ -74,7 +72,7 @@ def saas_api_only(f):
 
 
 def token_required(f):
-    @wraps(f)
+    @functools.wraps(f)
     def wrapper(*args, **kwds):
         # Skip token_required is user is cookie authenticated
         if g.user is not None:
@@ -355,7 +353,7 @@ def forgot_password():
         )
         company = Company.query.first()
         password_reset_url = (
-            "https://" + flask.request.host + "/auth/password-reset?token=" + token
+            "https://" + request.host + "/auth/password-reset?token=" + token
         )
         log.info(f"password_reset_url: {password_reset_url}")
 
