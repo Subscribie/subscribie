@@ -1046,7 +1046,7 @@ def refresh_subscriptions():
         flash(
             "Note: Subscription statuses are refreshed automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
-        return redirect(request.referrer)
+        return redirect(url_for("admin.subscribers"))
     return "Refresh Subscription statuses requested", 202
 
 
