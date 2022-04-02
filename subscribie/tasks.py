@@ -1,6 +1,7 @@
 import logging
 import queue
 import threading
+from flask import current_app
 
 log = logging.getLogger(__name__)
 
@@ -34,3 +35,13 @@ def fifo_queue():
 
 thread = threading.Thread(target=fifo_queue)
 thread.start()
+
+
+def background_task(f):
+    def bg_f(*a, **kw):
+        app = current_app._get_current_object()
+        kw["app"] = app  # inject flask app for app context
+
+        threading.Thread(target=f, args=a, kwargs=kw).start()
+
+    return bg_f
