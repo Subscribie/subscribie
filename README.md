@@ -221,7 +221,9 @@ The test suite needs to listen to these events locally when running tests.
 
 tldr: 
 1. Install the stripe cli
-2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
+2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
+
+> For testing failed payments using [test cards table](https://stripe.com/docs/testing), the test card `4000000000000341` is especially useful because the cards in the previous table can’t be attached to a Customer object, but `4000000000000341` can be (and will fail which is useful for testing failed subscription payments such as `insufficient_funds`).
 
 ## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
 > Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
@@ -231,7 +233,7 @@ If you're doing local development, then you need Stripe to send you the test pay
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
 3. Run
   ``` 
-  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+  stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook
    ```
    You will see:
    ```
