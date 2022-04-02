@@ -3,6 +3,7 @@ import threading
 import json
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
+from subscribie.signals import signal_payment_failed
 from flask import (
     Blueprint,
     render_template,
@@ -439,6 +440,9 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+
+    signal_payment_failed.send("yolo")
+
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()

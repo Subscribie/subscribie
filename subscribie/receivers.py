@@ -1,5 +1,5 @@
 import logging
-from subscribie.tasks import task_queue
+from subscribie.tasks import task_queue, background_task
 from subscribie.models import User, Company
 import smtplib
 import socket
@@ -53,3 +53,10 @@ def receiver_send_shop_owner_new_subscriber_notification_email(
             receiver=email, company_name=company_name
         )
     )
+
+
+@background_task
+def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
+    log.debug("In receiver_send_subscriber_payment_failed_notification_email")
+    breakpoint()
+    pass

@@ -636,7 +636,7 @@ def stripe_webhook():
             log.info(eventObj)
             personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
             personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
-            # Notify if payment_failed event was related to a Subscription charge
+            # Notify Shop owner if payment_failed event was related to a Subscription charge
             if eventObj["charges"]["data"][0]["description"] == "Subscription update":
                 emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
                 The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
