@@ -20,7 +20,6 @@ from flask import (
 )
 import jinja2
 import requests
-from jinja2 import Environment
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
@@ -1334,7 +1333,7 @@ def edit_welcome_email():
 
         new_custom_template = form.template.data
         # Validate template syntax
-        env = Environment()
+        env = jinja2.Environment()
         try:
             env.parse(new_custom_template)
             # Store the validated template
@@ -1478,10 +1477,13 @@ def announce_shop_stripe_connect_ids():
             timeout=10,
         )
         if req.status_code != 200:
-            return jsonify(
-                {
-                    "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
-                }
+            return (
+                jsonify(
+                    {
+                        "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
+                    }
+                ),
+                500,
             )
         return req
 
@@ -1507,7 +1509,7 @@ def announce_shop_stripe_connect_ids():
                         "Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError"  # noqa: E501
                     ),
                     500,
-                )
+                )  # noqa: E501
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
@@ -1526,7 +1528,7 @@ def announce_shop_stripe_connect_ids():
                         "Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError"  # noqa: E501
                     ),
                     500,
-                )
+                )  # noqa: E501
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
@@ -1544,7 +1546,7 @@ WARNING: Check logs to verify recipt"
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
-        return jsonify("Failed to announce stripe connect id"), 500
+        return jsonify("Failed to account stripe connect id"), 500
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"
