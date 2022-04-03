@@ -1,3 +1,15 @@
+# v0.1.61 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- maintainability housekeeping [#852](https://github.com/Subscribie/subscribie/pull/852) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.60 (Sat Apr 02 2022)
 
 #### 🐛 Bug Fix
