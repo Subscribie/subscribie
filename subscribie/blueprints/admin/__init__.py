@@ -1401,7 +1401,7 @@ def rename_shop_post():
     SERVER_NAME = os.getenv("SERVER_NAME")
 
     new_name = request.json["new_name"].replace(SUBSCRIBIE_DOMAIN, "").replace(".", "")
-    NEW_DOMAIN = new_name + "." + SUBSCRIBIE_DOMAIN
+    NEW_DOMAIN = secure_filename(new_name + "." + SUBSCRIBIE_DOMAIN)
     if new_name is None:
         return {"msg": "You must provide a new name"}
     if new_name.isalnum() is False:
