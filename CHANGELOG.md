@@ -1,3 +1,15 @@
+# v0.1.63 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- ref #852 new_domain escape [#856](https://github.com/Subscribie/subscribie/pull/856) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.62 (Sun Apr 03 2022)
 
 #### 🐛 Bug Fix
