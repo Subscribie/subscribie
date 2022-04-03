@@ -11,7 +11,7 @@ from subscribie.utils import (
     get_stripe_failed_subscription_invoices,
     get_stripe_invoices,
 )
-from flask import render_template, flash, request, redirect, current_app
+from flask import render_template, flash, request, redirect, current_app, url_for
 import stripe
 
 log = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ def fetch_upcoming_invoices():
     msg = "Upcoming invoices fetched."
     flash(msg)
     if request.referrer is not None:
-        return redirect(request.referrer)
+        return redirect(url_for("admin.invoices"))
     return msg
 
 
