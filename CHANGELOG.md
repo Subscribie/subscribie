@@ -1,3 +1,15 @@
+# v0.1.62 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #853 Fix test announcer action [#854](https://github.com/Subscribie/subscribie/pull/854) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.61 (Sun Apr 03 2022)
 
 #### 🐛 Bug Fix
