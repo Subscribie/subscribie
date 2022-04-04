@@ -295,11 +295,7 @@ def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
     """Returns true/false if a Stripe Invoice has failed all collection attemts
     and no further *automated* collection will take place."""
     if stripeInvoice.subscribie_subscription_id:
-        if (
-            stripeInvoice.status == "open"
-            and stripeInvoice.next_payment_attempt is None
-            and stripeInvoice.status != "paid"
-        ):
+        if stripeInvoice.status == "open" and stripeInvoice.status != "paid":
             return True
     else:
         return False

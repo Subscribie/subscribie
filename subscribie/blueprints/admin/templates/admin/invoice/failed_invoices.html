@@ -63,7 +63,7 @@
                 Amount paid: {{ failedInvoice.amount_paid| currencyFormat }} <br />
                 Amount remaining: {{ failedInvoice.amount_remaining| currencyFormat }} <br />
                 Charge Attempt Count: {{ failedInvoice.attempt_count }} <br />
-                Next automatic charge attempt: {% if failedInvoice.next_payment_attempt is sameas None %} Never {% else %} Unknowne {% endif %} <br />
+                Next automatic charge attempt: {% if failedInvoice.next_payment_attempt is sameas None %} Never {% else %} {{ failedInvoice.next_payment_attempt | timestampToDate }} {% endif %} <br />
               </div>
               <hr />
             {% endfor %}
