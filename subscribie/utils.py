@@ -2,6 +2,7 @@ from flask import current_app, request, g
 import stripe
 from subscribie import database
 import logging
+from subscribie.tasks import background_task
 
 log = logging.getLogger(__name__)
 
@@ -167,6 +168,7 @@ def get_stripe_livemode():
     return False
 
 
+@background_task
 def get_stripe_invoices(app):
     """Upsert Stripe invoices into stripe_invoices
 
@@ -291,97 +293,89 @@ def get_stripe_invoices(app):
     log.debug("Finished get_stripe_invoices")
 
 
-def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
+def stripe_invoice_failed(stripeInvoice):
     """Returns true/false if a Stripe Invoice has failed all collection attemts
     and no further *automated* collection will take place."""
     if stripeInvoice.subscribie_subscription_id:
         if (
             stripeInvoice.status == "open"
             and stripeInvoice.next_payment_attempt is None
-            and stripeInvoice.status != "paid"
         ):
+            log.debug(f"Returning True for stripe_invoice_failed: {stripeInvoice}")
             return True
     else:
         return False
 
 
-def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
-    """Return Stripe invoices which have failed, and
-    were generated via a Stripe Subscription.
-
-    An Stripe Invoice may reach this stage when
-
-    - All automatic payment rety attempts have failed
-    - Failed Stripe Invoices have a null value for "next_payment_attempt"
-    - Failed Stripe Invoices payment `attempt_count` is *often*
-        equal to the max retry attempts + 1
-        (first attempt + max number of retries).
-    - Note `attempt_count` could be less than max number of retries if the
-        connected account goes away, gets disconnected, other reasons),
-        do not rely on it as a metric for failed.
-
-    NOTE: Stripe has no formal definition of a "failed"
-         status for an Invoice (even though in the
-         Stripe UI the word 'failed' is displayed to the
-         user). The official Stripe Subscription statuses
-         are documented here:
-         https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses
-
-         In the context of Subscribie: A failed invoice
-         is an Invoice for which no further automatic charge will
-         be attempted for *that* Invoice.
-
-         "No further automatic charge" is *very* important
-         given if a Shop owner decides to collect money owed
-         outside of the platform, it is beneficial for the
-         shop owner to know that no further automatic charge will
-         be taken for *that* invoice.
-
-         Remember, however, that if
-         a Subscription is still active, then *new* invoices,
-         and therefore new charge attempts will be generated for the
-         active Subscription as expected.
-
-
-    NOTE: Stripe Invoices which are generated via a
-    Stripe Subscription are generated automatically
-    by Stripe and therefore have different properties
-    to manually created invoices, most notably the
-    'collection_method' field'.
-    See https://stripe.com/docs/billing/subscriptions/overview
+def stripe_invoice_failing(stripeInvoice):
+    """Returns true/false if a Stripe Invoice is failing
+    NOTE: Automatic payment attempts may still happen
+    for a failing invoice- see stripe_invoice_failed
+    for failed invoice check
     """
+    if stripeInvoice.subscribie_subscription_id:
+        if (
+            stripeInvoice.status == "open"
+            and stripeInvoice.next_payment_attempt is not None
+        ):
+            log.debug(f"Returning True for stripe_invoice_failing: {stripeInvoice}")
+            return True
+    else:
+        return False
+
+
+def getBadInvoices():
+    """Return both failed and failing invocies
+
+    What's a bad invoice?
+
+    A bad invoice is either one which is failing or failed
+    """
+    failingInvoices = get_stripe_failing_subscription_invoices()
+    failedInvoices = get_stripe_failed_subscription_invoices()
+
+    badInvoices = failingInvoices + failedInvoices
+
+    return badInvoices
+
+
+def get_stripe_failing_subscription_invoices():
+    """Return list of stripe failing invoices
+    Note: remember that failing invoices may still
+    get automatic attemps to be collected
+    """
+    failingInvoices = []
+    from subscribie.models import StripeInvoice
+
+    log.info("Fetching Stripe failing Invoices from database cache")
+
+    stripeInvoices = StripeInvoice.query.all()
+    for stripeInvoice in stripeInvoices:
+        if stripe_invoice_failing(stripeInvoice):
+            log.info(
+                f"appending failing Stripe Invoice {stripeInvoice.id} to failingInvoices from cache"  # noqa: E501
+            )
+            failingInvoices.append(stripeInvoice)
+    return failingInvoices
+
+
+def get_stripe_failed_subscription_invoices():
+    """Return Stripe invoices which have failed, and
+    were generated via a Stripe Subscription."""
 
     failedInvoices = []
-    # Default to getting Stripe Failed Invoices from local database cache
-    if refetchCachedStripeInvoices is False:
-        from subscribie.models import StripeInvoice
+    from subscribie.models import StripeInvoice
 
-        log.info("Fetching Stripe failed Invoices from database cache")
+    log.info("Fetching Stripe failed Invoices from database cache")
 
-        stripeInvoices = StripeInvoice.query.all()
-        for stripeInvoice in stripeInvoices:
-            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
-                log.info(
-                    f"appending failed Stripe Invoice {stripeInvoice.id} to failedInvoices from cache"  # noqa: E501
-                )
-                # Means invoice is no longer being auto collected
-                failedInvoices.append(stripeInvoice)
-    elif refetchCachedStripeInvoices is True:
-        log.info("Fetching Stripe failed Invoices directly from Stripe")
-        # TODO remove this in favor of using get_stripe_invoices to a schedule
-        # webhooks
-        stripe.api_key = get_stripe_secret_key()
-        stripe_connect_account_id = get_stripe_connect_account_id()
-        stripeInvoices = stripe.Invoice.list(
-            collection_method="charge_automatically",
-            stripe_account=stripe_connect_account_id,
-            limit=100,
-        )
-
-        for stripeInvoice in stripeInvoices.auto_paging_iter():
-            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
-                # Means invoice is no longer being auto collected
-                failedInvoices.append(stripeInvoice)
+    stripeInvoices = StripeInvoice.query.all()
+    for stripeInvoice in stripeInvoices:
+        if stripe_invoice_failed(stripeInvoice):
+            log.info(
+                f"appending failed Stripe Invoice {stripeInvoice.id} to failedInvoices from cache"  # noqa: E501
+            )
+            # Means invoice is no longer being auto collected
+            failedInvoices.append(stripeInvoice)
     return failedInvoices
 
 

@@ -3,12 +3,12 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Failed Invoices</h2>
+<h2 class="text-center text-dark mb-3">Failing Payments</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ url_for('subscriber.account') }}">My Account</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Failed Invoices</li>
+    <li class="breadcrumb-item active" aria-current="page">Failing Payments</li>
   </ul>
 </div>
 
@@ -16,7 +16,7 @@
   <div class="section">
     <div class="container">
 
-          <h2>Failed Invoices</h2>
+          <h2>Failing Payments</h2>
           <p>
             A "failed invoice" means that all <em>automatic</em> payment collection
             attemps for a given invoice have failed, and there wll be
@@ -37,16 +37,18 @@
         <th>Charge Date</th>
         <th>Status</th>
         <th>Charge attempts</th>
+        <th>Next payment attempt</th>
         <th>Decline code</th>
     </thead>
-    {% for failed_invoice in failed_invoices %}
+    {% for bad_invoice in bad_invoices %}
     <tr>
-        <td><a href="{{ url_for("subscriber.subscriber_pay_invoice", invoice_reference=failed_invoice.id) }}">Pay Now</a></td>
-        <td>{{ failed_invoice.amount_due | currencyFormat }}</td>
-        <td>{{ failed_invoice['created']| timestampToDate }}</td>
-        <td>{{ failed_invoice.status }}</td>
-        <td>{{ failed_invoice.attempt_count }}</td>
-        <td>{{ failed_invoice['stripe_decline_code'] or "Unknown" }} </td>
+        <td><a href="{{ url_for("subscriber.subscriber_pay_invoice", invoice_reference=bad_invoice.id) }}">Pay Now</a></td>
+        <td>{{ bad_invoice.amount_due | currencyFormat }}</td>
+        <td>{{ bad_invoice['created']| timestampToDate }}</td>
+        <td>{{ bad_invoice.status }}</td>
+        <td>{{ bad_invoice.attempt_count }}</td>
+        <td>{% if bad_invoice.next_payment_attempt is sameas None %} Never {% else %} {{ bad_invoice.next_payment_attempt | timestampToDate }} {% endif %} </td>
+        <td>{{ bad_invoice['stripe_decline_code'] or "Unknown" }} </td>
     
     <tr>
     {% endfor %}

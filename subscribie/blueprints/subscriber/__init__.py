@@ -352,10 +352,10 @@ def subscriber_view_failed_invoices():
     attemps for a given invoice has failed, **and** there wll be
     no further *automated* payment collections for this invoice.
     """
-    get_stripe_invoices(app=current_app)
-    failed_invoices = g.subscriber.failed_invoices()
+    get_stripe_invoices()
+    bad_invoices = g.subscriber.bad_invoices()
     return render_template(
-        "subscriber/subscriber_failed_invoices.html", failed_invoices=failed_invoices
+        "subscriber/subscriber_failed_invoices.html", bad_invoices=bad_invoices
     )
 
 

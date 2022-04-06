@@ -8,10 +8,10 @@ from subscribie.utils import (
     get_stripe_connect_account,
 )
 from subscribie.utils import (
-    get_stripe_failed_subscription_invoices,
+    getBadInvoices,
     get_stripe_invoices,
 )
-from flask import render_template, flash, request, redirect, current_app, url_for
+from flask import render_template, flash, request, redirect, url_for
 import stripe
 
 log = logging.getLogger(__name__)
@@ -22,13 +22,12 @@ log = logging.getLogger(__name__)
 @stripe_connect_id_required
 def failed_invoices():
     if "refreshFailedInvoices" in request.args:
-        get_stripe_invoices(app=current_app)
+        flash("Invoice statuses are being refreshed")
+        get_stripe_invoices()
 
-    failedInvoices = get_stripe_failed_subscription_invoices(
-        refetchCachedStripeInvoices=False
-    )
+    badInvoices = getBadInvoices()
     return render_template(
-        "admin/invoice/failed_invoices.html", failedInvoices=failedInvoices
+        "admin/invoice/failed_invoices.html", badInvoices=badInvoices
     )
 
 

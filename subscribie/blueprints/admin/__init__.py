@@ -289,6 +289,11 @@ def stripe_create_charge():
 
             flash("Charge was successful")
             return redirect(url_for("admin.transactions"))
+    except stripe.error.CardError as e:
+        log.error(f"Failed to perform manual charge: {e}")
+        log.error(f"Status is: {e.http_status}")
+        log.error(f"Code is: {e.code}")
+        log.error("Message is: {e.user_message}")
     except stripe.error.InvalidRequestError as stripeError:
         return jsonify(stripeError.error.message)
 
@@ -439,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()
