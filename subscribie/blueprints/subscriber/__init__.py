@@ -71,7 +71,6 @@ def subscriber_login_required(view):
 
 
 def check_password_login(email, password):
-    return True
     subscriber = Person.query.filter_by(email=email).first()
     if subscriber.check_password(password):
         return True
