@@ -16,7 +16,6 @@ import os
 import sys
 import sqlite3
 from .database import database
-import flask
 import datetime
 from base64 import b64encode
 from flask import (
@@ -26,6 +25,7 @@ from flask import (
     url_for,
     current_app,
     Blueprint,
+    request,
 )
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme
@@ -194,7 +194,7 @@ def create_app(test_config=None):
             # App context needed for request.host (app.config["SERVER_NAME"] not set)
             with app.test_request_context("/"):
                 update_options_url = (
-                    "https://" + flask.request.host + url_for("subscriber.login")
+                    "https://" + request.host + url_for("subscriber.login")
                 )
                 company = Company.query.first()
                 with open(email_template) as file_:

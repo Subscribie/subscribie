@@ -2,7 +2,6 @@ import logging
 from subscribie.auth import check_private_page
 from pathlib import Path
 import jinja2
-from jinja2 import Environment, FileSystemLoader
 from flask import (
     abort,
     Blueprint,
@@ -205,11 +204,12 @@ def custom_page(path):
         {% endblock body %}
     """
     try:
-        rtemplate = Environment(
-            loader=FileSystemLoader(str(current_app.config["THEME_PATH"]))
+        rtemplate = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"]))
         ).from_string(page_header + body + page_footer)
     except jinja2.exceptions.TemplateAssertionError as e:
-        return f"Page needs updating: {e}"
+        log.error(f"Error updating custom page: {e}")
+        return "Unable to update page. We have been notified. Sorry about that!", 500
 
     company = Company.query.first()
     integration = Integration.query.first()

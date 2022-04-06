@@ -4,7 +4,6 @@ import functools
 import binascii
 import os
 from pathlib import Path
-import flask
 from flask import (
     Blueprint,
     render_template,
@@ -144,7 +143,7 @@ def forgot_password():
         )
         company = Company.query.first()
         password_reset_url = (
-            "https://" + flask.request.host + "/account/password-reset?token=" + token
+            "https://" + request.host + "/account/password-reset?token=" + token
         )
 
         with open(email_template) as file_:
