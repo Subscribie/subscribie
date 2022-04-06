@@ -16,7 +16,7 @@ from flask import request, current_app
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
-    stripe_invoice_failed_all_automated_collection_attempts,
+    stripe_invoice_failed,
     get_stripe_invoices,
 )
 import stripe
@@ -194,7 +194,7 @@ class Person(database.Model, HasArchived):
         failed_invoices = []
         invoices = self.invoices()
         for invoice in invoices:
-            if stripe_invoice_failed_all_automated_collection_attempts(invoice):
+            if stripe_invoice_failed(invoice):
                 failed_invoices.append(invoice)
         return failed_invoices
 

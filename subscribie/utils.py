@@ -293,14 +293,29 @@ def get_stripe_invoices(app):
     log.debug("Finished get_stripe_invoices")
 
 
-def stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
+def stripe_invoice_failed(stripeInvoice):
     """Returns true/false if a Stripe Invoice has failed all collection attemts
     and no further *automated* collection will take place."""
     if stripeInvoice.subscribie_subscription_id:
         if (
             stripeInvoice.status == "open"
             and stripeInvoice.next_payment_attempt is None
-            and stripeInvoice.status != "paid"
+        ):
+            return True
+    else:
+        return False
+
+
+def stripe_invoice_failing(stripeInvoice):
+    """Returns true/false if a Stripe Invoice is failing
+    NOTE: Automatic payment attempts may still happen
+    for a failing invoice- see stripe_invoice_failed
+    for failed invoice check
+    """
+    if stripeInvoice.subscribie_subscription_id:
+        if (
+            stripeInvoice.status == "open"
+            and stripeInvoice.next_payment_attempt is not None
         ):
             return True
     else:
@@ -362,7 +377,7 @@ def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
 
         stripeInvoices = StripeInvoice.query.all()
         for stripeInvoice in stripeInvoices:
-            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
+            if stripe_invoice_failed(stripeInvoice):
                 log.info(
                     f"appending failed Stripe Invoice {stripeInvoice.id} to failedInvoices from cache"  # noqa: E501
                 )
@@ -381,7 +396,7 @@ def get_stripe_failed_subscription_invoices(refetchCachedStripeInvoices=False):
         )
 
         for stripeInvoice in stripeInvoices.auto_paging_iter():
-            if stripe_invoice_failed_all_automated_collection_attempts(stripeInvoice):
+            if stripe_invoice_failed(stripeInvoice):
                 # Means invoice is no longer being auto collected
                 failedInvoices.append(stripeInvoice)
     return failedInvoices
