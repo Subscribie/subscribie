@@ -13,8 +13,9 @@
 
 
 ## Demo
-https://footballclub.subscriby.shop/ 
-![image](https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png)
+https://footballclub.subscriby.shop/
+<a href="https://footballclub.subscriby.shop/" target="_blank">
+<img src="https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png" /></a>
 
 
 ## What does this project do?
