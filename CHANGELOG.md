@@ -1,3 +1,15 @@
+# v0.1.65 (Wed Apr 06 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch '783-as-subscriber-notification-when-payment-fails' [#848](https://github.com/Subscribie/subscribie/pull/848) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.64 (Wed Apr 06 2022)
 
 #### ⚠️ Pushed to `master`
