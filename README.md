@@ -62,6 +62,9 @@ Quickly set-up a subscription site which can:
 - Pause subscriptions ✔️
 - Cancel active subscriptions ✔️
 - Refund individual transactions ✔️
+- View failed and failing payments ✔️
+- As a subscriber, I am notified if a payment fails ✔️
+- As a subscriber, I can pay outstanding/failed payments directly from my dashboard ✔️
 - Charge customers ad-hoc outside of their subscription (e.g. chrage for ad-hoc additonal support) ✔️ 
 - Create private plans which are hidden from the main shop ✔️
 - Create subscription payment links which I can send to people to sign up to ✔️
