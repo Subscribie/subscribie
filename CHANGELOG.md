@@ -1,3 +1,15 @@
+# v0.1.64 (Wed Apr 06 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Make demo shop picture link clickable ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.63 (Sun Apr 03 2022)
 
 #### 🐛 Bug Fix
