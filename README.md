@@ -12,10 +12,23 @@
 #### Open Source subscription billing and management
 
 
+
 ## Demo
 https://footballclub.subscriby.shop/
 <a href="https://footballclub.subscriby.shop/" target="_blank">
 <img src="https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png" /></a>
+
+## Video Demos 📹 😎
+
+<details>
+  <summary>View video demos</summary>
+  
+  ### subscriber-Ordering-recurring-plan
+  https://user-images.githubusercontent.com/1718624/162085566-eff392b1-ae9e-4ff1-a3f7-2c5a2e2b7c5a.mp4
+
+
+</details>
+
 
 
 ## What does this project do?
