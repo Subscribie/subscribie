@@ -17,6 +17,7 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
     stripe_invoice_failed,
+    stripe_invoice_failing,
     get_stripe_invoices,
 )
 import stripe
@@ -197,6 +198,24 @@ class Person(database.Model, HasArchived):
             if stripe_invoice_failed(invoice):
                 failed_invoices.append(invoice)
         return failed_invoices
+
+    def failing_invoices(self):
+        """List Subscribers failed invoices"""
+        failing_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failing(invoice):
+                failing_invoices.append(invoice)
+        return failing_invoices
+
+    def bad_invoices(self):
+        """List Subscribers failing and failed invoices"""
+        bad_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failed(invoice) or stripe_invoice_failing(invoice):
+                bad_invoices.append(invoice)
+        return bad_invoices
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
