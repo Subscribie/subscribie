@@ -52,6 +52,7 @@
                 Status: {{ badInvoice.status }} <br />
                 Subscription to plan: {{ badInvoice.subscribie_subscription.plan.title }} <br />
                 Subscriber: <a href="{{ url_for('admin.show_subscriber', subscriber_id=badInvoice.subscribie_subscription.person.id) }}">{{ badInvoice.subscribie_subscription.person.given_name }} {{ badInvoice.subscribie_subscription.person.family_name }}</a><br />
+                Charge Date: {{ badInvoice.created | timestampToDate }} <br />
                 Amount due: {{ badInvoice.amount_due | currencyFormat }} <br />
                 Amount paid: {{ badInvoice.amount_paid| currencyFormat }} <br />
                 Amount remaining: {{ badInvoice.amount_remaining| currencyFormat }} <br />
