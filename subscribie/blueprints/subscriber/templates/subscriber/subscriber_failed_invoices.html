@@ -44,7 +44,7 @@
     <tr>
         <td><a href="{{ url_for("subscriber.subscriber_pay_invoice", invoice_reference=bad_invoice.id) }}">Pay Now</a></td>
         <td>{{ bad_invoice.amount_due | currencyFormat }}</td>
-        <td>{{ bad_invoice['created']| timestampToDate }}</td>
+        <td>{{ bad_invoice.created | timestampToDate }}</td>
         <td>{{ bad_invoice.status }}</td>
         <td>{{ bad_invoice.attempt_count }}</td>
         <td>{% if bad_invoice.next_payment_attempt is sameas None %} Never {% else %} {{ bad_invoice.next_payment_attempt | timestampToDate }} {% endif %} </td>

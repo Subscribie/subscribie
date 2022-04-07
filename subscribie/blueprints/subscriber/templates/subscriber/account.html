@@ -18,7 +18,7 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 <div class="container">
 
   <div class="card px-3 py-3 my-3">
-    {% if failed_invoices  %}
+    {% if bad_invoices  %}
     <h3 class="card-title">Your subscriptions <a style="color: red" href="{{ url_for('subscriber.subscriber_view_failed_invoices')}}"> payment is pending </a></h3>
     {% else %}
 

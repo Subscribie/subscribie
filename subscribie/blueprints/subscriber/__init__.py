@@ -212,7 +212,7 @@ def account():
     stripe_publishable_key = get_stripe_publishable_key()
     stripe_default_payment_method = None
     stripe_session = None
-    failed_invoices = g.subscriber.failed_invoices()
+    bad_invoices = g.subscriber.bad_invoices()
     # Get subscribers first subscription to determine stripe customer id
     # excluding one-off plans.
     subscription = (
@@ -287,7 +287,7 @@ def account():
         stripe_session=stripe_session,
         stripe_publishable_key=stripe_publishable_key,
         stripe_default_payment_method=stripe_default_payment_method,
-        failed_invoices=failed_invoices,
+        bad_invoices=bad_invoices,
     )
 
 
