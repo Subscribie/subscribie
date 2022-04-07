@@ -246,6 +246,9 @@ def get_stripe_invoices(app):
                 stripeInvoice.stripe_subscription_id = (
                     latest_stripe_invoice.subscription
                 )
+
+                # created is invoice created date, created_at is the row creation date
+                stripeInvoice.created = latest_stripe_invoice.created
                 stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
                 # Attach Subscribie subscription relationship if subscription it not None # noqa: E501
                 subscribieSubscription = Subscription.query.where(
@@ -281,6 +284,8 @@ def get_stripe_invoices(app):
                 stripeInvoice.stripe_subscription_id = (
                     latest_stripe_invoice.subscription
                 )
+                # created is invoice created date, created_at is the row creation date
+                stripeInvoice.created = latest_stripe_invoice.created
                 stripeInvoice.stripe_invoice_raw_json = latest_stripe_invoice.__str__()
                 # Attach Subscribie subscription relationship if subscription it not None # noqa: E501
                 subscribieSubscription = Subscription.query.where(
