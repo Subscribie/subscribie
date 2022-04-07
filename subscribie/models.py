@@ -86,6 +86,12 @@ class HasArchived(object):
     archived = Column(Boolean, nullable=False, default=0)
 
 
+class CreatedAt(object):
+    """Mixin that identifies a class as having created_at entities"""
+
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+
 class User(database.Model):
     __tablename__ = "user"
     id = database.Column(database.Integer(), primary_key=True)
@@ -161,12 +167,7 @@ class Person(database.Model, HasArchived):
         query = query.filter(Person.id == self.id)
         invoices = query.all()
         for invoice in invoices:
-            stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
-            setattr(
-                invoice,
-                "created",
-                stripeRawInvoice["created"],
-            )
+            invoice.created
             # Get stripe_decline_code if possible
             try:
                 payment_intent_id = stripeRawInvoice["payment_intent"]
@@ -181,8 +182,7 @@ class Person(database.Model, HasArchived):
                 )
             # Get next payment attempt date if possible
             try:
-                next_payment_attempt = stripeRawInvoice["next_payment_attempt"]
-                setattr(invoice, "next_payment_attempt", next_payment_attempt)
+                next_payment_attempt = invoice.next_payment_attempt
             except Exception as e:
                 log.debug(
                     f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
@@ -361,7 +361,7 @@ class UpcomingInvoice(database.Model):
     subscription = relationship("Subscription", back_populates="upcoming_invoice")
 
 
-class StripeInvoice(database.Model):
+class StripeInvoice(database.Model, CreatedAt):
     """
     Reflection of Stripe Invoices
 
@@ -397,6 +397,7 @@ class StripeInvoice(database.Model):
     subscribie_subscription = relationship(
         "Subscription", back_populates="stripe_invoices"
     )
+    created = database.Column(database.Integer(), nullable=True)
     stripe_invoice_raw_json = database.Column(database.JSON(), nullable=True)
 
 
