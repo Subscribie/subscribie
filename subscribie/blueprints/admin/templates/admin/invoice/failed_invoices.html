@@ -58,6 +58,7 @@
                 Amount remaining: {{ badInvoice.amount_remaining| currencyFormat }} <br />
                 Charge Attempt Count: {{ badInvoice.attempt_count }} <br />
                 Next automatic charge attempt: {% if badInvoice.next_payment_attempt is sameas None %} Never {% else %} {{ badInvoice.next_payment_attempt | timestampToDate }} {% endif %} <br />
+                Change Invoice status as: <a href={{ url_for("admin.payBadInvoices", badInvoice=badInvoice.id, confirm="")}}>PAID</a>
               </div>
               <hr />
             {% endfor %}
