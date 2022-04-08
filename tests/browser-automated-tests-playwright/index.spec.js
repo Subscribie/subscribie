@@ -17,17 +17,16 @@ test.describe("Subscribie tests:", () => {
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
-    try {
-      let connectYourShopContent = await page.evaluate(() => document.body.textContent);
-      if (connectYourShopContent.indexOf("Congrats!") > -1) {
-        expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
-        console.log("Already connected Stripe sucessfully, exiting test");
-        return 0;
-      }
-    } catch (e) {
-      delete_connect_account_id = require('./tests/delete_connect_account_id.js');
-      console.log("Exception checking if onboarding completed, looks like it's not complete");
-      console.log("Continuing with Stripe Connect onboarding");
+    let connectYourShopContent = await page.evaluate(() => document.body.textContent);
+    if (connectYourShopContent.indexOf("Congrats!") > -1) {
+      expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
+      console.log("Already connected Stripe sucessfully, exiting test");
+    }
+    else {
+    await page.goto('/admin/delete-connect-account');
+    console.log('deleting connect account id');
+    console.log("Exception checking if onboarding completed, looks like it's not complete");
+    console.log("Continuing with Stripe Connect onboarding");
     }
   });
   test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
