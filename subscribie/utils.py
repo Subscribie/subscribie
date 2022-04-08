@@ -460,6 +460,7 @@ def getBadInvoices():
     failedInvoices = get_stripe_failed_subscription_invoices()
 
     badInvoices = failingInvoices + failedInvoices
+
     return badInvoices
 
 
