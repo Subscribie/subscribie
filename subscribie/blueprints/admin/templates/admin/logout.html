@@ -6,7 +6,11 @@
 <h2 class="text-center text-dark">You have logged out</h2>
 
 <div class="container">
+  {% if g.user %}
   <p><a href="{{ url_for('auth.login') }}">Click here to log back in.</a></p>
+  {% else %}
+  <p><a href="{{ url_for('subscriber.login') }}">Click here to log back in.</a></p>
+  {% endif %}
 </div>
 
 {% endblock body %}

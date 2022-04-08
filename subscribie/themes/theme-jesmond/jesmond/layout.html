@@ -105,7 +105,7 @@
       </ul>
 
       <ul class="navbar-nav mt-2 mt-lg-0">
-        {% if g.user %}
+        {% if g.user or g.subscriber %}
 
         {% if ns.hasPrivatePages %}
           <div class="dropdown nav-item">
@@ -125,7 +125,10 @@
             </div>
           </div>
         {% endif %}
+        {% endif %}
 
+
+        {% if g.user %}
         <li class="nav-item">
           <a class="btn-link mb-3" href="/admin/dashboard">Dashboard</a>
         </li>
@@ -133,6 +136,15 @@
         <li class="nav-item">
           <a class="btn-outlined" href="/auth/logout">Logout</a>
         </li>
+        {% elif g.subscriber %}
+        <li class="nav-item">
+          <a class="btn-link mb-3" href="/account">Account</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="btn-outlined" href="/account/logout">Logout</a>
+        </li>
+
         {% else %}
         <li class="nav-item">
           <a class="btn-outlined" href="{{ url_for('subscriber.login') }}" title="Subscriber login">Subscriber Login</a>
@@ -165,8 +177,12 @@
     
     {% if g.user %}
       <a class="body-lg" href="/auth/logout">Logout</a>
+    {% elif g.subscriber %}
+      <a class="body-lg" href="/account/logout">Logout</a>
     {% else %}
       <a href="{{ url_for('auth.login') }}" class="body-lg">Shop owner login</a>
+      or
+      <a href="{{ url_for('subscriber.login') }}" class="body-lg">Subscriber login</a>
     {% endif %}
     
     <br />

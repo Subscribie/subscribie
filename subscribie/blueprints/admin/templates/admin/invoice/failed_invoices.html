@@ -1,0 +1,75 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Failing Invoices</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.failed_invoices') }}">Failed Invoices</a></li>
+  </ul>
+</div>
+      
+<main>
+  <div class="container">
+      <div class="row">
+
+        <div class="card col-md-12" style="width: 18rem;">
+          <div class="card-body">
+            <h3>Failing &amp; Failed Invoices</h3>
+            <p><em>"Attempts"</em></p>
+
+            <p>Means the number of attempts made to collect the payment.</p>
+            <p><em>"Next automatic charge attempt"</em></p>
+
+            <p>Means the next date a payment collection will be attempted. If this is "Never" then this means that all payment collection attempts have failed and no further automatic collection will take place. Though the subscriber can still manually pay by logging into their account and clicking 'pay now'.</p>
+            <button id="refresh_failed_invoices" title="Refresh failed invoices" class="btn btn-primary disable-on-click">Refresh failed invoices</button>
+            <script>
+            btnRefreshFailedInvoices = document.getElementById('refresh_failed_invoices');
+            btnRefreshFailedInvoices.addEventListener('click', refreshFailedInvoices);
+
+            function refreshFailedInvoices() {
+              btnRefreshFailedInvoices.textContent = "Please wait...this may take a while if you have lots of invoices";
+              fetch('/admin/invoices/failed/?refreshFailedInvoices')
+                .then(response => { document.location = "/admin/invoices/failed/"});
+            }
+            </script>
+          </div>
+          <ul class="list-group list-group-flush">
+          </ul>
+          <!-- invoices list -->
+          <div class="card-body">
+            <h3>Failing / Failed Invoices List:</h3>
+            {% if badInvoices|length == 0 %}
+                There are no failed invoices.
+            {% endif %}
+            {% for badInvoice in badInvoices %}
+              <div class="failed-invoice-container">
+                ID: {{ badInvoice.id }} <br />
+                Status: {{ badInvoice.status }} <br />
+                Subscription to plan: {{ badInvoice.subscribie_subscription.plan.title }} <br />
+                Subscriber: <a href="{{ url_for('admin.show_subscriber', subscriber_id=badInvoice.subscribie_subscription.person.id) }}">{{ badInvoice.subscribie_subscription.person.given_name }} {{ badInvoice.subscribie_subscription.person.family_name }}</a><br />
+                Charge Date: {{ badInvoice.created | timestampToDate }} <br />
+                Amount due: {{ badInvoice.amount_due | currencyFormat }} <br />
+                Amount paid: {{ badInvoice.amount_paid| currencyFormat }} <br />
+                Amount remaining: {{ badInvoice.amount_remaining| currencyFormat }} <br />
+                Charge Attempt Count: {{ badInvoice.attempt_count }} <br />
+                Next automatic charge attempt: {% if badInvoice.next_payment_attempt is sameas None %} Never {% else %} {{ badInvoice.next_payment_attempt | timestampToDate }} {% endif %} <br />
+              </div>
+              <hr />
+            {% endfor %}
+
+
+          </div>
+          <!-- end invoices list -->
+        </div>
+      </div>
+
+  </div><!--end container-->
+
+</main>
+
+{% endblock body %}

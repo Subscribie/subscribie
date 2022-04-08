@@ -1,4 +1,5 @@
 import logging
+import threading
 import json
 from dotenv import load_dotenv
 from subscribie.database import database  # noqa
@@ -15,10 +16,10 @@ from flask import (
     session,
     Response,
     Markup,
+    escape,
 )
 import jinja2
 import requests
-from jinja2 import Environment
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
@@ -26,6 +27,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
+    get_stripe_invoices,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -39,7 +41,11 @@ from subscribie.forms import (
     SetReplyToEmailForm,
     UploadFilesForm,
 )
-from subscribie.auth import login_required, protected_download
+from subscribie.auth import (
+    login_required,
+    protected_download,
+    stripe_connect_id_required,
+)
 from flask_uploads import UploadSet, IMAGES
 import os
 from pathlib import Path
@@ -66,7 +72,6 @@ from subscribie.models import (
     UpcomingInvoice,
 )
 from .subscription import update_stripe_subscription_statuses
-from .invoice import fetch_stripe_upcoming_invoices
 from .stats import (
     get_number_of_active_subscribers,
     get_number_of_subscribers,
@@ -91,6 +96,7 @@ from .option import list_options  # noqa: F401, E402
 from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
 from .export_transactions import export_transactions  # noqa: F401, E402a
+from .invoice import failed_invoices  # noqa: F401
 
 load_dotenv(verbose=True)  # get environment variables from .env
 
@@ -202,7 +208,7 @@ def update_payment_fulfillment(stripe_external_id):
     database.session.commit()  # Save/update transaction in transactions table
 
     # Go back to previous page
-    return redirect(request.referrer)
+    return redirect(url_for("admin.dashboard"))
 
 
 @admin.route("/stripe/charge", methods=["POST", "GET"])
@@ -283,6 +289,11 @@ def stripe_create_charge():
 
             flash("Charge was successful")
             return redirect(url_for("admin.transactions"))
+    except stripe.error.CardError as e:
+        log.error(f"Failed to perform manual charge: {e}")
+        log.error(f"Status is: {e.http_status}")
+        log.error(f"Code is: {e.code}")
+        log.error("Message is: {e.user_message}")
     except stripe.error.InvalidRequestError as stripeError:
         return jsonify(stripeError.error.message)
 
@@ -433,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
         payment_provider = PaymentProvider()
@@ -587,7 +599,7 @@ def edit():
                 draftPlan.primary_icon = src
         database.session.commit()  # Save
         flash("Plan(s) updated.")
-        return redirect(request.referrer)
+        return redirect(url_for("admin.edit"))
     return render_template("admin/edit.html", plans=plans, form=form)
 
 
@@ -1032,24 +1044,32 @@ def subscribers():
 
 @admin.route("/refresh-subscription-statuses")
 def refresh_subscriptions():
+
     update_stripe_subscription_statuses()
+
     if request.referrer is not None:
-        flash("subscription statuses have been refreshed.")
+        flash("We've started refreshing all subscription statuses for you right away.")
         flash(
-            "note: this is done automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
+            "Note: Subscription statuses are refreshed automatically every 10 minutes so you don't need to keep clicking refresh."  # noqa
         )
-        return redirect(request.referrer)
-    return "Subscription statuses refreshed", 200
+        return redirect(url_for("admin.subscribers"))
+    return "Refresh Subscription statuses requested", 202
 
 
-@admin.route("/fetch-upcoming_invoices")
-def fetch_upcoming_invoices():
-    fetch_stripe_upcoming_invoices()
-    msg = "Upcoming invoices fetched."
-    flash(msg)
-    if request.referrer is not None:
-        return redirect(request.referrer)
-    return msg
+@admin.route("/refresh-invoices")
+def refresh_invoices():
+    """
+    Request to refresh all Stripe invoices
+    in background thread.
+
+    https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202
+    """
+    bgInvoices = threading.Thread(
+        target=get_stripe_invoices, kwargs={"app": current_app._get_current_object()}
+    )
+    bgInvoices.daemon = True
+    bgInvoices.start()
+    return "Refresh invoices request accepted.", 202
 
 
 @admin.route("/archive-subscriber/<subscriber_id>")
@@ -1101,6 +1121,7 @@ def upcoming_invoices():
 
 @admin.route("/invoices")
 @login_required
+@stripe_connect_id_required
 def invoices():
     stripe.api_key = get_stripe_secret_key()
     connect_account = get_stripe_connect_account()
@@ -1232,7 +1253,7 @@ def add_shop_admin():
 
         if form.validate_on_submit():
             # Check user dosent already exist
-            email = request.form["email"]
+            email = escape(request.form["email"])
             if User.query.filter_by(email=email).first() is not None:
                 return f"Error, admin with email ({email}) already exists."
 
@@ -1280,7 +1301,7 @@ def remove_logo():
     database.session.commit()
     flash("Logo removed")
     # Return user to previous page
-    return redirect(request.referrer)
+    return redirect(url_for("admin.upload_logo"))
 
 
 @admin.route("/remove-plan-image/<plan_id>", methods=["GET"])
@@ -1292,7 +1313,7 @@ def remove_plan_image(plan_id):
     database.session.commit()
     flash("Plan image removed")
     # Return user to previous page
-    return redirect(request.referrer)
+    return redirect(url_for("admin.edit"))
 
 
 @admin.route("/welcome-email-edit", methods=["GET", "POST"])
@@ -1318,7 +1339,7 @@ def edit_welcome_email():
 
         new_custom_template = form.template.data
         # Validate template syntax
-        env = Environment()
+        env = jinja2.Environment()
         try:
             env.parse(new_custom_template)
             # Store the validated template
@@ -1386,13 +1407,20 @@ def rename_shop_post():
     SERVER_NAME = os.getenv("SERVER_NAME")
 
     new_name = request.json["new_name"].replace(SUBSCRIBIE_DOMAIN, "").replace(".", "")
-    NEW_DOMAIN = new_name + "." + SUBSCRIBIE_DOMAIN
+    NEW_DOMAIN = secure_filename(new_name + "." + SUBSCRIBIE_DOMAIN)
     if new_name is None:
         return {"msg": "You must provide a new name"}
     if new_name.isalnum() is False:
         return {"msg": "Shop name can only contain letters and numbers"}
 
-    if Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}").is_dir():
+    base_path = os.getenv("PATH_TO_SITES")
+    new_path = Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}")
+
+    if not new_path.startswith(base_path):
+        log.error("Invalid path for shop rename")
+        raise Exception
+
+    if new_path.is_dir():
         msg = "This name already exists"
         flash(msg)
         log.debug(
@@ -1404,7 +1432,7 @@ def rename_shop_post():
             f"{PATH_TO_RENAME_SCRIPT} {SERVER_NAME} {NEW_DOMAIN} {PATH_TO_SITES}",  # noqa
             shell=True,
         )
-        return {"msg": f"Renaming site to {new_name}"}
+        return {"msg": f"Renaming site to {escape(new_name)}"}
 
 
 @admin.route("/announce-stripe-connect", methods=["GET"])
@@ -1455,10 +1483,13 @@ def announce_shop_stripe_connect_ids():
             timeout=10,
         )
         if req.status_code != 200:
-            return jsonify(
-                {
-                    "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
-                }
+            return (
+                jsonify(
+                    {
+                        "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
+                    }
+                ),
+                500,
             )
         return req
 
@@ -1479,9 +1510,12 @@ def announce_shop_stripe_connect_ids():
             except requests.exceptions.ConnectionError as e:
                 msg = f"Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
                 log.error(msg)
-                return Response(
-                    json.dumps(msg), status=500, mimetype="application/json"
-                )
+                return (
+                    jsonify(
+                        "Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError"  # noqa: E501
+                    ),
+                    500,
+                )  # noqa: E501
 
         if payment_provider.stripe_test_connect_account_id is not None:
             # send test connect account id
@@ -1495,9 +1529,12 @@ def announce_shop_stripe_connect_ids():
             except requests.exceptions.ConnectionError as e:
                 msg = f"Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
                 log.error(msg)
-                return Response(
-                    json.dumps(msg), status=500, mimetype="application/json"
-                )
+                return (
+                    jsonify(
+                        "Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError"  # noqa: E501
+                    ),
+                    500,
+                )  # noqa: E501
 
         stripe_connect_account_id = None
         if stripe_live_connect_account_id is not None:
@@ -1515,7 +1552,7 @@ WARNING: Check logs to verify recipt"
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
-        return Response(json.dumps(msg), status=500, mimetype="application/json")
+        return jsonify("Failed to account stripe connect id"), 500
 
     return Response(
         json.dumps(msg), status=req.status_code, mimetype="application/json"
@@ -1584,7 +1621,7 @@ def delete_file(uuid):
     except Exception as e:
         log.error(e)
     flash(f"Deleted: {theFile.file_name}")
-    return redirect(request.referrer)
+    return redirect(url_for("admin.list_files"))
 
 
 @admin.route("/uploads/<uuid>")

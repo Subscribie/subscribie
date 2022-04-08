@@ -1,3 +1,192 @@
+# v0.1.68 (Fri Apr 08 2022)
+
+#### 🐛 Bug Fix
+
+- #857 adding charge date to shop owner failed and failing invoices [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- adding subscriber Charge date using database column created [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- fetching stripe invoice created date [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- #857 adding created at and created columns inside stripe_invoices [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.67 (Wed Apr 06 2022)
+
+#### ⚠️ Pushed to `master`
+
+- add first video demo to readme ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.66 (Wed Apr 06 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.65 (Wed Apr 06 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch '783-as-subscriber-notification-when-payment-fails' [#848](https://github.com/Subscribie/subscribie/pull/848) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.64 (Wed Apr 06 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Make demo shop picture link clickable ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.63 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- ref #852 new_domain escape [#856](https://github.com/Subscribie/subscribie/pull/856) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.62 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #853 Fix test announcer action [#854](https://github.com/Subscribie/subscribie/pull/854) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.61 (Sun Apr 03 2022)
+
+#### 🐛 Bug Fix
+
+- maintainability housekeeping [#852](https://github.com/Subscribie/subscribie/pull/852) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.60 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #214 Shop owner can "View my shop" from dashboard" [#850](https://github.com/Subscribie/subscribie/pull/850) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.59 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #201 faq page typos [#847](https://github.com/Subscribie/subscribie/pull/847) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.58 (Sat Apr 02 2022)
+
+#### 🐛 Bug Fix
+
+- #845 dont redirect using request.referrer, send to well known path admin.subscribers [#846](https://github.com/Subscribie/subscribie/pull/846) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #845 introduce background_task decorator & make update_stripe_subscription_statuses non blocking [#846](https://github.com/Subscribie/subscribie/pull/846) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.57 (Fri Apr 01 2022)
+
+#### 🐛 Bug Fix
+
+- removing shopowner login when they already are in [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting unnecesary <p> tags [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+- #836 adding account and logout buttons for subscribers template [#840](https://github.com/Subscribie/subscribie/pull/840) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.56 (Fri Apr 01 2022)
+
+#### 🐛 Bug Fix
+
+- #841 add logging to get_stripe_invoices [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 pass current_app to get_stripe_invoices [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- remove duplication in get_stripe_invoices by making app context required #841 [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Set http response code to 202 for /admin/refresh-invoices #841 [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 remove debug statement [#842](https://github.com/Subscribie/subscribie/pull/842) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #841 putting refresh-invoices path to use threads [#842](https://github.com/Subscribie/subscribie/pull/842) ([@joeltejeda](https://github.com/joeltejeda))
+- #837 keep fix for when logged in subscriber subscribes to new plan- but remove additional email "newplan.jinja2.html" as not needed [#843](https://github.com/Subscribie/subscribie/pull/843) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #837 spelling + wording newplan.jinja2.html [#843](https://github.com/Subscribie/subscribie/pull/843) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- filtering paths to let subscribers buy plans while logged in [#843](https://github.com/Subscribie/subscribie/pull/843) ([@joeltejeda](https://github.com/joeltejeda))
+- creating a new email template for logged subscribers [#843](https://github.com/Subscribie/subscribie/pull/843) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.55 (Tue Mar 29 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch 'master' of github.com:Subscribie/subscribie [#811](https://github.com/Subscribie/subscribie/pull/811) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Bump minimist from 1.2.5 to 1.2.6 [#833](https://github.com/Subscribie/subscribie/pull/833) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v0.1.54 (Fri Mar 25 2022)
 
 #### ⚠️ Pushed to `master`

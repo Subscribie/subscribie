@@ -1,7 +1,6 @@
 import logging
 from email.message import EmailMessage
 from flask import current_app, session, request, render_template
-import flask
 from subscribie.models import (
     Setting,
     User,
@@ -55,7 +54,7 @@ def send_welcome_email():
     html = jinja_template.render(
         first_name=session.get("given_name", None),
         company_name=company.name,
-        subscriber_login_url=scheme + flask.request.host + "/account/login",
+        subscriber_login_url=scheme + request.host + "/account/login",
         first_charge_date=first_charge_date,
         first_charge_amount=first_charge_amount,
         plan=plan,
@@ -68,7 +67,7 @@ def send_welcome_email():
         msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
         msg["To"] = session["email"]
         msg.set_content("Subscription confirmation")
-        msg.add_alternative(html).format(subtype="html")
+        msg.add_alternative(html, subtype="html")
         setting = Setting.query.first()
         if setting is not None:
             msg["Reply-To"] = setting.reply_to_email_address
