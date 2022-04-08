@@ -22,7 +22,6 @@ from subscribie.utils import (
 )
 import stripe
 import json
-
 from .database import database
 
 log = logging.getLogger(__name__)
@@ -168,6 +167,7 @@ class Person(database.Model, HasArchived):
         invoices = query.all()
         for invoice in invoices:
             invoice.created
+            stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
             # Get stripe_decline_code if possible
             try:
                 payment_intent_id = stripeRawInvoice["payment_intent"]
@@ -181,12 +181,6 @@ class Person(database.Model, HasArchived):
                     f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
                 )
             # Get next payment attempt date if possible
-            try:
-                next_payment_attempt = invoice.next_payment_attempt
-            except Exception as e:
-                log.debug(
-                    f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
-                )
 
         return invoices
 
