@@ -1,3 +1,18 @@
+# v0.1.68 (Fri Apr 08 2022)
+
+#### 🐛 Bug Fix
+
+- #857 adding charge date to shop owner failed and failing invoices [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- adding subscriber Charge date using database column created [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- fetching stripe invoice created date [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+- #857 adding created at and created columns inside stripe_invoices [#858](https://github.com/Subscribie/subscribie/pull/858) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.67 (Wed Apr 06 2022)
 
 #### ⚠️ Pushed to `master`
