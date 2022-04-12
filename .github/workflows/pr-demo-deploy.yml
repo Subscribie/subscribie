@@ -99,13 +99,13 @@ jobs:
 
       - name: Install node dependencies needed for Playwright browser tests
         run: |
-          npm i -D @playwright/test@1.20.0
+          npm i -D @playwright/test@1.19.0
           npx playwright install
 
       - name: Run & Record browser automated tests (Playwright)
         env:
           PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
-          PLAYWRIGHT_SLOWMO: 500
+          PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
         run: |
           set -x
