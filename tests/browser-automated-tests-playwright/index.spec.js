@@ -127,7 +127,7 @@ test.describe("Subscribie tests:", () => {
         console.log("Stripe Onboarding filling require information");
         if (expect(notice_title_content === "Missing required information")) {
           console.log("On the Let's review your details page");
-          await new Promise(x => setTimeout(x, 2000));
+          await new Promise(x => setTimeout(x, 10000));
           await page.click('button:has-text("Update")');
         }
         // Stripe onboarding identify verification step
