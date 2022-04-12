@@ -23,8 +23,6 @@ test.describe("Subscribie tests:", () => {
       console.log("Already connected Stripe sucessfully, exiting test");
     }
     else {
-    await page.goto('/admin/delete-connect-account');
-    console.log('deleting connect account id');
     console.log("Exception checking if onboarding completed, looks like it's not complete");
     console.log("Continuing with Stripe Connect onboarding");
     }
@@ -36,9 +34,13 @@ test.describe("Subscribie tests:", () => {
       //page.setDefaultTimeout(3000);
       let contentStripeConnect = await page.evaluate(() => document.body.textContent);
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
+      expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
+
+      await page.goto('/admin/delete-connect-account');
+      await page.goto('/admin/dashboard');
+      console.log('deleting connect account id');
 
       // Start Stripe connect onboarding
-      expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
       await page.goto('/admin/connect/stripe-connect');
       await page.click('.btn-success');
 
@@ -64,7 +66,7 @@ test.describe("Subscribie tests:", () => {
         // Use SME verify with test code
         const phone_content = await page.textContent('text="Enter the verification code we sent to your phone"');
         if (expect(phone_content === "Enter the verification code we sent to your phone")) {
-          console.log("Clicking Use test code")
+          console.log("Clicking Use test code");
           await page.click('button:has-text("Use test code")'); //Use Test code for SMS
         }
   
@@ -73,6 +75,7 @@ test.describe("Subscribie tests:", () => {
         const business_type_content = await page.textContent('text="Tell us about your business"');
         if (expect(business_type_content === "Tell us about your business")) {
           await new Promise(x => setTimeout(x, 4000));
+          console.log("Stripe Onboarding Business Type");
           await page.selectOption('select', 'individual');
           await page.click('text="Continue"');
         }
@@ -80,6 +83,7 @@ test.describe("Subscribie tests:", () => {
         // Stripe onboarding personal details step
         //const personal_details_content = await page.textContent('.db-ConsumerUITitle');
         const personal_details_content = await page.textContent('text="Personal details"');
+        console.log("Stripe Onboarding Personal Details");
         if (expect(personal_details_content === 'Personal details')) {
           await new Promise(x => setTimeout(x, 1000));
           try {
@@ -101,6 +105,7 @@ test.describe("Subscribie tests:", () => {
         // Stripe onboarding industry selection
         //const business_details_content = await page.textContent('.db-ConsumerUITitle');
         const business_details_content = await page.textContent('text="Business details"');
+        console.log("Stripe Onboarding Industry Selection");
         if (expect(business_details_content === "Business details")) {
           await new Promise(x => setTimeout(x, 1000));
           await page.click('text="Please select your industry…"');
@@ -111,6 +116,7 @@ test.describe("Subscribie tests:", () => {
         // Stripe onboarding payouts bank details
         //const account_payouts_content = await page.textContent('.db-ConsumerUITitle');
         const account_payouts_content = await page.textContent('text="Select an account for payouts"');
+        console.log("Stripe Onboarding Bank details");
         if (expect(account_payouts_content === "Select an account for payouts")) {
           await new Promise(x => setTimeout(x, 1000));
           await page.click('text="Use test account"');
@@ -118,6 +124,7 @@ test.describe("Subscribie tests:", () => {
         // Stripe onboarding verification summary
         //const notice_title_content = await page.textContent('.Notice-title');
         const notice_title_content = await page.textContent('text="Missing required information"');
+        console.log("Stripe Onboarding filling require information");
         if (expect(notice_title_content === "Missing required information")) {
           console.log("On the Let's review your details page");
           await new Promise(x => setTimeout(x, 2000));
@@ -130,12 +137,14 @@ test.describe("Subscribie tests:", () => {
           await new Promise(x => setTimeout(x, 5000));
 
           await page.click(":nth-match(:text('Verify Now'), 2)");
+          console.log("Stripe Onboarding proof of address");
           const address_content = await page.textContent('text="Proof of address document"');
           if (expect(address_content === "Proof of address document")) {
             await new Promise(x => setTimeout(x, 1000));
             await page.click('text="Use test document"');
           }
           const home_address_provided = await page.textContent(":nth-match(:text('Provided'), 2)");
+          console.log("Stripe Onboarding id verification");
           await page.click(":nth-match(:text('Verify Now'), 1)");
           const id_verification_content = await page.textContent('text="ID verification for "');
           await new Promise(x => setTimeout(x, 5000));
@@ -153,7 +162,7 @@ test.describe("Subscribie tests:", () => {
         // Stripe onboarding verification complete
         const stripe_completion_content = await page.textContent('text="Other information provided"');
         if (expect(stripe_completion_content === "Other information provided")) {
-          await new Promise(x => setTimeout(x, 1000));
+          await new Promise(x => setTimeout(x, 2000));
 
           // Dont wait too long to click either Submit or Done
           try {

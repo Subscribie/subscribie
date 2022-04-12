@@ -13,7 +13,7 @@ const config: PlaywrightTestConfig = {
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
   retries: 2,
-  workers: 3, 
+  workers: 1, 
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
