@@ -2,7 +2,13 @@ import os
 from . import admin
 from subscribie.auth import login_required
 from subscribie.database import database
-from subscribie.models import Subscription, Person, Transaction, PaymentProvider
+from subscribie.models import (
+    Subscription,
+    Person,
+    Transaction,
+    PaymentProvider,
+    TaxRate,
+)
 from flask import jsonify
 from subscribie.utils import get_stripe_connect_account_id, get_stripe_secret_key
 import stripe
@@ -61,6 +67,7 @@ def delete_connect_account():
     if connect_account_id:
         stripe.Account.delete(get_stripe_connect_account_id())
         database.session.query(PaymentProvider).delete()
+        database.session.query(TaxRate).delete()
         database.session.commit()
         msg = {"msg": "stripe connect accound id deleted"}
         return jsonify(msg)
