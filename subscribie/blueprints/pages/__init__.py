@@ -45,7 +45,7 @@ def delete_pages_list():
 @module_pages.route("/delete-page/<path>", methods=["POST", "GET"])
 @login_required
 def delete_page_by_path(path):
-    secure_filename(path)
+    path = secure_filename(path)
     """Delete a given page"""
     if "confirm" in request.args:
         return render_template(
@@ -80,7 +80,7 @@ def edit_pages_list():
 @module_pages.route("/edit-page/<path>", methods=["POST", "GET"])
 @login_required
 def edit_page(path):
-    secure_filename(path)
+    path = secure_filename(path)
     """Edit a given page"""
     page = Page.query.filter_by(path=path).first()
     if request.method == "GET":
