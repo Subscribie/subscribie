@@ -1,3 +1,15 @@
+# v0.1.69 (Fri Apr 22 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #864 added missing subscriber-payment-failed-notification email template [#865](https://github.com/Subscribie/subscribie/pull/865) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.68 (Fri Apr 08 2022)
 
 #### 🐛 Bug Fix
