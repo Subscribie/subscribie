@@ -63,7 +63,7 @@ class PlanBase(OrmBase):
     selling_points: Optional[List[PlanSellingPointBase]] = []
     archived: Optional[bool] = False
     uuid: str = str(_uuid.uuid4())
-    title: str
+    description: str
     interval_unit: Optional[IntervalUnitEnum] = "monthly"
     interval_amount: Optional[int] = None
     sell_price: Optional[int] = 0
@@ -76,7 +76,7 @@ class PlanInDBBase(PlanBase):
 
 
 class Plan(PlanBase):
-    id: int
+    id: Optional[int]
 
     class Config:
         orm_mode = True
@@ -89,3 +89,24 @@ class PlanUpdate(PlanBase):
 class PlanCreate(PlanBase):
     title: str
     created_at: datetime = datetime.utcnow()
+
+
+class Company(OrmBase):
+    name: str
+
+
+class ShopBase(OrmBase):
+    version: int
+    users: List[str]
+    password: Optional[str] = None
+    login_token: Optional[str] = None
+    company: Company
+    plans: Optional[List[Plan]] = []
+
+
+class ShopCreate(ShopBase):
+    pass
+
+
+class Shop(ShopBase):
+    pass
