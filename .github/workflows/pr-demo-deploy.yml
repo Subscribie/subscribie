@@ -104,7 +104,7 @@ jobs:
       - name: Run & Record browser automated tests (Playwright)
         env:
           PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
-          PLAYWRIGHT_SLOWMO: 500
+          PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
         run: |
           set -x
