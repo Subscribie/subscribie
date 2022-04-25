@@ -1,3 +1,15 @@
+# v0.1.73 (Mon Apr 25 2022)
+
+#### 🐛 Bug Fix
+
+- changing colour contrast for Order Summary [#869](https://github.com/Subscribie/subscribie/pull/869) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.72 (Mon Apr 25 2022)
 
 #### 🐛 Bug Fix
