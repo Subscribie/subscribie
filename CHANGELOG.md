@@ -1,3 +1,16 @@
+# v0.1.71 (Mon Apr 25 2022)
+
+#### 🐛 Bug Fix
+
+- adding variable name [#863](https://github.com/Subscribie/subscribie/pull/863) ([@joeltejeda](https://github.com/joeltejeda))
+- housekeeping [#863](https://github.com/Subscribie/subscribie/pull/863) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.70 (Mon Apr 25 2022)
 
 #### 🐛 Bug Fix
