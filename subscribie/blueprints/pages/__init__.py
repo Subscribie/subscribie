@@ -8,6 +8,7 @@ from flask import (
     url_for,
     flash,
     Markup,
+    escape,
 )
 from subscribie.auth import login_required
 from subscribie.models import database, Page
@@ -96,7 +97,7 @@ def edit_page(path):
 
     elif request.method == "POST":
         try:
-            page_title = request.form["page-title"]
+            page_title = escape(request.form["page-title"])
             page.page_name = page_title
         except KeyError:
             return "Error: Page title is required"
@@ -158,7 +159,7 @@ def save_new_page():
     added page.
     """
     try:
-        page_title = request.form["page-title"]
+        page_title = escape(request.form["page-title"])
     except KeyError:
         return "Error: Page title is required"
 
