@@ -36,6 +36,7 @@ test.describe("Subscribie tests:", () => {
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
       expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
 
+      // deleting connect account id before configuring stripe
       await page.goto('/admin/delete-connect-account');
       await page.goto('/admin/dashboard');
       console.log('deleting connect account id');
