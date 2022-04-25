@@ -1,3 +1,16 @@
+# v0.1.72 (Mon Apr 25 2022)
+
+#### 🐛 Bug Fix
+
+- housekeeping3.1 [#868](https://github.com/Subscribie/subscribie/pull/868) ([@joeltejeda](https://github.com/joeltejeda))
+- housekeeping3 [#868](https://github.com/Subscribie/subscribie/pull/868) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.71 (Mon Apr 25 2022)
 
 #### 🐛 Bug Fix
