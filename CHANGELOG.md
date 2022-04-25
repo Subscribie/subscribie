@@ -1,3 +1,16 @@
+# v0.1.70 (Mon Apr 25 2022)
+
+#### 🐛 Bug Fix
+
+- Update pr-demo-deploy.yml [#862](https://github.com/Subscribie/subscribie/pull/862) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting taxrate table and deleting connect account id [#862](https://github.com/Subscribie/subscribie/pull/862) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.69 (Fri Apr 22 2022)
 
 #### 🐛 Bug Fix
