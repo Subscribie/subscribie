@@ -1,3 +1,15 @@
+# v0.1.75 (Wed Apr 27 2022)
+
+#### 🐛 Bug Fix
+
+- adding custom bootstrap css navbar [#871](https://github.com/Subscribie/subscribie/pull/871) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.74 (Wed Apr 27 2022)
 
 #### 🐛 Bug Fix
