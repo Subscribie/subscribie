@@ -22,6 +22,8 @@ test.beforeEach(async ({ page }) => {
 
   change_shop_colour = require('./tests/387_shop_owner_change_shop_colour');
 
+  uploading_plan_picture = require('./tests/872_uploading_plan_picture.js');
+
   adding_vat = require('./tests/463_shop_owner_adding_vat');
 
   ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
