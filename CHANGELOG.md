@@ -1,3 +1,30 @@
+# v0.1.75 (Wed Apr 27 2022)
+
+#### 🐛 Bug Fix
+
+- adding custom bootstrap css navbar [#871](https://github.com/Subscribie/subscribie/pull/871) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.74 (Wed Apr 27 2022)
+
+#### 🐛 Bug Fix
+
+- reverting [#870](https://github.com/Subscribie/subscribie/pull/870) ([@joeltejeda](https://github.com/joeltejeda))
+- Revert "#620 adding question about card expiration" [#870](https://github.com/Subscribie/subscribie/pull/870) ([@joeltejeda](https://github.com/joeltejeda))
+- making the test slower [#870](https://github.com/Subscribie/subscribie/pull/870) ([@joeltejeda](https://github.com/joeltejeda))
+- #620 adding question about card expiration [#870](https://github.com/Subscribie/subscribie/pull/870) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.73 (Mon Apr 25 2022)
 
 #### 🐛 Bug Fix
