@@ -1,3 +1,17 @@
+# v0.1.76 (Thu Apr 28 2022)
+
+#### 🐛 Bug Fix
+
+- testing logo upload [#873](https://github.com/Subscribie/subscribie/pull/873) ([@joeltejeda](https://github.com/joeltejeda))
+- adding subscribie logo [#873](https://github.com/Subscribie/subscribie/pull/873) ([@joeltejeda](https://github.com/joeltejeda))
+- #872 uploading subscribie logo into hair gel plan [#873](https://github.com/Subscribie/subscribie/pull/873) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.75 (Wed Apr 27 2022)
 
 #### 🐛 Bug Fix
