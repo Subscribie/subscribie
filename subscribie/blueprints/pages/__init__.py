@@ -171,7 +171,7 @@ def save_new_page():
     # Generate a valid path for url
     pageName = ""
     for char in page_title:
-        if char.isalpha():
+        if char.isalnum():
             pageName += char
     # Generate a valid html filename
     template_file = pageName + ".html"
