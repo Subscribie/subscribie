@@ -1,3 +1,15 @@
+# v0.1.77 (Thu Apr 28 2022)
+
+#### 🐛 Bug Fix
+
+- allowing custom pages to have numbers and letters [#874](https://github.com/Subscribie/subscribie/pull/874) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.76 (Thu Apr 28 2022)
 
 #### 🐛 Bug Fix
