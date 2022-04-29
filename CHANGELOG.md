@@ -1,3 +1,19 @@
+# v0.1.78 (Fri Apr 29 2022)
+
+#### 🐛 Bug Fix
+
+- adding delete connect account id test after all tests [#875](https://github.com/Subscribie/subscribie/pull/875) ([@joeltejeda](https://github.com/joeltejeda))
+- renaming delete connect account id [#875](https://github.com/Subscribie/subscribie/pull/875) ([@joeltejeda](https://github.com/joeltejeda))
+- re-adding delete connect accound id test [#875](https://github.com/Subscribie/subscribie/pull/875) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting connect account id after all workers [#875](https://github.com/Subscribie/subscribie/pull/875) ([@joeltejeda](https://github.com/joeltejeda))
+- #600 replacing paytoday with upfrontcost, adding the total and removing duplicated html theme [#875](https://github.com/Subscribie/subscribie/pull/875) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.77 (Thu Apr 28 2022)
 
 #### 🐛 Bug Fix
