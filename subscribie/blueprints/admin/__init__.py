@@ -1569,6 +1569,7 @@ def upload_files():
         "image/gif",
         "image/jpg",
         "image/jpeg",
+        "image/webp",
         "audio/mpeg",
         "video/mpeg",
         "audio/ogg",
@@ -1595,6 +1596,9 @@ def upload_files():
                 uploadedFile.file_name = filename
                 database.session.add(uploadedFile)
                 flash(f"Uploaded {filename}")
+            else:
+                filename = secure_filename(upload.filename)
+                flash(f"file {filename} not supported")
         database.session.commit()
     return render_template("admin/uploads/upload_files.html", form=form)
 

@@ -89,6 +89,8 @@
                     <!-- plan image -->
                     <div class="form-group">
                       <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
+                      <p> Supported image upload extensions: <br> 
+                          jpg, jpe, jpeg, png, gif, svg, bmp</p>
                       <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
                       {% if plan.primary_icon %}
                       <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
