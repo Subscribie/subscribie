@@ -1,3 +1,15 @@
+# v0.1.80 (Fri Apr 29 2022)
+
+#### 🐛 Bug Fix
+
+- #209 changing connect to stripe wording [#876](https://github.com/Subscribie/subscribie/pull/876) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.79 (Fri Apr 29 2022)
 
 #### 🐛 Bug Fix
