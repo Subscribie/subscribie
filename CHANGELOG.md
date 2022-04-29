@@ -1,3 +1,17 @@
+# v0.1.79 (Fri Apr 29 2022)
+
+#### 🐛 Bug Fix
+
+- adding edit plan suppoed image text [#877](https://github.com/Subscribie/subscribie/pull/877) ([@joeltejeda](https://github.com/joeltejeda))
+- #227 adding upload supported list and adding webp image extension [#877](https://github.com/Subscribie/subscribie/pull/877) ([@joeltejeda](https://github.com/joeltejeda))
+- adding uploads to the filter path [#877](https://github.com/Subscribie/subscribie/pull/877) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.78 (Fri Apr 29 2022)
 
 #### 🐛 Bug Fix
