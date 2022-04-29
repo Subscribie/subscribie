@@ -21,7 +21,6 @@ from subscribie.utils import (
     get_stripe_invoices,
 )
 import stripe
-import json
 
 from .database import database
 
@@ -71,6 +70,7 @@ def filter_archived(query):
             and "/stripe-create-checkout-session" not in request.path
             and "instant_payment_complete" not in request.path
             and "thankyou" not in request.path
+            and "uploads" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
