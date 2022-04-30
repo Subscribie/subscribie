@@ -1,3 +1,15 @@
+# v0.1.81 (Sat Apr 30 2022)
+
+#### 🐛 Bug Fix
+
+- wip #866 added Shop schema (pydantic) [#867](https://github.com/Subscribie/subscribie/pull/867) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.80 (Fri Apr 29 2022)
 
 #### 🐛 Bug Fix
