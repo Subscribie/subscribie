@@ -8,10 +8,12 @@ from flask import (
     url_for,
     flash,
     Markup,
+    escape,
 )
 from subscribie.auth import login_required
 from subscribie.models import database, Page
 from pathlib import Path
+from werkzeug.utils import secure_filename
 
 log = logging.getLogger(__name__)
 module_pages = Blueprint(
@@ -44,6 +46,7 @@ def delete_pages_list():
 @module_pages.route("/delete-page/<path>", methods=["POST", "GET"])
 @login_required
 def delete_page_by_path(path):
+    path = secure_filename(path)
     """Delete a given page"""
     if "confirm" in request.args:
         return render_template(
@@ -78,6 +81,7 @@ def edit_pages_list():
 @module_pages.route("/edit-page/<path>", methods=["POST", "GET"])
 @login_required
 def edit_page(path):
+    path = secure_filename(path)
     """Edit a given page"""
     page = Page.query.filter_by(path=path).first()
     if request.method == "GET":
@@ -93,7 +97,7 @@ def edit_page(path):
 
     elif request.method == "POST":
         try:
-            page_title = request.form["page-title"]
+            page_title = escape(request.form["page-title"])
             page.page_name = page_title
         except KeyError:
             return "Error: Page title is required"
@@ -155,7 +159,7 @@ def save_new_page():
     added page.
     """
     try:
-        page_title = request.form["page-title"]
+        page_title = escape(request.form["page-title"])
     except KeyError:
         return "Error: Page title is required"
 
@@ -167,7 +171,7 @@ def save_new_page():
     # Generate a valid path for url
     pageName = ""
     for char in page_title:
-        if char.isalpha():
+        if char.isalnum():
             pageName += char
     # Generate a valid html filename
     template_file = pageName + ".html"

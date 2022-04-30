@@ -12,8 +12,14 @@ from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
-from flask import request
-from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account_id
+from flask import request, current_app
+from subscribie.utils import (
+    get_stripe_secret_key,
+    get_stripe_connect_account_id,
+    stripe_invoice_failed,
+    stripe_invoice_failing,
+    get_stripe_invoices,
+)
 import stripe
 
 from .database import database
@@ -60,6 +66,11 @@ def filter_archived(query):
             and "/page" not in request.path
             and "/new_customer" not in request.path
             and "/start-building" not in request.path
+            and "/order-summary" not in request.path
+            and "/stripe-create-checkout-session" not in request.path
+            and "instant_payment_complete" not in request.path
+            and "thankyou" not in request.path
+            and "uploads" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
@@ -73,6 +84,12 @@ class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
     archived = Column(Boolean, nullable=False, default=0)
+
+
+class CreatedAt(object):
+    """Mixin that identifies a class as having created_at entities"""
+
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
 
 
 class User(database.Model):
@@ -117,10 +134,14 @@ class Person(database.Model, HasArchived):
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
 
-    def invoices(self):
-        """Get all invoices for a given person
+    def invoices(self, refetchCachedStripeInvoices=False):
+        """Get all cached Stripe invoices for a given person
 
-        Note a person may have zero or more subscriptions,
+        NOTE: This is a **cached** view of Stripe invoices,
+        to refresh and get the latest Stripe invoices, set refetchCachedStripeInvoices
+        to True.
+
+        NOTE: a person may have zero or more subscriptions,
         with each subscription having zero or more invoices
 
         For Stripe invoices, the stripe customer id is needed,
@@ -132,53 +153,69 @@ class Person(database.Model, HasArchived):
         - this file class "Subscription" with colum "stripe_subscription_id"
         - https://stripe.com/docs/api/subscriptions/object?lang=python#subscription_object-customer # noqa: E501
         """
-        invoices = []
+        if refetchCachedStripeInvoices:
+            # TODO optimise to only refetch invoices for this Subscriber
+            get_stripe_invoices(app=current_app)
+
         stripe.api_key = get_stripe_secret_key()
         stripe_account_id = get_stripe_connect_account_id()
-
-        # Get Stripe invoices
-        for subscription in self.subscriptions:
-            if subscription.stripe_subscription_id != "":
-                try:
-                    if subscription.stripe_subscription_id is not None:
-                        stripe_subscription = stripe.Subscription.retrieve(
-                            subscription.stripe_subscription_id,
-                            stripe_account=stripe_account_id,
-                        )
-                        # Get Stripe customer id
-                        stripe_customer_id = stripe_subscription.customer
-                        # Get Stripe invoices for this customer/subscriber
-                        stripe_invoices = stripe.Invoice.list(
-                            stripe_account=stripe_account_id,
-                            customer=stripe_customer_id,
-                        )
-                        # loop over all invoices
-                        # See https://stripe.com/docs/api/pagination/auto
-                        for invoice in stripe_invoices.auto_paging_iter():
-                            # If invoice is not paid, check for any payment errors
-                            if invoice.status != "paid":
-                                try:
-                                    stripe_decline_code = stripe.PaymentIntent.retrieve(
-                                        invoice.payment_intent,
-                                        stripe_account=stripe_account_id,
-                                    ).last_payment_error.decline_code
-                                    invoice["stripe_decline_code"] = stripe_decline_code
-                                except Exception as e:
-                                    log.warning(
-                                        f"Could not get Stripe Invoice PaymentIntent last_payment_error decline_code: {e}"  # noqa: E501
-                                    )
-                            else:
-                                invoice["stripe_decline_code"] = None
-                            invoices.append(invoice)
-                except stripe.error.InvalidRequestError as e:
-                    log.error(
-                        f"Unable to retrieve stripe subscription by id: {subscription.stripe_subscription_id}. {e}"  # noqa: E501
-                    )
-            else:
+        query = database.session.query(StripeInvoice)
+        query = query.join(
+            Subscription, StripeInvoice.subscribie_subscription_id == Subscription.id
+        )
+        query = query.join(Person, Subscription.person_id == Person.id)
+        query = query.filter(Person.id == self.id)
+        invoices = query.all()
+        for invoice in invoices:
+            invoice.created
+            # Get stripe_decline_code if possible
+            try:
+                payment_intent_id = stripeRawInvoice["payment_intent"]
+                stripe_decline_code = stripe.PaymentIntent.retrieve(
+                    payment_intent_id,
+                    stripe_account=stripe_account_id,
+                ).last_payment_error.decline_code
+                setattr(invoice, "stripe_decline_code", stripe_decline_code)
+            except Exception as e:
                 log.debug(
-                    f"Skipping fetching invoice for subscription.uuid {subscription.uuid}"  # noqa: E501
+                    f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
                 )
+            # Get next payment attempt date if possible
+            try:
+                next_payment_attempt = invoice.next_payment_attempt
+            except Exception as e:
+                log.debug(
+                    f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
+                )
+
         return invoices
+
+    def failed_invoices(self):
+        """List Subscribers failed invoices"""
+        failed_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failed(invoice):
+                failed_invoices.append(invoice)
+        return failed_invoices
+
+    def failing_invoices(self):
+        """List Subscribers failed invoices"""
+        failing_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failing(invoice):
+                failing_invoices.append(invoice)
+        return failing_invoices
+
+    def bad_invoices(self):
+        """List Subscribers failing and failed invoices"""
+        bad_invoices = []
+        invoices = self.invoices()
+        for invoice in invoices:
+            if stripe_invoice_failed(invoice) or stripe_invoice_failing(invoice):
+                bad_invoices.append(invoice)
+        return bad_invoices
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -188,6 +225,14 @@ class Person(database.Model, HasArchived):
 
     def __repr__(self):
         return "<Person {}>".format(self.given_name)
+
+
+class Balance(database.Model):
+    __tablename__ = "balance"
+    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    available_amount = database.Column(database.Integer(), nullable=True)
+    available_currency = database.Column(database.String(), nullable=True)
+    stripe_livemode = database.Column(database.Boolean(), default=False)
 
 
 class LoginToken(database.Model):
@@ -215,6 +260,9 @@ class Subscription(database.Model):
     note = relationship(
         "SubscriptionNote", back_populates="subscription", uselist=False
     )
+
+    # List of associated Stripe Invoices (may not be live synced)
+    stripe_invoices = relationship("StripeInvoice")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship("ChosenOption", back_populates="subscription")
@@ -311,6 +359,46 @@ class UpcomingInvoice(database.Model):
         database.Integer, ForeignKey("subscription.uuid")
     )
     subscription = relationship("Subscription", back_populates="upcoming_invoice")
+
+
+class StripeInvoice(database.Model, CreatedAt):
+    """
+    Reflection of Stripe Invoices
+
+    Not a live in-sync view of Stripe created invoices
+
+    Purpose: To reduce round trip time fetching invoice information
+    from Stripe each time (cache).
+
+    Note: not all invoices have to originate from Stripe,
+          this models table name is named stripe_invoice for
+          that reason.
+
+    Note: Inserts are upsert-ed to preserve keys
+    """
+
+    __tablename__ = "stripe_invoice"
+    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    id = database.Column(database.String(), nullable=True)
+    status = database.Column(database.String(), nullable=True)
+    amount_due = database.Column(database.Integer(), nullable=True)
+    amount_paid = database.Column(database.Integer(), nullable=True)
+    amount_remaining = database.Column(database.Integer(), nullable=True)
+    application_fee_amount = database.Column(database.Integer(), nullable=True)
+    attempt_count = database.Column(database.Integer(), nullable=True)
+    billing_reason = database.Column(database.String(), nullable=True)
+    collection_method = database.Column(database.String(), nullable=True)
+    currency = database.Column(database.String(), nullable=True)
+    next_payment_attempt = database.Column(database.Integer(), nullable=True)
+    stripe_subscription_id = database.Column(database.String(), nullable=True)
+    subscribie_subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id"), nullable=True
+    )
+    subscribie_subscription = relationship(
+        "Subscription", back_populates="stripe_invoices"
+    )
+    created = database.Column(database.Integer(), nullable=True)
+    stripe_invoice_raw_json = database.Column(database.JSON(), nullable=True)
 
 
 class Company(database.Model):

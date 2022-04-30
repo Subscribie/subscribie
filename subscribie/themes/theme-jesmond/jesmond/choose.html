@@ -169,7 +169,7 @@
   }
 
   $( ".plan-img-action" ).click(function() {
-    var imgURL = $(this).attr('data-highres');
+    var imgURL = $.(this).attr('data-highres');
     $(".modal-img").attr("src", imgURL);
   });
 

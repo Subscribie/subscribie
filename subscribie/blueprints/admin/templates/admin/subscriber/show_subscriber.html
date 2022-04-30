@@ -122,19 +122,23 @@
             <tr>
               <th>Amount</th>
               <th>Status</th>
-              <th>Created</th>
+              <th>Charge Date</th>
               <th>Attempts</th>
               <th>Errors</th>
               <th>Next retry</th>
             </tr>
               {% for invoice in person.invoices() %}
               <tr>
-                <td>{{ invoice['total'] | currencyFormat }}</td>
-                <td>{{ invoice['status'] }}</td>
-                <td>{{ invoice['created']| timestampToDate }}</td>
-                <td>{{ invoice['attempt_count'] }}</td>
+                <td>{{ invoice.amount_due | currencyFormat }}</td>
+                <td>{{ invoice.status }}</td>
+                <td>{{ invoice.created | timestampToDate }}</td>
+                <td>{{ invoice.attempt_count }}</td>
                 <td>{{ invoice['stripe_decline_code'] or '' }}</td>
-                <td>{{ invoice['next_payment_attempt'] | timestampToDate or ''}}</td>
+                {% if invoice.status == "open" %}
+                <td>{{ invoice.next_payment_attempt | timestampToDate or 'Never'}}</td>
+                {% else %}
+                <td>{{ invoice.next_payment_attempt | timestampToDate or ''}}</td>
+                {% endif %}
               </tr>
               {% endfor %}
             </table>

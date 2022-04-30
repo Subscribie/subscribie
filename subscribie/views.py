@@ -2,7 +2,6 @@ import logging
 from subscribie.auth import check_private_page
 from pathlib import Path
 import jinja2
-from jinja2 import Environment, FileSystemLoader
 from flask import (
     abort,
     Blueprint,
@@ -20,9 +19,10 @@ from .models import Company, Plan, Integration, Page, Category, Setting
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
-from subscribie.signals import journey_complete
+from subscribie.signals import journey_complete, signal_payment_failed
 from subscribie.receivers import (
     receiver_send_shop_owner_new_subscriber_notification_email,
+    receiver_send_subscriber_payment_failed_notification_email,
 )
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
@@ -35,8 +35,11 @@ log = logging.getLogger(__name__)
 bp = Blueprint("views", __name__, url_prefix=None)
 
 
-# Connect recievers to signals
+# Connect signals to recievers
 journey_complete.connect(receiver_send_shop_owner_new_subscriber_notification_email)
+signal_payment_failed.connect(
+    receiver_send_subscriber_payment_failed_notification_email
+)
 
 
 @bp.before_app_first_request
@@ -205,11 +208,12 @@ def custom_page(path):
         {% endblock body %}
     """
     try:
-        rtemplate = Environment(
-            loader=FileSystemLoader(str(current_app.config["THEME_PATH"]))
+        rtemplate = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"]))
         ).from_string(page_header + body + page_footer)
     except jinja2.exceptions.TemplateAssertionError as e:
-        return f"Page needs updating: {e}"
+        log.error(f"Error updating custom page: {e}")
+        return "Unable to update page. We have been notified. Sorry about that!", 500
 
     company = Company.query.first()
     integration = Integration.query.first()

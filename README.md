@@ -12,9 +12,23 @@
 #### Open Source subscription billing and management
 
 
+
 ## Demo
-https://footballclub.subscriby.shop/ 
-![image](https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png)
+https://footballclub.subscriby.shop/
+<a href="https://footballclub.subscriby.shop/" target="_blank">
+<img src="https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png" /></a>
+
+## Video Demos 📹 😎
+
+<details>
+  <summary>View video demos</summary>
+  
+  ### subscriber-Ordering-recurring-plan
+  https://user-images.githubusercontent.com/1718624/162085566-eff392b1-ae9e-4ff1-a3f7-2c5a2e2b7c5a.mp4
+
+
+</details>
+
 
 
 ## What does this project do?
@@ -61,6 +75,9 @@ Quickly set-up a subscription site which can:
 - Pause subscriptions ✔️
 - Cancel active subscriptions ✔️
 - Refund individual transactions ✔️
+- View failed and failing payments ✔️
+- As a subscriber, I am notified if a payment fails ✔️
+- As a subscriber, I can pay outstanding/failed payments directly from my dashboard ✔️
 - Charge customers ad-hoc outside of their subscription (e.g. chrage for ad-hoc additonal support) ✔️ 
 - Create private plans which are hidden from the main shop ✔️
 - Create subscription payment links which I can send to people to sign up to ✔️
@@ -221,7 +238,9 @@ The test suite needs to listen to these events locally when running tests.
 
 tldr: 
 1. Install the stripe cli
-2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
+2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
+
+> For testing failed payments using [test cards table](https://stripe.com/docs/testing), the test card `4000000000000341` is especially useful because the cards in the previous table can’t be attached to a Customer object, but `4000000000000341` can be (and will fail which is useful for testing failed subscription payments such as `insufficient_funds`).
 
 ## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
 > Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
@@ -231,7 +250,7 @@ If you're doing local development, then you need Stripe to send you the test pay
 2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
 3. Run
   ``` 
-  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
+  stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook
    ```
    You will see:
    ```

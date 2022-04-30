@@ -39,6 +39,7 @@
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
     <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription since starting your shop.</p>
     <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers') }}">people</a> buy a one-off item from your shop.</p>
+    <p><a href="/" class="btn btn-success mb-2 mt-2" style="color: white" target="_blank">View my Shop</a></p>
   </div>
 
 
@@ -200,6 +201,15 @@
               <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.export_transactions', csv="") }}">
                   Export Transactions
+              </a>
+          </div>
+          <div class="px-3 py-3 my-3">
+              <p class="card-subtitle mb-3 text-muted">
+                  View Invoices which have failed all automated retries.
+              </p>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.failed_invoices') }}">
+                  Failed Invoices
               </a>
           </div>
         </div>

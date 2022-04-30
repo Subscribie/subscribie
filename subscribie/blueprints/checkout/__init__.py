@@ -36,7 +36,7 @@ from subscribie.utils import (
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
-from subscribie.signals import journey_complete
+from subscribie.signals import journey_complete, signal_payment_failed
 from subscribie.email import send_welcome_email
 from subscribie.notifications import newSubscriberEmailNotification
 import stripe
@@ -637,7 +637,7 @@ def stripe_webhook():
             log.info(eventObj)
             personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
             personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
-            # Notify if payment_failed event was related to a Subscription charge
+            # Notify Shop owner if payment_failed event was related to a Subscription charge # noqa: E501
             if eventObj["charges"]["data"][0]["description"] == "Subscription update":
                 emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
                 The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
@@ -652,6 +652,9 @@ def stripe_webhook():
                 msg["TO"] = email
                 msg.set_content(emailBody)
                 msg.queue()
+            # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
+            # so that receivers (such as notify Subscriber) are notified
+            signal_payment_failed.send(stripe_event=eventObj)
         except Exception as e:
             log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
         return "OK", 200

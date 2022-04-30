@@ -36,9 +36,14 @@ test.describe("Subscribie tests:", () => {
       //page.setDefaultTimeout(3000);
       let contentStripeConnect = await page.evaluate(() => document.body.textContent);
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
+      expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
+
+      // deleting connect account id before configuring stripe
+      await page.goto('/admin/delete-connect-account');
+      await page.goto('/admin/dashboard');
+      console.log('deleting connect account id');
 
       // Start Stripe connect onboarding
-      expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
       await page.goto('/admin/connect/stripe-connect');
       await page.click('.btn-success');
 
@@ -184,5 +189,6 @@ test.describe("Subscribie tests:", () => {
   // 1. Transacion filter by name and plan title
   // 2. 2.A pause, resume and 2.B cancel subscription test. 
   order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
+
 });
 

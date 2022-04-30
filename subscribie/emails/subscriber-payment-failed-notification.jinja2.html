@@ -1,0 +1,13 @@
+Hi {{ subscriber_first_name or '' }},<br />
+
+<p>This is a message from {{ company.name }}.</p>
+
+<p>The system says a payment collection failed.</p>
+
+<p>The system gave the following reason: "{{ failure_message }} / {{ failure_code }}."</p>
+
+<p>Please could you log into <a href="{{ subscriber_login_url }}">your account</a> where you can retry payments (under 'Failed Invoices').<p>
+
+<p>If you need to, you can also change your payment details (under 'Payment Settings').</p>
+
+<p>Thank you!</p>

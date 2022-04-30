@@ -21,7 +21,7 @@ jobs:
       - name: testing stripe production webhooks
         run: |
           set -e
-          curl -v -H 'Content-Type: application/json' ${{ secrets.PROD_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
+          curl -v -H 'Content-Type: application/json' ${{ secrets.PROD_ANNOUNCER }} -d '{"stripe_connect_account_id":0, "site_url": "example.com"}' | grep 'example.com'
           if [ $? == '0' ]
           then 
             echo "production stripe webhook is working"
@@ -33,7 +33,8 @@ jobs:
       - name: testing stripe test webhooks
         run: |
           set -e
-          curl -v -H 'Content-Type: application/json' ${{ secrets.TEST_ANNOUNCER }} -d '{}' | grep 'Stripe connect account added or updated' 
+          curl -v -H 'Content-Type: application/json' ${{ secrets.TEST_ANNOUNCER }} -d '{"stripe_connect_account_id":0, "site_url": "example.com"}' | grep 'example.com'
+
           if [ $? == '0' ]
           then 
             echo "testing stripe webhook is working"
