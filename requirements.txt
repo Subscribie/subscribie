@@ -14,7 +14,6 @@ pytest
 Flask-SQLAlchemy==2.5.1
 Flask-Migrate==3.0.1
 python-dotenv==0.13.0
-click==7.1.2
 pyjwt[crypto]
 py-auth-header-parser==1.0.2
 pydantic==1.6.2
