@@ -1,6 +1,10 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 
-# Subscribie  - Collect recurring payments easily 
+# Subscribie  - Collect recurring payments easily
+
+**Subscribie** helps you automatically collect money from your customers, clients and members, without the hassle of manual payments. Save time by having people signup themselves, and easily track payments.
+
+You don't need to be technical, and can integrate it with your existing business by [creating your account](https://subscribie.co.uk/).
 
 - [Features](#features)
 - [Demo & Hosting](#demo--hosting)
@@ -10,7 +14,6 @@
   - [Architecture Overview](#architecture)
   - [Application server](#application-server-uwsgi)
 #### Open Source subscription billing and management
-
 
 
 ## Demo
