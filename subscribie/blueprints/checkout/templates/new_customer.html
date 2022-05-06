@@ -129,7 +129,7 @@
               <p class="py-3 body-lg">{{ plan.trial_period_days }} days free, then</p>
               {% endif %}
               {% if plan.requirements.instant_payment %}
-                <p class="py-2"><span class="body-lg">Pay today:</span><span class="p-1 bg-success text-white rounded ml-2">{{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
+                <p class="py-2"><span class="body-lg">Upfront cost:</span><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
               {% endif %}
 
               {% if plan.requirements.subscription %}
