@@ -1,0 +1,22 @@
+name: remove pr preview
+on: 
+  pull_request:
+    types: [closed]
+
+jobs:
+  Delete:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: remove pr preview
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+        run: |
+          set -x
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.DOKKU_HOST }}>> ~/.ssh/known_hosts
+          eval `ssh-agent -s` 
+          ssh-add - <<< "$SSH_PRIVATE_KEY"
+          echo deleting dokku app ${{ github.head_ref }}
+          ssh dokku@$DOKKU_HOST -C "dokku -- --force apps:destroy ${{ github.head_ref }}"
