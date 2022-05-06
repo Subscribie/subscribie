@@ -6,9 +6,8 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <link rel="stylesheet" href="/static/style.css">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
-
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.0.0.js" integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo=" crossorigin="anonymous"></script>
 {% if custom_code != "None" %}
 <!-- custom code -->
   {{ custom_code }}
@@ -53,8 +52,7 @@
 <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
 
 <!-- color picker -->
-<script src="https://code.jquery.com/jquery-3.0.0.js"></script>
-    
+<script src="https://code.jquery.com/jquery-3.0.0.js" integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo=" crossorigin="anonymous"></script>
 
 </head>
 
@@ -105,7 +103,7 @@
       </ul>
 
       <ul class="navbar-nav mt-2 mt-lg-0">
-        {% if g.user %}
+        {% if g.user or g.subscriber %}
 
         {% if ns.hasPrivatePages %}
           <div class="dropdown nav-item">
@@ -125,7 +123,10 @@
             </div>
           </div>
         {% endif %}
+        {% endif %}
 
+
+        {% if g.user %}
         <li class="nav-item">
           <a class="btn-link mb-3" href="/admin/dashboard">Dashboard</a>
         </li>
@@ -133,6 +134,15 @@
         <li class="nav-item">
           <a class="btn-outlined" href="/auth/logout">Logout</a>
         </li>
+        {% elif g.subscriber %}
+        <li class="nav-item">
+          <a class="btn-link mb-3" href="/account">Account</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="btn-outlined" href="/account/logout">Logout</a>
+        </li>
+
         {% else %}
         <li class="nav-item">
           <a class="btn-outlined" href="{{ url_for('subscriber.login') }}" title="Subscriber login">Subscriber Login</a>
@@ -165,8 +175,12 @@
     
     {% if g.user %}
       <a class="body-lg" href="/auth/logout">Logout</a>
+    {% elif g.subscriber %}
+      <a class="body-lg" href="/account/logout">Logout</a>
     {% else %}
       <a href="{{ url_for('auth.login') }}" class="body-lg">Shop owner login</a>
+      or
+      <a href="{{ url_for('subscriber.login') }}" class="body-lg">Subscriber login</a>
     {% endif %}
     
     <br />

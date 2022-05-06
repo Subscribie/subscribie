@@ -89,7 +89,9 @@
                     <!-- plan image -->
                     <div class="form-group">
                       <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
-                      <input type="file" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
+                      <p> Supported image upload extensions: <br> 
+                          jpg, jpe, jpeg, png, gif, svg, bmp</p>
+                      <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
                       {% if plan.primary_icon %}
                       <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
                       <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">

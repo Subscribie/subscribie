@@ -329,10 +329,13 @@ body {
           transform: scale(1.05);
 }
 
-.plan-selling-points i, .fa-check-circle {
+.plan-selling-points, .fa-check-circle {
   color: var(--primary-color-darken);
 }
+.card-header {
+  background-color: var(--primary);
 
+}
 .pricing-plan .card-footer {
   background-color: white;
   border: none;
