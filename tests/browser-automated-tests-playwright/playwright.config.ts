@@ -5,7 +5,7 @@ import { PlaywrightTestConfig } from '@playwright/test';
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_SLOWMO = parseInt(process.env.PLAYWRIGHT_SLOWMO);
-
+const PLAYWRIGHT_GLOBALTEARDOWN = process.env.PLAYWRIGHT_GLOBALTEARDOWN;
 const { devices } = require('@playwright/test');
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config: PlaywrightTestConfig = {
@@ -13,8 +13,8 @@ const config: PlaywrightTestConfig = {
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
   retries: 2,
-  workers: 3,
-  globalTeardown: './delete-connect-account-id', 
+  workers: 1,
+  globalTeardown: PLAYWRIGHT_GLOBALTEARDOWN,
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
