@@ -1,3 +1,15 @@
+# v0.1.83 (Fri May 06 2022)
+
+#### 🐛 Bug Fix
+
+- #878 adding github action to remove pr preview after merge [#880](https://github.com/Subscribie/subscribie/pull/880) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.82 (Thu May 05 2022)
 
 #### ⚠️ Pushed to `master`
