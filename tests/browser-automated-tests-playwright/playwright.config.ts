@@ -13,7 +13,7 @@ const config: PlaywrightTestConfig = {
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
   retries: 2,
-  workers: 1,
+  workers: 3,
   globalTeardown: PLAYWRIGHT_GLOBALTEARDOWN,
   use: {
 
