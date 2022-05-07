@@ -1,3 +1,16 @@
+# v0.1.84 (Sat May 07 2022)
+
+#### 🐛 Bug Fix
+
+- adding back the 3 workers at a time [#883](https://github.com/Subscribie/subscribie/pull/883) ([@joeltejeda](https://github.com/joeltejeda))
+- #881 using globalteardown as an env variable to enable and disable it [#883](https://github.com/Subscribie/subscribie/pull/883) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.83 (Fri May 06 2022)
 
 #### 🐛 Bug Fix
