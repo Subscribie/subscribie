@@ -82,7 +82,7 @@ def on_each_request():
             "official_name": countryObj.official_name,
         }
         session["country"] = country
-        session["country_code"] = country.alpha_2
+        session["country_code"] = countryObj.alpha_2
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
