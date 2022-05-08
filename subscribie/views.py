@@ -28,6 +28,7 @@ from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
+import pycountry
 
 log = logging.getLogger(__name__)
 
@@ -52,6 +53,37 @@ def migrate_database():
 
 @bp.before_app_request
 def on_each_request():
+    # Detect country code if present in the request from proxy
+    # the requesting country must be detected by the upstream
+    # proxy, and that proxy must inject the header 'Geo-Country-Code'
+    # into the request in order for Subscribie to read it.
+    # https://github.com/Subscribie/subscribie/issues/886
+    # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
+    country = None
+    geo_country_code_header = request.headers.get("Geo-Country-Code")
+    try:
+        country = pycountry.countries.get(alpha_2=geo_country_code_header)
+    except LookupError as e:  # noqa: F841
+        log.debug("Unable to get geo country from request header: {e}")
+
+    if country is not None:
+        session["country"] = country
+        session["country_code"] = country.alpha_2
+    else:
+        # Default to default country selection
+        # TODO As a shop owner I can set the default country of my shop
+        countryObj = pycountry.countries.get(alpha_2="GB")
+        country = {
+            "alpha_2": countryObj.alpha_2,
+            "alpha_3": countryObj.alpha_3,
+            "flag": countryObj.flag,
+            "name": countryObj.name,
+            "numeric": countryObj.numeric,
+            "official_name": countryObj.official_name,
+        }
+        session["country"] = country
+        session["country_code"] = country.alpha_2
+
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
         category = Category()

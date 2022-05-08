@@ -185,6 +185,13 @@
     
     <br />
     <a href="#" class="btn-outlined mt-3">Scroll back to top</a>
+
+    {% if 'country' in session %}
+    <div id="country-region-select" class="mt-2" style="text-align: left">
+      Country {{ session['country']['flag'] }}
+    </div>
+    {% endif %}
+
   </footer>
   {# end if not inside iframe_embeded, show footer #} 
   {% endif %}
