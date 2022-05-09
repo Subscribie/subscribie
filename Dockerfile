@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM python:3.6.8-alpine3.9
+FROM python:3.9-alpine
 
 WORKDIR /usr/src/app
 RUN pip install --upgrade pip
