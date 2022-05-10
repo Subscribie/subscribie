@@ -104,6 +104,7 @@ jobs:
           PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
           PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
+          PLAYWRIGHT_GLOBALTEARDOWN: "./delete-connect-account-id"
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
