@@ -1,3 +1,19 @@
+# v0.1.85 (Sat May 14 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch '886-store-client-request-country-in-request-header' of github.com:Subscribie/subscribie into 886-store-client-request-country-in-request-header [#887](https://github.com/Subscribie/subscribie/pull/887) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Fix #888 upgrade to python 3.10 [#889](https://github.com/Subscribie/subscribie/pull/889) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.84 (Sat May 07 2022)
 
 #### 🐛 Bug Fix
