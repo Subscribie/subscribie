@@ -59,6 +59,7 @@ def on_each_request():
     # into the request in order for Subscribie to read it.
     # https://github.com/Subscribie/subscribie/issues/886
     # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
+    countryObj = None
     geo_country_code_header = request.headers.get("Geo-Country-Code")
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
