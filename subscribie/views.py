@@ -59,16 +59,24 @@ def on_each_request():
     # into the request in order for Subscribie to read it.
     # https://github.com/Subscribie/subscribie/issues/886
     # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
-    country = None
     geo_country_code_header = request.headers.get("Geo-Country-Code")
     try:
-        country = pycountry.countries.get(alpha_2=geo_country_code_header)
+        countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
     except LookupError as e:  # noqa: F841
         log.debug("Unable to get geo country from request header: {e}")
 
-    if country is not None:
+    # Dynamic country detection
+    if countryObj is not None:
+        country = {
+            "alpha_2": countryObj.alpha_2,
+            "alpha_3": countryObj.alpha_3,
+            "flag": countryObj.flag,
+            "name": countryObj.name,
+            "numeric": countryObj.numeric,
+            "official_name": countryObj.official_name,
+        }
         session["country"] = country
-        session["country_code"] = country.alpha_2
+        session["country_code"] = countryObj.alpha_2
     else:
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
