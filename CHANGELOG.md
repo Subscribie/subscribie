@@ -1,3 +1,16 @@
+# v0.1.86 (Sun May 15 2022)
+
+#### 🐛 Bug Fix
+
+- #886 default countryObj to None [#892](https://github.com/Subscribie/subscribie/pull/892) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #886 dynamic country detection [#892](https://github.com/Subscribie/subscribie/pull/892) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.85 (Sat May 14 2022)
 
 #### 🐛 Bug Fix
