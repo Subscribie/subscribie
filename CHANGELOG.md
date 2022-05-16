@@ -1,3 +1,15 @@
+# v0.1.87 (Mon May 16 2022)
+
+#### 🐛 Bug Fix
+
+- removing official name attribute [#894](https://github.com/Subscribie/subscribie/pull/894) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.86 (Sun May 15 2022)
 
 #### 🐛 Bug Fix
