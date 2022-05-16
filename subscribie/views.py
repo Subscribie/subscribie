@@ -74,7 +74,6 @@ def on_each_request():
             "flag": countryObj.flag,
             "name": countryObj.name,
             "numeric": countryObj.numeric,
-            "official_name": countryObj.official_name,
         }
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
@@ -88,7 +87,6 @@ def on_each_request():
             "flag": countryObj.flag,
             "name": countryObj.name,
             "numeric": countryObj.numeric,
-            "official_name": countryObj.official_name,
         }
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
