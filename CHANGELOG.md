@@ -1,3 +1,15 @@
+# v0.1.88 (Mon May 16 2022)
+
+#### 🐛 Bug Fix
+
+- filtering subscription for trialing and active [#897](https://github.com/Subscribie/subscribie/pull/897) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.87 (Mon May 16 2022)
 
 #### 🐛 Bug Fix
