@@ -142,8 +142,9 @@ def create_app(test_config=None):
                 payment_provider = PaymentProvider()
                 database.session.add(payment_provider)
                 database.session.commit()
-        except sqlalchemy.exc.OperationalError as e:
+        except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.ProgrammingError) as e:
             # Allow to fail until migrations run (flask upgrade requires app reboot)
+            log.debug("Unable to set initial payment provider")
             log.debug(e)
 
         load_theme(app)
