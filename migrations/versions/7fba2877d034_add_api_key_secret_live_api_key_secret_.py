@@ -19,10 +19,10 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("setting") as batch_op:
         batch_op.add_column(
-            sa.Column("api_key_secret_live", sa.String(), nullable=True)
+            sa.Column("api_key_secret_live", sa.String(255), nullable=True)
         )
         batch_op.add_column(
-            sa.Column("api_key_secret_test", sa.String(), nullable=True)
+            sa.Column("api_key_secret_test", sa.String(255), nullable=True)
         )
 
 

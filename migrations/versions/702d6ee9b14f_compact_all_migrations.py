@@ -240,7 +240,7 @@ def upgrade():
         op.create_table(
             "subscription",
             sa.Column("id", sa.Integer(), nullable=False),
-            sa.Column("uuid", sa.String(255), nullable=True),
+            sa.Column("uuid", sa.String(255), nullable=True, index=True),
             sa.Column("sku_uuid", sa.String(255), nullable=True),
             sa.Column("gocardless_subscription_id", sa.String(255), nullable=True),
             sa.Column("person_id", sa.Integer(), nullable=True),
