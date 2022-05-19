@@ -7,10 +7,10 @@ PYTHON_LOG_LEVEL = os.getenv('PYTHON_LOG_LEVEL', logging.INFO)
 logging.basicConfig(level=PYTHON_LOG_LEVEL)
 
 def load():
-    paths = [os.getenv('PYTHON_PATH_INJECT')]
-    for p in paths:
-        logging.info(f"Injecting python path {p}")
-        sys.path.insert(0, p)
+    path_inject = os.getenv('PYTHON_PATH_INJECT')
+    if path_inject is not None:
+        logging.info(f"Injecting python path {path_inject}")
+        sys.path.insert(0, path_inject)
 
 load()
 

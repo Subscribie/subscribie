@@ -1044,8 +1044,11 @@ def subscribers():
     query = database.session.query(Person).execution_options(include_archived=True)
 
     if show_active:
-        query = query.filter(Person.subscriptions.any())
-
+        query = query.filter(Person.subscriptions)
+        query = query.where(
+            (Subscription.stripe_status == "active")
+            | (Subscription.stripe_status == "trialing")
+        )
     people = query.order_by(desc(Person.created_at))
 
     return render_template(

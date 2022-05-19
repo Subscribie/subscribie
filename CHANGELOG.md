@@ -1,3 +1,69 @@
+# v0.1.88 (Mon May 16 2022)
+
+#### 🐛 Bug Fix
+
+- filtering subscription for trialing and active [#897](https://github.com/Subscribie/subscribie/pull/897) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.87 (Mon May 16 2022)
+
+#### 🐛 Bug Fix
+
+- removing official name attribute [#894](https://github.com/Subscribie/subscribie/pull/894) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.86 (Sun May 15 2022)
+
+#### 🐛 Bug Fix
+
+- #886 default countryObj to None [#892](https://github.com/Subscribie/subscribie/pull/892) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #886 dynamic country detection [#892](https://github.com/Subscribie/subscribie/pull/892) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.85 (Sat May 14 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch '886-store-client-request-country-in-request-header' of github.com:Subscribie/subscribie into 886-store-client-request-country-in-request-header [#887](https://github.com/Subscribie/subscribie/pull/887) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Fix #888 upgrade to python 3.10 [#889](https://github.com/Subscribie/subscribie/pull/889) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.84 (Sat May 07 2022)
+
+#### 🐛 Bug Fix
+
+- adding back the 3 workers at a time [#883](https://github.com/Subscribie/subscribie/pull/883) ([@joeltejeda](https://github.com/joeltejeda))
+- #881 using globalteardown as an env variable to enable and disable it [#883](https://github.com/Subscribie/subscribie/pull/883) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.83 (Fri May 06 2022)
 
 #### 🐛 Bug Fix
