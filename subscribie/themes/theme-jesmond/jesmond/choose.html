@@ -7,7 +7,7 @@
 
     <div class="container">
       <div class="hero-content py-5 px-0 px-sm-4 ">
-        <h1 class="title-1">{{ company.name }}</h1>
+        <h1 class="title-1">{{ company.name }}{{ session.get('currency_code') }}</h1>
         {% if company.slogan is sameas None or company.slogan == "None"  %}
             <p></p>
         {% else %}
@@ -63,16 +63,16 @@
                   <div class="my-md-4">
                     <span class="text">
                       {% if plan.trial_period_days > 0 %}Then {% endif %}
-                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
+                      <span class="price">{{ plan.interval_amount | currencyFormat }}</span>/{{ plan.interval_unit }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
-                      <span class="text">Upfront cost: {{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</span>
+                    <span class="text">Upfront cost: {{ plan.sell_price | currencyFormat }}</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
+                      <span class="price">{{ plan.sell_price | currencyFormat }}</span>/One-off
                     </span>  <br>
                     <span class="text">No subscription</span>
                   </div>
