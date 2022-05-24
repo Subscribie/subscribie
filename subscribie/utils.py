@@ -8,7 +8,7 @@ from subscribie.tasks import background_task
 log = logging.getLogger(__name__)
 
 
-def get_default_currency_code():
+def get_currency_code():
     from subscribie.models import Setting
 
     setting = Setting.query.first()
