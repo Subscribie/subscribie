@@ -1,7 +1,7 @@
 from . import admin
 from subscribie.auth import login_required
 from subscribie.models import Transaction
-from subscribie.utils import get_default_currency_code
+from subscribie.utils import get_currency_code
 from flask import request, Response, jsonify
 import logging
 
@@ -37,7 +37,7 @@ def export_transactions():
                     "transaction_date": transaction.created_at,
                     "plan_title": plan_title,
                     "amount": transaction.amount / 100,
-                    "currency": get_default_currency_code(),  # TODO get and store during payment_intent event # noqa: E501
+                    "currency": get_currency_code(),  # TODO get and store during payment_intent event # noqa: E501
                     "payment_status": transaction.payment_status,
                     "given_name": transaction.person.given_name,
                     "family_name": transaction.person.family_name,
