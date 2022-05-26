@@ -87,7 +87,6 @@
   {{ custom_code }}
 <!-- end custom code -->
 {% endif %}
-
     <title>{% block title %}{% endblock %} | {{ company.name }}</title>
 </head>
 <body>
@@ -96,7 +95,7 @@
  <div class="header header-bg">
         <div class="row nav-menu">
             <div class="col-sm-12 ">
-                <nav class="navbar navbar-expand-custom navbar-light d-flex justify-content-between flex-wrap">
+                <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between flex-wrap">
                     <a class="navbar-brand text-white" href="/">Subscribie</a>
                     <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
                             class="navbar-toggler"
@@ -105,42 +104,37 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav w-100 d-flex justify-content-end align-items-center ">
-                            <li class="nav-item w-auto active">
-                                <a class="nav-link text-white" href="/">Home <span class="sr-only">(current)</span></a>
+                            <div class="dropdown nav-item w-auto active">
+                              <li onclick="myFunction()" class="dropbtn nav-link text-white">Home <i class="arrow down dropbtn"> </i></li>
+                              <div id="myDropdown" class="dropdown-content">
+                                    <li class="nav-item w-auto active">
+                                       <a class="nav-link text-white" href="/">Home <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item w-auto">
+                                        <a class="nav-link text-white" href="/#features">Features</a>
+                                    </li>
+                                    <li class="nav-item w-auto">
+                                        <a class="nav-link text-white" href="/#why-subscribie">Why Subscribie?</a>
+                                    </li>
+                                    <li class="nav-item w-auto">
+                                        <a class="nav-link text-white" href="/#revenue-calculator">Revenue Calculator</a>
+                                    </li>
+                              </div>
+                            </div>                      
+                            <li class="nav-item w-auto">
+                                <a class="nav-link text-white" href="/start-building">Register</a>
                             </li>
                             <li class="nav-item w-auto">
                                 <a class="nav-link text-white" href="/page/pricing">Pricing</a>
                             </li>
                             <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/shop-owner-login">Login</a>
-                            </li>
-                            /
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/start-building">Register</a>
+                                <a class="nav-link text-white" href="/page/faq">FAQ</a>
                             </li>
                             <li class="nav-item w-auto">
                                 <a class="nav-link text-white" href="https://subscriptionwebsitebuilder.co.uk/blog">Blog</a>
                             </li>
                             <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/faq">FAQ</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/features">Features</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/subscription-billing">Subscription Billing</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/choose-subscribie">Why Subscribie?</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/#revenue-calculator">Revenue Calculator</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/collect-membership-fees-online">Collect Membership Fees Online</a>
-                            </li>
-                            <li class="nav-item w-auto">
-                                <a class="nav-link text-white" href="/page/subscription-software">Subscription Software</a>
+                                <a class="nav-link text-white" href="/shop-owner-login">Login</a>
                             </li>
                         </ul>
                     </div>
@@ -195,6 +189,26 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
 
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
 </body>
 </html>
