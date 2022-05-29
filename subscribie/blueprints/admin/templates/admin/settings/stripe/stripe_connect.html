@@ -25,12 +25,20 @@
           </p>
           <p>The country in which the account holder resides, or in which the business is legally established:</p>
           <select id="country_code" class="form-control" style="margin-bottom: 2em">
-            {% if default_currency %}
-            <option value="{{ default_currency }}" data-currency="{{ default_currency }}" selected>{{ default_currency }}</option>
-            {% else %}
+            {% if default_currency == "GBP" %}
+              <option value="{{ default_currency }}" data-currency="{{ default_currency }}" selected>United Kingdom</option>
+            {% endif %}
+
+            {% if default_currency == "USD" %}
+              <option value="{{ default_currency }}" data-currency="{{ default_currency }}" selected>United States</option>
+            {% endif %}
+
+            {% if default_currency != "GBP" %}
               <option value="GB" data-currency="GBP" selected>United Kingdom</option>
             {% endif %}
-            <option value="US" data-currency="USD">United States</option>
+            {% if default_currency != "USD" %}
+              <option value="US" data-currency="USD">United States</option>
+            {% endif %}
           </select>
 
           {# Only allow activated shops to activate Stripe
