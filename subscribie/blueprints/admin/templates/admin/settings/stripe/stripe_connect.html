@@ -26,44 +26,30 @@
           <p>The country in which the account holder resides, or in which the business is legally established:</p>
           <select id="country_code" class="form-control" style="margin-bottom: 2em">
             {% if default_currency %}
-              <option value="GB" data-currency="GBP" selected>{{ default_currency }}</option>
+            <option value="{{ default_currency }}" data-currency="{{ default_currency }}" selected>{{ default_currency }}</option>
             {% else %}
               <option value="GB" data-currency="GBP" selected>United Kingdom</option>
             {% endif %}
             <option value="US" data-currency="USD">United States</option>
           </select>
 
-          <button id="submit" class="btn btn-success mb-4">
-          Setup payouts on Stripe
-          {% if payment_provider.stripe_livemode %}
-            (live mode)
           {# Only allow activated shops to activate Stripe
-             in live mode #}
-          {% endif %}
-          {% if shop_activated %}
-
-            <button id="submit" class="btn btn-success">
-            Setup payouts on Stripe
-            {% if payment_provider.stripe_livemode %}
-              (live mode)
-            {% else %}
-              (test mode)
-            {% endif %}
-            </button>
-
-          {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
-            {# Only require non-already stripe connected sites to activate via human operator #}
-            <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
+            in live mode #}
+         {% if shop_activated %}
+           <button id="submit" class="btn btn-success">
+           Setup payouts on Stripe
+           {% if payment_provider.stripe_livemode %}
+             (live mode)
+           {% else %}
+             (test mode)
+           {% endif %}
+           </button>
+           {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
+           {# Only require non-already stripe connected sites to activate via human operator #}
+           <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
 
           {% else %}
-            <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
-          {% endif %}
-
-
-          {% if account.payouts_enabled is sameas False and payment_provider.stripe_livemode is sameas True %}
-            <div class="alert alert-warning" role="alert">
-              Please complete setting up Stripe in live mode.
-            </div>
+           <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
           {% endif %}
 
          {% if account.payouts_enabled %}
@@ -137,7 +123,6 @@
           <h3>Live / Test mode</h3>
           <p>Switch between live and test mode.</p>
           <p><em>Live</em> means use real money. <em>Test</em> is pretend money.</p>
-
 
           <div class="form-check form-check-inline">
             <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1"
