@@ -873,6 +873,19 @@ def stripe_connect():
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
     database.session.commit()
+    countryToCurrency = [
+        {
+            "country_code": "GB",
+            "country_name": "United Kingdom",
+            "currency_code": "GBP",
+        },
+        {
+            "country_code": "US",
+            "country_name": "United States of America",
+            "currency_code": "USD",
+        },
+        {"country_code": "FR", "country_name": "France", "currency_code": "EUR"},
+    ]
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
         stripe_onboard_path=url_for("admin.stripe_onboarding"),
@@ -882,6 +895,7 @@ def stripe_connect():
         default_currency=setting.default_currency,
         shop_activated=shop_activated,
         saas_activate_account_url=saas_activate_account_url,
+        countryToCurrency=countryToCurrency,
     )
 
 
@@ -896,6 +910,7 @@ def stripe_onboarding():
     default_currency = request.json.get("default_currency")
 
     # Set shop's default currency
+    shop_is_changing_default_currency = False
     setting = Setting.query.first()
     setting.default_currency = str(default_currency)
     database.session.commit()
@@ -905,12 +920,26 @@ def stripe_onboarding():
         log.info("Trying if there's an existing stripe account")
         account = get_stripe_connect_account()
         log.info(f"Yes, stripe account found: {account.id}")
+        log.info("Checking if account and chosen default_currency match")
+        if account["default_currency"] != request.json["default_currency"].lower():
+            breakpoint()
+            log.warning(
+                f"Preparing to dissociate existing Stripe account, and create new Stripe account with different default_currency (changing from default_currency {account['default_currency']} to {request.json['default_currency'].lower()}"  # noqa: E501
+            )
+            shop_is_changing_default_currency = True
+            raise AttributeError
     except (
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
         AttributeError,
     ):
-        log.info("Could not find a stripe account, Creating stripe account")
+        log.warning(
+            "Could not find a valid Stripe account, Creating new Stripe account"
+        )
+        if shop_is_changing_default_currency:
+            log.info(
+                "Creating new Stripe account reason: shop_is_switching_default_currency"
+            )
         account = create_stripe_connect_account(company, country_code, default_currency)
         if payment_provider.stripe_livemode:
             payment_provider.stripe_live_connect_account_id = account.id
