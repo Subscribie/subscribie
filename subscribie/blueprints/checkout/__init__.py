@@ -592,6 +592,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         is None
     ):
         transaction = Transaction()
+        transaction.currency = data["currency"]
         transaction.amount = data["amount"]
         transaction.payment_status = (
             "paid" if data["status"] == "succeeded" else data["status"]
