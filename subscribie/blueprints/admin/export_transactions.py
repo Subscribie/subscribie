@@ -30,7 +30,9 @@ def export_transactions():
                 plan_title = None
                 subscription_uuid = None
                 subscription_status = None
-
+            # Backward compatibility to GB only shops
+            if transaction.currency is None:
+                transaction.currency = "gbp"
             rows.append(
                 {
                     "transaction_date": transaction.created_at,
