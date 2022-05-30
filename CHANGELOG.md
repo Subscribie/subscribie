@@ -1,3 +1,22 @@
+# v0.1.89 (Mon May 30 2022)
+
+#### 🐛 Bug Fix
+
+- #900 restore collect-membership-fees.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 myFunction -> toggleDropdown [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 "Register -> Start now" [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore "Why Subsctibie" to footer [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore subscriptionbilling.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore subscriptionsoftware.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restructure builder theme [#901](https://github.com/Subscribie/subscribie/pull/901) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.88 (Mon May 16 2022)
 
 #### 🐛 Bug Fix
