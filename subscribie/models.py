@@ -532,6 +532,7 @@ class Transaction(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
+    currency = database.Column(database.String(), nullable=True)
     amount = database.Column(database.Integer())
     comment = database.Column(database.Text())
     # External id e.g. Stripe or GoCardless id
