@@ -277,7 +277,7 @@ def stripe_create_checkout_session():
     charge = {}
     charge["sell_price"] = plan.sell_price
     charge["interval_amount"] = plan.interval_amount
-    charge["currency"] = get_currency_code()
+    charge["currency"] = get_currency_code(iso_4217=True)
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(

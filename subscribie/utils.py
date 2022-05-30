@@ -8,14 +8,21 @@ from subscribie.tasks import background_task
 log = logging.getLogger(__name__)
 
 
-def get_currency_code():
+def get_currency_code(iso_4217=False):
     from subscribie.models import Setting
+
+    """Return either the shop default currency symbol (e.g. £, $)
+       Or currency code (e.g. GBP, USD) if iso_4217 is True
+    """
 
     setting = Setting.query.first()
     default_currency = setting.default_currency
     if default_currency is None:
         default_currency = "GBP"
-    currency_code = CurrencySymbols.get_symbol(default_currency)
+    if iso_4217:
+        currency_code = default_currency
+    else:
+        currency_code = CurrencySymbols.get_symbol(default_currency)
     return currency_code
 
 
