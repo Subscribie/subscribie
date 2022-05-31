@@ -1,3 +1,16 @@
+# v0.1.92 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- updating stripe onboarding steps [#906](https://github.com/Subscribie/subscribie/pull/906) ([@joeltejeda](https://github.com/joeltejeda))
+- #905 testing filtering by subscriber name and email [#906](https://github.com/Subscribie/subscribie/pull/906) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.91 (Tue May 31 2022)
 
 #### 🐛 Bug Fix
