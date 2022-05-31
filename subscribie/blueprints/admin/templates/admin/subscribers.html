@@ -26,11 +26,16 @@
        </div>
         <form action="#" method="GET">
         <h4>Search...</h4>
+        {% if request.args.get("subscriber_email") or request.args.get("subscriber_name") %}
+        <div class="alert alert-warning">
+          You currently have a search filter active. <a href="{{ url_for('admin.subscribers') }}">Click here to show all subscribers again</a>.
+        </div>
+        {% endif %}
         <div class="form-group">
           <label for="subscriber_name">Subscriber name:</label>
           <input type="text" name="subscriber_name" id="subscriber_name" class="form-control mb-2" placeholder="Enter subscriber's name..." value="{{ request.args.get("subscriber_name") or '' }}" />
           <label for="plan_title">Subscriber email:</label>
-          <input type="text" name="subscriber_email" id="subscriber_email" class="form-control" placeholder="Enter subscriber's email..." value="{{ request.args.get("subscriber_email") }}" />
+          <input type="text" name="subscriber_email" id="subscriber_email" class="form-control" placeholder="Enter subscriber's email..." value="{{ request.args.get("subscriber_email") or '' }}" />
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
         </form>
