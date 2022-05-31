@@ -1,4 +1,11 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
+[![Recording demo videos](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml)
+[![Update All Sites](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml)
+[![Update Onboarding Site](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml)
+[![testing stripe prod and test webhooks](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml)
+[![Verify Prod Onbording](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml)
+[![Login Emails Sending](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml)
+[![Release](https://github.com/Subscribie/subscribie/actions/workflows/release.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/release.yml)
 
 # Subscribie  - Collect recurring payments easily
 
