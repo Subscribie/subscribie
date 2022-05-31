@@ -1,3 +1,19 @@
+# v0.1.91 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- #886 Shop owner can search by name & email at the same time (inclusive search) [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- close #885 warn shop owner when search filter is applied to subscribers [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #885 keep searched subscriber name/email between searches so shop owner does not need to re-type [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #885 filtering subscribers by name and email [#895](https://github.com/Subscribie/subscribie/pull/895) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.90 (Tue May 31 2022)
 
 #### 🐛 Bug Fix
