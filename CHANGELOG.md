@@ -1,3 +1,15 @@
+# v0.1.90 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- adding workflow badges to the the readme [#904](https://github.com/Subscribie/subscribie/pull/904) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.89 (Mon May 30 2022)
 
 #### 🐛 Bug Fix
