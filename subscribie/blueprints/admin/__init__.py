@@ -1031,14 +1031,13 @@ def subscribers():
     show_active = action == "show_active"
     subscriber_email = request.args.get("subscriber_email", None)
     subscriber_name = request.args.get("subscriber_name", None)
-    filterBy = None
-
-    if subscriber_email:
-        filterBy = Person.email.like(f"%{subscriber_email}%")
-    if subscriber_name:
-        filterBy = Person.full_name.like(f"%{subscriber_name}%")
 
     query = database.session.query(Person).execution_options(include_archived=True)
+
+    if subscriber_email:
+        query = query.where(Person.email.like(f"%{subscriber_email}%"))
+    if subscriber_name:
+        query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
 
     if show_active:
         query = query.filter(Person.subscriptions)
@@ -1047,9 +1046,6 @@ def subscribers():
             | (Subscription.stripe_status == "trialing")
         )
     people = query.order_by(desc(Person.created_at))
-
-    if filterBy is not None:
-        people = people.where(filterBy)
 
     return render_template(
         "admin/subscribers.html", people=people.all(), show_active=show_active
