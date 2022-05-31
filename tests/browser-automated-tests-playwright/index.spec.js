@@ -79,8 +79,8 @@ test.describe("Subscribie tests:", () => {
 
         // Stripe onboarding personal details step
         //const personal_details_content = await page.textContent('.db-ConsumerUITitle');
-        const personal_details_content = await page.textContent('text="Personal details"');
-        if (expect(personal_details_content === 'Personal details')) {
+        const personal_details_content = await page.textContent('text="Verify your personal details"');
+        if (expect(personal_details_content === 'Verify your personal details')) {
           await new Promise(x => setTimeout(x, 1000));
           try {
               await page.fill('#first_name', "Sam");
@@ -100,8 +100,8 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding industry selection
         //const business_details_content = await page.textContent('.db-ConsumerUITitle');
-        const business_details_content = await page.textContent('text="Business details"');
-        if (expect(business_details_content === "Business details")) {
+        const business_details_content = await page.textContent('text="Tell us more about your business"');
+        if (expect(business_details_content === "Tell us more about your buisness")) {
           await new Promise(x => setTimeout(x, 1000));
           await page.click('text="Please select your industry…"');
           await page.click('text="Software"');
