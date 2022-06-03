@@ -448,6 +448,7 @@ class Plan(database.Model, HasArchived):
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
+    currency = database.Column(database.String(), nullable=True)
 
 
 class Category(database.Model):

@@ -259,7 +259,6 @@ def thankyou():
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     data = request.json
-
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
     if settings is not None:
@@ -276,7 +275,10 @@ def stripe_create_checkout_session():
     charge = {}
     charge["sell_price"] = plan.sell_price
     charge["interval_amount"] = plan.interval_amount
-    charge["currency"] = "GBP"
+    if plan.currency:
+        charge["currency"] = plan.currency
+    else:
+        charge["currency"] = "GBP"
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(

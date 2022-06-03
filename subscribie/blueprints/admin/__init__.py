@@ -488,6 +488,8 @@ def edit():
 
     form = PlansForm()
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
+    action = request.args.get("action")
+
     if form.validate_on_submit():
         company = Company.query.first()
         company.name = request.form["company_name"]
@@ -600,7 +602,12 @@ def edit():
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
-    return render_template("admin/edit.html", plans=plans, form=form)
+    return render_template(
+        "admin/edit.html",
+        plans=plans,
+        form=form,
+        action=action,
+    )
 
 
 @admin.route("/add", methods=["GET", "POST"])
@@ -612,12 +619,15 @@ def add_plan():
         database.session.add(draftPlan)
         plan_requirements = PlanRequirements()
         draftPlan.requirements = plan_requirements
-
         draftPlan.uuid = str(uuid.uuid4())
         draftPlan.title = form.title.data[0].strip()
         draftPlan.position = request.form.get("position-0", 0)
         interval_unit = form.interval_unit.data[0].strip()
-
+        plan_currency = form.plan_currency.data[0].strip()
+        if "GBP" in plan_currency or "USD" in plan_currency:
+            draftPlan.currency = plan_currency
+        else:
+            draftPlan.currency = "GBP"
         if form.description.data[0].strip() != "":
             draftPlan.description = form.description.data[0]
         if (
@@ -706,11 +716,13 @@ def add_plan():
 
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
-
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_plan.html", form=form)
+    return render_template(
+        "admin/add_plan.html",
+        form=form,
+    )
 
 
 @admin.route("/delete", methods=["GET"])

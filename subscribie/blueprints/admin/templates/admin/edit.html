@@ -33,9 +33,8 @@
       <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
         <!-- shop details -->
         <div class="card mx-auto col-md-6 mb-3">
-
           <fieldset>
-            <legend>Shop details</legend>
+            <legend>Shop details <a href="{{url_for('admin.edit', action='USD')}}">USD</a> | <a href="{{url_for('admin.edit', action='GBP')}}">GBP</a></legend>
             <div class="form-group">
               {{ render_field(form.company_name, value=company['name'], class="form-control" ) }}
             </div>
@@ -50,6 +49,7 @@
         <div class="container mb-auto mx-auto">
           <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
             {% for plan in plans %}
+            {% if action == "USD" and plan.currency == "USD" %}
             <div class="card">
               <div class="card-header" id="{{ plan.uuid }}">
                   <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">{{ plan.title }}</button>
@@ -116,7 +116,11 @@
                           <label for="interval_amount-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Recurring Amount</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
+                            {% if plan.currency == "USD" %}
+                              <span class="input-group-text">$</span>
+                            {% else %}
                               <span class="input-group-text">£</span>
+                            {% endif %}
                             </div>
                             <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}" {% if plan.interval_amount %} value="{{ plan.interval_amount/ 100 }}" {% endif %} class="form-control" type="number" step="0.01">
                           </div>
@@ -165,7 +169,11 @@
                         <label for="sell_price-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Upfront price</label>
                         <div class="input-group">
                           <div class="input-group-prepend">
-                            <span class="input-group-text">£</span>
+                            {% if plan.currency == "USD" %}
+                              <span class="input-group-text">$</span>
+                            {% else %}
+                              <span class="input-group-text">£</span>
+                            {% endif %}
                           </div>
                           <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} value="{{ plan.sell_price/100 }}" {% endif %} id="sell_price-{{ loop.index0 }}" class="form-control">
                         </div>
@@ -241,6 +249,207 @@
                 </div><!-- end card body -->
               </div><!-- end plan collapse header -->
             </div><!-- end plan cards-->
+            {% elif action == "GBP" and plan.currency != "USD" %}
+            <div class="card">
+              <div class="card-header" id="{{ plan.uuid }}">
+                  <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">{{ plan.title }}</button>
+              </div>
+              <div id="collapse-{{ plan.uuid }}" class="collapse" aria-labelledby="{{ plan.uuid }}">
+                <!-- individual plan form -->
+                <div class="card-body">
+                  <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
+                  <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
+                  <div class="col-lg-12">
+                    {{ form.csrf_token }}
+                    <!-- plan title -->
+                    <div class="form-group">
+                      <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Plan or Product name</label>
+                      <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
+                      <div class="invalid-feedback">
+                        Plan name is required.
+                      </div>
+                    </div>
+                    <!-- end plan title -->
+                    <!-- plan selling points -->
+                    <fieldset class="form-group">
+                      <legend class="col-form-label font-weight-bolder">Product selling points</legend>
+                      {% set ns = namespace(count=0) %}
+                      {% set outer_loop = loop %}
+                      {% for selling_point in plan.selling_points %}
+                      <div>
+                        <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md" required>
+                        {% set ns.count = ns.count + 1 %}
+                        <div class="invalid-feedback">
+                          Please provide a selling point {{ ns.count }}
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </fieldset>
+                    <!-- end plan selling points -->
+                    <!-- plan image -->
+                    <div class="form-group">
+                      <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
+                      <p> Supported image upload extensions: <br> 
+                          jpg, jpe, jpeg, png, gif, svg, bmp</p>
+                      <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
+                      {% if plan.primary_icon %}
+                      <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
+                      <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                        Remove Image
+                      </a>
+                      {% endif %}
+                    </div>
+                    <!-- end plan image-->
+                    <!-- plan pricing -->
+                    <hr>
+                    <fieldset>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
+                          <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" {% if plan.requirements.subscription  %} checked {% endif %}>
+                          <label class="form-check-label font-weight-bolder" for="subscription-{{ loop.index0 }}">Recurring Charge?</label>
+                        </div>
+                      </div>
+
+                      <div class="extra_fields">
+                        <div class="form-group">
+                          <label for="interval_amount-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Recurring Amount</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                            {% if plan.currency == "USD" %}
+                              <span class="input-group-text">$</span>
+                            {% else %}
+                              <span class="input-group-text">£</span>
+                            {% endif %}
+                            </div>
+                            <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}" {% if plan.interval_amount %} value="{{ plan.interval_amount/ 100 }}" {% endif %} class="form-control" type="number" step="0.01">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="interval_unit-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Interval Unit</label>
+                          <div class="input-group">
+                            <select name="interval_unit-{{ loop.index0 }}" id="interval_unit-{{ loop.index0 }}" class="form-control">
+                              <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>
+                              <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>
+                              <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="days_before_first_charge-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Days before the first charge</label>
+                          <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ plan.days_before_first_charge }}" class="form-control">
+                          <small class="form-text text-muted">
+                            "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
+                          </small>
+                        </div>
+                        <div class="form-group">
+                          <label for="trial_period_days-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Free trial period number of days</label>
+                          <input id="trial_period_days-{{ loop.index0 }}" name="trial_period_days-{{ loop.index0 }}" type="number" min="0" max="" value="{{ plan.trial_period_days }}" class="form-control">
+                          <small class="form-text text-muted">
+                            If you want to offer a free trial, simply put the number of days and the plan
+                            will only start charging after the trial has ended. When creating a subscription with a
+                            trial period, no payment is taken from the customer.
+                            An immediate invoice is still created, but for a zero amount.
+                          </small>
+                        </div>
+                      </div>
+                    </fieldset>
+                    <!-- end plan pricing -->
+                    <!-- up-front pricing -->
+                    <hr>
+                    <fieldset>
+                      <div class="form-group form-check">
+                        <input type="hidden" class="instant_payment-check" data-id="{{ loop.index0 }}" name="instant_payment-{{ loop.index0 }}" value="no">
+                        <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} checked {% endif %}>
+                        <label class="form-check-label font-weight-bolder" for="instant_payment-{{ loop.index0 }}">Add upfront charge</label>
+                      </div>
+
+                      <div class="form-group extra_fields" id="upfront_price">
+                        <label for="sell_price-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Upfront price</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            {% if plan.currency == "USD" %}
+                              <span class="input-group-text">$</span>
+                            {% else %}
+                              <span class="input-group-text">£</span>
+                            {% endif %}
+                          </div>
+                          <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} value="{{ plan.sell_price/100 }}" {% endif %} id="sell_price-{{ loop.index0 }}" class="form-control">
+                        </div>
+                      </div>
+                    </fieldset>
+                    <!-- end up-front pricing -->
+                    <!-- plan description & settings -->
+                    <hr>
+                    <fieldset>
+                      <div class="form-group ">
+                        <div class="form-check">
+                          <input type="checkbox" value="yes" class="form-check-input toggle" name="plan_description_required-{{ loop.index0 }}" id="plan_description_required-{{ loop.index0 }}" {% if plan.description is not sameas None %} checked
+                            {% endif %}>
+                          <label class="form-check-label font-weight-bolder" for="plan_description_required-{{ loop.index0 }}">Plan Description</label>
+                        </div>
+                        <small class="form-text text-muted">
+                          Add a paragraph describing the plan (optional).
+                        </small>
+                      </div>
+
+                      <div class="form-group extra_fields" id="message">
+                        <label for="description-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Plan description</label>
+                        <textarea class="form-control" id="description-{{ loop.index0 }}" name="description-{{ loop.index0 }}" rows="3">{% if plan.description is not sameas None %}{{ plan.description }}{% endif %}</textarea>
+                        <small class="form-text text-muted">
+                          Enter a description about the plan.
+                        </small>
+                      </div>
+
+                      <div class="form-group ">
+                        <div class="form-check">
+                          <input type="hidden" class="note_to_seller_required-check" data-id="{{ loop.index0 }}" name="note_to_seller_required-{{ loop.index0 }}" value="no">
+                          <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}" {% if plan.requirements.note_to_seller_required %} checked
+                            {% endif %}>
+                          <label class="form-check-label font-weight-bolder" for="note_to_seller_required-{{ loop.index0 }}">Require customer note</label>
+                        </div>
+                        <small class="form-text text-muted">
+                          Useful for product personalisation, customisation or variations
+                        </small>
+                      </div>
+
+                      <div class="form-group extra_fields" id="message">
+                        <label for="note_to_buyer_message-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Message for the customer</label>
+                        <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}">{{ plan.requirements.note_to_buyer_message }} </textarea>
+                        <small class="form-text text-muted">
+                          This message will be shown during checkout to the customer
+                        </small>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="position-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Position</label>
+                        <div class="input-group">
+                          <input type="number" step="1" data-plan-name-position="{{ plan.title|safe }}" name="position-{{ loop.index0 }}" {% if plan.position %} value="{{ plan.position }}" {% else %} value="0" {% endif %} id="position-{{ loop.index0 }}" class="form-control" placeholder="0">
+                        </div>
+                        <small class="form-text text-muted">
+                          Control the order in which plans appear. Lower number appears first
+                        </small>
+                      </div>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input type="checkbox" value="yes" class="form-check-input" name="private-{{ loop.index0 }}" id="private-{{ loop.index0 }}" {% if plan.private %} checked {% endif %}>
+                          <label class="form-check-label font-weight-bolder" for="private-{{ loop.index0 }}">Private</label>
+                        </div>
+                        <small class="form-text text-muted">
+                          Want to create a private plan? Mark a plan as private, and it won't appear on the homepage.
+                          Then, you can send a link to your customer(s) to sign-up to the private plan.
+                        </small>
+                      </div>
+                      <a href="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title)}}" target="_blank">Share URL</a>
+                    </fieldset>
+                    <!-- end plan description & settings -->
+                  </div><!-- end card-wrapper -->
+                  <button type="submit" class="disable-on-click btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
+                </div><!-- end card body -->
+              </div><!-- end plan collapse header -->
+            </div><!-- end plan cards-->
+            {% endif %}
             {% endfor %}
           </div>
         </div><!-- end .container -->

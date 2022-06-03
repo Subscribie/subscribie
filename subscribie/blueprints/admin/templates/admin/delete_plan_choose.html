@@ -36,6 +36,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Plan Currency </th>
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -43,6 +44,11 @@
                 {% for plan in plans %}
                     <tr>
                         <td>{{ plan.title }}</td>
+                        {% if plan.currency == None %}
+                        <td>BGP</td>
+                        {% else %}
+                        <td>{{ plan.currency }}</td>
+                        {% endif %}
                         <td>
                             <a href="{{ url_for('admin.delete_plan_by_uuid', uuid=plan.uuid, confirm=1) }}" 
                                 class="btn btn-danger col-md-6 btn-block">Delete</a>

@@ -62,6 +62,9 @@ class PlansForm(StripWhitespaceForm):
     interval_unit = FieldList(
         StringField("Interval Unit", [validators.optional()]), min_entries=1
     )
+    plan_currency = FieldList(
+        StringField("Plan Currency", [validators.optional()]), min_entries=1
+    )
     selling_points = FieldList(
         FieldList(
             StringField("Unique Selling Point", [validators.DataRequired()]),

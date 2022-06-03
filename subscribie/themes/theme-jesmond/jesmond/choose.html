@@ -59,20 +59,27 @@
                 {% if plan.trial_period_days > 0 %}
                 <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
                 {% endif %}
+
+                {% if plan.currency == "USD" %}
+                    {% set currencySymbol="$" %}
+                {% else %}
+                    {% set currencySymbol="£" %}
+                {% endif %}
+
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
                       {% if plan.trial_period_days > 0 %}Then {% endif %}
-                      <span class="price">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
+                      <span class="price">{{ currencySymbol }}{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
-                      <span class="text">Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>
+                      <span class="text">Upfront cost: {{ currencySymbol }}{{ "%.2f"|format(plan.sell_price/100) }}</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
+                      <span class="price">{{ currencySymbol }}{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
                     </span>  <br>
                     <span class="text">No subscription</span>
                   </div>
