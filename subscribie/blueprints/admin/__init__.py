@@ -1069,8 +1069,15 @@ def utility_get_transaction_fulfillment_state():
 def subscribers():
     action = request.args.get("action")
     show_active = action == "show_active"
+    subscriber_email = request.args.get("subscriber_email", None)
+    subscriber_name = request.args.get("subscriber_name", None)
 
     query = database.session.query(Person).execution_options(include_archived=True)
+
+    if subscriber_email:
+        query = query.where(Person.email.like(f"%{subscriber_email}%"))
+    if subscriber_name:
+        query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
 
     if show_active:
         query = query.filter(Person.subscriptions)

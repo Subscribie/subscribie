@@ -1,3 +1,63 @@
+# v0.1.92 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- updating stripe onboarding steps [#906](https://github.com/Subscribie/subscribie/pull/906) ([@joeltejeda](https://github.com/joeltejeda))
+- #905 testing filtering by subscriber name and email [#906](https://github.com/Subscribie/subscribie/pull/906) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.91 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- #886 Shop owner can search by name & email at the same time (inclusive search) [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- close #885 warn shop owner when search filter is applied to subscribers [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #885 keep searched subscriber name/email between searches so shop owner does not need to re-type [#895](https://github.com/Subscribie/subscribie/pull/895) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #885 filtering subscribers by name and email [#895](https://github.com/Subscribie/subscribie/pull/895) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.90 (Tue May 31 2022)
+
+#### 🐛 Bug Fix
+
+- adding workflow badges to the the readme [#904](https://github.com/Subscribie/subscribie/pull/904) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.89 (Mon May 30 2022)
+
+#### 🐛 Bug Fix
+
+- #900 restore collect-membership-fees.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 myFunction -> toggleDropdown [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 "Register -> Start now" [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore "Why Subsctibie" to footer [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore subscriptionbilling.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restore subscriptionsoftware.html [#901](https://github.com/Subscribie/subscribie/pull/901) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #900 restructure builder theme [#901](https://github.com/Subscribie/subscribie/pull/901) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.88 (Mon May 16 2022)
 
 #### 🐛 Bug Fix
