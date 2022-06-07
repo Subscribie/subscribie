@@ -662,3 +662,45 @@ class PriceList(database.Model):
     start_date = database.Column(database.DateTime, default=datetime.utcnow)
     expire_date = database.Column(database.DateTime, default=None)
     currency = database.Column(database.String())
+
+
+class PriceListRule(database.Model):
+    """
+    PriceListRule table
+
+    Each plan can have a related active price list per currency, but (never?)
+    more than one active price list per currency.
+
+    e.g. As a shop owner selling in GBP by default, I want to sell plan A in
+    USD and GBP.
+    There will be at most 2 PriceList(s), one for GBP and one for USD.
+
+    Note: There may be a PriceList per currency, a PriceList per plan is
+          NOT required or recommended as there would be to mant PriceLists
+          to manage. Instead, use PriceListRule(s) and assign rule(s) to
+          PriceList(s)
+
+    At least, there would be 1 PriceList: One for USD, a second PriceList is
+    not mandatory for GBP since that is the default currency. However, the
+    moment the shop owner wants to apply special price rules for GBP, the
+    shop owner would need to create a GBP PriceList (e.g. a single GBP PriceList
+    with two PriceListRule(s) giving 10% off, for subscriptions over £50
+    """
+
+    __tablename__ = "price_list_rule"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    name = database.Column(database.String())
+    start_date = database.Column(database.DateTime, default=datetime.utcnow)
+    expire_date = database.Column(database.DateTime, default=None)
+    active = database.Column(database.Boolean(), default=1)
+    position = database.Column(database.Integer(), default=0)
+    affects_sell_price = database.Column(database.Boolean(), default=1)
+    affects_interval_amount = database.Column(database.Boolean(), default=1)
+    percent_discount = database.Column(database.Integer(), default=0)
+    percent_increase = database.Column(database.Integer(), default=0)
+    amount_discount = database.Column(database.Integer(), default=0)
+    amount_increase = database.Column(database.Integer(), default=0)
+    min_sell_price = database.Column(database.Integer(), default=0)
+    min_interval_amount = database.Column(database.Integer(), default=0)
