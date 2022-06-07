@@ -448,7 +448,6 @@ class Plan(database.Model, HasArchived):
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
-    currency = database.Column(database.String(), nullable=True)
 
 
 class Category(database.Model):
@@ -643,3 +642,23 @@ class TaxRate(database.Model):
     stripe_tax_rate_id = database.Column(database.String())
     stripe_livemode = database.Column(database.Boolean())
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+
+class PriceList(database.Model):
+    """
+    PriceList table
+
+    Purpose: Stores a price list for each currency (note this is per currency,
+    not per plan).
+    e.g. As a shop owner, I can create a USD price list which increases all
+    prices by 10% of the base price, by assigning PriceListRules to a PriceList
+    """
+
+    __tablename__ = "price_list"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    name = database.Column(database.String())
+    start_date = database.Column(database.DateTime, default=datetime.utcnow)
+    expire_date = database.Column(database.DateTime, default=None)
+    currency = database.Column(database.String())
