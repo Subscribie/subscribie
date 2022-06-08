@@ -1,3 +1,15 @@
+# v0.1.93 (Wed Jun 08 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #908 show link to live demo try [#909](https://github.com/Subscribie/subscribie/pull/909) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.92 (Tue May 31 2022)
 
 #### 🐛 Bug Fix
