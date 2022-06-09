@@ -1,8 +1,8 @@
 import logging
 from flask import Blueprint, url_for, jsonify
-from subscribie.models import Page, Setting
+from subscribie.models import Page, Setting, PriceList
 from subscribie.database import database
-from subscribie.auth import saas_api_only
+from subscribie.auth import saas_api_only, login_required
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +22,20 @@ def apiv1_list_pages():
             }
         )
     return jsonify(urls)
+
+
+@apiv1.route("/price_lists", methods=["GET"])
+@login_required
+def apiv1_list_price_lists():
+    price_lists = PriceList.query.all()
+    return jsonify(price_lists)
+
+
+@apiv1.route("/price_lists", methods=["POST"])
+@login_required
+def apiv1_create_price_list():
+    price_list = PriceList()
+    return jsonify(price_list)
 
 
 @apiv1.route("/activate-shop", methods=["GET"])
