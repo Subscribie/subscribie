@@ -35,6 +35,5 @@ test('@623@subscriber@reset password receives email', async ({ page }) => {
   //check subscriptions
   await page.goto("/account/subscriptions");
   await page.textContent('text=Subscriptions') === "Subscriptions";
-  await page.textContent('text=One-Off Soaps') === "One-Off Soaps";
 
 });
