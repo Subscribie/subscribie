@@ -30,4 +30,3 @@ test.beforeEach(async ({ page }) => {
 
   subscriber_magic_login = require('./tests/623_subscriber_magic_login');
 
-});
