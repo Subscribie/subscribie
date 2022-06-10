@@ -19,13 +19,6 @@ function checkSubscriberLogin() {
     imap_search_since_date: IMAP_SEARCH_SINCE_DATE
   })
 
-  console.log("environment is:");
-  console.log(process.env.SUBSCRIBER_EMAIL_HOST);
-  console.log(process.env.SUBSCRIBER_EMAIL_USER);
-  console.log(process.env.SUBSCRIBER_EMAIL_PASSWORD);
-  console.log(process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT);
-  console.log(data)
-  console.log("line18 succeded");
   const options = {
     hostname: EMAIL_SEARCH_API_HOST,
     port: 443,
@@ -36,7 +29,6 @@ function checkSubscriberLogin() {
       'Content-Length': data.length
     }
   }
-  console.log("line 28 succeded");
   const req = https.request(options, res => {
     console.log(`statusCode: ${res.statusCode}`)
     if ( res.statusCode != 200 ) {
