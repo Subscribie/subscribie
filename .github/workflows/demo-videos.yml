@@ -81,9 +81,16 @@ jobs:
             sudo npx playwright install-deps 
         - name: Run & Record browser automated tests (Playwright)
           env:
-              PLAYWRIGHT_HOST: http://${{ github.event.repository.default_branch }}.pcpink.co.uk/
-              PLAYWRIGHT_SLOWMO: 1000
-              PLAYWRIGHT_HEADLESS: true
+          PLAYWRIGHT_HOST: http://${{ github.event.repository.default_branch }}.pcpink.co.uk/
+          PLAYWRIGHT_SLOWMO: 1000
+          PLAYWRIGHT_HEADLESS: true
+          SUBSCRIBER_EMAIL_HOST: ${{ secrets.SUBSCRIBER_EMAIL_HOST }}
+          SUBSCRIBER_EMAIL_USER: ${{ secrets.SUBSCRIBER_EMAIL_USER }}
+          SUBSCRIBER_EMAIL_PASSWORD: ${{ secrets.SUBSCRIBER_EMAIL_PASSWORD }}
+          EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
+          RESET_PASSWORD_IMAP_SEARCH_SUBJECT: {{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
+          IMAP_SEARCH_UNSEEN: "1"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
 
           run: |
             set -x
