@@ -10,5 +10,8 @@ test('@704@shop_owner@magic login receives email', async ({ page }) => {
   await page.click('#login');
   await new Promise(r => setTimeout(r, 5000));
   checkShopOwnerLogin.checkShopOwnerLogin();
+  console.log(checkShopOwnerLogin.magic_login_url);
+  await new Promise(r => setTimeout(r, 5000));
+  await page.goto(checkShopOwnerLogin.magic_login_url);
   await new Promise(r => setTimeout(r, 5000));
 });
