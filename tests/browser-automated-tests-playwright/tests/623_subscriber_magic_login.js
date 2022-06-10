@@ -14,8 +14,6 @@ test('@623@subscriber@reset password receives email', async ({ page }) => {
   checkSubscriberLogin.checkSubscriberLogin();
   console.log("checking reset password");
   await new Promise(r => setTimeout(r, 5000));
-  console.log("the password url is: ");
-  console.log(checkSubscriberLogin.reset_password_url);
   await page.goto(checkSubscriberLogin.reset_password_url);
   await new Promise(r => setTimeout(r, 5000));
   //reseting password
