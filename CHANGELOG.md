@@ -1,3 +1,15 @@
+# v0.1.94 (Sat Jun 11 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.93 (Wed Jun 08 2022)
 
 #### 🐛 Bug Fix
