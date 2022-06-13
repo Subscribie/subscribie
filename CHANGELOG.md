@@ -1,3 +1,22 @@
+# v0.1.95 (Mon Jun 13 2022)
+
+#### 🐛 Bug Fix
+
+- ordering upfront plan with test user [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing special characters [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- debug 3 [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing debug 2 [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing debug [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing password url from logs [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing password reset url https when running in development mode [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- updating subscriber magic login test [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.94 (Sat Jun 11 2022)
 
 #### ⚠️ Pushed to `master`
