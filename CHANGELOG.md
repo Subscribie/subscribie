@@ -1,3 +1,15 @@
+# v0.1.96 (Mon Jun 13 2022)
+
+#### 🐛 Bug Fix
+
+- #910 center get started and demo shop button [#912](https://github.com/Subscribie/subscribie/pull/912) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.95 (Mon Jun 13 2022)
 
 #### 🐛 Bug Fix
