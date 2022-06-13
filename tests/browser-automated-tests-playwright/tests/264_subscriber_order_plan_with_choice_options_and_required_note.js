@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-
+const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test("@264@subscriber@order plan with choice, option and required note", async ({ page }) => {
         console.log("order plan with choice, option and required note");
         // Buy item with subscription & upfront fee
@@ -16,7 +16,7 @@ test("@264@subscriber@order plan with choice, option and required note", async (
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', 'john@example.com');
+        await page.fill('#email', SUBSCRIBER_EMAIL_USER);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
@@ -70,7 +70,7 @@ test("@264@subscriber@order plan with choice, option and required note", async (
         
         // Verify that subscriber is present in the list
         const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === 'john@example.com');
+        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
 
         // Verify that plan is attached to subscriber
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
