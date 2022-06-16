@@ -59,8 +59,7 @@ jobs:
             ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} FLASK_ENV=development"
             ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} EMAIL_QUEUE_FOLDER=${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }}"
             # mount email-queue folder
-            ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} | true"
-            ssh dokku@$DOKKU_HOST -C "dokku ps:restart ${{ github.head_ref }}"
+            ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ github.head_ref }} | true"
         - uses: actions/checkout@v2
           with:
             fetch-depth: 0
