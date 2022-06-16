@@ -54,7 +54,6 @@ test.describe("Subscribie tests:", () => {
           console.log("Detected stripe onboarding")
           // Use the text phone number for SMS verification
           await page.click('text="the test phone number"');
-          await page.fill('#email', email);
           await page.click('text="Continue"');
           await new Promise(x => setTimeout(x, 2000));
         } else {
