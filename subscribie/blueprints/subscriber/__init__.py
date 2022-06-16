@@ -141,10 +141,15 @@ def forgot_password():
             )
         )
         company = Company.query.first()
-        password_reset_url = (
-            "https://" + request.host + "/account/password-reset?token=" + token
-        )
-
+        FLASK_ENV = os.getenv("FLASK_ENV")
+        if FLASK_ENV == "development":
+            password_reset_url = (
+                "http://" + request.host + "/account/password-reset?token=" + token
+            )
+        else:
+            password_reset_url = (
+                "https://" + request.host + "/account/password-reset?token=" + token
+            )
         with open(email_template) as file_:
             template = Template(file_.read())
             html = template.render(
