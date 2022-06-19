@@ -25,7 +25,7 @@ def upgrade():
         sa.Column("name", sa.String(), nullable=True),
         sa.Column("start_date", sa.DateTime(), nullable=True),
         sa.Column("expire_date", sa.DateTime(), nullable=True),
-        sa.Column("currency", sa.String(), nullable=True),
+        sa.Column("currency", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
 

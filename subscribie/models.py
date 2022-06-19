@@ -668,6 +668,22 @@ class PriceList(database.Model):
     not per plan).
     e.g. As a shop owner, I can create a USD price list which increases all
     prices by 10% of the base price, by assigning PriceListRules to a PriceList
+
+    Usage example:
+    >>> from subscribie.database import database
+    >>> from subscribie.models import PriceListRule, PriceList
+    >>> priceList = PriceList(name="Christmas USD", currency="USD")
+    >>> rule = PriceListRule(percent_discount=25)
+    >>> priceList.rules.append(rule)
+    >>> database.session.add(priceList)
+    >>> database.session.commit()
+    >>> PriceList.query.all()
+    [<PriceList 1>, <PriceList 2>]
+    >>> PriceList.query.all()[1]
+    <PriceList 2>
+    >>> PriceList.query.all()[1].__dict__
+    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f60e0a3b820>, 'id': 2, 'uuid': '1aad2818-42ab-4493-b5f2-1fa64497a784', 'start_date': datetime.datetime(2022, 6, 19, 20, 39, 44, 180493), 'currency': 'USD', 'created_at': datetime.datetime(2022, 6, 19, 20, 39, 44, 180368), 'name': 'Christmas USD', 'expire_date': None} # noqa: E501
+
     """
 
     __tablename__ = "price_list"
