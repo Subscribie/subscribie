@@ -644,6 +644,22 @@ class TaxRate(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
 
 
+association_table_price_list_to_rule = database.Table(
+    "price_list_rules_associations",
+    database.Column(
+        "price_list_uuid",
+        database.Integer,
+        ForeignKey("price_list.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "price_list_rule_uuid",
+        database.Integer,
+        ForeignKey("price_list_rule.uuid"),
+    ),
+)
+
+
 class PriceList(database.Model):
     """
     PriceList table
@@ -662,6 +678,9 @@ class PriceList(database.Model):
     start_date = database.Column(database.DateTime, default=datetime.utcnow)
     expire_date = database.Column(database.DateTime, default=None)
     currency = database.Column(database.String())
+    rules = relationship(
+        "PriceListRule", secondary=association_table_price_list_to_rule
+    )
 
 
 class PriceListRule(database.Model):
@@ -704,3 +723,8 @@ class PriceListRule(database.Model):
     amount_increase = database.Column(database.Integer(), default=0)
     min_sell_price = database.Column(database.Integer(), default=0)
     min_interval_amount = database.Column(database.Integer(), default=0)
+    price_lists = relationship(
+        "PriceList",
+        secondary=association_table_price_list_to_rule,
+        back_populates="rules",
+    )
