@@ -468,6 +468,184 @@ class Plan(database.Model, HasArchived):
         "PriceList", secondary=association_table_plan_to_price_lists
     )
 
+    def getPrice(self, currency):
+        """Returns a tuple of sell_price and interval_amount of the plan for
+        a given currency, or a tuple False, and an error message str.
+
+        To answer the question "what is the price of this plan?" the
+        questions which need answers include:
+
+        - What currency do you want? (A plan may or may not be sold in a given currency
+        - Are there any price_list rules associated with the plan + currency?
+            - e.g. In the US a price rule may increase prices by x %
+        - An error is returned if a price is requested for a plan with no matching
+          currency, see :return:.
+
+        :param currency: Currency code e.g. GBP
+        :type currency: str
+        :return: tuple sell_price, interval_amount for the plan after applying any found price_list rules, # noqa: E501
+                 if no price_list is found for the desired currency, then a tuple of False, error message # noqa: E501
+                 is returned.
+        :rtype: tuple
+        """
+        # Find price_lists for plan
+        log.debug(
+            f"Searching for price_list in currency {currency} for plan {self.title}"
+        )
+
+        # Not all plans will have a price_list, if not, return error
+        price_list_found_for_currency = False
+        for price_list in self.price_lists:
+            log.debug(f"only use price list if currency {currency}")
+
+            if price_list.currency == currency:
+                price_list_found_for_currency = True
+                log.debug(
+                    f"Found {currency} priceList: {price_list} for plan."
+                )  # noqa: E501
+
+                foundRules = []
+                for rule in price_list.rules:
+                    log.debug(f"Found rule: {rule}")
+                    foundRules.append(rule)
+
+                # Pass callable get_discount_code to support external context (e.g. session data) # noqa: E501
+                context = {"get_discount_code": get_discount_code}
+                sell_price, interval_amount = self.applyRules(
+                    rules=foundRules, context=context
+                )
+        if price_list_found_for_currency is False:
+            msg = f"Could not find price_list for currency: {currency}. There are {len(self.price_lists)} connected to this plan, but none of them are for currency {currency}"  # noqa: E501
+            log.warning(msg)
+            return False, msg
+        log.debug(f"getPrice returning sell price: {sell_price} for plan {self.title}")
+        log.debug(
+            f"getPrice returning interval_amount: {interval_amount} for plan {self.title}"  # noqa: E501
+        )
+        return sell_price, interval_amount
+
+    def applyRules(self, rules=[], context={}):
+        """Apply pricelist rules to a given plan
+
+        :param rules: List of rules to apply to the plan price
+        :param context: Dictionary storing session context, for example get_discount_code callable for validating discount codes # noqa: E501
+        """
+        log.debug(f"Applying applyRules to plan: {self.title}")
+
+        sell_price = self.sell_price
+        interval_amount = self.interval_amount
+
+        log.debug(f"before apply_rules sell price is: {self.sell_price}")
+        log.debug(f"before apply_rules inverval_price is: {self.interval_amount}")
+
+        def apply_percent_increase(base: int, percent_increase: int) -> int:
+            add = int((base / 100) * percent_increase)
+            base += add
+            return base
+
+        def apply_percent_discount(base: int, percent_discount: int) -> int:
+            minus = int((base / 100) * percent_discount)
+            base -= minus
+            return base
+
+        def apply_amount_decrease(base: int, amount_decrease: int) -> int:
+            base -= amount_decrease
+            return base
+
+        def apply_amount_increase(base: int, amount_increase: int) -> int:
+            base += amount_increase
+            return base
+
+        def check_discount_code_valid(expected_discount_code=None, f=None) -> bool:
+            """
+            Check discount code is valid
+
+            :param expected_discount_code: str, the expected discount code from a given rule # noqa: E501
+            :param f: Callable, which must return a string of the discount code
+            :return: bool success (True) or fail (False) check against rule's discount code # noqa: E501
+            """
+            if f is None:
+                return False
+            else:
+                # Call the get_discount_code callable
+                return expected_discount_code == f()
+
+        def calculatePrice(
+            sell_price: int, interval_amount: int, rules, context={}
+        ):  # noqa: E501
+            """Apply all Return tuple of sell_price, interval_amount
+
+            :param sell_price: The base sell_price of the plan
+            :type sell_price: int
+            :param interval_amount: The base interval_amount
+            :type interval_amount: int
+            :param rules: List of rules to apply to the plan
+            :type rules: list
+            :param context: Context for passing callables which may access session data, like get_discount_code # noqa: E501
+            :type context: dict, optional
+            :return Tuple of sell_price, interval_amount after price rules have been applied, if any
+            :rtype tuple
+            """
+            for rule in rules:
+                log.debug(f"applying rule {rule}")
+                if rule.requires_discount_code:
+                    expected_discount_code = rule.discount_code
+                    f = context["get_discount_code"]
+                    if (
+                        check_discount_code_valid(
+                            expected_discount_code=expected_discount_code, f=f
+                        )
+                        is False
+                    ):
+                        # Skip this rule if discount_code validation fails
+                        continue
+                if rule.affects_sell_price:
+
+                    sell_price = apply_percent_increase(
+                        sell_price, rule.percent_increase
+                    )  # noqa: E501
+                    sell_price = apply_percent_discount(
+                        sell_price, rule.percent_discount
+                    )  # noqa: E501
+
+                    sell_price = apply_amount_decrease(
+                        sell_price, rule.amount_decrease
+                    )  # noqa: E501
+
+                    sell_price = apply_amount_increase(
+                        sell_price, rule.amount_increase
+                    )  # noqa: E501
+
+                if rule.affects_interval_amount:
+
+                    if rule.percent_increase:
+                        interval_amount = apply_percent_increase(
+                            interval_amount, rule.percent_increase
+                        )  # noqa: E501
+
+                    if rule.percent_discount:
+                        interval_amount = apply_percent_discount(
+                            interval_amount, rule.percent_discount
+                        )  # noqa: E501
+
+                    interval_amount = apply_amount_decrease(
+                        interval_amount, rule.amount_decrease
+                    )  # noqa: E501
+
+                    interval_amount = apply_amount_increase(
+                        interval_amount, rule.amount_increase
+                    )  # noqa: E501
+
+                log.debug(f"after apply_rules sell price is: {sell_price}")
+                log.debug(f"after apply_rules interval_amount is: {interval_amount}")
+
+            return sell_price, interval_amount
+
+        sell_price, interval_amount = calculatePrice(
+            sell_price, interval_amount, rules, context=context
+        )  # noqa: E501
+
+        return sell_price, interval_amount
 
 
 class Category(database.Model):
@@ -706,8 +884,6 @@ class PriceList(database.Model):
     >>> plan.price_lists.append(price_list)
     >>> database.session.add(plan)
     >>> database.session.commit()
-
-
 
     """
 

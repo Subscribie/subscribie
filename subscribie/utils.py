@@ -1,4 +1,4 @@
-from flask import current_app, request, g
+from flask import current_app, request, g, session
 import stripe
 from subscribie import database
 from currency_symbols import CurrencySymbols
@@ -434,3 +434,11 @@ def get_stripe_void_subscription_invoices():
         ):
             voidInvoices.append(invoice)
     return voidInvoices
+
+
+def get_discount_code():
+    """Get discount code from the current session
+    :return: The discount code, or None
+    :rtype: str
+    """
+    return session.get("discount_code", None)
