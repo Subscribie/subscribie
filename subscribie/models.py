@@ -417,6 +417,22 @@ association_table_plan_choice_group = database.Table(
 )
 
 
+association_table_plan_to_price_lists = database.Table(
+    "plan_price_list_associations",
+    database.Column(
+        "plan_uuid",
+        database.String,
+        ForeignKey("plan.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "price_list_uuid",
+        database.String,
+        ForeignKey("price_list.uuid"),
+    ),
+)
+
+
 class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
@@ -448,6 +464,10 @@ class Plan(database.Model, HasArchived):
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
+    price_lists = relationship(
+        "PriceList", secondary=association_table_plan_to_price_lists
+    )
+
 
 
 class Category(database.Model):
@@ -673,16 +693,21 @@ class PriceList(database.Model):
     >>> from subscribie.database import database
     >>> from subscribie.models import PriceListRule, PriceList
     >>> priceList = PriceList(name="Christmas USD", currency="USD")
-    >>> rule = PriceListRule(percent_discount=25)
+    >>> rule = PriceListRule(percent_discount=25, name="25% Discount")
     >>> priceList.rules.append(rule)
     >>> database.session.add(priceList)
     >>> database.session.commit()
     >>> PriceList.query.all()
-    [<PriceList 1>, <PriceList 2>]
-    >>> PriceList.query.all()[1]
-    <PriceList 2>
-    >>> PriceList.query.all()[1].__dict__
+    [<PriceList 1>]
+    >>> PriceList.query.all()[0].__dict__
     {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f60e0a3b820>, 'id': 2, 'uuid': '1aad2818-42ab-4493-b5f2-1fa64497a784', 'start_date': datetime.datetime(2022, 6, 19, 20, 39, 44, 180493), 'currency': 'USD', 'created_at': datetime.datetime(2022, 6, 19, 20, 39, 44, 180368), 'name': 'Christmas USD', 'expire_date': None} # noqa: E501
+    >>> price_list = PriceList.query.first()
+    >>> plan = Plan.query.first()
+    >>> plan.price_lists.append(price_list)
+    >>> database.session.add(plan)
+    >>> database.session.commit()
+
+
 
     """
 
@@ -696,6 +721,11 @@ class PriceList(database.Model):
     currency = database.Column(database.String())
     rules = relationship(
         "PriceListRule", secondary=association_table_price_list_to_rule
+    )
+    plans = relationship(
+        "Plan",
+        secondary=association_table_plan_to_price_lists,
+        back_populates="price_lists",
     )
 
 
