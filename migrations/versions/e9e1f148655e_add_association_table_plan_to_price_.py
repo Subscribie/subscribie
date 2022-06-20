@@ -30,7 +30,6 @@ def upgrade():
             ["price_list_uuid"],
             ["price_list.uuid"],
         ),
-        sa.PrimaryKeyConstraint("plan_uuid"),
     )
 
 
