@@ -21,6 +21,25 @@
       <div class="col-md-7">
         <h3>Add / Edit / Delete Price Lists</h3>
         <p class="card-subtitle text-muted">Select a Price List to edit.</p>
+        <p>
+        Use pricelists to set different pricing rules on your plans.<br />
+        <style>
+        ul {
+          list-style: disc;
+        }
+        </style>
+        <ul>
+          <li>Price lists are per-currency</li>
+          <li>You can attach rules to price lists, e.g. 20% off rule</li>
+          <li>You assign price lists to your plan(s)</li>
+        </ul>
+        <p>Examples:</p>
+        </p>
+
+        <ul>
+          <li>20% price increase for USD currency</li>
+          <li>Incresse GBP plan(s) price by &pound;1</li>
+        </ul>
 
         <a href="{{ url_for('admin.add_priceList') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
           Add Price List
@@ -53,7 +72,7 @@
         {% for priceList in priceLists %}
           <tr>
             <td>
-                {{ priceList.name}}
+              {{ priceList.name}} <small>(has {{ priceList.rules|length }} price rules)</small>
             </td>
             <td>
               <a href="{{ url_for('admin.edit_priceList', id=priceList.id) }}" 

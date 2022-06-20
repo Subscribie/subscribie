@@ -71,6 +71,13 @@
                       href="{{ url_for('admin.list_categories') }}">
                     Manage Categories
                   </a>
+                  <hr />
+                  {# TODO move to own menu or within plans #}
+                  <p>Price Lists &amp; Discounts</p>
+                  <a class="btn btn-success btn-block"
+                      href="{{ url_for('admin.list_priceLists') }}">
+                    Manage Price Lists
+                  </a>
               </div>
         </div>
       </div>
