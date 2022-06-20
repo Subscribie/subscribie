@@ -1,3 +1,15 @@
+# v0.1.99 (Mon Jun 20 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #915 demo-videos syntax [#916](https://github.com/Subscribie/subscribie/pull/916) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.98 (Mon Jun 20 2022)
 
 #### ⚠️ Pushed to `master`
