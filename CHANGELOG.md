@@ -1,3 +1,15 @@
+# v0.1.100 (Tue Jun 21 2022)
+
+#### 🐛 Bug Fix
+
+- #915 github.head_ref -> env.SUBDOMAIN [#917](https://github.com/Subscribie/subscribie/pull/917) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.99 (Mon Jun 20 2022)
 
 #### 🐛 Bug Fix
