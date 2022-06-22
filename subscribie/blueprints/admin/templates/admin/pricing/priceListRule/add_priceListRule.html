@@ -75,6 +75,18 @@
           <small id="percent_increaseHelp" class="form-text text-muted">For example, enter 20 for 20% increase.</small>
         </div>
 
+        <div class="form-group">
+          <label for="name">Minimum up-front price</label>
+            <input type="number" min="0" class="form-control" id="min_sell_price" aria-describedby="min_sell_priceHelp" name="min_sell_price" />
+          <small id="min_sell_priceHelp" class="form-text text-muted">To protect your margin. For example, if this rule should only affect up-front costs of more than &pound;5, enter 500. This can prevent you from applying pricing rules to all plans, but exclude your cheaper plans.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Minimum recurring charge</label>
+            <input type="number" min="0" class="form-control" id="min_interval_amount" aria-describedby="min_interval_amountHelp" name="min_interval_amount" />
+          <small id="min_interval_amountHelp" class="form-text text-muted">To protect your margin. For example, if this rule should only affect plans with recurring amounts more than &pound;5, enter 500. This can prevent you from applying pricing rules to all plans, but exclude your cheaper plans.</small>
+        </div>
+
         <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
       </form>
 
