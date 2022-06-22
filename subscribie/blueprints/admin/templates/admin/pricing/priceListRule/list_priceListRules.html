@@ -48,14 +48,34 @@
       {% else %}
         <table class="table table-hover table-scroll">
           <thead>
-            <th>Title</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th>Action</th>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>Expire Date</th>
+            <th>Affects Up-Front Price</th>
+            <th>Affects recurring amount</th>
+            <th>Percent Discount</th>
+            <th>Percent Increase</th>
+            <th>Amount discount</th>
+            <th>Amount Increase</th>
+            <th>Min Sell Price</th>
+            <th>Min Recurring amount</th>
           </thead>
         {% for priceListRule in priceListRules %}
-            {{ priceListRule }}
+          <tr>
+            <td><a href="{{ url_for('admin.edit_priceListRule', id=priceListRule.uuid) }}" class="btn btn-success">Edit</a></td>
+            <td>{{ priceListRule.name }}</td>
+            <td>{{ priceListRule.start_date }}</td>
+            <td>{{ priceListRule.expire_date }}</td>
+            <td>{{ priceListRule.affects_sell_price }}</td>
+            <td>{{ priceListRule.affects_interval_amount }}</td>
+            <td>{{ priceListRule.percent_discount }}%</td>
+            <td>{{ priceListRule.percent_increase }}%</td>
+            <td>{{ priceListRule.amount_discount }}</td>
+            <td>{{ priceListRule.amount_increase }}</td>
+            <td>{{ priceListRule.min_sell_price }}</td>
+            <td>{{ priceListRule.min_interval_amount }}</td>
+          </tr>
         {% endfor %}
         </table>
       {% endif %}

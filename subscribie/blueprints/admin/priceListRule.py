@@ -1,6 +1,7 @@
 from . import admin
 from subscribie.auth import login_required
 from subscribie.models import PriceListRule
+from subscribie.database import database
 from flask import render_template, request
 import logging
 import os
@@ -26,24 +27,48 @@ def list_priceListRules():
 @admin.route("/addPriceListRule", methods=["GET", "POST"])
 @login_required
 def add_priceListRule():
-    return render_template(
-        "admin/priceListRule/add_priceListRule.html",
-        supported_currencies=supported_currencies,
-    )
+    if request.method == "POST":
+        name = request.form.get("name", None)  # noqa: F841
+        start_date = request.form.get("start_date", None)  # noqa: F841
+        expire_date = request.form.get("expire_date", None)  # noqa: F841
+        affects_sell_price = request.form.get("affects_sell_price", None)  # noqa: F841
+        affects_interval_amount = request.form.get(  # noqa: F841
+            "affects_interval_amount", None
+        )
+        percent_discount = request.form.get("percent_discount", None)  # noqa: F841
+        percent_increase = request.form.get("percent_increase", None)  # noqa: F841
+        amount_discount = request.form.get("amount_discount", None)  # noqa: F841
+        amount_increase = request.form.get("amount_increase", None)  # noqa: F841
+        min_sell_price = request.form.get("min_sell_price", None)  # noqa: F841
+        min_interval_amount = request.form.get(  # noqa: F841
+            "min_interval_amount", None
+        )
+
+        # Create PriceListRule
+        priceListRule = PriceListRule(**dict(request.form))
+        database.session.add(priceListRule)
+        database.session.commit()
+
+        return request.data
+    else:
+        return render_template(
+            "admin/pricing/priceListRule/add_priceListRule.html",
+            supported_currencies=supported_currencies,
+        )
 
 
 @admin.route("/editPriceListRule", methods=["GET", "POST"])
 @login_required
 def edit_priceListRule():
-    price_list_id = request.args.get("id")
-    price_list = PriceListRule.query.get(price_list_id)
+    priceListRuleId = request.args.get("id")
+    priceListRule = PriceListRule.query.where(uuid=priceListRuleId)
 
     if request.method == "POST":
         return "TODO save changes"
     else:
         return render_template(
-            "admin/priceListRule/edit_priceListRule.html",
-            price_list=price_list,
+            "admin/pricing/priceListRule/edit_priceListRule.html",
+            priceListRule=priceListRule,
             supported_currencies=supported_currencies,
         )
 
