@@ -1,6 +1,6 @@
 from . import admin
 from subscribie.auth import login_required
-from subscribie.models import PriceList
+from subscribie.models import PriceList, PriceListRule
 from flask import render_template, request
 import logging
 import os
@@ -36,6 +36,7 @@ def add_priceList():
 def edit_priceList():
     price_list_id = request.args.get("id")
     price_list = PriceList.query.get(price_list_id)
+    rules = PriceListRule.query.all()
 
     if request.method == "POST":
         return "TODO save changes"
@@ -44,6 +45,7 @@ def edit_priceList():
             "admin/pricing/priceList/edit_priceList.html",
             price_list=price_list,
             supported_currencies=supported_currencies,
+            rules=rules,
         )
 
 

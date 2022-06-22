@@ -63,13 +63,27 @@
               <p>It is normal for your default price list to have zero rules. When a price list
               has zero rules, the price will always be unaffected when applied to a plan.</p>
             {% endif %}
-            {% for rule in price_list.rules %}
-              {{ rule }}
-              <br />
+
+            <form action="" method="POST" class="col-md-7 py-3">
+            {% for rule in rules %}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" name="assign" value="{{ rule.uuid }}" id="{{ rule.uuid }}"
+                  {% if rule.uuid == uuid %}
+                    checked
+                  {% endif %}>
+                </div>
+              </div>
+              <label class="form-control" for="{{ rule.uuid }}">{{ rule.name}}</label>
+            </div>
             {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
+            </form>
+
           </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
       </form>
 
     </div> <!-- end container-->
