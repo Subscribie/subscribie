@@ -1,0 +1,87 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Price List Rule{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Price List Rule</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="">Price List Rules</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Add Price List Rule</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Add Price List Rule</h3>
+      <p class="card-subtitle text-muted mb-3">Price List Rules allow you create rules
+      which affect prices.</p>
+      <p>For example you can create a rule to 'increase by 20%', and then apply that rule
+      to your price list(s).</p>
+
+      <hr>
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        <div class="form-group">
+          <label for="name">Rule name</label>
+          <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name" placeholder="20% off March 2023" />
+          <small id="nameHelp" class="form-text text-muted">For example, 20% off.</small>
+        </div>
+        <div class="form-group">
+          <label for="start_date">Start Date</label>
+          <input type="date" class="form-control" id="start_date" aria-describedby="start_dateHelp">
+          <small id="start_dateHelp" class="form-text text-muted">When would you like this rule to apply from?</small>
+        </div>
+        <div class="form-group">
+          <label for="end_date">End Date</label>
+          <input type="date" class="form-control" id="end_date" aria-describedby="end_dateHelp">
+          <small id="end_dateHelp" class="form-text text-muted">When would you like this rule to end?</small>
+        </div>
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="affects_sell_price" aria-describedby="affects_sell_priceHelp">
+          <label class="form-check-label" for="affects_sell_price">Affect the up-front price?</label>
+          <small id="affects_sell_priceHelp" class="form-text text-muted">Should this rule affect the up-front price?</small>
+        </div>
+
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="affects_interval_amount" aria-describedby="affects_interval_amountHelp">
+          <label class="form-check-label" for="affects_interval_amount">Affect the recurring charge?</label>
+          <small id="affects_sell_priceHelp" class="form-text text-muted">Should this rule affect the recurring price?</small>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Percent Discount ⬇️</label>
+          <div class="input-group">
+            <input type="number" min="0" max="100" maxlength="3" class="form-control" id="percent_discount" aria-describedby="percent_discountHelp" name="percent_discount" />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">%</span>
+            </div>
+          </div>
+          <small id="percent_discountHelp" class="form-text text-muted">For example, enter 20 for 20% off.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Percent Increase ⬆️</label>
+          <div class="input-group">
+            <input type="number" min="0" max="100" maxlength="3" class="form-control" id="percent_increase" aria-describedby="percent_increaseHelp" name="percent_increase" />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">%</span>
+            </div>
+          </div>
+          <small id="percent_increaseHelp" class="form-text text-muted">For example, enter 20 for 20% increase.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
