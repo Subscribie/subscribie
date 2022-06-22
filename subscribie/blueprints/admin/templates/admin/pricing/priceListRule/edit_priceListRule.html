@@ -1,16 +1,16 @@
 {% extends "admin/layout.html" %}
-{% block title %} Add Price List Rule{% endblock %}
+{% block title %} Edit Price List Rule{% endblock %}
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Add Price List Rule</h2>
+<h2 class="text-center text-dark mb-3">Edit Price List Rule</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
     <li class="breadcrumb-item"><a href="">Price List Rules</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Add Price List Rule</li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Price List Rule</li>
   </ul>
 </div>
 
@@ -18,7 +18,7 @@
   <div class="section">
     <div class="container">
 
-      <h3>Add Price List Rule</h3>
+      <h3>Edit Price List Rule</h3>
       <p class="card-subtitle text-muted mb-3">Price List Rules allow you create rules
       which affect prices.</p>
       <p>For example you can create a rule to 'increase by 20%', and then apply that rule
@@ -28,27 +28,27 @@
       <form method="POST" action="#" class="col-md-7 py-3">
         <div class="form-group">
           <label for="name">Rule name</label>
-          <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name" placeholder="20% off March 2023" />
+          <input type="text" class="form-control" value="{{ priceListRule.name }}" id="name" aria-describedby="nameHelp" name="name" placeholder="20% off March 2023" />
           <small id="nameHelp" class="form-text text-muted">For example, 20% off.</small>
         </div>
         <div class="form-group">
           <label for="start_date">Start Date</label>
-          <input type="date" class="form-control" id="start_date" name="start_date" aria-describedby="start_dateHelp">
+          <input type="date" class="form-control" value="{{ priceListRule.start_date }}" id="start_date" name="start_date" aria-describedby="start_dateHelp">
           <small id="start_dateHelp" class="form-text text-muted">When would you like this rule to apply from?</small>
         </div>
         <div class="form-group">
           <label for="expire_date">Expire Date</label>
-          <input type="date" class="form-control" id="expire_date" name="expire_date" aria-describedby="expire_dateHelp">
+          <input type="date" class="form-control" value="{{ priceListRule.expire_date }}" id="expire_date" name="expire_date" aria-describedby="expire_dateHelp">
           <small id="expire_dateHelp" class="form-text text-muted">When would you like this rule to expire?</small>
         </div>
         <div class="form-group form-check">
-          <input type="checkbox" name="affects_sell_price" class="form-check-input" id="affects_sell_price" aria-describedby="affects_sell_priceHelp">
+          <input type="checkbox" name="affects_sell_price" class="form-check-input" id="affects_sell_price" aria-describedby="affects_sell_priceHelp" {% if priceListRule.affects_sell_price %} checked {% endif %}>
           <label class="form-check-label" for="affects_sell_price">Affect the up-front price?</label>
           <small id="affects_sell_priceHelp" class="form-text text-muted">Should this rule affect the up-front price?</small>
         </div>
 
         <div class="form-group form-check">
-          <input type="checkbox" name="affects_interval_amount" class="form-check-input" id="affects_interval_amount" aria-describedby="affects_interval_amountHelp">
+          <input type="checkbox" name="affects_interval_amount" class="form-check-input" id="affects_interval_amount" aria-describedby="affects_interval_amountHelp" {% if priceListRule.affects_interval_amount %} checked {% endif %}>
           <label class="form-check-label" for="affects_interval_amount">Affect the recurring charge?</label>
           <small id="affects_sell_priceHelp" class="form-text text-muted">Should this rule affect the recurring price?</small>
         </div>
@@ -56,7 +56,7 @@
         <div class="form-group">
           <label for="name">Percent Discount ⬇️</label>
           <div class="input-group">
-            <input type="number" min="0" max="100" maxlength="3" class="form-control" id="percent_discount" aria-describedby="percent_discountHelp" name="percent_discount" />
+            <input type="number" value="{{ priceListRule.percent_discount }}" min="0" max="100" maxlength="3" class="form-control" id="percent_discount" aria-describedby="percent_discountHelp" name="percent_discount" />
             <div class="input-group-append">
               <span class="input-group-text" id="basic-addon2">%</span>
             </div>
@@ -67,7 +67,7 @@
         <div class="form-group">
           <label for="name">Percent Increase ⬆️</label>
           <div class="input-group">
-            <input type="number" min="0" max="100" maxlength="3" class="form-control" id="percent_increase" aria-describedby="percent_increaseHelp" name="percent_increase" />
+            <input type="number" value="{{ priceListRule.percent_increase }}" min="0" max="100" maxlength="3" class="form-control" id="percent_increase" aria-describedby="percent_increaseHelp" name="percent_increase" />
             <div class="input-group-append">
               <span class="input-group-text" id="basic-addon2">%</span>
             </div>
@@ -77,13 +77,13 @@
 
         <div class="form-group">
           <label for="name">Minimum up-front price</label>
-            <input type="number" min="0" class="form-control" id="min_sell_price" aria-describedby="min_sell_priceHelp" name="min_sell_price" />
+          <input type="number" value="{{ priceListRule.min_sell_price }}" min="0" class="form-control" id="min_sell_price" aria-describedby="min_sell_priceHelp" name="min_sell_price" />
           <small id="min_sell_priceHelp" class="form-text text-muted">To protect your margin. For example, if this rule should only affect up-front costs of more than &pound;5, enter 500. This can prevent you from applying pricing rules to all plans, but exclude your cheaper plans.</small>
         </div>
 
         <div class="form-group">
           <label for="name">Minimum recurring charge</label>
-            <input type="number" min="0" class="form-control" id="min_interval_amount" aria-describedby="min_interval_amountHelp" name="min_interval_amount" />
+          <input type="number" value="{{ priceListRule.min_interval_amount }}" min="0" class="form-control" id="min_interval_amount" aria-describedby="min_interval_amountHelp" name="min_interval_amount" />
           <small id="min_interval_amountHelp" class="form-text text-muted">To protect your margin. For example, if this rule should only affect plans with recurring amounts more than &pound;5, enter 500. This can prevent you from applying pricing rules to all plans, but exclude your cheaper plans.</small>
         </div>
 

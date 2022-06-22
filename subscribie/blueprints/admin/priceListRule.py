@@ -2,9 +2,10 @@ from . import admin
 from subscribie.auth import login_required
 from subscribie.models import PriceListRule
 from subscribie.database import database
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for, flash
 import logging
 import os
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +46,10 @@ def add_priceListRule():
         )
 
         # Create PriceListRule
-        priceListRule = PriceListRule(**dict(request.form))
+        priceListRuleForm = dict(request.form)
+        priceListRuleForm["start_date"] = datetime.now()
+        priceListRuleForm["expire_date"] = datetime.now()
+        priceListRule = PriceListRule(**priceListRuleForm)
         database.session.add(priceListRule)
         database.session.commit()
 
@@ -61,10 +65,30 @@ def add_priceListRule():
 @login_required
 def edit_priceListRule():
     priceListRuleId = request.args.get("id")
-    priceListRule = PriceListRule.query.where(uuid=priceListRuleId)
+    priceListRule = PriceListRule.query.where(
+        PriceListRule.uuid == priceListRuleId
+    ).first()
 
     if request.method == "POST":
-        return "TODO save changes"
+        priceListRuleForm = dict(request.form)
+
+        if "affects_sell_price" not in priceListRuleForm:
+            priceListRuleForm["affects_sell_price"] = False
+        else:
+            priceListRuleForm["affects_sell_price"] = True
+
+        if "affects_interval_amount" not in priceListRuleForm:
+            priceListRuleForm["affects_interval_amount"] = False
+        else:
+            priceListRuleForm["affects_interval_amount"] = True
+
+        priceListRuleForm["start_date"] = datetime.now()
+        priceListRuleForm["expire_date"] = datetime.now()
+        priceListRule = PriceListRule.query.where(PriceListRule.uuid == priceListRuleId)
+        priceListRule.update(priceListRuleForm)
+        database.session.commit()
+        flash(f'Price list rule "{priceListRuleForm["name"]}" updated')
+        return redirect(url_for("admin.list_priceListRules"))
     else:
         return render_template(
             "admin/pricing/priceListRule/edit_priceListRule.html",
