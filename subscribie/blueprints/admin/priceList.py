@@ -1,7 +1,8 @@
 from . import admin
 from subscribie.auth import login_required
 from subscribie.models import PriceList, PriceListRule
-from flask import render_template, request
+from subscribie.database import database
+from flask import render_template, request, url_for, redirect, flash
 import logging
 import os
 
@@ -35,12 +36,27 @@ def add_priceList():
 @login_required
 def edit_priceList():
     price_list_id = request.args.get("id")
-    price_list = PriceList.query.get(price_list_id)
+    price_list = PriceList.query.where(PriceList.id == price_list_id).first()
     rules = PriceListRule.query.all()
 
     if request.method == "POST":
-        return "TODO save changes"
+        assignedRules = request.form.getlist("assign")
+        assignedRulesList = []
+        for assignedRule in assignedRules:
+            rule = PriceListRule.query.where(PriceListRule.uuid == assignedRule).first()
+            if rule is not None:
+                assignedRulesList.append(rule)
+
+        price_list.rules = assignedRulesList
+        price_list.name = request.form.get("name")
+        if request.form.get("currency") in supported_currencies:
+            price_list.currency = request.form.get("currency")
+
+        database.session.commit()
+        flash(f'Price list "{request.form.get("name")}" updated.')
+        return redirect(url_for("admin.edit_priceList", id=price_list_id))
     else:
+        price_list = PriceList.query.get(price_list_id)
         return render_template(
             "admin/pricing/priceList/edit_priceList.html",
             price_list=price_list,

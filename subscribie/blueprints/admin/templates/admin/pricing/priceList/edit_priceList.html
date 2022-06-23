@@ -9,7 +9,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-    <li class="breadcrumb-item"><a href="">Price Lists</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_priceLists') }}">Price Lists</a></li>
     <li class="breadcrumb-item active" aria-current="page">Edit Price List</li>
   </ul>
 </div>
@@ -31,9 +31,9 @@
         </div>
         <div class="row">
           <label class="col-sm-3 col-form-label" for="title">Currency:</label>
-          <select class="custom-select col-sm-9">
+          <select name="currency" class="custom-select col-sm-9">
             {% for currency in supported_currencies %}
-              <option value="{currency}" {% if currency == price_list.currency %} selected {% endif %}>{{currency}}</option>
+            <option value="{{ currency }}" {% if currency == price_list.currency %} selected {% endif %}>{{currency}}</option>
             {% endfor %}
           </select>
         </div>
@@ -64,24 +64,22 @@
               has zero rules, the price will always be unaffected when applied to a plan.</p>
             {% endif %}
 
-            <form action="" method="POST" class="col-md-7 py-3">
             {% for rule in rules %}
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
                   <input type="checkbox" name="assign" value="{{ rule.uuid }}" id="{{ rule.uuid }}"
-                  {% if rule.uuid == uuid %}
-                    checked
-                  {% endif %}>
+                  {% for assignedRule in price_list.rules %}
+                    {% if assignedRule.id == rule.id %}
+                      checked
+                    {% endif %}
+                  {% endfor %}>
                 </div>
               </div>
               <label class="form-control" for="{{ rule.uuid }}">{{ rule.name}}</label>
             </div>
             {% endfor %}
-
             <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
-            </form>
-
           </div>
         </div>
       </form>

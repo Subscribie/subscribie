@@ -43,6 +43,10 @@
 
         <a href="{{ url_for('admin.add_priceList') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
           Add Price List
+        </a>
+
+        <a href="{{ url_for('admin.list_priceListRules') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Manage Rules 
         </a>  
       </div>
 
@@ -72,7 +76,7 @@
         {% for priceList in priceLists %}
           <tr>
             <td>
-              {{ priceList.name}} <small>(has {{ priceList.rules|length }} price rules)</small>
+              {{ priceList.name}} <small>({{ priceList.rules|length }} <a href="{{ url_for("admin.edit_priceList", id=priceList.id) }}">price rules</a> attached)</small>
             </td>
             <td>
               <a href="{{ url_for('admin.edit_priceList', id=priceList.id) }}" 
@@ -83,7 +87,7 @@
             <td>
               <a href="" 
               class="btn btn-success btn-block" name= "{{ priceList.name }}-Price List"style="display: inline-block" role="button">
-              Put Plans in this Price List
+              Assign to Plans
               </a>
             </td>
             <td>
