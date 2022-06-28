@@ -626,7 +626,7 @@ def stripe_webhook():
     See https://github.com/Subscribie/subscribie/issues/352
     """
     event = request.json
-    stripe_livemode = database.session.query(PaymentProvider).first().stripe_livemode
+    stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
 
         msg = {
