@@ -626,89 +626,103 @@ def stripe_webhook():
     See https://github.com/Subscribie/subscribie/issues/352
     """
     event = request.json
+    stripe_livemode = database.session.query(PaymentProvider).first().stripe_livemode
+    if stripe_livemode != event["livemode"]:
 
-    log.info(f"Received stripe webhook event type {event['type']}")
-    # Handle the payment_intent.payment_failed
-    if event["type"] == "payment_intent.payment_failed":
-        log.info("Stripe webhook event: payment_intent.payment_failed")
-        try:
-            eventObj = event["data"]["object"]
-            log.info(eventObj)
-            personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
-            personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
-            # Notify Shop owner if payment_failed event was related to a Subscription charge # noqa: E501
-            if eventObj["charges"]["data"][0]["description"] == "Subscription update":
-                emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
-                The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
-                The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
-                Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
-                log.info(emailBody)
-                email = User.query.first().email
-                company = Company.query.first()
-                msg = EmailMessageQueue()
-                msg["Subject"] = company.name + " " + "A payment collection failed"
-                msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
-                msg["TO"] = email
-                msg.set_content(emailBody)
-                msg.queue()
-            # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
-            # so that receivers (such as notify Subscriber) are notified
-            signal_payment_failed.send(stripe_event=eventObj)
-        except Exception as e:
-            log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
-        return "OK", 200
+        msg = {
+            "msg": "the current test account has been created with a testmode key, and therefore can only be used with testmode keys",
+            "event": event,
+        }
+        log.info(msg)
+    else:
+        log.info(f"Received stripe webhook event type {event['type']}")
+        # Handle the payment_intent.payment_failed
+        if event["type"] == "payment_intent.payment_failed":
+            log.info("Stripe webhook event: payment_intent.payment_failed")
+            try:
+                eventObj = event["data"]["object"]
+                log.info(eventObj)
+                personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
+                personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
+                # Notify Shop owner if payment_failed event was related to a Subscription charge # noqa: E501
+                if (
+                    eventObj["charges"]["data"][0]["description"]
+                    == "Subscription update"
+                ):
+                    emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
+                    The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
+                    The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
+                    Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
+                    log.info(emailBody)
+                    email = User.query.first().email
+                    company = Company.query.first()
+                    msg = EmailMessageQueue()
+                    msg["Subject"] = company.name + " " + "A payment collection failed"
+                    msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                    msg["TO"] = email
+                    msg.set_content(emailBody)
+                    msg.queue()
+                # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
+                # so that receivers (such as notify Subscriber) are notified
+                signal_payment_failed.send(stripe_event=eventObj)
+            except Exception as e:
+                log.error(
+                    f"Unhandled error processing payment_intent.payment_failed: {e}"
+                )
+            return "OK", 200
 
-    # Handle the checkout.session.completed event
-    if event["type"] == "checkout.session.completed":
-        log.info("Processing checkout.session.completed event")
-        session = event["data"]["object"]
-        try:
-            subscribie_checkout_session_id = session["metadata"][
-                "subscribie_checkout_session_id"
-            ]
-        except KeyError as e:
-            subscribie_checkout_session_id = None
-            log.warning(
-                f"Could not get subscribie_checkout_session_id from session metadata in webhook checkout.session.completed: {e}"  # noqa: E501
-            )
-            log.warning(f"The provided metadata (if any) was: {session['metadata']}")
+        # Handle the checkout.session.completed event
+        if event["type"] == "checkout.session.completed":
+            log.info("Processing checkout.session.completed event")
+            session = event["data"]["object"]
+            try:
+                subscribie_checkout_session_id = session["metadata"][
+                    "subscribie_checkout_session_id"
+                ]
+            except KeyError as e:
+                subscribie_checkout_session_id = None
+                log.warning(
+                    f"Could not get subscribie_checkout_session_id from session metadata in webhook checkout.session.completed: {e}"  # noqa: E501
+                )
+                log.warning(
+                    f"The provided metadata (if any) was: {session['metadata']}"
+                )
 
-        if session["mode"] == "subscription":
-            stripe_subscription_id = session["subscription"]
-        else:
-            stripe_subscription_id = None
+            if session["mode"] == "subscription":
+                stripe_subscription_id = session["subscription"]
+            else:
+                stripe_subscription_id = None
 
-        try:
-            chosen_option_ids = session["metadata"]["chosen_option_ids"]
-            chosen_option_ids = json.loads(chosen_option_ids)
-        except KeyError:
-            chosen_option_ids = None
-        try:
-            package = session["metadata"]["package"]
-        except KeyError:
-            package = None
+            try:
+                chosen_option_ids = session["metadata"]["chosen_option_ids"]
+                chosen_option_ids = json.loads(chosen_option_ids)
+            except KeyError:
+                chosen_option_ids = None
+            try:
+                package = session["metadata"]["package"]
+            except KeyError:
+                package = None
 
-        """
-        We treat Stripe checkout session.mode equally because
-        a subscribie plan may either be a one-off plan or a
-        recuring plan. A 'subscription' is still created in the
-        subscribie database regardless of if the Stripe session
-        mode is "payment" or "subscription".
-        See https://stripe.com/docs/api/checkout/sessions/object
-        """
-        if session["mode"] == "subscription" or session["mode"] == "payment":
-            create_subscription(
-                email=session["customer_email"],
-                package=package,
-                chosen_option_ids=chosen_option_ids,
-                subscribie_checkout_session_id=subscribie_checkout_session_id,
-                stripe_subscription_id=stripe_subscription_id,
-                stripe_external_id=session["id"],
-            )
-        return "OK", 200
-
-    if event["type"] == "payment_intent.succeeded":
-        return stripe_process_event_payment_intent_succeeded(event)
+            """
+            We treat Stripe checkout session.mode equally because
+            a subscribie plan may either be a one-off plan or a
+            recuring plan. A 'subscription' is still created in the
+            subscribie database regardless of if the Stripe session
+            mode is "payment" or "subscription".
+            See https://stripe.com/docs/api/checkout/sessions/object
+            """
+            if session["mode"] == "subscription" or session["mode"] == "payment":
+                create_subscription(
+                    email=session["customer_email"],
+                    package=package,
+                    chosen_option_ids=chosen_option_ids,
+                    subscribie_checkout_session_id=subscribie_checkout_session_id,
+                    stripe_subscription_id=stripe_subscription_id,
+                    stripe_external_id=session["id"],
+                )
+            return "OK", 200
+        if event["type"] == "payment_intent.succeeded":
+            return stripe_process_event_payment_intent_succeeded(event)
 
     msg = {"msg": "Unknown event", "event": event}
     log.debug(msg)
