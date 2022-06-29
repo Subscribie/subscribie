@@ -19,6 +19,7 @@ from subscribie.utils import (
     stripe_invoice_failed,
     stripe_invoice_failing,
     get_stripe_invoices,
+    get_discount_code,
 )
 import stripe
 
@@ -599,7 +600,7 @@ class Plan(database.Model, HasArchived):
                     ):
                         # Skip this rule if discount_code validation fails
                         continue
-                if rule.affects_sell_price:
+                if rule.affects_sell_price and sell_price is not None:
 
                     sell_price = apply_percent_increase(
                         sell_price, rule.percent_increase
@@ -609,14 +610,14 @@ class Plan(database.Model, HasArchived):
                     )  # noqa: E501
 
                     sell_price = apply_amount_decrease(
-                        sell_price, rule.amount_decrease
+                        sell_price, rule.amount_discount
                     )  # noqa: E501
 
                     sell_price = apply_amount_increase(
                         sell_price, rule.amount_increase
                     )  # noqa: E501
 
-                if rule.affects_interval_amount:
+                if rule.affects_interval_amount and interval_amount is not None:
 
                     if rule.percent_increase:
                         interval_amount = apply_percent_increase(
@@ -629,7 +630,7 @@ class Plan(database.Model, HasArchived):
                         )  # noqa: E501
 
                     interval_amount = apply_amount_decrease(
-                        interval_amount, rule.amount_decrease
+                        interval_amount, rule.amount_discount
                     )  # noqa: E501
 
                     interval_amount = apply_amount_increase(
@@ -945,6 +946,7 @@ class PriceListRule(database.Model):
     amount_increase = database.Column(database.Integer(), default=0)
     min_sell_price = database.Column(database.Integer(), default=0)
     min_interval_amount = database.Column(database.Integer(), default=0)
+    requires_discount_code = database.Column(database.Boolean(), default=0)
     price_lists = relationship(
         "PriceList",
         secondary=association_table_price_list_to_rule,
