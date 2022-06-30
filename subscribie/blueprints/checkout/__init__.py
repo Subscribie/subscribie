@@ -600,6 +600,8 @@ def stripe_process_event_payment_intent_succeeded(event):
         if subscribie_subscription is not None:
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
+            database.session.add(transaction)
+            database.session.commit()
         elif data["metadata"] == {}:
             log.warn(f"Empty metadata: {data}")
             return "Empty metadata", 422
@@ -610,8 +612,6 @@ def stripe_process_event_payment_intent_succeeded(event):
             )
             log.error(data["metadata"])
             raise Exception
-        database.session.add(transaction)
-        database.session.commit()
     return "OK", 200
 
 
