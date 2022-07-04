@@ -7,7 +7,7 @@ from sqlalchemy import event
 from sqlalchemy import Column
 from sqlalchemy import Boolean
 
-
+from typing import Optional
 from datetime import datetime
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -647,6 +647,26 @@ class Plan(database.Model, HasArchived):
         )  # noqa: E501
 
         return sell_price, interval_amount
+
+    def getSellPrice(self, currency: str) -> Optional[int]:
+        """Return the sell_price of a given plan after applying any price rules
+        Args:
+            currency: str of the currency requested
+        Returns:
+            Integer representing the sell_price after aplying any pricing riles
+            or None if plan does not have a sell_price.
+        """
+        return self.getPrice(currency)[0]
+
+    def getIntervalAmount(self, currency: str) -> Optional[int]:
+        """Return the sell_price of a given plan after applying any price rules
+        Args:
+            currency: str of the currency requested
+        Returns:
+            Integer representing the interval_amount after applying any pricing
+            rules, or None if plan does not have an interval_amount.
+        """
+        return self.getPrice(currency)[1]
 
 
 class Category(database.Model):
