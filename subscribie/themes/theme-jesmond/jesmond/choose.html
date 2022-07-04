@@ -43,7 +43,6 @@
               {% endif %}
               <div class="card-body">
                 <h5 class="body-lg">{{ plan.title|safe }}</h5>
-
                 {% if plan.description is not sameas None %}
                   <div>
                     <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
@@ -63,16 +62,16 @@
                   <div class="my-md-4">
                     <span class="text">
                       {% if plan.trial_period_days > 0 %}Then {% endif %}
-                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.interval_amount/100) }}</span>/{{ plan.interval_unit }}
+                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.getIntervalAmount("GBP")/100) }}</span>/{{ plan.interval_unit }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
-                      <span class="text">Upfront cost: {{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</span>
+                      <span class="text">Upfront cost: {{ currency_code }}{{ "%.2f"|format(plan.getSellPrice("GBP")/100) }}</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
+                      <span class="price">{{ currency_code }}{{ "%.2f"|format(plan.getSellPrice("GBP")/100) }}</span>/One-off
                     </span>  <br>
                     <span class="text">No subscription</span>
                   </div>
