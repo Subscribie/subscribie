@@ -1,3 +1,17 @@
+# v0.1.101 (Mon Jul 04 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #921 move "More Details" plan description to below selling points of plan [#922](https://github.com/Subscribie/subscribie/pull/922) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #921 adding description template to plans [#922](https://github.com/Subscribie/subscribie/pull/922) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.100 (Tue Jun 21 2022)
 
 #### 🐛 Bug Fix
