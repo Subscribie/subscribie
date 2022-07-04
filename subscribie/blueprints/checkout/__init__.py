@@ -275,8 +275,8 @@ def stripe_create_checkout_session():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
-    charge["sell_price"] = plan.sell_price
-    charge["interval_amount"] = plan.interval_amount
+    charge["sell_price"] = plan.getSellPrice(get_currency_code(iso_4217=True))
+    charge["interval_amount"] = plan.getIntervalAmount(get_currency_code(iso_4217=True))
     charge["currency"] = get_currency_code(iso_4217=True)
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
