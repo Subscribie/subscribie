@@ -28,7 +28,7 @@ from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
-from subscribie.utils import get_currency_code
+from subscribie.utils import get_shop_default_currency_code
 import pycountry
 
 log = logging.getLogger(__name__)
@@ -133,7 +133,7 @@ def inject_template_globals():
         database.session.add(setting)
         database.session.commit()
     custom_code = setting.custom_code
-    currency_code = get_currency_code()
+    currency_code = get_shop_default_currency_code()
 
     return dict(
         company=company,

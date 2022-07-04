@@ -27,7 +27,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
-    get_currency_code,
+    get_shop_default_currency_code,
     get_stripe_invoices,
 )
 from subscribie.forms import (
@@ -117,7 +117,7 @@ def dec2pence(amount):
 def currencyFormat(value):
     value = float(value) / 100
     units = "{:,.2f}".format(value)
-    currency_code = get_currency_code()
+    currency_code = get_shop_default_currency_code()
     formatted_currency = f"{currency_code}{units}"
     return formatted_currency
 
@@ -250,7 +250,7 @@ def stripe_create_charge():
         )
 
         amount = int(request.form.get("amount"))
-        currency = get_currency_code()
+        currency = get_shop_default_currency_code()
         statement_descriptor_suffix = request.form.get("description")
 
     try:

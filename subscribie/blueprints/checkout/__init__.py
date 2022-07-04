@@ -32,7 +32,7 @@ from subscribie.utils import (
     create_stripe_tax_rate,
     get_stripe_livemode,
     get_stripe_connect_account_id,
-    get_currency_code,
+    get_shop_default_currency_code,
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
@@ -275,9 +275,11 @@ def stripe_create_checkout_session():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
-    charge["sell_price"] = plan.getSellPrice(get_currency_code(iso_4217=True))
-    charge["interval_amount"] = plan.getIntervalAmount(get_currency_code(iso_4217=True))
-    charge["currency"] = get_currency_code(iso_4217=True)
+    currency_code = get_shop_default_currency_code(iso_4217=True)
+
+    charge["sell_price"] = plan.getSellPrice(currency_code)
+    charge["interval_amount"] = plan.getIntervalAmount(currency_code)
+    charge["currency"] = currency_code
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(
