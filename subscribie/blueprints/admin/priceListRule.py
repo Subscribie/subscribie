@@ -18,7 +18,16 @@ if os.getenv("SUPPORTED_CURRENCIES", False) is not False:
 @admin.route("/priceListRule", methods=["GET"])
 @login_required
 def list_priceListRules():
-    priceListRules = PriceListRule.query.all()
+    priceListRules = PriceListRule.query.filter(
+        PriceListRule.active != False  # noqa: E712
+    ).all()
+
+    confirm = False
+    if "confirm" in request.args:
+        confirm = request.args.get("confirm")
+        if confirm == "true":
+            confirm = True
+
     return render_template(
         "admin/pricing/priceListRule/list_priceListRules.html",
         priceListRules=priceListRules,
@@ -106,7 +115,37 @@ def edit_priceListRule():
         )
 
 
-@admin.route("/deletePriceListRule", methods=["GET", "POST"])
+@admin.route("/deletePriceListRule")
 @login_required
 def delete_priceListRule():
-    return render_template("admin/priceListRule/delete_priceListRule.html")
+    priceListRules = PriceListRule.query.all()
+    priceListRule = None
+
+    confirm = False
+    if "confirm" in request.args:
+        confirm = request.args.get("confirm")
+        if confirm == "true":
+            confirm = True
+            uuid = request.args.get("id")
+            priceListRule = PriceListRule.query.filter_by(uuid=uuid).first()
+
+    return render_template(
+        "admin/pricing/priceListRule/list_priceListRules.html",
+        priceListRules=priceListRules,
+        confirm=confirm,
+        priceListRule=priceListRule,
+    )
+
+
+@admin.route("/delete/<uuid>", methods=["GET", "POST"])
+@login_required
+def delete_priceListRule_by_uuid(uuid):
+    """Mark inactive (dont actually delete) priceListRule"""
+    priceListRule = PriceListRule.query.filter_by(uuid=uuid).first()
+
+    if uuid is not False:
+        # Perform archive
+        priceListRule.active = False
+        database.session.commit()
+    flash("Price list rule deleted.")
+    return redirect(url_for("admin.list_priceListRules"))

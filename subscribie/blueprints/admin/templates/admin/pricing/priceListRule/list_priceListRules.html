@@ -35,11 +35,11 @@
         </a>  
       </div>
 
-      {% if confirm is sameas false %}
-        <div class="card mx-auto my-3 py-3 col-md-7">
-          <h3 class="card-title mx-auto">Are you sure?</h3>
+      {% if confirm is sameas true %}
+        <div class="card mx-auto my-3 mt-4 py-3 col-md-7">
+          <h3 class="card-title mx-auto">Delete Price List Rule "{{priceListRule.name}}" - Are you sure?</h3>
           <div class="mx-auto">
-            <a href="{{ url_for('admin.delete_priceListRule', id=priceList.id) }}" 
+            <a href="{{ url_for('admin.delete_priceListRule_by_uuid', uuid=priceListRule.uuid) }}"
                 class="btn btn-danger mx-3 px-5" role="button">
                 Yes
             </a>
@@ -67,7 +67,10 @@
           </thead>
         {% for priceListRule in priceListRules %}
           <tr>
-            <td><a href="{{ url_for('admin.edit_priceListRule', id=priceListRule.uuid) }}" class="btn btn-success">Edit</a></td>
+            <td>
+              <a href="{{ url_for('admin.edit_priceListRule', id=priceListRule.uuid) }}" class="btn btn-success">Edit</a>
+              <a href="{{ url_for('admin.delete_priceListRule', id=priceListRule.uuid, confirm="true") }}" class="btn btn-danger mt-4">Delete</a>
+            </td>
             <td>{{ priceListRule.name }}</td>
             <td>{{ priceListRule.start_date }}</td>
             <td>{{ priceListRule.expire_date }}</td>
