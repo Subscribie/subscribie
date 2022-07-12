@@ -32,10 +32,16 @@ def add_priceListRule():
         name = request.form.get("name", None)  # noqa: F841
         start_date = request.form.get("start_date", None)  # noqa: F841
         expire_date = request.form.get("expire_date", None)  # noqa: F841
-        affects_sell_price = request.form.get("affects_sell_price", None)  # noqa: F841
+        affects_sell_price = request.form.get("affects_sell_price", False)  # noqa: F841
+        if affects_sell_price == "on":
+            affects_sell_price = True
+
         affects_interval_amount = request.form.get(  # noqa: F841
-            "affects_interval_amount", None
+            "affects_interval_amount", False
         )
+        if affects_interval_amount == "on":
+            affects_interval_amount = True
+
         percent_discount = request.form.get("percent_discount", None)  # noqa: F841
         percent_increase = request.form.get("percent_increase", None)  # noqa: F841
         amount_discount = request.form.get("amount_discount", None)  # noqa: F841
@@ -49,11 +55,14 @@ def add_priceListRule():
         priceListRuleForm = dict(request.form)
         priceListRuleForm["start_date"] = datetime.now()
         priceListRuleForm["expire_date"] = datetime.now()
+        priceListRuleForm["affects_sell_price"] = affects_sell_price
+        priceListRuleForm["affects_interval_amount"] = affects_interval_amount
         priceListRule = PriceListRule(**priceListRuleForm)
         database.session.add(priceListRule)
         database.session.commit()
 
-        return request.data
+        flash(f'Price list rule added: "{priceListRule.name}"')
+        return redirect(url_for("admin.list_priceListRules"))
     else:
         return render_template(
             "admin/pricing/priceListRule/add_priceListRule.html",
