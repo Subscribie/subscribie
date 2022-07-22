@@ -8,6 +8,16 @@ from subscribie.tasks import background_task
 log = logging.getLogger(__name__)
 
 
+def get_geo_currency_code():
+    # If geo country_code is set, base displayed currency on
+    # that, otherwise fallback to shops default currency
+    session["country_code"]
+    return get_shop_default_currency_code(iso_4217=True)
+
+def get_shop_default_country_code():
+    #TODO return default shop country
+    return "US"
+
 def get_shop_default_currency_code(iso_4217=False):
     from subscribie.models import Setting
 

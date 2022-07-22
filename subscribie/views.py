@@ -28,7 +28,11 @@ from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
-from subscribie.utils import get_shop_default_currency_code
+from subscribie.utils import (
+    get_shop_default_currency_code,
+    get_geo_currency_code,
+    get_shop_default_country_code,
+)
 import pycountry
 
 log = logging.getLogger(__name__)
@@ -60,7 +64,12 @@ def on_each_request():
     # into the request in order for Subscribie to read it.
     # https://github.com/Subscribie/subscribie/issues/886
     # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
+
+    # Assume country detection will fail by default
+    session["fallback_default_country_active"] = False
     countryObj = None
+
+    # Try to get Geo-Country-Code
     geo_country_code_header = request.headers.get("Geo-Country-Code")
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
@@ -81,7 +90,10 @@ def on_each_request():
     else:
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
-        countryObj = pycountry.countries.get(alpha_2="GB")
+        fallback_default_country = get_shop_default_country_code()
+        log.debug("Unable to get geo country from request header: {e}")
+        countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
+        assert countryObj is not None
         country = {
             "alpha_2": countryObj.alpha_2,
             "alpha_3": countryObj.alpha_3,
@@ -91,6 +103,7 @@ def on_each_request():
         }
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
+        session["fallback_default_country_active"] = True
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
@@ -142,6 +155,7 @@ def inject_template_globals():
         pages=pages,
         custom_code=Markup(custom_code),
         currency_code=currency_code,
+        get_geo_currency_code=get_geo_currency_code,
     )
 
 
