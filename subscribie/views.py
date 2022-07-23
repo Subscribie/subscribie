@@ -30,6 +30,7 @@ from subscribie.blueprints.admin.stats import (
 )
 from subscribie.utils import (
     get_shop_default_currency_code,
+    get_geo_currency_symbol,
     get_geo_currency_code,
     get_shop_default_country_code,
 )
@@ -146,7 +147,7 @@ def inject_template_globals():
         database.session.add(setting)
         database.session.commit()
     custom_code = setting.custom_code
-    currency_code = get_shop_default_currency_code()
+    currency_symbol = get_geo_currency_symbol()
 
     return dict(
         company=company,
@@ -154,7 +155,7 @@ def inject_template_globals():
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
-        currency_code=currency_code,
+        currency_symbol=currency_symbol,
         get_geo_currency_code=get_geo_currency_code,
     )
 

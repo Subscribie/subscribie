@@ -7,33 +7,58 @@ from subscribie.tasks import background_task
 
 log = logging.getLogger(__name__)
 
+COUNTRY_CODE_TO_CURRENCY_CODE = {"US": "USD", "GB": "GBP"}
+
 
 def get_geo_currency_code():
-    # If geo country_code is set, base displayed currency on
-    # that, otherwise fallback to shops default currency
-    session["country_code"]
-    return get_shop_default_currency_code(iso_4217=True)
+    """Return currency code based on current detected (or selected)
+    country code.
+    """
+    country_code = get_geo_country_code()
+    # Get currency code from COUNTRY_CODE_TO_CURRENCY_CODE mapping
+    try:
+        currency_code = COUNTRY_CODE_TO_CURRENCY_CODE[country_code]
+    except KeyError as e:
+        log.error("Could not map country_code {country_code} to a currency code.")
+        currency_code = get_shop_default_currency_code()
+    return currency_code
+
 
 def get_shop_default_country_code():
-    #TODO return default shop country
     return "US"
 
-def get_shop_default_currency_code(iso_4217=False):
-    from subscribie.models import Setting
 
-    """Return either the shop default currency symbol (e.g. £, $)
-       Or currency code (e.g. GBP, USD) if iso_4217 is True
-    """
+def get_geo_country_code():
+    # If geo country_code is set, use that,
+    # otherwise fallback to shops default country_code
+    if session.get("country_code"):
+        country_code = session.get("country_code")
+    else:
+        country_code = get_shop_default_country_code()
+    return country_code
+
+
+def get_geo_currency_symbol():
+    """Return default currency symbol"""
+    from subscribie.models import Setting
 
     setting = Setting.query.first()
     default_currency = setting.default_currency
     if default_currency is None:
-        default_currency = "GBP"
-    if iso_4217:
-        currency_code = default_currency
-    else:
-        currency_code = CurrencySymbols.get_symbol(default_currency)
-    return currency_code
+        default_currency = "USD"
+    currency_symbol = CurrencySymbols.get_symbol(default_currency)
+    return currency_symbol
+
+
+def get_shop_default_currency_code():
+    from subscribie.models import Setting
+
+    """Return default shop currency code in iso_4217 format
+       (e.g. GBP, USD)
+    """
+    setting = Setting.query.first()
+    default_currency_code = setting.default_currency
+    return default_currency_code
 
 
 def get_stripe_secret_key():

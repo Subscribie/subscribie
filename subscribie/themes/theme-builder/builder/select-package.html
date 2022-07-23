@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %} Subscribie Pricing | 3 months for just {{ currency_code }}10 {% endblock %}
+{% block title %} Subscribie Pricing | 3 months for just {{ currency_symbol }}10 {% endblock %}
 
 {% block body %}
 <div class="header-content py-4">
@@ -34,26 +34,26 @@
             {{ plan.trial_period_days }} days free
             {% endif %}
             <small class="text-muted">
-            then {{ currency_code }}{{ "%.2f"|format(plan.getIntervalAmount(get_geo_currency_code())/100) }}
+            then {{ currency_symbol }}{{ "%.2f"|format(plan.getIntervalAmount(get_geo_currency_code())/100) }}
             / {{ plan.interval_unit }}</small>
             </h1>
             {% elif plan.requirements.subscription %}
               <h1 class="card-title pricing-card-title">
-              {{ currency_code }}{{ "%.2f"|format(plan.getIntervalAmount(get_geo_currency_code())/100) }}
+              {{ currency_symbol }}{{ "%.2f"|format(plan.getIntervalAmount(get_geo_currency_code())/100) }}
               <small class="text-muted">/ {{ plan.interval_unit }}</small>
               </h1>
             {% else %}
               <h1 class="card-title pricing-card-title">
-              {{ currency_code }}0.00
+              {{ currency_symbol }}0.00
               </h1>
             {% endif %}
 		    {% if plan.requirements.instant_payment %}
               <p class="text-muted">
-              Using default currency {{ get_geo_currency_code() }} Upfront cost: {{ currency_code }}{{ "%.2f"|format(plan.getSellPrice(get_geo_currency_code())/100) }}
+              Using default currency {{ get_geo_currency_code() }} Upfront cost: {{ currency_symbol }}{{ "%.2f"|format(plan.getSellPrice(get_geo_currency_code())/100) }}
               </p>
 		    {% else %}
               <p class="text-muted">
-              Upfront cost: {{ currency_code }}0.00
+              Upfront cost: {{ currency_symbol }}0.00
               </p>
 		    {% endif %}
             <ul class="list-unstyled mt-3 mb-4">
