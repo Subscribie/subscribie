@@ -20,6 +20,8 @@ from subscribie.utils import (
     stripe_invoice_failing,
     get_stripe_invoices,
     get_discount_code,
+    get_geo_currency_symbol,
+    get_geo_currency_code,
 )
 import stripe
 
@@ -667,6 +669,41 @@ class Plan(database.Model, HasArchived):
             rules, or None if plan does not have an interval_amount.
         """
         return self.getPrice(currency)[1]
+
+    def showSellPrice(self) -> str:
+        """Return formatted currency string of sell price
+        Utility function to make jinja templating simpler:
+
+        From this:
+
+        {{ currency_code }}{{ "%.2f"|format(plan.getSellPrice(get_geo_currency_code())/100) }}
+
+        To to this:
+
+        {{ plan.showSellPrice() }}
+
+        """
+        currency_symbol = get_geo_currency_symbol()
+        amount = self.getSellPrice(get_geo_currency_code()) / 100
+
+        result = f"{currency_symbol}{amount:.2f}"
+        return result
+
+    def showIntervalAmount(self) -> str:
+        """Return formatted currency string of interval amount
+        Utility function to avoid having to be verbose in jinja
+        templates: See showSellPrice
+
+        Usage in jinja:
+
+        {{ plan.showIntervalAmount() }}
+        """
+
+        currency_symbol = get_geo_currency_symbol()
+        amount = self.getIntervalAmount(get_geo_currency_code()) / 100
+
+        result = f"{currency_symbol}{amount:.2f}"
+        return result
 
 
 class Category(database.Model):
