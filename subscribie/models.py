@@ -251,6 +251,11 @@ class Subscription(database.Model):
     sku_uuid = database.Column(database.String())
     gocardless_subscription_id = database.Column(database.String())
     person_id = database.Column(database.Integer(), ForeignKey("person.id"))
+    interval_unit = database.Column(database.String())  # Charge interval
+    interval_amount = database.Column(
+        database.Integer(), default=0
+    )  # Charge amount each interval
+    sell_price = database.Column(database.Integer())  # Upfront price
     plan = relationship(
         "Plan",
         uselist=False,
