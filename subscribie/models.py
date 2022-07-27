@@ -20,8 +20,10 @@ from subscribie.utils import (
     stripe_invoice_failing,
     get_stripe_invoices,
     get_discount_code,
+    get_currency_symbol_from_currency_code,
     get_geo_currency_symbol,
     get_geo_currency_code,
+    currencyFormat,
 )
 import stripe
 
@@ -329,6 +331,52 @@ class Subscription(database.Model):
             )[-1]
 
         return next_date
+
+    def showSellPrice(self) -> str:
+        """Return formatted currency string of sell price
+        Utility function to make jinja templating simpler.
+
+        NOTE: Since this is the Subscription object, the sell_price/interval_amount
+        comes directly from this model, since by this point a currency may have been
+        used during the purchase of the plan.
+
+        jinja usage:
+
+        {{ subscription.showSellPrice() }}
+
+        """
+
+        # Backward compatibility, old Subscription entries will not
+        # have currency, sell_price or interval_amount set on the
+        # subscription model.
+        if self.sell_price is None:
+            result = "unknown"
+        else:
+            amount = self.sell_price
+            result = currencyFormat(self.currency, amount)
+        return result
+
+    def showIntervalAmount(self) -> str:
+        """Return formatted currency string of inverval_amount
+        Utility function to make jinja templating simpler.
+
+        NOTE: Since this is the Subscription object, the sell_price/interval_amount
+        comes directly from this model, since by this point a currency may have been
+        used during the purchase of the plan.
+
+        jinja usage:
+
+        {{ subscription.showIntervalAmount() }}
+
+        """
+
+        # Backward compatibility
+        if self.interval_amount is None:
+            result = "unknown"
+        else:
+            amount = self.interval_amount
+            result = currencyFormat(self.currency, amount)
+        return result
 
 
 class SubscriptionNote(database.Model):

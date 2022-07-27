@@ -114,15 +114,6 @@ def dec2pence(amount):
 
 
 @admin.app_template_filter()
-def currencyFormat(value):
-    value = float(value) / 100
-    units = "{:,.2f}".format(value)
-    currency_code = get_shop_default_currency_code()
-    formatted_currency = f"{currency_code}{units}"
-    return formatted_currency
-
-
-@admin.app_template_filter()
 def timestampToDate(timestamp: str):
     if timestamp is None:
         return None

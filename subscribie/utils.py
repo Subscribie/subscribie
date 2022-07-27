@@ -37,6 +37,10 @@ def get_geo_country_code():
         country_code = get_shop_default_country_code()
     return country_code
 
+def get_currency_symbol_from_currency_code(currency_code) -> str:
+    currency_symbol = CurrencySymbols.get_symbol(currency_code)
+    return currency_symbol
+
 
 def get_geo_currency_symbol():
     """Return default currency symbol"""
@@ -59,6 +63,13 @@ def get_shop_default_currency_code():
     setting = Setting.query.first()
     default_currency_code = setting.default_currency
     return default_currency_code
+
+def currencyFormat(currency_code, value) -> str:
+    currency_symbol = get_currency_symbol_from_currency_code(currency_code)
+    value = float(value) / 100
+    units = "{:,.2f}".format(value)
+    formatted_currency = f"{currency_symbol}{units}"
+    return formatted_currency
 
 
 def get_stripe_secret_key():
