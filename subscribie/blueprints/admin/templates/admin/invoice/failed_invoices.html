@@ -53,9 +53,9 @@
                 Subscription to plan: {{ badInvoice.subscribie_subscription.plan.title }} <br />
                 Subscriber: <a href="{{ url_for('admin.show_subscriber', subscriber_id=badInvoice.subscribie_subscription.person.id) }}">{{ badInvoice.subscribie_subscription.person.given_name }} {{ badInvoice.subscribie_subscription.person.family_name }}</a><br />
                 Charge Date: {{ badInvoice.created | timestampToDate }} <br />
-                Amount due: {{ badInvoice.amount_due | currencyFormat }} <br />
-                Amount paid: {{ badInvoice.amount_paid| currencyFormat }} <br />
-                Amount remaining: {{ badInvoice.amount_remaining| currencyFormat }} <br />
+                Amount due: {{ currency_format(badInvoice.currency, badInvoice.amount_due) }} <br />
+                Amount paid: {{ currency_format(badInvoice.currency, badInvoice.amount_paid) }} <br />
+                Amount remaining: {{ currency_format(badInvoice.currency, badInvoice.amount_remaining) }} <br />
                 Charge Attempt Count: {{ badInvoice.attempt_count }} <br />
                 Next automatic charge attempt: {% if badInvoice.next_payment_attempt is sameas None %} Never {% else %} {{ badInvoice.next_payment_attempt | timestampToDate }} {% endif %} <br />
               </div>

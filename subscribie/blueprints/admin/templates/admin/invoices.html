@@ -35,6 +35,7 @@
         <th>Status</th>
         <th>ID</th>
         <th>PDF</th>
+        <th>Currency</th>
         <th>Amount Due</th>
         <th>Amount Paid</th>
         <th>Amount Remaining</th>
@@ -51,9 +52,10 @@
             Download PDF
           </a>
         </td>
-        <td>{{ currency_code }}{{ "%.2f"|format(invoice.amount_due/100) }}</td>
-        <td class="invoice-amount-paid">{{ currency_code }}{{ "%.2f"|format(invoice.amount_paid/100) }}</td>
-        <td>{{ currency_code }}{{ "%.2f"|format(invoice.amount_remaining/100) }}</td>
+        <td>{{ invoice.currency | upper }}</td>
+        <td>{{ currency_format(invoice.currency, invoice.amount_due) }}</td>
+        <td class="invoice-amount-paid">{{ currency_format(invoice.currency, invoice.amount_paid) }}</td>
+        <td>{{ currency_format(invoice.currency, invoice.amount_remaining) }}</td>
 			</tr>
 			{% endfor %}
 		  </tbody>
