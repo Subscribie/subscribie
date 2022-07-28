@@ -64,8 +64,8 @@
                 </p>
                 {% endif %}
                 {% if plan.requirements.subscription and plan.requirements.instant_payment %}
-                <p class="py-3"><span class="body-lg">Total: <span class="p-2 bg-danger text-white rounded ml-2">{{ currency_code }}{{ "%.2f"|format(plan.getSellPrice("GBP")/100 + plan.getIntervalAmount("GBP")/100) }}</span></span></br></br>
-                Then {{ currency_code }}{{ "%.2f"|format(plan.getIntervalAmount("GBP")/100) }} {{ plan.interval_unit }}</p>
+                <p class="py-3"><span class="body-lg">Total: <span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format(plan.getSellPrice("GBP")/100 + plan.getIntervalAmount("GBP")/100) }}</span></span></br></br>
+                Then {{ geo_currency_symbol }}{{ "%.2f"|format(plan.getIntervalAmount("GBP")/100) }} {{ plan.interval_unit }}</p>
                 {% endif %}
 
             </div>
