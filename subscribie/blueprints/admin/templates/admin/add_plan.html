@@ -100,7 +100,7 @@
                 <label for="interval_amount-0" id="interval_amount_label" class="col-form-label font-weight-bolder">Recurring Amount</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text">{{ currency_code }}</span>
+                    <span class="input-group-text">{{ default_currency_symbol }}</span>
                   </div>
                   <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01">
                 </div>
@@ -152,7 +152,7 @@
               <label for="sell_price-0" class="col-form-label font-weight-bolder">Upfront price</label>
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">{{ currency_code }}</span>
+                  <span class="input-group-text">{{ default_currency_symbol }}</span>
                 </div>
                 <input type="number" step="0.01" name="sell_price-0" id="sell_price-0" class="form-control">
               </div>

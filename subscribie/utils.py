@@ -27,6 +27,10 @@ def get_geo_currency_code():
 def get_shop_default_country_code():
     return "US"
 
+def get_shop_default_currency_symbol():
+    currency_code = get_shop_default_currency_code()
+    currency_symbol = get_currency_symbol_from_currency_code(currency_code)
+    return currency_symbol
 
 def get_geo_country_code():
     # If geo country_code is set, use that,

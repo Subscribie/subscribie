@@ -33,6 +33,7 @@ from subscribie.utils import (
     get_geo_currency_symbol,
     get_geo_currency_code,
     get_shop_default_country_code,
+    get_shop_default_currency_symbol
 )
 import pycountry
 
@@ -148,6 +149,7 @@ def inject_template_globals():
         database.session.commit()
     custom_code = setting.custom_code
     currency_symbol = get_geo_currency_symbol()
+    default_currency_symbol = get_shop_default_currency_symbol()
 
     return dict(
         company=company,
@@ -157,6 +159,7 @@ def inject_template_globals():
         custom_code=Markup(custom_code),
         currency_symbol=currency_symbol,
         get_geo_currency_code=get_geo_currency_code,
+        default_currency_symbol=default_currency_symbol
     )
 
 
