@@ -29,6 +29,7 @@ from subscribie.utils import (
     create_stripe_tax_rate,
     get_shop_default_currency_code,
     get_stripe_invoices,
+    currencyFormat,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -1043,18 +1044,9 @@ def add_custom_code():
         )
 
 
-@admin.context_processor
-def utility_get_transaction_fulfillment_state():
-    """return fulfullment_state of transaction"""
-
-    def get_transaction_fulfillment_state(external_id):
-        transaction = Transaction.query.filter_by(external_id=external_id).first()
-        if transaction:
-            return transaction.fulfillment_state
-        else:
-            return None
-
-    return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
+@admin.app_context_processor
+def inject_template_globals():
+    return dict(currencyFormat=currencyFormat)
 
 
 @admin.route("/subscribers")

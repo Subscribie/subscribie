@@ -129,7 +129,7 @@
             </tr>
               {% for invoice in person.invoices() %}
               <tr>
-                <td>{{ invoice.amount_due | currencyFormat }}</td>
+                <td>{{ currencyFormat(invoice.currency, invoice.amount_due) }}</td>
                 <td>{{ invoice.status }}</td>
                 <td>{{ invoice.created | timestampToDate }}</td>
                 <td>{{ invoice.attempt_count }}</td>
