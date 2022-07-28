@@ -137,7 +137,7 @@ def delete_priceListRule():
     )
 
 
-@admin.route("/delete/<uuid>", methods=["GET", "POST"])
+@admin.route("/priceListRule/delete/<uuid>", methods=["GET", "POST"])
 @login_required
 def delete_priceListRule_by_uuid(uuid):
     """Mark inactive (dont actually delete) priceListRule"""
