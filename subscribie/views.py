@@ -149,7 +149,7 @@ def inject_template_globals():
         database.session.add(setting)
         database.session.commit()
     custom_code = setting.custom_code
-    currency_symbol = get_geo_currency_symbol()
+    geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
     currency_format = currencyFormat
 
@@ -159,7 +159,7 @@ def inject_template_globals():
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
-        currency_symbol=currency_symbol,
+        geo_currency_symbol=geo_currency_symbol,
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
         currency_format=currency_format

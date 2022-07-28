@@ -53,14 +53,14 @@
                 {% if plan.requirements.instant_payment %}
                 <p class="py-3 body-lg">
                     <b>Pay today:</b>
-                    <span class="p-1 bg-success text-white rounded ml-2">{{ currency_code }}{{ "%.2f"|format(plan.getSellPrice("GBP")/100) }}</span>
+                    <span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span>
                 </p>
                 {% endif %}
 
                 {% if plan.requirements.subscription %}
                 <p class="py-3 body-lg">
                     <b>Price ({{ plan.interval_unit }})</b>
-                    <span class="p-2 bg-primary text-white rounded ml-2">{{ currency_code }}{{ "%.2f"|format(plan.getIntervalAmount("GBP")/100) }}</span>
+                    <span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span>
                 </p>
                 {% endif %}
                 {% if plan.requirements.subscription and plan.requirements.instant_payment %}
