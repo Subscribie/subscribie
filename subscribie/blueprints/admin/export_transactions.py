@@ -32,13 +32,13 @@ def export_transactions():
                 subscription_status = None
             # Backward compatibility to GB only shops
             if transaction.currency is None:
-                transaction.currency = "gbp"
+                transaction.currency = "GBP"
             rows.append(
                 {
                     "transaction_date": transaction.created_at,
                     "plan_title": plan_title,
                     "amount": transaction.amount / 100,
-                    "currency": transaction.currency,
+                    "currency": transaction.currency.upper(),
                     "payment_status": transaction.payment_status,
                     "given_name": transaction.person.given_name,
                     "family_name": transaction.person.family_name,
