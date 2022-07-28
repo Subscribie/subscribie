@@ -704,25 +704,34 @@ class Plan(database.Model, HasArchived):
 
         return sell_price, interval_amount
 
-    def getSellPrice(self, currency: str) -> Optional[int]:
+    def getSellPrice(self, currency_code=None) -> Optional[int]:
         """Return the sell_price of a given plan after applying any price rules
         Args:
-            currency: str of the currency requested
+            currency_code: str of the currency requested. If currency is None,
+                      then the currency is detected via geo lookup with
+                      default fallback.
         Returns:
             Integer representing the sell_price after aplying any pricing riles
             or None if plan does not have a sell_price.
         """
-        return self.getPrice(currency)[0]
+        if currency_code is None:
+            currency_code = get_geo_currency_code()
+        return self.getPrice(currency_code)[0]
 
-    def getIntervalAmount(self, currency: str) -> Optional[int]:
+    def getIntervalAmount(self, currency_code=None) -> Optional[int]:
         """Return the sell_price of a given plan after applying any price rules
         Args:
-            currency: str of the currency requested
+            currency_code: str of the currency requested. If currency is None,
+                      then the currency is detected via geo lookup with
+                      default fallback.
         Returns:
             Integer representing the interval_amount after applying any pricing
             rules, or None if plan does not have an interval_amount.
         """
-        return self.getPrice(currency)[1]
+        if currency_code is None:
+            currency_code = get_geo_currency_code()
+
+        return self.getPrice(currency_code)[1]
 
     def showSellPrice(self) -> str:
         """Return formatted currency string of sell price
