@@ -1,3 +1,19 @@
+# v0.1.102 (Fri Jul 29 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@jimmyedagawa78](https://github.com/jimmyedagawa78), for all your work!
+
+#### 🐛 Bug Fix
+
+- update choose.html [#926](https://github.com/Subscribie/subscribie/pull/926) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.101 (Mon Jul 04 2022)
 
 #### 🐛 Bug Fix
