@@ -7,6 +7,7 @@ import logging
 import os
 from datetime import datetime
 
+dog = 1
 log = logging.getLogger(__name__)
 
 if os.getenv("SUPPORTED_CURRENCIES", False) is not False:
@@ -38,30 +39,31 @@ def list_priceListRules():
 @login_required
 def add_priceListRule():
     if request.method == "POST":
-        name = request.form.get("name", None)  # noqa: F841
-        start_date = request.form.get("start_date", None)  # noqa: F841
-        expire_date = request.form.get("expire_date", None)  # noqa: F841
-        affects_sell_price = request.form.get("affects_sell_price", False)  # noqa: F841
+        affects_sell_price = request.form.get("affects_sell_price", False)
         if affects_sell_price == "on":
             affects_sell_price = True
 
-        affects_interval_amount = request.form.get(  # noqa: F841
+        affects_interval_amount = request.form.get(
             "affects_interval_amount", False
-        )
+        )  # noqa: E501
         if affects_interval_amount == "on":
             affects_interval_amount = True
 
-        percent_discount = request.form.get("percent_discount", None)  # noqa: F841
-        percent_increase = request.form.get("percent_increase", None)  # noqa: F841
-        amount_discount = request.form.get("amount_discount", None)  # noqa: F841
-        amount_increase = request.form.get("amount_increase", None)  # noqa: F841
-        min_sell_price = request.form.get("min_sell_price", None)  # noqa: F841
-        min_interval_amount = request.form.get(  # noqa: F841
-            "min_interval_amount", None
-        )
+        percent_discount = request.form.get("percent_discount", None)
+        percent_increase = request.form.get("percent_increase", None)
+        amount_discount = request.form.get("amount_discount", None)
+        amount_increase = request.form.get("amount_increase", None)
+        min_sell_price = request.form.get("min_sell_price", None)
+        min_interval_amount = request.form.get("min_interval_amount", None)
 
         # Create PriceListRule
         priceListRuleForm = dict(request.form)
+        priceListRuleForm["percent_discount"] = percent_discount
+        priceListRuleForm["percent_increase"] = percent_increase
+        priceListRuleForm["amount_discount"] = amount_discount
+        priceListRuleForm["amount_increase"] = amount_increase
+        priceListRuleForm["min_sell_price"] = min_sell_price
+        priceListRuleForm["min_interval_amount"] = min_interval_amount
         priceListRuleForm["start_date"] = datetime.now()
         priceListRuleForm["expire_date"] = datetime.now()
         priceListRuleForm["affects_sell_price"] = affects_sell_price
@@ -102,7 +104,9 @@ def edit_priceListRule():
 
         priceListRuleForm["start_date"] = datetime.now()
         priceListRuleForm["expire_date"] = datetime.now()
-        priceListRule = PriceListRule.query.where(PriceListRule.uuid == priceListRuleId)
+        priceListRule = PriceListRule.query.where(
+            PriceListRule.uuid == priceListRuleId
+        )  # noqa
         priceListRule.update(priceListRuleForm)
         database.session.commit()
         flash(f'Price list rule "{priceListRuleForm["name"]}" updated')
