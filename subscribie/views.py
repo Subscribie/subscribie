@@ -29,12 +29,11 @@ from subscribie.blueprints.admin.stats import (
     get_monthly_revenue,
 )
 from subscribie.utils import (
-    get_shop_default_currency_code,
     get_geo_currency_symbol,
     get_geo_currency_code,
     get_shop_default_country_code,
     get_shop_default_currency_symbol,
-    currencyFormat
+    currencyFormat,
 )
 import pycountry
 
@@ -162,7 +161,7 @@ def inject_template_globals():
         geo_currency_symbol=geo_currency_symbol,
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
-        currency_format=currency_format
+        currency_format=currency_format,
     )
 
 
