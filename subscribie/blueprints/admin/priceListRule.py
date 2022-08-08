@@ -23,12 +23,6 @@ def list_priceListRules():
         PriceListRule.active != False  # noqa: E712
     ).all()
 
-    confirm = False
-    if "confirm" in request.args:
-        confirm = request.args.get("confirm")
-        if confirm == "true":
-            confirm = True
-
     return render_template(
         "admin/pricing/priceListRule/list_priceListRules.html",
         priceListRules=priceListRules,
