@@ -20,7 +20,6 @@ from subscribie.utils import (
     stripe_invoice_failing,
     get_stripe_invoices,
     get_discount_code,
-    get_currency_symbol_from_currency_code,
     get_geo_currency_symbol,
     get_geo_currency_code,
     currencyFormat,
@@ -38,7 +37,9 @@ def _do_orm_execute_hide_archived(orm_execute_state):
         orm_execute_state.is_select
         and not orm_execute_state.is_column_load
         and not orm_execute_state.is_relationship_load
-        and not orm_execute_state.execution_options.get("include_archived", False)
+        and not orm_execute_state.execution_options.get(
+            "include_archived", False
+        )  # noqa: E501
     ):
         orm_execute_state.statement = orm_execute_state.statement.options(
             with_loader_criteria(
@@ -166,7 +167,8 @@ class Person(database.Model, HasArchived):
         stripe_account_id = get_stripe_connect_account_id()
         query = database.session.query(StripeInvoice)
         query = query.join(
-            Subscription, StripeInvoice.subscribie_subscription_id == Subscription.id
+            Subscription,
+            StripeInvoice.subscribie_subscription_id == Subscription.id,  # noqa: E501
         )
         query = query.join(Person, Subscription.person_id == Person.id)
         query = query.filter(Person.id == self.id)
@@ -218,7 +220,9 @@ class Person(database.Model, HasArchived):
         bad_invoices = []
         invoices = self.invoices()
         for invoice in invoices:
-            if stripe_invoice_failed(invoice) or stripe_invoice_failing(invoice):
+            if stripe_invoice_failed(invoice) or stripe_invoice_failing(
+                invoice
+            ):  # noqa: E501
                 bad_invoices.append(invoice)
         return bad_invoices
 
@@ -234,7 +238,9 @@ class Person(database.Model, HasArchived):
 
 class Balance(database.Model):
     __tablename__ = "balance"
-    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    uuid = database.Column(
+        database.String(), default=uuid_string, primary_key=True
+    )  # noqa: E501
     available_amount = database.Column(database.Integer(), nullable=True)
     available_currency = database.Column(database.String(), nullable=True)
     stripe_livemode = database.Column(database.Boolean(), default=False)
@@ -275,7 +281,9 @@ class Subscription(database.Model):
     stripe_invoices = relationship("StripeInvoice")
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     transactions = relationship("Transaction", back_populates="subscription")
-    chosen_options = relationship("ChosenOption", back_populates="subscription")
+    chosen_options = relationship(
+        "ChosenOption", back_populates="subscription"
+    )  # noqa: E501
     currency = database.Column(database.String(), default="USD")
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
@@ -336,8 +344,9 @@ class Subscription(database.Model):
         """Return formatted currency string of sell price
         Utility function to make jinja templating simpler.
 
-        NOTE: Since this is the Subscription object, the sell_price/interval_amount
-        comes directly from this model, since by this point a currency may have been
+        NOTE: Since this is the Subscription object,
+        the sell_price/interval_amount comes directly from
+        this model, since by this point a currency may have been
         used during the purchase of the plan.
 
         jinja usage:
@@ -360,9 +369,10 @@ class Subscription(database.Model):
         """Return formatted currency string of inverval_amount
         Utility function to make jinja templating simpler.
 
-        NOTE: Since this is the Subscription object, the sell_price/interval_amount
-        comes directly from this model, since by this point a currency may have been
-        used during the purchase of the plan.
+        NOTE: Since this is the Subscription object,
+        the sell_price/interval_amount comes directly
+        from this model, since by this point a currency
+        may have been used during the purchase of the plan.
 
         jinja usage:
 
@@ -415,7 +425,9 @@ class UpcomingInvoice(database.Model):
     subscription_uuid = database.Column(
         database.Integer, ForeignKey("subscription.uuid")
     )
-    subscription = relationship("Subscription", back_populates="upcoming_invoice")
+    subscription = relationship(
+        "Subscription", back_populates="upcoming_invoice"
+    )  # noqa: E501
 
 
 class StripeInvoice(database.Model, CreatedAt):
@@ -435,7 +447,9 @@ class StripeInvoice(database.Model, CreatedAt):
     """
 
     __tablename__ = "stripe_invoice"
-    uuid = database.Column(database.String(), default=uuid_string, primary_key=True)
+    uuid = database.Column(
+        database.String(), default=uuid_string, primary_key=True
+    )  # noqa: E501
     id = database.Column(database.String(), nullable=True)
     status = database.Column(database.String(), nullable=True)
     amount_due = database.Column(database.Integer(), nullable=True)
@@ -469,7 +483,9 @@ class Company(database.Model):
 
 association_table_plan_choice_group = database.Table(
     "plan_choice_group",
-    database.Column("choice_group_id", database.Integer, ForeignKey("choice_group.id")),
+    database.Column(
+        "choice_group_id", database.Integer, ForeignKey("choice_group.id")
+    ),  # noqa: E501
     database.Column("plan_id", database.Integer, ForeignKey("plan.id")),
 )
 
@@ -517,7 +533,9 @@ class Plan(database.Model, HasArchived):
     )
     position = database.Column(database.Integer(), default=0)
 
-    category_uuid = database.Column(database.Integer, ForeignKey("category.uuid"))
+    category_uuid = database.Column(
+        database.Integer, ForeignKey("category.uuid")
+    )  # noqa: E501
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
@@ -547,7 +565,7 @@ class Plan(database.Model, HasArchived):
         """
         # Find price_lists for plan
         log.debug(
-            f"Searching for price_list in currency {currency} for plan {self.title}"
+            f"Searching for price_list in currency {currency} for plan {self.title}"  # noqa: E501
         )
 
         # Not all plans will have a price_list, if not, return error
@@ -575,7 +593,9 @@ class Plan(database.Model, HasArchived):
             msg = f"Could not find price_list for currency: {currency}. There are {len(self.price_lists)} connected to this plan, but none of them are for currency {currency}"  # noqa: E501
             log.warning(msg)
             return False, msg
-        log.debug(f"getPrice returning sell price: {sell_price} for plan {self.title}")
+        log.debug(
+            f"getPrice returning sell price: {sell_price} for plan {self.title}"  # noqa: E501
+        )  # noqa: E501
         log.debug(
             f"getPrice returning interval_amount: {interval_amount} for plan {self.title}"  # noqa: E501
         )
@@ -593,7 +613,9 @@ class Plan(database.Model, HasArchived):
         interval_amount = self.interval_amount
 
         log.debug(f"before apply_rules sell price is: {self.sell_price}")
-        log.debug(f"before apply_rules inverval_price is: {self.interval_amount}")
+        log.debug(
+            f"before apply_rules inverval_price is: {self.interval_amount}"
+        )  # noqa: E501
 
         def apply_percent_increase(base: int, percent_increase: int) -> int:
             add = int((base / 100) * percent_increase)
@@ -613,7 +635,9 @@ class Plan(database.Model, HasArchived):
             base += amount_increase
             return base
 
-        def check_discount_code_valid(expected_discount_code=None, f=None) -> bool:
+        def check_discount_code_valid(
+            expected_discount_code=None, f=None
+        ) -> bool:  # noqa: E501
             """
             Check discount code is valid
 
@@ -673,7 +697,10 @@ class Plan(database.Model, HasArchived):
                         sell_price, rule.amount_increase
                     )  # noqa: E501
 
-                if rule.affects_interval_amount and interval_amount is not None:
+                if (
+                    rule.affects_interval_amount
+                    and interval_amount is not None  # noqa: E501
+                ):
 
                     if rule.percent_increase:
                         interval_amount = apply_percent_increase(
@@ -694,7 +721,9 @@ class Plan(database.Model, HasArchived):
                     )  # noqa: E501
 
                 log.debug(f"after apply_rules sell price is: {sell_price}")
-                log.debug(f"after apply_rules interval_amount is: {interval_amount}")
+                log.debug(
+                    f"after apply_rules interval_amount is: {interval_amount}"
+                )  # noqa: E501
 
             return sell_price, interval_amount
 
@@ -739,7 +768,7 @@ class Plan(database.Model, HasArchived):
 
         From this:
 
-        {{ currency_code }}{{ "%.2f"|format(plan.getSellPrice(get_geo_currency_code())/100) }}
+        {{ currency_code }}{{ "%.2f"|format(plan.getSellPrice(get_geo_currency_code())/100) }} # noqa: E501
 
         To to this:
 
@@ -1045,8 +1074,9 @@ class PriceListRule(database.Model):
     At least, there would be 1 PriceList: One for USD, a second PriceList is
     not mandatory for GBP since that is the default currency. However, the
     moment the shop owner wants to apply special price rules for GBP, the
-    shop owner would need to create a GBP PriceList (e.g. a single GBP PriceList
-    with two PriceListRule(s) giving 10% off, for subscriptions over £50
+    shop owner would need to create a GBP PriceList
+    (e.g. a single GBP PriceList with two PriceListRule(s)
+    giving 10% off, for subscriptions over £50
     """
 
     __tablename__ = "price_list_rule"
