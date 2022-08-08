@@ -1,3 +1,93 @@
+# v0.1.98 (Mon Jun 20 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update demo-videos.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.97 (Mon Jun 20 2022)
+
+#### 🐛 Bug Fix
+
+- updating onboarding stripe 2 [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- updating stripe onboarding steps [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- missing one character for the or statement [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- only restarting dokku container if mounting the email-queue folder for the first time [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- true if already exist [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- fixing misspelling [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- mounting email queue folder [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- adding back the http to development [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- #913 adding queue email folder [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- refactoring email sending to magic login and reset password [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- removing http on development environment [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+- #913 changing test subscriber user with a new valid test mail [#914](https://github.com/Subscribie/subscribie/pull/914) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.96 (Mon Jun 13 2022)
+
+#### 🐛 Bug Fix
+
+- #910 center get started and demo shop button [#912](https://github.com/Subscribie/subscribie/pull/912) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.95 (Mon Jun 13 2022)
+
+#### 🐛 Bug Fix
+
+- ordering upfront plan with test user [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing special characters [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- debug 3 [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing debug 2 [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing debug [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing password url from logs [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- removing password reset url https when running in development mode [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+- updating subscriber magic login test [#729](https://github.com/Subscribie/subscribie/pull/729) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.94 (Sat Jun 11 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.93 (Wed Jun 08 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #908 show link to live demo try [#909](https://github.com/Subscribie/subscribie/pull/909) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.92 (Tue May 31 2022)
 
 #### 🐛 Bug Fix

@@ -1,23 +1,23 @@
-const https = require('https')
+const https = require('https');
 
-function checkShopOwnerLogin() {
-  SHOP_OWNER_EMAIL_HOST = process.env.SHOP_OWNER_EMAIL_HOST
-  SHOP_OWNER_EMAIL_USER = process.env.SHOP_OWNER_EMAIL_USER
-  SHOP_OWNER_EMAIL_PASSWORD = process.env.SHOP_OWNER_EMAIL_PASSWORD
-  MAGIC_LOGIN_IMAP_SEARCH_SUBJECT = process.env.MAGIC_LOGIN_IMAP_SEARCH_SUBJECT
-  // global env
+function checkSubscriberLogin() {
+  console.log("executing checkSubscribierLogin")
+  SUBSCRIBER_EMAIL_HOST = process.env.SUBSCRIBER_EMAIL_HOST
+  SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER
+  SUBSCRIBER_EMAIL_PASSWORD = process.env.SUBSCRIBER_EMAIL_PASSWORD
+  RESET_PASSWORD_IMAP_SEARCH_SUBJECT = process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT
+  //global env
   IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
   EMAIL_SEARCH_API_HOST = process.env.EMAIL_SEARCH_API_HOST
 
   const data = JSON.stringify({
-    email_host: SHOP_OWNER_EMAIL_HOST,
-    email_user: SHOP_OWNER_EMAIL_USER,
-    email_password: SHOP_OWNER_EMAIL_PASSWORD,
-    imap_search_subject: MAGIC_LOGIN_IMAP_SEARCH_SUBJECT,
+    email_host: SUBSCRIBER_EMAIL_HOST,
+    email_user: SUBSCRIBER_EMAIL_USER,
+    email_password: SUBSCRIBER_EMAIL_PASSWORD,
+    imap_search_subject: RESET_PASSWORD_IMAP_SEARCH_SUBJECT,
     imap_search_unseen: 1,
     imap_search_since_date: IMAP_SEARCH_SINCE_DATE
   })
-
 
   const options = {
     hostname: EMAIL_SEARCH_API_HOST,
@@ -29,7 +29,6 @@ function checkShopOwnerLogin() {
       'Content-Length': data.length
     }
   }
-
   const req = https.request(options, res => {
     console.log(`statusCode: ${res.statusCode}`)
     if ( res.statusCode != 200 ) {
@@ -44,11 +43,14 @@ function checkShopOwnerLogin() {
         process.exit(5)
       }
       lastEmail = emails[emails.length -1]['email_body']
-      if ( lastEmail.includes('/auth/login/') ) {
+      if ( lastEmail.includes('/account/password-reset')) {
+        //json to string
         jsonToString = JSON.stringify(lastEmail);
-        const regex = /"(http.*)(?:\\")/gm;
-        magic_login_url = regex.exec(jsonToString)[1];
-        module.exports.magic_login_url = magic_login_url;
+
+        // filter email magic login url
+        const regex = /"(http.*)(?:\\r)/gm;
+        reset_password_url = regex.exec(jsonToString)[1];
+        module.exports.reset_password_url = reset_password_url;
         return true
       } else {
         console.error("Could not find login text in email")
@@ -64,6 +66,5 @@ function checkShopOwnerLogin() {
   req.write(data)
   req.end()
 }
-
-exports.checkShopOwnerLogin = checkShopOwnerLogin;
+exports.checkSubscriberLogin = checkSubscriberLogin;
 

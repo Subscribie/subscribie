@@ -22,7 +22,6 @@ You don't need to be technical, and can integrate it with your existing business
   - [Application server](#application-server-uwsgi)
 #### Open Source subscription billing and management
 
-
 ## Demo
 https://footballclub.subscriby.shop/
 <a href="https://footballclub.subscriby.shop/" target="_blank">
@@ -130,6 +129,11 @@ Quickly set-up a subscription site which can:
 - Integrate with google analytics ✔️
 - Change the colour of my shop ✔️
 - Is mobile friendly ✔️
+
+
+
+> 🌍 Looking for true multi-currency support 💴💵💶💷? We're on it! [Create a test shop now](https://subscribie.co.uk) and we will DM you once it's ready. 🙏🙌
+
 
 # Why is this project useful?                                                    
 

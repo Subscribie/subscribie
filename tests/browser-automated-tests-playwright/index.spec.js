@@ -54,7 +54,6 @@ test.describe("Subscribie tests:", () => {
           console.log("Detected stripe onboarding")
           // Use the text phone number for SMS verification
           await page.click('text="the test phone number"');
-          await page.fill('#email', email);
           await page.click('text="Continue"');
           await new Promise(x => setTimeout(x, 2000));
         } else {
@@ -96,6 +95,7 @@ test.describe("Subscribie tests:", () => {
           await page.fill('input[name=address]', "123 Tree Lane");
           await page.fill('input[name=locality]', "123 Tree Lane");
           await page.fill('input[name=zip]', "SW1A 1AA");
+          await page.fill('input[name=phone]', "0000000000");
           await page.click('text="Continue"');
         }
         // Stripe onboarding industry selection
