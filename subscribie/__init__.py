@@ -9,7 +9,6 @@
 """
 from dotenv import load_dotenv
 
-load_dotenv(verbose=True)
 from .logger import logger  # noqa: F401
 import logging
 import os
@@ -30,7 +29,12 @@ from flask import (
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme
 from flask_cors import CORS
-from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
+from flask_uploads import (
+    configure_uploads,
+    UploadSet,
+    IMAGES,
+    patch_request_class,
+)  # noqa: E501
 import importlib
 import urllib
 from pathlib import Path
@@ -40,6 +44,8 @@ import click
 from jinja2 import Template
 
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
+
+load_dotenv(verbose=True)
 
 log = logging.getLogger(__name__)
 
@@ -165,7 +171,6 @@ def create_app(test_config=None):
                         )
                 else:
                     log.debug("SUPPORTED_CURRENCIES is not set")
-                pass
             # Ensure every plan has a PriceList attached for each supported currency
             plans = Plan.query.all()
             price_lists = (
