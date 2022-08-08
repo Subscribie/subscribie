@@ -42,10 +42,6 @@ test.describe("Subscribie tests:", () => {
       await page.goto('/admin/connect/stripe-connect');
       await page.click('.btn-success');
 
-      // Create shop owner stripe connect email address based on 'admin' + 'hostname'
-      const email = await page.evaluate(() => 'admin@' + document.location.hostname);
-      await new Promise(x => setTimeout(x, 5000));
-
       console.log("Start Stripe connect onboarding")
 
         const phone_email_content = await page.textContent('.db-ConsumerUITitle');
@@ -100,8 +96,8 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding industry selection
         //const business_details_content = await page.textContent('.db-ConsumerUITitle');
-        const business_details_content = await page.textContent('text="Tell us more about your business"');
-        if (expect(business_details_content === "Tell us more about your buisness")) {
+        const business_details_content = await page.textContent('text="Tell us a few details about how you earn money with Subscribie."');
+        if (expect(business_details_content === "Tell us a few details about how you earn money with Subscribie.")) {
           await new Promise(x => setTimeout(x, 1000));
           await page.click('text="Please select your industry…"');
           await page.click('text="Software"');
