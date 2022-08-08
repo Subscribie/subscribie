@@ -1,3 +1,22 @@
+# v0.1.103 (Mon Aug 08 2022)
+
+#### 🐛 Bug Fix
+
+- #927 re-order and re-word footer links [#928](https://github.com/Subscribie/subscribie/pull/928) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Updating Landing Page Links with Relevant Keywords [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- fixed landing page link [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- Spelling Correction to site footer (Landing Pages) [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- adding footer header and fixing missed end of div [#928](https://github.com/Subscribie/subscribie/pull/928) ([@joeltejeda](https://github.com/joeltejeda))
+- Add Landing Page [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 3
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.102 (Fri Jul 29 2022)
 
 :tada: This release contains work from a new contributor! :tada:
