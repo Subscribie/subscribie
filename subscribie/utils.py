@@ -19,7 +19,7 @@ def get_geo_currency_code():
     try:
         currency_code = COUNTRY_CODE_TO_CURRENCY_CODE[country_code]
     except KeyError as e:
-        log.error("Could not map country_code {country_code} to a currency code.")
+        log.error(f"Could not map country_code {country_code} to a currency code. {e}")
         currency_code = get_shop_default_currency_code()
     return currency_code
 
@@ -27,10 +27,12 @@ def get_geo_currency_code():
 def get_shop_default_country_code():
     return "US"
 
+
 def get_shop_default_currency_symbol():
     currency_code = get_shop_default_currency_code()
     currency_symbol = get_currency_symbol_from_currency_code(currency_code)
     return currency_symbol
+
 
 def get_geo_country_code():
     # If geo country_code is set, use that,
@@ -40,6 +42,7 @@ def get_geo_country_code():
     else:
         country_code = get_shop_default_country_code()
     return country_code
+
 
 def get_currency_symbol_from_currency_code(currency_code: str) -> str:
     currency_code = currency_code.upper()
@@ -67,7 +70,16 @@ def get_shop_default_currency_code():
     """
     setting = Setting.query.first()
     default_currency_code = setting.default_currency
+    # Mid-upgrade compatibility for shops migrating before
+    # https://github.com/Subscribie/subscribie/issues/482
+    if default_currency_code is None:
+        default_currency_code = "GBP"
+        log.warning(
+            f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
+        )
+
     return default_currency_code
+
 
 def currencyFormat(currency_code: str, value) -> str:
     currency_symbol = get_currency_symbol_from_currency_code(currency_code)
