@@ -1,3 +1,18 @@
+# v0.1.105 (Tue Aug 09 2022)
+
+#### 🐛 Bug Fix
+
+- udpate stripe onboarding 3 [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting connect account id if stripe was not connected succesfully [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- updating stripe onboarding2 [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- update stripe onboarding [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.104 (Tue Aug 09 2022)
 
 #### 🐛 Bug Fix
