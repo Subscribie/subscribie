@@ -123,7 +123,7 @@ test.describe("Subscribie tests:", () => {
           console.log("On the Let's review your details page");
           await new Promise(x => setTimeout(x, 2000));
           //await page.click('button:has-text("Update")');
-          await page.locator('button:has-text=("Update")').click();
+          await page.locator('text="Update"').click();
         }
         // Stripe onboarding identify verification step
         //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
