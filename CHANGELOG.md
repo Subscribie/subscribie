@@ -1,3 +1,15 @@
+# v0.1.104 (Tue Aug 09 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #930 show url to plan in api get plan output [#931](https://github.com/Subscribie/subscribie/pull/931) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.103 (Mon Aug 08 2022)
 
 #### 🐛 Bug Fix
