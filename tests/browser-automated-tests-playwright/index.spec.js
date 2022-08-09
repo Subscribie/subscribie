@@ -38,13 +38,14 @@ test.describe("Subscribie tests:", () => {
       test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
       expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
 
+      // deleting connect account id, if stripe was not succesfully connected
+      await page.goto('/admin/delete-connect-account');
+      await page.goto('/admin/dashboard');
+      console.log('deleting connect account id');
+
       // Start Stripe connect onboarding
       await page.goto('/admin/connect/stripe-connect');
       await page.click('.btn-success');
-
-      // Create shop owner stripe connect email address based on 'admin' + 'hostname'
-      const email = await page.evaluate(() => 'admin@' + document.location.hostname);
-      await new Promise(x => setTimeout(x, 5000));
 
       console.log("Start Stripe connect onboarding")
 
@@ -100,8 +101,8 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding industry selection
         //const business_details_content = await page.textContent('.db-ConsumerUITitle');
-        const business_details_content = await page.textContent('text="Tell us more about your business"');
-        if (expect(business_details_content === "Tell us more about your buisness")) {
+        const business_details_content = await page.textContent('text="Tell us a few details about how you earn money with Subscribie."');
+        if (expect(business_details_content === "Tell us a few details about how you earn money with Subscribie.")) {
           await new Promise(x => setTimeout(x, 1000));
           await page.click('text="Please select your industry…"');
           await page.click('text="Software"');
@@ -121,7 +122,8 @@ test.describe("Subscribie tests:", () => {
         if (expect(notice_title_content === "Missing required information")) {
           console.log("On the Let's review your details page");
           await new Promise(x => setTimeout(x, 2000));
-          await page.click('button:has-text("Update")');
+          //await page.click('button:has-text("Update")');
+          await page.locator('text="Update"').click();
         }
         // Stripe onboarding identify verification step
         //const additional_information_content = await page.textContent('.db-ConsumerUITitle');

@@ -1,3 +1,103 @@
+# v0.1.105 (Tue Aug 09 2022)
+
+#### 🐛 Bug Fix
+
+- udpate stripe onboarding 3 [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- deleting connect account id if stripe was not connected succesfully [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- updating stripe onboarding2 [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+- update stripe onboarding [#929](https://github.com/Subscribie/subscribie/pull/929) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.104 (Tue Aug 09 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #930 show url to plan in api get plan output [#931](https://github.com/Subscribie/subscribie/pull/931) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.103 (Mon Aug 08 2022)
+
+#### 🐛 Bug Fix
+
+- #927 re-order and re-word footer links [#928](https://github.com/Subscribie/subscribie/pull/928) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Updating Landing Page Links with Relevant Keywords [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- fixed landing page link [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- Spelling Correction to site footer (Landing Pages) [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+- adding footer header and fixing missed end of div [#928](https://github.com/Subscribie/subscribie/pull/928) ([@joeltejeda](https://github.com/joeltejeda))
+- Add Landing Page [#928](https://github.com/Subscribie/subscribie/pull/928) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 3
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.102 (Fri Jul 29 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@jimmyedagawa78](https://github.com/jimmyedagawa78), for all your work!
+
+#### 🐛 Bug Fix
+
+- update choose.html [#926](https://github.com/Subscribie/subscribie/pull/926) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.101 (Mon Jul 04 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #921 move "More Details" plan description to below selling points of plan [#922](https://github.com/Subscribie/subscribie/pull/922) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #921 adding description template to plans [#922](https://github.com/Subscribie/subscribie/pull/922) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.100 (Tue Jun 21 2022)
+
+#### 🐛 Bug Fix
+
+- #915 github.head_ref -> env.SUBDOMAIN [#917](https://github.com/Subscribie/subscribie/pull/917) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.99 (Mon Jun 20 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #915 demo-videos syntax [#916](https://github.com/Subscribie/subscribie/pull/916) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.98 (Mon Jun 20 2022)
 
 #### ⚠️ Pushed to `master`

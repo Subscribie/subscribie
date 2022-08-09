@@ -1,6 +1,6 @@
 import logging
 from .auth import token_required, login_required
-from flask import Blueprint, jsonify, request, Response, redirect
+from flask import Blueprint, jsonify, request, Response, redirect, url_for
 from .models import Plan, PlanRequirements, PlanSellingPoints, User, Setting
 from .auth import generate_login_url
 from .auth import get_magic_login_link
@@ -132,6 +132,7 @@ def get_plans():
 def get_plan(plan_id):
     plan = Plan.query.get(plan_id)
     res = json.loads(schemas.Plan.from_orm(plan).json())
+    res["url"] = url_for("views.view_plan", uuid=plan.uuid, _external=True)
     return jsonify(res)
 
 

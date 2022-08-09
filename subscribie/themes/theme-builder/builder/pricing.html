@@ -20,6 +20,7 @@
                {{ plan['title']|safe }}
             </h4>
           </div>
+
           <div class="card-body">
           {% if plan.requirements.subscription and plan.trial_period_days > 0 %}
             <h1 class="card-title pricing-card-title">
@@ -70,6 +71,18 @@
               </details>
              {% endfor %}
             {% endif %}
+
+          {% if plan.description is not sameas None %}
+            <div>
+              <div class="btn-link-lg btn-block text-center pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
+                <h5 class="mb-4">More details</h5>
+              </div>
+              <div class="collapse" id="collapse-{{ plan.id }}">
+                <p class="text pt-2">{{ plan.description }}</p>
+              </div>
+            </div>
+          {% endif %}
+
             <a href="/start-building?plan={{ plan.uuid }}&sku={{ plan.sku }}"
                class="btn btn-lg btn-block btn-primary">Start now</a>
           </div>
