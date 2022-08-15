@@ -1,3 +1,16 @@
+# v0.1.106 (Mon Aug 15 2022)
+
+#### ⚠️ Pushed to `master`
+
+- #932 remive honeycomb ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- fix #934 wip remove undeeded settings ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.105 (Tue Aug 09 2022)
 
 #### 🐛 Bug Fix
