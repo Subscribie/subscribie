@@ -22,7 +22,7 @@ def upgrade():
             "cancel_at",
             type_=sa.Boolean(),
             nullable=True,
-            existing_type=sa.String(),
+            existing_type=sa.String(255),
             default=False,
         )
 

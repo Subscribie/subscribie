@@ -21,13 +21,15 @@ def upgrade():
     op.create_table(
         "category",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("uuid", sa.String(), nullable=True),
+        sa.Column("uuid", sa.String(255), nullable=True, index=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("name", sa.String(255), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     with op.batch_alter_table("plan") as batch_op:
-        batch_op.add_column(sa.Column("category_uuid", sa.Integer(), nullable=True))
+        batch_op.add_column(
+            sa.Column("category_uuid", sa.String(255), nullable=True, index=True)
+        )
         batch_op.create_foreign_key(
             "fk_category_uuid", "category", ["category_uuid"], ["uuid"]
         )

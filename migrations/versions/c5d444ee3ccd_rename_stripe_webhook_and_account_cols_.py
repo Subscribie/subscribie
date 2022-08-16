@@ -6,6 +6,7 @@ Create Date: 2020-11-02 11:31:22.184012
 
 """
 from alembic import op
+import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "c5d444ee3ccd"
@@ -19,14 +20,17 @@ def upgrade():
         batch_op.alter_column(
             "stripe_webhook_endpoint_id",
             new_column_name="stripe_live_webhook_endpoint_id",
+            existing_type=sa.String(255),
         )
         batch_op.alter_column(
             "stripe_webhook_endpoint_secret",
             new_column_name="stripe_live_webhook_endpoint_secret",
+            existing_type=sa.String(255),
         )
         batch_op.alter_column(
             "stripe_connect_account_id",
             new_column_name="stripe_live_connect_account_id",
+            existing_type=sa.String(255),
         )
 
 

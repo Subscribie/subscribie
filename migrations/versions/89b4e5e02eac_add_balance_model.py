@@ -19,9 +19,9 @@ depends_on = None
 def upgrade():
     op.create_table(
         "balance",
-        sa.Column("uuid", sa.String(), nullable=False),
+        sa.Column("uuid", sa.String(255), nullable=False),
         sa.Column("available_amount", sa.Integer(), nullable=True),
-        sa.Column("available_currency", sa.String(), nullable=True),
+        sa.Column("available_currency", sa.String(255), nullable=True),
         sa.Column("stripe_livemode", sa.Boolean(), nullable=True),
         sa.PrimaryKeyConstraint("uuid"),
     )

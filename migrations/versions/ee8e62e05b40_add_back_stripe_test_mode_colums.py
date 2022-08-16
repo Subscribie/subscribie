@@ -19,10 +19,12 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("payment_provider") as batch_op:
         batch_op.add_column(
-            sa.Column("stripe_test_webhook_endpoint_id", sa.String(), nullable=True)
+            sa.Column("stripe_test_webhook_endpoint_id", sa.String(255), nullable=True)
         )
         batch_op.add_column(
-            sa.Column("stripe_test_webhook_endpoint_secret", sa.String(), nullable=True)
+            sa.Column(
+                "stripe_test_webhook_endpoint_secret", sa.String(255), nullable=True
+            )
         )
 
 
