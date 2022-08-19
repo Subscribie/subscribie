@@ -1,3 +1,17 @@
+# v0.1.107 (Fri Aug 19 2022)
+
+#### 🐛 Bug Fix
+
+- fixing database session was never closed [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+- refactoring [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+- #918 check if stripe event webhook livemode is equal to database stripe_livemode [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.106 (Mon Aug 15 2022)
 
 #### ⚠️ Pushed to `master`
