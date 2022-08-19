@@ -1,3 +1,15 @@
+# v0.1.108 (Fri Aug 19 2022)
+
+#### 🐛 Bug Fix
+
+- Added Features Link to footer [#933](https://github.com/Subscribie/subscribie/pull/933) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.107 (Fri Aug 19 2022)
 
 #### 🐛 Bug Fix
