@@ -1,3 +1,42 @@
+# v0.1.108 (Fri Aug 19 2022)
+
+#### 🐛 Bug Fix
+
+- Added Features Link to footer [#933](https://github.com/Subscribie/subscribie/pull/933) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.107 (Fri Aug 19 2022)
+
+#### 🐛 Bug Fix
+
+- fixing database session was never closed [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+- refactoring [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+- #918 check if stripe event webhook livemode is equal to database stripe_livemode [#919](https://github.com/Subscribie/subscribie/pull/919) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.106 (Mon Aug 15 2022)
+
+#### ⚠️ Pushed to `master`
+
+- #932 remive honeycomb ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- fix #934 wip remove undeeded settings ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.105 (Tue Aug 09 2022)
 
 #### 🐛 Bug Fix

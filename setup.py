@@ -35,7 +35,6 @@ setuptools.setup(
         "pyjwt[crypto]",
         "py-auth-header-parser==1.0.2",
         "pydantic==1.6.2",
-        "honeycomb-beeline==2.14.0",
     ],
     entry_points="""
         [console_scripts]
