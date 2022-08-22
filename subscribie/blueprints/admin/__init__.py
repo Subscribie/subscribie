@@ -705,12 +705,11 @@ def add_plan():
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
         price_lists = PriceList.query.all()
-        if len(draftPlan.price_lists) == 0:
-            for price_list in price_lists:
-                log.debug(f"Adding price_list {price_list.name} to {draftPlan.title}")
-                draftPlan.price_lists.append(price_list)
-                database.session.commit()
-                log.debug(f"Added price_list {price_list.name} to {draftPlan.title}")
+        for price_list in price_lists:
+            log.debug(f"Adding price_list {price_list.name} to {draftPlan.title}")
+            draftPlan.price_lists.append(price_list)
+            database.session.commit()
+            log.debug(f"Added price_list {price_list.name} to {draftPlan.title}")
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
