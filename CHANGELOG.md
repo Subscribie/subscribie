@@ -1,3 +1,16 @@
+# v0.1.109 (Mon Aug 22 2022)
+
+#### 🐛 Bug Fix
+
+- ref #937 bring back usage of IMAP_SEARCH_UNSEEN so is configurable [#938](https://github.com/Subscribie/subscribie/pull/938) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- fix #937 update env playwright test example [#938](https://github.com/Subscribie/subscribie/pull/938) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.108 (Fri Aug 19 2022)
 
 #### 🐛 Bug Fix

@@ -4,6 +4,7 @@ function checkShopOwnerLogin() {
   SHOP_OWNER_EMAIL_HOST = process.env.SHOP_OWNER_EMAIL_HOST
   SHOP_OWNER_EMAIL_USER = process.env.SHOP_OWNER_EMAIL_USER
   SHOP_OWNER_EMAIL_PASSWORD = process.env.SHOP_OWNER_EMAIL_PASSWORD
+  IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
   MAGIC_LOGIN_IMAP_SEARCH_SUBJECT = process.env.MAGIC_LOGIN_IMAP_SEARCH_SUBJECT
   // global env
   IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
@@ -14,7 +15,7 @@ function checkShopOwnerLogin() {
     email_user: SHOP_OWNER_EMAIL_USER,
     email_password: SHOP_OWNER_EMAIL_PASSWORD,
     imap_search_subject: MAGIC_LOGIN_IMAP_SEARCH_SUBJECT,
-    imap_search_unseen: 1,
+    imap_search_unseen: IMAP_SEARCH_UNSEEN,
     imap_search_since_date: IMAP_SEARCH_SINCE_DATE
   })
 
