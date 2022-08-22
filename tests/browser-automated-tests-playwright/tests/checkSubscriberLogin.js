@@ -5,6 +5,7 @@ function checkSubscriberLogin() {
   SUBSCRIBER_EMAIL_HOST = process.env.SUBSCRIBER_EMAIL_HOST
   SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER
   SUBSCRIBER_EMAIL_PASSWORD = process.env.SUBSCRIBER_EMAIL_PASSWORD
+  IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
   RESET_PASSWORD_IMAP_SEARCH_SUBJECT = process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT
   //global env
   IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
@@ -15,7 +16,7 @@ function checkSubscriberLogin() {
     email_user: SUBSCRIBER_EMAIL_USER,
     email_password: SUBSCRIBER_EMAIL_PASSWORD,
     imap_search_subject: RESET_PASSWORD_IMAP_SEARCH_SUBJECT,
-    imap_search_unseen: 1,
+    imap_search_unseen: IMAP_SEARCH_UNSEEN,
     imap_search_since_date: IMAP_SEARCH_SINCE_DATE
   })
 
