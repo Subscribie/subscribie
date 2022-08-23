@@ -797,6 +797,14 @@ class Plan(database.Model, HasArchived):
         result = f"{currency_symbol}{amount:.2f}"
         return result
 
+    def assignDefaultPriceLists(self, price_lists, title):
+        existing_price_list = PriceList.query.all()
+        for price_list in existing_price_list:
+            log.debug(f"Added price_list {price_list.name} to {title}")
+            price_lists.append(price_list)
+            log.debug(f"Added price_list {price_list.name} to {title}")
+        return price_lists
+
 
 class Category(database.Model):
     __tablename__ = "category"

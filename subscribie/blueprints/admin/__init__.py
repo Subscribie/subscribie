@@ -72,7 +72,6 @@ from subscribie.models import (
     TaxRate,
     Category,
     UpcomingInvoice,
-    PriceList,
 )
 from .subscription import update_stripe_subscription_statuses
 from .stats import (
@@ -588,6 +587,9 @@ def edit():
             else:
                 draftPlan.private = 0
 
+            # filling plan price_list with existing price_lists
+            draftPlan.assignDefaultPriceLists(draftPlan.price_lists, draftPlan.title)
+
             # Primary icon image storage
             f = getPlan(form.image.data, index)
             if f:
@@ -704,11 +706,10 @@ def add_plan():
 
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
-        price_lists = PriceList.query.all()
-        for price_list in price_lists:
-            log.debug(f"Adding price_list {price_list.name} to {draftPlan.title}")
-            draftPlan.price_lists.append(price_list)
-            log.debug(f"Added price_list {price_list.name} to {draftPlan.title}")
+
+        # filling plan price_list with existing price_lists
+        draftPlan.assignDefaultPriceLists(draftPlan.price_lists, draftPlan.title)
+
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
