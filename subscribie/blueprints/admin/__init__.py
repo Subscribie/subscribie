@@ -588,7 +588,7 @@ def edit():
                 draftPlan.private = 0
 
             # filling plan price_list with existing price_lists
-            draftPlan.assignDefaultPriceLists(draftPlan.price_lists, draftPlan.title)
+            draftPlan.assignDefaultPriceLists()
 
             # Primary icon image storage
             f = getPlan(form.image.data, index)
@@ -708,7 +708,7 @@ def add_plan():
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
 
         # filling plan price_list with existing price_lists
-        draftPlan.assignDefaultPriceLists(draftPlan.price_lists, draftPlan.title)
+        draftPlan.assignDefaultPriceLists()
 
         database.session.commit()
         flash("Plan added.")
