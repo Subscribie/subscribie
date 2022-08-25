@@ -7,8 +7,8 @@ test("@463@subscriber@Ordering plan with VAT", async ({ page }) => {
         await page.click('[name="Bath Soaps"]');
 
         // Fill in order form
-        await page.fill('#given_name', 'Paul');
-        await page.fill('#family_name', 'Man');
+        await page.fill('#given_name', 'John');
+        await page.fill('#family_name', 'Smith');
         await page.fill('#email', SUBSCRIBER_EMAIL_USER);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
