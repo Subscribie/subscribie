@@ -25,7 +25,7 @@ def get_geo_currency_code():
 
 
 def get_shop_default_country_code():
-    return "US"
+    return "GB"
 
 
 def get_shop_default_currency_symbol():
@@ -57,7 +57,7 @@ def get_geo_currency_symbol():
     setting = Setting.query.first()
     default_currency = setting.default_currency
     if default_currency is None:
-        default_currency = "USD"
+        default_currency = "GBP"
     currency_symbol = CurrencySymbols.get_symbol(default_currency)
     return currency_symbol
 
