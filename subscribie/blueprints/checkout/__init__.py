@@ -260,6 +260,7 @@ def thankyou():
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     data = request.json
+
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
     if settings is not None:
@@ -274,9 +275,11 @@ def stripe_create_checkout_session():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
-    charge["sell_price"] = plan.sell_price
-    charge["interval_amount"] = plan.interval_amount
-    charge["currency"] = get_geo_currency_code()
+    currency_code = get_geo_currency_code()
+
+    charge["sell_price"] = plan.getSellPrice(currency_code)
+    charge["interval_amount"] = plan.getIntervalAmount(currency_code)
+    charge["currency"] = currency_code
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(
@@ -409,6 +412,7 @@ def stripe_create_checkout_session():
 
 
 def create_subscription(
+    currency=None,  # None to allow subscriptions with no monetary association
     email=None,
     package=None,
     chosen_option_ids=None,
@@ -424,6 +428,16 @@ def create_subscription(
     """
     log.info("Creating Subscription model if needed")
     subscription = None  # Initalize subscription model to None
+    # Get the associated plan they have purchased
+    plan = database.session.query(Plan).filter_by(uuid=package).one()
+    if currency is not None:
+        sell_price, interval_amount = plan.getPrice(currency)
+    else:
+        log.warning(
+            "currency was set to None, so setting Subscription sell_price and interval_amount to zero"
+        )
+        sell_price = 0
+        interval_amount = 0
 
     # Store Subscription against Person locally
     if email is None:
@@ -457,12 +471,20 @@ def create_subscription(
     if subscription is None:
         log.info("No existing subscription model found, creating Subscription model")
         # Create new subscription model
+        # - Get current pricing
+        # - TODO address race condition:
+        #   - add validation for potential discrepency between Stripe
+        #     webhook delivery delay and price rules changing
         subscription = Subscription(
             sku_uuid=package,
             person=person,
             subscribie_checkout_session_id=subscribie_checkout_session_id,
             stripe_external_id=stripe_external_id,
             stripe_subscription_id=stripe_subscription_id,
+            interval_unit=plan.interval_unit,
+            interval_amount=interval_amount,
+            sell_price=sell_price,
+            currency=currency,
         )
         # Add chosen options (if any)
         if chosen_option_ids is None:
@@ -591,6 +613,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         is None
     ):
         transaction = Transaction()
+        transaction.currency = data["currency"]
         transaction.amount = data["amount"]
         transaction.payment_status = (
             "paid" if data["status"] == "succeeded" else data["status"]
@@ -662,6 +685,7 @@ def stripe_webhook():
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
+        currency = session["currency"].upper()
         try:
             subscribie_checkout_session_id = session["metadata"][
                 "subscribie_checkout_session_id"
@@ -698,6 +722,7 @@ def stripe_webhook():
         """
         if session["mode"] == "subscription" or session["mode"] == "payment":
             create_subscription(
+                currency=currency,
                 email=session["customer_email"],
                 package=package,
                 chosen_option_ids=chosen_option_ids,
