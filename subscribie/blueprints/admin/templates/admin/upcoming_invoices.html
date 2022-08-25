@@ -89,7 +89,7 @@ li { list-style: none}
                         </li>
                         <li><strong>Sell price: </strong>
                             {% if upcomingInvoice.subscription.plan.requirements.instant_payment %}
-                            <span class="plan-sell-price">{{ upcomingInvoice.subscription.plan.sell_price|default(0)|currencyFormat }}</span>
+                            <span class="plan-sell-price">{{ currencyFormat(upcomingInvoice.stripe_currency, upcomingInvoice.subscription.plan.sell_price) }}</span>
                             {% else %}
                               <span class="upcoming-invoices-plan-no-sell_price">(No up-front cost)</span>
                             {% endif %}
