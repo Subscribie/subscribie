@@ -85,9 +85,17 @@ test.describe("Subscribie tests:", () => {
           try {
               await page.fill('#first_name', "Sam");
               await page.fill('#last_name', "Smith");
-              await page.fill('input[name=dob-day]', "28");
-              await page.fill('input[name=dob-month]', "12");
-              await page.fill('input[name=dob-year]', "1990");
+              try {
+                await page.fill('input[name=dob-day]', "28", { timeout: 10000 });
+                await page.fill('input[name=dob-month]', "12", { timeout: 10000 });
+                await page.fill('input[name=dob-year]', "1990", { timeout: 10000 });
+                console.log("input selector being used");
+              } catch (e) {
+                await page.selectOption('select >> nth=0', '12');
+                await page.selectOption('select >> nth=1', '28');
+                await page.selectOption('select >> nth=2', '1990');
+                console.log("select selector being used");
+              }
           } catch (e) {
             console.log("Exception in setting personal details, perhaps already completed");
             console.log(e);
