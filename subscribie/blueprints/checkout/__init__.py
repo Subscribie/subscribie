@@ -151,8 +151,8 @@ def store_customer():
 def order_summary():
     payment_provider = PaymentProvider.query.first()
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    # if plan is free then it shouldn't matter if its connected to stripe or not
-    if plan.interval_amount == 0 and plan.sell_price == 0:
+    # if plan is free, skip Stripe checkout and store subscription right away
+    if plan.requirements.instant_payment is False and plan.requirements.subscription is False:
         create_subscription(
             email=session["email"],
             package=session["package"],
