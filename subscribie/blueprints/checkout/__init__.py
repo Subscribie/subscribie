@@ -153,10 +153,13 @@ def order_summary():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     # if plan is free, skip Stripe checkout and store subscription right away
     if plan.requirements.instant_payment is False and plan.requirements.subscription is False:
+
+        chosen_option_ids = session.get("chosen_option_ids", None)
+
         create_subscription(
             email=session["email"],
             package=session["package"],
-            chosen_option_ids=session["chosen_option_ids"],
+            chosen_option_ids=chosen_option_ids,
             subscribie_checkout_session_id="free",
             stripe_subscription_id="free",
             stripe_external_id="free",
