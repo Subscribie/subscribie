@@ -160,9 +160,6 @@ def order_summary():
             email=session["email"],
             package=session["package"],
             chosen_option_ids=chosen_option_ids,
-            subscribie_checkout_session_id="free",
-            stripe_subscription_id="free",
-            stripe_external_id="free",
         )
 
         database.session.commit()
