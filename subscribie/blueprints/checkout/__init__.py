@@ -150,37 +150,54 @@ def store_customer():
 @checkout.route("/order-summary", methods=["GET"])
 def order_summary():
     payment_provider = PaymentProvider.query.first()
-    if (
-        payment_provider.stripe_livemode
-        and payment_provider.stripe_live_connect_account_id is None
-        or payment_provider.stripe_livemode is False
-        and payment_provider.stripe_test_connect_account_id is None
-    ):
-
-        return """Shop owner has not connected Stripe payments yet.
-                This can be done by the shop owner via the admin dashboard."""
-
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    stripe_pub_key = get_stripe_publishable_key()
-    company = Company.query.first()
-    stripe_create_checkout_session_url = url_for(
-        "checkout.stripe_create_checkout_session"
-    )
+    # if plan is free then it shouldn't matter if its connected to stripe or not
+    if plan.interval_amount == 0 and plan.sell_price == 0:
+        create_subscription(
+            email=session["email"],
+            package=session["package"],
+            chosen_option_ids=session["chosen_option_ids"],
+            subscribie_checkout_session_id="free",
+            stripe_subscription_id="free",
+            stripe_external_id="free",
+        )
 
-    if payment_provider.stripe_livemode:
-        stripe_connected_account_id = payment_provider.stripe_live_connect_account_id
+        database.session.commit()
+        return redirect(url_for("checkout.thankyou"))
     else:
-        stripe_connected_account_id = payment_provider.stripe_test_connect_account_id
+        if (
+            payment_provider.stripe_livemode
+            and payment_provider.stripe_live_connect_account_id is None
+            or payment_provider.stripe_livemode is False
+            and payment_provider.stripe_test_connect_account_id is None
+        ):
 
-    return render_template(
-        "order_summary.html",
-        company=company,
-        plan=plan,
-        fname=session["given_name"],
-        stripe_pub_key=stripe_pub_key,
-        stripe_create_checkout_session_url=stripe_create_checkout_session_url,
-        stripe_connected_account_id=stripe_connected_account_id,
-    )
+            return """Shop owner has not connected Stripe payments yet.
+                    This can be done by the shop owner via the admin dashboard."""
+        stripe_pub_key = get_stripe_publishable_key()
+        company = Company.query.first()
+        stripe_create_checkout_session_url = url_for(
+            "checkout.stripe_create_checkout_session"
+        )
+
+        if payment_provider.stripe_livemode:
+            stripe_connected_account_id = (
+                payment_provider.stripe_live_connect_account_id
+            )
+        else:
+            stripe_connected_account_id = (
+                payment_provider.stripe_test_connect_account_id
+            )
+
+        return render_template(
+            "order_summary.html",
+            company=company,
+            plan=plan,
+            fname=session["given_name"],
+            stripe_pub_key=stripe_pub_key,
+            stripe_create_checkout_session_url=stripe_create_checkout_session_url,
+            stripe_connected_account_id=stripe_connected_account_id,
+        )
 
 
 @checkout.route("/instant_payment_complete", methods=["GET"])
