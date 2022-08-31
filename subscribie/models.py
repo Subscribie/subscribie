@@ -449,6 +449,20 @@ class Plan(database.Model, HasArchived):
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
 
+    def is_free(self):
+        """
+        Return True if plan requirements mean plan is free
+        Return False if plan requirements mean plan is not free
+
+        Note this method does NOT take pricelists into account.
+
+        #TODO take pricelists into account (because a product may *become*
+        free, based on a date rule for example).
+        """
+        if self.requirements.instant_payment is False and self.requirements.subscription is False:
+            return True
+        return False
+
 
 class Category(database.Model):
     __tablename__ = "category"
