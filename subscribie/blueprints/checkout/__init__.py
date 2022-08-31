@@ -162,7 +162,6 @@ def order_summary():
             chosen_option_ids=chosen_option_ids,
         )
 
-        database.session.commit()
         return redirect(url_for("checkout.thankyou"))
     else:
         if (
