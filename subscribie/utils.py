@@ -74,7 +74,7 @@ def get_shop_default_currency_code():
     # https://github.com/Subscribie/subscribie/issues/482
     if default_currency_code is None:
         default_currency_code = "GBP"
-        log.warning(
+        log.error(
             f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
         )
 
