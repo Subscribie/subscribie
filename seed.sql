@@ -19,12 +19,17 @@ INSERT INTO plan
 (id, created_at, archived, uuid, title, sell_price, days_before_first_charge, trial_period_days, category_uuid, private)
 VALUES(3, datetime(), 0,  '58921f7a-3371-4ccf-aeee-e2b8af5cca3a', 'One-Off Soaps', 566, 0, 0, '7085d61d-c84d-4951-a824-aa27c7e21086', 0);
 
+INSERT INTO plan
+(id, created_at, archived, uuid, title, sell_price, days_before_first_charge, trial_period_days, category_uuid, private)
+VALUES(4, datetime(), 0,  '20921f7a-3371-4ccf-aeee-e2b8af5cca20', 'Free plan', 0, 0, 0, '7085d61d-c84d-4951-a824-aa27c7e21086', 0);
+
 INSERT INTO plan_requirements (
 id, created_at, plan_id, instant_payment, subscription)
 VALUES
 (1, datetime(), 1, 1, 1),
 (2, datetime(), 2, 0, 1),
-(3, datetime(), 3, 1, 0);
+(3, datetime(), 3, 1, 0),
+(4, datetime(), 4, 0, 0);
 
 INSERT INTO plan_selling_points (
 id, created_at, point, plan_id

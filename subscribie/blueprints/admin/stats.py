@@ -36,7 +36,11 @@ def get_monthly_revenue():
         .where(Plan.interval_unit == "monthly")
         .execution_options(include_archived=True)
     )
-    return query.first()[0] / 100
+    monthly_revenue = query.first()[0]
+    if monthly_revenue is None:
+        return 0
+    else:
+        return monthly_revenue / 100
 
 
 def get_number_of_subscribers():
