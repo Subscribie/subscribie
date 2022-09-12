@@ -176,7 +176,7 @@ def stats():
         "active_subscribers": get_number_of_active_subscribers(),
         "monthly_revenue": get_monthly_revenue(),
         "stripe_active": payment_provider.stripe_active,
-        "stripe_mode": payment_provider.stripe_livemode,
+        "stripe_livemode": payment_provider.stripe_livemode,
     }
 
 
