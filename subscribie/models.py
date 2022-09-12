@@ -805,6 +805,20 @@ class Plan(database.Model, HasArchived):
             log.debug(f"Added price_list {price_list.name} to {self.title}")
         return self.price_lists
 
+    def is_free(self):
+        """
+        Return True if plan requirements mean plan is free
+        Return False if plan requirements mean plan is not free
+
+        Note this method does NOT take pricelists into account.
+
+        #TODO take pricelists into account (because a product may *become*
+        free, based on a date rule for example).
+        """
+        if self.requirements.instant_payment is False and self.requirements.subscription is False:
+            return True
+        return False
+
 
 class Category(database.Model):
     __tablename__ = "category"
@@ -847,6 +861,14 @@ class Integration(database.Model):
     tawk_property_id = database.Column(database.String())
 
 
+# stripe_active:
+# True(1) if the subscriber has connected to stripe either in test mode or live mode
+# False(0) if the subscriber has not yet connected to stripe
+# stripe_livemode:
+# True(1) if stripe is in live mode
+# False(0) if stripe is in test mode
+
+
 class PaymentProvider(database.Model):
     __tablename__ = "payment_provider"
     id = database.Column(database.Integer(), primary_key=True)
@@ -854,7 +876,7 @@ class PaymentProvider(database.Model):
     gocardless_active = database.Column(database.Boolean())
     gocardless_access_token = database.Column(database.String())
     gocardless_environment = database.Column(database.String())
-    stripe_active = database.Column(database.Boolean())
+    stripe_active = database.Column(database.Boolean(), default=False)
     stripe_live_webhook_endpoint_secret = database.Column(database.String())
     stripe_live_webhook_endpoint_id = database.Column(database.String())
     stripe_live_connect_account_id = database.Column(database.String())
