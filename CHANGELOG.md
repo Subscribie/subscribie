@@ -1,3 +1,18 @@
+# v0.1.111 (Mon Sep 12 2022)
+
+#### 🐛 Bug Fix
+
+- renaming to have parity with stripe docs [#943](https://github.com/Subscribie/subscribie/pull/943) ([@joeltejeda](https://github.com/joeltejeda))
+- adding default value to column stripe_active [#943](https://github.com/Subscribie/subscribie/pull/943) ([@joeltejeda](https://github.com/joeltejeda))
+- #942 refactoring [#943](https://github.com/Subscribie/subscribie/pull/943) ([@joeltejeda](https://github.com/joeltejeda))
+- #942 updating route to check if stripe is linked [#943](https://github.com/Subscribie/subscribie/pull/943) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.110 (Mon Sep 12 2022)
 
 #### 🐛 Bug Fix
