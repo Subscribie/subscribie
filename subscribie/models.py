@@ -505,6 +505,14 @@ class Integration(database.Model):
     tawk_property_id = database.Column(database.String())
 
 
+# stripe_active:
+# True(1) if the subscriber has connected to stripe either in test mode or live mode
+# False(0) if the subscriber has not yet connected to stripe
+# stripe_livemode:
+# True(1) if stripe is in live mode
+# False(0) if stripe is in test mode
+
+
 class PaymentProvider(database.Model):
     __tablename__ = "payment_provider"
     id = database.Column(database.Integer(), primary_key=True)

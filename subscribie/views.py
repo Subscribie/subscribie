@@ -15,7 +15,7 @@ from flask import (
     send_from_directory,
     Markup,
 )
-from .models import Company, Plan, Integration, Page, Category, Setting
+from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
@@ -167,11 +167,21 @@ def show_500():
 
 @bp.route("/open")
 def stats():
-    """Open stats"""
-    return {
-        "active_subscribers": get_number_of_active_subscribers(),
-        "monthly_revenue": get_monthly_revenue(),
-    }
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_active is True:
+        if payment_provider.stripe_livemode is True:
+            stripe_livemode = "Live mode"
+        if payment_provider.stripe_livemode is False:
+            stripe_livemode = "Test mode"
+
+        """Open stats"""
+        return {
+            "active_subscribers": get_number_of_active_subscribers(),
+            "monthly_revenue": get_monthly_revenue(),
+            "stripe_livemode": stripe_livemode,
+        }
+    else:
+        return "stripe is not connected"
 
 
 @bp.route("/choose")
