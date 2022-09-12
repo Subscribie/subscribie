@@ -72,7 +72,11 @@
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
+                      {% if plan.requirements.instant_payment is sameas False %}
+                        <span class="price">Free</span>
+                      {% else %}
+                          <span class="price">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span>/One-off
+                      {% endif %}
                     </span>  <br>
                     <span class="text">No subscription</span>
                   </div>

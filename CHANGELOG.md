@@ -1,3 +1,25 @@
+# v0.1.110 (Mon Sep 12 2022)
+
+#### 🐛 Bug Fix
+
+- updating stripe onboarding [#940](https://github.com/Subscribie/subscribie/pull/940) ([@joeltejeda](https://github.com/joeltejeda))
+- adding free plan test [#940](https://github.com/Subscribie/subscribie/pull/940) ([@joeltejeda](https://github.com/joeltejeda))
+- #939 added Plan.is_free() utility method [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 update choose.html to show "Free" when plan is free [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 add free plan to seed.sql so `flask initdb` inserts test free plan [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 remove database.session.commit() not needed because db commits are handled atomically within the execution of create_subscription and no surounding db changes [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 no need to pass subscribie_checkout_session_id, stripe_subscription_id, or stripe_external_id because the default is none (see def create_subscription) [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 dont assume chosen_option_ids exists, not all plans have options (KeyError: chosen_option_ids) [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #939 use Plan.requirements to check if is a free plan [#940](https://github.com/Subscribie/subscribie/pull/940) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- adding free plan creation without stripe connect [#940](https://github.com/Subscribie/subscribie/pull/940) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.109 (Mon Aug 22 2022)
 
 #### 🐛 Bug Fix
