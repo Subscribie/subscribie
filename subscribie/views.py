@@ -168,20 +168,16 @@ def show_500():
 @bp.route("/open")
 def stats():
     payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_active is True:
-        if payment_provider.stripe_livemode is True:
-            stripe_livemode = "Live mode"
-        if payment_provider.stripe_livemode is False:
-            stripe_livemode = "Test mode"
+    if payment_provider.stripe_active is None:
+        payment_provider.stripe_active = False
 
-        """Open stats"""
-        return {
-            "active_subscribers": get_number_of_active_subscribers(),
-            "monthly_revenue": get_monthly_revenue(),
-            "stripe_livemode": stripe_livemode,
-        }
-    else:
-        return "stripe is not connected"
+    """Open stats"""
+    return {
+        "active_subscribers": get_number_of_active_subscribers(),
+        "monthly_revenue": get_monthly_revenue(),
+        "stripe_active": payment_provider.stripe_active,
+        "stripe_mode": payment_provider.stripe_livemode,
+    }
 
 
 @bp.route("/choose")

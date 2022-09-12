@@ -506,7 +506,7 @@ class PaymentProvider(database.Model):
     gocardless_active = database.Column(database.Boolean())
     gocardless_access_token = database.Column(database.String())
     gocardless_environment = database.Column(database.String())
-    stripe_active = database.Column(database.Boolean())
+    stripe_active = database.Column(database.Boolean(), default=False)
     stripe_live_webhook_endpoint_secret = database.Column(database.String())
     stripe_live_webhook_endpoint_id = database.Column(database.String())
     stripe_live_connect_account_id = database.Column(database.String())
