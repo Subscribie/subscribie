@@ -1302,9 +1302,14 @@ def delete_admin_confirmation(email: str):
         )
     if "confirm" in request.args and request.args["confirm"] == "1":
         try:
-            User.query.filter_by(email=email).delete()
-            database.session.commit()
-            flash("Account was deleted succesfully")
+            user = User.query.filter_by(email=email).first()
+            if user.id == 1:
+                flash("The account used to create the shop cannot be deleted")
+
+            else:
+                User.query.filter(User.id != 1).filter_by(email=email).delete()
+                database.session.commit()
+                flash("Account was deleted succesfully")
 
         except Exception as e:
             msg = "Error deleting the admin account"
