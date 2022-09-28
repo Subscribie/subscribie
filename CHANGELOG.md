@@ -1,3 +1,21 @@
+# v0.1.112 (Wed Sep 28 2022)
+
+#### 🐛 Bug Fix
+
+- #944 type hint admin id int [#945](https://github.com/Subscribie/subscribie/pull/945) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #994 deleting admin account by id [#945](https://github.com/Subscribie/subscribie/pull/945) ([@joeltejeda](https://github.com/joeltejeda))
+- Fix #994 superadmin account cant be deleted [#945](https://github.com/Subscribie/subscribie/pull/945) ([@joeltejeda](https://github.com/joeltejeda))
+- #944 put "Delete Shop Admin" button below "Add Shop Admin" [#945](https://github.com/Subscribie/subscribie/pull/945) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #944 rename "Delete an Admin Account" -> "Delete Shop Admin" [#945](https://github.com/Subscribie/subscribie/pull/945) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #944 delete admin account feature [#945](https://github.com/Subscribie/subscribie/pull/945) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.111 (Mon Sep 12 2022)
 
 #### 🐛 Bug Fix
