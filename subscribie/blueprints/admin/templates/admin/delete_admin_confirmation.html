@@ -1,0 +1,35 @@
+{% extends "admin/layout.html" %}                                                
+{% block title %} Delete a shop admin{% endblock %}                                                                
+                                                                                 
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Delete a Shop Admin</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Delete a Shop Admin</li>
+  </ul>
+</div>                                                                              
+
+<main>
+    <div class="section">
+        <div class="container">
+            <div class="card col-md-6 mx-auto my-3 py-3">
+                <h3 class="card-title mx-auto">Are you sure?</h3>
+                <div class="mx-auto">
+                    <a href="{{ url_for('admin.delete_admin_confirmation', email=email, confirm=1) }}" 
+                        class="btn btn-danger mx-3 px-5" role="button">
+                        Yes
+                    </a>
+                    <a href="{{ url_for('admin.delete_admin_by_email', cancel=1)}}" 
+                        class="btn btn-success mx-3 px-5" role="button">
+                        No
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div><!-- end .section -->
+</main>
+{% endblock body %}

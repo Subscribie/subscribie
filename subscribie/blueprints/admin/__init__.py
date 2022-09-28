@@ -1280,6 +1280,40 @@ def add_shop_admin():
         return render_template("admin/add_shop_admin.html", form=form)
 
 
+@admin.route("/delete-shop-admin", methods=["GET", "POST"])
+@login_required
+def delete_admin_by_email():
+    """Delete a shop admin"""
+    users = User.query.filter(User.id != 1).all()
+
+    if "cancel" in request.args and request.args["cancel"] == "1":
+        flash("Deletion aborted")
+    return render_template("admin/delete_shop_admin.html", users=users)
+
+
+@admin.route("/delete-shop-admin/<email>/actions/delete")
+@login_required
+def delete_admin_confirmation(email: str):
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/delete_admin_confirmation.html",
+            confirm=False,
+            email=email,
+        )
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            User.query.filter_by(email=email).delete()
+            database.session.commit()
+            flash("Account was deleted succesfully")
+
+        except Exception as e:
+            msg = "Error deleting the admin account"
+            flash(msg)
+            log.error(f"{msg}. {e}")
+
+    return redirect(url_for("admin.delete_admin_by_email"))
+
+
 @admin.route("/upload-logo", methods=["GET", "POST"])
 @login_required
 def upload_logo():
