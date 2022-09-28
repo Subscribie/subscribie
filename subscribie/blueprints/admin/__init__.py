@@ -1282,7 +1282,7 @@ def add_shop_admin():
 
 @admin.route("/delete-shop-admin", methods=["GET", "POST"])
 @login_required
-def delete_admin_by_email():
+def delete_admin_by_id():
     """Delete a shop admin"""
     users = User.query.filter(User.id != 1).all()
 
@@ -1291,23 +1291,23 @@ def delete_admin_by_email():
     return render_template("admin/delete_shop_admin.html", users=users)
 
 
-@admin.route("/delete-shop-admin/<email>/actions/delete")
+@admin.route("/delete-shop-admin/<id>/actions/delete")
 @login_required
-def delete_admin_confirmation(email: str):
+def delete_admin_confirmation(id: str):
     if "confirm" in request.args and request.args["confirm"] != "1":
         return render_template(
             "admin/delete_admin_confirmation.html",
             confirm=False,
-            email=email,
+            id=id,
         )
     if "confirm" in request.args and request.args["confirm"] == "1":
         try:
-            user = User.query.filter_by(email=email).first()
+            user = User.query.filter_by(id=id).first()
             if user.id == 1:
                 flash("The account used to create the shop cannot be deleted")
 
             else:
-                User.query.filter(User.id != 1).filter_by(email=email).delete()
+                User.query.filter_by(id=id).delete()
                 database.session.commit()
                 flash("Account was deleted succesfully")
 
@@ -1316,7 +1316,7 @@ def delete_admin_confirmation(email: str):
             flash(msg)
             log.error(f"{msg}. {e}")
 
-    return redirect(url_for("admin.delete_admin_by_email"))
+    return redirect(url_for("admin.delete_admin_by_id"))
 
 
 @admin.route("/upload-logo", methods=["GET", "POST"])
