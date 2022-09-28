@@ -19,11 +19,11 @@
             <div class="card col-md-6 mx-auto my-3 py-3">
                 <h3 class="card-title mx-auto">Are you sure?</h3>
                 <div class="mx-auto">
-                    <a href="{{ url_for('admin.delete_admin_confirmation', email=email, confirm=1) }}" 
+                    <a href="{{ url_for('admin.delete_admin_confirmation', id=id, confirm=1) }}" 
                         class="btn btn-danger mx-3 px-5" role="button">
                         Yes
                     </a>
-                    <a href="{{ url_for('admin.delete_admin_by_email', cancel=1)}}" 
+                    <a href="{{ url_for('admin.delete_admin_by_id', cancel=1)}}" 
                         class="btn btn-success mx-3 px-5" role="button">
                         No
                     </a>

@@ -31,7 +31,7 @@
             <tr >  
             <td style="padding-bottom: 1.5em"> {{ user.email }}&nbsp;</td>
             <td>  <a href="{{ url_for("admin.delete_admin_confirmation", 
-              email=user.email, confirm="") }}">
+              id=user.id, confirm="") }}">
               <span class="btn btn-danger mx-2 px-4" role="button">Delete</span>
               </a></td>
             </tr>
