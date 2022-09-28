@@ -1,0 +1,52 @@
+{% extends "admin/layout.html" %}
+{% block title %} Delete Shop Admin{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Delete Shop Admin</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Delete Shop Admin</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Delete Shop Admin</h2>
+          <p>Deleting an Admin account will blocked the account from logging in.</p>
+          <p>Note: The account used to create the shop cannot be deleted </p>
+          <table style="width:100%">
+            <tr>
+              <th> Email </th>
+              <th> Action </th>
+            </tr>
+          {% for user in users %}
+            <tr >  
+            <td style="padding-bottom: 1.5em"> {{ user.email }}&nbsp;</td>
+            <td>  <a href="{{ url_for("admin.delete_admin_confirmation", 
+              email=user.email, confirm="") }}">
+              <span class="btn btn-danger mx-2 px-4" role="button">Delete</span>
+              </a></td>
+            </tr>
+          {% endfor %}
+          </table> 
+        </div>
+
+        <div class="col-md-5">
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
