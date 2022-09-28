@@ -1293,7 +1293,7 @@ def delete_admin_by_id():
 
 @admin.route("/delete-shop-admin/<id>/actions/delete")
 @login_required
-def delete_admin_confirmation(id: str):
+def delete_admin_confirmation(id: int):
     if "confirm" in request.args and request.args["confirm"] != "1":
         return render_template(
             "admin/delete_admin_confirmation.html",
