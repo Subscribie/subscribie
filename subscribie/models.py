@@ -611,7 +611,6 @@ class Plan(database.Model, HasArchived):
 
         sell_price = self.sell_price
         interval_amount = self.interval_amount
-
         log.debug(f"before apply_rules sell price is: {self.sell_price}")
         log.debug(
             f"before apply_rules inverval_price is: {self.interval_amount}"
@@ -682,12 +681,26 @@ class Plan(database.Model, HasArchived):
                         continue
                 if rule.affects_sell_price and sell_price is not None:
 
-                    sell_price = apply_percent_increase(
-                        sell_price, rule.percent_increase
-                    )  # noqa: E501
-                    sell_price = apply_percent_discount(
-                        sell_price, rule.percent_discount
-                    )  # noqa: E501
+                    if rule.percent_increase:
+                        # only increase percent if the min_sell_price is higher than plan sell_price
+                        if (
+                            rule.min_sell_price
+                            and rule.min_sell_price > sell_price
+                            or rule.min_sell_price is None
+                        ):
+                            sell_price = apply_percent_increase(
+                                sell_price, rule.percent_increase
+                            )  # noqa: E501
+                    if rule.percent_discount:
+                        # onlt decrease percent if sell_price is higher than min_sell_price
+                        if (
+                            rule.min_sell_price
+                            and rule.min_sell_price < sell_price
+                            or rule.min_sell_price is None
+                        ):
+                            sell_price = apply_percent_discount(
+                                sell_price, rule.percent_discount
+                            )  # noqa: E501
 
                     sell_price = apply_amount_decrease(
                         sell_price, rule.amount_discount
@@ -703,14 +716,24 @@ class Plan(database.Model, HasArchived):
                 ):
 
                     if rule.percent_increase:
-                        interval_amount = apply_percent_increase(
-                            interval_amount, rule.percent_increase
-                        )  # noqa: E501
+                        if (
+                            rule.min_interval_amount
+                            and rule.mi_interval_amount > interval_amount
+                            or rule.min_interal_amount is None
+                        ):
+                            interval_amount = apply_percent_increase(
+                                interval_amount, rule.percent_increase
+                            )  # noqa: E501
 
                     if rule.percent_discount:
-                        interval_amount = apply_percent_discount(
-                            interval_amount, rule.percent_discount
-                        )  # noqa: E501
+                        if (
+                            rule.min_interval_amount
+                            and rule.mi_interval_amount < interval_amount
+                            or rule.min_interal_amount is None
+                        ):
+                            interval_amount = apply_percent_discount(
+                                interval_amount, rule.percent_discount
+                            )  # noqa: E501
 
                     interval_amount = apply_amount_decrease(
                         interval_amount, rule.amount_discount
@@ -815,7 +838,10 @@ class Plan(database.Model, HasArchived):
         #TODO take pricelists into account (because a product may *become*
         free, based on a date rule for example).
         """
-        if self.requirements.instant_payment is False and self.requirements.subscription is False:
+        if (
+            self.requirements.instant_payment is False
+            and self.requirements.subscription is False
+        ):
             return True
         return False
 
