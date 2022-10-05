@@ -42,7 +42,7 @@
             <li>
                 {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                     <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
-                    <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
+                    <span class="subscribers-plan-interval_amount">{{ subscription.plan.showIntervalAmount() }}</span>
                 {% else %}
                     (One-off. Not a subscription)
                 {% endif %}
@@ -50,7 +50,7 @@
             <li><strong>Sell price: </strong>
                 <span class="subscribers-plan-sell-price">
                     {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
-                        {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                        {{ subscription.plan.showSellPrice() }}</li>
                     {% else %}
                         (No up-front fee)
                     {% endif %}
