@@ -43,7 +43,7 @@
     {% for bad_invoice in bad_invoices %}
     <tr>
         <td><a href="{{ url_for("subscriber.subscriber_pay_invoice", invoice_reference=bad_invoice.id) }}">Pay Now</a></td>
-        <td>{{ bad_invoice.amount_due | currencyFormat }}</td>
+        <td>{{ currency_format(bad_invoice.currency, bad_invoice.amount_due) }}</td>
         <td>{{ bad_invoice.created | timestampToDate }}</td>
         <td>{{ bad_invoice.status }}</td>
         <td>{{ bad_invoice.attempt_count }}</td>
