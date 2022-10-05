@@ -28,13 +28,7 @@ def get_shop_default_country_code():
     """
     Returns shops default country code.
     """
-    SHOP_DEFAULT_COUNTRY_CODE = current_app.config.get("SHOP_DEFAULT_COUNTRY_CODE", None)
-
-    if SHOP_DEFAULT_COUNTRY_CODE is None:
-        log.warning("SHOP_DEFAULT_COUNTRY_CODE was not set in envrionment, defaulting to US")
-        SHOP_DEFAULT_COUNTRY_CODE = "US"
-
-    return SHOP_DEFAULT_COUNTRY_CODE
+    return "US"
 
 
 def get_shop_default_currency_symbol():
