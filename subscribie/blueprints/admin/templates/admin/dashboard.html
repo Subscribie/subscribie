@@ -497,7 +497,7 @@
       <div class="card">
         <div class="card-header" id="headingShopSettings">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
-            Shop Settings (TAX, VAT &amp; Rename shop)
+            Shop Settings (TAX{% if shop_default_country_code == "GB" %}, VAT {% endif %} &amp; Rename shop)
             </button>
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
@@ -506,10 +506,14 @@
                   href="{{ url_for('admin.rename_shop') }}">
               Rename shop web address
               </a>
+              {% if shop_default_country_code == "GB" %}
+              {# Tax not implemented for other jurisdictions yet #}
               <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.vat_settings') }}">
               VAT Settings
               </a>
+              {% endif %}
+
               <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.show_api_keys') }}">
               API Keys

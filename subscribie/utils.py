@@ -25,6 +25,9 @@ def get_geo_currency_code():
 
 
 def get_shop_default_country_code():
+    """
+    Returns shops default country code.
+    """
     SHOP_DEFAULT_COUNTRY_CODE = current_app.config.get("SHOP_DEFAULT_COUNTRY_CODE", None)
 
     if SHOP_DEFAULT_COUNTRY_CODE is None:

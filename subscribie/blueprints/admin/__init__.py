@@ -30,6 +30,7 @@ from subscribie.utils import (
     get_shop_default_currency_code,
     get_stripe_invoices,
     currencyFormat,
+    get_shop_default_country_code
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -458,6 +459,8 @@ def dashboard():
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
 
+    shop_default_country_code = get_shop_default_country_code()
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -467,6 +470,7 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
+        shop_default_country_code=shop_default_country_code
     )
 
 
