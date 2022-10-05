@@ -49,7 +49,22 @@ def add_priceListRule():
         amount_increase = request.form.get("amount_increase", None)
         min_sell_price = request.form.get("min_sell_price", None)
         min_interval_amount = request.form.get("min_interval_amount", None)
-
+        # validate if using both percent/amount increase and discount
+        if percent_increase and percent_discount or amount_increase and amount_discount:
+            flash("Please only use one method, increase or discount")
+            return redirect(url_for("admin.add_priceListRule"))
+        if (
+            percent_increase
+            and amount_discount
+            or percent_increase
+            and amount_increase
+            or percent_discount
+            and amount_discount
+            or percent_discount
+            and amount_increase
+        ):
+            flash("Please only use one method, percentage or amount")
+            return redirect(url_for("admin.add_priceListRule"))
         # Create PriceListRule
         priceListRuleForm = dict(request.form)
         priceListRuleForm["percent_discount"] = percent_discount

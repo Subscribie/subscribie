@@ -718,8 +718,8 @@ class Plan(database.Model, HasArchived):
                     if rule.percent_increase:
                         if (
                             rule.min_interval_amount
-                            and rule.mi_interval_amount > interval_amount
-                            or rule.min_interal_amount is None
+                            and rule.min_interval_amount > interval_amount
+                            or rule.min_interval_amount is None
                         ):
                             interval_amount = apply_percent_increase(
                                 interval_amount, rule.percent_increase
@@ -728,8 +728,8 @@ class Plan(database.Model, HasArchived):
                     if rule.percent_discount:
                         if (
                             rule.min_interval_amount
-                            and rule.mi_interval_amount < interval_amount
-                            or rule.min_interal_amount is None
+                            and rule.min_interval_amount < interval_amount
+                            or rule.min_interval_amount is None
                         ):
                             interval_amount = apply_percent_discount(
                                 interval_amount, rule.percent_discount

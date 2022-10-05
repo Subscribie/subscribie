@@ -25,7 +25,7 @@ def get_geo_currency_code():
 
 
 def get_shop_default_country_code():
-    return "GB"
+    return "US"
 
 
 def get_shop_default_currency_symbol():
@@ -52,12 +52,9 @@ def get_currency_symbol_from_currency_code(currency_code: str) -> str:
 
 def get_geo_currency_symbol():
     """Return default currency symbol"""
-    from subscribie.models import Setting
-
-    setting = Setting.query.first()
-    default_currency = setting.default_currency
+    default_currency = get_geo_currency_code()
     if default_currency is None:
-        default_currency = "GBP"
+        default_currency = "USD"
     currency_symbol = CurrencySymbols.get_symbol(default_currency)
     return currency_symbol
 
@@ -73,7 +70,7 @@ def get_shop_default_currency_code():
     # Mid-upgrade compatibility for shops migrating before
     # https://github.com/Subscribie/subscribie/issues/482
     if default_currency_code is None:
-        default_currency_code = "GBP"
+        default_currency_code = "USD"
         log.error(
             f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
         )
