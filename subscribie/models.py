@@ -1023,6 +1023,7 @@ class Setting(database.Model):
     charge_vat = database.Column(database.Boolean(), default=False)
     custom_code = database.Column(database.String(), default=None)
     default_currency = database.Column(database.String(), default=None)
+    default_country_code = database.Column(database.String(), default=None)
     shop_activated = database.Column(database.Boolean(), default=False)
     api_key_secret_live = database.Column(database.String(), default=None)
     api_key_secret_test = database.Column(database.String(), default=None)

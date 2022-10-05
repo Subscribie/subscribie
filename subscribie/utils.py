@@ -28,7 +28,15 @@ def get_shop_default_country_code():
     """
     Returns shops default country code.
     """
-    return "US"
+    from subscribie.models import Setting
+    settings = Setting.query.first()
+    default_country_code = setting.default_country_code
+
+    if default_country_code is None:
+        log.error("default_country_code is not set, defaulting to US")
+        default_country_code = "US"
+
+    return default_country_code
 
 
 def get_shop_default_currency_symbol():
