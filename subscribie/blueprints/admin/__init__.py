@@ -944,8 +944,8 @@ def stripe_onboarding():
     # Set shop's default currency
     shop_is_changing_default_currency = False
     setting = Setting.query.first()
-    setting.default_currency = str(default_currency)
-    setting.default_country_code = str(country_code)
+    setting.default_currency = default_currency
+    setting.default_country_code = country_code
     database.session.commit()
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
