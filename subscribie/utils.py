@@ -56,8 +56,13 @@ def get_shop_default_country_code():
     default_country_code = settings.default_country_code
 
     if default_country_code is None:
-        log.error("default_country_code is not set, defaulting to US")
-        default_country_code = "US"
+        # only to migrate
+        setting = Setting.query.first()
+        default_country_code = setting.default_country_code = "GB"
+        database.session.add(setting)
+        database.session.commit()
+        # log.error("default_country_code is not set, defaulting to US")
+        # default_country_code = "US"
 
     return default_country_code
 
@@ -104,10 +109,15 @@ def get_shop_default_currency_code():
     # Mid-upgrade compatibility for shops migrating before
     # https://github.com/Subscribie/subscribie/issues/482
     if default_currency_code is None:
-        default_currency_code = "USD"
-        log.error(
-            f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
-        )
+        # default_currency_code = "USD"
+        # log.error(
+        #    f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
+        # )
+        # only to migrate
+        setting = Setting.query.first()
+        default_currency_code = setting.default_currency = "GBP"
+        database.session.add(setting)
+        database.session.commit()
 
     return default_currency_code
 
