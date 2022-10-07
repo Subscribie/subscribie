@@ -146,6 +146,9 @@ def create_app(test_config=None):
             setting = Setting.query.first()
             if setting is None:
                 setting = Setting()
+                # delete after migrate
+                setting.default_country_code = "GB"
+                setting.default_currency = "GBP"
                 database.session.add(setting)
                 database.session.commit()
         except sqlalchemy.exc.OperationalError as e:
