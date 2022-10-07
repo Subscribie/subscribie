@@ -30,7 +30,7 @@ from subscribie.utils import (
     get_shop_default_currency_code,
     get_stripe_invoices,
     currencyFormat,
-    get_shop_default_country_code
+    get_shop_default_country_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -470,7 +470,7 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
-        shop_default_country_code=shop_default_country_code
+        shop_default_country_code=shop_default_country_code,
     )
 
 
@@ -880,15 +880,45 @@ def stripe_connect():
     countryToCurrency = [
         {
             "country_code": "GB",
-            "country_name": "United Kingdom",
+            "country_name": "United Kingdom(GBP)",
             "currency_code": "GBP",
         },
         {
             "country_code": "US",
-            "country_name": "United States of America",
+            "country_name": "United States of America(USD)",
             "currency_code": "USD",
         },
-        {"country_code": "FR", "country_name": "France", "currency_code": "EUR"},
+        {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
+        {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
+        {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
+        {"country_code": "EE", "country_name": "Estonia(EUR)", "currency_code": "EUR"},
+        {"country_code": "FI", "country_name": "Finland(EUR)", "currency_code": "EUR"},
+        {"country_code": "FR", "country_name": "France(EUR)", "currency_code": "EUR"},
+        {"country_code": "DE", "country_name": "Germany(EUR)", "currency_code": "EUR"},
+        {"country_code": "GR", "country_name": "Greece(EUR)", "currency_code": "EUR"},
+        {"country_code": "IE", "country_name": "Ireland(EUR)", "currency_code": "EUR"},
+        {"country_code": "IT", "country_name": "Italy(EUR)", "currency_code": "EUR"},
+        {"country_code": "LV", "country_name": "Latvia(EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "LT",
+            "country_name": "Lithuania(EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "LU",
+            "country_name": "Luxembourg(EUR)",
+            "currency_code": "EUR",
+        },
+        {"country_code": "MT", "country_name": "Malta(EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "NL",
+            "country_name": "Netherlands(EUR)",
+            "currency_code": "EUR",
+        },
+        {"country_code": "PT", "country_name": "Portugal(EUR)", "currency_code": "EUR"},
+        {"country_code": "SK", "country_name": "Slovakia(EUR)", "currency_code": "EUR"},
+        {"country_code": "SI", "country_name": "Slovenia(EUR)", "currency_code": "EUR"},
+        {"country_code": "ES", "country_name": "Spain(EUR)", "currency_code": "EUR"},
     ]
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
@@ -926,7 +956,6 @@ def stripe_onboarding():
         log.info(f"Yes, stripe account found: {account.id}")
         log.info("Checking if account and chosen default_currency match")
         if account["default_currency"] != request.json["default_currency"].lower():
-            breakpoint()
             log.warning(
                 f"Preparing to dissociate existing Stripe account, and create new Stripe account with different default_currency (changing from default_currency {account['default_currency']} to {request.json['default_currency'].lower()}"  # noqa: E501
             )

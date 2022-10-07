@@ -7,7 +7,29 @@ from subscribie.tasks import background_task
 
 log = logging.getLogger(__name__)
 
-COUNTRY_CODE_TO_CURRENCY_CODE = {"US": "USD", "GB": "GBP"}
+COUNTRY_CODE_TO_CURRENCY_CODE = {
+    "US": "USD",
+    "GB": "GBP",
+    "AT": "EUR",
+    "BE": "EUR",
+    "CY": "EUR",
+    "EE": "EUR",
+    "FI": "EUR",
+    "FR": "EUR",
+    "DE": "EUR",
+    "GR": "EUR",
+    "IE": "EUR",
+    "IT": "EUR",
+    "LV": "EUR",
+    "LT": "EUR",
+    "LU": "EUR",
+    "MT": "EUR",
+    "NL": "EUR",
+    "PT": "EUR",
+    "SK": "EUR",
+    "SI": "EUR",
+    "ES": "EUR",
+}
 
 
 def get_geo_currency_code():
@@ -28,10 +50,14 @@ def get_shop_default_country_code():
     """
     Returns shops default country code.
     """
-    SHOP_DEFAULT_COUNTRY_CODE = current_app.config.get("SHOP_DEFAULT_COUNTRY_CODE", None)
+    SHOP_DEFAULT_COUNTRY_CODE = current_app.config.get(
+        "SHOP_DEFAULT_COUNTRY_CODE", None
+    )
 
     if SHOP_DEFAULT_COUNTRY_CODE is None:
-        log.warning("SHOP_DEFAULT_COUNTRY_CODE was not set in envrionment, defaulting to US")
+        log.warning(
+            "SHOP_DEFAULT_COUNTRY_CODE was not set in envrionment, defaulting to US"
+        )
         SHOP_DEFAULT_COUNTRY_CODE = "US"
 
     return SHOP_DEFAULT_COUNTRY_CODE
