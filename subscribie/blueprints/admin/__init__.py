@@ -845,8 +845,6 @@ def stripe_connect():
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
     payment_provider = PaymentProvider.query.first()
-    setting = Setting.query.first()
-
     try:
         account = get_stripe_connect_account()
         if account is not None and account.charges_enabled and account.payouts_enabled:
@@ -947,8 +945,8 @@ def stripe_onboarding():
     shop_is_changing_default_currency = False
     setting = Setting.query.first()
     setting.default_currency = str(default_currency)
+    setting.default_country_code = str(country_code)
     database.session.commit()
-
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
         log.info("Trying if there's an existing stripe account")
