@@ -143,10 +143,6 @@ def inject_template_globals():
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     setting = Setting.query.first()
-    if setting is None:
-        setting = Setting()
-        database.session.add(setting)
-        database.session.commit()
     custom_code = setting.custom_code
     geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
