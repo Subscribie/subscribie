@@ -459,7 +459,10 @@ class Plan(database.Model, HasArchived):
         #TODO take pricelists into account (because a product may *become*
         free, based on a date rule for example).
         """
-        if self.requirements.instant_payment is False and self.requirements.subscription is False:
+        if (
+            self.requirements.instant_payment is False
+            and self.requirements.subscription is False
+        ):
             return True
         return False
 
