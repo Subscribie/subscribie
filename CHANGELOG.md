@@ -1,3 +1,15 @@
+# v0.1.115 (Sat Oct 08 2022)
+
+#### 🐛 Bug Fix
+
+- #951 added psf/black@stable action step [#952](https://github.com/Subscribie/subscribie/pull/952) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.114 (Sat Oct 08 2022)
 
 #### ⚠️ Pushed to `master`
