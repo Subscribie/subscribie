@@ -1,3 +1,15 @@
+# v0.1.114 (Sat Oct 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- wip #951 black format missed out forms/models.py ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.113 (Sat Oct 08 2022)
 
 #### 🐛 Bug Fix
