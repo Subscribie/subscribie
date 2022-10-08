@@ -1,3 +1,20 @@
+# v0.1.113 (Sat Oct 08 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #949 f strings on module import logging [#950](https://github.com/Subscribie/subscribie/pull/950) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Bump jpeg-js and @playwright/test [#948](https://github.com/Subscribie/subscribie/pull/948) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v0.1.112 (Wed Sep 28 2022)
 
 #### 🐛 Bug Fix
