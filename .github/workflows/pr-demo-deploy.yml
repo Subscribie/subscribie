@@ -66,6 +66,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: psf/black@stable # Fail early if fails Black code style
       - name: Deploy branch ${{ github.head_ref }} to dokku
         uses: idoberko2/dokku-deploy-github-action@v1
         with:
