@@ -79,10 +79,10 @@ def create_app(test_config=None):
         for module in modules:
             # Assume standard python module
             try:
-                log.info("Attempting to importing module: {module.name}")
+                log.info(f"Attempting to importing module: {module.name}")
                 importlib.import_module(module.name)
             except ModuleNotFoundError:
-                log.debug("Error: Could not import module: {module.name}")
+                log.debug(f"Error: Could not import module: {module.name}")
             # Register modules as blueprint (if it is one)
             try:
                 importedModule = importlib.import_module(module.name)
@@ -96,7 +96,7 @@ def create_app(test_config=None):
                     log.info(f"Imported {module.name} as flask Blueprint")
 
             except (ModuleNotFoundError, AttributeError):
-                log.debug("Error: Could not import module as blueprint: {module.name}")
+                log.debug(f"Error: Could not import module as blueprint: {module.name}")
 
     CORS(app)
     images = UploadSet("images", IMAGES)
