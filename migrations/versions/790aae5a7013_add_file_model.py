@@ -10,19 +10,20 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '790aae5a7013'
-down_revision = '702d6ee9b14f'
+revision = "790aae5a7013"
+down_revision = "702d6ee9b14f"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.create_table('file',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('uuid', sa.String(), nullable=True),
-    sa.Column('file_name', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    op.create_table(
+        "file",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("uuid", sa.String(), nullable=True),
+        sa.Column("file_name", sa.String(), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
     )
 
 
