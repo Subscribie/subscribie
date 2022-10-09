@@ -1,3 +1,15 @@
+# v0.1.116 (Sun Oct 09 2022)
+
+#### 🐛 Bug Fix
+
+- #951 bring migrations up to black format [#953](https://github.com/Subscribie/subscribie/pull/953) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.115 (Sat Oct 08 2022)
 
 #### 🐛 Bug Fix
