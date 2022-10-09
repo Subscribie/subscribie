@@ -1,3 +1,15 @@
+# v0.1.117 (Sun Oct 09 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #954 log error if module subscribie imports fail [#955](https://github.com/Subscribie/subscribie/pull/955) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.116 (Sun Oct 09 2022)
 
 #### 🐛 Bug Fix
