@@ -96,7 +96,7 @@ def create_app(test_config=None):
                     log.info(f"Imported {module.name} as flask Blueprint")
 
             except (ModuleNotFoundError, AttributeError):
-                log.debug(f"Error: Could not import module as blueprint: {module.name}")
+                log.error(f"Error: Could not import module as blueprint: {module.name}")
 
     CORS(app)
     images = UploadSet("images", IMAGES)
