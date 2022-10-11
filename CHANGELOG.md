@@ -1,3 +1,15 @@
+# v0.1.118 (Tue Oct 11 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #956 rearreging black inside pr-demo-deploy github action [#957](https://github.com/Subscribie/subscribie/pull/957) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.117 (Sun Oct 09 2022)
 
 #### 🐛 Bug Fix
