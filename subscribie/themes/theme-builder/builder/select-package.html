@@ -44,7 +44,7 @@
               </h1>
             {% else %}
               <h1 class="card-title pricing-card-title">
-              {{ geo_currency_symbol }}0.00
+                Free
               </h1>
             {% endif %}
 		    {% if plan.requirements.instant_payment %}
@@ -53,7 +53,7 @@
               </p>
 		    {% else %}
               <p class="text-muted">
-              Upfront cost: {{ currency_symbol }}0.00
+              No Upfront payment
               </p>
 		    {% endif %}
             <ul class="list-unstyled mt-3 mb-4">
