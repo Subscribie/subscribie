@@ -14,7 +14,7 @@ USAGE:
 
 export AMBER_SECRET=stored-in-password-fault
 
-amber exec -v -- python3 -i delete_stripe_accounts_bulk.py 
+amber exec -v -- python3 delete_stripe_accounts_bulk.py 
 
 """
 
