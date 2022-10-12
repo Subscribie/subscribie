@@ -25,6 +25,10 @@ jobs:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: |
           echo $GITHUB_CONTEXT
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: psf/black@stable # Fail early if fails Black code style
       - name: Prepare runner with ssh keys
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -63,9 +67,6 @@ jobs:
           # mount email-queue folder
           ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ github.head_ref }} || true"
 
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Deploy branch ${{ github.head_ref }} to dokku
         uses: idoberko2/dokku-deploy-github-action@v1
         with:
