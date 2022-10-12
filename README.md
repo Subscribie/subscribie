@@ -17,6 +17,7 @@ You don't need to be technical, and can integrate it with your existing business
 - [Demo & Hosting](#demo--hosting)
 - [Quickstart](#quickstart-without-docker)
 - [Testing](#testing)
+  - [Bulk delete Stripe accounts](#bulk-delete-stripe-accounts)
 - [SaaS Deployment](#saas-deployment)
   - [Architecture Overview](#architecture)
   - [Application server](#application-server-uwsgi)
@@ -279,6 +280,8 @@ Remember Stripe will give you a key valid for 90 days, if you get the following 
 ```
 Error while authenticating with Stripe: Authorization failed, status=401
 ```
+
+#### Bulk delete Stripe accounts
 
 > **Warning**
 > Stripe webhooks will be automatically disabled if error rates go above a certain %.
