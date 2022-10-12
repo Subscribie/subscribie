@@ -1,3 +1,80 @@
+# v0.1.118 (Tue Oct 11 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #956 rearreging black inside pr-demo-deploy github action [#957](https://github.com/Subscribie/subscribie/pull/957) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.117 (Sun Oct 09 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #954 log error if module subscribie imports fail [#955](https://github.com/Subscribie/subscribie/pull/955) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.116 (Sun Oct 09 2022)
+
+#### 🐛 Bug Fix
+
+- #951 bring migrations up to black format [#953](https://github.com/Subscribie/subscribie/pull/953) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.115 (Sat Oct 08 2022)
+
+#### 🐛 Bug Fix
+
+- #951 added psf/black@stable action step [#952](https://github.com/Subscribie/subscribie/pull/952) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.114 (Sat Oct 08 2022)
+
+#### ⚠️ Pushed to `master`
+
+- wip #951 black format missed out forms/models.py ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.113 (Sat Oct 08 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #949 f strings on module import logging [#950](https://github.com/Subscribie/subscribie/pull/950) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### 🔩 Dependency Updates
+
+- Bump jpeg-js and @playwright/test [#948](https://github.com/Subscribie/subscribie/pull/948) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v0.1.112 (Wed Sep 28 2022)
 
 #### 🐛 Bug Fix

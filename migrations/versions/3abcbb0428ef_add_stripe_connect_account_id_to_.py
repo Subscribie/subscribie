@@ -10,15 +10,17 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3abcbb0428ef'
-down_revision = '790aae5a7013'
+revision = "3abcbb0428ef"
+down_revision = "790aae5a7013"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
     with op.batch_alter_table("payment_provider") as batch_op:
-        batch_op.add_column(sa.Column('stripe_connect_account_id', sa.String(), nullable=True))
+        batch_op.add_column(
+            sa.Column("stripe_connect_account_id", sa.String(), nullable=True)
+        )
 
 
 def downgrade():
