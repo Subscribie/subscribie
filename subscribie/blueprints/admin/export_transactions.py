@@ -1,6 +1,8 @@
 from . import admin
 from subscribie.auth import login_required
 from subscribie.models import Transaction
+from subscribie.database import database
+
 from flask import request, Response, jsonify
 import logging
 
@@ -31,8 +33,13 @@ def export_transactions():
                 subscription_uuid = None
                 subscription_status = None
             # Backward compatibility to GB only shops
+            # TODO Remove
             if transaction.currency is None:
                 transaction.currency = "GBP"
+                try:
+                    database.session.commit()
+                except Exception as e:
+                    log.error(f"Problem committing transaction currency null: {e}")
             rows.append(
                 {
                     "transaction_date": transaction.created_at,

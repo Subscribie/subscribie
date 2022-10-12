@@ -140,7 +140,10 @@ def get_stripe_publishable_key():
         return current_app.config.get("STRIPE_TEST_PUBLISHABLE_KEY", None)
 
 
-def create_stripe_connect_account(company, country_code="GB", default_currency="GBP"):
+def create_stripe_connect_account(company, country_code=None, default_currency=None):
+    assert country_code is not None
+    assert default_currency is not None
+
     stripe.api_key = get_stripe_secret_key()
     if "127.0.0.1" in request.host_url:
         url = "blackhole-1.iana.org"
