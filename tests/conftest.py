@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 
 from subscribie import create_app
 from subscribie import database as _db
-from subscribie.models import User, Company
+from subscribie.models import User, Company, Setting
 from subscribie import seed_db
 
 
@@ -98,4 +98,14 @@ def with_shop_owner(db, session):
     company = Company()
     company.name = "Subscription Shop"
     company.slogan = "Buy plans on subscription"
+    session.commit()
+
+
+@pytest.fixture(scope="function")
+def with_default_country_code_and_default_currency(db, session):
+    # Add minimal settings
+    setting = Setting()
+    setting.default_currency = "GBP"
+    setting.default_country_code = "GB"
+    session.add(setting)
     session.commit()
