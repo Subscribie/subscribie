@@ -10,15 +10,16 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6d9febd1346e'
-down_revision = '6738e7241978'
+revision = "6d9febd1346e"
+down_revision = "6738e7241978"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
     with op.batch_alter_table("subscription") as batch_op:
-        batch_op.add_column(sa.Column('currency', sa.String(), default="USD"))
+        batch_op.add_column(sa.Column("currency", sa.String(), default="USD"))
+
 
 def downgrade():
     pass
