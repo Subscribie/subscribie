@@ -45,6 +45,8 @@ test.describe("Subscribie tests:", () => {
 
       // Start Stripe connect onboarding
       await page.goto('/admin/connect/stripe-connect');
+      // Selecting countring to connect to stripe
+      await page.locator('select').selectOption('GB')
       await page.click('.btn-success');
 
       console.log("Start Stripe connect onboarding")
