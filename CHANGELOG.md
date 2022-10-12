@@ -1,3 +1,17 @@
+# v0.1.120 (Wed Oct 12 2022)
+
+#### 🐛 Bug Fix
+
+- #960 remove undeeded -i tests/delete_stripe_accounts_bulk.py leftover from debugging [#961](https://github.com/Subscribie/subscribie/pull/961) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #960 add heading link to bulk delete stripe accounts [#961](https://github.com/Subscribie/subscribie/pull/961) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #960 tests/delete_stripe_accounts_bulk.py & document [#961](https://github.com/Subscribie/subscribie/pull/961) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.119 (Wed Oct 12 2022)
 
 #### 🐛 Bug Fix
