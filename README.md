@@ -279,6 +279,12 @@ Remember Stripe will give you a key valid for 90 days, if you get the following 
 ```
 Error while authenticating with Stripe: Authorization failed, status=401
 ```
+
+> **Warning**
+> Stripe webhooks will be automatically disabled if error rates go above a certain %.
+> To delete in bulk test Stripe Connect express accounts see: [./tests/delete_stripe_accounts_bulk.py](./tests/delete_stripe_accounts_bulk.py)
+
+
 ### Run browser automated tests with playright
 > **Important:** Stripe cli must be running locally to recieve payment events:
 >`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
