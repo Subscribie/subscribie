@@ -1,3 +1,15 @@
+# v0.1.119 (Wed Oct 12 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #958 removing unneeded stripe onboarding steps [#959](https://github.com/Subscribie/subscribie/pull/959) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.118 (Tue Oct 11 2022)
 
 #### 🐛 Bug Fix
