@@ -127,39 +127,20 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding verification summary
         //const notice_title_content = await page.textContent('.Notice-title');
-        const notice_title_content = await page.textContent('text="Missing required information"');
-        if (expect(notice_title_content === "Missing required information")) {
+        const notice_title_content = await page.textContent('text="Information required soon"');
+        if (expect(notice_title_content === "Information required soon")) {
           console.log("On the Let's review your details page");
           await new Promise(x => setTimeout(x, 2000));
           //await page.click('button:has-text("Update")');
-          await page.locator('text="Update"').click();
+          await page.locator('text="Information required soon"').click();
         }
         // Stripe onboarding identify verification step
         //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
-        const additional_information_content = await page.textContent('text="Additional information"');
-        if (expect(additional_information_content === "Additional information")) {
-          await new Promise(x => setTimeout(x, 5000));
-
-          await page.click(":nth-match(:text('Verify Now'), 2)");
-          const address_content = await page.textContent('text="Proof of address document"');
-          if (expect(address_content === "Proof of address document")) {
-            await new Promise(x => setTimeout(x, 1000));
+        const additional_information_content = await page.textContent('text=For additional security, please have this person finish verifying their identity');
+        if (expect(additional_information_content === "For additional security, please have this person finish verifying their identity")) {
+            await new Promise(x => setTimeout(x, 3000));
             await page.click('text="Use test document"');
-          }
-          const home_address_provided = await page.textContent(":nth-match(:text('Provided'), 2)");
-          await page.click(":nth-match(:text('Verify Now'), 1)");
-          const id_verification_content = await page.textContent('text="ID verification for "');
-          await new Promise(x => setTimeout(x, 5000));
-          if (expect(id_verification_content === "ID verification for ")) {
-            await new Promise(x => setTimeout(x, 1000));
-            await page.click('text="Use test document"');
-          }
-
-          const id_verification_provided = await page.textContent(":nth-match(:text('Provided'), 1)");
-          if (expect(id_verification_provided === "Provided") && expect(home_address_provided === "Provided")) {
-            await page.click('button:has-text("Submit")');
-            await new Promise(x => setTimeout(x, 5000));
-          }
+            await new Promise(x => setTimeout(x, 3000));
         }
         // Stripe onboarding verification complete
         const stripe_completion_content = await page.textContent('text="Other information provided"');
