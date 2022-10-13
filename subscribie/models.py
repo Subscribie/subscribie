@@ -780,7 +780,9 @@ class Plan(database.Model, HasArchived):
             Integer representing the interval_amount after applying any pricing
             rules, or None if plan does not have an interval_amount.
         """
+        log.debug(f"getIntervalAmount called with currency_code: {currency_code}")
         if currency_code is None:
+            log.warning(f"getIntervalAmount currency_code was None")
             currency_code = get_geo_currency_code()
 
         return self.getPrice(currency_code)[1]
