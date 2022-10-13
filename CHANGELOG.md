@@ -1,3 +1,16 @@
+# v0.1.121 (Thu Oct 13 2022)
+
+#### 🐛 Bug Fix
+
+- 482 As a shop owner I can sell in USD currency [#757](https://github.com/Subscribie/subscribie/pull/757) ([@joeltejeda](https://github.com/joeltejeda) [@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.120 (Wed Oct 12 2022)
 
 #### 🐛 Bug Fix
