@@ -27,7 +27,10 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
     create_stripe_tax_rate,
+    get_shop_default_currency_code,
     get_stripe_invoices,
+    currencyFormat,
+    get_shop_default_country_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -97,6 +100,8 @@ from .subscriber import show_subscriber  # noqa: F401, E402
 from .export_subscribers import export_subscribers  # noqa: F401, E402a
 from .export_transactions import export_transactions  # noqa: F401, E402a
 from .invoice import failed_invoices  # noqa: F401
+from .priceList import list_priceLists  # noqa: F401
+from .priceListRule import list_priceListRules  # noqa: F401
 
 load_dotenv(verbose=True)  # get environment variables from .env
 
@@ -108,12 +113,6 @@ def dec2pence(amount):
     import math
 
     return int(math.ceil(float(amount) * 100))
-
-
-@admin.app_template_filter()
-def currencyFormat(value):
-    value = float(value) / 100
-    return "£{:,.2f}".format(value)
 
 
 @admin.app_template_filter()
@@ -218,7 +217,6 @@ def stripe_create_charge():
 
     :param stripe_customer_id: Stripe customer id
     :param amount: Positive integer amount to charge in smallest currency unit
-    :param currency: ISO currency code, defaults to [GBP]
     :param statement_descriptor_suffix: What customers see on their statements. Maximum 22 characters # noqa
 
     Example call:
@@ -245,7 +243,7 @@ def stripe_create_charge():
         )
 
         amount = int(request.form.get("amount"))
-        currency = "GBP"
+        currency = get_shop_default_currency_code()
         statement_descriptor_suffix = request.form.get("description")
 
     try:
@@ -461,6 +459,8 @@ def dashboard():
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
 
+    shop_default_country_code = get_shop_default_country_code()
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -470,6 +470,7 @@ def dashboard():
         num_subscribers=num_subscribers,
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
+        shop_default_country_code=shop_default_country_code,
     )
 
 
@@ -590,6 +591,9 @@ def edit():
             else:
                 draftPlan.private = 0
 
+            # filling plan price_list with existing price_lists
+            draftPlan.assignDefaultPriceLists()
+
             # Primary icon image storage
             f = getPlan(form.image.data, index)
             if f:
@@ -706,6 +710,9 @@ def add_plan():
 
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
+
+        # filling plan price_list with existing price_lists
+        draftPlan.assignDefaultPriceLists()
 
         database.session.commit()
         flash("Plan added.")
@@ -838,7 +845,6 @@ def stripe_connect():
     stripe_express_dashboard_url = None
     stripe.api_key = get_stripe_secret_key()
     payment_provider = PaymentProvider.query.first()
-
     try:
         account = get_stripe_connect_account()
         if account is not None and account.charges_enabled and account.payouts_enabled:
@@ -869,14 +875,59 @@ def stripe_connect():
         except stripe.error.InvalidRequestError:
             stripe_express_dashboard_url = None
     database.session.commit()
+    countryToCurrency = [
+        {
+            "country_code": "GB",
+            "country_name": "United Kingdom(GBP)",
+            "currency_code": "GBP",
+        },
+        {
+            "country_code": "US",
+            "country_name": "United States of America(USD)",
+            "currency_code": "USD",
+        },
+        {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
+        {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
+        {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
+        {"country_code": "EE", "country_name": "Estonia(EUR)", "currency_code": "EUR"},
+        {"country_code": "FI", "country_name": "Finland(EUR)", "currency_code": "EUR"},
+        {"country_code": "FR", "country_name": "France(EUR)", "currency_code": "EUR"},
+        {"country_code": "DE", "country_name": "Germany(EUR)", "currency_code": "EUR"},
+        {"country_code": "GR", "country_name": "Greece(EUR)", "currency_code": "EUR"},
+        {"country_code": "IE", "country_name": "Ireland(EUR)", "currency_code": "EUR"},
+        {"country_code": "IT", "country_name": "Italy(EUR)", "currency_code": "EUR"},
+        {"country_code": "LV", "country_name": "Latvia(EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "LT",
+            "country_name": "Lithuania(EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "LU",
+            "country_name": "Luxembourg(EUR)",
+            "currency_code": "EUR",
+        },
+        {"country_code": "MT", "country_name": "Malta(EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "NL",
+            "country_name": "Netherlands(EUR)",
+            "currency_code": "EUR",
+        },
+        {"country_code": "PT", "country_name": "Portugal(EUR)", "currency_code": "EUR"},
+        {"country_code": "SK", "country_name": "Slovakia(EUR)", "currency_code": "EUR"},
+        {"country_code": "SI", "country_name": "Slovenia(EUR)", "currency_code": "EUR"},
+        {"country_code": "ES", "country_name": "Spain(EUR)", "currency_code": "EUR"},
+    ]
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
         stripe_onboard_path=url_for("admin.stripe_onboarding"),
         account=account,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
+        default_currency=setting.default_currency,
         shop_activated=shop_activated,
         saas_activate_account_url=saas_activate_account_url,
+        countryToCurrency=countryToCurrency,
     )
 
 
@@ -886,21 +937,41 @@ def stripe_onboarding():
     # Determine if in live or test mode
     payment_provider = PaymentProvider.query.first()
     stripe.api_key = get_stripe_secret_key()
-
     company = Company.query.first()
+    country_code = request.json.get("country_code")
+    default_currency = request.json.get("default_currency")
 
+    # Set shop's default currency
+    shop_is_changing_default_currency = False
+    setting = Setting.query.first()
+    setting.default_currency = default_currency
+    setting.default_country_code = country_code
+    database.session.commit()
     # Use existing stripe_connect_account_id, otherwise create stripe connect account
     try:
         log.info("Trying if there's an existing stripe account")
         account = get_stripe_connect_account()
         log.info(f"Yes, stripe account found: {account.id}")
+        log.info("Checking if account and chosen default_currency match")
+        if account["default_currency"] != request.json["default_currency"].lower():
+            log.warning(
+                f"Preparing to dissociate existing Stripe account, and create new Stripe account with different default_currency (changing from default_currency {account['default_currency']} to {request.json['default_currency'].lower()}"  # noqa: E501
+            )
+            shop_is_changing_default_currency = True
+            raise AttributeError
     except (
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
         AttributeError,
     ):
-        log.info("Could not find a stripe account, Creating stripe account")
-        account = create_stripe_connect_account(company)
+        log.warning(
+            "Could not find a valid Stripe account, Creating new Stripe account"
+        )
+        if shop_is_changing_default_currency:
+            log.info(
+                "Creating new Stripe account reason: shop_is_switching_default_currency"
+            )
+        account = create_stripe_connect_account(company, country_code, default_currency)
         if payment_provider.stripe_livemode:
             payment_provider.stripe_live_connect_account_id = account.id
         else:
@@ -1010,18 +1081,9 @@ def add_custom_code():
         )
 
 
-@admin.context_processor
-def utility_get_transaction_fulfillment_state():
-    """return fulfullment_state of transaction"""
-
-    def get_transaction_fulfillment_state(external_id):
-        transaction = Transaction.query.filter_by(external_id=external_id).first()
-        if transaction:
-            return transaction.fulfillment_state
-        else:
-            return None
-
-    return dict(get_transaction_fulfillment_state=get_transaction_fulfillment_state)
+@admin.app_context_processor
+def inject_template_globals():
+    return dict(currencyFormat=currencyFormat)
 
 
 @admin.route("/subscribers")

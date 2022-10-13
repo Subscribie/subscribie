@@ -1,10 +1,123 @@
-from flask import current_app, request, g
+from flask import current_app, request, g, session
 import stripe
 from subscribie import database
+from currency_symbols import CurrencySymbols
 import logging
 from subscribie.tasks import background_task
 
 log = logging.getLogger(__name__)
+
+COUNTRY_CODE_TO_CURRENCY_CODE = {
+    "US": "USD",
+    "GB": "GBP",
+    "AT": "EUR",
+    "BE": "EUR",
+    "CY": "EUR",
+    "EE": "EUR",
+    "FI": "EUR",
+    "FR": "EUR",
+    "DE": "EUR",
+    "GR": "EUR",
+    "IE": "EUR",
+    "IT": "EUR",
+    "LV": "EUR",
+    "LT": "EUR",
+    "LU": "EUR",
+    "MT": "EUR",
+    "NL": "EUR",
+    "PT": "EUR",
+    "SK": "EUR",
+    "SI": "EUR",
+    "ES": "EUR",
+}
+
+
+def get_geo_currency_code():
+    """Return currency code based on current detected (or selected)
+    country code.
+    """
+    country_code = get_geo_country_code()
+    # Get currency code from COUNTRY_CODE_TO_CURRENCY_CODE mapping
+    try:
+        currency_code = COUNTRY_CODE_TO_CURRENCY_CODE[country_code]
+    except KeyError as e:
+        log.error(f"Could not map country_code {country_code} to a currency code. {e}")
+        currency_code = get_shop_default_currency_code()
+    return currency_code
+
+
+def get_shop_default_country_code():
+    """
+    Returns shops default country code.
+    """
+    from subscribie.models import Setting
+
+    settings = Setting.query.first()
+    default_country_code = settings.default_country_code
+
+    if default_country_code is None:
+        log.error("default_country_code is not set, defaulting to US")
+        default_country_code = "US"
+
+    return default_country_code
+
+
+def get_shop_default_currency_symbol():
+    currency_code = get_shop_default_currency_code()
+    currency_symbol = get_currency_symbol_from_currency_code(currency_code)
+    return currency_symbol
+
+
+def get_geo_country_code():
+    # If geo country_code is set, use that,
+    # otherwise fallback to shops default country_code
+    if session.get("country_code"):
+        country_code = session.get("country_code")
+    else:
+        country_code = get_shop_default_country_code()
+    return country_code
+
+
+def get_currency_symbol_from_currency_code(currency_code: str) -> str:
+    currency_code = currency_code.upper()
+    currency_symbol = CurrencySymbols.get_symbol(currency_code)
+    return currency_symbol
+
+
+def get_geo_currency_symbol():
+    """Return default currency symbol"""
+    default_currency = get_geo_currency_code()
+    if default_currency is None:
+        default_currency = "USD"
+    currency_symbol = CurrencySymbols.get_symbol(default_currency)
+    return currency_symbol
+
+
+def get_shop_default_currency_code():
+    from subscribie.models import Setting
+
+    """Return default shop currency code in iso_4217 format
+       (e.g. GBP, USD)
+    """
+    setting = Setting.query.first()
+    default_currency_code = setting.default_currency
+    # Mid-upgrade compatibility for shops migrating before
+    # https://github.com/Subscribie/subscribie/issues/482
+    if default_currency_code is None:
+        default_currency_code = "USD"
+        log.error(
+            f"No default_currency_code found, so falling back to {default_currency_code}"  # noqa: E501
+        )
+
+    return default_currency_code
+
+
+def currencyFormat(currency_code: str, value) -> str:
+    currency_symbol = get_currency_symbol_from_currency_code(currency_code)
+    value = float(value) / 100
+    units = "{:,.2f}".format(value)
+    formatted_currency = f"{currency_symbol}{units}"
+    return formatted_currency
 
 
 def get_stripe_secret_key():
@@ -27,7 +140,10 @@ def get_stripe_publishable_key():
         return current_app.config.get("STRIPE_TEST_PUBLISHABLE_KEY", None)
 
 
-def create_stripe_connect_account(company):
+def create_stripe_connect_account(company, country_code=None, default_currency=None):
+    assert country_code is not None
+    assert default_currency is not None
+
     stripe.api_key = get_stripe_secret_key()
     if "127.0.0.1" in request.host_url:
         url = "blackhole-1.iana.org"
@@ -37,7 +153,8 @@ def create_stripe_connect_account(company):
     account = stripe.Account.create(
         type="express",
         email=g.user.email,
-        default_currency="gbp",
+        country=country_code,
+        default_currency=default_currency,
         business_profile={"url": url, "name": company.name},
         capabilities={
             "card_payments": {"requested": True},
@@ -414,3 +531,11 @@ def get_stripe_void_subscription_invoices():
         ):
             voidInvoices.append(invoice)
     return voidInvoices
+
+
+def get_discount_code():
+    """Get discount code from the current session
+    :return: The discount code, or None
+    :rtype: str
+    """
+    return session.get("discount_code", None)

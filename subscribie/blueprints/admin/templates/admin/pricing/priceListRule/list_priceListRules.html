@@ -1,0 +1,94 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Price List Rules</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_priceLists') }}">Price List Rules</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete  Price List Rules Rules</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Add / Edit / Delete Price List Rules</h3>
+        <p class="card-subtitle text-muted">Select a Price List Rule to edit.</p>
+        <p>
+        Create rules which you can later assign to one or more price lists.<br />
+        E.g. you might create a 20% discount rule, and use it accross all currencies.
+        </p>
+
+        <a href="{{ url_for('admin.add_priceListRule') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Add Price List Rule
+        </a>
+
+        <a href="{{ url_for('admin.list_priceLists') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Manage Price Lists
+        </a>  
+      </div>
+
+      {% if confirm is sameas true %}
+        <div class="card mx-auto my-3 mt-4 py-3 col-md-7">
+          <h3 class="card-title mx-auto">Delete Price List Rule "{{priceListRule.name}}" - Are you sure?</h3>
+          <div class="mx-auto">
+            <a href="{{ url_for('admin.delete_priceListRule_by_uuid', uuid=priceListRule.uuid) }}"
+                class="btn btn-danger mx-3 px-5" role="button">
+                Yes
+            </a>
+            <a href="{{ url_for('admin.list_priceListRules', cancel=1) }}" 
+                class="btn btn-success mx-3 px-5" role="button">
+                No
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <table class="table table-hover table-scroll">
+          <thead>
+            <th>Action</th>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>Expire Date</th>
+            <th>Affects Up-Front Price</th>
+            <th>Affects recurring amount</th>
+            <th>Percent Discount</th>
+            <th>Percent Increase</th>
+            <th>Amount discount</th>
+            <th>Amount Increase</th>
+            <th>Min Sell Price</th>
+            <th>Min Recurring amount</th>
+          </thead>
+        {% for priceListRule in priceListRules %}
+          <tr>
+            <td>
+              <a href="{{ url_for('admin.edit_priceListRule', id=priceListRule.uuid) }}" class="btn btn-success">Edit</a>
+              <a href="{{ url_for('admin.delete_priceListRule', id=priceListRule.uuid, confirm="true") }}" class="btn btn-danger mt-4">Delete</a>
+            </td>
+            <td>{{ priceListRule.name }}</td>
+            <td>{{ priceListRule.start_date }}</td>
+            <td>{{ priceListRule.expire_date }}</td>
+            <td>{{ priceListRule.affects_sell_price }}</td>
+            <td>{{ priceListRule.affects_interval_amount }}</td>
+            <td>{{ priceListRule.percent_discount }}%</td>
+            <td>{{ priceListRule.percent_increase }}%</td>
+            <td>{{ priceListRule.amount_discount }}</td>
+            <td>{{ priceListRule.amount_increase }}</td>
+            <td>{{ priceListRule.min_sell_price }}</td>
+            <td>{{ priceListRule.min_interval_amount }}</td>
+          </tr>
+        {% endfor %}
+        </table>
+      {% endif %}
+      
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

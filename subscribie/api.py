@@ -90,17 +90,15 @@ def apiv1_generate_api_key():
         # Generate api key
         api_key = f"subscribie_test_{secrets.token_urlsafe(255)}"
         # Store api key
-        api_key = save_api_key(api_key, mode="test")
-        # Decrypt
-        api_key = decrypt_secret(data=setting.api_key_secret_test)
+        save_api_key(api_key, mode="test")
 
     elif "live" in request.path:
         # Generate api key
         api_key = f"subscribie_live_{secrets.token_urlsafe(255)}"
         # Store api key
-        api_key = save_api_key(api_key, mode="live")
+        save_api_key(api_key, mode="live")
         # Decrypt
-        api_key = decrypt_secret(data=setting.api_key_secret_live)
+        decrypt_secret(data=setting.api_key_secret_live)
 
     if "live" in request.path:
         return redirect("/api/fetch-live-api-key")

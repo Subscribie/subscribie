@@ -28,26 +28,26 @@
             {{ plan.trial_period_days }} days free
             {% endif %}
             <small class="text-muted">
-            then &pound;{{ "%.2f"|format(plan.interval_amount/100) }}
+            then {{ plan.showIntervalAmount() }}
             / {{ plan.interval_unit }}</small>
             </h1>
           {% elif plan.requirements.subscription %}
             <h1 class="card-title pricing-card-title">
-            &pound;{{ "%.2f"|format(plan.interval_amount/100) }}
+            {{ plan.showIntervalAmount() }}
             <small class="text-muted">/ {{ plan.interval_unit }}</small>
             </h1>
           {% else %}
             <h1 class="card-title pricing-card-title">
-            &pound;0.00
+              {{ geo_currency_symbol }}0.00
             </h1>
           {% endif %}
 		    {% if plan.requirements.instant_payment %}
               <p class="text-muted">
-              Upfront cost: &pound;{{ "%.2f"|format(plan.sell_price/100) }}
+              Upfront cost: {{ plan.showSellPrice() }}
               </p>
 		    {% else %}
               <p class="text-muted">
-              Upfront cost: &pound;0.00
+              No Upfront payment
               </p>
 		    {% endif %}
             <ul class="text-left list-unstyled">

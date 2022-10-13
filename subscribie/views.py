@@ -28,6 +28,13 @@ from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
+from subscribie.utils import (
+    get_geo_currency_symbol,
+    get_geo_currency_code,
+    get_shop_default_country_code,
+    get_shop_default_currency_symbol,
+    currencyFormat,
+)
 import pycountry
 
 log = logging.getLogger(__name__)
@@ -59,7 +66,12 @@ def on_each_request():
     # into the request in order for Subscribie to read it.
     # https://github.com/Subscribie/subscribie/issues/886
     # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
+
+    # Assume country detection will fail by default
+    session["fallback_default_country_active"] = False
     countryObj = None
+
+    # Try to get Geo-Country-Code
     geo_country_code_header = request.headers.get("Geo-Country-Code")
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
@@ -80,7 +92,10 @@ def on_each_request():
     else:
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
-        countryObj = pycountry.countries.get(alpha_2="GB")
+        fallback_default_country = get_shop_default_country_code()
+        log.debug("Unable to get geo country from request header: {e}")
+        countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
+        assert countryObj is not None
         country = {
             "alpha_2": countryObj.alpha_2,
             "alpha_3": countryObj.alpha_3,
@@ -90,6 +105,7 @@ def on_each_request():
         }
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
+        session["fallback_default_country_active"] = True
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
@@ -127,17 +143,21 @@ def inject_template_globals():
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     setting = Setting.query.first()
-    if setting is None:
-        setting = Setting()
-        database.session.add(setting)
-        database.session.commit()
-    custom_code = Setting.query.first().custom_code
+    custom_code = setting.custom_code
+    geo_currency_symbol = get_geo_currency_symbol()
+    default_currency_symbol = get_shop_default_currency_symbol()
+    currency_format = currencyFormat
+
     return dict(
         company=company,
         integration=integration,
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
+        geo_currency_symbol=geo_currency_symbol,
+        get_geo_currency_code=get_geo_currency_code,
+        default_currency_symbol=default_currency_symbol,
+        currency_format=currency_format,
     )
 
 

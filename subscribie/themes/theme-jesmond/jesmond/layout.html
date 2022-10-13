@@ -187,7 +187,7 @@
     <a href="#" class="btn-outlined mt-3">Scroll back to top</a>
 
     {% if 'country' in session %}
-    <div id="country-region-select" class="mt-2" style="text-align: left">
+    <div id="country-region-select" class="mt-2" style="text-align: left" title="{{ session['country']['name'] }} ({{ session['country']['alpha_3'] }})">
       Country {{ session['country']['flag'] }}
     </div>
     {% endif %}

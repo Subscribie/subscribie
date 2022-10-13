@@ -23,32 +23,37 @@
           <p>Connect to Stripe below. When your subscribers pay one-off or recurring amounts, they 
           will be paid out into your bank account via Stripe.
           </p>
+          Default currency is set to: {{ default_currency }}
+          <p>The country in which the account holder resides, or in which the business is legally established:</p>
+          <select id="country_code" class="form-control" style="margin-bottom: 2em">
+            {% for country in countryToCurrency %}
+              {% if default_currency == country['currency_code'] %}
+                <option value="{{ country['country_code'] }}" data-currency="{{ country['currency_code'] }}" selected>{{ country['country_name'] }}</option>
+              {% else %}
+                <option value="{{ country['country_code'] }}" data-currency="{{ country['currency_code'] }}">{{ country['country_name'] }}</option>
+              {% endif %}
+            {% endfor %}
+            </select>
+          </select>
+
+
           {# Only allow activated shops to activate Stripe
-             in live mode #}
-          {% if shop_activated %}
-
-            <button id="submit" class="btn btn-success">
-            Setup payouts on Stripe
-            {% if payment_provider.stripe_livemode %}
-              (live mode)
-            {% else %}
-              (test mode)
-            {% endif %}
-            </button>
-
-          {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
-            {# Only require non-already stripe connected sites to activate via human operator #}
-            <a href="{{ saas_activate_account_url }}" class="btn btn-success">Start taking live payments</a>
+            in live mode #}
+         {% if shop_activated %}
+           <button id="submit" class="btn btn-success">
+           Setup payouts on Stripe
+           {% if payment_provider.stripe_livemode %}
+             (live mode)
+           {% else %}
+             (test mode)
+           {% endif %}
+           </button>
+           {% elif account.payouts_enabled is not sameas True and payment_provider.stripe_livemode is sameas True %}
+           {# Only require non-already stripe connected sites to activate via human operator #}
+           <a href="{{ saas_activate_account_url }}" class="btn btn-success" id="submit">Start taking live payments</a>
 
           {% else %}
-            <button id="submit" class="btn btn-success"> Setup payouts on Stripe (test mode) </button>
-          {% endif %}
-
-
-          {% if account.payouts_enabled is sameas False and payment_provider.stripe_livemode is sameas True %}
-            <div class="alert alert-warning" role="alert">
-              Please complete setting up Stripe in live mode.
-            </div>
+           <button id="submit" class="btn btn-success mb-4"> Setup payouts on Stripe (test mode) </button>
           {% endif %}
 
          {% if account.payouts_enabled %}
@@ -62,27 +67,34 @@
                 Any valid name/Address
             </div>
             {% endif %}
+
+            {% if payment_provider.stripe_livemode is sameas True %}
             <div class="alert alert-success" role="alert">
                 <b>Congrats!</b> Payouts are active on your site, which means 
                 you'll receive funds to your bank account. <br />
-                {% if payment_provider.stripe_livemode is not sameas True %}
-                  <b>Your accout is currently in test mode, once you are ready, 
-                  you can switch to live mode using real money.</b>
-                {% endif %}
             </div> 
+            {% endif %}
+
+            {% if payment_provider.stripe_livemode is not sameas True %}
+              <div class="alert alert-warning" role="alert">
+                <b>Your accout is currently in test mode, once you are ready,
+                you can switch to live mode using real money.</b>
+              </div>
+            {% endif %}
 
             <a href="{{ stripe_express_dashboard_url }}" class="btn btn-success">
                 View balance, payouts and change bank account settings
             </a> <br /> <br />
 
-         {% elif account.charges_enabled and account.payouts_enabled is sameas False %}
+         {% elif account.payouts_enabled is sameas False %}
             <div class="alert alert-warning" role="alert">
                 Payouts to your bank account are not active yet.
                 Stripe needs you to provide identification.<br />
-                Please check back here after a short while (5 mins) and Stripe
-                will ask you to upload verification documents. Click
-                'Setup payouts on stripe' again and you'll be asked to provide documents
-                (this is to reduce fraud and protect you and your customers).
+                If you have already done this, please check back here after a
+                short while (5 mins). <br />
+                Otherwise please click 'Setup payouts on stripe' again and you'll
+                be asked to provide documents. This is to better protect you and your customers
+                from fraud.
                 <br />
                 <p>
                     If you have recently uploaded these documents, please give Stripe some time
@@ -92,8 +104,9 @@
                       <h3>Items Currently Due</h3>
                       <p>Stripe currently needs the following information:</p>
                       {% for item in account.requirements.currently_due %}
-                          <!-- {{ item }} <br/> -->
+                        {{ item }} <br/>
                       {% endfor %}
+
                       <ul>
                       
                       {% if 'individual.verification.document' in account.requirements.currently_due %}
@@ -122,7 +135,6 @@
           <h3>Live / Test mode</h3>
           <p>Switch between live and test mode.</p>
           <p><em>Live</em> means use real money. <em>Test</em> is pretend money.</p>
-
 
           <div class="form-check form-check-inline">
             <input class="form-check-input stripe-change-live-mode" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1"
@@ -166,35 +178,36 @@
 
 <script>
 let elmButton = document.querySelector("#submit");
-  
-if (elmButton) {
-  elmButton.addEventListener(
-    "click",
-    e => {
-      elmButton.setAttribute("disabled", "disabled");
-      elmButton.textContent = "Opening please wait...";
+elmButton.addEventListener(
+  "click",
+  e => {
+    let country_code = document.querySelector("#country_code");
+    let data = {};
+    data['country_code'] = country_code.value;
+    data['default_currency'] = country_code[country_code.selectedIndex].dataset.currency;
+    elmButton.setAttribute("disabled", "disabled");
+    elmButton.textContent = "Opening please wait...";
 
-      fetch("{{ stripe_onboard_path }}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+    fetch('{{ stripe_onboard_path }}', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.url) {
+          window.location = data.url;
+        } else {
+          elmButton.removeAttribute("disabled");
+          elmButton.textContent = "Something went wrong";
+          console.log("data", data);
         }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.url) {
-            window.location = data.url;
-          } else {
-            elmButton.removeAttribute("disabled");
-            elmButton.textContent = "<Something went wrong>";
-            console.log("data", data);
-          }
-        });
-    },
-    false
-  );
-}
-
+      });
+  },
+  false
+);
 /* Toggle stripe live mode */
 elms = document.querySelectorAll('.stripe-change-live-mode');
 

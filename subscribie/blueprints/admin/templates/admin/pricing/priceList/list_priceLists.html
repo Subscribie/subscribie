@@ -1,0 +1,108 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Price Lists</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_priceLists') }}">Price Lists</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete  Price Lists</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Add / Edit / Delete Price Lists</h3>
+        <p class="card-subtitle text-muted">Select a Price List to edit.</p>
+        <p>
+        Use pricelists to set different pricing rules on your plans.<br />
+        <style>
+        ul {
+          list-style: disc;
+        }
+        </style>
+        <ul>
+          <li>Price lists are per-currency</li>
+          <li>You can attach rules to price lists, e.g. 20% off rule</li>
+          <li>You assign price lists to your plan(s)</li>
+        </ul>
+        <p>Examples:</p>
+        </p>
+
+        <ul>
+          <li>20% price increase for USD currency</li>
+          <li>Incresse GBP plan(s) price by &pound;1</li>
+        </ul>
+
+        <a href="{{ url_for('admin.add_priceList') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Add Price List
+        </a>
+
+        <a href="{{ url_for('admin.list_priceListRules') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Manage Rules 
+        </a>  
+      </div>
+
+      {% if confirm is sameas false %}
+        <div class="card mx-auto my-3 py-3 col-md-7">
+          <h3 class="card-title mx-auto">Are you sure?</h3>
+          <div class="mx-auto">
+            <a href="{{ url_for('admin.delete_priceList', id=priceList.id) }}" 
+                class="btn btn-danger mx-3 px-5" role="button">
+                Yes
+            </a>
+            <a href="{{ url_for('admin.list_priceLists', cancel=1) }}" 
+                class="btn btn-success mx-3 px-5" role="button">
+                No
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <table class="table table-hover table-scroll">
+          <thead>
+            <th>Title</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </thead>
+        {% for priceList in priceLists %}
+          <tr>
+            <td>
+              {{ priceList.name}} <small>({{ priceList.rules|length }} <a href="{{ url_for("admin.edit_priceList", id=priceList.id) }}">price rules</a> attached)</small>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.edit_priceList', id=priceList.id) }}" 
+              class="btn btn-success btn-block" role="button">
+              Edit
+              </a>
+            </td>
+            <td>
+              <a href="" 
+              class="btn btn-success btn-block" name= "{{ priceList.name }}-Price List"style="display: inline-block" role="button">
+              Assign to Plans
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.delete_priceList', id=priceList.id, confirm=0) }}" 
+              class="btn btn-danger btn-block" role="button">
+              Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+      {% endif %}
+      
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

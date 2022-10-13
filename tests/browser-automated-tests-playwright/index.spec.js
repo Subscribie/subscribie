@@ -19,7 +19,7 @@ test.describe("Subscribie tests:", () => {
     // Check onboarding not already completed
     try {
       let connectYourShopContent = await page.evaluate(() => document.body.textContent);
-      if (connectYourShopContent.indexOf("Congrats!") > -1) {
+      if (connectYourShopContent.indexOf("Your currently running in test mode.") > -1) {
         expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
         console.log("Already connected Stripe sucessfully, exiting test");
         return 0;
@@ -35,7 +35,7 @@ test.describe("Subscribie tests:", () => {
       await page.goto('admin/connect/stripe-connect');
       //page.setDefaultTimeout(3000);
       let contentStripeConnect = await page.evaluate(() => document.body.textContent);
-      test.skip(contentStripeConnect.indexOf("Congrats!") > -1);
+      test.skip(contentStripeConnect.indexOf("Your currently running in test mode.") > -1);
       expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
 
       // deleting connect account id, if stripe was not succesfully connected
@@ -45,6 +45,8 @@ test.describe("Subscribie tests:", () => {
 
       // Start Stripe connect onboarding
       await page.goto('/admin/connect/stripe-connect');
+      // Selecting countring to connect to stripe
+      await page.locator('select').selectOption('GB')
       await page.click('.btn-success');
 
       console.log("Start Stripe connect onboarding")
@@ -96,7 +98,6 @@ test.describe("Subscribie tests:", () => {
                 await page.selectOption('select >> nth=2', '1990');
                 console.log("select selector being used");
               }
-
           } catch (e) {
             console.log("Exception in setting personal details, perhaps already completed");
             console.log(e);
@@ -159,8 +160,8 @@ test.describe("Subscribie tests:", () => {
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
       await new Promise(x => setTimeout(x, 5000));
-      const stripe_connected = await page.textContent("text=Congrats!");
-      expect(stripe_connected === "Congrats!");
+      const stripe_connected = await page.textContent("text=Your currently running in test mode.");
+      expect(stripe_connected === "Your currently running in test mode.");
       console.log("Stripe Connected");
       await page.goto('/admin/announce-stripe-connect'); 
       await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";

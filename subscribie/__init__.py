@@ -9,7 +9,6 @@
 """
 from dotenv import load_dotenv
 
-load_dotenv(verbose=True)
 from .logger import logger  # noqa: F401
 import logging
 import os
@@ -30,7 +29,12 @@ from flask import (
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme
 from flask_cors import CORS
-from flask_uploads import configure_uploads, UploadSet, IMAGES, patch_request_class
+from flask_uploads import (
+    configure_uploads,
+    UploadSet,
+    IMAGES,
+    patch_request_class,
+)  # noqa: E501
 import importlib
 import urllib
 from pathlib import Path
@@ -39,12 +43,9 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 
-from .models import (
-    PaymentProvider,
-    Person,
-    Company,
-    Module,
-)
+from .models import PaymentProvider, Setting, Person, Company, Module, Plan, PriceList
+
+load_dotenv(verbose=True)
 
 log = logging.getLogger(__name__)
 
@@ -142,6 +143,59 @@ def create_app(test_config=None):
                 payment_provider = PaymentProvider()
                 database.session.add(payment_provider)
                 database.session.commit()
+            setting = Setting.query.first()
+            if setting is None:
+                setting = Setting()
+                # delete after migrate
+                setting.default_country_code = "GB"
+                setting.default_currency = "GBP"
+                database.session.add(setting)
+                database.session.commit()
+        except sqlalchemy.exc.OperationalError as e:
+            # Allow to fail until migrations run (flask upgrade requires app reboot)
+            log.debug(e)
+        try:
+            # Ensure shop has a PriceList for each supported currency
+            # such PriceList contains zero rules so effectively returns the plan.sell_price # noqa: E501
+            # and plan.interval_amount without any price adjustments.
+            # Note that PriceLists must also be assigned to plan(s) to be in effect.
+            price_lists = PriceList.query.all()
+            # If there are zero PriceLists this may mean shop is outdated and
+            # therefore needs its inital PriceLists created
+            if len(price_lists) == 0:
+                # Create defaul PriceList with zero rules for each suported currency
+                if os.getenv("SUPPORTED_CURRENCIES", False) is not False:
+                    for currency in os.getenv("SUPPORTED_CURRENCIES").split(","):
+                        log.debug(
+                            f"Creating PriceList with zero rules for currency {currency}"  # noqa: E501
+                        )
+                        price_list = PriceList(
+                            currency=currency, name=f"Default {currency}"
+                        )  # noqa: E501
+                        database.session.add(price_list)
+                        database.session.commit()
+                        log.debug(
+                            f"Created PriceList with zero rules for currency {currency}"
+                        )
+                else:
+                    log.debug("SUPPORTED_CURRENCIES is not set")
+            # Ensure every plan has a PriceList attached for each supported currency
+            plans = Plan.query.all()
+            price_lists = (
+                PriceList.query.all()
+            )  # TODO only get default pricelist for given currency
+            # since there is danger here that newly created pricelists may be added # noqa: E501
+            for plan in plans:
+                # Note we are careful to skip plans which already have a PriceList attached # noqa: E501
+                # to handle the case of an already updated shop.
+                if len(plan.price_lists) == 0:
+                    for price_list in price_lists:
+                        log.debug(
+                            f"Adding price_list {price_list.name} to {plan.title}"
+                        )
+                        plan.price_lists.append(price_list)
+                        database.session.commit()
+                        log.debug(f"Added price_list {price_list.name} to {plan.title}")
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations run (flask upgrade requires app reboot)
             log.debug(e)

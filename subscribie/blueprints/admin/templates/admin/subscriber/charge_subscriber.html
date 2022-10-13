@@ -46,7 +46,7 @@
               <div class="form-group">
                 <label for="amount">Amount</label>
                 <input type="number" name="amount" class="form-control" id="amount" aria-describedby="amountHelp" placeholder="2000" required>
-                <small id="amountHelp" class="form-text text-muted">Enter the amount in smallest unit. E.g. 2000 is &pound;20.00 <br />Another example: 699 is &pound;6.99</small>
+                <small id="amountHelp" class="form-text text-muted">Enter the amount in smallest unit. E.g. 2000 is {{ currency_code }}20.00 <br />Another example: 699 is {{ currency_code }}6.99</small>
               </div>
               <div class="form-group">
                 <label for="description">Description</label>
