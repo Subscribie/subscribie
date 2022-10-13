@@ -1,3 +1,15 @@
+# v0.1.124 (Thu Oct 13 2022)
+
+#### ⚠️ Pushed to `master`
+
+- reduce default currency error to info subscribie/utils.py ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.123 (Thu Oct 13 2022)
 
 #### 🐛 Bug Fix
