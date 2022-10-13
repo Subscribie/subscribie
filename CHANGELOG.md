@@ -1,3 +1,15 @@
+# v0.1.123 (Thu Oct 13 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #964 Add SUPPORTED_CURRENCIES to .envsubst.template [#965](https://github.com/Subscribie/subscribie/pull/965) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.122 (Thu Oct 13 2022)
 
 #### 🐛 Bug Fix
