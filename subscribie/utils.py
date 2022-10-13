@@ -43,7 +43,7 @@ def get_geo_currency_code():
     except KeyError as e:
         log.error(f"Could not map country_code {country_code} to a currency code. {e}")
         currency_code = get_shop_default_currency_code()
-    log.debug(f("get_geo_currency_code returned currency_code: {currency_code}"))
+    log.debug(f"get_geo_currency_code returned currency_code: {currency_code}")
     return currency_code
 
 
@@ -76,6 +76,7 @@ def get_geo_country_code():
         country_code = session.get("country_code")
     else:
         country_code = get_shop_default_country_code()
+    log.debug(f"get_geo_country_code returned country_code: {country_code}")
     return country_code
 
 
