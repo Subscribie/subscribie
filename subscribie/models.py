@@ -815,11 +815,18 @@ class Plan(database.Model, HasArchived):
 
         {{ plan.showIntervalAmount() }}
         """
-
+        log.debug("showIntervalAmount called")
         currency_symbol = get_geo_currency_symbol()
+        log.debug(f"showIntervalAmount got currency_symbol {currency_symbol}")
+
         amount = self.getIntervalAmount(get_geo_currency_code()) / 100
 
+        log.debug(
+            f"showIntervalAmount amount calculated to amount: {amount}, with currency code {get_geo_currency_code()}"
+        )
+
         result = f"{currency_symbol}{amount:.2f}"
+        log.debug(f"showIntervalAmount result formatted as: {result}")
         return result
 
     def assignDefaultPriceLists(self):
