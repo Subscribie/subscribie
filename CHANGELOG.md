@@ -1,3 +1,15 @@
+# v0.1.125 (Thu Oct 13 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #966 changing logs from error to info [#967](https://github.com/Subscribie/subscribie/pull/967) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.124 (Thu Oct 13 2022)
 
 #### ⚠️ Pushed to `master`
