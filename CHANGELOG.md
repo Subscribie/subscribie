@@ -1,3 +1,18 @@
+# v0.1.122 (Thu Oct 13 2022)
+
+#### 🐛 Bug Fix
+
+- #962 debug logging showIntervalAmount [#963](https://github.com/Subscribie/subscribie/pull/963) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #962 debug getIntervalAmount [#963](https://github.com/Subscribie/subscribie/pull/963) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #962 get_geo_country_code log country_code [#963](https://github.com/Subscribie/subscribie/pull/963) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip fix #962 log get_geo_currency_code currency_code [#963](https://github.com/Subscribie/subscribie/pull/963) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.121 (Thu Oct 13 2022)
 
 #### 🐛 Bug Fix
