@@ -43,7 +43,7 @@ def get_geo_currency_code():
     except KeyError as e:
         log.error(f"Could not map country_code {country_code} to a currency code. {e}")
         currency_code = get_shop_default_currency_code()
-    log.debug(f"get_geo_currency_code returned currency_code: {currency_code}")
+    log.info(f"get_geo_currency_code returned currency_code: {currency_code}")
     return currency_code
 
 
@@ -57,7 +57,7 @@ def get_shop_default_country_code():
     default_country_code = settings.default_country_code
 
     if default_country_code is None:
-        log.error("default_country_code is not set, defaulting to US")
+        log.info("default_country_code is not set, defaulting to US")
         default_country_code = "US"
 
     return default_country_code
