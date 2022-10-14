@@ -1,3 +1,15 @@
+# v0.1.127 (Fri Oct 14 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #969 join subscription and plan table for interval amount and sell price [#970](https://github.com/Subscribie/subscribie/pull/970) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.126 (Fri Oct 14 2022)
 
 #### 🐛 Bug Fix
