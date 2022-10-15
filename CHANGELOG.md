@@ -1,3 +1,15 @@
+# v0.1.129 (Sat Oct 15 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #972 show video on homepage builder theme [#973](https://github.com/Subscribie/subscribie/pull/973) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.128 (Sat Oct 15 2022)
 
 #### 🐛 Bug Fix
