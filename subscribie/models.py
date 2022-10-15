@@ -354,16 +354,15 @@ class Subscription(database.Model):
         {{ subscription.showSellPrice() }}
 
         """
-        # Backward compatibility#####
+        # Backward compatibility
+        # old Subscription entries will not have
+        # currency or sell_price set on the
+        # subscription model.
         if self.currency is None:
             self.currency = "GBP"
             self.sell_price = self.plan.sell_price
             database.session.commit()
         ##############################
-
-        # Backward compatibility, old Subscription entries will not
-        # have currency, sell_price or interval_amount set on the
-        # subscription model.
 
         if self.sell_price is None:
             result = "unknown"
@@ -386,7 +385,10 @@ class Subscription(database.Model):
         {{ subscription.showIntervalAmount() }}
 
         """
-        # Backward compatibility#####
+        # Backward compatibility
+        # old Subscription entries will not have
+        # currency or interval_amount set on the
+        # subscription model.
         if self.currency is None:
             self.currency = "GBP"
             self.interval_amount = self.plan.interval_amount
