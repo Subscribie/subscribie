@@ -1,3 +1,17 @@
+# v0.1.128 (Sat Oct 15 2022)
+
+#### 🐛 Bug Fix
+
+- adding more comments to the backward compatibility code [#971](https://github.com/Subscribie/subscribie/pull/971) ([@joeltejeda](https://github.com/joeltejeda))
+- adding backwards compability for existing shops [#971](https://github.com/Subscribie/subscribie/pull/971) ([@joeltejeda](https://github.com/joeltejeda))
+- reverting changes [#971](https://github.com/Subscribie/subscribie/pull/971) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.127 (Fri Oct 14 2022)
 
 #### 🐛 Bug Fix
