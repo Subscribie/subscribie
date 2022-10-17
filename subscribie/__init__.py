@@ -43,7 +43,7 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 
-from .models import PaymentProvider, Setting, Person, Company, Module, Plan, PriceList
+from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
 
 load_dotenv(verbose=True)
 
@@ -142,14 +142,6 @@ def create_app(test_config=None):
                 # If payment provider table not seeded, seed with blank values.
                 payment_provider = PaymentProvider()
                 database.session.add(payment_provider)
-                database.session.commit()
-            setting = Setting.query.first()
-            if setting is None:
-                setting = Setting()
-                # delete after migrate
-                setting.default_country_code = "GB"
-                setting.default_currency = "GBP"
-                database.session.add(setting)
                 database.session.commit()
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations run (flask upgrade requires app reboot)
