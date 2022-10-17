@@ -35,7 +35,8 @@ jobs:
           SHOP_OWNER_EMAIL_PASSWORD: ${{ secrets.SHOP_OWNER_EMAIL_PASSWORD }}
           EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST_ISSUE_704 }}
           SHOP_OWNER_MAGIC_LOGIN_IMAP_SEARCH_SUBJECT: "Subscribie Magic Login"
-          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
+          IMAP_SEARCH_UNSEEN: "1"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2022"
         run: |
           set -x
           cd tests/browser-automated-tests-playwright; npx playwright test --grep @704
