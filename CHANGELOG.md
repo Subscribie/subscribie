@@ -1,3 +1,16 @@
+# v0.1.133 (Mon Oct 17 2022)
+
+#### 🐛 Bug Fix
+
+- updating seed sql for test site [#975](https://github.com/Subscribie/subscribie/pull/975) ([@joeltejeda](https://github.com/joeltejeda))
+- Fix #974 removing multi-currency migration code [#975](https://github.com/Subscribie/subscribie/pull/975) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.132 (Sat Oct 15 2022)
 
 #### ⚠️ Pushed to `master`
