@@ -59,3 +59,6 @@ CREATE TABLE IF NOT EXISTS builder_sites
       site_url text,
       email text
 );
+
+INSERT INTO setting (id, charge_vat, shop_activated, default_currency, default_country_code) 
+VALUES (1,0,0,'GBP','GB');
