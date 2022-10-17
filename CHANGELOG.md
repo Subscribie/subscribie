@@ -1,3 +1,15 @@
+# v0.1.134 (Mon Oct 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #976 update send email workflow adding IMAP_SEARCH_UNSEEN variable [#977](https://github.com/Subscribie/subscribie/pull/977) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.133 (Mon Oct 17 2022)
 
 #### 🐛 Bug Fix
