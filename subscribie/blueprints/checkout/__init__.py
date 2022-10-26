@@ -36,7 +36,7 @@ from subscribie.utils import (
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
-from subscribie.signals import journey_complete, signal_payment_failed
+from subscribie.signals import signal_payment_failed
 from subscribie.email import send_welcome_email
 from subscribie.notifications import newSubscriberEmailNotification
 import stripe
@@ -265,9 +265,6 @@ def thankyou():
     database.session.commit()
 
     # Send journey_complete signal
-    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
-    journey_complete.send(current_app._get_current_object(), email=email)
-
     send_welcome_email()
 
     return render_template("thankyou.html")
