@@ -21,9 +21,9 @@ from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
 from subscribie.signals import journey_complete, signal_payment_failed
 from subscribie.receivers import (
-    receiver_send_shop_owner_new_subscriber_notification_email,
     receiver_send_subscriber_payment_failed_notification_email,
 )
+from subscribie.notifications import newSubscriberEmailNotification
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
@@ -43,7 +43,7 @@ bp = Blueprint("views", __name__, url_prefix=None)
 
 
 # Connect signals to recievers
-journey_complete.connect(receiver_send_shop_owner_new_subscriber_notification_email)
+journey_complete.connect(newSubscriberEmailNotification)
 signal_payment_failed.connect(
     receiver_send_subscriber_payment_failed_notification_email
 )
