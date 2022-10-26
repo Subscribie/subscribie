@@ -1,3 +1,15 @@
+# v0.1.135 (Wed Oct 26 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #935 removing dead code [#978](https://github.com/Subscribie/subscribie/pull/978) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.134 (Mon Oct 17 2022)
 
 #### 🐛 Bug Fix
