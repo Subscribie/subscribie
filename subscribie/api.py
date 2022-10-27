@@ -16,15 +16,30 @@ log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
 
 
+@api.route("/shop-name-taken/<shop_name>", methods=["GET"])
+def shop_name_taken(shop_name):
+    """Check if shop name has been taken or not"""
+    from builder import Shop
+
+    shop_name = f"https://{shop_name}.{os.getenv('SUBSCRIBIE_DOMAIN')}"
+    lookup = database.session.query(Shop).where(Shop.site_url == shop_name).all()
+    log.debug(f"Running shop_name_taken lookup for: {lookup}")
+    if len(lookup) == 0:
+        log.debug(f"Shop name not taken: {lookup}")
+        return jsonify(False)
+    log.debug(f"Shop name is already taken: {lookup}")
+    return jsonify(True)
+
+
 @api.route("/magic-login-link", methods=["POST"])
 def api_get_magic_login_link():
     email = request.form.get("email", None)
     if email is not None:
         user = User.query.filter_by(email=email).first()
-        if user is not None:
-            login_url = generate_login_url(email)
-            resp = {"login_url": login_url}
-            return resp
+    if user is not None:
+        login_url = generate_login_url(email)
+        resp = {"login_url": login_url}
+        return resp
     return {"msg": "Could not generate login url"}
 
 
