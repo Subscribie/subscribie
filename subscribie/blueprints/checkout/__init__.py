@@ -662,6 +662,12 @@ def stripe_webhook():
     See https://github.com/Subscribie/subscribie/issues/352
     """
     event = request.json
+    stripe_livemode = PaymentProvider.query.first().stripe_livemode
+    if stripe_livemode != event["livemode"]:
+
+        log.warn(
+            f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"
+        )
 
     log.info(f"Received stripe webhook event type {event['type']}")
     # Handle the payment_intent.payment_failed
@@ -745,7 +751,10 @@ def stripe_webhook():
             )
         return "OK", 200
 
-    if event["type"] == "payment_intent.succeeded":
+    if (
+        stripe_livemode == event["livemode"]
+        and event["type"] == "payment_intent.succeeded"
+    ):
         return stripe_process_event_payment_intent_succeeded(event)
 
     msg = {"msg": "Unknown event", "event": event}
