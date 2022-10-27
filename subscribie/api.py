@@ -36,10 +36,10 @@ def api_get_magic_login_link():
     email = request.form.get("email", None)
     if email is not None:
         user = User.query.filter_by(email=email).first()
-        if user is not None:
-            login_url = generate_login_url(email)
-            resp = {"login_url": login_url}
-            return resp
+    if user is not None:
+        login_url = generate_login_url(email)
+        resp = {"login_url": login_url}
+        return resp
     return {"msg": "Could not generate login url"}
 
 
