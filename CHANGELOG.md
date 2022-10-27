@@ -1,3 +1,16 @@
+# v0.1.136 (Thu Oct 27 2022)
+
+#### 🐛 Bug Fix
+
+- #980 restore change to api_get_magic_login_link made in error [#981](https://github.com/Subscribie/subscribie/pull/981) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #980 add api call /api/shop-name-taken/ lookup [#981](https://github.com/Subscribie/subscribie/pull/981) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.135 (Wed Oct 26 2022)
 
 #### 🐛 Bug Fix
