@@ -22,7 +22,9 @@ def shop_name_taken(shop_name):
     from builder import Shop
 
     shop_name = f"https://{shop_name}.{os.getenv('SUBSCRIBIE_DOMAIN')}"
-    lookup = database.session.query(Shop).where(Shop.site_url == shop_name).all()
+    lookup = (
+        database.session.query(Shop).where(Shop.site_url == shop_name.lower()).all()
+    )
     log.debug(f"Running shop_name_taken lookup for: {lookup}")
     if len(lookup) == 0:
         log.debug(f"Shop name not taken: {lookup}")
