@@ -21,10 +21,9 @@ def shop_name_taken(shop_name):
     """Check if shop name has been taken or not"""
     from builder import Shop
 
+    shop_name = shop_name.replace(" ", "").lower()
     shop_name = f"https://{shop_name}.{os.getenv('SUBSCRIBIE_DOMAIN')}"
-    lookup = (
-        database.session.query(Shop).where(Shop.site_url == shop_name.lower()).all()
-    )
+    lookup = database.session.query(Shop).where(Shop.site_url == shop_name).all()
     log.debug(f"Running shop_name_taken lookup for: {lookup}")
     if len(lookup) == 0:
         log.debug(f"Shop name not taken: {lookup}")
