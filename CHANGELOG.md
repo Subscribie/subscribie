@@ -1,3 +1,23 @@
+# v0.1.138 (Sat Oct 29 2022)
+
+#### 🐛 Bug Fix
+
+- #980 lowercase checkshopname exists [#984](https://github.com/Subscribie/subscribie/pull/984) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Merge branch '980-api-check-shopname-exists' of github.com:Subscribie/subscribie into 980-api-check-shopname-exists [#984](https://github.com/Subscribie/subscribie/pull/984) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #980 restore change to api_get_magic_login_link made in error [#981](https://github.com/Subscribie/subscribie/pull/981) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #980 add api call /api/shop-name-taken/ lookup [#981](https://github.com/Subscribie/subscribie/pull/981) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `master`
+
+- #980 remove spaced when checking shopname taken ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Merge branch 'master' of github.com:Subscribie/subscribie into 980-api-check-shopname-exists ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.137 (Sat Oct 29 2022)
 
 #### 🐛 Bug Fix
