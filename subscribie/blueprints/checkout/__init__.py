@@ -264,7 +264,6 @@ def thankyou():
 
     database.session.commit()
 
-    # Send journey_complete signal
     send_welcome_email()
 
     return render_template("thankyou.html")
