@@ -1,3 +1,15 @@
+# v0.1.139 (Sat Nov 05 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #986 refactor events & signals [#987](https://github.com/Subscribie/subscribie/pull/987) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.138 (Sat Oct 29 2022)
 
 #### 🐛 Bug Fix
