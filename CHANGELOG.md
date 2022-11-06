@@ -1,3 +1,15 @@
+# v0.1.141 (Sun Nov 06 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #988 fix next_payment_attempt removed by mistake [#989](https://github.com/Subscribie/subscribie/pull/989) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.140 (Sun Nov 06 2022)
 
 #### 🐛 Bug Fix
