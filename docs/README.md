@@ -7,6 +7,11 @@ Building and running the site locally requires a recent `extended` version of [H
 You can find out more about how to install Hugo for your environment in our
 [Getting started](https://www.docsy.dev/docs/getting-started/#prerequisites-and-installation) guide.
 
+On `Ubuntu Linux`? You can download from [Hugu Releases on GitHub](https://github.com/gohugoio/hugo/releases) 
+e.g. `hugo_extended_0.105.0_linux-amd64.deb` then `sudo dpkg -i hugo_extended_0.105.0_linux-amd64.deb`
+
+> Remember, you must download/install the **extended** version.
+
 Once you've made your working copy of the site repo, from the repo root folder, run:
 
 ```bash
