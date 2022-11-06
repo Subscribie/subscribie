@@ -25,6 +25,7 @@ from subscribie.utils import (
     currencyFormat,
 )
 import stripe
+import json
 
 from .database import database
 
@@ -174,7 +175,8 @@ class Person(database.Model, HasArchived):
         query = query.filter(Person.id == self.id)
         invoices = query.all()
         for invoice in invoices:
-            invoice.created
+            stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
+            setattr(invoice, "created", stripeRawInvoice["created"])
             # Get stripe_decline_code if possible
             try:
                 payment_intent_id = stripeRawInvoice["payment_intent"]
@@ -190,6 +192,7 @@ class Person(database.Model, HasArchived):
             # Get next payment attempt date if possible
             try:
                 next_payment_attempt = invoice.next_payment_attempt
+                setattr(invoice, "next_payment_attempt", next_payment_attempt)
             except Exception as e:
                 log.debug(
                     f"Failed to get sripe next_payment_attempt for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
@@ -776,7 +779,7 @@ class Plan(database.Model, HasArchived):
         """
         log.debug(f"getIntervalAmount called with currency_code: {currency_code}")
         if currency_code is None:
-            log.warning(f"getIntervalAmount currency_code was None")
+            log.warning("getIntervalAmount currency_code was None")
             currency_code = get_geo_currency_code()
 
         return self.getPrice(currency_code)[1]
