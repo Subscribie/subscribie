@@ -1,3 +1,15 @@
+# v0.1.140 (Sun Nov 06 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #982 matching stripe livemode with the event stripelivemode [#983](https://github.com/Subscribie/subscribie/pull/983) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.139 (Sat Nov 05 2022)
 
 #### 🐛 Bug Fix
