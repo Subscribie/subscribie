@@ -15,19 +15,23 @@ from flask import (
     send_from_directory,
     Markup,
 )
-from .models import Company, Plan, Integration, Page, Category, Setting
+from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
 from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
-from subscribie.signals import journey_complete, signal_payment_failed
-from subscribie.receivers import (
-    receiver_send_shop_owner_new_subscriber_notification_email,
-    receiver_send_subscriber_payment_failed_notification_email,
-)
+from subscribie.signals import register_signal_handlers
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
 )
+from subscribie.utils import (
+    get_geo_currency_symbol,
+    get_geo_currency_code,
+    get_shop_default_country_code,
+    get_shop_default_currency_symbol,
+    currencyFormat,
+)
+import pycountry
 
 log = logging.getLogger(__name__)
 
@@ -35,10 +39,7 @@ bp = Blueprint("views", __name__, url_prefix=None)
 
 
 # Connect signals to recievers
-journey_complete.connect(receiver_send_shop_owner_new_subscriber_notification_email)
-signal_payment_failed.connect(
-    receiver_send_subscriber_payment_failed_notification_email
-)
+register_signal_handlers()
 
 
 @bp.before_app_first_request
@@ -52,6 +53,53 @@ def migrate_database():
 
 @bp.before_app_request
 def on_each_request():
+    # Detect country code if present in the request from proxy
+    # the requesting country must be detected by the upstream
+    # proxy, and that proxy must inject the header 'Geo-Country-Code'
+    # into the request in order for Subscribie to read it.
+    # https://github.com/Subscribie/subscribie/issues/886
+    # See also https://github.com/KarmaComputing/geo-location-ip-country-serverside
+
+    # Assume country detection will fail by default
+    session["fallback_default_country_active"] = False
+    countryObj = None
+
+    # Try to get Geo-Country-Code
+    geo_country_code_header = request.headers.get("Geo-Country-Code")
+    try:
+        countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
+    except LookupError as e:  # noqa: F841
+        log.debug("Unable to get geo country from request header: {e}")
+
+    # Dynamic country detection
+    if countryObj is not None:
+        country = {
+            "alpha_2": countryObj.alpha_2,
+            "alpha_3": countryObj.alpha_3,
+            "flag": countryObj.flag,
+            "name": countryObj.name,
+            "numeric": countryObj.numeric,
+        }
+        session["country"] = country
+        session["country_code"] = countryObj.alpha_2
+    else:
+        # Default to default country selection
+        # TODO As a shop owner I can set the default country of my shop
+        fallback_default_country = get_shop_default_country_code()
+        log.debug("Unable to get geo country from request header: {e}")
+        countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
+        assert countryObj is not None
+        country = {
+            "alpha_2": countryObj.alpha_2,
+            "alpha_3": countryObj.alpha_3,
+            "flag": countryObj.flag,
+            "name": countryObj.name,
+            "numeric": countryObj.numeric,
+        }
+        session["country"] = country
+        session["country_code"] = countryObj.alpha_2
+        session["fallback_default_country_active"] = True
+
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
         category = Category()
@@ -88,17 +136,21 @@ def inject_template_globals():
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     setting = Setting.query.first()
-    if setting is None:
-        setting = Setting()
-        database.session.add(setting)
-        database.session.commit()
-    custom_code = Setting.query.first().custom_code
+    custom_code = setting.custom_code
+    geo_currency_symbol = get_geo_currency_symbol()
+    default_currency_symbol = get_shop_default_currency_symbol()
+    currency_format = currencyFormat
+
     return dict(
         company=company,
         integration=integration,
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
+        geo_currency_symbol=geo_currency_symbol,
+        get_geo_currency_code=get_geo_currency_code,
+        default_currency_symbol=default_currency_symbol,
+        currency_format=currency_format,
     )
 
 
@@ -128,10 +180,16 @@ def show_500():
 
 @bp.route("/open")
 def stats():
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_active is None:
+        payment_provider.stripe_active = False
+
     """Open stats"""
     return {
         "active_subscribers": get_number_of_active_subscribers(),
         "monthly_revenue": get_monthly_revenue(),
+        "stripe_active": payment_provider.stripe_active,
+        "stripe_livemode": payment_provider.stripe_livemode,
     }
 
 

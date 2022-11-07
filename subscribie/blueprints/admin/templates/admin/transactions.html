@@ -68,6 +68,7 @@
         <th>Refund</th>
         <th>Payment id</th>
         <th>Amount</th>
+        <th>Currency</th>
         <th>Source</th>
         <th>Subscriber</th>
         <th>Subscription</th>
@@ -94,7 +95,8 @@
             {% endif %}
         </td> 
         <td>{{ transaction.external_id }}</td>
-        <td class="transaction-amount">&pound;{{ "%.2f"|format(transaction.amount/100) }}</td>
+        <td class="transaction-amount">{{ currency_code }}{{ "%.2f"|format(transaction.amount/100) }}</td>
+        <td class="transaction-currency">{{ transaction.currency|upper }}</td>
         <td>{{ transaction.external_src }}</td>
         <td>
           <a class="transaction-subscriber" href="{{ url_for('admin.show_subscriber', subscriber_id=transaction.person.id)}}">{{ transaction.person.full_name|capitalize }}</a>

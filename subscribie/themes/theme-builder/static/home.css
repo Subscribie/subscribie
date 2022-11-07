@@ -45,6 +45,34 @@ button {
     padding: 1rem;
 }
 
+@media (min-width: 1350px){
+    .navbar-expand-custom {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+    .navbar-expand-custom .navbar-nav {
+        flex-direction: row;
+    }
+    .navbar-expand-custom .dropdown-menu {
+        position: absolute;
+    }
+    .navbar-expand-custom .nav-link {
+        padding-right: .5rem;
+        padding-left: .5rem;
+    }
+    .navbar-expand-custom > .container {
+        flex-wrap: nowrap;
+    }
+    .navbar-expand-custom .navbar-collapse {
+        display: flex!important;
+        flex-basis: auto;
+    }
+    .navbar-expand-custom .navbar-toggler {
+        display: none;
+    }
+}
+
 .navbar-brand {
     font-weight: 600;
 }
@@ -434,3 +462,29 @@ footer img {
     }
 
 }
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+.dropdown-content {
+  display: none;
+  background-color: #0D4DCD;
+  position: absolute;
+  z-index: 1;
+}
+.dropdown-content a { 
+  color: black;
+  display: block;
+}
+.dropdown a:hover {background-color: #0A307D;}
+.show {display: block;}
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+

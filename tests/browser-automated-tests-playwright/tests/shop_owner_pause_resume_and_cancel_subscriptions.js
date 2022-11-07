@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-
+const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
     test("@147@shop-owner@Pause and Resume transaction", async ({ page }) => {  
@@ -11,7 +11,7 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
 
         // Verify that subscriber is present in the list
         const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === 'john@example.com');
+        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
 
         const subscriber_subscription_title_content = await page.textContent('.subscription-title');
         expect(subscriber_subscription_title_content === 'Hair Gel');
@@ -49,7 +49,7 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
 
         // Verify that subscriber is present in the list
         const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === 'john@example.com');
+        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
 
         const subscriber_subscription_title_content = await page.textContent('.subscription-title');
         expect(subscriber_subscription_title_content === 'Hair Gel');

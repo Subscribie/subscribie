@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-
+const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
     test("@293@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
         console.log("Ordering Plan with subscription and upfront charge");
@@ -10,7 +10,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', 'john@example.com');
+        await page.fill('#email', SUBSCRIBER_EMAIL_USER);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
@@ -62,7 +62,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         
         // Verify that subscriber is present in the list
         const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === 'john@example.com');
+        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
 
         // Verify that plan is attached to subscriber
         const subscriber_subscription_title_content = await page.textContent('.subscription-title');
@@ -103,5 +103,6 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         expect(content_upcoming_invoice_plan_upfront_amount === '£1.00')
     });
     transaction_filter_by_name_and_by_plan_title = require('./shop_owner_transaction_filter_by_name_and_by_plan_title.js');
+    subscriber_filter_by_name_and_by_plan_title = require('./905-subscriber-search-by-email-and-name.js');
     pause_resume_and_cancel_subscriptions = require('./shop_owner_pause_resume_and_cancel_subscriptions.js');
 });

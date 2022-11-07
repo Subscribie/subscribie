@@ -12,7 +12,6 @@
     <li class="breadcrumb-item active" aria-current="page">Subscribers</li>
   </ul>
 </div>
-
 <main>
   <div class="section">
     <div class="container">
@@ -25,6 +24,21 @@
       <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
+        <form action="#" method="GET">
+        <h4>Search...</h4>
+        {% if request.args.get("subscriber_email") or request.args.get("subscriber_name") %}
+        <div class="alert alert-warning">
+          You currently have a search filter active. <a href="{{ url_for('admin.subscribers') }}">Click here to show all subscribers again</a>.
+        </div>
+        {% endif %}
+        <div class="form-group">
+          <label for="subscriber_name">Subscriber name:</label>
+          <input type="text" name="subscriber_name" id="subscriber_name" class="form-control mb-2" placeholder="Enter subscriber's name..." value="{{ request.args.get("subscriber_name") or '' }}" />
+          <label for="plan_title">Subscriber email:</label>
+          <input type="text" name="subscriber_email" id="subscriber_email" class="form-control" placeholder="Enter subscriber's email..." value="{{ request.args.get("subscriber_email") or '' }}" />
+          <input type="submit" class="btn btn-primary mt-4" />
+        </div>
+        </form>
       <table class="table mobile-optimised">
         <thead>
           <tr>
@@ -83,8 +97,8 @@
                                 <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
                                 <li>
                                     {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                        <strong>Price ({{ subscription.plan.interval_unit }}): </strong>
-                                        <span class="subscribers-plan-interval_amount">{{ subscription.plan.interval_amount |default(0)|currencyFormat }}</span>
+                                        <strong>Price: </strong>
+                                        <span class="subscribers-plan-interval_amount">{{ subscription.showIntervalAmount() }}</span>
                                     {% else %}
                                         (One-off. Not a subscription)
                                     {% endif %}
@@ -92,12 +106,12 @@
                                 <li><strong>Sell price: </strong>
                                     <span class="subscribers-plan-sell-price">
                                         {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
-                                            {{ subscription.plan.sell_price|default(0)|currencyFormat }}</li>
+                                            {{ subscription.showSellPrice() }}</li>
                             {% else %}
                                 (No up-front fee)
                             {% endif %}
                                     </span>
-                                    <li><strong>Status: </strong>
+                                    <li><strong>Status:</strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                            {% if subscription.stripe_pause_collection == "void" %}
                                               <span class="subscription-status">Paused</span>

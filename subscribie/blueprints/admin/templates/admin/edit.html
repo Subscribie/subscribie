@@ -89,7 +89,9 @@
                     <!-- plan image -->
                     <div class="form-group">
                       <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
-                      <input type="file" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
+                      <p> Supported image upload extensions: <br> 
+                          jpg, jpe, jpeg, png, gif, svg, bmp</p>
+                      <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
                       {% if plan.primary_icon %}
                       <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
                       <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">
@@ -114,7 +116,7 @@
                           <label for="interval_amount-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Recurring Amount</label>
                           <div class="input-group">
                             <div class="input-group-prepend">
-                              <span class="input-group-text">£</span>
+                              <span class="input-group-text">{{ default_currency_symbol }}</span>
                             </div>
                             <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}" {% if plan.interval_amount %} value="{{ plan.interval_amount/ 100 }}" {% endif %} class="form-control" type="number" step="0.01">
                           </div>
@@ -163,7 +165,7 @@
                         <label for="sell_price-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Upfront price</label>
                         <div class="input-group">
                           <div class="input-group-prepend">
-                            <span class="input-group-text">£</span>
+                            <span class="input-group-text">{{ default_currency_symbol }}</span>
                           </div>
                           <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} value="{{ plan.sell_price/100 }}" {% endif %} id="sell_price-{{ loop.index0 }}" class="form-control">
                         </div>

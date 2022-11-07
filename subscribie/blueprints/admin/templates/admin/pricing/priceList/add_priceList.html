@@ -1,0 +1,51 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Price List{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Price List</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_priceLists') }}">Price Lists</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Add Price List</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Add Price List</h3>
+      <p class="card-subtitle text-muted mb-3">Price Lists allow you set different prices according
+      to rules you set.</p>
+      <p>For example you can set rules based on currency, and seasonal pricing (like Christmas).</p>
+
+      <hr>
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        <div class="row">
+          <label class="col-sm-3 col-form-label" for="title">Price List name:</label>
+          <div class="col-sm-9">
+            <input class="form-control" placeholder="Christmas" name="name" required>
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 col-form-label" for="title">Currency:</label>
+          <select class="custom-select col-sm-9">
+            {% for currency in supported_currencies %}
+            <option value="{currency}">{{currency}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

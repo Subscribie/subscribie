@@ -95,7 +95,6 @@ def style_shop():
                 log.error(f"Could not load css_style.css_properties_json. {e}")
         else:
             customCSS = ""
-            css_properties = ""
 
         return render_template(
             "show-custom-css.html",

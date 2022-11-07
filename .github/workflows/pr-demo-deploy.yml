@@ -25,6 +25,10 @@ jobs:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: |
           echo $GITHUB_CONTEXT
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: psf/black@stable # Fail early if fails Black code style
       - name: Prepare runner with ssh keys
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -49,8 +53,6 @@ jobs:
           echo The PR was raised by: ${{ github.event.pull_request.user.login }}
           eval `ssh-agent -s`
           ssh-add - <<< "$SSH_PRIVATE_KEY"
-          echo deleting dokku app ${{ github.head_ref }}
-          ssh dokku@$DOKKU_HOST -C "dokku apps:destroy --force ${{ env.SUBDOMAIN }}" | true
           echo Creating dokku app ${{ github.head_ref }}
           ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
           echo The url will be ${{ github.head_ref }}.pcpink.co.uk
@@ -61,10 +63,10 @@ jobs:
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_TEST_PUBLISHABLE_KEY=${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=${{ secrets.STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST }}"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} FLASK_ENV=development"
+          ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} EMAIL_QUEUE_FOLDER=${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }}"
+          # mount email-queue folder
+          ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ github.head_ref }} || true"
 
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Deploy branch ${{ github.head_ref }} to dokku
         uses: idoberko2/dokku-deploy-github-action@v1
         with:
@@ -104,8 +106,15 @@ jobs:
       - name: Run & Record browser automated tests (Playwright)
         env:
           PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
-          PLAYWRIGHT_SLOWMO: 500
+          PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
+          SUBSCRIBER_EMAIL_HOST: ${{ secrets.SUBSCRIBER_EMAIL_HOST }}
+          SUBSCRIBER_EMAIL_USER: ${{ secrets.SUBSCRIBER_EMAIL_USER }}
+          SUBSCRIBER_EMAIL_PASSWORD: ${{ secrets.SUBSCRIBER_EMAIL_PASSWORD }}
+          EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
+          RESET_PASSWORD_IMAP_SEARCH_SUBJECT: ${{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
+          IMAP_SEARCH_UNSEEN: "1"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env

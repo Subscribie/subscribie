@@ -1,0 +1,93 @@
+{% extends "admin/layout.html" %}
+{% block title %} Edit Price List{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Edit Price List</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_priceLists') }}">Price Lists</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Price List</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Edit Price List</h3>
+      <p class="card-subtitle text-muted mb-3">Add/remove rules from price list.</p>
+
+      <hr>
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        <div class="row">
+          <label class="col-sm-3 col-form-label" for="title">Price list name:</label>
+          <div class="col-sm-9">
+            <input class="form-control" placeholder="Christmas" name="name" value="{{ price_list.name }}" required>
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 col-form-label" for="title">Currency:</label>
+          <select name="currency" class="custom-select col-sm-9">
+            {% for currency in supported_currencies %}
+            <option value="{{ currency }}" {% if currency == price_list.currency %} selected {% endif %}>{{currency}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 mt-2">
+            <h3>Associated Plan(s):</h3>
+            {% if price_list.plans|length == 0 %}
+              <p>Price list "{{ price_list.name }}" currently has zero plans attached.</p>
+            {% endif %}
+
+            {% if price_list.plans|length > 0 %}
+              <ul>
+              {% for plan in price_list.plans %}
+              <li><a href="{{ url_for("admin.edit") }}" target="_blank">{{ plan.title }}</a></li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 mt-2">
+            <h3>Rules:</h3>
+            {% if price_list.rules|length == 0 %}
+              <p>Price list "{{ price_list.name }}" currently has zero rules attached.</p>
+              <p>It is normal for your default price list to have zero rules. When a price list
+              has zero rules, the price will always be unaffected when applied to a plan.</p>
+            {% endif %}
+
+            {% for rule in rules %}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" name="assign" value="{{ rule.uuid }}" id="{{ rule.uuid }}"
+                  {% for assignedRule in price_list.rules %}
+                    {% if assignedRule.id == rule.id %}
+                      checked
+                    {% endif %}
+                  {% endfor %}>
+                </div>
+              </div>
+              <label class="form-control" for="{{ rule.uuid }}">{{ rule.name}}</label>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block mb-3 mt-3">Save</button>
+          </div>
+        </div>
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

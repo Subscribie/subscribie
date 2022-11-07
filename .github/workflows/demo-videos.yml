@@ -47,8 +47,6 @@ jobs:
             echo The PR was raised by: ${{ github.event.pull_request.user.login }}
             eval `ssh-agent -s`
             ssh-add - <<< "$SSH_PRIVATE_KEY"
-            echo Deleting dokku app ${{ github.event.repository.default_branch }}
-            ssh dokku@$DOKKU_HOST -C "dokku --force apps:destroy ${{ env.SUBDOMAIN }}" | true
             echo Creating dokku app ${{ github.event.repository.default_branch }}
             ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
             echo The url will be ${{ github.event.repository.default_branch }}.pcpink.co.uk
@@ -59,7 +57,9 @@ jobs:
             ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_TEST_PUBLISHABLE_KEY=${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}"
             ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=${{ secrets.STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST }}"
             ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} FLASK_ENV=development"
-
+            ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} EMAIL_QUEUE_FOLDER=${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }}"
+            # mount email-queue folder
+            ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ env.SUBDOMAIN}} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ env.SUBDOMAIN }} || true"
         - uses: actions/checkout@v2
           with:
             fetch-depth: 0
@@ -83,9 +83,17 @@ jobs:
             sudo npx playwright install-deps 
         - name: Run & Record browser automated tests (Playwright)
           env:
-              PLAYWRIGHT_HOST: http://${{ github.event.repository.default_branch }}.pcpink.co.uk/
-              PLAYWRIGHT_SLOWMO: 1000
-              PLAYWRIGHT_HEADLESS: true
+            PLAYWRIGHT_HOST: http://${{ github.event.repository.default_branch }}.pcpink.co.uk/
+            PLAYWRIGHT_SLOWMO: 1000
+            PLAYWRIGHT_HEADLESS: true
+            SUBSCRIBER_EMAIL_HOST: ${{ secrets.SUBSCRIBER_EMAIL_HOST }}
+            SUBSCRIBER_EMAIL_USER: ${{ secrets.SUBSCRIBER_EMAIL_USER }}
+            SUBSCRIBER_EMAIL_PASSWORD: ${{ secrets.SUBSCRIBER_EMAIL_PASSWORD }}
+            EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
+            RESET_PASSWORD_IMAP_SEARCH_SUBJECT: ${{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
+            IMAP_SEARCH_UNSEEN: "1"
+            IMAP_SEARCH_SINCE_DATE: "01-Jun-2022"
+
           run: |
             set -x
             cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env

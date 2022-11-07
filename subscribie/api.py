@@ -1,6 +1,6 @@
 import logging
 from .auth import token_required, login_required
-from flask import Blueprint, jsonify, request, Response, redirect
+from flask import Blueprint, jsonify, request, Response, redirect, url_for
 from .models import Plan, PlanRequirements, PlanSellingPoints, User, Setting
 from .auth import generate_login_url
 from .auth import get_magic_login_link
@@ -14,6 +14,22 @@ import base64
 
 log = logging.getLogger(__name__)
 api = Blueprint("api", __name__, url_prefix="/api")
+
+
+@api.route("/shop-name-taken/<shop_name>", methods=["GET"])
+def shop_name_taken(shop_name):
+    """Check if shop name has been taken or not"""
+    from builder import Shop
+
+    shop_name = shop_name.replace(" ", "").lower()
+    shop_name = f"https://{shop_name}.{os.getenv('SUBSCRIBIE_DOMAIN')}"
+    lookup = database.session.query(Shop).where(Shop.site_url == shop_name).all()
+    log.debug(f"Running shop_name_taken lookup for: {lookup}")
+    if len(lookup) == 0:
+        log.debug(f"Shop name not taken: {lookup}")
+        return jsonify(False)
+    log.debug(f"Shop name is already taken: {lookup}")
+    return jsonify(True)
 
 
 @api.route("/magic-login-link", methods=["POST"])
@@ -90,17 +106,15 @@ def apiv1_generate_api_key():
         # Generate api key
         api_key = f"subscribie_test_{secrets.token_urlsafe(255)}"
         # Store api key
-        api_key = save_api_key(api_key, mode="test")
-        # Decrypt
-        api_key = decrypt_secret(data=setting.api_key_secret_test)
+        save_api_key(api_key, mode="test")
 
     elif "live" in request.path:
         # Generate api key
         api_key = f"subscribie_live_{secrets.token_urlsafe(255)}"
         # Store api key
-        api_key = save_api_key(api_key, mode="live")
+        save_api_key(api_key, mode="live")
         # Decrypt
-        api_key = decrypt_secret(data=setting.api_key_secret_live)
+        decrypt_secret(data=setting.api_key_secret_live)
 
     if "live" in request.path:
         return redirect("/api/fetch-live-api-key")
@@ -134,6 +148,7 @@ def get_plans():
 def get_plan(plan_id):
     plan = Plan.query.get(plan_id)
     res = json.loads(schemas.Plan.from_orm(plan).json())
+    res["url"] = url_for("views.view_plan", uuid=plan.uuid, _external=True)
     return jsonify(res)
 
 

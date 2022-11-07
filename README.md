@@ -1,17 +1,31 @@
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
+[![Recording demo videos](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml)
+[![Update All Sites](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml)
+[![Update Onboarding Site](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml)
+[![testing stripe prod and test webhooks](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml)
+[![Verify Prod Onbording](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml)
+[![Login Emails Sending](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml)
+[![Release](https://github.com/Subscribie/subscribie/actions/workflows/release.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/release.yml)
 
-# Subscribie  - Collect recurring payments easily 
+# Subscribie  - Collect recurring payments easily
+
+**Subscribie** helps you automatically collect money from your customers, clients and members, without the hassle of manual payments. Save time by having people signup themselves, and easily track payments.
+
+You don't need to be technical, and can integrate it with your existing business by [creating your account](https://subscribie.co.uk/).
+
+
+https://user-images.githubusercontent.com/1718624/196006904-3f00f852-3b86-4ecc-b940-85e3357c275b.mp4
+
 
 - [Features](#features)
 - [Demo & Hosting](#demo--hosting)
 - [Quickstart](#quickstart-without-docker)
 - [Testing](#testing)
+  - [Bulk delete Stripe accounts](#bulk-delete-stripe-accounts)
 - [SaaS Deployment](#saas-deployment)
   - [Architecture Overview](#architecture)
   - [Application server](#application-server-uwsgi)
 #### Open Source subscription billing and management
-
-
 
 ## Demo
 https://footballclub.subscriby.shop/
@@ -120,6 +134,11 @@ Quickly set-up a subscription site which can:
 - Integrate with google analytics ✔️
 - Change the colour of my shop ✔️
 - Is mobile friendly ✔️
+
+
+
+> 🌍 Looking for true multi-currency support 💴💵💶💷? We're on it! [Create a test shop now](https://subscribie.co.uk) and we will DM you once it's ready. 🙏🙌
+
 
 # Why is this project useful?                                                    
 
@@ -265,6 +284,14 @@ Remember Stripe will give you a key valid for 90 days, if you get the following 
 ```
 Error while authenticating with Stripe: Authorization failed, status=401
 ```
+
+#### Bulk delete Stripe accounts
+
+> **Warning**
+> Stripe webhooks will be automatically disabled if error rates go above a certain %.
+> To delete in bulk test Stripe Connect express accounts see: [./tests/delete_stripe_accounts_bulk.py](./tests/delete_stripe_accounts_bulk.py)
+
+
 ### Run browser automated tests with playright
 > **Important:** Stripe cli must be running locally to recieve payment events:
 >`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`

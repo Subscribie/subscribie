@@ -32,10 +32,11 @@ from subscribie.utils import (
     create_stripe_tax_rate,
     get_stripe_livemode,
     get_stripe_connect_account_id,
+    get_geo_currency_code,
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
-from subscribie.signals import journey_complete, signal_payment_failed
+from subscribie.signals import signal_payment_failed
 from subscribie.email import send_welcome_email
 from subscribie.notifications import newSubscriberEmailNotification
 import stripe
@@ -150,37 +151,53 @@ def store_customer():
 @checkout.route("/order-summary", methods=["GET"])
 def order_summary():
     payment_provider = PaymentProvider.query.first()
-    if (
-        payment_provider.stripe_livemode
-        and payment_provider.stripe_live_connect_account_id is None
-        or payment_provider.stripe_livemode is False
-        and payment_provider.stripe_test_connect_account_id is None
-    ):
-
-        return """Shop owner has not connected Stripe payments yet.
-                This can be done by the shop owner via the admin dashboard."""
-
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    stripe_pub_key = get_stripe_publishable_key()
-    company = Company.query.first()
-    stripe_create_checkout_session_url = url_for(
-        "checkout.stripe_create_checkout_session"
-    )
+    # if plan is free, skip Stripe checkout and store subscription right away
+    if plan.is_free():
+        log.info("Plan is free, so skipping Stripe checkout")
+        chosen_option_ids = session.get("chosen_option_ids", None)
 
-    if payment_provider.stripe_livemode:
-        stripe_connected_account_id = payment_provider.stripe_live_connect_account_id
+        create_subscription(
+            email=session["email"],
+            package=session["package"],
+            chosen_option_ids=chosen_option_ids,
+        )
+
+        return redirect(url_for("checkout.thankyou"))
     else:
-        stripe_connected_account_id = payment_provider.stripe_test_connect_account_id
+        if (
+            payment_provider.stripe_livemode
+            and payment_provider.stripe_live_connect_account_id is None
+            or payment_provider.stripe_livemode is False
+            and payment_provider.stripe_test_connect_account_id is None
+        ):
 
-    return render_template(
-        "order_summary.html",
-        company=company,
-        plan=plan,
-        fname=session["given_name"],
-        stripe_pub_key=stripe_pub_key,
-        stripe_create_checkout_session_url=stripe_create_checkout_session_url,
-        stripe_connected_account_id=stripe_connected_account_id,
-    )
+            return """Shop owner has not connected Stripe payments yet.
+                    This can be done by the shop owner via the admin dashboard."""
+        stripe_pub_key = get_stripe_publishable_key()
+        company = Company.query.first()
+        stripe_create_checkout_session_url = url_for(
+            "checkout.stripe_create_checkout_session"
+        )
+
+        if payment_provider.stripe_livemode:
+            stripe_connected_account_id = (
+                payment_provider.stripe_live_connect_account_id
+            )
+        else:
+            stripe_connected_account_id = (
+                payment_provider.stripe_test_connect_account_id
+            )
+
+        return render_template(
+            "order_summary.html",
+            company=company,
+            plan=plan,
+            fname=session["given_name"],
+            stripe_pub_key=stripe_pub_key,
+            stripe_create_checkout_session_url=stripe_create_checkout_session_url,
+            stripe_connected_account_id=stripe_connected_account_id,
+        )
 
 
 @checkout.route("/instant_payment_complete", methods=["GET"])
@@ -247,10 +264,6 @@ def thankyou():
 
     database.session.commit()
 
-    # Send journey_complete signal
-    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
-    journey_complete.send(current_app._get_current_object(), email=email)
-
     send_welcome_email()
 
     return render_template("thankyou.html")
@@ -274,9 +287,11 @@ def stripe_create_checkout_session():
     plan = Plan.query.filter_by(uuid=session["plan"]).first()
     person = Person.query.get(session["person_id"])
     charge = {}
-    charge["sell_price"] = plan.sell_price
-    charge["interval_amount"] = plan.interval_amount
-    charge["currency"] = "GBP"
+    currency_code = get_geo_currency_code()
+
+    charge["sell_price"] = plan.getSellPrice(currency_code)
+    charge["interval_amount"] = plan.getIntervalAmount(currency_code)
+    charge["currency"] = currency_code
     session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(
@@ -409,6 +424,7 @@ def stripe_create_checkout_session():
 
 
 def create_subscription(
+    currency=None,  # None to allow subscriptions with no monetary association
     email=None,
     package=None,
     chosen_option_ids=None,
@@ -424,6 +440,16 @@ def create_subscription(
     """
     log.info("Creating Subscription model if needed")
     subscription = None  # Initalize subscription model to None
+    # Get the associated plan they have purchased
+    plan = database.session.query(Plan).filter_by(uuid=package).one()
+    if currency is not None:
+        sell_price, interval_amount = plan.getPrice(currency)
+    else:
+        log.warning(
+            "currency was set to None, so setting Subscription sell_price and interval_amount to zero"
+        )
+        sell_price = 0
+        interval_amount = 0
 
     # Store Subscription against Person locally
     if email is None:
@@ -457,12 +483,20 @@ def create_subscription(
     if subscription is None:
         log.info("No existing subscription model found, creating Subscription model")
         # Create new subscription model
+        # - Get current pricing
+        # - TODO address race condition:
+        #   - add validation for potential discrepency between Stripe
+        #     webhook delivery delay and price rules changing
         subscription = Subscription(
             sku_uuid=package,
             person=person,
             subscribie_checkout_session_id=subscribie_checkout_session_id,
             stripe_external_id=stripe_external_id,
             stripe_subscription_id=stripe_subscription_id,
+            interval_unit=plan.interval_unit,
+            interval_amount=interval_amount,
+            sell_price=sell_price,
+            currency=currency,
         )
         # Add chosen options (if any)
         if chosen_option_ids is None:
@@ -591,6 +625,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         is None
     ):
         transaction = Transaction()
+        transaction.currency = data["currency"]
         transaction.amount = data["amount"]
         transaction.payment_status = (
             "paid" if data["status"] == "succeeded" else data["status"]
@@ -626,6 +661,12 @@ def stripe_webhook():
     See https://github.com/Subscribie/subscribie/issues/352
     """
     event = request.json
+    stripe_livemode = PaymentProvider.query.first().stripe_livemode
+    if stripe_livemode != event["livemode"]:
+
+        log.warn(
+            f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"
+        )
 
     log.info(f"Received stripe webhook event type {event['type']}")
     # Handle the payment_intent.payment_failed
@@ -662,6 +703,7 @@ def stripe_webhook():
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
+        currency = session["currency"].upper()
         try:
             subscribie_checkout_session_id = session["metadata"][
                 "subscribie_checkout_session_id"
@@ -698,6 +740,7 @@ def stripe_webhook():
         """
         if session["mode"] == "subscription" or session["mode"] == "payment":
             create_subscription(
+                currency=currency,
                 email=session["customer_email"],
                 package=package,
                 chosen_option_ids=chosen_option_ids,
@@ -707,7 +750,10 @@ def stripe_webhook():
             )
         return "OK", 200
 
-    if event["type"] == "payment_intent.succeeded":
+    if (
+        stripe_livemode == event["livemode"]
+        and event["type"] == "payment_intent.succeeded"
+    ):
         return stripe_process_event_payment_intent_succeeded(event)
 
     msg = {"msg": "Unknown event", "event": event}

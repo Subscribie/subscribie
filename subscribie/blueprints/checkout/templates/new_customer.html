@@ -37,7 +37,7 @@
 
     <div class="row row-cols-1 row-cols-lg-2">
       <div class="col-lg-8">
-        <h3 class="title-1">Your details</h3>
+        <h3 class="title-2">Your details</h3>
         <p class="text mb-3">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
 
         <div class="form-group row pt-3 m-0">
@@ -64,7 +64,7 @@
           </div>
         </div>
 
-        <h3 class="title-1 pt-4">Your Address</h3>
+        <h3 class="title-2 pt-4">Your Address</h3>
 
         <div class="form-group row pt-3 m-0">
           <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Address</label>
@@ -129,11 +129,15 @@
               <p class="py-3 body-lg">{{ plan.trial_period_days }} days free, then</p>
               {% endif %}
               {% if plan.requirements.instant_payment %}
-                <p class="py-2"><span class="body-lg">Pay today:</span><span class="p-1 bg-success text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.sell_price/100) }}</span></p>
+              <p class="py-2"><span class="body-lg">Upfront cost:</span><span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span></p>
               {% endif %}
 
               {% if plan.requirements.subscription %}
-                <p class="py-2"><span class="body-lg">Price ({{ plan.interval_unit }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">&pound;{{ "%.2f"|format(plan.interval_amount/100) }}</span></p>
+              <p class="py-2"><span class="body-lg">Price ({{ plan.interval_unit }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span></p>
+              {% endif %}
+              {% if plan.requirements.subscription and plan.requirements.instant_payment %}
+              <p class="py-2"><span class="body-lg">Total: </span><span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></br>
+              Then {{ plan.showIntervalAmount() }} {{ plan.interval_unit }}</p>
               {% endif %}
             </div>
           </div>

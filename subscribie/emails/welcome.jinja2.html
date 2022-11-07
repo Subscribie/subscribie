@@ -6,12 +6,12 @@
 
 
 {% if plan.requirements.instant_payment %}
-    <p>Upfront payment: &pound;{{ plan.sell_price|int /100 }}</p>
+    <p>Upfront payment: {{ plan.showSellPrice() }}</p>
 {% endif %}
 
 {% if plan.requirements.subscription %}
     <p>Interval: {{ plan.interval_unit }}</p>
-    <p>Amount: &pound;{{ plan.interval_amount|int /100 }}
+    <p>Amount: {{ plan.showIntervalAmount()  }}
     {% if first_charge_date %}
       <p>Your first payment will be taken on: {{ first_charge_date }}</p>
     {% endif %}

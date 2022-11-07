@@ -48,7 +48,7 @@ class PlansForm(StripWhitespaceForm):
     # Allow seller to say what additional information they need
     note_to_buyer_message = FieldList(
         TextAreaField(
-            u"Note to buyer", [validators.optional(), validators.length(max=500)]
+            "Note to buyer", [validators.optional(), validators.length(max=500)]
         )
     )
     days_before_first_charge = FieldList(StringField("Days before first charge"))

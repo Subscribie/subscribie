@@ -14,13 +14,17 @@ def user_set(app, user):
         yield
 
 
-def test_admin_can_view_dashboard(session, app, client, admin_session):
+def test_admin_can_view_dashboard(
+    session, app, client, admin_session, with_default_country_code_and_default_currency
+):
     user = User.query.filter_by(email="admin@example.com").first()
     with user_set(app, user):
         client.get("/admin/dashboard", follow_redirects=True)
 
 
-def test_admin_can_add_plan(session, app, client, admin_session):
+def test_admin_can_add_plan(
+    session, app, client, admin_session, with_default_country_code_and_default_currency
+):
     user = User.query.filter_by(email="admin@example.com").first()
     with user_set(app, user):
         req = client.post(
@@ -63,7 +67,9 @@ def test_admin_can_add_plan(session, app, client, admin_session):
         )
 
 
-def test_admin_can_add_choice_group(session, app, client, admin_session):
+def test_admin_can_add_choice_group(
+    session, app, client, admin_session, with_default_country_code_and_default_currency
+):
     user = User.query.filter_by(email="admin@example.com").first()
     with user_set(app, user):
         req = client.post(
@@ -76,7 +82,9 @@ def test_admin_can_add_choice_group(session, app, client, admin_session):
         assert "Colour choice" in req.data.decode("utf-8")
 
 
-def test_admin_can_add_an_option_to_a_choice_group(session, app, client, admin_session):
+def test_admin_can_add_an_option_to_a_choice_group(
+    session, app, client, admin_session, with_default_country_code_and_default_currency
+):
     user = User.query.filter_by(email="admin@example.com").first()
     with user_set(app, user):
         # First add a choice group (will have an id of 1)
@@ -106,12 +114,14 @@ def admin_session(client, with_shop_owner):
         sess["user_id"] = "admin@example.com"
 
 
-def test_homepage(session, client):
+def test_homepage(session, client, with_default_country_code_and_default_currency):
     req = client.get("/")
     assert req.status_code == 200
 
 
-def test_magic_login_submission_as_shop_owner(session, client, with_shop_owner):
+def test_magic_login_submission_as_shop_owner(
+    session, client, with_shop_owner, with_default_country_code_and_default_currency
+):
     """This does not test a successful login. Only that the login form submission
      is working.
 
@@ -122,7 +132,9 @@ def test_magic_login_submission_as_shop_owner(session, client, with_shop_owner):
     assert b"We've just sent you a login link." in req.data
 
 
-def test_shop_owner_forgot_password_submission(session, client, with_shop_owner):
+def test_shop_owner_forgot_password_submission(
+    session, client, with_shop_owner, with_default_country_code_and_default_currency
+):
     """Test if forgot password form submission works for shop owner"""
     req = client.post(
         "/auth/forgot-password",
@@ -132,7 +144,7 @@ def test_shop_owner_forgot_password_submission(session, client, with_shop_owner)
     assert b"We&#39;ve sent you an email with a password reset link" in req.data
 
 
-def test_apiv1_pages(session, client):
+def test_apiv1_pages(session, client, with_default_country_code_and_default_currency):
     req = client.get("/api/v1/pages")
     assert req.status_code == 200
     assert req.json == []

@@ -1,27 +1,27 @@
 const https = require('https')
 
 function checkShopOwnerLogin() {
-  email_host = process.env.email_host
-  email_user = process.env.email_user
-  email_password = process.env.email_password
-  imap_search_subject = process.env.imap_search_subject
-  imap_search_unseen = process.env.imap_search_unseen
-  imap_search_since_date = process.env.imap_search_since_date
-
-  email_search_api_host = process.env.email_search_api_host
+  SHOP_OWNER_EMAIL_HOST = process.env.SHOP_OWNER_EMAIL_HOST
+  SHOP_OWNER_EMAIL_USER = process.env.SHOP_OWNER_EMAIL_USER
+  SHOP_OWNER_EMAIL_PASSWORD = process.env.SHOP_OWNER_EMAIL_PASSWORD
+  IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
+  MAGIC_LOGIN_IMAP_SEARCH_SUBJECT = process.env.MAGIC_LOGIN_IMAP_SEARCH_SUBJECT
+  // global env
+  IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
+  EMAIL_SEARCH_API_HOST = process.env.EMAIL_SEARCH_API_HOST
 
   const data = JSON.stringify({
-    email_host: email_host,
-    email_user: email_user,
-    email_password: email_password,
-    imap_search_subject: imap_search_subject,
-    imap_search_unseen: imap_search_unseen,
-    imap_search_since_date: imap_search_since_date
+    email_host: SHOP_OWNER_EMAIL_HOST,
+    email_user: SHOP_OWNER_EMAIL_USER,
+    email_password: SHOP_OWNER_EMAIL_PASSWORD,
+    imap_search_subject: MAGIC_LOGIN_IMAP_SEARCH_SUBJECT,
+    imap_search_unseen: IMAP_SEARCH_UNSEEN,
+    imap_search_since_date: IMAP_SEARCH_SINCE_DATE
   })
 
 
   const options = {
-    hostname: email_search_api_host,
+    hostname: EMAIL_SEARCH_API_HOST,
     port: 443,
     path: '/search-email',
     method: 'POST',
@@ -46,6 +46,10 @@ function checkShopOwnerLogin() {
       }
       lastEmail = emails[emails.length -1]['email_body']
       if ( lastEmail.includes('/auth/login/') ) {
+        jsonToString = JSON.stringify(lastEmail);
+        const regex = /"(http.*)(?:\\")/gm;
+        magic_login_url = regex.exec(jsonToString)[1];
+        module.exports.magic_login_url = magic_login_url;
         return true
       } else {
         console.error("Could not find login text in email")
