@@ -7,7 +7,7 @@ description: >
 ---
 
 
-# How Signals & Events work togeather
+# How Signals & Events work together
 
 For a more in depth generic explanation of signals see the [ official blinker documentation](https://blinker.readthedocs.io/en/stable/).
 
