@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - 990-docs-as-part-of-release-hugo
 jobs:
   update_all_sites:
     name: Update Docs
