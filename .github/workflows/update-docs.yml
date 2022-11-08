@@ -19,8 +19,9 @@ jobs:
     - name: Installing Hugo
       run: |
         sudo apt update
-        sudo apt install snapd
-        sudo snap install hugo --channel=extended
+        sudo get https://github.com/gohugoio/hugo/releases/download/v0.105.0/hugo_extended_0.105.0_linux-amd64.deb
+        sudo dpkg -i hugo_extended_0.105.0_linux-arm64.deb
+        npm install
     - name: moving html files into the server
       run: |
         set -x
