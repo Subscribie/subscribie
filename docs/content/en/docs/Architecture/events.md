@@ -24,6 +24,6 @@ The following events are defined:
 
 # How do I create an event? (aka How do I create a signal?)
 
-> It's helpful to think is terms of **Signals** which emit notifications to all connected recievers. Many **Receivers** may be interested in a single event. For example, a new order your email notification system might be interested, plus your postal service. One **Signal** can have multiple **Receivers** connected to it.
+> It's helpful to think in terms of **Signals** which emit notifications to all connected recievers. Many **Receivers** may be interested in a single event. For example, a new order your email notification system might be interested, plus your postal service. One **Signal** can have multiple **Receivers** connected to it.
 
 First, you must have created a signal.
