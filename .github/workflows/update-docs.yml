@@ -18,7 +18,7 @@ jobs:
         ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
     - name: Installing Hugo
       run: |
-        sudo apt update
+        apt update
         apt install snapd
         snap install hugo --channel=extended
     - name: moving html files into the server
