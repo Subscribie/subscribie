@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - 990-docs-as-part-of-release-hugo
+
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   update_all_sites:
     name: Update Docs
