@@ -20,7 +20,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install snapd
-        snap install hugo --channel=extended
+        sudo snap install hugo --channel=extended
     - name: moving html files into the server
       run: |
         set -x
