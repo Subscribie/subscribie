@@ -1,0 +1,35 @@
+name: Update All Sites
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**/README.md'
+      - '**/TESTING.md'
+jobs:
+  update_all_sites:
+    name: Update Docs
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Setup ssh access
+      run: |
+        set -x
+        mkdir -p ~/.ssh
+        eval `ssh-agent -s` 
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
+    - name: Installing Hugo
+      run: |
+        sudo apt update
+        apt install snapd
+        snap install hugo --channel=extended
+    - name: moving html files into the server
+      run: |
+        set -x
+        eval `ssh-agent -s` 
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        cd ${{ secrets.REPO_DOCS_PATH }}
+        hugo
+        
+        scp -r public ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }}:${{ secrets.DOCS_PATH }}
