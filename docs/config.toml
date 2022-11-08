@@ -117,7 +117,7 @@ github_subdir = "docs"
 
 # Uncomment this if your GitHub repo does not have "main" as the default branch,
 # or specify a new value if you want to reference another branch in your GitHub links
-github_branch= "master"
+github_branch= "990-docs-as-part-of-release-hugo"
 
 # Google Custom Search Engine ID. Remove or comment out to disable search.
 #gcs_engine_id = "d72aa9b2712488cc3"
