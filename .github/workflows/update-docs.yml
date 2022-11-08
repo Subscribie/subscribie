@@ -26,7 +26,8 @@ jobs:
         set -x
         eval `ssh-agent -s` 
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
-        cd ${{ secrets.REPO_DOCS_PATH }}
+        ls
+        cd docs
         hugo
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "rm -r ${{ secrets.DOCS_PATH }}/public/"
         scp -r public/ ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }}:${{ secrets.DOCS_PATH }}/public/
