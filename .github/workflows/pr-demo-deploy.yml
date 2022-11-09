@@ -100,7 +100,7 @@ jobs:
 
       - name: Install node dependencies needed for Playwright browser tests
         run: |
-          npm i -D @playwright/test@1.14.0
+          npm i -D @playwright/test@1.27.1
           npx playwright install
           sudo npx playwright install-deps 
 
