@@ -94,7 +94,7 @@ jobs:
               body: "🙌 Live preview is here: http://${{ github.head_ref }}.pcpink.co.uk"
             })
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
 
       - uses: microsoft/playwright-github-action@v1
 

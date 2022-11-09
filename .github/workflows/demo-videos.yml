@@ -73,7 +73,7 @@ jobs:
             git-push-flags: '--force'
             remote-branch: ${{ github.event.repository.default_branch }}
 
-        - uses: actions/setup-node@v1
+        - uses: actions/setup-node@v3
 
         - uses: microsoft/playwright-github-action@v1
 
