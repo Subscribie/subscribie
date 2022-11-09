@@ -11,7 +11,7 @@ on:
     paths-ignore:
       - '**/README.md'
       - '**/TESTING.md'
-      - '**/docs/**'
+      - 'docs/**'
 jobs:
   deploy-pr:
     runs-on: ubuntu-20.04
