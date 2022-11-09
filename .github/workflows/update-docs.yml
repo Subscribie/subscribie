@@ -1,0 +1,43 @@
+name: Update Docs
+on:
+  workflow_dispatch:
+  push:
+    paths:
+    - 'docs/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-docs:
+    name: Update Docs
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Setup ssh access
+      run: |
+        set -x
+        mkdir -p ~/.ssh
+        eval `ssh-agent -s` 
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        ssh-keyscan ${{ secrets.ONBOARDING_HOST }}>> ~/.ssh/known_hosts
+    - name: Installing Hugo
+      run: |
+        sudo apt update
+        sudo wget https://github.com/gohugoio/hugo/releases/download/v0.105.0/hugo_extended_0.105.0_linux-amd64.deb
+        sudo dpkg -i hugo_extended_0.105.0_linux-amd64.deb
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: moving html files into the server
+      run: |
+        set -x
+        eval `ssh-agent -s` 
+        ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
+        cd docs
+        npm install
+        hugo
+        NOW=$(date +%s)-docs
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "mkdir -p ${{ secrets.DOCS_PATH }}/$NOW"
+        scp -r public/ ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }}:${{ secrets.DOCS_PATH }}/$NOW/
+        ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "rm -r ${{ secrets.DOCS_PATH }}/public/ && mv ${{ secrets.DOCS_PATH }}/$NOW ${{ secrets.DOCS_PATH }}/public"
