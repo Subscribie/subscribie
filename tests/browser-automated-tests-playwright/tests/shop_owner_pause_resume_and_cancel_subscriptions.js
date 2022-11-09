@@ -65,7 +65,7 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         await page.click('.cancel-yes');
         await new Promise(x => setTimeout(x, 3000)); // 3 seconds
 
-        subscription_canceled_notification = await page.textContent('text="Subscription cancelled"');
+        const subscription_canceled_notification = await page.textContent('text="Subscription cancelled"');
         expect(subscription_canceled_notification === "Subscription cancelled");
         expect(await page.screenshot()).toMatchSnapshot('cancel-plan.png');
 
