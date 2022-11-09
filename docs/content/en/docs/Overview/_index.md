@@ -33,4 +33,5 @@ Give your users next steps from the Overview. For example:
 
 * [Create an account](https://subscribie.co.uk/): to start adding the plans you want to sell.
 * [Examples](/docs/examples/): Review our examples of Subscription shops
+* [Features]({{< ref "Features" >}} "Subscribie Features")
 
