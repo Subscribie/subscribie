@@ -2,15 +2,15 @@ name: Update Docs
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 990-docs-as-part-of-release-hugo
+    paths:
+    - 'docs/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  update_all_sites:
+  update-docs:
     name: Update Docs
     runs-on: ubuntu-20.04
     steps:
@@ -34,7 +34,6 @@ jobs:
         set -x
         eval `ssh-agent -s` 
         ssh-add - <<< "${{ secrets.UPDATE_ALL_SITES_PRIVATE_KEY}}"
-        ls
         cd docs
         npm install
         hugo

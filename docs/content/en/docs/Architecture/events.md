@@ -9,6 +9,8 @@ description: >
 
 # How Signals & Events work together
 
+When an 'event' happens, you find out by receiving a signal- but you must *subscribie* to the signals you're interested in.
+
 For a more in depth generic explanation of signals see the [ official blinker documentation](https://blinker.readthedocs.io/en/stable/).
 
 
@@ -22,7 +24,7 @@ The following events are defined:
 > By convention, signal names are prefixed with `signal_`
 
 
-# How do I create an event? (aka How do I create a signal?)
+# How do I create an event?
 
 > It's helpful to think in terms of **Signals** which emit notifications to all connected recievers. Many **Receivers** may be interested in a single event. For example, a new order your email notification system might be interested, plus your postal service. One **Signal** can have multiple **Receivers** connected to it.
 
