@@ -62,6 +62,8 @@ In worker 1 we have these tests:
   * pause, resume subscription test
 
   * cancel subscription test.
+  
+  * Subscriber filter by name and plan title
  
 #### Worker2 is called worker2.spec.js and in this worker have these tests:
  * plan_creation
@@ -94,15 +96,16 @@ Why these tests? plan creation, changing plans order, and sharing private plan u
  * Adding_vat
   
  * ordering_plan_with_VAT
+ 
+ * subscriber_magic_login
+ 
+ * subscriber_order_free_plan
+ * subscriber_change_card_details
 
-Worker 3 mostly contains tests that don't require stripe to be connected, only the last one (ordering plan with vat) requires Stripe to be connected. 
+Worker 3 mostly contains tests that don't require stripe to be connected, only the 4th last ones requires Stripe to be connected. 
 
 # TEST RELATIONSHIP
-
-<img width="799" alt="Screen Shot 2021-09-20 at 11 53 29 PM" src="https://user-images.githubusercontent.com/76879536/134396271-f4382aba-50ca-47e7-b2e0-1dbae51397e4.png">
-
-
-
+![Subscribie Playwright tests drawio](https://user-images.githubusercontent.com/76879536/200958357-621ae5ee-6084-4e2f-999c-42731dab102d.png)
 
 
 
