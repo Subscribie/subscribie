@@ -31,4 +31,4 @@ test.beforeEach(async ({ page }) => {
   const subscriber_magic_login = require('./tests/623_subscriber_magic_login');
 
   const subscriber_order_free_plan = require('./tests/939_subscriber_order_free_plan.js');
-  const change_card_details = require('./tests/993_change_card_details.js');
+  const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
