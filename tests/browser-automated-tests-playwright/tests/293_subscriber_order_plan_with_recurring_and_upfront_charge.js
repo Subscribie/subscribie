@@ -102,7 +102,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         const content_upcoming_invoice_plan_upfront_amount = await page.textContent('.plan-sell-price');
         expect(content_upcoming_invoice_plan_upfront_amount === '£1.00')
     });
-    transaction_filter_by_name_and_by_plan_title = require('./shop_owner_transaction_filter_by_name_and_by_plan_title.js');
-    subscriber_filter_by_name_and_by_plan_title = require('./905-subscriber-search-by-email-and-name.js');
-    pause_resume_and_cancel_subscriptions = require('./shop_owner_pause_resume_and_cancel_subscriptions.js');
+    const transaction_filter_by_name_and_by_plan_title = require('./shop_owner_transaction_filter_by_name_and_by_plan_title.js');
+    const subscriber_filter_by_name_and_by_plan_title = require('./905-subscriber-search-by-email-and-name.js');
+    const pause_resume_and_cancel_subscriptions = require('./shop_owner_pause_resume_and_cancel_subscriptions.js');
 });
