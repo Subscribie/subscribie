@@ -5,13 +5,21 @@ linkTitle: "Examples"
 weight: 3
 date: 2017-01-05
 description: >
-  See your project in action!
+  Example Subscribie Subscription Shop
 ---
 
 {{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
+Do you know? You can *[create a test shop here](https://subscribie.co.uk/)*.
+
 {{% /pageinfo %}}
 
-Do you have any example **applications** or **code** for your users in your repo or elsewhere? Link to your examples here.
+# Football Club example shop
 
+> This example shop below shows the key subscription software features:
+- Online sign-up for your customers to choose from the plans you create
+- Flexibiliy to offer different plans & choice options
+- Not displayed, but you can also offer 'Free' plans, trial plans, and up-front charges
 
+If you'd prefer to visit the example shop directly, go to: [footballclub.subscriby.shop](https://footballclub.subscriby.shop)
+
+<iframe src="https://footballclub.subscriby.shop/" width=100% height=500></iframe>
