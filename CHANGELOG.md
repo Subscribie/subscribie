@@ -1,3 +1,17 @@
+# v0.1.142 (Wed Nov 09 2022)
+
+#### 🐛 Bug Fix
+
+- #990 wip hugo docs [#991](https://github.com/Subscribie/subscribie/pull/991) ([@chrisjsimpson](https://github.com/chrisjsimpson) [@joeltejeda](https://github.com/joeltejeda) [@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 3
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.141 (Sun Nov 06 2022)
 
 #### 🐛 Bug Fix
