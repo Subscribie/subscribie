@@ -7,6 +7,9 @@ description: >
 ---
 
 {{% pageinfo %}}
+
+> Please see also [CONTRIBUTING.md](https://github.com/Subscribie/subscribie/blob/master/CONTRIBUTING.md)
+
 These basic sample guidelines assume that your Subscribie site is deployed using Netlify and your files are stored in GitHub. You can use the guidelines "as is" or adapt them with your own instructions: for example, other deployment options, information about your doc project's file structure, project-specific review guidelines, versioning guidelines, or any other information your users might find useful when updating your site. [Kubeflow](https://github.com/kubeflow/website/blob/master/README.md) has a great example.
 
 Don't forget to link to your own doc repo rather than our example site! Also make sure users can find these guidelines from your doc repo README: either add them there and link to them from this page, add them here and link to them from the README, or include them in both locations.
@@ -30,7 +33,7 @@ Here's a quick guide to updating the docs. It assumes you're familiar with the
 GitHub workflow and you're happy to use the automated preview of your doc
 updates:
 
-1. Fork the [Subscribie repo](https://github.com/google/Subscribie-example) on GitHub.
+1. Fork the [Subscribie repo](https://github.com/subscribie/Subscribie) on GitHub.
 1. Make your changes and send a pull request (PR).
 1. If you're not yet ready for a review, add "WIP" to the PR name to indicate 
   it's a work in progress. (**Don't** add the Hugo property 
