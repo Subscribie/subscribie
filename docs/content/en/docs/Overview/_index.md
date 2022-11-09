@@ -3,36 +3,34 @@ title: "Overview"
 linkTitle: "Overview"
 weight: 1
 description: >
-  Here's where your user finds out if your project is for them.
+  What can Subscribie do for my business?
 ---
 
 {{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
+Subscribie is for **automating payment collection**, businesses use this service to collect **subscription payments** automatically. <br /> Whilst Subscribie
+is subscription focused, it also supports on-time payments.
 {{% /pageinfo %}}
-
-
-The Overview is where your users find out about your project. Depending on the size of your docset, you can have a separate overview page (like this one) or put your overview contents in the Documentation landing page (like in the Subscribie User Guide). 
-
-Try answering these questions for your user in this page:
 
 ## What is it?
 
-Introduce your project, including what it does or lets you do, why you would use it, and its primary goal (and how it achieves it). This should be similar to your README description, though you can go into a little more detail here if you want.
+With Subscribie, after [creating an account](https://subscribie.co.uk/), you get an online service to setup and sell subscription plans for your business. You might be a business, a members club, or a software company seling charging license fees- wanting to collect subscription payments.
+
+The primary goal of Subscribie is to **automate the boring**, and collecting / chasing payments for small businesses can waste a lot of time.
+
+Subscribie **automates payment collection** and lets you focus on what matters- your business, your clients and customers. Sports Clubs, Golf Instructors, Software companies, Sales Teams, and Wine Clubs are all examples of business owners successully using Subscribie to automate their payment collectiion.
 
 ## Why do I want it?
 
-Help your user know if your project will help them. Useful information can include: 
+Reasons people choose to use Subscribie:
 
-* **What is it good for?**: What types of problems does your project solve? What are the benefits of using it?
+* **Time Saver**: Before using Subscribie, a sports club was collecting payments manually which was a lot of effort for their members. They didn't want anything complicated, just simple automated payment collection. Another example is a sales team, which uses Subscribie to sign-up their members to plans which are on offer.
 
-* **What is it not good for?**: For example, point out situations that might intuitively seem suited for your project, but aren't for some reason. Also mention known limitations, scaling issues, or anything else that might let your users know if the project is not for them.
-
-* **What is it *not yet* good for?**: Highlight any useful features that are coming soon.
+* **Simple & no coding skills required**: Subscribie is very easy to set-up and use, it only takes about 10 minutes to get started. More importantly, it's simple for your subscribers too, all they need to do is choose from the plans you create, and Subscribie will charge them accordingly.
 
 ## Where should I go next?
 
 Give your users next steps from the Overview. For example:
 
-* [Getting Started](/docs/getting-started/): Get started with $project
-* [Examples](/docs/examples/): Check out some example code!
+* [Create an account](https://subscribie.co.uk/): to start adding the plans you want to sell.
+* [Examples](/docs/examples/): Review our examples of Subscription shops
 
