@@ -168,15 +168,15 @@ test.describe("Subscribie tests:", () => {
       console.log("Announced to Stripe connect account");
 
   }); 
-  order_plan_with_only_recurring_charge = require('./tests/293_subscriber_order_plan_with_only_recurring_charge');
+  const order_plan_with_only_recurring_charge = require('./tests/293_subscriber_order_plan_with_only_recurring_charge');
 
-  order_plan_with_only_upfront_charge = require('./tests/293_subscriber_order_plan_with_only_upfront_charge');
+  const order_plan_with_only_upfront_charge = require('./tests/293_subscriber_order_plan_with_only_upfront_charge');
 
-  order_plan_with_free_trial = require('./tests/475_subscriber_order_plan_with_free_trial');
+  const order_plan_with_free_trial = require('./tests/475_subscriber_order_plan_with_free_trial');
   // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
   // 1. Transacion filter by name and plan title
   // 2. 2.A pause, resume and 2.B cancel subscription test. 
-  order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
+  const order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
 
 });
 
