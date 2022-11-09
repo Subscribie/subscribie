@@ -1,14 +1,12 @@
 ---
-title: "Add VAT to your Subscription Automatically"
+title: "Charge VAT automatically"
 date: 2022-11-09
 weight: 5
 description: >
-  A guide on how to automatically calculate VAT for your Subscription Plan in your Shop.
+  How to automatically charge value added tax (VAT)
 ---
 
-Does your shop need to charge VAT for your products and services? Follow these 3 simple steps to add VAT to your subscription shop!
-
->To experience all our latest features and charge VAT, create your own subscription store for your customers on Subscribie! 
+Does your shop need to charge VAT for your products and services? Follow these 3 simple steps to add VAT to your subscription shop.
 
 ## Steps to add VAT to your Subsciption Plans.
 
@@ -25,3 +23,4 @@ Step 3:  To activate VAT choose "Yes. Charge VAT at 20%" and click "Save"
 ![](https://subscribie.co.uk/blog/content/images/2022/10/image-2.png)
 
 Now your shop is ready to charge VAT to your customers who sign up to your shop on Subscribie!
+Invoices generated will automatically have vat added during checkout and subsequent automaic charges.
