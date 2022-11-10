@@ -1,3 +1,16 @@
+# v0.1.143 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- removing folder instead of files [#996](https://github.com/Subscribie/subscribie/pull/996) ([@joeltejeda](https://github.com/joeltejeda) [@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.142 (Wed Nov 09 2022)
 
 #### 🐛 Bug Fix
