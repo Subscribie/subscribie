@@ -1,3 +1,15 @@
+# v0.1.144 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 chmod +x smoketest-docs.sh [#997](https://github.com/Subscribie/subscribie/pull/997) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.143 (Thu Nov 10 2022)
 
 #### 🐛 Bug Fix
