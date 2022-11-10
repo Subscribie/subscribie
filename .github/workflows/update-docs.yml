@@ -41,5 +41,5 @@ jobs:
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "mkdir -p ${{ secrets.DOCS_PATH }}/$NOW"
         scp -r public/ ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }}:${{ secrets.DOCS_PATH }}/$NOW/
         sleep 2
-        ./smoketest-docs.sh
         ssh ${{ secrets.ONBOARDING_USER }}@${{ secrets.ONBOARDING_HOST }} -C "rm -r ${{ secrets.DOCS_PATH }}/public && mv ${{ secrets.DOCS_PATH }}/$NOW ${{ secrets.DOCS_PATH }}/public"
+        ./smoketest-docs.sh
