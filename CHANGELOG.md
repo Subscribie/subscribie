@@ -1,3 +1,15 @@
+# v0.1.145 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 smoketest docs at end [#998](https://github.com/Subscribie/subscribie/pull/998) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.144 (Thu Nov 10 2022)
 
 #### 🐛 Bug Fix
