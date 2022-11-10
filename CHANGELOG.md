@@ -1,3 +1,15 @@
+# v0.1.148 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added tutorial for create private pages ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.147 (Thu Nov 10 2022)
 
 #### ⚠️ Pushed to `master`
