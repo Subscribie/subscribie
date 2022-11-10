@@ -1,3 +1,15 @@
+# v0.1.147 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- add plan description tutorial ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.146 (Thu Nov 10 2022)
 
 #### 🐛 Bug Fix
