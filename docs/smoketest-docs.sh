@@ -2,8 +2,7 @@
 
 set -x
 echo Checking docs are still live with curl
-curl -s -o /dev/null -w "%{http_code}" https://docs.subscribie.co.uk
-RET=$?
+RET=$(curl -s -o /dev/null -w "%{http_code}" https://docs.subscribie.co.uk)
 
 echo $RET
 
