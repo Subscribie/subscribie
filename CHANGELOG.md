@@ -1,3 +1,16 @@
+# v0.1.146 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- fixing smoketest [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+- getting the files inside the public folder not the folder [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.145 (Thu Nov 10 2022)
 
 #### 🐛 Bug Fix
