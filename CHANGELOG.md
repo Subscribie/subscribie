@@ -1,3 +1,15 @@
+# v0.1.150 (Fri Nov 11 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides for reordering plans, signup test and subscription and stripe creation ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.149 (Thu Nov 10 2022)
 
 #### ⚠️ Pushed to `master`
