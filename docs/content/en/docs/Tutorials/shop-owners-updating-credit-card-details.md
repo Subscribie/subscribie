@@ -10,13 +10,19 @@ Want to learn how to update your card details as a shop owner. Follow these step
 
 ## Steps to Update your credit card details
 
-Step 1: On your Admin dashboard scroll down and click **Users, Passwords & Cards details**
+### Step 1: 
+  * On your Admin dashboard scroll down and click **Users, Passwords & Cards details**
 
-Step 2: After the dropdown, click **Change My Card details**. It will redirect you to your profile side of subscribie where you will need to enter your credentials (it's different from your site credentials, you can always use the forget password feature)
+### Step 2: 
+  * After the dropdown, click **Change My Card details**. It will redirect you to your profile side of subscribie where you will need to enter your credentials.
+> :warning: Note: Your site credentials are different from your profile credentials, you can always use the forget password feature.
 
-Step 3: After logging in, scroll down and click **update payment method**.
+### Step 3: 
+  * After logging in, scroll down and click **update payment method**.
 
-Step 4: Follow the steps and click **Save**.
+### Step 4: 
+  * Follow the steps and click **Save**.
 
-Step 5: After updating your credentials, you can scroll down the dashboard to check the 4 last digit of your new card which will be that it was changed succesfully!
+### Step 5: 
+  * After updating your credentials, you can scroll down the dashboard to check the 4 last digit of your new card which will be that it was changed succesfully!
 
