@@ -15,7 +15,7 @@ Want to learn how to update your card details as a shop owner. Follow these step
 
 #### Step 2: 
   * After the dropdown, click **Change My Card details**. It will redirect you to your profile side of subscribie where you will need to enter your credentials.
-> Note: Your site credentials are different from your profile credentials, you can always use the forget password feature.
+> Note: If you can't remember your Subscribie credentials, use the [forgotten password](https://subscribie.co.uk/account/login) link on the login page.
 
 #### Step 3: 
   * After logging in, scroll down and click **update payment method**.
