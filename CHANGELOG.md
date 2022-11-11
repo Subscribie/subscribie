@@ -1,3 +1,27 @@
+# v0.1.151 (Fri Nov 11 2022)
+
+#### 🐛 Bug Fix
+
+- Update shop-owners-updating-credit-card-details.md [#994](https://github.com/Subscribie/subscribie/pull/994) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Update shop-owners-updating-credit-card-details.md [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updating template [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- adding update credit card details docs [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- #993 use SAAS_URL from env -> saas_url in template not hard code url [#994](https://github.com/Subscribie/subscribie/pull/994) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- declaring a constant [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updaing node version and package.json update [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updating playwright version [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- adding change card details test [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- changing the name of the card details test [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- #993 adding nav bar button on builder theme and link on jesmond dashboard [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- Fix #993 adding const to variables and playwright test to changing cards details [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.150 (Fri Nov 11 2022)
 
 #### ⚠️ Pushed to `master`
