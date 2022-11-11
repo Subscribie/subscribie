@@ -1,3 +1,115 @@
+# v0.1.150 (Fri Nov 11 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides for reordering plans, signup test and subscription and stripe creation ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.149 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- update docs demonstrate which pipelines run again ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.148 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added tutorial for create private pages ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.147 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- add plan description tutorial ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.146 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- fixing smoketest [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+- getting the files inside the public folder not the folder [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.145 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 smoketest docs at end [#998](https://github.com/Subscribie/subscribie/pull/998) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.144 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 chmod +x smoketest-docs.sh [#997](https://github.com/Subscribie/subscribie/pull/997) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.143 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- removing folder instead of files [#996](https://github.com/Subscribie/subscribie/pull/996) ([@joeltejeda](https://github.com/joeltejeda) [@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.142 (Wed Nov 09 2022)
+
+#### 🐛 Bug Fix
+
+- #990 wip hugo docs [#991](https://github.com/Subscribie/subscribie/pull/991) ([@chrisjsimpson](https://github.com/chrisjsimpson) [@joeltejeda](https://github.com/joeltejeda) [@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 3
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.141 (Sun Nov 06 2022)
 
 #### 🐛 Bug Fix

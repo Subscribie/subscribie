@@ -17,11 +17,10 @@ You don't need to be technical, and can integrate it with your existing business
 https://user-images.githubusercontent.com/1718624/196006904-3f00f852-3b86-4ecc-b940-85e3357c275b.mp4
 
 
-- [Features](#features)
+- [Features](https://docs.subscribie.co.uk/docs/overview/features/)
 - [Demo & Hosting](#demo--hosting)
 - [Quickstart](#quickstart-without-docker)
-- [Testing](#testing)
-  - [Bulk delete Stripe accounts](#bulk-delete-stripe-accounts)
+- [Testing](https://docs.subscribie.co.uk/architecture/testing)
 - [SaaS Deployment](#saas-deployment)
   - [Architecture Overview](#architecture)
   - [Application server](#application-server-uwsgi)
@@ -79,65 +78,7 @@ Password: password
 
 [More about containers](https://mkdev.me/en/posts/the-tool-that-really-runs-your-containers-deep-dive-into-runc-and-oci-specifications).
 
-# Features
-Quickly set-up a subscription site which can:
 
-- Collect recurring payments weekly / monthly / yearly ✔️ 
-- Sell subscription plans with an up-front cost ✔️
-- Sell subscription plans with both a recurring & an upfront cost ✔️
-- Create free trial plans which automatically charge after trial expires ✔️
-- Pause subscriptions ✔️
-- Cancel active subscriptions ✔️
-- Refund individual transactions ✔️
-- View failed and failing payments ✔️
-- As a subscriber, I am notified if a payment fails ✔️
-- As a subscriber, I can pay outstanding/failed payments directly from my dashboard ✔️
-- Charge customers ad-hoc outside of their subscription (e.g. chrage for ad-hoc additonal support) ✔️ 
-- Create private plans which are hidden from the main shop ✔️
-- Create subscription payment links which I can send to people to sign up to ✔️
-- Recieve payments to my bank account daily from my subscribers ✔️
-- Automatically generate invoices for every payment ✔️
-- Automatically charge VAT to plans if VAT registered ✔️
-- Show the VAT amount on invoices if VAT registerd ✔️
-- Embed my shop in an existing website ✔️
-- Upload simple files (images, documents) to my shop, which only paying subscribers can see ✔️
-- View a history of all transactions which have happend through my shop ✔️
-- View all payment history of individual subscribers ✔️
-- Search payments by subscriber name ✔️
-- Search payments by plan name ✔️
-- Search payments by plan name & subscriber name ✔️
-- Add additonal team members to my shop to manage it ✔️
-- My Subscribers can login to their account and change their payment details ✔️
-- My Subscribers can login to their account and view their plans ✔️
-- My Subscribers can login to their account and download the files I have uploaded to my shop ✔️
-- My Subscribers can login to their account and vew the private pages I've created once they're logged in ✔️
-- Delay the number of days before the first payment (useful for cooling off period) ✔️
-- Set a cancel at date on plans so that payments automatically stop on a specified date ✔️
-- View statistics on the number of active subscribers ✔️
-- [Divide my plans into categories](https://subscriptionwebsitebuilder.co.uk/blog/how-to-use-categories-in-subscribie/) ✔️
-- Require a simple text note from the customer during sign-up ✔️
-- Present 'options' and 'choices' to customers during signup, for example colour 'red, green or blue'? ✔️
-- Create subscription plans with a description & unique selling points ✔️
-- View upcomming payments ✔️
-- Export my subscribers as a csv ✔️
-- Export all transactions as a csv ✔️
-- Arrange the order that plans appear on my shop ✔️
-- Upload an image on each of my plans ✔️
-- Create basic pages on my shop, such as an about page ✔️
-- Create private pages which only my subscribers can see ✔️
-- Customise the welcome email to my subscribers ✔️
-- Change the 'reply-to' email on the welcome email to my subscribers ✔️
-- Upload my company logo ✔️
-- Set the slogan of my business ✔️
-- Integrate online chat with your shop ✔️
-- Inject custom code snippets ✔️
-- Integrate with google analytics ✔️
-- Change the colour of my shop ✔️
-- Is mobile friendly ✔️
-
-
-
-> 🌍 Looking for true multi-currency support 💴💵💶💷? We're on it! [Create a test shop now](https://subscribie.co.uk) and we will DM you once it's ready. 🙏🙌
 
 
 # Why is this project useful?                                                    
@@ -234,124 +175,6 @@ Then visit http://127.0.0.1:5000
 
 To go inside the container, you can do: `docker-compose exec web /bin/bash` 
 from the project root directory.
-
-# Testing
-
-### How to setup/run tests
-
-There are two types of test
-- Browser automated tests using [playwright](https://github.com/microsoft/playwright)
-- Basic Python tests
-
-### Run Basic Python Tests:
-
-```
-. venv/bin/activate # activates venv
-python -m pytest --ignore=node_modules # run pytest
-```
-
-#### Receive Stripe webhooks locally whilst testing
-
-Stripe webhooks are recieved when payment events occur.
-The test suite needs to listen to these events locally when running tests.
-
-tldr: 
-1. Install the stripe cli
-2. Run `stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook`
-
-> For testing failed payments using [test cards table](https://stripe.com/docs/testing), the test card `4000000000000341` is especially useful because the cards in the previous table can’t be attached to a Customer object, but `4000000000000341` can be (and will fail which is useful for testing failed subscription payments such as `insufficient_funds`).
-
-## Concept: What are [Stipe Webhooks](https://stripe.com/docs/webhooks)?
-> Stripe takes payments. Stripe sends payment related events to Subscribie via [`POST` requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)- also known as 'webhooks').
-If you're doing local development, then you need Stripe to send you the test payment events you're creating. `stripe cli` is a tool created by Stripe to do that. 
-
-1. Install [Stripe cli](https://stripe.com/docs/stripe-cli#install)
-2. Login into stripe via `stripe login` (this shoud open the browser with stripe page where you should enter your credentials). If this command doesn't work use `stripe login -i` (this will login you in interactive mode where instead of opening browser you'll have to put stripe secret key directly into terminal)
-3. Run
-  ``` 
-  stripe listen --events checkout.session.completed,payment_intent.succeeded,payment_intent.payment_failed --forward-to 127.0.0.1:5000/stripe_webhook
-   ```
-   You will see:
-   ```
-   ⢿ Getting ready... > Ready! 
-   ```
-4. Please note, the stripe webhook secret is *not* needed for local development - for production, stripe webhook verification is done in  [Stripe-connect-webhook-endpoint-router](https://github.com/Subscribie/stripe-connect-webhook-endpoint-router) (you don't need this for local development). 
-  ```
-  stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook
-  ```
-Remember Stripe will give you a key valid for 90 days, if you get the following error you will need to do step 2 again:
-
-```
-Error while authenticating with Stripe: Authorization failed, status=401
-```
-
-#### Bulk delete Stripe accounts
-
-> **Warning**
-> Stripe webhooks will be automatically disabled if error rates go above a certain %.
-> To delete in bulk test Stripe Connect express accounts see: [./tests/delete_stripe_accounts_bulk.py](./tests/delete_stripe_accounts_bulk.py)
-
-
-### Run browser automated tests with playright
-> **Important:** Stripe cli must be running locally to recieve payment events:
->`stripe listen --events checkout.session.completed,payment_intent.succeeded --forward-to 127.0.0.1:5000/stripe_webhook`
-
-<br />
-
-#### Install Playwright dependencies
-```
-npm install
-npm i -D @playwright/test
-npx playwright install
-npx playwright install-deps
-```
-
-Might see: `UnhandledPromiseRejectionWarning: browserType.launch: Host system is missing dependencies!`
-```
-  Install missing packages with:
-      sudo apt-get install libgstreamer-plugins-bad1.0-0\
-          libenchant1c2a
-```
-
-[Stripe-connect-account-announcer](https://github.com/Subscribie/stripe-connect-account-announcer)
-needs to be running locally if you're runnning browser automated tests
-locally.
-
-#### Turn on headful mode & set Playwright host
-
-```
-export PLAYWRIGHT_HEADLESS=false
-export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
-```
-
-#### Run playwright tests:
-
-```
-cd tests/browser-automated-tests-playwright
-npx playwright test
-```
-Something not working?
-Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
-```
-PWDEBUG=1 npx playwright test
-```
-If you don't see the playwright inspector, make sure you have an up to date version of playwright.
-
-Alternative debugging with breakpoints
-
-- Set breakpoint(s) by typing `debugger;` anywhere you want a breakpoint in a test.
-Then run with the node debugger active:
-```
-unset PWDEBUG
-node inspect index.js
-```
-Useful node debug commands:
-- `help` # shows help
-- `n` # go to next line
-- `list()` # show code where paused
-- `cont` # continue execution until next breakpoint
-- 
-##### For more information about test dependecies and how they work please go to [testing.md](https://github.com/Subscribie/subscribie/blob/master/testing.md)
 
 # Logging & Debugging - How to change the logLevel
 Quick: edit your `.env` file and set `PYTHON_LOG_LEVEL=DEBUG`.
