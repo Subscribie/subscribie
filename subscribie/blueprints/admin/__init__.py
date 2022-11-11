@@ -460,6 +460,7 @@ def dashboard():
     num_one_off_purchases = get_number_of_one_off_purchases()
 
     shop_default_country_code = get_shop_default_country_code()
+    saas_url = current_app.config.get("SAAS_URL")
 
     return render_template(
         "admin/dashboard.html",
@@ -471,6 +472,7 @@ def dashboard():
         num_signups=num_signups,
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
+        saas_url=saas_url,
     )
 
 
