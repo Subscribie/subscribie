@@ -40,4 +40,4 @@ Step 4: Once you have clicked **Save**, Subscribie will begin to build your webs
 
 Now you have created a Subscription.
 
-Next, learn how to activate payment collection to start automating payment collection.
+Next, [learn how to activate payment collection to start automating payment collection.](https://docs.subscribie.co.uk/docs/tutorials/link-stripe-to-shop/)
