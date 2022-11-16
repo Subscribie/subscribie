@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 18:52+0000\n"
+"POT-Creation-Date: 2022-11-16 21:19+0000\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:321
+#: subscribie/__init__.py:320
 msgid "Hello"
 msgstr "Hallo"
 
@@ -49,6 +49,10 @@ msgstr "Einmal"
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:76
 msgid "No subscription"
 msgstr "Kein Abonnement"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:113
+msgid "Choose"
+msgstr "Wählen"
 
 #~ msgid "Make your choice"
 #~ msgstr "Treffen Sie Ihre Wahl"
