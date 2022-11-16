@@ -62,18 +62,18 @@
                   <div class="my-md-4">
                     <span class="text">
                       {% if plan.trial_period_days > 0 %}Then {% endif %}
-                      <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.interval_unit }}
+                      <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.showItervalUnit() }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
-                    <span class="text">Upfront cost: {{ plan.showSellPrice() }}</span>
+                    <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}</span>
                     {% endif %}
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">{{ plan.showSellPrice() }}</span>/One-off
+                      <span class="price">{{ plan.showSellPrice() }}</span>/{{ _('One-off') }}
                     </span>  <br>
-                    <span class="text">No subscription</span>
+                    <span class="text">{{ _('No subscription') }}</span>
                   </div>
                 {% endif %}
 

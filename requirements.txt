@@ -13,6 +13,7 @@ pathlib
 pytest
 Flask-SQLAlchemy==2.5.1
 Flask-Migrate==3.0.1
+Flask-Babel==2.0.0
 python-dotenv==0.13.0
 pyjwt[crypto]
 py-auth-header-parser==1.0.2

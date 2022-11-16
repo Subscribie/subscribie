@@ -1,0 +1,58 @@
+# German translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-11-16 18:52+0000\n"
+"PO-Revision-Date: 2022-11-16 16:50+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: subscribie/__init__.py:321
+msgid "Hello"
+msgstr "Hallo"
+
+#: subscribie/models.py:509
+msgid "daily"
+msgstr "täglich"
+
+#: subscribie/models.py:510
+msgid "weekly"
+msgstr "wöchentlich"
+
+#: subscribie/models.py:511
+msgid "monthly"
+msgstr "monatlich"
+
+#: subscribie/models.py:512
+msgid "yearly"
+msgstr "jährlich"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:68
+msgid "Upfront cost"
+msgstr "Kosten im Voraus"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:74
+msgid "One-off"
+msgstr "Einmal"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:76
+msgid "No subscription"
+msgstr "Kein Abonnement"
+
+#~ msgid "Make your choice"
+#~ msgstr "Treffen Sie Ihre Wahl"
+
+#~ msgid "weekly"
+#~ msgstr "wöchentlich"
+
