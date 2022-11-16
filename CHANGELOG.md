@@ -1,3 +1,15 @@
+# v0.1.154 (Wed Nov 16 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1000 correcting the baseurl in the config toml [#1001](https://github.com/Subscribie/subscribie/pull/1001) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.153 (Wed Nov 16 2022)
 
 #### ⚠️ Pushed to `master`
