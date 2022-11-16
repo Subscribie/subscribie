@@ -1,3 +1,15 @@
+# v0.1.153 (Wed Nov 16 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides and moving to existing guides to tasks ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.152 (Tue Nov 15 2022)
 
 #### ⚠️ Pushed to `master`
