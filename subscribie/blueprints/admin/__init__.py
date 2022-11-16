@@ -73,6 +73,7 @@ from subscribie.models import (
     TaxRate,
     Category,
     UpcomingInvoice,
+    Document,
 )
 from .subscription import update_stripe_subscription_statuses
 from .stats import (
@@ -747,6 +748,63 @@ def delete_plan_by_uuid(uuid):
     flash("Plan deleted.")
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
+
+
+@admin.route("/list-documents", methods=["get"])
+@login_required
+def list_documents():
+    documents = Document.query.all()
+    return render_template("admin/documents/list_documents.html", documents=documents)
+
+
+@admin.route("/add-document", methods=["get", "post"])
+@login_required
+def add_document():
+    if request.method == "POST":
+        document_name = request.form.get("document", None)
+        document_type = request.form.get("type", None)
+        if document_name:
+            document = Document()
+            document.name = document_name
+            document.type = document_type
+            database.session.add(document)
+            database.session.commit()
+            flash(f"added new document: {document_name}")
+            return redirect(url_for("admin.list_documents"))
+    return render_template("admin/documents/add_document.html")
+
+
+@admin.route("/edit-document", methods=["get", "post"])
+@login_required
+def edit_document():
+    document_id = request.args.get("id", None)
+    document = Document.query.get(document_id)
+    if request.method == "POST":
+        document.name = request.form.get("name")
+        document.position = request.form.get("position")
+        database.session.commit()
+        flash("Document name updated")
+        return redirect(url_for("admin.list_category"))
+    return render_template("admin/category/edit_document.html", document=document)
+
+
+@admin.route("/delete-document", methods=["get", "post"])
+@login_required
+def delete_document():
+    document_id = request.args.get("id", None)
+    document = Document.query.get(document_id)
+    if document is not None:
+        database.session.delete(document)
+        database.session.commit()
+    flash("Document deleted")
+
+    return redirect(url_for("admin.list_documents"))
+
+
+@admin.route("/assign-plan-to-document/<document_id>", methods=["GET", "POST"])
+@login_required
+def document_assign_plan(document_id):
+    pass
 
 
 @admin.route("/list-categories", methods=["get"])

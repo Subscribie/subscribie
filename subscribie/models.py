@@ -1057,6 +1057,18 @@ class File(database.Model):
     file_name = database.Column(database.String())
 
 
+class Document(database.Model, HasArchived):
+    """Raw text Document"""
+
+    __tablename__ = "document"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    name = database.Column(database.String(), default=None)
+    type = database.Column(database.String(), default=None)
+    body = database.Column(database.String(), default=None)
+
+
 class TaxRate(database.Model):
     """Stripe Tax Rate ids"""
 

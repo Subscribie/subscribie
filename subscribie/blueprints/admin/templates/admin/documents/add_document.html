@@ -1,0 +1,77 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Document{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Add Document</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="">Documents</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add Document</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Add Document</h3>
+      <p class="card-subtitle text-muted mb-3">Documents may be associated with plans, such as terms and conditions.</p>
+
+      <hr>
+
+      <form action="#" method="POST">
+        <div class="form-group row py-md-3">
+          <label for="page-title" class="col-sm-2 col-form-label">Document Name:</label>
+          <div class="col-sm-10">
+            <input name="document" id="page-title" type="text" autofocus class="form-control">
+          </div> 
+        </div>
+
+        <div class="form-group row py-md-3">
+          <label for="document-type" class="col-sm-2 col-form-label">Document type:</label>
+          <select id="document-type" name="type" class="custom-select" aria-label="Select document type" required>
+            <option value="terms-and-conditions">Terms &amp; Conditions</option>
+            <option value="generic">Generic</option>
+          </select>
+        </div>
+    
+        <div class="form-group pb-md-3">
+          <label for="body">Document content:</label>
+          <textarea name="body" id="body" cols="80" rows="50"></textarea>
+        </div>
+
+        <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+  </head>
+  <body>
+    <div id="summernote"></div>
+    <script>
+      $('#body').summernote({
+        placeholder: 'Start typing...',
+        tabsize: 2,
+        height: 240,
+        toolbar: [
+          ['style', ['bold', 'italic', 'underline', 'clear']],
+          ['para', ['ul', 'ol']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+      });
+    </script>
+
+
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Document</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_documents') }}">Documents</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete  Document</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+        <h3>Add / Edit / Delete Documents</h3>
+        <p class="card-subtitle text-muted">Select a document to edit.</p>
+
+        <a href="{{ url_for('admin.add_document') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+          Add Document
+        </a>  
+      </div>
+
+      {% if confirm is sameas false %}
+        <div class="card mx-auto my-3 py-3 col-md-7">
+          <h3 class="card-title mx-auto">Are you sure?</h3>
+          <div class="mx-auto">
+            <a href="{{ url_for('admin.delete_document', id=document.id) }}" 
+                class="btn btn-danger mx-3 px-5" role="button">
+                Yes
+            </a>
+            <a href="{{ url_for('admin.list_documents', cancel=1) }}" 
+                class="btn btn-success mx-3 px-5" role="button">
+                No
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <table class="table table-hover table-scroll">
+          <thead>
+            <th>Title</th>
+            <th>Type</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </thead>
+        {% for document in documents %}
+          <tr>
+            <td>
+                {{ document.name }}
+            </td>
+            <td>
+                {{ document.type }}
+            </td>
+            <td>
+              <a href="{{ url_for('admin.edit_document', id=document.id) }}" 
+              class="btn btn-success btn-block" role="button">
+              Edit
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.document_assign_plan', document_id=document.id) }}" 
+              class="btn btn-success btn-block" name= "{{ document.name }}-document"style="display: inline-block" role="button">
+              Assign Plans to this document
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.delete_document', id=document.id, confirm=0) }}" 
+              class="btn btn-danger btn-block" role="button">
+              Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+      {% endif %}
+      
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}
