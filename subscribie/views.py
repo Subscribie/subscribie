@@ -103,6 +103,9 @@ def on_each_request():
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
         category = Category()
+        # Note this string is not translated since is populated
+        # during bootstrap. category.name titles may be edited in the
+        # admin dashboard in the 'Manage Categories' section
         category.name = "Make your choice"
         # Add all plans to this category
         plans = Plan.query.all()

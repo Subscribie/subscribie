@@ -26,6 +26,7 @@ from flask import (
     Blueprint,
     request,
 )
+from flask_babel import Babel, _
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme
 from flask_cors import CORS
@@ -56,11 +57,18 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    babel = Babel(app)
+    LANGUAGES = ["en", "de"]
+
     load_dotenv(verbose=True)
     app.config.update(os.environ)
 
     if test_config is not None:
         app.config.update(test_config)
+
+    @babel.localeselector
+    def get_locale():
+        return request.accept_languages.best_match(LANGUAGES)
 
     @app.before_request
     def start_session():
@@ -222,6 +230,38 @@ def create_app(test_config=None):
                 log.info("Database already seeded.")
             con.close()
 
+    @app.cli.group()
+    def translate():
+        """Translation and localization commands."""
+        pass
+
+    @translate.command()
+    def update():
+        """Update all languages."""
+        if os.system("pybabel extract -F babel.cfg -k _l -o messages.pot ."):
+            raise RuntimeError("extract command failed")
+        if os.system("pybabel update -i messages.pot -d subscribie/translations"):
+            raise RuntimeError("update command failed")
+        os.remove("messages.pot")
+
+    @translate.command()
+    def compile():
+        """Compile all languages."""
+        if os.system("pybabel compile -d subscribie/translations"):
+            raise RuntimeError("compile command failed")
+
+    @translate.command()
+    @click.argument("lang")
+    def init(lang):
+        """Initialize a new language."""
+        if os.system("pybabel extract -F babel.cfg -k _l -o messages.pot ."):
+            raise RuntimeError("extract command failed")
+        if os.system(
+            "pybabel init -i messages.pot -d subscribie/translations -l " + lang
+        ):
+            raise RuntimeError("init command failed")
+        os.remove("messages.pot")
+
     @app.cli.command()
     def alert_subscribers_make_choice():
         """Alert qualifying subscribers to set their choices
@@ -273,5 +313,9 @@ def create_app(test_config=None):
                               plan: {subscription.plan.title}"
                         )
                         alert_subscriber_update_choices(person)
+
+    @app.route("/test-lanuage")
+    def test_language():
+        return _("Hello")
 
     return app

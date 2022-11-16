@@ -13,6 +13,7 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
 from flask import request, current_app
+from flask_babel import _
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
@@ -26,6 +27,7 @@ from subscribie.utils import (
 )
 import stripe
 import json
+from enum import Enum
 
 from .database import database
 
@@ -503,6 +505,13 @@ association_table_plan_to_price_lists = database.Table(
 )
 
 
+class INTERVAL_UNITS(Enum):
+    DAILY = _("daily")
+    WEEKLY = _("weekly")
+    MONTHLY = _("monthly")
+    YEARLY = _("yearly")
+
+
 class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
@@ -802,6 +811,9 @@ class Plan(database.Model, HasArchived):
 
         result = f"{currency_symbol}{amount:.2f}"
         return result
+
+    def showItervalUnit(self) -> str:
+        return _(INTERVAL_UNITS[self.interval_unit.upper()].value)
 
     def showIntervalAmount(self) -> str:
         """Return formatted currency string of interval amount
