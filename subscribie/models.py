@@ -688,7 +688,7 @@ class Plan(database.Model, HasArchived):
                 if rule.affects_sell_price and sell_price is not None:
 
                     if rule.percent_increase:
-                        # only increase percent if the min_sell_price is higher than plan sell_price
+                        # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
                             rule.min_sell_price
                             and rule.min_sell_price > sell_price
@@ -698,7 +698,7 @@ class Plan(database.Model, HasArchived):
                                 sell_price, rule.percent_increase
                             )  # noqa: E501
                     if rule.percent_discount:
-                        # onlt decrease percent if sell_price is higher than min_sell_price
+                        # onlt decrease percent if sell_price is higher than min_sell_price  # noqa: E501
                         if (
                             rule.min_sell_price
                             and rule.min_sell_price < sell_price
@@ -831,7 +831,7 @@ class Plan(database.Model, HasArchived):
         amount = self.getIntervalAmount(get_geo_currency_code()) / 100
 
         log.debug(
-            f"showIntervalAmount amount calculated to amount: {amount}, with currency code {get_geo_currency_code()}"
+            f"showIntervalAmount amount calculated to amount: {amount}, with currency code {get_geo_currency_code()}"  # noqa: E501
         )
 
         result = f"{currency_symbol}{amount:.2f}"
