@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 20:41-0400\n"
+"POT-Creation-Date: 2022-11-16 21:07-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -43,26 +43,33 @@ msgid "Choose plan"
 msgstr "Wählen Sie einen Plan"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:49
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:20
 msgid "More details"
 msgstr "Mehr details"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:59
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
 msgid "days free"
 msgstr "Tage frei"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:64
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
 msgid "Then"
 msgstr "Dann"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:68
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:39
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
 msgid "Upfront cost"
 msgstr "Kosten im Voraus"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:74
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
 msgid "One-off"
 msgstr "Einmal"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:76
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:49
 msgid "No subscription"
 msgstr "Kein Abonnement"
 
@@ -71,11 +78,14 @@ msgid "Automatically cancels on"
 msgstr "Automatisches Abbrechen an"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:95
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:65
 msgid "See choice options"
 msgstr "Siehe Wahlmöglichkeiten"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:113
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:117
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:84
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:88
 msgid "Choose"
 msgstr "Wählen"
 
@@ -133,6 +143,39 @@ msgstr "Zurück nach oben scrollen"
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:191
 msgid "Country"
 msgstr "Land"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:10
+msgid "Choose your options"
+msgstr "Siehe Wahlmöglichkeiten"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:28
+msgid "The"
+msgstr "Das"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:28
+msgid "plan has options"
+msgstr "Plan hat Optionen"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "The choice group"
+msgstr "Siehe Wahlmöglichkeiten"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "has"
+msgstr "hat"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:70
+msgid "options"
+msgstr "Optionen"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "Please choose one of them"
+msgstr "Bitte wählen Sie eine davon aus"
+
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
+msgid "None"
+msgstr "Keiner"
 
 #~ msgid "Make your choice"
 #~ msgstr "Treffen Sie Ihre Wahl"
