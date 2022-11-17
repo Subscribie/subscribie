@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 19:32-0400\n"
+"POT-Creation-Date: 2022-11-17 19:51-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -49,6 +49,7 @@ msgstr "Benutzerdefinierten Code hinzufügen"
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:10
 #: subscribie/blueprints/admin/templates/admin/change_email.html:10
 #: subscribie/blueprints/admin/templates/admin/change_password.html:10
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:10
 msgid "Shop"
 msgstr "Geschäft"
 
@@ -58,6 +59,7 @@ msgstr "Geschäft"
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:11
 #: subscribie/blueprints/admin/templates/admin/change_email.html:11
 #: subscribie/blueprints/admin/templates/admin/change_password.html:11
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:11
 msgid "Manage My Shop"
 msgstr "Meinen Shop verwalten"
 
@@ -95,6 +97,7 @@ msgid "Save"
 msgstr "Speichern"
 
 #: subscribie/blueprints/admin/templates/admin/add_custom_code.html:46
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:66
 msgid "Need some help"
 msgstr "Hilfe benötigen"
 
@@ -405,7 +408,6 @@ msgid "Change Email"
 msgstr "Ändern Sie die E-Mail"
 
 #: subscribie/blueprints/admin/templates/admin/change_email.html:23
-
 msgid "Enter your new email below"
 msgstr "Fügen Sie Ihren Code unten ein"
 
@@ -421,14 +423,90 @@ msgstr "Neue e-mail"
 #: subscribie/blueprints/admin/templates/admin/change_password.html:6
 #: subscribie/blueprints/admin/templates/admin/change_password.html:12
 #: subscribie/blueprints/admin/templates/admin/change_password.html:22
-
 msgid "Change Password"
 msgstr "Passwort"
 
 #: subscribie/blueprints/admin/templates/admin/change_password.html:23
-
 msgid "Enter your new password below"
 msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:2
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:6
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:12
+msgid "Connect Google Tag Manager"
+msgstr "Verbinden Google Tag Manager"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:22
+#, fuzzy
+msgid "Connect Google Tag Manager to your shop"
+msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:29
+msgid "Status"
+msgstr "Status"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:31
+msgid "Google Tag Manager is already connected"
+msgstr "Google Tag Manager ist bereits verbunden"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:33
+msgid "Google Tag Manager isn't yet configured, use the form below"
+msgstr "Google Tag Manager noch nicht konfiguriert ist, verwenden Sie das unten stehende Formular"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:37
+msgid "To start tracking using Google Tag manager, copy"
+msgstr "Um mit dem Tracking zu beginnen Google Tag manager, Kopieren"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:37
+msgid "paste your"
+msgstr "fügen Sie Ihre ein"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:38
+msgid "container id"
+msgstr "Container-ID"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:38
+#, fuzzy
+msgid "into the box below"
+msgstr "Füllen Sie das untenstehende Formular aus"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:44
+msgid "Publishable Key"
+msgstr "Veröffentlichbarer Schlüssel"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:53
+msgid "Reconnect"
+msgstr "Verbinden Sie sich erneut"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:55
+msgid "Connect"
+msgstr "Verbinden"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:57
+msgid "Google Tag Manager"
+msgstr "Google Tag Manager"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:67
+msgid ""
+"In order to link Google Tag Manager, you must already have an account created. If you do not yet have an account"
+msgstr "Um zu verlinken Google Tag Manager, Sie müssen bereits ein Konto erstellt haben. Falls Sie noch kein Konto haben "
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:69
+msgid "register for Google Tag Manager"
+msgstr "registrieren für Google Tag Manager"
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:69
+msgid "to create one"
+msgstr "einen erstellen""
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:71
+msgid "Google Tag Manager is FREE"
+msgstr ""
+
+#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:72
+msgid ""
+"Subscribie does not charge you for Google Tag Manager integration, but do make sure you learn how to use it to see the benefits"
+msgstr "Subscribie berechnet Ihnen nichts Google Tag Manager Integration, aber stellen Sie sicher, dass Sie lernen, wie man es benutzt, um die Vorteile zu sehen"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"

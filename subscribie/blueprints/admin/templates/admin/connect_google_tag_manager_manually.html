@@ -1,15 +1,15 @@
 {% extends "admin/layout.html" %}
-{% block title %} Connect Google Tag Manager{% endblock %}
+{% block title %} {{ _('Connect Google Tag Manager') }}{% endblock %}
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Connect Google Tag Manager</h2>
+<h2 class="text-center text-dark mb-3">{{ _('Connect Google Tag Manager') }}</h2>
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Connect Google Tag Manager</li>
+    <li class="breadcrumb-item"><a href="/">{{ _('Shop') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">{{ _('Manage My Shop') }}</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Connect Google Tag Manager') }}</li>
   </ul>
 </div>
 
@@ -19,29 +19,29 @@
 
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col-md-7">
-          <h2>Connect Google Tag Manager to your shop</h2>
+          <h2>{{ _('Connect Google Tag Manager to your shop') }}</h2>
           <div class="alert
             {% if integration.google_tag_manager_container_id %}
             alert-success
             {% else %}
             alert-light
             {% endif %}">
-          <p><strong>Status: </strong>
+          <p><strong>{{ _('Status') }}: </strong>
             {% if integration.google_tag_manager_container_id %}
-              Google Tag Manager is already connected!
+              {{ _('Google Tag Manager is already connected') }}!
             {% else %}
-              Google Tag Manager isn't yet configured, use the form below.
+              {{ _("Google Tag Manager isn't yet configured, use the form below") }}.
             {% endif %}
             </p>
           </div>
-          <p>To start tracking using Google Tag manager, copy &amp; paste your 
-            <em>container id</em> into the box below.
+          <p>{{ _('To start tracking using Google Tag manager, copy') }}&amp; {{ _('paste your') }} 
+            <em>{{ _('container id') }}</em> {{ _('into the box below') }}.
           </p>
 
           <form class="form" action="" method="POST" action="/">
             {{ form.csrf_token }}
               <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="container_id ">Publishable Key:</label>
+                <label class="col-sm-3 col-form-label" for="container_id ">{{ _('Publishable Key') }}:</label>
                 <div class="col-sm-9">
                   <input class="input" type="text" name="container_id"
                           id="container_id" placeholder="GTM-ABC123">
@@ -50,11 +50,11 @@
               
             <button type="submit" class="btn btn-primary btn-block mb-3">
             {% if integration.google_tag_manager_container_id %}
-              Reconnect
+              {{ _('Reconnect') }}
             {% else %}
-              Connect
+              {{ _('Connect') }}
             {% endif %} 
-              Google Tag Manager
+              {{ _('Google Tag Manager') }}
             </button>
           </form>
         </div>
@@ -63,15 +63,13 @@
           <div class="card shadow-sm">
             <img src="/static/google_tag_manager.jpg" class="card-img-top my-3"  style="width:50%; display:block; margin:auto">
             <div class="card-body">
-              <h4 class="card-title">Need some help?</h4>
-              <p>In order to link Google Tag Manager, you must already have an account 
-                created. If you do not yet have an account, 
+              <h4 class="card-title">{{ _('Need some help') }}?</h4>
+              <p>{{ _('In order to link Google Tag Manager, you must already have an account created. If you do not yet have an account') }}, 
                 <a href="https://marketingplatform.google.com/about/tag-manager/">
-                register for Google Tag Manager</a> to create one.
+                {{ _('register for Google Tag Manager') }}</a> {{ _('to create one') }}.
               </p>
-              <h4 class="card-title">Google Tag Manager is FREE</h4>
-              <p>Subscribie does not charge you for Google Tag Manager integration, 
-              but do make sure you learn how to use it to see the benefits.</p>
+              <h4 class="card-title">{{ _('Google Tag Manager is FREE') }}</h4>
+              <p>{{ _('Subscribie does not charge you for Google Tag Manager integration, but do make sure you learn how to use it to see the benefits') }}.</p>
             </div>
           </div>
         </div>
