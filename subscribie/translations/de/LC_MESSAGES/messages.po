@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 19:21-0400\n"
+"POT-Creation-Date: 2022-11-17 19:32-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -47,6 +47,8 @@ msgstr "Benutzerdefinierten Code hinzufügen"
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:10
 #: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:10
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:10
+#: subscribie/blueprints/admin/templates/admin/change_email.html:10
+#: subscribie/blueprints/admin/templates/admin/change_password.html:10
 msgid "Shop"
 msgstr "Geschäft"
 
@@ -54,6 +56,8 @@ msgstr "Geschäft"
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:11
 #: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:11
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:11
+#: subscribie/blueprints/admin/templates/admin/change_email.html:11
+#: subscribie/blueprints/admin/templates/admin/change_password.html:11
 msgid "Manage My Shop"
 msgstr "Meinen Shop verwalten"
 
@@ -85,6 +89,8 @@ msgstr "Postleitzahl"
 #: subscribie/blueprints/admin/templates/admin/add_custom_code.html:38
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:250
 #: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:40
+#: subscribie/blueprints/admin/templates/admin/change_email.html:39
+#: subscribie/blueprints/admin/templates/admin/change_password.html:33
 msgid "Save"
 msgstr "Speichern"
 
@@ -356,6 +362,7 @@ msgid "Email"
 msgstr "täglich"
 
 #: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:35
+#: subscribie/blueprints/admin/templates/admin/change_password.html:28
 msgid "Password"
 msgstr "Passwort"
 
@@ -374,8 +381,13 @@ msgid "Are you sure"
 msgstr "Bist du dir sicher"
 
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:20
-msgid "Once cancelled, a customer must re-subscribe to a plan if they want to continue. Another option is to \"pause\" the subscription instead"
-msgstr "Nach der Kündigung muss ein Kunde einen Plan erneut abonnieren, wenn er fortfahren möchte. Eine andere Möglichkeit besteht darin, das Abonnement stattdessen zu \"pausieren\"."
+msgid ""
+"Once cancelled, a customer must re-subscribe to a plan if they want to "
+"continue. Another option is to \"pause\" the subscription instead"
+msgstr ""
+"Nach der Kündigung muss ein Kunde einen Plan erneut abonnieren, wenn er "
+"fortfahren möchte. Eine andere Möglichkeit besteht darin, das Abonnement "
+"stattdessen zu \"pausieren\"."
 
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:25
 msgid "Yes"
@@ -384,6 +396,39 @@ msgstr "Ja"
 #: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:29
 msgid "No"
 msgstr "Nein"
+
+#: subscribie/blueprints/admin/templates/admin/change_email.html:2
+#: subscribie/blueprints/admin/templates/admin/change_email.html:6
+#: subscribie/blueprints/admin/templates/admin/change_email.html:12
+#: subscribie/blueprints/admin/templates/admin/change_email.html:22
+msgid "Change Email"
+msgstr "Ändern Sie die E-Mail"
+
+#: subscribie/blueprints/admin/templates/admin/change_email.html:23
+
+msgid "Enter your new email below"
+msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/admin/templates/admin/change_email.html:28
+msgid "Current email"
+msgstr "Aktuelle E-Mail"
+
+#: subscribie/blueprints/admin/templates/admin/change_email.html:34
+msgid "New email"
+msgstr "Neue e-mail"
+
+#: subscribie/blueprints/admin/templates/admin/change_password.html:2
+#: subscribie/blueprints/admin/templates/admin/change_password.html:6
+#: subscribie/blueprints/admin/templates/admin/change_password.html:12
+#: subscribie/blueprints/admin/templates/admin/change_password.html:22
+
+msgid "Change Password"
+msgstr "Passwort"
+
+#: subscribie/blueprints/admin/templates/admin/change_password.html:23
+
+msgid "Enter your new password below"
+msgstr "Fügen Sie Ihren Code unten ein"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
