@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 21:07-0400\n"
+"POT-Creation-Date: 2022-11-16 21:24-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -38,6 +38,110 @@ msgstr "monatlich"
 msgid "yearly"
 msgstr "jährlich"
 
+#: subscribie/blueprints/checkout/templates/new_customer.html:2
+msgid "New Customer"
+msgstr "Neukunde"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:12
+msgid "Order Information"
+msgstr "Bestellinformationen"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:13
+msgid "Complete the form below"
+msgstr "Füllen Sie das untenstehende Formular aus"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:35
+msgid "Error"
+msgstr "Fehler"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:40
+msgid "Your details"
+msgstr "Mehr details"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:41
+msgid ""
+"We only use your details in order to get in touch with you regarding the "
+"order status and for billing. No spam, no rubbish"
+msgstr ""
+"Wir verwenden Ihre Daten nur, um Sie bezüglich des Bestellstatus und zur "
+"Rechnungsstellung zu kontaktieren. Kein Spam, kein Müll"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:44
+msgid "Your Name"
+msgstr "Ihren Namen"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:54
+msgid "Email"
+msgstr "täglich"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:61
+msgid "Phone"
+msgstr "Keiner"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:67
+msgid "Your Address"
+msgstr "Deine Adresse"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:70
+msgid "Address"
+msgstr "Adresse"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:77
+msgid "City"
+msgstr "Stadt"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:84
+msgid "Post Code"
+msgstr "Postleitzahl"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:91
+msgid "Note to seller"
+msgstr "Notiz an den Verkäufer"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:105
+msgid "Order Summary"
+msgstr "Bestellübersicht"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:118
+msgid "Choices"
+msgstr "Auswahl"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:129
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:59
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
+msgid "days free"
+msgstr "Tage frei"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:129
+#, fuzzy
+msgid "then"
+msgstr "Dann"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:132
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:68
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:39
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
+msgid "Upfront cost"
+msgstr "Kosten im Voraus"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:136
+msgid "Price"
+msgstr "Preis"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:139
+msgid "Total"
+msgstr "Gesamt"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:140
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:64
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
+msgid "Then"
+msgstr "Dann"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:152
+msgid "Continue to Payment"
+msgstr "Weiter zu Zahlung"
+
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:16
 msgid "Choose plan"
 msgstr "Wählen Sie einen Plan"
@@ -46,22 +150,6 @@ msgstr "Wählen Sie einen Plan"
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:20
 msgid "More details"
 msgstr "Mehr details"
-
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:59
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
-msgid "days free"
-msgstr "Tage frei"
-
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:64
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
-msgid "Then"
-msgstr "Dann"
-
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:68
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:39
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
-msgid "Upfront cost"
-msgstr "Kosten im Voraus"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:74
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
