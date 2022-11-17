@@ -2,7 +2,7 @@
 <html lang=en>
   <head>
 
-    <title>Error</title>
+    <title>{{ _('Error') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/style.css">
@@ -43,9 +43,9 @@
           <div class="container">
             <div class="row">
               <div class="col-md-8 pl-0">
-                <h1 class="h1 text-white font-weight-bold">Something's gone wrong</h1>
-                <h2 class="h3 text-white">Sorry we encountered an error on this page.</h2>
-                <a href="/" class="btn btn-lg btn-light my-3 p-3">Take me home</a>
+                <h1 class="h1 text-white font-weight-bold">{{ _("Something's gone wrong") }}</h1>
+                <h2 class="h3 text-white">{{ _('Sorry we encountered an error on this page') }}.</h2>
+                <a href="/" class="btn btn-lg btn-light my-3 p-3">{{ _('Take me home') }}</a>
               </div>
 
               <div class="col-6 col-md-3 text-right d-none d-lg-block mr-lg-5">
@@ -59,19 +59,19 @@
       <main class="main">
         <div class="section mx-lg-5">
 
-          <h2 class="text-dark mb-3 h2 text-center font-weight-bold">How did that happen?!</h2>
-          <p class="text-center">Sorry you encountered this error, we've logged it and will dispatch a team of monkeys to fix it. Click the button above to go back home.</p>
+          <h2 class="text-dark mb-3 h2 text-center font-weight-bold">{{ _('How did that happen') }}?!</h2>
+          <p class="text-center">{{ _("Sorry you encountered this error, we've logged it and will dispatch a team of monkeys to fix it. Click the button above to go back home") }}.</p>
         </div>
       </main>
 
     </div>
 
     <footer class="container-fluid bg-light text-center py-5" >
-      <p class="pb-3">By Karma Computing.</p>
-      <p> Made possible with <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
-      <a href="{{ url_for('auth.login') }}">Shop owner login</a>
+      <p class="pb-3">{{ _('By') }} Karma Computing.</p>
+      <p> {{ _('Made possible with') }} <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> {{ _('in') }} Newcastle upon Tyne.</p>
+      <a href="{{ url_for('auth.login') }}">{{ _('Shop owner login') }}</a>
       <br>
-      <a href="#" class="btn btn-outline-secondary mt-3">Scroll back to top</a>
+      <a href="#" class="btn btn-outline-secondary mt-3">{{ _('Scroll back to top') }}</a>
     </footer>
 
   </body>
