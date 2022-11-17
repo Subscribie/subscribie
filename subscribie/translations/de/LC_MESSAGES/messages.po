@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 17:40-0400\n"
+"POT-Creation-Date: 2022-11-17 18:52-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:319
+#: subscribie/__init__.py:320
 msgid "Hello"
 msgstr "Hallo"
 
@@ -37,6 +37,295 @@ msgstr "monatlich"
 #: subscribie/models.py:512
 msgid "yearly"
 msgstr "jährlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:2
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:6
+msgid "Add custom code"
+msgstr "Benutzerdefinierten Code hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:10
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:10
+msgid "Shop"
+msgstr "Geschäft"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:11
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:11
+msgid "Manage My Shop"
+msgstr "Meinen Shop verwalten"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:12
+msgid "Add Custom Code"
+msgstr "Benutzerdefinierten Code hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:22
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:22
+msgid "Inject Custom Code"
+msgstr "Benutzerdefinierten Code einfügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:24
+msgid "Paste your code below"
+msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:26
+msgid "You must include the script start and end tags"
+msgstr "Sie müssen die Start- und End-Tags des Skripts einfügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:32
+#, fuzzy
+msgid "Custom code"
+msgstr "Postleitzahl"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:38
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:250
+msgid "Save"
+msgstr "Speichern"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:46
+msgid "Need some help"
+msgstr "Hilfe benötigen"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:47
+#, fuzzy
+msgid ""
+"You can paste any code you want here, and it will be\n"
+"                injected onto every page of your shop"
+msgstr ""
+"Sie können hier jeden beliebigen Code einfügen, der auf jeder Seite Ihres"
+" Shops eingefügt wird"
+
+#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:49
+#, fuzzy
+msgid ""
+"Make sure you only paste code you trust, and that \n"
+"                your site still works after you save"
+msgstr ""
+"Stellen Sie sicher, dass Sie nur Code einfügen, dem Sie vertrauen, und "
+"dass Ihre Website nach dem Speichern noch funktioniert"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:2
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
+msgid "Dashboard"
+msgstr "Armaturenbrett"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:6
+msgid "Create a new plan"
+msgstr "Erstellen Sie einen neuen Plan"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:12
+msgid "Add new plan"
+msgstr "Neuen Tarif hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:23
+msgid "something is missing. Please take a look at"
+msgstr "etwas fehlt. Bitte werfen Sie einen Blick auf"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:45
+msgid "Plan or Product name"
+msgstr "Plan oder Produktname"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:47
+msgid "What are you selling on subscription"
+msgstr "Was verkaufen Sie im Abonnement"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:48
+msgid ""
+"You can also sell one-off items which don't have a subscription and only "
+"have a one-off charge"
+msgstr ""
+"Sie können auch Einzelstücke verkaufen, die kein Abonnement haben und nur"
+" eine einmalige Gebühr haben"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:53
+msgid "Plan name is required"
+msgstr "Planname ist erforderlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:58
+msgid "Plan selling points"
+msgstr ""
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:74
+msgid "Please provide a third selling point"
+msgstr "Verkaufsargumente planen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:81
+msgid "Product image"
+msgstr "Produktbild"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:82
+msgid "Supported image upload extensions"
+msgstr "Unterstützte Bild-Upload-Erweiterungen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:93
+msgid "Recurring Charge"
+msgstr "Wiederkehrende Gebühr"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:100
+msgid "Recurring Amount"
+msgstr "Wiederkehrender Betrag"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:111
+msgid "Interval Unit"
+msgstr "Intervalleinheit"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:114
+#, fuzzy
+msgid "Monthly"
+msgstr "monatlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:115
+#, fuzzy
+msgid "Weekly"
+msgstr "wöchentlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:116
+#, fuzzy
+msgid "Yearly"
+msgstr "jährlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:122
+msgid "Days before the first charge"
+msgstr "Tage vor der ersten Aufladung\""
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:125
+msgid ""
+"\"Cooling off period\" before the first charge happens. Leave 0 to charge"
+" the customer as soon as possible"
+msgstr ""
+"\"Bedenkzeit\" bevor der erste Ladevorgang erfolgt. Lassen Sie 0, um den "
+"Kunden so schnell wie möglich zu belasten "
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:130
+msgid "Free trial period number of days"
+msgstr "Kostenlose Probezeit in Tagen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:133
+#, fuzzy
+msgid ""
+"If you want to offer a free trial, simply put the number of days and the "
+"plan\n"
+"                will only start charging after the trial has ended. When "
+"creating a subscription with a\n"
+"                trial period, no payment is taken from the customer"
+msgstr ""
+"Wenn Sie eine kostenlose Testversion anbieten möchten, geben Sie einfach "
+"die Anzahl der Tage ein und der Plan wird erst nach Ablauf der "
+"Testversion berechnet. Beim Erstellen eines Abonnements mit Probezeitraum"
+" wird dem Kunden keine Zahlung abgenommen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:136
+msgid "An immediate invoice is still created, but for a zero amount"
+msgstr "Es wird trotzdem eine Sofortrechnung erstellt, jedoch mit einem Nullbetrag"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:148
+msgid "Add upfront charge"
+msgstr "Vorabgebühr hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:152
+msgid "Upfront price"
+msgstr "Kosten im Voraus"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:169
+msgid "Plan Description"
+msgstr "Plan hat Optionen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:172
+msgid "Add a paragraph describing the plan (optional)"
+msgstr "Fügen Sie einen Absatz hinzu, der den Plan beschreibt (optional)"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:177
+msgid "Plan description"
+msgstr "Plan hat Optionen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:180
+msgid "Enter a description about the plan"
+msgstr "Geben Sie eine Beschreibung des Plans ein"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:189
+msgid "Require customer note"
+msgstr "Kundenhinweis erforderlich"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:192
+msgid "Useful for plan personalisation, customisation or variations"
+msgstr "Nützlich für die Personalisierung, Anpassung oder Variation des Plans"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:197
+msgid "Message for the customer"
+msgstr "Nachricht für den Kunden"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:200
+msgid "This message will be shown during checkout to the customer"
+msgstr "Diese Nachricht wird dem Kunden während des Bestellvorgangs angezeigt"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:206
+msgid "Position"
+msgstr "Optionen"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:212
+msgid "Control the order in which plans appear. Lower number appears first"
+msgstr ""
+"Steuern Sie die Reihenfolge, in der Pläne angezeigt werden. Die "
+"niedrigere Zahl erscheint zuerst"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:218
+msgid "Private"
+msgstr "Private Seiten"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:221
+msgid ""
+"Want to create a private plan? Mark a plan as private, and it won't "
+"appear on the homepage"
+msgstr ""
+"Möchten Sie einen privaten Plan erstellen? Wenn Sie einen Plan als privat"
+" markieren, wird er nicht auf der Startseite angezeigt"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:222
+msgid ""
+"Then, you can send a link to your customer(s) to sign-up to the private "
+"plan"
+msgstr ""
+"Dann können Sie einen Link an Ihre Kunden senden, um sich für den "
+"privaten Plan anzumelden"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:229
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:238
+msgid "Cancel at"
+msgstr "Abbrechen um"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:232
+#, fuzzy
+msgid ""
+"Cancel all subscriptions to this plan at this date / time. This is useful"
+" if you run a\n"
+"                    membership style organisation with seasons (such as a"
+" Football club)"
+msgstr ""
+"Kündigen Sie alle Abonnements für diesen Plan zu diesem Datum / dieser "
+"Uhrzeit. Dies ist nützlich, wenn Sie eine Organisation im "
+"Mitgliedschaftsstil mit Saisons betreiben (z. B. einen Fußballverein)."
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:237
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:241
+msgid "Date"
+msgstr "Datum"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:237
+msgid "time to"
+msgstr "Zeit zum"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:241
+msgid "June"
+msgstr "Juni"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:245
+msgid "Time"
+msgstr "Zeit"
+
+#: subscribie/blueprints/admin/templates/admin/add_plan.html:245
+msgid "midnight"
+msgstr "Mitternacht"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
@@ -236,10 +525,6 @@ msgstr "Wählen"
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:111
 msgid "Private pages"
 msgstr "Private Seiten"
-
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
-msgid "Dashboard"
-msgstr "Armaturenbrett"
 
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:135
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:143
