@@ -13,7 +13,7 @@
         {% else %}
             <p class="text-light">{{ company.slogan }}</p>
         {% endif %}
-        <a class="btn-outlined-lg" href="#plans" title="Subscriber login">Choose plan</a>
+        <a class="btn-outlined-lg" href="#plans" title="Subscriber login">{{ _('Choose plan') }}</a>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
                 {% if plan.description is not sameas None %}
                   <div>
                     <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
-                      More details
+                     {{ _('More details') }}
                     </div>
                     <div class="collapse" id="collapse-{{ plan.id }}">
                       <p class="text mb-0 pt-2">{{ plan.description }}</p>
@@ -56,12 +56,12 @@
 
                 <hr class="my-4">
                 {% if plan.trial_period_days > 0 %}
-                <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
+                <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}</p>
                 {% endif %}
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
-                      {% if plan.trial_period_days > 0 %}Then {% endif %}
+                      {% if plan.trial_period_days > 0 %}{{ _('Then') }} {% endif %}
                       <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.showItervalUnit() }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
@@ -83,7 +83,7 @@
                 </div>
                 {% endfor %}
                 {% if plan.cancel_at %}
-                  <small>Automatically cancels on: {{ plan.cancel_at | timestampToDate }}</small>
+                  <small>{{ _('Automatically cancels on') }}: {{ plan.cancel_at | timestampToDate }}</small>
                 {% endif %}
               </div> <!-- end card-body -->
 
@@ -92,12 +92,12 @@
                 {% if plan.choice_groups %}
                   <div>
                     <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
-                      See choice options
+                      {{ _('See choice options') }}
                     </div>
                     <div class="collapse mb-4" id="collapse-choise-{{ plan.id }}" >
                       {% for choice_group in plan.choice_groups %}
                       <details>
-                        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
+                        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _(options) }})</summary>
                         <ul>
                           {% for option in choice_group.options %}
                           <li>{{ option.title }}</li>

@@ -170,7 +170,7 @@
   {% if session.get('iframe_embeded') is sameas False %}
 
   <footer class="container-fluid text-center py-3 footer mt-auto" >
-    <p> By <a href="/" class="body-lg">{{ company['name'] }}</a>. </p>
+    <p> {{ _('By') }} <a href="/" class="body-lg">{{ company['name'] }}</a>. </p>
     <p> <a href="https://subscriptionwebsitebuilder.co.uk" title="Subscription Website Builder" class="body-lg">{{ _('Collect payments easily with Subscribie') }}</a> - {{ _('Made in') }} Newcastle Upon Tyne</p>
     
     {% if g.user %}
