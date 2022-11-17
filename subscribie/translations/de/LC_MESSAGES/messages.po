@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 21:36-0400\n"
+"POT-Creation-Date: 2022-11-17 17:29-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -51,6 +51,7 @@ msgid "Complete the form below"
 msgstr "Füllen Sie das untenstehende Formular aus"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:35
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:5
 msgid "Error"
 msgstr "Fehler"
 
@@ -184,7 +185,9 @@ msgstr "Bestellung ausgeführt"
 
 #: subscribie/blueprints/checkout/templates/thankyou.html:12
 msgid "We've received your order and will be in contact soon"
-msgstr "Wir haben Ihre Bestellung erhalten und werden uns in Kürze mit Ihnen in Verbindung setzen"
+msgstr ""
+"Wir haben Ihre Bestellung erhalten und werden uns in Kürze mit Ihnen in "
+"Verbindung setzen"
 
 #: subscribie/blueprints/checkout/templates/thankyou.html:16
 msgid "Subscription Builder - Success"
@@ -252,6 +255,7 @@ msgstr "Konto"
 msgid "Subscriber Login"
 msgstr "Abonnenten-Login"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:173
 msgid "By"
 msgstr "Durch"
@@ -264,6 +268,7 @@ msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
 msgid "Made in"
 msgstr "Hergestellt in"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:181
 msgid "Shop owner login"
 msgstr "Shop-Besitzer-Login"
@@ -272,6 +277,7 @@ msgstr "Shop-Besitzer-Login"
 msgid "Subscriber login"
 msgstr "Abonnenten-Login"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:187
 msgid "Scroll back to top"
 msgstr "Zurück nach oben scrollen"
@@ -312,6 +318,37 @@ msgstr "Bitte wählen Sie eine davon aus"
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
 msgid "None"
 msgstr "Keiner"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:46
+msgid "Something's gone wrong"
+msgstr "Etwas ist schief gelaufen"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:47
+msgid "Sorry we encountered an error on this page"
+msgstr "Es tut uns leid, dass auf dieser Seite ein Fehler aufgetreten ist"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:48
+msgid "Take me home"
+msgstr "Bring mich nach Hause"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:62
+msgid "How did that happen"
+msgstr "Wie ist das passiert"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:63
+msgid ""
+"Sorry you encountered this error, we've logged it and will dispatch a "
+"team of monkeys to fix it. Click the button above to go back home"
+msgstr "Es tut uns leid, dass Sie auf diesen Fehler gestoßen sind. Wir haben ihn protokolliert und senden eine "
+"Team von Affen, um es zu beheben. Klicken Sie auf die Schaltfläche oben, um nach Hause zurückzukehren"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "Made possible with"
+msgstr "Möglich gemacht mit"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "in"
+msgstr "in"
 
 #~ msgid "Make your choice"
 #~ msgstr "Treffen Sie Ihre Wahl"
