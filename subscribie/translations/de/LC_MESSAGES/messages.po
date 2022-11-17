@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 21:24-0400\n"
+"POT-Creation-Date: 2022-11-16 21:36-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -99,6 +99,9 @@ msgid "Note to seller"
 msgstr "Notiz an den Verkäufer"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:105
+#: subscribie/blueprints/checkout/templates/order_summary.html:2
+#: subscribie/blueprints/checkout/templates/order_summary.html:11
+#: subscribie/blueprints/checkout/templates/order_summary.html:77
 msgid "Order Summary"
 msgstr "Bestellübersicht"
 
@@ -107,12 +110,14 @@ msgid "Choices"
 msgstr "Auswahl"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:129
+#: subscribie/blueprints/checkout/templates/order_summary.html:51
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:59
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
 msgid "days free"
 msgstr "Tage frei"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:129
+#: subscribie/blueprints/checkout/templates/order_summary.html:51
 #, fuzzy
 msgid "then"
 msgstr "Dann"
@@ -125,14 +130,17 @@ msgid "Upfront cost"
 msgstr "Kosten im Voraus"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:136
+#: subscribie/blueprints/checkout/templates/order_summary.html:62
 msgid "Price"
 msgstr "Preis"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:139
+#: subscribie/blueprints/checkout/templates/order_summary.html:67
 msgid "Total"
 msgstr "Gesamt"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:140
+#: subscribie/blueprints/checkout/templates/order_summary.html:68
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:64
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
 msgid "Then"
@@ -141,6 +149,46 @@ msgstr "Dann"
 #: subscribie/blueprints/checkout/templates/new_customer.html:152
 msgid "Continue to Payment"
 msgstr "Weiter zu Zahlung"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:15
+msgid "Payment"
+msgstr "Zahlung"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:47
+msgid "Please complete your order"
+msgstr "Bitte schließen Sie Ihre Bestellung ab"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:48
+msgid "Great choice"
+msgstr "Schöne Wahl"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:48
+msgid "please complete the form below"
+msgstr "Füllen Sie das untenstehende Formular aus"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:55
+msgid "Upfront Cost"
+msgstr "Kosten im Voraus"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:92
+msgid "Checkout"
+msgstr "Konto"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:2
+msgid "Thank you"
+msgstr "Vielen Dank"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:11
+msgid "Order Complete"
+msgstr "Bestellung ausgeführt"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:12
+msgid "We've received your order and will be in contact soon"
+msgstr "Wir haben Ihre Bestellung erhalten und werden uns in Kürze mit Ihnen in Verbindung setzen"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:16
+msgid "Subscription Builder - Success"
+msgstr "Abonnement-Builder - Erfolg"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:16
 msgid "Choose plan"

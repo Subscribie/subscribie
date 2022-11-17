@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %} Order Summary {% endblock %}
+{% block title %} {{ _('Order Summary') }} {% endblock %}
 
 {% block hero %}
 <div class="section-hero px-2">
@@ -8,11 +8,11 @@
         <div class="row">
           <div class="col col-md-8 hero-content py-5 px-3 px-sm-4 ">
             <h2 class="title-1">{{ company.name }}</h2>
-            <p class="text-light body-lg mb-0">Order Summary</p>
+            <p class="text-light body-lg mb-0">{{ _('Order Summary') }}</p>
           </div>
           <div class="col-4 col-md-4 text-right d-none d-lg-block py-3 px-0 px-sm-4">
             <svg style="max-width:500px; width:75%" viewBox="0 0 1309 490" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <title>Payment</title>
+                <title>{{ _('Payment') }}</title>
                 <defs></defs>
                 <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                     <g id="Artboard" fill="#FFFFFF">
@@ -44,28 +44,28 @@
 <div class="container mx-auto">
     <div class="row row-cols-1 row-cols-lg-2">
         <div class="col-lg-8">
-            <h3 class="title-1">Please complete your order</h3>
-            <p class="text mb-3">Great choice {{ fname }}, please complete the form below.</p>
+            <h3 class="title-1">{{ _('Please complete your order') }}</h3>
+            <p class="text mb-3">{{ _('Great choice') }} {{ fname }}, {{ _('please complete the form below') }}.</p>
             <div>
                 {% if plan.trial_period_days > 0 %}
-                <p class="py-3 body-lg">{{ plan.trial_period_days }} days free, then</p>
+                <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}, {{ _('then') }}</p>
                 {% endif %}
                 {% if plan.requirements.instant_payment %}
                 <p class="py-3 body-lg">
-                    <b>Upfront Cost:</b>
+                    <b>{{ _('Upfront Cost') }}:</b>
                     <span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span>
                 </p>
                 {% endif %}
 
                 {% if plan.requirements.subscription %}
                 <p class="py-3 body-lg">
-                    <b>Price ({{ plan.interval_unit }})</b>
+                    <b>{{ _('Price') }} ({{ plan.interval_unit }})</b>
                     <span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span>
                 </p>
                 {% endif %}
                 {% if plan.requirements.subscription and plan.requirements.instant_payment %}
-                <p class="py-3"><span class="body-lg">Total: <span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></span></br></br>
-                Then {{ plan.showIntervalAmount() }} {{ plan.interval_unit }}</p>
+                <p class="py-3"><span class="body-lg">{{ _('Total') }}: <span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></span></br></br>
+                {{ _('Then') }} {{ plan.showIntervalAmount() }} {{ plan.interval_unit }}</p>
                 {% endif %}
 
             </div>
@@ -74,7 +74,7 @@
         <div class="col-lg-4 my-3 my-lg-0">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h3 class="pt-3 title-1">Order Summary</h3>
+                    <h3 class="pt-3 title-1">{{ _('Order Summary') }}</h3>
                 </div>
                 <div class="card-body">
                     <h4 class="my-3 body-lg">{{ plan.title|capitalize() }}</h4>
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <button id="checkout-button" class="btn-primary-lg btn-block col-lg-8 my-3">Checkout</button>    
+    <button id="checkout-button" class="btn-primary-lg btn-block col-lg-8 my-3">{{ _('Checkout') }}</button>    
 
 </div>
 
