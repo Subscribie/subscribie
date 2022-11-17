@@ -512,6 +512,22 @@ class INTERVAL_UNITS(Enum):
     YEARLY = _("yearly")
 
 
+association_table_plan_to_document = database.Table(
+    "plan_document_associations",
+    database.Column(
+        "plan_uuid",
+        database.Integer,
+        ForeignKey("plan.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "document_uuid",
+        database.Integer,
+        ForeignKey("document.uuid"),
+    ),
+)
+
+
 class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
@@ -537,6 +553,7 @@ class Plan(database.Model, HasArchived):
         secondary=association_table_plan_choice_group,
         backref=database.backref("plans", lazy="dynamic"),
     )
+    documents = relationship("Document", secondary=association_table_plan_to_document)
     position = database.Column(database.Integer(), default=0)
 
     category_uuid = database.Column(
@@ -1067,6 +1084,11 @@ class Document(database.Model, HasArchived):
     name = database.Column(database.String(), default=None)
     type = database.Column(database.String(), default=None)
     body = database.Column(database.String(), default=None)
+    plans = relationship(
+        "Plan",
+        secondary=association_table_plan_to_document,
+        back_populates="documents",
+    )
 
 
 class TaxRate(database.Model):
