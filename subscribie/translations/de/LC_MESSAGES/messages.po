@@ -172,7 +172,7 @@ msgstr "Kosten im Voraus"
 
 #: subscribie/blueprints/checkout/templates/order_summary.html:92
 msgid "Checkout"
-msgstr "Konto"
+msgstr "Kasse"
 
 #: subscribie/blueprints/checkout/templates/thankyou.html:2
 msgid "Thank you"
