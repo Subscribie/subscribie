@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 21:19+0000\n"
+"POT-Creation-Date: 2022-11-16 20:13-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -51,8 +51,61 @@ msgid "No subscription"
 msgstr "Kein Abonnement"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:113
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:117
 msgid "Choose"
 msgstr "Wählen"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:91
+#, fuzzy
+msgid "Home"
+msgstr "Wählen"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:111
+msgid "Private pages"
+msgstr "Private Seiten"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
+msgid "Dashboard"
+msgstr "Armaturenbrett"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:135
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:143
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:139
+msgid "Account"
+msgstr "Konto"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:148
+msgid "Subscriber Login"
+msgstr "Abonnenten-Login"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:174
+msgid "Collect payments easily with Subscribie"
+msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:174
+msgid "Made in"
+msgstr "Hergestellt in"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:181
+msgid "Shop owner login"
+msgstr "Shop-Besitzer-Login"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:183
+msgid "Subscriber login"
+msgstr "Abonnenten-Login"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:187
+msgid "Scroll back to top"
+msgstr "Zurück nach oben scrollen"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:191
+msgid "Country"
+msgstr "Land"
 
 #~ msgid "Make your choice"
 #~ msgstr "Treffen Sie Ihre Wahl"
