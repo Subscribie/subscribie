@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 17:29-0400\n"
+"POT-Creation-Date: 2022-11-17 17:40-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:320
+#: subscribie/__init__.py:319
 msgid "Hello"
 msgstr "Hallo"
 
@@ -51,6 +51,7 @@ msgid "Complete the form below"
 msgstr "Füllen Sie das untenstehende Formular aus"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:35
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:5
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:5
 msgid "Error"
 msgstr "Fehler"
@@ -255,6 +256,7 @@ msgstr "Konto"
 msgid "Subscriber Login"
 msgstr "Abonnenten-Login"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:70
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:173
 msgid "By"
@@ -268,6 +270,7 @@ msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
 msgid "Made in"
 msgstr "Hergestellt in"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:72
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:181
 msgid "Shop owner login"
@@ -277,6 +280,7 @@ msgstr "Shop-Besitzer-Login"
 msgid "Subscriber login"
 msgstr "Abonnenten-Login"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:74
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:187
 msgid "Scroll back to top"
@@ -319,6 +323,34 @@ msgstr "Bitte wählen Sie eine davon aus"
 msgid "None"
 msgstr "Keiner"
 
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:47
+msgid "We couldn't find that page"
+msgstr "Wir konnten diese Seite nicht finden"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:48
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:48
+msgid "Take me home"
+msgstr "Bring mich nach Hause"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:63
+msgid ""
+"You may have followed a dead, old or broken link, sorry about that, click"
+" the button at the top right to go back home and try again"
+msgstr ""
+"Möglicherweise sind Sie einem toten, alten oder defekten Link gefolgt, "
+"entschuldigen Sie bitte, klicken Sie auf die Schaltfläche oben rechts, um"
+" nach Hause zurückzukehren und es erneut zu versuchen"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "Made possible with"
+msgstr "Möglich gemacht mit"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "in"
+msgstr "in"
+
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:46
 msgid "Something's gone wrong"
 msgstr "Etwas ist schief gelaufen"
@@ -326,10 +358,6 @@ msgstr "Etwas ist schief gelaufen"
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:47
 msgid "Sorry we encountered an error on this page"
 msgstr "Es tut uns leid, dass auf dieser Seite ein Fehler aufgetreten ist"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:48
-msgid "Take me home"
-msgstr "Bring mich nach Hause"
 
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:62
 msgid "How did that happen"
@@ -339,16 +367,10 @@ msgstr "Wie ist das passiert"
 msgid ""
 "Sorry you encountered this error, we've logged it and will dispatch a "
 "team of monkeys to fix it. Click the button above to go back home"
-msgstr "Es tut uns leid, dass Sie auf diesen Fehler gestoßen sind. Wir haben ihn protokolliert und senden eine "
-"Team von Affen, um es zu beheben. Klicken Sie auf die Schaltfläche oben, um nach Hause zurückzukehren"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
-msgid "Made possible with"
-msgstr "Möglich gemacht mit"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
-msgid "in"
-msgstr "in"
+msgstr ""
+"Es tut uns leid, dass Sie auf diesen Fehler gestoßen sind. Wir haben ihn "
+"protokolliert und senden eine Team von Affen, um es zu beheben. Klicken "
+"Sie auf die Schaltfläche oben, um nach Hause zurückzukehren"
 
 #~ msgid "Make your choice"
 #~ msgstr "Treffen Sie Ihre Wahl"
