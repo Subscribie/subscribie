@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-16 20:13-0400\n"
+"POT-Creation-Date: 2022-11-16 20:41-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -38,6 +38,22 @@ msgstr "monatlich"
 msgid "yearly"
 msgstr "jährlich"
 
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:16
+msgid "Choose plan"
+msgstr "Wählen Sie einen Plan"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:49
+msgid "More details"
+msgstr "Mehr details"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:59
+msgid "days free"
+msgstr "Tage frei"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:64
+msgid "Then"
+msgstr "Dann"
+
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:68
 msgid "Upfront cost"
 msgstr "Kosten im Voraus"
@@ -50,13 +66,20 @@ msgstr "Einmal"
 msgid "No subscription"
 msgstr "Kein Abonnement"
 
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:86
+msgid "Automatically cancels on"
+msgstr "Automatisches Abbrechen an"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:95
+msgid "See choice options"
+msgstr "Siehe Wahlmöglichkeiten"
+
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:113
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:117
 msgid "Choose"
 msgstr "Wählen"
 
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:91
-#, fuzzy
 msgid "Home"
 msgstr "Wählen"
 
@@ -82,6 +105,10 @@ msgstr "Konto"
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:148
 msgid "Subscriber Login"
 msgstr "Abonnenten-Login"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:173
+msgid "By"
+msgstr "Durch"
 
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:174
 msgid "Collect payments easily with Subscribie"
