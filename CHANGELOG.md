@@ -1,3 +1,15 @@
+# v0.1.157 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- Revert "Fix #1007 tuple as no object status code" [#1010](https://github.com/Subscribie/subscribie/pull/1010) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.156 (Thu Nov 17 2022)
 
 #### 🐛 Bug Fix
