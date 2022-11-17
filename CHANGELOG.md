@@ -1,3 +1,15 @@
+# v0.1.156 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1007 tuple as no object status code [#1008](https://github.com/Subscribie/subscribie/pull/1008) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.155 (Thu Nov 17 2022)
 
 #### 🐛 Bug Fix
