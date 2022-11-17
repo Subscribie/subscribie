@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 18:52-0400\n"
+"POT-Creation-Date: 2022-11-17 19:21-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -45,11 +45,15 @@ msgstr "Benutzerdefinierten Code hinzufügen"
 
 #: subscribie/blueprints/admin/templates/admin/add_custom_code.html:10
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:10
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:10
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:10
 msgid "Shop"
 msgstr "Geschäft"
 
 #: subscribie/blueprints/admin/templates/admin/add_custom_code.html:11
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:11
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:11
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:11
 msgid "Manage My Shop"
 msgstr "Meinen Shop verwalten"
 
@@ -80,6 +84,7 @@ msgstr "Postleitzahl"
 
 #: subscribie/blueprints/admin/templates/admin/add_custom_code.html:38
 #: subscribie/blueprints/admin/templates/admin/add_plan.html:250
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:40
 msgid "Save"
 msgstr "Speichern"
 
@@ -327,6 +332,59 @@ msgstr "Zeit"
 msgid "midnight"
 msgstr "Mitternacht"
 
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:2
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:6
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:12
+msgid "Add Shop Admin"
+msgstr "Shop-Admin hinzufügen"
+
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:22
+msgid "Add Another Shop Admin"
+msgstr "Fügen Sie einen weiteren Shop-Administrator hinzu"
+
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:23
+msgid "Add someone else to manage your shop"
+msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
+
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:24
+msgid "This will allow them to login an manage your shop too"
+msgstr "Dadurch können sie sich auch anmelden und Ihren Shop verwalten"
+
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:29
+#: subscribie/blueprints/checkout/templates/new_customer.html:54
+msgid "Email"
+msgstr "täglich"
+
+#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:35
+msgid "Password"
+msgstr "Passwort"
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:2
+#, fuzzy
+msgid "Cancel a subscription"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:6
+#, fuzzy
+msgid "Confirmation"
+msgstr "Bestellinformationen"
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:19
+msgid "Are you sure"
+msgstr "Bist du dir sicher"
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:20
+msgid "Once cancelled, a customer must re-subscribe to a plan if they want to continue. Another option is to \"pause\" the subscription instead"
+msgstr "Nach der Kündigung muss ein Kunde einen Plan erneut abonnieren, wenn er fortfahren möchte. Eine andere Möglichkeit besteht darin, das Abonnement stattdessen zu \"pausieren\"."
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:25
+msgid "Yes"
+msgstr "Ja"
+
+#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:29
+msgid "No"
+msgstr "Nein"
+
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
 msgstr "Neukunde"
@@ -360,10 +418,6 @@ msgstr ""
 #: subscribie/blueprints/checkout/templates/new_customer.html:44
 msgid "Your Name"
 msgstr "Ihren Namen"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:54
-msgid "Email"
-msgstr "täglich"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:61
 msgid "Phone"
