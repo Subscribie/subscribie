@@ -1,14 +1,14 @@
 {% extends "admin/layout.html" %}                                                
-{% block title %} {{ _('Cancel a subscription') }} {% endblock %}                                                                
+{% block title %} Cancel a subscription {% endblock %}                                                                
                                                                                  
 {% block body %}
 
-<h1 class="text-center text-dark mb-3">{{ _('Confirmation') }}</h1>
+<h1 class="text-center text-dark mb-3">Confirmation</h1>
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">{{ _('Shop') }}</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">{{ _('Manage My Shop') }}</a></li>   
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
   </ul>
 </div>                                                                              
 
@@ -16,17 +16,19 @@
     <div class="section">
         <div class="container">
             <div class="card col-md-6 mx-auto my-3 py-3">
-                <h3 class="card-title mx-auto">{{ _('Are you sure') }}?</h3>
-                <p>{{ _('Once cancelled, a customer must re-subscribe to a plan if they want to continue. Another option is to "pause" the subscription instead') }}.
+                <h3 class="card-title mx-auto">Are you sure?</h3>
+                <p>Once cancelled, a customer must re-subscribe to a plan if they 
+                   want to continue. Another option is to 'pause' the subscription
+                   instead.
                 </p>
                 <div class="mx-auto">
                     <a href="{{ url_for('admin.cancel_stripe_subscription', subscription_id=subscription_id, confirm=1) }}" 
                         class="btn btn-danger mx-3 px-5" role="button">
-                       <span class="cancel-yes">{{ _('Yes') }}</span>
+                       <span class="cancel-yes">Yes</span>
                     </a>
                     <a href="{{ url_for('admin.subscribers', cancel=1)}}" 
                         class="btn btn-success mx-3 px-5" role="button">
-                    <span class="cancel-no">{{ _('No') }}</span>
+                    <span class="cancel-no">No</span>
                     </a>
                 </div>
             </div>

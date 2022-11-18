@@ -1,15 +1,15 @@
 {% extends "admin/layout.html" %}                                                
-{% block title %} {{ _('Dashboard') }} {% endblock %}                                                                                                        
+{% block title %} Dashboard {% endblock %}                                                                                                        
                                                                                  
 {% block body %}  
 
-<h2 class="text-center text-dark mb-3">{{ _('Create a new plan') }}</h2>
+<h2 class="text-center text-dark mb-3">Create a new plan</h2>
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">{{ _('Shop') }}</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">{{ _('Manage My Shop') }}</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">{{ _('Add new plan') }}</li>
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Add new plan</li>
   </ul>
 </div>
 
@@ -20,7 +20,7 @@
     {% if form.errors %}
     <div class="container">
       <div class="alert alert-danger col-md-6 mx-auto">
-        <p><strong class="alert-heading">Oops, {{ _('something is missing. Please take a look at') }}:</strong></p>
+        <p><strong class="alert-heading">Oops, something is missing. Please take a look at:</strong></p>
         <ul class=errors>                                                            
           {% for error in form.errors %}                                              
             <li>{{ error }}</li>                                                       
@@ -42,44 +42,44 @@
           </div>
 
           <div class="form-group">
-            <label for="title-0" class="col-form-label font-weight-bolder">{{ _('Plan or Product name') }}
+            <label for="title-0" class="col-form-label font-weight-bolder">Plan or Product name
             <small class="form-text text-muted">
-            {{ _('What are you selling on subscription') }}?
-            {{ _("You can also sell one-off items which don't have a subscription and only have a one-off charge") }}.
+            What are you selling on subscription?
+            You can also sell one-off items which don't have a subscription and only have a one-off charge.
             </small>
             </label>
             <input name="title-0" id="title-0" class="form-control" required>
 						<div class="invalid-feedback">
-							{{ _('Plan name is required') }}.
+							Plan name is required.
 						</div>
           </div>
 
           <fieldset class="form-group">
-            <legend class="col-form-label font-weight-bolder">{{ _('Plan selling points') }}</legend>
+            <legend class="col-form-label font-weight-bolder">Plan selling points</legend>
               <div>
                 <input name="selling_points-0-0" id="selling_points-0-0" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
-									{{ ('Please provide a selling point') }}.
+									Please provide a selling point.
 								</div>
               </div>
               <div>
                 <input name="selling_points-0-1"  id="selling_points-0-1" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
-									{{ ('Please provide a seccond selling point') }}.
+									Please provide a seccond selling point.
 								</div>
               </div>
               <div>
                 <input name="selling_points-0-3"  id="selling_points-0-3" class="form-control mb-2 col-md" required>
 								<div class="invalid-feedback">
-									{{ _('Please provide a third selling point') }}.
+									Please provide a third selling point.
 								</div>
               </div>
           </fieldset>
 
           <div class="form-group">
 
-            <label for="image-0" class="col-form-label font-weight-bolder">{{ _('Product image') }}</label>
-            <p>{{ _('Supported image upload extensions') }}: <br>
+            <label for="image-0" class="col-form-label font-weight-bolder">Product image</label>
+            <p>Supported image upload extensions: <br>
                jpg, jpe, jpeg, png, gif, svg, bmp</p>
             <input type="file" name="image-0" id="image-0" class="form-control-file">
           </div>
@@ -90,14 +90,14 @@
             <div class="form-group">
               <div class="form-check">
                 <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-0" id="subscription-0">
-                <label class="form-check-label font-weight-bolder" for="subscription-0">{{ _('Recurring Charge') }}?</label>
+                <label class="form-check-label font-weight-bolder" for="subscription-0">Recurring Charge?</label>
               </div>
             </div>
        
             <div class="extra_fields"> 
               
               <div class="form-group">
-                <label for="interval_amount-0" id="interval_amount_label" class="col-form-label font-weight-bolder">{{ _('Recurring Amount') }}</label>
+                <label for="interval_amount-0" id="interval_amount_label" class="col-form-label font-weight-bolder">Recurring Amount</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{ default_currency_symbol }}</span>
@@ -108,32 +108,32 @@
             
               <div class="form-group">
                
-                <label for="interval_unit-0" class="col-form-label font-weight-bolder">{{ _('Interval Unit') }}</label>
+                <label for="interval_unit-0" class="col-form-label font-weight-bolder">Interval Unit</label>
                 <div class="input-group">
                   <select name="interval_unit-0" id="interval_unit-0" class="form-control">
-                    <option value="monthly">{{ _('Monthly') }}</option>
-                    <option value="weekly">{{ _('Weekly') }}</option>
-                    <option value="yearly">{{ _('Yearly') }}</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="yearly">Yearly</option>
                   </select>
                 </div>
               </div> 
 
              <div class="form-group">
-                <label for="days_before_first_charge-0" class="col-form-label font-weight-bolder">{{ _('Days before the first charge') }}</label>
+                <label for="days_before_first_charge-0" class="col-form-label font-weight-bolder">Days before the first charge</label>
                 <input id="days_before_first_charge-0" name="days_before_first_charge-0" type="number" value="0" class="form-control" >
                 <small class="form-text text-muted">
-                  {{ _('"Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible') }}
+                  "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
                 </small>
               </div>
             
               <div class="form-group">
-                <label for="trial_period_days-0" class="col-form-label font-weight-bolder">{{ _('Free trial period number of days') }}</label>
+                <label for="trial_period_days-0" class="col-form-label font-weight-bolder">Free trial period number of days</label>
                 <input id="trial_period_days-0" name="trial_period_days-0" type="number" value="0" class="form-control" >
                 <small class="form-text text-muted">
-                {{ _('If you want to offer a free trial, simply put the number of days and the plan
+                If you want to offer a free trial, simply put the number of days and the plan
                 will only start charging after the trial has ended. When creating a subscription with a
-                trial period, no payment is taken from the customer') }}.
-                {{ _('An immediate invoice is still created, but for a zero amount') }}.
+                trial period, no payment is taken from the customer.
+                An immediate invoice is still created, but for a zero amount.
                 </small>
               </div>
             
@@ -145,11 +145,11 @@
           <fieldset>
             <div class="form-group form-check">
               <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-0" id="instant_payment-0" >
-              <label class="form-check-label font-weight-bolder" for="instant_payment-0">{{ _('Add upfront charge') }}</label>
+              <label class="form-check-label font-weight-bolder" for="instant_payment-0">Add upfront charge</label>
             </div>
 
             <div class="form-group extra_fields" id="upfront_price" >
-              <label for="sell_price-0" class="col-form-label font-weight-bolder">{{ _('Upfront price') }}</label>
+              <label for="sell_price-0" class="col-form-label font-weight-bolder">Upfront price</label>
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text">{{ default_currency_symbol }}</span>
@@ -166,18 +166,18 @@
             <div class="form-group ">
               <div class="form-check">
                 <input type="checkbox" value="yes" class="form-check-input toggle" name="plan_description_required-0" id="plan_description_required-0">
-                <label class="form-check-label font-weight-bolder" for="plan_description_required-0">{{ _('Plan Description') }}</label>
+                <label class="form-check-label font-weight-bolder" for="plan_description_required-0">Plan Description</label>
               </div>
               <small class="form-text text-muted">
-                {{ _('Add a paragraph describing the plan (optional)') }}.
+                Add a paragraph describing the plan (optional).
               </small>
             </div>
 
             <div class="form-group extra_fields" id="message" >
-              <label for="description-0" class="col-form-label font-weight-bolder">{{ _('Plan description') }}</label>
+              <label for="description-0" class="col-form-label font-weight-bolder">Plan description</label>
               <textarea class="form-control" id="description-0" name="description-0" rows="3"></textarea>
               <small class="form-text text-muted">
-                {{ _('Enter a description about the plan') }}.
+                Enter a description about the plan.
               </small>
             </div>
 
@@ -186,68 +186,68 @@
             <div class="form-group ">
               <div class="form-check">
                 <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
-                <label class="form-check-label font-weight-bolder" for="note_to_seller_required-0">{{ _('Require customer note') }}</label>
+                <label class="form-check-label font-weight-bolder" for="note_to_seller_required-0">Require customer note</label>
               </div>
               <small class="form-text text-muted">
-                {{ _('Useful for plan personalisation, customisation or variations') }}
+                Useful for plan personalisation, customisation or variations
               </small>
             </div>
             
             <div class="form-group extra_fields" id="message" >
-              <label for="note_to_buyer_message-0" class="col-form-label font-weight-bolder">{{ _('Message for the customer') }}</label>
+              <label for="note_to_buyer_message-0" class="col-form-label font-weight-bolder">Message for the customer</label>
               <textarea class="form-control" id="note_to_buyer_message-0" name="note_to_buyer_message-0" rows="3"></textarea>
               <small class="form-text text-muted">
-                {{ _('This message will be shown during checkout to the customer') }}
+                This message will be shown during checkout to the customer
               </small>
             </div>
 
 
             <div class="form-group">
-              <label for="position-0" class="col-form-label font-weight-bolder">{{ _('Position') }}</label>
+              <label for="position-0" class="col-form-label font-weight-bolder">Position</label>
               <div class="input-group">
                 <input type="number" step="1" name="position-0" id="position-0" class="form-control"
                 placeholder="0">
               </div>
               <small class="form-text text-muted">
-                {{ _('Control the order in which plans appear. Lower number appears first') }}
+                Control the order in which plans appear. Lower number appears first
               </small>
             </div>
             <div class="form-group">
                               <div class="form-check">
                                 <input type="checkbox" value="yes" class="form-check-input" name="private" id="private">
-                                <label class="form-check-label font-weight-bolder" for="private">{{ _('Private') }}</label>
+                                <label class="form-check-label font-weight-bolder" for="private">Private</label>
                               </div>
                               <small class="form-text text-muted">
-                              {{ _("Want to create a private plan? Mark a plan as private, and it won't appear on the homepage") }}.
-                              {{ _('Then, you can send a link to your customer(s) to sign-up to the private plan') }}.
+                              Want to create a private plan? Mark a plan as private, and it won't appear on the homepage.
+                              Then, you can send a link to your customer(s) to sign-up to the private plan.
                               </small>
             </div>
 
             <div class="form-group ">
                   <div class="form-check">
                     <input type="checkbox" value="yes" class="form-check-input toggle" name="cancel_at_set-0" id="cancel_at_set-0">
-                    <label class="form-check-label font-weight-bolder" for="cancel_at_set-0">{{ _('Cancel at') }}</label>
+                    <label class="form-check-label font-weight-bolder" for="cancel_at_set-0">Cancel at</label>
                   </div>
                   <small class="form-text text-muted">
-                    {{ _('Cancel all subscriptions to this plan at this date / time. This is useful if you run a
-                    membership style organisation with seasons (such as a Football club)') }}.
+                    Cancel all subscriptions to this plan at this date / time. This is useful if you run a
+                    membership style organisation with seasons (such as a Football club).
                   </small>
             </div>
             <div class="form-group extra_fields" id="cancel_at" >
-              <label for="cancel_at-0" class="col-form-label font-weight-bolder">{{ _('Date') }} &amp; {{ _('time to') }}</label>
-              <label class="form-check-label font-weight-bolder" for="cancel_at_date">{{ _('Cancel at') }}</label>
+              <label for="cancel_at-0" class="col-form-label font-weight-bolder">Date &amp; time to</label>
+              <label class="form-check-label font-weight-bolder" for="cancel_at_date">Cancel at</label>
               <input type="date" class="form-control" name="cancel_at_date" id="cancel_at_date">
               <small class="form-text text-muted mb-2">
-                {{ _('Date') }} (e.g. 30th {{ _('June') }} 2022)
+                Date (e.g. 30th June 2022)
               </small>
               <input type="time" class="form-control" name="cancel_at_time" value="00:00" id="cancel_at_time">
               <small class="form-text text-muted">
-                {{ _('Time') }} (e.g. {{ _('midnight') }})
+                Time (e.g. midnight)
               </small>
             </div>
           </fieldset>
         
-          <button type="submit" class="disable-on-click btn btn-primary btn-block my-3 mx-auto">{{ _('Save') }}</button>
+          <button type="submit" class="disable-on-click btn btn-primary btn-block my-3 mx-auto">Save</button>
           <span id="error"></span>
 
         </form>
