@@ -1,3 +1,15 @@
+# v0.1.158 (Fri Nov 18 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.157 (Thu Nov 17 2022)
 
 #### 🐛 Bug Fix
