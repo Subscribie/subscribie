@@ -1,13 +1,13 @@
 {% extends "admin/layout.html" %}
-{% block title %} Account - {{ company.name }} {% endblock %}
+{% block title %} {{ _('Account') }} - {{ company.name }} {% endblock %}
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Uploaded files</h2>
+<h2 class="text-center text-dark mb-3">{{ _('Uploaded files') }}</h2>
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Uploaded files</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Uploaded files') }}</li>
   </ul>
 </div>
 
@@ -15,8 +15,8 @@
   <div class="section">
     <div class="container">
 
-          <h2>Uploaded Files</h2>
-          <p>Files listed here will be available to your subscribers when they login.</p>
+          <h2>{{ _('Uploaded Files') }}</h2>
+          <p>{{ _('Files listed here will be available to your subscribers when they login') }}.</p>
     <style>
     th {
         padding: 5px;
@@ -24,8 +24,8 @@
     </style> 
     <table border="1">  
     <thead>
-        <th>File name</th>
-        <th>Created at</th>
+        <th>{{ _('File name') }}</th>
+        <th>{{ _('Created at') }}</th>
     </thead>
     {% for file in files %}
     <tr>
