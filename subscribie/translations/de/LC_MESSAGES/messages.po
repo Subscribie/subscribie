@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-18 16:21-0400\n"
+"POT-Creation-Date: 2022-11-18 16:33-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -196,6 +196,7 @@ msgstr "Abonnement-Builder - Erfolg"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:2
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:14
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:2
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:139
 msgid "Account"
 msgstr "Konto"
@@ -230,8 +231,12 @@ msgid "File access"
 msgstr "Dateizugriff"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:38
-msgid "Some subscriptions may give you access to files. If they do, they will appear below"
-msgstr "Einige Abonnements geben Ihnen möglicherweise Zugriff auf Dateien. Wenn dies der Fall ist, werden sie unten angezeigt"
+msgid ""
+"Some subscriptions may give you access to files. If they do, they will "
+"appear below"
+msgstr ""
+"Einige Abonnements geben Ihnen möglicherweise Zugriff auf Dateien. Wenn "
+"dies der Fall ist, werden sie unten angezeigt"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:41
 msgid "View Files"
@@ -255,7 +260,9 @@ msgstr "Zahlungseinstellungen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:60
 msgid "If you have changed banks, you can update your payment method here"
-msgstr "Wenn Sie die Bank gewechselt haben, können Sie Ihre Zahlungsmethode hier aktualisieren"
+msgstr ""
+"Wenn Sie die Bank gewechselt haben, können Sie Ihre Zahlungsmethode hier "
+"aktualisieren"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
 msgid "Current payment method"
@@ -278,12 +285,20 @@ msgid "Note"
 msgstr "Notiz"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:70
-msgid "You don't need to do anything if your card has expired or you have a new card, the details are automatically updated"
-msgstr "Sie müssen nichts tun, wenn Ihre Karte abgelaufen ist oder Sie eine neue Karte haben, die Daten werden automatisch aktualisiert"
+msgid ""
+"You don't need to do anything if your card has expired or you have a new "
+"card, the details are automatically updated"
+msgstr ""
+"Sie müssen nichts tun, wenn Ihre Karte abgelaufen ist oder Sie eine neue "
+"Karte haben, die Daten werden automatisch aktualisiert"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:71
-msgid "You only need to update payment details if you have changed banks or have a new card account"
-msgstr "Sie müssen die Zahlungsdaten nur aktualisieren, wenn Sie die Bank gewechselt haben oder ein neues Kartenkonto haben"
+msgid ""
+"You only need to update payment details if you have changed banks or have"
+" a new card account"
+msgstr ""
+"Sie müssen die Zahlungsdaten nur aktualisieren, wenn Sie die Bank "
+"gewechselt haben oder ein neues Kartenkonto haben"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:74
 msgid "Update Payment Method"
@@ -302,6 +317,7 @@ msgid "Failed Invoices"
 msgstr "Fehlgeschlagene Rechnungen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:2
 msgid "Login"
 msgstr "Anmeldung"
 
@@ -314,8 +330,59 @@ msgid "We will send you an email to reset your password"
 msgstr "Wir senden Ihnen eine E-Mail, um Ihr Passwort zurückzusetzen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:15
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:16
 msgid "Submit"
 msgstr "Einreichen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:10
+msgid "Uploaded files"
+msgstr "Hochgeladene Dateien"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:18
+msgid "Uploaded Files"
+msgstr "Hochgeladene Dateien"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:19
+msgid "Files listed here will be available to your subscribers when they login"
+msgstr "Die hier aufgelisteten Dateien stehen Ihren Abonnenten zur Verfügung, wenn sie sich anmelden"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:27
+#, fuzzy
+msgid "File name"
+msgstr "Dateizugriff"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:28
+msgid "Created at"
+msgstr "Hergestellt in"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:6
+#, fuzzy
+msgid "Customer Login"
+msgstr "Abonnenten-Login"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:16
+msgid "Sign In"
+msgstr "Einloggen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:18
+#, fuzzy
+msgid "Forgot your password"
+msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:2
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:6
+#, fuzzy
+msgid "Set a new password"
+msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:12
+#, fuzzy
+msgid "Please choose a new password"
+msgstr "Bitte wählen Sie eine davon aus"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:16
 msgid "Choose plan"
