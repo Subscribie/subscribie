@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-17 19:51-0400\n"
+"POT-Creation-Date: 2022-11-18 16:21-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -37,476 +37,6 @@ msgstr "monatlich"
 #: subscribie/models.py:512
 msgid "yearly"
 msgstr "jährlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:2
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:6
-msgid "Add custom code"
-msgstr "Benutzerdefinierten Code hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:10
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:10
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:10
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:10
-#: subscribie/blueprints/admin/templates/admin/change_email.html:10
-#: subscribie/blueprints/admin/templates/admin/change_password.html:10
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:10
-msgid "Shop"
-msgstr "Geschäft"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:11
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:11
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:11
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:11
-#: subscribie/blueprints/admin/templates/admin/change_email.html:11
-#: subscribie/blueprints/admin/templates/admin/change_password.html:11
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:11
-msgid "Manage My Shop"
-msgstr "Meinen Shop verwalten"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:12
-msgid "Add Custom Code"
-msgstr "Benutzerdefinierten Code hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:22
-msgid "Add"
-msgstr "Hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:22
-msgid "Inject Custom Code"
-msgstr "Benutzerdefinierten Code einfügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:24
-msgid "Paste your code below"
-msgstr "Fügen Sie Ihren Code unten ein"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:26
-msgid "You must include the script start and end tags"
-msgstr "Sie müssen die Start- und End-Tags des Skripts einfügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:32
-#, fuzzy
-msgid "Custom code"
-msgstr "Postleitzahl"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:38
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:250
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:40
-#: subscribie/blueprints/admin/templates/admin/change_email.html:39
-#: subscribie/blueprints/admin/templates/admin/change_password.html:33
-msgid "Save"
-msgstr "Speichern"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:46
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:66
-msgid "Need some help"
-msgstr "Hilfe benötigen"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:47
-#, fuzzy
-msgid ""
-"You can paste any code you want here, and it will be\n"
-"                injected onto every page of your shop"
-msgstr ""
-"Sie können hier jeden beliebigen Code einfügen, der auf jeder Seite Ihres"
-" Shops eingefügt wird"
-
-#: subscribie/blueprints/admin/templates/admin/add_custom_code.html:49
-#, fuzzy
-msgid ""
-"Make sure you only paste code you trust, and that \n"
-"                your site still works after you save"
-msgstr ""
-"Stellen Sie sicher, dass Sie nur Code einfügen, dem Sie vertrauen, und "
-"dass Ihre Website nach dem Speichern noch funktioniert"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:2
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
-msgid "Dashboard"
-msgstr "Armaturenbrett"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:6
-msgid "Create a new plan"
-msgstr "Erstellen Sie einen neuen Plan"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:12
-msgid "Add new plan"
-msgstr "Neuen Tarif hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:23
-msgid "something is missing. Please take a look at"
-msgstr "etwas fehlt. Bitte werfen Sie einen Blick auf"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:45
-msgid "Plan or Product name"
-msgstr "Plan oder Produktname"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:47
-msgid "What are you selling on subscription"
-msgstr "Was verkaufen Sie im Abonnement"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:48
-msgid ""
-"You can also sell one-off items which don't have a subscription and only "
-"have a one-off charge"
-msgstr ""
-"Sie können auch Einzelstücke verkaufen, die kein Abonnement haben und nur"
-" eine einmalige Gebühr haben"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:53
-msgid "Plan name is required"
-msgstr "Planname ist erforderlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:58
-msgid "Plan selling points"
-msgstr ""
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:74
-msgid "Please provide a third selling point"
-msgstr "Verkaufsargumente planen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:81
-msgid "Product image"
-msgstr "Produktbild"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:82
-msgid "Supported image upload extensions"
-msgstr "Unterstützte Bild-Upload-Erweiterungen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:93
-msgid "Recurring Charge"
-msgstr "Wiederkehrende Gebühr"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:100
-msgid "Recurring Amount"
-msgstr "Wiederkehrender Betrag"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:111
-msgid "Interval Unit"
-msgstr "Intervalleinheit"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:114
-#, fuzzy
-msgid "Monthly"
-msgstr "monatlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:115
-#, fuzzy
-msgid "Weekly"
-msgstr "wöchentlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:116
-#, fuzzy
-msgid "Yearly"
-msgstr "jährlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:122
-msgid "Days before the first charge"
-msgstr "Tage vor der ersten Aufladung\""
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:125
-msgid ""
-"\"Cooling off period\" before the first charge happens. Leave 0 to charge"
-" the customer as soon as possible"
-msgstr ""
-"\"Bedenkzeit\" bevor der erste Ladevorgang erfolgt. Lassen Sie 0, um den "
-"Kunden so schnell wie möglich zu belasten "
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:130
-msgid "Free trial period number of days"
-msgstr "Kostenlose Probezeit in Tagen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:133
-#, fuzzy
-msgid ""
-"If you want to offer a free trial, simply put the number of days and the "
-"plan\n"
-"                will only start charging after the trial has ended. When "
-"creating a subscription with a\n"
-"                trial period, no payment is taken from the customer"
-msgstr ""
-"Wenn Sie eine kostenlose Testversion anbieten möchten, geben Sie einfach "
-"die Anzahl der Tage ein und der Plan wird erst nach Ablauf der "
-"Testversion berechnet. Beim Erstellen eines Abonnements mit Probezeitraum"
-" wird dem Kunden keine Zahlung abgenommen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:136
-msgid "An immediate invoice is still created, but for a zero amount"
-msgstr "Es wird trotzdem eine Sofortrechnung erstellt, jedoch mit einem Nullbetrag"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:148
-msgid "Add upfront charge"
-msgstr "Vorabgebühr hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:152
-msgid "Upfront price"
-msgstr "Kosten im Voraus"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:169
-msgid "Plan Description"
-msgstr "Plan hat Optionen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:172
-msgid "Add a paragraph describing the plan (optional)"
-msgstr "Fügen Sie einen Absatz hinzu, der den Plan beschreibt (optional)"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:177
-msgid "Plan description"
-msgstr "Plan hat Optionen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:180
-msgid "Enter a description about the plan"
-msgstr "Geben Sie eine Beschreibung des Plans ein"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:189
-msgid "Require customer note"
-msgstr "Kundenhinweis erforderlich"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:192
-msgid "Useful for plan personalisation, customisation or variations"
-msgstr "Nützlich für die Personalisierung, Anpassung oder Variation des Plans"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:197
-msgid "Message for the customer"
-msgstr "Nachricht für den Kunden"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:200
-msgid "This message will be shown during checkout to the customer"
-msgstr "Diese Nachricht wird dem Kunden während des Bestellvorgangs angezeigt"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:206
-msgid "Position"
-msgstr "Optionen"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:212
-msgid "Control the order in which plans appear. Lower number appears first"
-msgstr ""
-"Steuern Sie die Reihenfolge, in der Pläne angezeigt werden. Die "
-"niedrigere Zahl erscheint zuerst"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:218
-msgid "Private"
-msgstr "Private Seiten"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:221
-msgid ""
-"Want to create a private plan? Mark a plan as private, and it won't "
-"appear on the homepage"
-msgstr ""
-"Möchten Sie einen privaten Plan erstellen? Wenn Sie einen Plan als privat"
-" markieren, wird er nicht auf der Startseite angezeigt"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:222
-msgid ""
-"Then, you can send a link to your customer(s) to sign-up to the private "
-"plan"
-msgstr ""
-"Dann können Sie einen Link an Ihre Kunden senden, um sich für den "
-"privaten Plan anzumelden"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:229
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:238
-msgid "Cancel at"
-msgstr "Abbrechen um"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:232
-#, fuzzy
-msgid ""
-"Cancel all subscriptions to this plan at this date / time. This is useful"
-" if you run a\n"
-"                    membership style organisation with seasons (such as a"
-" Football club)"
-msgstr ""
-"Kündigen Sie alle Abonnements für diesen Plan zu diesem Datum / dieser "
-"Uhrzeit. Dies ist nützlich, wenn Sie eine Organisation im "
-"Mitgliedschaftsstil mit Saisons betreiben (z. B. einen Fußballverein)."
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:237
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:241
-msgid "Date"
-msgstr "Datum"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:237
-msgid "time to"
-msgstr "Zeit zum"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:241
-msgid "June"
-msgstr "Juni"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:245
-msgid "Time"
-msgstr "Zeit"
-
-#: subscribie/blueprints/admin/templates/admin/add_plan.html:245
-msgid "midnight"
-msgstr "Mitternacht"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:2
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:6
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:12
-msgid "Add Shop Admin"
-msgstr "Shop-Admin hinzufügen"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:22
-msgid "Add Another Shop Admin"
-msgstr "Fügen Sie einen weiteren Shop-Administrator hinzu"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:23
-msgid "Add someone else to manage your shop"
-msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:24
-msgid "This will allow them to login an manage your shop too"
-msgstr "Dadurch können sie sich auch anmelden und Ihren Shop verwalten"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:29
-#: subscribie/blueprints/checkout/templates/new_customer.html:54
-msgid "Email"
-msgstr "täglich"
-
-#: subscribie/blueprints/admin/templates/admin/add_shop_admin.html:35
-#: subscribie/blueprints/admin/templates/admin/change_password.html:28
-msgid "Password"
-msgstr "Passwort"
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:2
-#, fuzzy
-msgid "Cancel a subscription"
-msgstr "Kein Abonnement"
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:6
-#, fuzzy
-msgid "Confirmation"
-msgstr "Bestellinformationen"
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:19
-msgid "Are you sure"
-msgstr "Bist du dir sicher"
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:20
-msgid ""
-"Once cancelled, a customer must re-subscribe to a plan if they want to "
-"continue. Another option is to \"pause\" the subscription instead"
-msgstr ""
-"Nach der Kündigung muss ein Kunde einen Plan erneut abonnieren, wenn er "
-"fortfahren möchte. Eine andere Möglichkeit besteht darin, das Abonnement "
-"stattdessen zu \"pausieren\"."
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:25
-msgid "Yes"
-msgstr "Ja"
-
-#: subscribie/blueprints/admin/templates/admin/cancel_subscription.html:29
-msgid "No"
-msgstr "Nein"
-
-#: subscribie/blueprints/admin/templates/admin/change_email.html:2
-#: subscribie/blueprints/admin/templates/admin/change_email.html:6
-#: subscribie/blueprints/admin/templates/admin/change_email.html:12
-#: subscribie/blueprints/admin/templates/admin/change_email.html:22
-msgid "Change Email"
-msgstr "Ändern Sie die E-Mail"
-
-#: subscribie/blueprints/admin/templates/admin/change_email.html:23
-msgid "Enter your new email below"
-msgstr "Fügen Sie Ihren Code unten ein"
-
-#: subscribie/blueprints/admin/templates/admin/change_email.html:28
-msgid "Current email"
-msgstr "Aktuelle E-Mail"
-
-#: subscribie/blueprints/admin/templates/admin/change_email.html:34
-msgid "New email"
-msgstr "Neue e-mail"
-
-#: subscribie/blueprints/admin/templates/admin/change_password.html:2
-#: subscribie/blueprints/admin/templates/admin/change_password.html:6
-#: subscribie/blueprints/admin/templates/admin/change_password.html:12
-#: subscribie/blueprints/admin/templates/admin/change_password.html:22
-msgid "Change Password"
-msgstr "Passwort"
-
-#: subscribie/blueprints/admin/templates/admin/change_password.html:23
-msgid "Enter your new password below"
-msgstr "Fügen Sie Ihren Code unten ein"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:2
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:6
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:12
-msgid "Connect Google Tag Manager"
-msgstr "Verbinden Google Tag Manager"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:22
-#, fuzzy
-msgid "Connect Google Tag Manager to your shop"
-msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:29
-msgid "Status"
-msgstr "Status"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:31
-msgid "Google Tag Manager is already connected"
-msgstr "Google Tag Manager ist bereits verbunden"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:33
-msgid "Google Tag Manager isn't yet configured, use the form below"
-msgstr "Google Tag Manager noch nicht konfiguriert ist, verwenden Sie das unten stehende Formular"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:37
-msgid "To start tracking using Google Tag manager, copy"
-msgstr "Um mit dem Tracking zu beginnen Google Tag manager, Kopieren"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:37
-msgid "paste your"
-msgstr "fügen Sie Ihre ein"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:38
-msgid "container id"
-msgstr "Container-ID"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:38
-#, fuzzy
-msgid "into the box below"
-msgstr "Füllen Sie das untenstehende Formular aus"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:44
-msgid "Publishable Key"
-msgstr "Veröffentlichbarer Schlüssel"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:53
-msgid "Reconnect"
-msgstr "Verbinden Sie sich erneut"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:55
-msgid "Connect"
-msgstr "Verbinden"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:57
-msgid "Google Tag Manager"
-msgstr "Google Tag Manager"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:67
-msgid ""
-"In order to link Google Tag Manager, you must already have an account created. If you do not yet have an account"
-msgstr "Um zu verlinken Google Tag Manager, Sie müssen bereits ein Konto erstellt haben. Falls Sie noch kein Konto haben "
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:69
-msgid "register for Google Tag Manager"
-msgstr "registrieren für Google Tag Manager"
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:69
-msgid "to create one"
-msgstr "einen erstellen""
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:71
-msgid "Google Tag Manager is FREE"
-msgstr ""
-
-#: subscribie/blueprints/admin/templates/admin/connect_google_tag_manager_manually.html:72
-msgid ""
-"Subscribie does not charge you for Google Tag Manager integration, but do make sure you learn how to use it to see the benefits"
-msgstr "Subscribie berechnet Ihnen nichts Google Tag Manager Integration, aber stellen Sie sicher, dass Sie lernen, wie man es benutzt, um die Vorteile zu sehen"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
@@ -541,6 +71,10 @@ msgstr ""
 #: subscribie/blueprints/checkout/templates/new_customer.html:44
 msgid "Your Name"
 msgstr "Ihren Namen"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:54
+msgid "Email"
+msgstr "täglich"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:61
 msgid "Phone"
@@ -660,6 +194,129 @@ msgstr ""
 msgid "Subscription Builder - Success"
 msgstr "Abonnement-Builder - Erfolg"
 
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:14
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:139
+msgid "Account"
+msgstr "Konto"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:22
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:25
+msgid "Your subscriptions"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:22
+msgid "payment is pending"
+msgstr "Zahlung steht aus"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:27
+msgid "View your subscriptions"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:28
+msgid "Please contact"
+msgstr "Kontaktieren Sie bitte"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:28
+msgid "if you wish to alter your subscription"
+msgstr "wenn Sie Ihr Abonnement ändern möchten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:31
+msgid "Manage Subscriptions"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:36
+msgid "File access"
+msgstr "Dateizugriff"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:38
+msgid "Some subscriptions may give you access to files. If they do, they will appear below"
+msgstr "Einige Abonnements geben Ihnen möglicherweise Zugriff auf Dateien. Wenn dies der Fall ist, werden sie unten angezeigt"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:41
+msgid "View Files"
+msgstr "Dateien anzeigen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:46
+msgid "Private Pages Access"
+msgstr "Private Seiten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:48
+msgid "Some subscriptions may give you access to private pages"
+msgstr "Einige Abonnements geben Ihnen möglicherweise Zugriff auf private Seiten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:48
+msgid "If they do, they will appear below"
+msgstr "Wenn dies der Fall ist, werden sie unten angezeigt"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:59
+msgid "Payment Settings"
+msgstr "Zahlungseinstellungen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:60
+msgid "If you have changed banks, you can update your payment method here"
+msgstr "Wenn Sie die Bank gewechselt haben, können Sie Ihre Zahlungsmethode hier aktualisieren"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
+msgid "Current payment method"
+msgstr "Aktuelle Zahlungsmethode"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
+msgid "Card"
+msgstr "Karte"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:64
+msgid "Brand"
+msgstr "Marke"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:65
+msgid "Last four digits"
+msgstr "Die letzten vier Ziffern"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:70
+msgid "Note"
+msgstr "Notiz"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:70
+msgid "You don't need to do anything if your card has expired or you have a new card, the details are automatically updated"
+msgstr "Sie müssen nichts tun, wenn Ihre Karte abgelaufen ist oder Sie eine neue Karte haben, die Daten werden automatisch aktualisiert"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:71
+msgid "You only need to update payment details if you have changed banks or have a new card account"
+msgstr "Sie müssen die Zahlungsdaten nur aktualisieren, wenn Sie die Bank gewechselt haben oder ein neues Kartenkonto haben"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:74
+msgid "Update Payment Method"
+msgstr "Zahlungsmethode aktualisieren"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:79
+msgid "View"
+msgstr "Aussicht"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:79
+msgid "manage failed payments"
+msgstr "fehlgeschlagene Zahlungen verwalten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:81
+msgid "Failed Invoices"
+msgstr "Fehlgeschlagene Rechnungen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:2
+msgid "Login"
+msgstr "Anmeldung"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:6
+msgid "Reset your password"
+msgstr "Fügen Sie Ihren Code unten ein"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:10
+msgid "We will send you an email to reset your password"
+msgstr "Wir senden Ihnen eine E-Mail, um Ihr Passwort zurückzusetzen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:15
+msgid "Submit"
+msgstr "Einreichen"
+
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:16
 msgid "Choose plan"
 msgstr "Wählen Sie einen Plan"
@@ -703,16 +360,16 @@ msgstr "Wählen"
 msgid "Private pages"
 msgstr "Private Seiten"
 
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
+msgid "Dashboard"
+msgstr "Armaturenbrett"
+
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:135
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:143
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:177
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:179
 msgid "Logout"
 msgstr "Ausloggen"
-
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:139
-msgid "Account"
-msgstr "Konto"
 
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:148
 msgid "Subscriber Login"
@@ -839,4 +496,374 @@ msgstr ""
 
 #~ msgid "weekly"
 #~ msgstr "wöchentlich"
+
+#~ msgid "Add custom code"
+#~ msgstr "Benutzerdefinierten Code hinzufügen"
+
+#~ msgid "Shop"
+#~ msgstr "Geschäft"
+
+#~ msgid "Manage My Shop"
+#~ msgstr "Meinen Shop verwalten"
+
+#~ msgid "Add Custom Code"
+#~ msgstr "Benutzerdefinierten Code hinzufügen"
+
+#~ msgid "Add"
+#~ msgstr "Hinzufügen"
+
+#~ msgid "Inject Custom Code"
+#~ msgstr "Benutzerdefinierten Code einfügen"
+
+#~ msgid "Paste your code below"
+#~ msgstr "Fügen Sie Ihren Code unten ein"
+
+#~ msgid "You must include the script start and end tags"
+#~ msgstr "Sie müssen die Start- und End-Tags des Skripts einfügen"
+
+#~ msgid "Custom code"
+#~ msgstr "Postleitzahl"
+
+#~ msgid "Save"
+#~ msgstr "Speichern"
+
+#~ msgid "Need some help"
+#~ msgstr "Hilfe benötigen"
+
+#~ msgid ""
+#~ "You can paste any code you want here, and it will be\n"
+#~ "                injected onto every page of your shop"
+#~ msgstr ""
+#~ "Sie können hier jeden beliebigen Code"
+#~ " einfügen, der auf jeder Seite Ihres"
+#~ " Shops eingefügt wird"
+
+#~ msgid ""
+#~ "Make sure you only paste code you trust, and that \n"
+#~ "                your site still works after you save"
+#~ msgstr ""
+#~ "Stellen Sie sicher, dass Sie nur "
+#~ "Code einfügen, dem Sie vertrauen, und"
+#~ " dass Ihre Website nach dem Speichern"
+#~ " noch funktioniert"
+
+#~ msgid "Create a new plan"
+#~ msgstr "Erstellen Sie einen neuen Plan"
+
+#~ msgid "Add new plan"
+#~ msgstr "Neuen Tarif hinzufügen"
+
+#~ msgid "something is missing. Please take a look at"
+#~ msgstr "etwas fehlt. Bitte werfen Sie einen Blick auf"
+
+#~ msgid "Plan or Product name"
+#~ msgstr "Plan oder Produktname"
+
+#~ msgid "What are you selling on subscription"
+#~ msgstr "Was verkaufen Sie im Abonnement"
+
+#~ msgid ""
+#~ "You can also sell one-off items"
+#~ " which don't have a subscription and"
+#~ " only have a one-off charge"
+#~ msgstr ""
+#~ "Sie können auch Einzelstücke verkaufen, "
+#~ "die kein Abonnement haben und nur "
+#~ "eine einmalige Gebühr haben"
+
+#~ msgid "Plan name is required"
+#~ msgstr "Planname ist erforderlich"
+
+#~ msgid "Plan selling points"
+#~ msgstr "Verkaufsargumente planen"
+
+#~ msgid "Please provide a third selling point"
+#~ msgstr "Verkaufsargumente planen"
+
+#~ msgid "Product image"
+#~ msgstr "Produktbild"
+
+#~ msgid "Supported image upload extensions"
+#~ msgstr "Unterstützte Bild-Upload-Erweiterungen"
+
+#~ msgid "Recurring Charge"
+#~ msgstr "Wiederkehrende Gebühr"
+
+#~ msgid "Recurring Amount"
+#~ msgstr "Wiederkehrender Betrag"
+
+#~ msgid "Interval Unit"
+#~ msgstr "Intervalleinheit"
+
+#~ msgid "Monthly"
+#~ msgstr "monatlich"
+
+#~ msgid "Weekly"
+#~ msgstr "wöchentlich"
+
+#~ msgid "Yearly"
+#~ msgstr "jährlich"
+
+#~ msgid "Days before the first charge"
+#~ msgstr "Tage vor der ersten Aufladung\""
+
+#~ msgid ""
+#~ "\"Cooling off period\" before the first"
+#~ " charge happens. Leave 0 to charge"
+#~ " the customer as soon as possible"
+#~ msgstr ""
+#~ "\"Bedenkzeit\" bevor der erste Ladevorgang "
+#~ "erfolgt. Lassen Sie 0, um den "
+#~ "Kunden so schnell wie möglich zu "
+#~ "belasten "
+
+#~ msgid "Free trial period number of days"
+#~ msgstr "Kostenlose Probezeit in Tagen"
+
+#~ msgid ""
+#~ "If you want to offer a free "
+#~ "trial, simply put the number of "
+#~ "days and the plan\n"
+#~ "                will only start charging "
+#~ "after the trial has ended. When "
+#~ "creating a subscription with a\n"
+#~ "                trial period, no payment is taken from the customer"
+#~ msgstr ""
+#~ "Wenn Sie eine kostenlose Testversion "
+#~ "anbieten möchten, geben Sie einfach die"
+#~ " Anzahl der Tage ein und der "
+#~ "Plan wird erst nach Ablauf der "
+#~ "Testversion berechnet. Beim Erstellen eines"
+#~ " Abonnements mit Probezeitraum wird dem "
+#~ "Kunden keine Zahlung abgenommen"
+
+#~ msgid "An immediate invoice is still created, but for a zero amount"
+#~ msgstr ""
+#~ "Es wird trotzdem eine Sofortrechnung "
+#~ "erstellt, jedoch mit einem Nullbetrag"
+
+#~ msgid "Add upfront charge"
+#~ msgstr "Vorabgebühr hinzufügen"
+
+#~ msgid "Upfront price"
+#~ msgstr "Kosten im Voraus"
+
+#~ msgid "Plan Description"
+#~ msgstr "Plan hat Optionen"
+
+#~ msgid "Add a paragraph describing the plan (optional)"
+#~ msgstr "Fügen Sie einen Absatz hinzu, der den Plan beschreibt (optional)"
+
+#~ msgid "Plan description"
+#~ msgstr "Plan hat Optionen"
+
+#~ msgid "Enter a description about the plan"
+#~ msgstr "Geben Sie eine Beschreibung des Plans ein"
+
+#~ msgid "Require customer note"
+#~ msgstr "Kundenhinweis erforderlich"
+
+#~ msgid "Useful for plan personalisation, customisation or variations"
+#~ msgstr "Nützlich für die Personalisierung, Anpassung oder Variation des Plans"
+
+#~ msgid "Message for the customer"
+#~ msgstr "Nachricht für den Kunden"
+
+#~ msgid "This message will be shown during checkout to the customer"
+#~ msgstr "Diese Nachricht wird dem Kunden während des Bestellvorgangs angezeigt"
+
+#~ msgid "Position"
+#~ msgstr "Optionen"
+
+#~ msgid "Control the order in which plans appear. Lower number appears first"
+#~ msgstr ""
+#~ "Steuern Sie die Reihenfolge, in der "
+#~ "Pläne angezeigt werden. Die niedrigere "
+#~ "Zahl erscheint zuerst"
+
+#~ msgid "Private"
+#~ msgstr "Private Seiten"
+
+#~ msgid ""
+#~ "Want to create a private plan? "
+#~ "Mark a plan as private, and it "
+#~ "won't appear on the homepage"
+#~ msgstr ""
+#~ "Möchten Sie einen privaten Plan "
+#~ "erstellen? Wenn Sie einen Plan als "
+#~ "privat markieren, wird er nicht auf "
+#~ "der Startseite angezeigt"
+
+#~ msgid ""
+#~ "Then, you can send a link to "
+#~ "your customer(s) to sign-up to the"
+#~ " private plan"
+#~ msgstr ""
+#~ "Dann können Sie einen Link an Ihre"
+#~ " Kunden senden, um sich für den "
+#~ "privaten Plan anzumelden"
+
+#~ msgid "Cancel at"
+#~ msgstr "Abbrechen um"
+
+#~ msgid ""
+#~ "Cancel all subscriptions to this plan"
+#~ " at this date / time. This is"
+#~ " useful if you run a\n"
+#~ "                    membership style organisation"
+#~ " with seasons (such as a Football "
+#~ "club)"
+#~ msgstr ""
+#~ "Kündigen Sie alle Abonnements für diesen"
+#~ " Plan zu diesem Datum / dieser "
+#~ "Uhrzeit. Dies ist nützlich, wenn Sie "
+#~ "eine Organisation im Mitgliedschaftsstil mit"
+#~ " Saisons betreiben (z. B. einen "
+#~ "Fußballverein)."
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "time to"
+#~ msgstr "Zeit zum"
+
+#~ msgid "June"
+#~ msgstr "Juni"
+
+#~ msgid "Time"
+#~ msgstr "Zeit"
+
+#~ msgid "midnight"
+#~ msgstr "Mitternacht"
+
+#~ msgid "Add Shop Admin"
+#~ msgstr "Shop-Admin hinzufügen"
+
+#~ msgid "Add Another Shop Admin"
+#~ msgstr "Fügen Sie einen weiteren Shop-Administrator hinzu"
+
+#~ msgid "Add someone else to manage your shop"
+#~ msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
+
+#~ msgid "This will allow them to login an manage your shop too"
+#~ msgstr "Dadurch können sie sich auch anmelden und Ihren Shop verwalten"
+
+#~ msgid "Password"
+#~ msgstr "Passwort"
+
+#~ msgid "Cancel a subscription"
+#~ msgstr "Kein Abonnement"
+
+#~ msgid "Confirmation"
+#~ msgstr "Bestellinformationen"
+
+#~ msgid "Are you sure"
+#~ msgstr "Bist du dir sicher"
+
+#~ msgid ""
+#~ "Once cancelled, a customer must re-"
+#~ "subscribe to a plan if they want"
+#~ " to continue. Another option is to"
+#~ " \"pause\" the subscription instead"
+#~ msgstr ""
+#~ "Nach der Kündigung muss ein Kunde "
+#~ "einen Plan erneut abonnieren, wenn er"
+#~ " fortfahren möchte. Eine andere Möglichkeit"
+#~ " besteht darin, das Abonnement stattdessen"
+#~ " zu \"pausieren\"."
+
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#~ msgid "No"
+#~ msgstr "Nein"
+
+#~ msgid "Change Email"
+#~ msgstr "Ändern Sie die E-Mail"
+
+#~ msgid "Enter your new email below"
+#~ msgstr "Fügen Sie Ihren Code unten ein"
+
+#~ msgid "Current email"
+#~ msgstr "Aktuelle E-Mail"
+
+#~ msgid "New email"
+#~ msgstr "Neue e-mail"
+
+#~ msgid "Change Password"
+#~ msgstr "Passwort"
+
+#~ msgid "Connect Google Tag Manager"
+#~ msgstr "Verbinden Google Tag Manager"
+
+#~ msgid "Connect Google Tag Manager to your shop"
+#~ msgstr "Fügen Sie eine andere Person hinzu, die Ihren Shop verwaltet"
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "Google Tag Manager is already connected"
+#~ msgstr "Google Tag Manager ist bereits verbunden"
+
+#~ msgid "Google Tag Manager isn't yet configured, use the form below"
+#~ msgstr ""
+#~ "Google Tag Manager noch nicht "
+#~ "konfiguriert ist, verwenden Sie das "
+#~ "unten stehende Formular"
+
+#~ msgid "To start tracking using Google Tag manager, copy"
+#~ msgstr "Um mit dem Tracking zu beginnen Google Tag manager, Kopieren"
+
+#~ msgid "paste your"
+#~ msgstr "fügen Sie Ihre ein"
+
+#~ msgid "container id"
+#~ msgstr "Container-ID"
+
+#~ msgid "into the box below"
+#~ msgstr "Füllen Sie das untenstehende Formular aus"
+
+#~ msgid "Publishable Key"
+#~ msgstr "Veröffentlichbarer Schlüssel"
+
+#~ msgid "Reconnect"
+#~ msgstr "Verbinden Sie sich erneut"
+
+#~ msgid "Connect"
+#~ msgstr "Verbinden"
+
+#~ msgid "Google Tag Manager"
+#~ msgstr "Google Tag Manager"
+
+#~ msgid ""
+#~ "In order to link Google Tag "
+#~ "Manager, you must already have an "
+#~ "account created. If you do not yet"
+#~ " have an account"
+#~ msgstr ""
+#~ "Um zu verlinken Google Tag Manager, "
+#~ "Sie müssen bereits ein Konto erstellt"
+#~ " haben. Falls Sie noch kein Konto "
+#~ "haben "
+
+#~ msgid "register for Google Tag Manager"
+#~ msgstr "registrieren für Google Tag Manager"
+
+#~ msgid "to create one"
+#~ msgstr "einen erstellen\""
+
+#~ msgid "Google Tag Manager is FREE"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Subscribie does not charge you for "
+#~ "Google Tag Manager integration, but do"
+#~ " make sure you learn how to use"
+#~ " it to see the benefits"
+#~ msgstr ""
+#~ "Subscribie berechnet Ihnen nichts Google "
+#~ "Tag Manager Integration, aber stellen "
+#~ "Sie sicher, dass Sie lernen, wie "
+#~ "man es benutzt, um die Vorteile zu"
+#~ " sehen"
 
