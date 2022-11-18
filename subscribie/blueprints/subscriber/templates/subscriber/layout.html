@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang=en>
+<head>
+<title>{% block title %}{% endblock %} | {{ company['name'] }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='style.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='custom_style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
+
+{% if integration.google_tag_manager_container_id
+   and integration.google_tag_manager_active
+%}
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',
+    '{{ integration.google_tag_manager_container_id }}');
+    </script>
+    <!-- End Google Tag Manager -->
+{% endif %}
+
+{% if integration.tawk_property_id
+   and integration.tawk_active
+%}
+    <!-- Tawk Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var
+        s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/{{ integration.tawk_property_id }}/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+    <!-- End Tawk Chat -->
+{% endif %}
+
+<meta name="theme-color" content="#1e88e5">
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet"/>
+</head>
+
+<body>
+
+  <nav class="jumbotron jumbotron-fluid text-light kcBlue">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item text-light h2" href="/">
+          {% if company['logo'] %}
+            <img src="/static/{{ company['logo'] }}" alt="{{ company['name'] }}">
+          {% else %}
+            {{ company['name'] }}
+          {% endif %}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="site-content">
+    <!-- {% block top %}
+    {% endblock top %}
+    <section class="hero kcBlue">
+      <div class="hero-body">
+        <div class="container" style="z-index:9999">
+            {% block hero %}{% endblock %}
+        </div>
+      </div>
+    </section> -->
+    <main>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="card alert-primary my-3 mx-3 px-3 py-2" role="alert">
+            <h4 class="alert-heading">{{ _('Notification') }}</h4>
+            <hr>
+            <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block body %}{% endblock %}
+    </main>
+
+  </div>
+
+  <footer class="container-fluid bg-light text-center py-5" >
+    <p> {{ _('By') }} <a href="/">{{ company['name'] }}</a>. </p>
+    <p> {{ _('Made possible with') }} <a href="https://subscriptionwebsitebuilder.co.uk" title="Karma Subscription Website Builder">Subscription Website Builder</a> in Newcastle upon Tyne.</p>
+
+    {% if g.user %}
+      <a class="nav-link" href="/auth/logout">{{ _('Logout') }}</a>
+    {% elif g.subscriber %}
+      <a class="nav-link" href="/account/logout">{{ _('Logout') }}</a>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">{{ _('Shop owner login') }}</a>
+      {{ _('or') }} 
+      <a href="{{ url_for('subscriber.login') }}">{{ _('Subscriber Login') }}</a>
+    {% endif %}
+    <br />
+    <a href="#" class="btn btn-outline-secondary mt-3">{{ _('Scroll back to top') }}</a>
+  </footer>
+
+  <script src="{{ url_for('admin.static', filename='js/app.js') }}"></script>
+
+  <!-- plan add/edit validation -->
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+              document.getElementById('save').disabled=false;
+              document.getElementById('error').textContent = "Please check for errors above";
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+
+    function handlePlansForm(e) {
+      // Remove hidden subscription inputs if subscription is checked
+      elms = document.querySelectorAll('.subscription-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with subscription=no
+        if (document.getElementById('subscription-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+      // Remove hidden instant_payment inputs if instant_payment is checked
+      elms = document.querySelectorAll('.instant_payment-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with instant_payment=no
+        if (document.getElementById('instant_payment-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+      // Remove hidden note_to_seller_required inputs if note_to_seller_required is checked
+      elms = document.querySelectorAll('.note_to_seller_required-check');
+      for (i=0;i<elms.length;i++) {
+        //Check if checked, disable hidden input with note_to_seller_required=no
+        if (document.getElementById('note_to_seller_required-' + elms[i].dataset.id).checked)
+        {
+          elms[i].disabled = true;
+        }
+      }
+    }
+    try {
+      form = document.getElementById('plansForm');
+      form.addEventListener('submit', handlePlansForm);
+    } catch (error) {
+      console.log(error);
+    }
+  </script>
+  <!-- end plan add/edit validation -->
+
+  <script>
+  <!-- disable on click handler -->
+  elements = document.querySelectorAll('button.disable-on-click');
+
+  function disableElement(e) {
+    window.setTimeout(enableElement, 10000, e);
+    if (e.target.closest('form') !== null) {
+      //If button click was inside a form, submit the form.
+      e.target.closest('form').submit();
+    }
+  }
+
+  function enableElement(e) {
+    e.target.disabled = false;
+  }
+
+  for (var i=0;i<elements.length;i++) {
+    elements[i].addEventListener('click', disableElement);
+  }
+  </script>
+  <!-- end disable-on-click handler -->
+
+  <!-- Bootstrap jQuery scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+
+</html>
