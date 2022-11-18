@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-18 16:33-0400\n"
+"POT-Creation-Date: 2022-11-18 17:02-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -133,6 +133,7 @@ msgstr "Kosten im Voraus"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:136
 #: subscribie/blueprints/checkout/templates/order_summary.html:62
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:44
 msgid "Price"
 msgstr "Preis"
 
@@ -197,6 +198,7 @@ msgstr "Abonnement-Builder - Erfolg"
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:2
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:14
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:2
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:139
 msgid "Account"
 msgstr "Konto"
@@ -345,7 +347,9 @@ msgstr "Hochgeladene Dateien"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:19
 msgid "Files listed here will be available to your subscribers when they login"
-msgstr "Die hier aufgelisteten Dateien stehen Ihren Abonnenten zur Verfügung, wenn sie sich anmelden"
+msgstr ""
+"Die hier aufgelisteten Dateien stehen Ihren Abonnenten zur Verfügung, "
+"wenn sie sich anmelden"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:27
 #, fuzzy
@@ -375,14 +379,185 @@ msgid "Change password"
 msgstr "Passwort ändern"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:6
-#, fuzzy
 msgid "Set a new password"
 msgstr "Fügen Sie Ihren Code unten ein"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:12
-#, fuzzy
 msgid "Please choose a new password"
 msgstr "Bitte wählen Sie eine davon aus"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:11
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:19
+msgid "Failing Payments"
+msgstr "fehlgeschlagene Zahlungen verwalten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+msgid "A \"failed invoice\" means that all"
+msgstr "Eine \"fehlgeschlagene Rechnung\" bedeutet, dass alle"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
+msgid "automatic"
+msgstr "automatisch"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+msgid ""
+"payment collection attemps for a given invoice have failed, and there "
+"will be no further"
+msgstr ""
+"Zahlungseinzugsversuche für eine bestimmte Rechnung sind fehlgeschlagen "
+"und es werden keine weiteren Versuche unternommen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
+msgid "payment collections for that invoices"
+msgstr "Zahlungseinzüge für diese Rechnungen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:25
+msgid "Please note there may still be manual attempts made to collect the payment"
+msgstr ""
+"Bitte beachten Sie, dass möglicherweise noch manuelle Versuche "
+"unternommen werden, die Zahlung einzuziehen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:34
+msgid "Action"
+msgstr "Optionen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:35
+msgid "Amount"
+msgstr "monatlich"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:36
+msgid "Charge Date"
+msgstr "Belastungsdatum"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:37
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:58
+msgid "Status"
+msgstr "Status"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:38
+msgid "Charge attempts"
+msgstr "Ladeversuche"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:39
+#, fuzzy
+msgid "Next payment attempt"
+msgstr "Aktuelle Zahlungsmethode"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:40
+msgid "Decline code"
+msgstr "Code ablehnen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:49
+msgid "Never"
+msgstr "Niemals"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:11
+msgid "Subscriptions"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:10
+msgid "My Account"
+msgstr "Konto"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:17
+#, fuzzy
+msgid "Your Subscriptions"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:22
+msgid "Title"
+msgstr "Titel"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:28
+#, fuzzy
+msgid "Chosen Options"
+msgstr "Siehe Wahlmöglichkeiten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:36
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:2
+#, fuzzy
+msgid "Update Choices"
+msgstr "Schöne Wahl"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:40
+#, fuzzy
+msgid "Subscription ID"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:41
+msgid "Date started"
+msgstr "Datum gestartet"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:74
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
+msgid "One-off"
+msgstr "Einmal"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
+#, fuzzy
+msgid "Not a subscription"
+msgstr "Kein Abonnement"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:50
+msgid "Sell price"
+msgstr "Verkaufspreis"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:55
+msgid "No up-front fee"
+msgstr "Keine Vorauszahlung"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:62
+msgid "Paid"
+msgstr "Bezahlt"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:66
+#, fuzzy
+msgid "Automatically Cancels at"
+msgstr "Automatisches Abbrechen an"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:74
+#, fuzzy
+msgid "Order Note"
+msgstr "Bestellung ausgeführt"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:78
+msgid "No note was given"
+msgstr "Es wurde kein Hinweis gegeben"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:84
+#, fuzzy
+msgid "Details"
+msgstr "Mehr details"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:9
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:10
+msgid "Choose your options"
+msgstr "Siehe Wahlmöglichkeiten"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:11
+msgid "Your"
+msgstr "Dein"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:11
+#, fuzzy
+msgid "plan has the following options"
+msgstr "Plan hat Optionen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:70
+msgid "options"
+msgstr "Optionen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
+#, fuzzy
+msgid "choose one"
+msgstr "Wählen Sie einen Plan"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:16
 msgid "Choose plan"
@@ -392,11 +567,6 @@ msgstr "Wählen Sie einen Plan"
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:20
 msgid "More details"
 msgstr "Mehr details"
-
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:74
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
-msgid "One-off"
-msgstr "Einmal"
 
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:76
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:49
@@ -476,10 +646,6 @@ msgstr "Zurück nach oben scrollen"
 msgid "Country"
 msgstr "Land"
 
-#: subscribie/themes/theme-jesmond/jesmond/set_options.html:10
-msgid "Choose your options"
-msgstr "Siehe Wahlmöglichkeiten"
-
 #: subscribie/themes/theme-jesmond/jesmond/set_options.html:28
 msgid "The"
 msgstr "Das"
@@ -495,11 +661,6 @@ msgstr "Siehe Wahlmöglichkeiten"
 #: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
 msgid "has"
 msgstr "hat"
-
-#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:70
-msgid "options"
-msgstr "Optionen"
 
 #: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
 msgid "Please choose one of them"
