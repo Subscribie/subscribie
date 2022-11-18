@@ -804,7 +804,29 @@ def delete_document():
 @admin.route("/assign-plan-to-document/<document_id>", methods=["GET", "POST"])
 @login_required
 def document_assign_plan(document_id):
-    pass
+    document = Document.query.get(document_id)
+    plans = Plan.query.filter_by(archived=0)
+
+    if request.method == "POST":
+        # If no plans selected, remove all plan associations from document
+        if len(request.form.getlist("assign")) == 0:
+            flash(f"Document '{document.name}' is now associated with zero plans.")
+            for plan in document.plans:
+                if document in plan.documents:
+                    document.plans.remove(plan)
+        # Assign any selected plans to to document
+        for plan_id in request.form.getlist("assign"):
+            plan = Plan.query.get(plan_id)
+            plan.documents.append(document)
+            flash(
+                f"Plan '{plan.title}' has been associated with Document '{document.name}'"  # noqa: E501
+            )
+        database.session.commit()
+        return redirect(url_for("admin.document_assign_plan", document_id=document_id))
+
+    return render_template(
+        "admin/documents/document_assign_plan.html", document=document, plans=plans
+    )
 
 
 @admin.route("/list-categories", methods=["get"])
