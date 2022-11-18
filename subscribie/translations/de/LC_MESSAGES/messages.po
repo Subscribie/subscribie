@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-18 17:10-0400\n"
+"POT-Creation-Date: 2022-11-18 17:35-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -120,7 +120,6 @@ msgstr "Tage frei"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:129
 #: subscribie/blueprints/checkout/templates/order_summary.html:51
-#, fuzzy
 msgid "then"
 msgstr "Dann"
 
@@ -370,7 +369,6 @@ msgid "Shop owner login"
 msgstr "Shop-Besitzer-Login"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:106
-#, fuzzy
 msgid "or"
 msgstr "Dein"
 
@@ -402,7 +400,6 @@ msgstr ""
 "wenn sie sich anmelden"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:27
-#, fuzzy
 msgid "File name"
 msgstr "Dateizugriff"
 
@@ -411,7 +408,6 @@ msgid "Created at"
 msgstr "Hergestellt in"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/login.html:6
-#, fuzzy
 msgid "Customer Login"
 msgstr "Abonnenten-Login"
 
@@ -420,7 +416,6 @@ msgid "Sign In"
 msgstr "Einloggen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/login.html:18
-#, fuzzy
 msgid "Forgot your password"
 msgstr "Fügen Sie Ihren Code unten ein"
 
@@ -491,7 +486,6 @@ msgid "Charge attempts"
 msgstr "Ladeversuche"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:39
-#, fuzzy
 msgid "Next payment attempt"
 msgstr "Aktuelle Zahlungsmethode"
 
@@ -514,7 +508,6 @@ msgid "My Account"
 msgstr "Konto"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:17
-#, fuzzy
 msgid "Your Subscriptions"
 msgstr "Kein Abonnement"
 
@@ -523,18 +516,15 @@ msgid "Title"
 msgstr "Titel"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:28
-#, fuzzy
 msgid "Chosen Options"
 msgstr "Siehe Wahlmöglichkeiten"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:36
 #: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:2
-#, fuzzy
 msgid "Update Choices"
 msgstr "Schöne Wahl"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:40
-#, fuzzy
 msgid "Subscription ID"
 msgstr "Kein Abonnement"
 
@@ -549,7 +539,6 @@ msgid "One-off"
 msgstr "Einmal"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
-#, fuzzy
 msgid "Not a subscription"
 msgstr "Kein Abonnement"
 
@@ -566,12 +555,10 @@ msgid "Paid"
 msgstr "Bezahlt"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:66
-#, fuzzy
 msgid "Automatically Cancels at"
 msgstr "Automatisches Abbrechen an"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:74
-#, fuzzy
 msgid "Order Note"
 msgstr "Bestellung ausgeführt"
 
@@ -580,7 +567,6 @@ msgid "No note was given"
 msgstr "Es wurde kein Hinweis gegeben"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:84
-#, fuzzy
 msgid "Details"
 msgstr "Mehr details"
 
@@ -594,7 +580,6 @@ msgid "Your"
 msgstr "Dein"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:11
-#, fuzzy
 msgid "plan has the following options"
 msgstr "Plan hat Optionen"
 
@@ -605,7 +590,6 @@ msgid "options"
 msgstr "Optionen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
-#, fuzzy
 msgid "choose one"
 msgstr "Wählen Sie einen Plan"
 
