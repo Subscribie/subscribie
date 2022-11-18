@@ -266,7 +266,8 @@ def custom_page(path):
     """
     try:
         rtemplate = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"]))
+            extensions=["jinja2.ext.i18n"],
+            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"])),
         ).from_string(page_header + body + page_footer)
     except jinja2.exceptions.TemplateAssertionError as e:
         log.error(f"Error updating custom page: {e}")
