@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-18 17:02-0400\n"
+"POT-Creation-Date: 2022-11-18 17:10-0400\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -336,6 +336,56 @@ msgstr "Wir senden Ihnen eine E-Mail, um Ihr Passwort zurückzusetzen"
 msgid "Submit"
 msgstr "Einreichen"
 
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:81
+msgid "Notification"
+msgstr "Benachrichtigung"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:97
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:70
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:173
+msgid "By"
+msgstr "Durch"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:98
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "Made possible with"
+msgstr "Möglich gemacht mit"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:101
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:103
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:135
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:143
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:105
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:72
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:181
+msgid "Shop owner login"
+msgstr "Shop-Besitzer-Login"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:106
+#, fuzzy
+msgid "or"
+msgstr "Dein"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:107
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:148
+msgid "Subscriber Login"
+msgstr "Abonnenten-Login"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:110
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:74
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:187
+msgid "Scroll back to top"
+msgstr "Zurück nach oben scrollen"
+
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:6
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:10
 msgid "Uploaded files"
@@ -601,23 +651,6 @@ msgstr "Private Seiten"
 msgid "Dashboard"
 msgstr "Armaturenbrett"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:135
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:143
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
-msgid "Logout"
-msgstr "Ausloggen"
-
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:148
-msgid "Subscriber Login"
-msgstr "Abonnenten-Login"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:70
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:173
-msgid "By"
-msgstr "Durch"
-
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:174
 msgid "Collect payments easily with Subscribie"
 msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
@@ -626,21 +659,9 @@ msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
 msgid "Made in"
 msgstr "Hergestellt in"
 
-#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:72
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:181
-msgid "Shop owner login"
-msgstr "Shop-Besitzer-Login"
-
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:183
 msgid "Subscriber login"
 msgstr "Abonnenten-Login"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:74
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:187
-msgid "Scroll back to top"
-msgstr "Zurück nach oben scrollen"
 
 #: subscribie/themes/theme-jesmond/jesmond/layout.html:191
 msgid "Country"
@@ -687,11 +708,6 @@ msgstr ""
 "Möglicherweise sind Sie einem toten, alten oder defekten Link gefolgt, "
 "entschuldigen Sie bitte, klicken Sie auf die Schaltfläche oben rechts, um"
 " nach Hause zurückzukehren und es erneut zu versuchen"
-
-#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
-msgid "Made possible with"
-msgstr "Möglich gemacht mit"
 
 #: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
