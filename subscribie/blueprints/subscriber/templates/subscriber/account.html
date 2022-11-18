@@ -1,5 +1,5 @@
 {% extends "admin/layout.html" %}
-{% block title %} Account - {{ company.name }} {% endblock %}
+{% block title %} {{ _('Account') }} - {{ company.name }} {% endblock %}
 
 {% block body %}
 <script src="https://js.stripe.com/v3/"></script>
@@ -11,7 +11,7 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 
 <div class="container">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Account</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Account') }}</li>
   </ul>
 </div>
 
@@ -19,33 +19,33 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 
   <div class="card px-3 py-3 my-3">
     {% if bad_invoices  %}
-    <h3 class="card-title">Your subscriptions <a style="color: red" href="{{ url_for('subscriber.subscriber_view_failed_invoices')}}"> payment is pending </a></h3>
+    <h3 class="card-title">{{ _('Your subscriptions') }} <a style="color: red" href="{{ url_for('subscriber.subscriber_view_failed_invoices')}}">{{ _('payment is pending') }} </a></h3>
     {% else %}
 
-    <h3 class="card-title">Your subscriptions</h3>
+    <h3 class="card-title">{{ _('Your subscriptions') }}</h3>
     {% endif %}
-    <p>View your subscriptions.</p>
-    <p>Please contact {{ company.name }} if you wish to alter your subscription.</p>
+    <p>{{ _('View your subscriptions') }}.</p>
+    <p>{{ _('Please contact') }} {{ company.name }} {{ _('if you wish to alter your subscription') }}.</p>
       <a class="btn btn-success mb-3" 
           href="{{ url_for('subscriber.subscriptions') }}">
-        Manage Subscriptions
+        {{ _('Manage Subscriptions') }}
       </a>
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">File access</h3>
+    <h3 class="card-title">{{ _('File access') }}</h3>
 
-    <p>Some subscriptions may give you access to files. If they do, they will appear below</p>
+    <p>{{ _('Some subscriptions may give you access to files. If they do, they will appear below') }}</p>
       <a class="btn btn-success mb-3" 
           href="{{ url_for('subscriber.list_files') }}">
-        View Files
+        {{ _('View Files') }}
       </a>
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Private Pages Access</h3>
+    <h3 class="card-title">{{ _('Private Pages Access') }}</h3>
 
-    <p>Some subscriptions may give you access to private pages. If they do, they will appear below</p>
+    <p>{{ _('Some subscriptions may give you access to private pages') }}. {{ _('If they do, they will appear below') }}</p>
     <ul>
       {% for page in pages if page.private %}
       <li><a href="{{ url_for('views.custom_page', path=page.path) }}">{{ page.page_name }}</a></li>
@@ -56,32 +56,29 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 {% if stripe_session %}
 {# can only update payment settings if has a subscription and stripe session #}
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Payment Settings</h3>
-    <p>If you have changed banks, you can update your payment
-       method here.<p>
+    <h3 class="card-title">{{ _('Payment Settings') }}</h3>
+    <p>{{ _('If you have changed banks, you can update your payment method here') }}.<p>
     {% if stripe_default_payment_method %}
-      <h4>Current payment method: Card</h4>
+      <h4>{{ _('Current payment method') }}: {{ _('Card') }}</h4>
       {% if stripe_default_payment_method.type == 'card' %}
-        Brand: {{ stripe_default_payment_method['card']['brand']|title }} <br />
-        Last four digits: {{ stripe_default_payment_method['card']['last4'] }}
+        {{ _('Brand') }}: {{ stripe_default_payment_method['card']['brand']|title }} <br />
+        {{ _('Last four digits') }}: {{ stripe_default_payment_method['card']['last4'] }}
       {% endif %}
     <hr />
     {% endif %}
 
-    <p><em>Note:</em> You don't need to do anything if your card has
-        expired or you have a new card, the details are automatically updated.
-        You only need to update payment details if you have changed banks or
-        have a new card account.
+    <p><em>{{ _('Note') }}:</em> {{ _("You don't need to do anything if your card has expired or you have a new card, the details are automatically updated") }}.
+        {{ _('You only need to update payment details if you have changed banks or have a new card account') }}.
     </p>
     <button id="checkout-button" class="btn btn-success mb-2 mt-2">
-      Update Payment Method
+      {{ _('Update Payment Method') }}
     </button>
 
     <hr />
 
-    <p>View &amp; manage failed payments.</p>
+    <p>{{ _('View') }} &amp; {{ _('manage failed payments') }}.</p>
       <a class="btn btn-success mb-3" href="{{ url_for("subscriber.subscriber_view_failed_invoices") }}">
-        Failed Invoices
+        {{ _('Failed Invoices') }}
       </a>
   </div>
 {% endif %}
