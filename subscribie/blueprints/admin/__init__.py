@@ -763,9 +763,11 @@ def add_document():
     if request.method == "POST":
         document_name = request.form.get("document", None)
         document_type = request.form.get("type", None)
+        document_body = request.form.get("document_body", None)
         if document_name:
             document = Document()
             document.name = document_name
+            document.body = document_body
             document.type = document_type
             database.session.add(document)
             database.session.commit()

@@ -50,6 +50,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
           </thead>
         {% for document in documents %}
           <tr>
@@ -58,6 +59,9 @@
             </td>
             <td>
                 {{ document.type }}
+            </td>
+            <td>
+              <a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}" class="btn btn-success btn-block">View</a>
             </td>
             <td>
               <a href="{{ url_for('admin.edit_document', id=document.id) }}" 

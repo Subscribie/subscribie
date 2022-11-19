@@ -127,6 +127,7 @@ def create_app(test_config=None):
     from .blueprints.style import module_style_shop
     from .blueprints.seo import module_seo_page_title
     from .blueprints.api import apiv1
+    from .blueprints.document import document_blueprint
 
     app.register_blueprint(module_pages, url_prefix="/pages")
     app.register_blueprint(module_iframe_embed, url_prefix="/iframe")
@@ -136,6 +137,7 @@ def create_app(test_config=None):
     app.register_blueprint(checkout)
     app.register_blueprint(subscriber)
     app.register_blueprint(apiv1, url_prefix="/api/v1/")
+    app.register_blueprint(document_blueprint)
 
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 

@@ -142,6 +142,21 @@
             </div>
           </div>
         </div>
+
+        {% if plan.documents| length > 0 %}
+        <div class="card shadow-sm">
+          <div class="card-body">
+          <p>By clicking continue, you are agreeing to the following Terms &amp; Conditions:</p>
+          <ul class="pt-2">
+            {% for document in plan.documents %}
+              {% if document.type == "terms-and-conditions" %}
+              <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}" target="_blank">{{ document.name }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          </div>
+        </div>
+        {% endif %}
       </div>
 
     </div>
@@ -149,15 +164,7 @@
     <!-- detect if embeded in iframe to trigger new tab if needed -->
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
-    <p>By clicking continue, you are agreeing to the following terms &amp; conditions:</p>
-    <ul>
-      {% for document in plan.documents %}
-        {% if document.type == "terms-and-conditions" %}
-          <li>{{ document.name }}</li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value="Continue to Payment">
+    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3 mb-5" value="Continue to Payment">
 
   </form>
   <script type="text/javascript">

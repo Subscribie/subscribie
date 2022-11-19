@@ -41,7 +41,7 @@
     
         <div class="form-group pb-md-3">
           <label for="body">Document content:</label>
-          <textarea name="body" id="body" cols="80" rows="50"></textarea>
+          <textarea name="document_body" id="document_body" cols="80" rows="50"></textarea>
         </div>
 
         <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
@@ -58,17 +58,10 @@
   <body>
     <div id="summernote"></div>
     <script>
-      $('#body').summernote({
+      $('#document_body').summernote({
         placeholder: 'Start typing...',
         tabsize: 2,
         height: 240,
-        toolbar: [
-          ['style', ['bold', 'italic', 'underline', 'clear']],
-          ['para', ['ul', 'ol']],
-          ['table', ['table']],
-          ['insert', ['link', 'picture', 'video']],
-          ['view', ['fullscreen', 'codeview', 'help']]
-        ]
       });
     </script>
 
