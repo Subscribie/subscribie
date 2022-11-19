@@ -97,7 +97,7 @@
                     <div class="collapse mb-4" id="collapse-choise-{{ plan.id }}" >
                       {% for choice_group in plan.choice_groups %}
                       <details>
-                        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _(options) }})</summary>
+                        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _('options') }})</summary>
                         <ul>
                           {% for option in choice_group.options %}
                           <li>{{ option.title }}</li>
