@@ -1,6 +1,6 @@
 import logging
 from email.message import EmailMessage
-from flask import current_app, session, request, render_template
+from flask import current_app, session, request
 from subscribie.models import (
     Setting,
     User,
@@ -30,9 +30,13 @@ class EmailMessageQueue(EmailMessage):
             )
 
 
-def send_welcome_email():
+def send_welcome_email(to_email=None):
     company = Company.query.first()
     plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
+
+    if to_email is None:
+        log.error("no to_email passed so send_welcome_email cannot be sent")
+        return None
 
     # Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()
@@ -58,14 +62,14 @@ def send_welcome_email():
         first_charge_date=first_charge_date,
         first_charge_amount=first_charge_amount,
         plan=plan,
-        subscriber_email=session.get("email"),
+        subscriber_email=to_email,
     )
 
     try:
         msg = EmailMessageQueue()
         msg["Subject"] = company.name + " " + "Subscription Confirmation"
         msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
-        msg["To"] = session["email"]
+        msg["To"] = to_email
         msg.set_content("Subscription confirmation")
         msg.add_alternative(html, subtype="html")
         setting = Setting.query.first()
@@ -78,5 +82,3 @@ def send_welcome_email():
         msg.queue()
     except Exception as e:
         log.error(f"Failed to send welcome email. {e}")
-    finally:
-        return render_template("thankyou.html")
