@@ -257,6 +257,37 @@ class LoginToken(database.Model):
     login_token = database.Column(database.String)
 
 
+# Track Documents at time of subscription creation
+# Note these are kept and never altered, compared to
+# association_table_plan_to_document which store live
+# documents which may change prior to subscriptions
+# being created.
+#
+# Worked example:
+#
+# When a subscription is created, any associated document(s)
+# associated with the subscribed Plan, are coped entirely to
+# another enty in Document table as a system of record,
+# and linked to the associated subscription.
+# Should the live Document(s) be updated/altered, then the
+# saved & archived document(s) will be left intact, and attached
+# the the Subscription.
+association_table_subscription_to_document = database.Table(
+    "subscription_document_associations",
+    database.Column(
+        "subscription_uuid",
+        database.Integer,
+        ForeignKey("subscription.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "document_uuid",
+        database.Integer,
+        ForeignKey("document.uuid"),
+    ),
+)
+
+
 class Subscription(database.Model):
     __tablename__ = "subscription"
     id = database.Column(database.Integer(), primary_key=True)
@@ -275,6 +306,9 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
+    documents = relationship(
+        "Document", secondary=association_table_subscription_to_document
+    )
     upcoming_invoice = relationship(
         "UpcomingInvoice", back_populates="subscription", uselist=False
     )
@@ -1087,6 +1121,11 @@ class Document(database.Model, HasArchived):
     plans = relationship(
         "Plan",
         secondary=association_table_plan_to_document,
+        back_populates="documents",
+    )
+    subscriptions = relationship(
+        "Subscription",
+        secondary=association_table_subscription_to_document,
         back_populates="documents",
     )
 

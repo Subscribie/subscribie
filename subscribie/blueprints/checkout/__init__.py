@@ -51,6 +51,7 @@ checkout = Blueprint("checkout", __name__, template_folder="templates")
 
 @checkout.route("/new_customer", methods=["GET"])
 def new_customer():
+    session["subscribie_checkout_session_id"] = str(uuid4())
     plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
     if plan is None:
         log.warning(
@@ -267,7 +268,11 @@ def thankyou():
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
     # Trigger journey_complete, so that receivers will react, such
     # as sending welcome email. See receivers.py
-    signal_journey_complete.send(current_app._get_current_object(), email=email)
+    signal_journey_complete.send(
+        current_app._get_current_object(),
+        email=email,
+        subscription_uuid=subscription.uuid,
+    )
 
     return render_template("thankyou.html")
 
@@ -295,7 +300,6 @@ def stripe_create_checkout_session():
     charge["sell_price"] = plan.getSellPrice(currency_code)
     charge["interval_amount"] = plan.getIntervalAmount(currency_code)
     charge["currency"] = currency_code
-    session["subscribie_checkout_session_id"] = str(uuid4())
     payment_method_types = ["card"]
     success_url = url_for(
         "checkout.instant_payment_complete", _external=True, plan=plan.uuid

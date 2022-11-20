@@ -2,11 +2,42 @@ import logging
 from subscribie.tasks import background_task
 from subscribie.email import send_welcome_email
 from subscribie.notifications import subscriberPaymentFailedNotification
+from subscribie.models import Subscription, Document
+from subscribie.database import database
 from dotenv import load_dotenv
+import sqlalchemy
 
 load_dotenv(verbose=True)
 
 log = logging.getLogger(__name__)
+
+
+def receiver_attach_documents_to_subscription(*args, **kwargs):
+    subscription_uuid = kwargs.get("subscription_uuid")
+    subscription = (
+        Subscription.query.where(Subscription.uuid == subscription_uuid)
+        .execution_options(include_archived=True)  # to include archived Documents
+        .one()
+    )
+
+    # If associated plan has document(s) associated,
+    # then copy those docs to preserve them as a
+    # system of record, and assignment to the
+    # subscription.documents
+    if len(subscription.plan.documents) > 0:
+        for document in subscription.plan.documents:
+            # Create copy of Document and assign it to Subscription
+            newDoc = Document()
+            newDoc.name = document.name
+            newDoc.type = "terms-and-conditions#agreed"
+            newDoc.body = document.body
+            subscription.documents.append(newDoc)
+            try:
+                database.session.commit()
+            except sqlalchemy.exc.IntegrityError as e:
+                # Document is already assigned to Subscription
+                database.session.rollback()
+                log.warning(e)
 
 
 @background_task
