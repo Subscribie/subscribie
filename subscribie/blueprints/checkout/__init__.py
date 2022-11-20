@@ -36,8 +36,7 @@ from subscribie.utils import (
 )
 from subscribie.forms import CustomerForm
 from subscribie.database import database
-from subscribie.signals import signal_payment_failed
-from subscribie.email import send_welcome_email
+from subscribie.signals import signal_journey_complete, signal_payment_failed
 from subscribie.notifications import newSubscriberEmailNotification
 import stripe
 import backoff
@@ -264,7 +263,11 @@ def thankyou():
 
     database.session.commit()
 
-    send_welcome_email()
+    # Send journey_complete signal
+    email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
+    # Trigger journey_complete, so that receivers will react, such
+    # as sending welcome email. See receivers.py
+    signal_journey_complete.send(current_app._get_current_object(), email=email)
 
     return render_template("thankyou.html")
 
@@ -446,7 +449,7 @@ def create_subscription(
         sell_price, interval_amount = plan.getPrice(currency)
     else:
         log.warning(
-            "currency was set to None, so setting Subscription sell_price and interval_amount to zero"
+            "currency was set to None, so setting Subscription sell_price and interval_amount to zero"  # noqa: E501
         )
         sell_price = 0
         interval_amount = 0
@@ -665,7 +668,7 @@ def stripe_webhook():
     if stripe_livemode != event["livemode"]:
 
         log.warn(
-            f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"
+            f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"  # noqa: E501
         )
 
     log.info(f"Received stripe webhook event type {event['type']}")
