@@ -753,8 +753,24 @@ def delete_plan_by_uuid(uuid):
 @admin.route("/list-documents", methods=["get"])
 @login_required
 def list_documents():
-    documents = Document.query.all()
-    return render_template("admin/documents/list_documents.html", documents=documents)
+    show_only_agreed_documents = False
+    if (
+        "filter" in request.args
+        and request.args["filter"] == "terms-and-conditions-agreed"
+    ):
+        show_only_agreed_documents = True
+        documents = Document.query.where(
+            Document.type == "terms-and-conditions-agreed"
+        ).all()
+    else:
+        documents = Document.query.where(
+            Document.type != "terms-and-conditions-agreed"
+        ).all()
+    return render_template(
+        "admin/documents/list_documents.html",
+        documents=documents,
+        show_only_agreed_documents=show_only_agreed_documents,
+    )
 
 
 @admin.route("/add-document", methods=["get", "post"])

@@ -18,20 +18,31 @@
   <div class="section">
     <div class="container">
 
-      <div class="col-md-7">
+      <div class="col-md-12">
         <h3>Add / Edit / Delete Documents</h3>
         <p class="card-subtitle text-muted">Select a document to edit.</p>
 
-        <a href="{{ url_for('admin.add_document') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
-          Add Document
-        </a>  
+        <div class="row">
+          <div class="col-md-6">
+            <a href="{{ url_for('admin.add_document') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+             Add Document
+            </a>
+          </div>
+          <div class="col-md-6">
+            <a href="{{ url_for('admin.list_documents', filter="terms-and-conditions-agreed") }}"
+              title="Show only documents which are associated with a Subscription"
+              class="btn btn-success my-3 btn-block btn-lg col-md-7">
+              Show agreed
+            </a>
+          </div>
+        </div>
       </div>
 
       {% if confirm is sameas false %}
         <div class="card mx-auto my-3 py-3 col-md-7">
           <h3 class="card-title mx-auto">Are you sure?</h3>
           <div class="mx-auto">
-            <a href="{{ url_for('admin.delete_document', id=document.id) }}" 
+            <a href="{{ url_for('admin.delete_document', id=document.id) }}"
                 class="btn btn-danger mx-3 px-5" role="button">
                 Yes
             </a>
@@ -61,26 +72,40 @@
                 {{ document.type }}
             </td>
             <td>
-              <a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}" class="btn btn-success btn-block">View</a>
+              <a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}" class="btn btn-success btn-block">View Document</a>
             </td>
-            <td>
-              <a href="{{ url_for('admin.edit_document', id=document.id) }}" 
-              class="btn btn-success btn-block" role="button">
-              Edit
-              </a>
-            </td>
-            <td>
-              <a href="{{ url_for('admin.document_assign_plan', document_id=document.id) }}" 
-              class="btn btn-success btn-block" name= "{{ document.name }}-document"style="display: inline-block" role="button">
-              Assign Plans to this document
-              </a>
-            </td>
-            <td>
-              <a href="{{ url_for('admin.delete_document', id=document.id, confirm=0) }}" 
-              class="btn btn-danger btn-block" role="button">
-              Delete
-              </a>
-            </td>
+            {% if show_only_agreed_documents is sameas False %}
+              <td>
+                <a href="{{ url_for('admin.edit_document', id=document.id) }}"
+                class="btn btn-success btn-block" role="button">
+                Edit
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for('admin.document_assign_plan', document_id=document.id) }}"
+                class="btn btn-success btn-block" name= "{{ document.name }}-document"style="display: inline-block" role="button">
+                Assign Plans to this document
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for('admin.delete_document', id=document.id, confirm=0) }}"
+                class="btn btn-danger btn-block" role="button">
+                Delete
+                </a>
+              </td>
+            {% else %}
+              <td>
+                <span class="btn" aria-disabled="true">Date: {{ document.created_at.strftime('%Y-%m-%d') }}</span>
+              </td>
+              <td>
+                <a href="{{ url_for('admin.show_subscriber', subscriber_id=document.subscriptions[0].person.id) }}" class="btn btn-success btn-block">
+                  Subscriber: {{ document.subscriptions[0].person.given_name }}
+                </a>
+              </td>
+              <td>
+                <span class="btn" aria-disabled="true">Plan: {{ document.subscriptions[0].plan.title }}</span>
+              </td>
+            {% endif %}
           </tr>
         {% endfor %}
         </table>
