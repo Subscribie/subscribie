@@ -1748,8 +1748,9 @@ WARNING: Check logs to verify recipt"
         msg = f"Failed to announce stripe connect id:\n{e}"
         log.error(msg)
         return jsonify("Failed to account stripe connect id"), 500
+
     return Response(
-        json.dumps(msg), status=req[0].status_code, mimetype="application/json"
+        json.dumps(msg), status=req.status_code, mimetype="application/json"
     )
 
 

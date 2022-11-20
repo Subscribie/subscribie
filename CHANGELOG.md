@@ -1,3 +1,39 @@
+# v0.1.159 (Sun Nov 20 2022)
+
+#### 🐛 Bug Fix
+
+- partial revert 7320b43a1da1c478c109d339355b42932e3545ee #935 [#992](https://github.com/Subscribie/subscribie/pull/992) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.158 (Fri Nov 18 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.157 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- Revert "Fix #1007 tuple as no object status code" [#1010](https://github.com/Subscribie/subscribie/pull/1010) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.156 (Thu Nov 17 2022)
 
 #### 🐛 Bug Fix
