@@ -14,6 +14,10 @@ log = logging.getLogger(__name__)
 
 def receiver_attach_documents_to_subscription(*args, **kwargs):
     subscription_uuid = kwargs.get("subscription_uuid")
+    if subscription_uuid is None:
+        log.error("receiver_attach_documents_to_subscription called but no subscription_uuid was given in the signal")
+        return None
+
     subscription = (
         Subscription.query.where(Subscription.uuid == subscription_uuid)
         .execution_options(include_archived=True)  # to include archived Documents
