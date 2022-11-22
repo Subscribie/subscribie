@@ -1,3 +1,15 @@
+# v0.1.162 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch 'master' of github.com:Subscribie/subscribie into 1005-terms-and-conditions [#1006](https://github.com/Subscribie/subscribie/pull/1006) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.161 (Tue Nov 22 2022)
 
 #### 🐛 Bug Fix
