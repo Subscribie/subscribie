@@ -68,7 +68,6 @@ def create_app(test_config=None):
 
     @babel.localeselector
     def get_locale():
-        return "de"
         return request.accept_languages.best_match(LANGUAGES)
 
     @app.before_request
