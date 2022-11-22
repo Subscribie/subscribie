@@ -133,7 +133,7 @@
               {% endif %}
 
               {% if plan.requirements.subscription %}
-              <p class="py-2"><span class="body-lg">{{ _('Price') }} ({{ plan.interval_unit }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span></p>
+              <p class="py-2"><span class="body-lg">{{ _('Price') }} ({{ plan.showItervalUnit() }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span></p>
               {% endif %}
               {% if plan.requirements.subscription and plan.requirements.instant_payment %}
               <p class="py-2"><span class="body-lg">{{ _('Total') }}: </span><span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></br>
