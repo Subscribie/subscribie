@@ -802,11 +802,11 @@ def edit_document():
     document = Document.query.get(document_id)
     if request.method == "POST":
         document.name = request.form.get("name")
-        document.position = request.form.get("position")
+        document.body = request.form.get("document_body")
         database.session.commit()
-        flash("Document name updated")
-        return redirect(url_for("admin.list_category"))
-    return render_template("admin/category/edit_document.html", document=document)
+        flash("Document updated")
+        return redirect(url_for("admin.list_documents"))
+    return render_template("admin/documents/edit_document.html", document=document)
 
 
 @admin.route("/delete-document", methods=["get", "post"])
