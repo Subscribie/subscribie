@@ -59,13 +59,13 @@
 
                 {% if plan.requirements.subscription %}
                 <p class="py-3 body-lg">
-                    <b>{{ _('Price') }} ({{ plan.interval_unit }})</b>
+                    <b>{{ _('Price') }} ({{ plan.showItervalUnit() }})</b>
                     <span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span>
                 </p>
                 {% endif %}
                 {% if plan.requirements.subscription and plan.requirements.instant_payment %}
                 <p class="py-3"><span class="body-lg">{{ _('Total') }}: <span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></span></br></br>
-                {{ _('Then') }} {{ plan.showIntervalAmount() }} {{ plan.interval_unit }}</p>
+                {{ _('Then') }} {{ plan.showIntervalAmount() }} {{ plan.showItervalUnit() }}</p>
                 {% endif %}
 
             </div>
