@@ -516,6 +516,9 @@ def edit():
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
 
+            # Preserve documents
+            draftPlan.documents = plan.documents
+
             # Preserve choice_groups
             draftPlan.choice_groups = plan.choice_groups
 
