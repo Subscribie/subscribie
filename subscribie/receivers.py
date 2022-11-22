@@ -15,7 +15,9 @@ log = logging.getLogger(__name__)
 def receiver_attach_documents_to_subscription(*args, **kwargs):
     subscription_uuid = kwargs.get("subscription_uuid")
     if subscription_uuid is None:
-        log.error("receiver_attach_documents_to_subscription called but no subscription_uuid was given in the signal")
+        log.error(
+            "receiver_attach_documents_to_subscription called but no subscription_uuid was given in the signal"  # noqa: E501
+        )
         return None
 
     subscription = (
@@ -41,7 +43,7 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
             except sqlalchemy.exc.IntegrityError as e:
                 # Document is already assigned to Subscription
                 database.session.rollback()
-                log.warning(e)
+                log.error(e)
 
 
 @background_task

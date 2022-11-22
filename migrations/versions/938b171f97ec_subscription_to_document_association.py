@@ -30,7 +30,6 @@ def upgrade():
             ["subscription_uuid"],
             ["subscription.uuid"],
         ),
-        sa.PrimaryKeyConstraint("subscription_uuid"),
     )
 
 
