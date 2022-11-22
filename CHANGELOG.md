@@ -1,3 +1,15 @@
+# v0.1.160 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- #990 remove example docs and improve Dashboard overview page [#1011](https://github.com/Subscribie/subscribie/pull/1011) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.159 (Sun Nov 20 2022)
 
 #### 🐛 Bug Fix
