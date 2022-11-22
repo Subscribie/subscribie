@@ -32,6 +32,8 @@ from subscribie.utils import (
     currencyFormat,
 )
 import pycountry
+from types import SimpleNamespace
+from flask_babel import Domain
 
 log = logging.getLogger(__name__)
 
@@ -222,6 +224,10 @@ def set_options(plan_uuid):
 @bp.route("/page/<path>", methods=["GET"])
 def custom_page(path):
     page = Page.query.filter_by(path=path).first()
+    company = Company.query.first()
+    integration = Integration.query.first()
+    plans = Plan.query.filter_by(archived=0)
+    pages = Page.query.all()
     if page is None:
         return "Page not found", 404
     # Check if private page & enforce
@@ -265,17 +271,53 @@ def custom_page(path):
         {% endblock body %}
     """
     try:
+
+        def _get_current_context():
+            if not g:
+                return None
+
+            if not hasattr(g, "_flask_babel"):
+                g._flask_babel = SimpleNamespace()
+
+            return g._flask_babel
+
+        def get_domain():
+            ctx = _get_current_context()
+            if ctx is None:
+                # this will use NullTranslations
+                return Domain()
+
+            try:
+                return ctx.babel_domain
+            except AttributeError:
+                pass
+
+            babel = current_app.extensions["babel"]
+            ctx.babel_domain = babel.domain_instance
+            return ctx.babel_domain
+
+        def get_translations():
+            """Returns the correct gettext translations that should be used for
+            this request.  This will never fail and return a dummy translation
+            object if used outside of the request or if a translation cannot be
+            found.
+            """
+            return get_domain().get_translations()
+
         rtemplate = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"]))
-        ).from_string(page_header + body + page_footer)
+            extensions=["jinja2.ext.i18n"],
+            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"])),
+        )
+        rtemplate.install_gettext_callables(
+            lambda x: get_translations().ugettext(x),
+            lambda s, p, n: get_translations().ungettext(s, p, n),
+            newstyle=True,
+        )
+        rtemplate = rtemplate.from_string(page_header + body + page_footer)
     except jinja2.exceptions.TemplateAssertionError as e:
         log.error(f"Error updating custom page: {e}")
         return "Unable to update page. We have been notified. Sorry about that!", 500
 
-    company = Company.query.first()
-    integration = Integration.query.first()
-    plans = Plan.query.filter_by(archived=0)
-    pages = Page.query.all()
     template = rtemplate.render(
         company=company,
         integration=integration,

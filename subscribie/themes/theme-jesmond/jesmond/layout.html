@@ -88,7 +88,7 @@
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
       <ul class="navbar-nav mt-2 mt-lg-0">
         <li class="nav-item">
-          <a class="btn-link" href="/">Home</a>
+          <a class="btn-link" href="/">{{ _('Home') }}</a>
         </li>
         {% for page in pages %}
           {% if page.private is sameas False %}
@@ -108,7 +108,7 @@
         {% if ns.hasPrivatePages %}
           <div class="dropdown nav-item">
             <a class="dropdown-toggle btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Private pages
+              {{ _('Private pages') }}
             </a>
           
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -128,24 +128,24 @@
 
         {% if g.user %}
         <li class="nav-item">
-          <a class="btn-link mb-3" href="/admin/dashboard">Dashboard</a>
+          <a class="btn-link mb-3" href="/admin/dashboard">{{ _('Dashboard') }}</a>
         </li>
 
         <li class="nav-item">
-          <a class="btn-outlined" href="/auth/logout">Logout</a>
+          <a class="btn-outlined" href="/auth/logout">{{ _('Logout') }}</a>
         </li>
         {% elif g.subscriber %}
         <li class="nav-item">
-          <a class="btn-link mb-3" href="/account">Account</a>
+          <a class="btn-link mb-3" href="/account">{{ _('Account') }}</a>
         </li>
 
         <li class="nav-item">
-          <a class="btn-outlined" href="/account/logout">Logout</a>
+          <a class="btn-outlined" href="/account/logout">{{ _('Logout') }}</a>
         </li>
 
         {% else %}
         <li class="nav-item">
-          <a class="btn-outlined" href="{{ url_for('subscriber.login') }}" title="Subscriber login">Subscriber Login</a>
+          <a class="btn-outlined" href="{{ url_for('subscriber.login') }}" title="Subscriber login">{{ _('Subscriber Login') }}</a>
         </li>
         {% endif %}
           
@@ -170,25 +170,25 @@
   {% if session.get('iframe_embeded') is sameas False %}
 
   <footer class="container-fluid text-center py-3 footer mt-auto" >
-    <p> By <a href="/" class="body-lg">{{ company['name'] }}</a>. </p>
-    <p> <a href="https://subscriptionwebsitebuilder.co.uk" title="Subscription Website Builder" class="body-lg">Collect payments easily with Subscribie</a> - Made in Newcastle Upon Tyne</p>
+    <p> {{ _('By') }} <a href="/" class="body-lg">{{ company['name'] }}</a>. </p>
+    <p> <a href="https://subscriptionwebsitebuilder.co.uk" title="Subscription Website Builder" class="body-lg">{{ _('Collect payments easily with Subscribie') }}</a> - {{ _('Made in') }} Newcastle Upon Tyne</p>
     
     {% if g.user %}
-      <a class="body-lg" href="/auth/logout">Logout</a>
+      <a class="body-lg" href="/auth/logout">{{ _('Logout') }}</a>
     {% elif g.subscriber %}
-      <a class="body-lg" href="/account/logout">Logout</a>
+      <a class="body-lg" href="/account/logout">{{ _('Logout') }}</a>
     {% else %}
-      <a href="{{ url_for('auth.login') }}" class="body-lg">Shop owner login</a>
+      <a href="{{ url_for('auth.login') }}" class="body-lg">{{ _('Shop owner login') }}</a>
       or
-      <a href="{{ url_for('subscriber.login') }}" class="body-lg">Subscriber login</a>
+      <a href="{{ url_for('subscriber.login') }}" class="body-lg">{{ _('Subscriber login') }}</a>
     {% endif %}
     
     <br />
-    <a href="#" class="btn-outlined mt-3">Scroll back to top</a>
+    <a href="#" class="btn-outlined mt-3">{{ _('Scroll back to top') }}</a>
 
     {% if 'country' in session %}
     <div id="country-region-select" class="mt-2" style="text-align: left" title="{{ session['country']['name'] }} ({{ session['country']['alpha_3'] }})">
-      Country {{ session['country']['flag'] }}
+      {{ _('Country') }} {{ session['country']['flag'] }}
     </div>
     {% endif %}
 

@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %} {% if title %} {{ title }} {% else %} New Customer {% endif %} {% endblock %}
+{% block title %} {% if title %} {{ title }} {% else %} {{ _('New Customer') }} {% endif %} {% endblock %}
 
 {% block hero %}
 
@@ -9,8 +9,8 @@
     <div class="container">
       <div class="row">
         <div class="col col-md-8 hero-content py-5 px-3 px-sm-4 ">
-          <h2 class="title-1">Order Information</h2>
-          <p class="text-light body-lg mb-0">Complete the form below</p>
+          <h2 class="title-1">{{ _('Order Information') }}</h2>
+          <p class="text-light body-lg mb-0">{{ _('Complete the form below') }}</p>
         </div>
         <div class="col-4 col-md-4 text-right d-none d-lg-block py-5 px-0 px-sm-4">
           <img class="pr-3" src="/static/mutli-box.svg" style="height:100%;" >
@@ -32,16 +32,16 @@
     {{ form.csrf_token }}
 
     {% if error %}
-      <p class=error><stong>Error:</strong> {{ error }}
+      <p class=error><strong>{{ _('Error') }}:</strong> {{ error }}
     {% endif %}
 
     <div class="row row-cols-1 row-cols-lg-2">
       <div class="col-lg-8">
-        <h3 class="title-2">Your details</h3>
-        <p class="text mb-3">We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish.</p>
+        <h3 class="title-2">{{ _('Your details') }}</h3>
+        <p class="text mb-3">{{ _('We only use your details in order to get in touch with you regarding the order status and for billing. No spam, no rubbish') }}.</p>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Your Name <i class="fas fa-user ml-1"></i></label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Your Name') }} <i class="fas fa-user ml-1"></i></label>
           <div class="col-lg-4">
             <input type="text" class="form-control form-control-lg mb-3 mb-lg-0" name=given_name id=given_name placeholder="John" value="{{ given_name }}" required>
           </div>
@@ -51,44 +51,44 @@
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Email <i class="fas fa-envelope ml-1"></i></label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Email') }} <i class="fas fa-envelope ml-1"></i></label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}" required>
           </div>
         </div>
 
         <div class="form-group row py-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Phone <i class="fas fa-phone ml-1"></i></label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Phone') }} <i class="fas fa-phone ml-1"></i></label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
           </div>
         </div>
 
-        <h3 class="title-2 pt-4">Your Address</h3>
+        <h3 class="title-2 pt-4">{{ _('Your Address') }}</h3>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Address</label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Address') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="address_line_one" id="address_line_one" required>
           </div>
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">City</label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('City') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="city" id="city" required>
           </div>
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Post Code</label>
+          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Post Code') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="postcode" id="postcode" required>
           </div>
         </div>
 
         {% if plan.requirements.note_to_seller_required %}
-        <h3 class="pt-3 font-weight-bold">Note to seller</h3>
+        <h3 class="pt-3 font-weight-bold">{{ _('Note to seller') }}</h3>
 
         <div class="form-group row pt-3 m-0">
           <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ plan.requirements.note_to_buyer_message }}</label>
@@ -102,7 +102,7 @@
       <div class="col-lg-4 my-3 my-lg-0">
         <div class="card shadow-sm">
           <div class="card-header">
-            <h3 class="pt-3 title-1">Order Summary</h3>
+            <h3 class="pt-3 title-1">{{ _('Order Summary') }}</h3>
           </div>
           <div class="card-body">
 
@@ -115,7 +115,7 @@
             </ul>
 
             {%if chosen_options %}
-            <h4 class="my-3">Choices</h4>
+            <h4 class="my-3">{{ _('Choices') }}</h4>
 
             <ul style="list-style: disc;" class="pl-3 ml-3">
               {% for option in chosen_options %}
@@ -126,18 +126,18 @@
 
             <div class="text-right">
               {% if plan.trial_period_days > 0 %}
-              <p class="py-3 body-lg">{{ plan.trial_period_days }} days free, then</p>
+              <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}, {{ _('then') }}</p>
               {% endif %}
               {% if plan.requirements.instant_payment %}
-              <p class="py-2"><span class="body-lg">Upfront cost:</span><span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span></p>
+              <p class="py-2"><span class="body-lg">{{ _('Upfront cost') }}:</span><span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span></p>
               {% endif %}
 
               {% if plan.requirements.subscription %}
-              <p class="py-2"><span class="body-lg">Price ({{ plan.interval_unit }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span></p>
+              <p class="py-2"><span class="body-lg">{{ _('Price') }} ({{ plan.showItervalUnit() }}) :</span><span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span></p>
               {% endif %}
               {% if plan.requirements.subscription and plan.requirements.instant_payment %}
-              <p class="py-2"><span class="body-lg">Total: </span><span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></br>
-              Then {{ plan.showIntervalAmount() }} {{ plan.interval_unit }}</p>
+              <p class="py-2"><span class="body-lg">{{ _('Total') }}: </span><span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></br>
+              {{ _('Then') }} {{ plan.showIntervalAmount() }} {{ plan.showItervalUnit() }}</p>
               {% endif %}
             </div>
           </div>
@@ -164,7 +164,7 @@
     <!-- detect if embeded in iframe to trigger new tab if needed -->
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
-    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3 mb-5" value="Continue to Payment">
+    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value="{{ _('Continue to Payment') }}">
 
   </form>
   <script type="text/javascript">

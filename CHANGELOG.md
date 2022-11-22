@@ -1,3 +1,52 @@
+# v0.1.161 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- #194 undo hardcode de locale [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- more #194 de translation new_customer plan.showItervalUnit() [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #194 de translation new_customer plan.showItervalUnit [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- adding missing quotes to the choose template [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- #194 enable gettext via flask_babel helpers to inject gettext functions after enabling the i18n extention for private pages [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #194 wip enable i18n translation for custom loaded pages [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- updating the translation file [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translation layout template for subscribers to de and adding a new layout just for the subscriber side [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating subscriber_failed_invoices, subscriptions and update_choices templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating subscriber list_files, reset_password and login templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translation subscribers account and forgot password templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- reverting back the template of the admin dashboard [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translate connect google tag manager and connect tawk manually to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating change email and password templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating add shop admin and cancel subscription templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating add custome code and add plan templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- fixing 404 html translation [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating 404 and 500 errors to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- fixing transaltion mispelled [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating order_summary and thankyou page to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating new_customer to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating set_options and view-plan to DE [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating choose theme jesmod to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- adding german languange to layout jesmond theme [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- #194 choose german translation [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.160 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- #990 remove example docs and improve Dashboard overview page [#1011](https://github.com/Subscribie/subscribie/pull/1011) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.159 (Sun Nov 20 2022)
 
 #### 🐛 Bug Fix

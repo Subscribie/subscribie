@@ -1,14 +1,14 @@
-{% extends "admin/layout.html" %}
-{% block title %} Account - {{ company.name }} {% endblock %}
+{% extends "subscriber/layout.html" %}
+{% block title %} {{ _('Account') }} - {{ company.name }} {% endblock %}
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Failing Payments</h2>
+<h2 class="text-center text-dark mb-3">{{ _('Failing Payments') }}</h2>
 
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ url_for('subscriber.account') }}">My Account</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Failing Payments</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Failing Payments') }}</li>
   </ul>
 </div>
 
@@ -16,14 +16,13 @@
   <div class="section">
     <div class="container">
 
-          <h2>Failing Payments</h2>
+          <h2>{{ _('Failing Payments') }}</h2>
           <p>
-            A "failed invoice" means that all <em>automatic</em> payment collection
-            attemps for a given invoice have failed, and there wll be
-            no further <em>automatic</em> payment collections for that invoices.
+            {{ _('A "failed invoice" means that all') }} <em>{{ _('automatic') }}</em> {{ _('payment collection attemps for a given invoice have failed, and there will be no further') }}
+            <em>{{ _('automatic') }}</em> {{ _('payment collections for that invoices') }}.
           </p>
           <p>
-            Please note there may still be manual attempts made to collect the payment.
+            {{ _('Please note there may still be manual attempts made to collect the payment') }}.
           </p>
     <style>
         th {
@@ -32,13 +31,13 @@
     </style>
     <table class="table">
     <thead>
-        <th>Action</th>
-        <th>Amount</th>
-        <th>Charge Date</th>
-        <th>Status</th>
-        <th>Charge attempts</th>
-        <th>Next payment attempt</th>
-        <th>Decline code</th>
+        <th>{{ _('Action') }}</th>
+        <th>{{ _('Amount') }}</th>
+        <th>{{ _('Charge Date') }}</th>
+        <th>{{ _('Status') }}</th>
+        <th>{{ _('Charge attempts') }}</th>
+        <th>{{ _('Next payment attempt') }}</th>
+        <th>{{ _('Decline code') }}</th>
     </thead>
     {% for bad_invoice in bad_invoices %}
     <tr>
@@ -47,7 +46,7 @@
         <td>{{ bad_invoice.created | timestampToDate }}</td>
         <td>{{ bad_invoice.status }}</td>
         <td>{{ bad_invoice.attempt_count }}</td>
-        <td>{% if bad_invoice.next_payment_attempt is sameas None %} Never {% else %} {{ bad_invoice.next_payment_attempt | timestampToDate }} {% endif %} </td>
+        <td>{% if bad_invoice.next_payment_attempt is sameas None %} {{ _('Never') }} {% else %} {{ bad_invoice.next_payment_attempt | timestampToDate }} {% endif %} </td>
         <td>{{ bad_invoice['stripe_decline_code'] or "Unknown" }} </td>
     
     <tr>

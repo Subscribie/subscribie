@@ -17,7 +17,7 @@
           {% if plan.description is not sameas None %}
             <div>
               <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
-                More details
+                {{ _('More details') }}
               </div>
               <div class="collapse" id="collapse-{{ plan.id }}">
                 <p class="text mb-0 pt-2">{{ plan.description }}</p>
@@ -27,26 +27,26 @@
 
           <hr class="my-4">
           {% if plan.trial_period_days > 0 %}
-          <p class="py-3 body-lg">{{ plan.trial_period_days }} days free</p>
+          <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}</p>
           {% endif %}
           {% if plan.requirements.subscription %}
             <div class="my-md-4">
               <span class="text">
-                {% if plan.trial_period_days > 0 %}Then {% endif %}
+                {% if plan.trial_period_days > 0 %}{{ _('Then') }} {% endif %}
                 <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.interval_unit }}
               </span> <br>
               {% if plan.requirements.instant_payment %}
-                <span class="text">Upfront cost: {{ plan.showSellPrice() }}</span>
+                <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}</span>
               {% else %}
-                <span class="text">Upfront cost: None</span>
+                <span class="text">{{ _('Upfront cost') }}: {{ _('None') }} </span>
               {% endif %}
             </div>
             {% else  %} {# Not a subscription based product #}
             <div class="my-md-4">
               <span class="text">
-                <span class="price">{{ plan.showSellPrice() }}</span>/One-off
+                <span class="price">{{ plan.showSellPrice() }}</span>/{{ _('One-off') }}
               </span>  <br>
-              <span class="text">No subscription</span>
+              <span class="text">{{ _('No subscription') }}</span>
             </div>
           {% endif %}
 
@@ -62,12 +62,12 @@
           {% if plan.choice_groups %}
             <div>
               <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
-                See choice options
+                {{ _('See choice options') }}
               </div>
               <div class="collapse mb-3" id="collapse-choise-{{ plan.id }}" >
                 {% for choice_group in plan.choice_groups %}
                 <details>
-                  <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options)</summary>
+                  <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _('options') }})</summary>
                   <ul>
                     {% for option in choice_group.options %}
                     <li>{{ option.title }}</li>
@@ -81,11 +81,11 @@
 
           {% if plan.choice_groups %}
             <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block">
-              Choose
+              {{ _('Choose') }}
             </a>
           {% else %}
             <a href="/new_customer?plan={{ plan.uuid }}" class="btn-outlined-lg btn-block">
-              Choose
+              {{ _('Choose') }}
             </a>
           {% endif %}
 
