@@ -36,5 +36,20 @@ test.describe("order free plan tests:", () => {
         // Verify that plan is attached to subscriber
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
         expect(subscriber_plan_title_content === 'Free plan');
+
+        // Verify that plan is attached with terms and conditions
+        const subscriber_plan_terms_and_conditions = await page.textContent('text="Terms and Conditions"');
+        expect(subscriber_plan_terms_and_conditions === 'Terms and conditions');
+
+        // Verify that as a shop owner i can see the terms and conditions attached
+        await page.click('text="Terms and Conditions"');
+        const subscriber_terms_and_conditions = await page.textContent('text="testing"');
+        expect(subscriber_terms_and_conditions === "testing");
+
+        // Verify that as a shop owner i can see the terms and conditions attached
+        await page.goto('/admin/list-documents');
+        await page.click('text=Show agreed');
+        const subscriber_agreed_terms_and_conditions = await page.textContent('text="terms-and-conditions-agreed"');
+        expect(subscriber_agreed_terms_and_conditions === 'terms-and-conditions-agreed');
     });
 });
