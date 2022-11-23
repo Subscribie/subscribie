@@ -17,11 +17,13 @@ Here are easy steps to adding a subscription plan to your shop for your subscrib
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-44.png)
 
-**Step 3:** Here, enter your Plan Name & Selling Points.
+**Step 3:** Here, enter your **Plan Name & Selling Points.**
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-45.png)
 
-**Step 4:** Choose whether you would like to set up your plan as a Recurring Charge by checking the checkbox, enter the amount for your plan, and then choose if it should be charged weekly, monthly or yearly.  
+**Step 4:** Choose whether you would like to set up your plan as a Recurring Charge by checking the checkbox and enter the amount. 
+
+> If you plan to Recurring, then choose if it should be charged weekly, monthly or yearly.  
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-46.png)
 

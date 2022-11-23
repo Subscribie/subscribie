@@ -22,11 +22,11 @@ Step 2: Select **"Embed"** and copy the text that is shown in the **"Embed Video
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-105.png)
 
-**Step 3:** Go to the **"modules"** section on your Subscribie Store Dashboard and select **"List Pages"**
+**Step 3:** Go to the **"modules"** section on your Subscribie Store Dashboard and select **"List Pages."**
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-106.png)
 
-**Step 4:** Go to your desired page and select the **"Link"** icon 🔗
+**Step 4:** Go to the desired page in Subscribie's Dashboard and select the **"Link"** icon 🔗
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-107.png)
 
@@ -57,7 +57,7 @@ Step 2: Select **"Embed"** and copy the text that is shown in the **"Embed Video
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-113.png)
 
-**Step 4:** Go to your desired page and select the **"Link"** icon 🔗
+**Step 4:** Go to your desired page in Subscribie's Dashboard and select the **"Link"** icon 🔗
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-114.png)
 
@@ -69,4 +69,4 @@ Step 2: Select **"Embed"** and copy the text that is shown in the **"Embed Video
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-116.png)
 
-Voila! Now you have a working video on your shop page!
+Now you have a working video on your shop page!

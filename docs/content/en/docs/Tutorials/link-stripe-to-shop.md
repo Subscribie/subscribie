@@ -10,16 +10,16 @@ Set up your account and want to start taking payments? Here are the steps to fol
 
 ## Steps to Connect Stripe to your Subscription Shop
 
-Step 1: Log into your store and navigate to your Shop Dashboard and Under Checklist, click **"Review Stripe"**
+Step 1: In the Shop Dashboard, click **"Review Stripe"**  Under Checklist.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-27.png)
 
 
-Step 2: On this page, Choose your country from the drop down menu. Now choose **"Live"** under **Live/Test mode.** Now click **"Start taking live payments".**
+Step 2: Choose your country from the drop down menu. Now choose **"Live"** under **Live/Test mode** and click **"Start taking live payments".**
 
 ![](https://subscribie.co.uk/blog/content/images/2022/10/image-4.png)
 
-Step 3: Next, fill out your **mobile number** and **email** then click continue  and  enter the six-digit verification code sent to your mobile number. 
+Step 3: Fill out **mobile number** and **email** then click **continue  and  enter the six-digit verification code sent to your mobile number. 
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-17.png)
 
