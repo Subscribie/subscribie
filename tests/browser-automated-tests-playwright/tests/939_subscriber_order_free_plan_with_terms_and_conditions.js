@@ -51,5 +51,14 @@ test.describe("order free plan tests:", () => {
         await page.click('text=Show agreed');
         const subscriber_agreed_terms_and_conditions = await page.textContent('text="terms-and-conditions-agreed"');
         expect(subscriber_agreed_terms_and_conditions === 'terms-and-conditions-agreed');
+        
+        // Verify the termns and conditions can be seen in the subscriber view
+        await page.click('text="Subscriber: John"');
+        page.locator('text=Subscriber: John');
+        page.locator('text=Terms and Conditions');
+
+        await page.click('text="Terms and Conditions"');
+        await page.locator('text=testing');
+        
     });
 });
