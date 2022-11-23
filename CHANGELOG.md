@@ -1,3 +1,16 @@
+# v0.1.164 (Wed Nov 23 2022)
+
+#### 🐛 Bug Fix
+
+- adding subscriber view test of terms and conditions [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+- adding playwright test termns and condition creation and checkout [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.163 (Wed Nov 23 2022)
 
 #### ⚠️ Pushed to `master`
