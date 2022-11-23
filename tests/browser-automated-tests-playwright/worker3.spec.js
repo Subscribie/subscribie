@@ -34,4 +34,6 @@ test.beforeEach(async ({ page }) => {
 
   const subscriber_order_free_plan = require('./tests/939_subscriber_order_free_plan_with_terms_and_conditions.js');
 
+  const subscriber_terms_and_condition_check_test = require('./tests/1005_subscriber_terms_and_condition_check_test.js');
+
   const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
