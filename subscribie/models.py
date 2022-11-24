@@ -80,6 +80,7 @@ def filter_archived(query):
             and "instant_payment_complete" not in request.path
             and "thankyou" not in request.path
             and "uploads" not in request.path
+            and "document" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
