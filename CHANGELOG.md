@@ -1,3 +1,15 @@
+# v0.1.165 (Thu Nov 24 2022)
+
+#### 🐛 Bug Fix
+
+- 1005 terms and conditions subscriber [#1013](https://github.com/Subscribie/subscribie/pull/1013) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.164 (Wed Nov 23 2022)
 
 #### 🐛 Bug Fix
