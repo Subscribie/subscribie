@@ -8,9 +8,11 @@ description: >
 
 Does your shop need to charge VAT for your products and services? Follow these 3 simple steps to add VAT to your subscription shop.
 
+>  VAT is not enabled by default for shops.
+
 ## Steps to add VAT to your Subsciption Plans.
 
-Step 1: VAT is not enabled by default for subscription shops, so to activate VAT to your shop, log into your store and navigate to "Manage My Shop".
+Step 1: On your Dashboard go to "Manage My Shop".
 
 ![](https://subscribie.co.uk/blog/content/images/2022/10/image.png)
 

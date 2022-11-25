@@ -18,7 +18,9 @@ Learn to pause a customers subscription, this is useful if you only want to temp
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-84.png)
 
-**Step 3:** Here, Navigate to the customer you would like to pause and select **"Pause".** To Unpause the Customer's Subscription, select **"Resume".**
+**Step 3:** Here, Navigate to the customer you would like to pause and select **"Pause".** 
+
+>To Unpause the Customer's Subscription, select **"Resume".**
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-85.png)
 
