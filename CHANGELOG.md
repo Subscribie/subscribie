@@ -1,3 +1,15 @@
+# v0.1.167 (Mon Nov 28 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added task for adding team members and TnC ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.1.166 (Fri Nov 25 2022)
 
 #### ⚠️ Pushed to `master`
