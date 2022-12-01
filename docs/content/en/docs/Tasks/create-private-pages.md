@@ -22,7 +22,7 @@ Learn how to add a private page that is only accessable by your subscribers by f
 
 ![](https://i.imgur.com/dZgLR8z.png)
 
-**Step 4:** Chose the Page and click **Submit.**
+**Step 4:** Choose the Page and click **Submit.**
 
 > Select all the pages you wish to private in this step.
 

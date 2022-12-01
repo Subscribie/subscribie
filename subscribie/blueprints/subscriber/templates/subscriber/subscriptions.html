@@ -80,6 +80,21 @@
                         </details>
                     {% endif %}
                 </li>
+               <li class=mt-2><strong>Documents: </strong>
+                 {% if subscription.documents|length == 0 %}
+                    None
+                 {% else %}
+                   <ul>
+                   {% for document in subscription.documents %}
+                   {# Show documents assocated with subscription (if any) #}
+                   <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}">
+                       {{ document.name }}</a> | 
+                       {{ document.created_at.strftime('%Y-%m-%d') }}</li>
+                   {% endfor %}
+                   </ul>
+                 {% endif %}
+               </li>
+
         </ul>
         <h5>{{ _('Details') }}</h5>
         <ul>

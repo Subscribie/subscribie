@@ -1,3 +1,52 @@
+# v0.1.167 (Mon Nov 28 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added task for adding team members and TnC ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.166 (Fri Nov 25 2022)
+
+#### ⚠️ Pushed to `master`
+
+- proofing tasks ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.165 (Thu Nov 24 2022)
+
+#### 🐛 Bug Fix
+
+- 1005 terms and conditions subscriber [#1013](https://github.com/Subscribie/subscribie/pull/1013) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.164 (Wed Nov 23 2022)
+
+#### 🐛 Bug Fix
+
+- adding subscriber view test of terms and conditions [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+- adding playwright test termns and condition creation and checkout [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.163 (Wed Nov 23 2022)
 
 #### ⚠️ Pushed to `master`

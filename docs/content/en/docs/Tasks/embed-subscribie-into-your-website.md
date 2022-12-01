@@ -10,7 +10,7 @@ Learn how to add Subscribie into your website!
 
 ## Steps to Embed Subscribie in a Website
 
-**Step 1:** Log into your Shop Dashboard.
+**Step 1:** Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
