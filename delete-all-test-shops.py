@@ -1,6 +1,8 @@
 import stripe
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 STRIPE_API_KEY = os.getenv("STRIPE_TEST_SECRET_KEY")
 stripe.api_key = STRIPE_API_KEY
 
