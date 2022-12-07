@@ -989,6 +989,11 @@ def stripe_connect():
             "country_name": "United States of America(USD)",
             "currency_code": "USD",
         },
+        {
+            "country_code": "CA",
+            "country_name": "Canada",
+            "currency_code": "CAD",
+        },
         {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
         {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
         {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
