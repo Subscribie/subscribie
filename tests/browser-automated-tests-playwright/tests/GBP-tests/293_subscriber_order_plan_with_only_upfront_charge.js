@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 
 test.describe("order plan with only upfront charge tests:", () => {
-    test("@293@subscriber@Ordering upfront plan", async ({ page }) => {
+    test("@293@subscriber@Ordering upfront plan @GBP", async ({ page }) => {
         console.log("Ordering plan with only upfront charge...");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product

@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
-test("@463@subscriber@Ordering plan with VAT", async ({ page }) => {
+test("@463@subscriber@Ordering plan with VAT @GBP", async ({ page }) => {
         console.log("Ordering plan with only recurring charge + VAT...");
         // Buy item with subscription & upfront fee
         await page.goto("/"); // Go to home before selecting product

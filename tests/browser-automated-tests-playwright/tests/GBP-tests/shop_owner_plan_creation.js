@@ -4,7 +4,7 @@ const TIMEOUT = 5000;
 //Subscribie tests
 test.describe("Plan Creation tests:", () => {
       // Create cooling off plan
-  test("@133@show-owner@Create cooling off plan", async ({ page }) => {
+  test("@133@show-owner@Create cooling off plan @GBP", async ({ page }) => {
     console.log("Starting plan creations...");
     await page.goto('/');
     try {

@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
-    test("@293@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
+    test("@293@subscriber@Ordering recurring and upfront plan @CAD", async ({ page }) => {
         console.log("Ordering Plan with subscription and upfront charge");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product

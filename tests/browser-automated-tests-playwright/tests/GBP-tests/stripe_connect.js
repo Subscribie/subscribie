@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
-test.describe("order plan with recurring and upfront charge test:", () => {
-    test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
+test.describe("@ gbp order plan with recurring and upfront charge test:", () => {
+    test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page @GBP", async ({ page }) => {
 
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');

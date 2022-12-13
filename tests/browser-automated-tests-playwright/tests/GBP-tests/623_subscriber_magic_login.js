@@ -3,7 +3,7 @@ const checkSubscriberLogin= require('./checkSubscriberLogin.js');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 
 
-test('@623@subscriber@reset password receives email', async ({ page }) => {
+test('@623@subscriber@reset password receives email @GBP', async ({ page }) => {
 
   
   await page.goto("/auth/logout");

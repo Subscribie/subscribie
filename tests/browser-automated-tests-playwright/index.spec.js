@@ -13,7 +13,7 @@ test.describe("Subscribie tests:", () => {
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   }); 
   //Stripe Test
-  test("@293@connect-to-stripe@shop-owner@Stripe Test", async ({ page }) => {
+  test("@293@connect-to-stripe@shop-owner@Stripe Test @GBP @CAD", async ({ page }) => {
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
@@ -29,17 +29,23 @@ test.describe("Subscribie tests:", () => {
       console.log("Continuing with Stripe Connect onboarding");
     }
   });
-  const stripe_connect = require(`./tests/${TEST}/stripe_connect.js`);
+  const stripe_connect = require('./tests/GBP-tests/stripe_connect.js');
 
-  const order_plan_with_only_recurring_charge = require(`./tests/${TEST}/293_subscriber_order_plan_with_only_recurring_charge`);
+  const order_plan_with_only_recurring_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_only_recurring_charge`);
 
-  const order_plan_with_only_upfront_charge = require(`./tests/${TEST}/293_subscriber_order_plan_with_only_upfront_charge`);
+  const order_plan_with_only_upfront_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_only_upfront_charge`);
 
-  const order_plan_with_free_trial = require(`./tests/${TEST}/475_subscriber_order_plan_with_free_trial`);
+  const order_plan_with_free_trial = require(`./tests/GBP-tests/475_subscriber_order_plan_with_free_trial`);
   // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
   // 1. Transacion filter by name and plan title
   // 2. 2.A pause, resume and 2.B cancel subscription test. 
-  const order_plan_with_subscription_and_upfront_charge = require(`./tests/${TEST}/293_subscriber_order_plan_with_recurring_and_upfront_charge`);
+  const order_plan_with_subscription_and_upfront_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_recurring_and_upfront_charge`);
+
+  // Tests for CAD currency
+  const stripe_connect_CAD = require('./tests/CAD-tests/stripe_connect.js');
+
+  const order_plan_with_subscription_and_upfront_charge_CAD = require(`./tests/CAD-tests/293_subscriber_order_plan_with_recurring_and_upfront_charge`);
+
 
 });
 

@@ -91,7 +91,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "🙌 Live preview is here: http://${{ github.head_ref }}.pcpink.co.uk"
+              body: "🙌 Live preview is here: http://CAD-${{ github.head_ref }}.pcpink.co.uk"
             })
 
       - uses: actions/setup-node@v3
@@ -106,7 +106,7 @@ jobs:
 
       - name: Run & Record browser automated tests (Playwright)
         env:
-          PLAYWRIGHT_HOST: http://${{ github.head_ref }}.pcpink.co.uk/
+          PLAYWRIGHT_HOST: http://CAD-${{ github.head_ref }}.pcpink.co.uk/
           PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
           SUBSCRIBER_EMAIL_HOST: ${{ secrets.SUBSCRIBER_EMAIL_HOST }}
@@ -115,13 +115,12 @@ jobs:
           EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
           RESET_PASSWORD_IMAP_SEARCH_SUBJECT: ${{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
           IMAP_SEARCH_UNSEEN: "1"
-          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
-          TEST: "CAD-tests"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2022"
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
           cp .env.example .env
-          cd tests/browser-automated-tests-playwright; npx playwright test --grep-invert @704 --update-snapshots
+          cd tests/browser-automated-tests-playwright; npx playwright test --grep @CAD --update-snapshots
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}

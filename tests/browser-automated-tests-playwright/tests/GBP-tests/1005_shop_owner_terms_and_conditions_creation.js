@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 //Subscribie tests
-test("@1005@shop-owner@terms and condition creation", async ({ page }) => {
+test("@1005@shop-owner@terms and condition creation @GBP", async ({ page }) => {
   try{
     console.log("checking if terms and conditions is already attached to the free plan...");
     await page.goto('/');

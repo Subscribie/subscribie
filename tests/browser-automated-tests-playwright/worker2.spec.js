@@ -1,5 +1,4 @@
 const { test, expect } = require('@playwright/test');
-const TEST = process.env.TEST;
 test.beforeEach(async ({ page }) => {
   //Login
   await page.goto('/auth/login');
@@ -13,16 +12,16 @@ test.beforeEach(async ({ page }) => {
   await new Promise(x => setTimeout(x, 5000));
 }); 
 
-  const plan_creation = require(`./tests/${TEST}/shop_owner_plan_creation`);
+  const plan_creation = require(`./tests/GBP-tests/shop_owner_plan_creation`);
   
-  const changing_plans_order = require(`./tests/${TEST}/275_shop_owner_changing_plans_order`);
+  const changing_plans_order = require(`./tests/GBP-tests/275_shop_owner_changing_plans_order`);
 
-  const share_private_plan_url = require(`./tests/${TEST}/491_shop_owner_share_private_plan_url`);
+  const share_private_plan_url = require(`./tests/GBP-tests/491_shop_owner_share_private_plan_url`);
 
-  const order_plan_with_choice_options_and_required_note = require(`./tests/${TEST}/264_subscriber_order_plan_with_choice_options_and_required_note`);
+  const order_plan_with_choice_options_and_required_note = require(`./tests/GBP-tests/264_subscriber_order_plan_with_choice_options_and_required_note`);
 
-  const order_plan_with_cancel_at = require(`./tests/${TEST}/516_subscriber_order_plan_with_cancel_at`);
+  const order_plan_with_cancel_at = require(`./tests/GBP-tests/516_subscriber_order_plan_with_cancel_at`);
 
-  const order_plan_cooling_off = require(`./tests/${TEST}/133_subscriber_order_plan_with_cooling_off`);
+  const order_plan_cooling_off = require(`./tests/GBP-tests/133_subscriber_order_plan_with_cooling_off`);
 
 

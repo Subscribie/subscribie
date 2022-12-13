@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 
 
-test('@993@subscriber@change card details', async ({ page }) => {
+test('@993@subscriber@change card details @GBP', async ({ page }) => {
 
   
   await page.goto("/auth/logout");

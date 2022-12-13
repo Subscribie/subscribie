@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with cooling off:", () => {
-    test("@133@subscriber@Ordering plan with cooling off feature", async ({ page }) => {
+    test("@133@subscriber@Ordering plan with cooling off feature @GBP", async ({ page }) => {
         console.log("Ordering plan with cooling off");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product

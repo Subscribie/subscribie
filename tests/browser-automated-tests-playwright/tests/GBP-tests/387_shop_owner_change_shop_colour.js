@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 //Subscribie tests
-test("@387@shop-owner@change_shop_colour", async ({ page }) => {
+test("@387@shop-owner@change_shop_colour @GBP", async ({ page }) => {
     console.log("changing shop colour...");
      // Go to style your shop
     await page.goto('/style/style-shop');

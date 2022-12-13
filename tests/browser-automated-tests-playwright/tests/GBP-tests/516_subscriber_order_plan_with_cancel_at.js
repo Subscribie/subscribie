@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with cancel at:", () => {
-    test("@516@subscriber@Ordering plan with cancel at feature", async ({ page }) => {
+    test("@516@subscriber@Ordering plan with cancel at feature @GBP", async ({ page }) => {
         console.log("Ordering plan with cancel_at");
         // Go to home before selecting product
         await page.goto('/'); 
