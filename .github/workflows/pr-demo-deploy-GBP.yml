@@ -66,7 +66,7 @@ jobs:
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} FLASK_ENV=development"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} EMAIL_QUEUE_FOLDER=${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }}"
           # mount email-queue folder
-          ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ github.head_ref }} || true"
+          ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ env.SUBDOMAIN }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ env.SUBDOMAIN }} || true"
 
       - name: Deploy branch ${{ github.head_ref }} to dokku
         uses: idoberko2/dokku-deploy-github-action@v1
@@ -81,7 +81,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
         run: |
-          echo Visit your pr here: http://${{ github.head_ref }}.pcpink.co.uk
+          echo Visit your pr here: http://GBP-${{ github.head_ref }}.pcpink.co.uk
       - name: 'Comment PR with web address of application live preview'
         uses: actions/github-script@v3
         if: github.event_name == 'pull_request'
