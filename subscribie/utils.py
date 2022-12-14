@@ -29,7 +29,7 @@ COUNTRY_CODE_TO_CURRENCY_CODE = {
     "SK": "EUR",
     "SI": "EUR",
     "ES": "EUR",
-    "AU": "USD",
+    "AU": "AUD",
 }
 
 

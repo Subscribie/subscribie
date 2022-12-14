@@ -997,7 +997,7 @@ def stripe_connect():
         {
             "country_code": "AU",
             "country_name": "Australia",
-            "currency_code": "USD",
+            "currency_code": "AUD",
         },
         {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
         {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
