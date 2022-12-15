@@ -1,3 +1,17 @@
+# v0.1.168 (Thu Dec 15 2022)
+
+#### 🐛 Bug Fix
+
+- 1022 australia support with usd [#1023](https://github.com/Subscribie/subscribie/pull/1023) ([@joeltejeda](https://github.com/joeltejeda))
+- Added canada to currency [#1019](https://github.com/Subscribie/subscribie/pull/1019) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 2
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.167 (Mon Nov 28 2022)
 
 #### ⚠️ Pushed to `master`
