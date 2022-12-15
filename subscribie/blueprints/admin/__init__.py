@@ -994,6 +994,86 @@ def stripe_connect():
             "country_name": "Canada",
             "currency_code": "CAD",
         },
+        {
+            "country_code": "BR",
+            "country_name": "Brazil",
+            "currency_code": "BRL",
+        },
+         {
+            "country_code": "BR",
+            "country_name": "Brazil",
+            "currency_code": "BGN",
+        },
+         {
+            "country_code": "BG",
+            "country_name": "Bulgaria",
+            "currency_code": "BRL",
+        },
+         {
+            "country_code": "CZ",
+            "country_name": "Czech Republic",
+            "currency_code": "CZK",
+        },
+         {
+            "country_code": "DK",
+            "country_name": "Denmark",
+            "currency_code": "DKK",
+        },
+         {
+            "country_code": "HK",
+            "country_name": "Hong Kong",
+            "currency_code": "HKD",
+        },
+         {
+            "country_code": "HU",
+            "country_name": "Hungary",
+            "currency_code": "HUF",
+        },
+         {
+            "country_code": "JP",
+            "country_name": "Japan",
+            "currency_code": "JPY",
+        },
+         {
+            "country_code": "MX",
+            "country_name": "Mexico",
+            "currency_code": "MXN",
+        },
+         {
+            "country_code": "NO",
+            "country_name": "Norway",
+            "currency_code": "NOK",
+        },
+         {
+            "country_code": "PL",
+            "country_name": "Poland",
+            "currency_code": "PLN",
+        },
+         {
+            "country_code": "RO",
+            "country_name": "Romania",
+            "currency_code": "RON",
+        },
+         {
+            "country_code": "SG",
+            "country_name": "Singapore",
+            "currency_code": "SGD",
+        },
+         {
+            "country_code": "ES",
+            "country_name": "Spain",
+            "currency_code": "EUR",
+        },
+         {
+            "country_code": "SE",
+            "country_name": "Sweden",
+            "currency_code": "SEK",
+        },
+         {
+            "country_code": "CH",
+            "country_name": "Switzerland",
+            "currency_code": "CHF",
+        },
         {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
         {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
         {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
