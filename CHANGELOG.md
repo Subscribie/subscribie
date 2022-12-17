@@ -1,3 +1,15 @@
+# v0.1.169 (Sat Dec 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1028 set session expiration 30mins [#1029](https://github.com/Subscribie/subscribie/pull/1029) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.168 (Thu Dec 15 2022)
 
 #### 🐛 Bug Fix
