@@ -61,7 +61,9 @@ def create_app(test_config=None):
     LANGUAGES = ["en", "de"]
 
     load_dotenv(verbose=True)
+    PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
+    app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
 
     if test_config is not None:
         app.config.update(test_config)
@@ -72,6 +74,7 @@ def create_app(test_config=None):
 
     @app.before_request
     def start_session():
+        session.permanent = True
         try:
             session["sid"]
         except KeyError:
