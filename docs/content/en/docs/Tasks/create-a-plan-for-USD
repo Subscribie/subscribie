@@ -1,0 +1,68 @@
+---
+title: "Create a USD ready plan"
+date: 2022-11-18
+weight: 5
+description: >
+  A guide to create a plan that is USD ready.
+---
+
+Do you want to offer your subscription to American customers? You can do this in Subscribie! Subscribie allows you to create a subscription and alter its price according to the curremcy, you will elarn all bout it in this guide. Subscribie allows you to place markups and markdowns to USD so you can change the price of the currency. Subscribie alters the price of the plan based on your location. for exapmple, if your customer is from the US, they will see your plan in USD.
+
+## Steps to Create a USD ready plan
+
+Step 1: On the main page of Subscribie.co.uk, click Get Started
+
+
+Step 2: Fill in your Business Name, E-mail and type a password then scroll down.
+
+
+Step 3: Now fill in your subscription details:
+- The name you would like to give your subscription, here we are naming it Membership Subscription.
+- Enter the amount for the subscription
+- Specify the interval between subscription payments, for example, weekly, monthly and yearly.
+- Write short description explaining your subscription.
+- Once you have provided the following information, click Save
+
+
+Step 4: Once you have clicked Save, Subscribie will begin to build your website and you will be redirected to your shop dashboard.
+
+
+Step 5: Under Checklist, click "Review Stripe"
+
+Step 6: Choose the country of Origin (the country you are based in) from the drop down menu.
+
+Step 7: Set "Live / Test mode" to begin colelcting payments and click "start taking live payments"
+
+Step 8: Next, fill out your contact details and verification code sent to yout phone.
+
+Step 9: Now select your Type of Business from the drop-down box
+
+Step 10: Next, fill out your details and select continue.
+
+Step 11: Select the Industry of your business 
+
+Step 12: Provide the nessisary details required and review the additional information if prompted and click Submit.
+
+Step 13: You are ready to take live payments!
+
+Step 14: Now you need to to make your existing plan USD ready. Go to "Price Lists" under "Edit/Add Plans" in your dashboard.
+
+Step 15: Now, Select "Manage Rules"
+
+Step 16: Select "Add Price List Rule"
+
+Step 17: Add a Rule name and set a price increase/decrease (You can also set a start and end date for this rule to be active) You also have the option to add a minimum price for this rule to be activated then click save.
+
+Steps 18: Now go to manage price lists and select "default USD" 
+
+Step 19: Choose the rule you just created in step 17 and click save.
+
+Step 20: Now, go to manage price lists and in "Default USD" click "Assign to Plans". This will apply the changes to your plans. 
+
+Step 21: Now your plans are USD ready.
+
+Step 22: Now, if an American subscriber signs up to your shop, Subscribie allows you to view your balance. To view your balance, click "Connect Stripe" under "Payment gateway" from your dashboard.
+
+Step 23: Select "View balance, payouts and change bank account settings". 
+
+Step 24: You can now view your balance.
