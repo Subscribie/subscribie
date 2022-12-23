@@ -43,12 +43,25 @@ def add_priceListRule():
         if affects_interval_amount == "on":
             affects_interval_amount = True
 
-        percent_discount = request.form.get("percent_discount", None)
-        percent_increase = request.form.get("percent_increase", None)
-        amount_discount = request.form.get("amount_discount", None)
-        amount_increase = request.form.get("amount_increase", None)
-        min_sell_price = request.form.get("min_sell_price", None)
-        min_interval_amount = request.form.get("min_interval_amount", None)
+        percent_discount = int(request.form.get("percent_discount") or 0)
+        percent_increase = int(request.form.get("percent_increase") or 0)
+        amount_discount = int(request.form.get("amount_discount") or 0)
+        amount_increase = int(request.form.get("amount_increase") or 0)
+        if request.form.get("min_sell_price") == '':
+            min_sell_price = None
+            has_min_sell_price = False
+        else:
+            min_sell_price = int(request.form.get("min_sell_price"))
+            has_min_sell_price = True
+
+        if request.form.get("min_interval_amount") == '':
+            min_interval_amount = None
+            has_min_interval_amount = False
+        else:
+            min_interval_amount = int(request.form.get("min_interval_amount"))
+            has_min_interval_amount = True
+
+
         # validate if using both percent/amount increase and discount
         if percent_increase and percent_discount or amount_increase and amount_discount:
             flash("Please only use one method, increase or discount")
