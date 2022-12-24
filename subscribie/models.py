@@ -740,7 +740,10 @@ class Plan(database.Model, HasArchived):
                 if rule.affects_sell_price and sell_price is not None:
                     if rule.percent_increase:
                         # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
-                        if ( rule.has_min_sell_price and sell_price >= rule.min_sell_price):
+                        if (
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
+                        ):
                             sell_price = apply_percent_increase(
                                 sell_price, rule.percent_increase
                             )  # noqa: E501
@@ -755,7 +758,10 @@ class Plan(database.Model, HasArchived):
                         Then I want a percent discount to apply if the value is equal to or greater than the minimum sell price
                         Otherwise, always apply the percent discount regardlrss of sell price.
                         """
-                        if rule.has_min_sell_price and sell_price >= rule.min_sell_price:
+                        if (
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
+                        ):
                             sell_price = apply_percent_discount(
                                 sell_price, rule.percent_discount
                             )  # noqa: E501
