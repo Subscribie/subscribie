@@ -21,6 +21,7 @@ def test_admin_can_view_dashboard(
     with user_set(app, user):
         client.get("/admin/dashboard", follow_redirects=True)
 
+
 def test_admin_can_add_plan(
     session, app, client, admin_session, with_default_country_code_and_default_currency
 ):
@@ -157,15 +158,25 @@ def test_user_model(session):
     assert user.id > 0
 
 
-def test_create_PriceList_and_price_list_rule_percent_discount(session, app, client, admin_session, with_shop_owner, with_default_country_code_and_default_currency):
+def test_create_PriceList_and_price_list_rule_percent_discount(
+    session,
+    app,
+    client,
+    admin_session,
+    with_shop_owner,
+    with_default_country_code_and_default_currency,
+):
     from subscribie.models import PriceList, PriceListRule, Plan
     from subscribie.database import database
+
     currency = "USD"
     priceList = PriceList(name="Christmas USD", currency=currency)
     # Prepare rule
     percent_discount = 25
 
-    rule = PriceListRule(percent_discount=percent_discount, name=f"{percent_discount}% Discount")
+    rule = PriceListRule(
+        percent_discount=percent_discount, name=f"{percent_discount}% Discount"
+    )
     priceList.rules.append(rule)
     database.session.add(priceList)
     database.session.commit()
@@ -211,5 +222,5 @@ def test_create_PriceList_and_price_list_rule_percent_discount(session, app, cli
     print(f"Ensure price rule is applied {percent_discount}% Discount")
     expected_sell_price = 750000
     expected_inverval_amount = 522
-    assert plan.getPrice('USD')[0] == expected_sell_price
-    assert plan.getPrice('USD')[1] == expected_inverval_amount
+    assert plan.getPrice("USD")[0] == expected_sell_price
+    assert plan.getPrice("USD")[1] == expected_inverval_amount
