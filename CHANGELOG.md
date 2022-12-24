@@ -1,3 +1,15 @@
+# v0.1.170 (Sat Dec 24 2022)
+
+#### 🐛 Bug Fix
+
+- fix #1024 added new zealand support with usd [#1025](https://github.com/Subscribie/subscribie/pull/1025) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.169 (Sat Dec 17 2022)
 
 #### 🐛 Bug Fix
