@@ -13,11 +13,21 @@ There are two types of test Subscribie has:
 1. Browser automated tests using [playwright](https://github.com/microsoft/playwright)
 2. Basic Python tests
 
+# Where are the tests?
+
+Tests are in the [`tests` directory of the Subscribie repo](https://github.com/Subscribie/subscribie/tree/master/tests)
+
 # Run Basic Tests with `pytest`
 
 ```
 . venv/bin/activate # activates venv
 python -m pytest --ignore=node_modules # run pytest
+```
+
+Run a single test
+
+```
+python -m pytest -vv -k 'test_create_PriceList_and_price_list_rule_percent_discount'
 ```
 
 # Browser automated tests with `playwright`
