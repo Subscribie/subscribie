@@ -995,6 +995,11 @@ def stripe_connect():
             "currency_code": "CAD",
         },
         {
+            "country_code": "NZ",
+            "country_name": "New Zealand",
+            "currency_code": "NZD",
+        },
+        {
             "country_code": "AU",
             "country_name": "Australia",
             "currency_code": "AUD",
