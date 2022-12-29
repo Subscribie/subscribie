@@ -1,3 +1,4 @@
+from .logger import logger  # noqa: F401
 import logging
 from subscribie.auth import check_private_page
 from pathlib import Path
@@ -162,6 +163,18 @@ def inject_template_globals():
 @bp.route("/health")
 def health():
     return "OK", 200
+
+
+@bp.route("/notification")
+def test_notifications():
+    log.debug("Test debug notification")
+    log.info("Test info notification")
+    log.warning("Test warning notification")
+    log.error("Test error notification")
+    log.critical("Test critical notification")
+    return """Test notification sent.\n
+    If handlers are configured correctly, then notification(s) will appear in the respective handler(s).\n
+    See also https://docs.subscribie.co.uk/docs/architecture/logging/"""  # noqa: E501
 
 
 @bp.route("/cdn/<path:filename>")
