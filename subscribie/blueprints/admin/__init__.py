@@ -1102,7 +1102,9 @@ def stripe_onboarding():
     try:
         return jsonify({"url": account_link_url})
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        msg = "An occurred during Stripe onboarding"
+        log.error(f"{msg}: {e}")
+        return jsonify(error=msg), 403
 
 
 def _generate_account_link(account_id):
