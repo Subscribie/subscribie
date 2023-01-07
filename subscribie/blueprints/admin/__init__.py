@@ -994,6 +994,16 @@ def stripe_connect():
             "country_name": "Canada",
             "currency_code": "CAD",
         },
+        {
+            "country_code": "NZ",
+            "country_name": "New Zealand",
+            "currency_code": "NZD",
+        },
+        {
+            "country_code": "AU",
+            "country_name": "Australia",
+            "currency_code": "AUD",
+        },
         {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
         {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
         {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},

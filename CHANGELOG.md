@@ -1,3 +1,41 @@
+# v0.1.170 (Sat Dec 24 2022)
+
+#### 🐛 Bug Fix
+
+- fix #1024 added new zealand support with usd [#1025](https://github.com/Subscribie/subscribie/pull/1025) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.169 (Sat Dec 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1028 set session expiration 30mins [#1029](https://github.com/Subscribie/subscribie/pull/1029) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.168 (Thu Dec 15 2022)
+
+#### 🐛 Bug Fix
+
+- 1022 australia support with usd [#1023](https://github.com/Subscribie/subscribie/pull/1023) ([@joeltejeda](https://github.com/joeltejeda))
+- Added canada to currency [#1019](https://github.com/Subscribie/subscribie/pull/1019) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 2
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.167 (Mon Nov 28 2022)
 
 #### ⚠️ Pushed to `master`
