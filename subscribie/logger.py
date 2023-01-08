@@ -6,9 +6,6 @@ from subscribie.TelegramHTTPHandler import TelegramHTTPHandler
 import os
 import sys
 import queue
-from dotenv import load_dotenv
-
-load_dotenv(verbose=True)
 
 PYTHON_LOG_LEVEL = os.getenv("PYTHON_LOG_LEVEL", "DEBUG")
 TELEGRAM_PYTHON_LOG_LEVEL = os.getenv("TELEGRAM_PYTHON_LOG_LEVEL", "ERROR")

@@ -30,7 +30,6 @@ setuptools.setup(
         "tinycss",
         "flask_sqlalchemy",
         "flask_migrate",
-        "python-dotenv==0.13.0",
         "click==7.1.2",
         "pyjwt[crypto]",
         "py-auth-header-parser==1.0.2",

@@ -7,7 +7,18 @@
 
     :copyright: (c) 2018 by Karma Computing Ltd
 """
-from dotenv import load_dotenv
+
+# Validate settings
+import yamale
+
+schema = yamale.make_schema("./schema.yaml")
+
+# Create a Data object
+loaded_settings = yamale.make_data("./.env")
+
+# Validate settings against schema. Throws a ValueError if settings are invalid.
+yamale.validate(schema, loaded_settings)
+settings = loaded_settings[0][0]["settings"]
 
 from .logger import logger  # noqa: F401
 import logging
@@ -46,7 +57,6 @@ from jinja2 import Template
 
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
 
-load_dotenv(verbose=True)
 
 log = logging.getLogger(__name__)
 
@@ -60,8 +70,10 @@ def create_app(test_config=None):
     babel = Babel(app)
     LANGUAGES = ["en", "de"]
 
-    load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
+    # First take from validated settings
+    app.config.update(settings)
+    # Allow environment overide
     app.config.update(os.environ)
     app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
 

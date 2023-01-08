@@ -1,0 +1,82 @@
+settings:
+  FLASK_ENV: str()
+  SAAS_URL: str()
+  # SAAS_API_KEY is to allow subscribie platform to send authenticated
+  # api requests to subscribie shops created by the shop builder.
+  SAAS_API_KEY: str()
+  SAAS_ACTIVATE_ACCOUNT_PATH: str()
+  
+  # For testing this repo in isolation, SUBSCRIBIE_REPO_DIRECTORY can be './'
+  # for production, SUBSCRIBIE_REPO_DIRECTORY should be wherever the repo
+  # is cloned to
+  SUBSCRIBIE_REPO_DIRECTORY: str()
+  SQLALCHEMY_TRACK_MODIFICATIONS: bool()
+  SQLALCHEMY_DATABASE_URI: str()
+  SECRET_KEY: str()
+  DB_FULL_PATH: str()
+  MODULES_PATH: str()
+  TEMPLATE_BASE_DIR: str()
+  THEME_NAME: str()
+  CUSTOM_PAGES_PATH: str()
+  UPLOADED_IMAGES_DEST: str()
+  UPLOADED_FILES_DEST: str()
+  MAX_CONTENT_LENGTH: int()
+  SUCCESS_REDIRECT_URL: str()
+  THANKYOU_URL: str()
+  EMAIL_LOGIN_FROM: str()
+  EMAIL_QUEUE_FOLDER: str()
+  
+  
+  SERVER_NAME: str()
+  
+  # Cookie policies
+  # See https://flask.palletsprojects.com/en/2.2.x/security/#set-cookie-options
+  PERMANENT_SESSION_LIFETIME: int()
+  SESSION_COOKIE_SECURE: bool()
+  SESSION_COOKIE_HTTPONLY: bool()
+  SESSION_COOKIE_SAMESITE: str()
+  
+  MAIL_DEFAULT_SENDER: str()
+  
+  # Supported currencies
+  SUPPORTED_CURRENCIES: str()
+  
+  STRIPE_LIVE_PUBLISHABLE_KEY: str(required=False)
+  STRIPE_LIVE_SECRET_KEY: str(required=False)
+  
+  STRIPE_TEST_PUBLISHABLE_KEY: str()
+  STRIPE_TEST_SECRET_KEY: str()
+  
+  # Internal server where shop should send its stripe connect account id to. See https: str()
+  STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: str()
+  
+  # For development: str()
+  
+  
+  # Python log levels: str()
+  # See https: str()
+  PYTHON_LOG_LEVEL: str(matches='(NOTSET|DEBUG|INFO|WARNING|ERROR|CRITICAL)')
+  
+  # Playwright testing
+  PLAYWRIGHT_HOST: str()
+  PLAYWRIGHT_HEADLESS: bool()
+  
+  # rename shop variables
+  PATH_TO_SITES: str()
+  PATH_TO_RENAME_SCRIPT: str()
+  SUBSCRIBIE_DOMAIN: str()
+  
+  PRIVATE_KEY: str()
+  PUBLIC_KEY: str()
+  
+  
+  # Optional
+  TELEGRAM_TOKEN: str()
+  TELEGRAM_CHAT_ID: str()
+  TELEGRAM_PYTHON_LOG_LEVEL: str(matches='(NOTSET|DEBUG|INFO|WARNING|ERROR|CRITICAL)')
+  
+  
+  # Environment Settings for tests
+  TEST_SHOP_OWNER_EMAIL_ISSUE_704: str()
+  TEST_SHOP_OWNER_LOGIN_URL: str()
+  
