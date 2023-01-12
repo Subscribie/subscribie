@@ -57,7 +57,8 @@ jobs:
           echo Creating dokku app ${{ github.head_ref }}
           ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
           echo The url will be ${{ github.head_ref }}.pcpink.co.uk
-          ssh dokku@$DOKKU_HOST -C "dokku git:sync --build ${{ env.SUBDOMAIN }} https://github.com/Subscribie/subscribie.git ${{ github.head_ref }}"
+          ssh dokku@$DOKKU_HOST -C "dokku git:initialize ${{ env.SUBDOMAIN }}"
+          ssh dokku@$DOKKU_HOST -C "dokku git:set ${{ env.SUBDOMAIN }} deploy-branch ${{ github.head_ref }}"
           # set Stripe test keys as env vars dor dokku/docker
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_TEST_SECRET_KEY=${{ secrets.STRIPE_TEST_SECRET_KEY }}"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_TEST_PUBLISHABLE_KEY=${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}"
