@@ -1,3 +1,15 @@
+# v0.1.172 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- Test pr preview master [#1046](https://github.com/Subscribie/subscribie/pull/1046) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.171 (Thu Jan 12 2023)
 
 #### 🐛 Bug Fix
