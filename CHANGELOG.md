@@ -1,3 +1,15 @@
+# v0.1.173 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- Update demo videos [#1047](https://github.com/Subscribie/subscribie/pull/1047) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.172 (Thu Jan 12 2023)
 
 #### 🐛 Bug Fix
