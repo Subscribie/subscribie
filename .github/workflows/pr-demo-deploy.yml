@@ -128,4 +128,4 @@ jobs:
           name: Screenshots-and-video-artifacts
           path: |
             ./index.spec.js-snapshots/*
-            ./tests/browser-automated-tests-playwright/test-results/*
+            ./test-results/*
