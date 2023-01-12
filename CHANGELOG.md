@@ -1,3 +1,15 @@
+# v0.1.171 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- 1041 fixing pr deploy [#1042](https://github.com/Subscribie/subscribie/pull/1042) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.170 (Sat Dec 24 2022)
 
 #### 🐛 Bug Fix
