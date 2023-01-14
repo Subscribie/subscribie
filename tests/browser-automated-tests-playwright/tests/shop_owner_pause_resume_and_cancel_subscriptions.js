@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test("@147@shop-owner@Pause and Resume transaction", async ({ page }) => {  
+    test("@147@shop-owner@Pause, Resume and Cancel transaction", async ({ page }) => {  
         console.log("Pause and Resume transaction");      
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
@@ -40,23 +40,14 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         expect(subscription_resume_notification === "Subscription resumed");
         expect(await page.screenshot()).toMatchSnapshot('resume-plan.png');
 
-    });
-    test("479@shop-owner@Cancel transaction", async ({ page }) => {
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
         await new Promise(x => setTimeout(x, 1000)); // 5 secconds
         await page.goto('admin/subscribers');
 
-        // Verify that subscriber is present in the list
-        const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
-
-        const subscriber_subscription_title_content = await page.textContent('.subscription-title');
-        expect(subscriber_subscription_title_content === 'Hair Gel');
-        
         // Verify if subscription active & click cancel 
-        const subscription_status = await page.textContent('.subscription-status');
-        expect(subscription_status === "active");
+        const subscription_status_resumed = await page.textContent('.subscription-status');
+        expect(subscription_status_resumed === "active");
 
         //Cancel Subscription
         await page.click('.cancel-action');

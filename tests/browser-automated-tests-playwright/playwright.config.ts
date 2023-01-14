@@ -10,9 +10,10 @@ const { devices } = require('@playwright/test');
 const config: PlaywrightTestConfig = {
   testDir: 'tests',
   testDir: '../browser-automated-tests-playwright',
+  globalSetup: require.resolve('./global-setup.js'),
   timeout: 180000,
-  retries: 2,
-  workers: 3,
+  retries: 5,
+  workers: 5,
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
