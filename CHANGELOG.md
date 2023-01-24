@@ -1,3 +1,15 @@
+# v0.1.174 (Tue Jan 24 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1052 provide link to help login [#1053](https://github.com/Subscribie/subscribie/pull/1053) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.173 (Thu Jan 12 2023)
 
 #### 🐛 Bug Fix
