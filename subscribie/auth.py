@@ -259,7 +259,7 @@ def send_login_token_email():
             session.clear()
             log.debug(f'Invalid password during form login using email "{email}"')
             flash("Invalid password")
-            log.debug('Redirecting user back to {url_for("auth.login")}')
+            log.debug(f'Redirecting user back to {url_for("auth.login")}')
             return redirect(url_for("auth.login"))
 
     if magic_login_form.validate_on_submit():
@@ -270,11 +270,11 @@ def send_login_token_email():
             msg = "Email address not found, did you sign-up with a different email address?"  # noqa: E501
             flash(msg)
             log.debug(f"User not found during magic login. Email: '{email}'")
-            log.debug('Redirecting user back to {url_for("auth.login")}')
+            log.debug(f'Redirecting user back to {url_for("auth.login")}')
             return redirect(url_for("auth.login"))
         try:
             log.debug(
-                'Attempting to send_login_url for {magic_login_form.data["email"]}'
+                f'Attempting to send_login_url for {magic_login_form.data["email"]}'
             )
             send_login_url(magic_login_form.data["email"])
             source = ' \
@@ -325,7 +325,7 @@ def do_login(login_token):
     # Try to get user from login_token
     user = User.query.filter_by(login_token=login_token).first()
     if user is not None:
-        log.debug("Located user via login token on user table. Email: '{user.email}'")
+        log.debug(f"Located user via login token on user table. Email: '{user.email}'")
         # Invalidate previous token
         new_login_token = urlsafe_b64encode(os.urandom(24))
         user.login_token = new_login_token
@@ -351,7 +351,7 @@ def do_login(login_token):
         return "User not found"
     else:
         log.degbug(
-            "Successfully located user via valid login token. Email: {user.email}"
+            f"Successfully located user via valid login token. Email: {user.email}"
         )
 
     start_new_user_session(user.email)
@@ -379,7 +379,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = User.query.filter_by(email=user_id).first()
-    log.debug("Set g.user to {g.user}")
+    log.debug(f"Set g.user to {g.user}")
 
 
 def generate_login_token():
@@ -396,10 +396,10 @@ def generate_login_url(email):
 
     if user is not None:
         user.login_token = login_token
-        log.debug("The located user was: {user.email}")
+        log.debug(f"The located user was: {user.email}")
     elif user is None:
         user = Person.query.filter_by(email=email.lower()).first()
-        log.debug("The located person was: {user.email}")
+        log.debug(f"The located person was: {user.email}")
         if user is not None:
             # Insert login token into db
             loginToken = LoginToken()
@@ -408,12 +408,12 @@ def generate_login_url(email):
             database.session.add(loginToken)
 
     if user is None:
-        log.debug("Unable to locate user for generate_login_url. Email: {email}")
+        log.debug(f"Unable to locate user for generate_login_url. Email: {email}")
         return "Invalid valid user"
 
     database.session.commit()
     login_url = "".join([request.host_url, "auth/login/", login_token])
-    log.info("One-time login url: {login_url}")
+    log.info(f"One-time login url: {login_url}")
     return login_url
 
 
@@ -438,7 +438,7 @@ def send_login_url(email):
     msg.add_alternative(html, subtype="html")
     msg.queue()
     log.debug(
-        "Added magic login url email to queue. To: '{email}'. Subject: '{subject}'"
+        f"Added magic login url email to queue. To: '{email}'. Subject: '{subject}'"
     )
 
 
@@ -448,12 +448,12 @@ def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():
         email = form.data["email"]
-        log.debug("Form validated for ForgotPasswordForm. Email: '{email}'")
+        log.debug(f"Form validated for ForgotPasswordForm. Email: '{email}'")
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash("User not found with that email")
             log.debug(
-                "User not found for {email}. Refusing to send forgot password email"
+                f"User not found for {email}. Refusing to send forgot password email"
             )
             return redirect(url_for("auth.forgot_password"))
         # Generate password reset token
@@ -509,11 +509,11 @@ def password_reset():
             return "Invalid reset token"
 
         user = User.query.filter_by(password_reset_string=form.data["token"]).first()
-        log.debug("User found using password reset token. Email: '{user.email}'")
+        log.debug(f"User found using password reset token. Email: '{user.email}'")
         user.set_password(form.data["password"])
         database.session.commit()
         flash("Your password has been reset")
-        log.debug("User password has been reset for user '{user.email}'")
+        log.debug(f"User password has been reset for user '{user.email}'")
         return redirect(url_for("auth.login"))
 
     if (

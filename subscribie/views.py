@@ -72,7 +72,7 @@ def on_each_request():
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
     except LookupError as e:  # noqa: F841
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(f"Unable to get geo country from request header: {e}")
 
     # Dynamic country detection
     if countryObj is not None:
@@ -89,7 +89,7 @@ def on_each_request():
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
         fallback_default_country = get_shop_default_country_code()
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(f"Unable to get geo country from request headers. Falling back to: {fallback_default_country}")
         countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
         assert countryObj is not None
         country = {
@@ -102,6 +102,9 @@ def on_each_request():
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
         session["fallback_default_country_active"] = True
+        log.debug(f'session country is set to: {session["country"]}')
+        log.debug(f'session country_code is set to: {session["country_code"]}')
+        log.debug(f'session fallback_default_country_active is: {session["fallback_default_country_active"]}')
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
