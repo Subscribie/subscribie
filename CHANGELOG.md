@@ -1,3 +1,15 @@
+# v0.1.175 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1054 additional help logging into shops docs [#1056](https://github.com/Subscribie/subscribie/pull/1056) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.174 (Tue Jan 24 2023)
 
 #### 🐛 Bug Fix
