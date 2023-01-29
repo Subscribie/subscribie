@@ -33,6 +33,7 @@ import jwt
 from py_auth_header_parser import parse_auth_header
 import datetime
 import stripe
+from flask_babel import _
 
 log = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -291,6 +292,14 @@ def send_login_token_email():
         except Exception as e:
             log.error(f"Failed to generate login email. {e}")
             return "Failed to generate login email."
+
+    # If reach here, then neither PasswordLoginForm nor magic_login_form have validated
+    flash(
+        _(
+            "Please provide at least your email address to login, or use the forgot password feature."  # noqa: E501
+        )
+    )
+    return redirect(url_for("auth.login"))
 
 
 @bp.route("/login", methods=["GET"])

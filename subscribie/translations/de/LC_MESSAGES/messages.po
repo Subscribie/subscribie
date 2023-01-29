@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-01-29 14:33+0000\n"
+"POT-Creation-Date: 2023-01-29 16:53+0000\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -21,6 +21,12 @@ msgstr ""
 #: subscribie/__init__.py:324
 msgid "Hello"
 msgstr "Hallo"
+
+#: subscribie/auth.py:298
+msgid ""
+"Please provide at least your email address to login, or use the forgot "
+"password feature."
+msgstr "Bitte geben Sie mindestens Ihre E-Mail-Adresse an, um sich anzumelden, oder verwenden Sie die Funktion 'Passwort vergessen'."
 
 #: subscribie/models.py:544
 msgid "daily"
