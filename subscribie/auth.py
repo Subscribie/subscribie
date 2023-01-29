@@ -409,6 +409,7 @@ def generate_login_url(email):
 
 
 def send_login_url(email):
+    log.debug("In send_login_url")
     login_url = generate_login_url(email)
     html = """\
     <html>
@@ -420,22 +421,31 @@ def send_login_url(email):
     log.info("Generated login url: %s", login_url)
     log.info("Sending login email to: %s", email)
     msg = EmailMessageQueue()
-    msg["Subject"] = "Subscribie Magic Login"
+    subject = "Subscribie Magic Login"
+    msg["Subject"] = subject
     msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
     msg["To"] = email
     msg.set_content = login_url
     msg.add_alternative(html, subtype="html")
     msg.queue()
+    log.debug(
+        "Added magic login url email to queue. To: '{email}'. Subject: '{subject}'"
+    )
 
 
 @bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
+    log.debug("In forgot_password")
     form = ForgotPasswordForm()
     if form.validate_on_submit():
         email = form.data["email"]
+        log.debug("Form validated for ForgotPasswordForm. Email: '{email}'")
         user = User.query.filter_by(email=email).first()
         if user is None:
             flash("User not found with that email")
+            log.debug(
+                "User not found for {email}. Refusing to send forgot password email"
+            )
             return redirect(url_for("auth.forgot_password"))
         # Generate password reset token
         token = binascii.hexlify(os.urandom(32)).decode()
@@ -478,6 +488,7 @@ def forgot_password():
 @bp.route("/password-reset", methods=["GET", "POST"])
 def password_reset():
     "Perform password reset from email link, verify token"
+    log.debug("In password_reset")
     form = ForgotPasswordResetPasswordForm()
 
     if form.validate_on_submit():
@@ -485,12 +496,15 @@ def password_reset():
             User.query.filter_by(password_reset_string=form.data["token"]).first()
             is None
         ):
+            log.debug("User not found using password reset token.")
             return "Invalid reset token"
 
         user = User.query.filter_by(password_reset_string=form.data["token"]).first()
+        log.debug("User found using password reset token. Email: '{user.email}'")
         user.set_password(form.data["password"])
         database.session.commit()
         flash("Your password has been reset")
+        log.debug("User password has been reset for user '{user.email}'")
         return redirect(url_for("auth.login"))
 
     if (
@@ -499,7 +513,9 @@ def password_reset():
         or User.query.filter_by(password_reset_string=request.args["token"]).first()
         is None
     ):
-        return "Invalid reset link. Please try generating a new reset link."
+        msg = "Invalid reset link. Please try generating a new reset link."
+        log.debug(f"{msg}")
+        return msg
 
     return render_template(
         "/admin/reset_password.html", token=request.args["token"], form=form
@@ -532,6 +548,8 @@ def stripe_connect_id_required(view):
     connect to be completed.
     """
 
+    log.debug("In stripe_connect_id_required")
+
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         stripe.api_key = get_stripe_secret_key()
@@ -543,6 +561,7 @@ def stripe_connect_id_required(view):
                     f"You must <a href='{ stripe_connect_url }'>connect Stripe first.</a>"  # noqa: E501
                 )
             )
+            log.debug(f'Redirecting user to {url_for("admin.dashboard")}')
             return redirect(url_for("admin.dashboard"))
 
         return view(**kwargs)
@@ -556,8 +575,10 @@ def protected_download(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is not None or g.subscriber is not None:
+            log.debug("Allowing access to protected_download")
             return view(**kwargs)
         else:
+            log.debug("Denying access to protected_download")
             return "Access denied", 401
 
     return wrapped_view
@@ -566,15 +587,19 @@ def protected_download(view):
 @bp.route("/logout")
 def logout():
     session.clear()
+    log.debug("/logout called")
     return render_template("admin/logout.html")
 
 
 def check_private_page(page_id):
     """Block access to page if private, only allow shop owner or subscriber"""
+    log.debug("In check_private_page")
     blocked = False
     page = Page.query.get(page_id)
     if page.private:
         if g.user is None and g.subscriber is None:
             blocked = True
+            log.debug(f"Denying access to private page. page_id: {page_id}")
             return blocked, redirect("/")
+    log.debug(f"Allowing access to page. page_id: {page_id}")
     return blocked, None
