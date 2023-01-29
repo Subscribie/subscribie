@@ -109,15 +109,21 @@ def token_required(f):
         public_key = open(current_app.config["PUBLIC_KEY"]).read()
         try:
             jwt.decode(auth_header["access_token"], public_key, algorithms=["RS256"])
-        except jwt.exceptions.InvalidSignatureError:
+            log.debug("jwt.decode was successful")
+        except jwt.exceptions.InvalidSignatureError as e:
+            log.exception(f"jwt.exceptions.InvalidSignatureError: {e}")
             return jsonify({"msg": "InvalidSignatureError"}), 401
-        except jwt.exceptions.ExpiredSignatureError:
+        except jwt.exceptions.ExpiredSignatureError as e:
+            log.exception(f"jwt.exceptions.ExpiredSignatureError: {e}")
             return jsonify({"msg": "ExpiredSignatureError"}), 401
-        except jwt.exceptions.InvalidAlgorithmError:
+        except jwt.exceptions.InvalidAlgorithmError as e:
+            log.exception(f"jwt.exceptions.InvalidAlgorithmError: {e}")
             return jsonify({"msg": "InvalidAlgorithmError"}), 401
-        except jwt.exceptions.DecodeError:
+        except jwt.exceptions.DecodeError as e:
+            log.exception(f"jwt.exceptions.DecodeError: {e}")
             return jsonify({"msg": "DecodeError"}), 401
-        except Exception:
+        except Exception as e:
+            log.exception(f"jwt general Exception: {e}")
             return jsonify({"msg": "Token could not be validated or was missing"})
 
         return f(*args, **kwds)
@@ -127,37 +133,54 @@ def token_required(f):
 
 def get_magic_login_link(email, password):
     login_url = generate_login_url(email)
-
+    log.debug("In get_magic_login_link")
     if check_password_login(email, password):
+        log.debug(
+            f"get_magic_login_link->check_password_login OK. Returning login_url: {login_url}"  # noqa: E501
+        )
         resp = {"login_url": login_url}
         return resp
+    log.debug(f"get_magic_login_link->check_password_login failed for email {email}")
     raise
 
 
 @bp.route("/jwt-login", methods=["GET", "POST"])
 def jwt_login():
-
+    log.debug("In jwt_login")
     if "Authorization" in request.headers:
+        log.debug(
+            "Authorization header present, so attempting to get email & password from Authorization header"  # noqa: E501
+        )
         email = request.authorization.username
         password = request.authorization.password
+        log.debug(f"Email in Authorization header was: {email}")
     elif (
         request.method == "POST"
         and request.headers.get("Content-Type") == "application/x-www-form-urlencoded"
     ):  # Oauth style login from form POST
+        log.debug(
+            "jwt_login was POST request & x-www-form-urlencoded so getting email & password from POST request"  # noqa: E501
+        )
         email = request.form.get("username", "")
         password = request.form.get("password", "")
+        log.debug(f"Email from POST x-www-form-urlencoded request was: {email}")
     elif (  # json post login
         request.method == "POST"
         and request.headers.get("Content-Type") == "application/json"
     ):
+        log.debug("jwt_login was POST & application/json request")
         email = request.json["username"]
         password = request.json["password"]
+        log.debug(f"Email from POST application/json request was: {email}")
     user = User.query.filter_by(email=email).first()
     if user is not None:
+        log.debug("Successfully located user object during jwt_login")
         # Check password
         if not user.check_password(password):
+            log.error(f"No password is set for {user.email}. Refusing to login")
             return jsonify({"msg": "Bad credentials"}), 401
 
+        log.debug("Generating jwt token")
         private_key = open(current_app.config["PRIVATE_KEY"]).read()
         jwt_payload = jwt.encode(
             {
@@ -168,6 +191,10 @@ def jwt_login():
             algorithm="RS256",
         )
         return jsonify({"token": jwt_payload})
+    else:
+        log.error(
+            f'Unable to locate user using email "{email}". Refusing to generate jtw token'  # noqa: E501
+        )
     return jsonify({"msg": "Bad credentials"})
 
 
@@ -175,18 +202,27 @@ def jwt_login():
 @token_required
 def protected():
     """Verify token based authentication"""
+    log.debug("In /protected, to verify token based authentication.")
     return jsonify({"msg": "Success"})
 
 
 def check_password_login(email, password):
+    log.debug("In check_password_login")
     user = User.query.filter_by(email=email).first()
     if user.check_password(password):
+        log.debug(
+            f'user.check_password was successfull in check_password_login for email: "{email}"'  # noqa: E501
+        )
         return True
+    log.debug(
+        f'user.check_password failed in check_password_login for email: "{email}"'
+    )
     return False
 
 
 def start_new_user_session(email):
     session.clear()
+    log.debug(f"session cleared for email '{email}' in start_new_user_session")
     session["user_id"] = email
 
 
