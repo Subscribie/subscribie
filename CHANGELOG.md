@@ -1,3 +1,16 @@
+# v0.1.177 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1035 add /notification test endpoint [#1036](https://github.com/Subscribie/subscribie/pull/1036) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1037 log stripe onboarding errors dont return [#1038](https://github.com/Subscribie/subscribie/pull/1038) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.176 (Sun Jan 29 2023)
 
 #### ⚠️ Pushed to `master`
