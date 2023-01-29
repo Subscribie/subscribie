@@ -74,29 +74,38 @@ def saas_api_only(f):
 def token_required(f):
     @functools.wraps(f)
     def wrapper(*args, **kwds):
-        # Skip token_required is user is cookie authenticated
         if g.user is not None:
+            log.debug(
+                "Skipping token_required since g.user is not None and therefore cookie authenticated"  # noqa: E501
+            )
             return f(*args, **kwds)
         if "Authorization" not in request.headers:
             resp = jsonify({"msg": "Not authenticated"})
             resp.headers.set("www-authenticate", "Bearer")
-
+            log.debug(
+                f"""Refusing login since Authorization not in request.headers.\n\n
+                The headers were: '{request.headers}'"""
+            )
             return resp, 401
 
         auth_header = parse_auth_header(request.headers["Authorization"])
 
-        # Attempt api token authentication
+        log.debug("Attemping api token authentication")
         settings = Setting.query.first()
 
         from subscribie.api import decrypt_secret
 
         api_key = decrypt_secret(settings.api_key_secret_test).decode("utf-8")
         if auth_header["access_token"] == api_key:
+            log.debug("access_token matched api_key")
             assert api_key is not None
             assert api_key != ""
+            log.debug("api_key was not None and was not empty")
             return f(*args, **kwds)
 
-        # Check if jtw based auth, Validate & decode jwt
+        log.warning("access_token did not match api_key")
+
+        log.debug("Checking if jtw based auth used, about to Validate & decode jwt")
         public_key = open(current_app.config["PUBLIC_KEY"]).read()
         try:
             jwt.decode(auth_header["access_token"], public_key, algorithms=["RS256"])
