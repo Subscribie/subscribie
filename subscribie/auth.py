@@ -222,42 +222,59 @@ def check_password_login(email, password):
 
 def start_new_user_session(email):
     session.clear()
-    log.debug(f"session cleared for email '{email}' in start_new_user_session")
+    log.debug(
+        f"session cleared & new session started for email '{email}' in start_new_user_session"  # noqa: E501
+    )
     session["user_id"] = email
 
 
 @bp.route("/login", methods=["POST"])
 def send_login_token_email():
+    log.debug("In send_login_token_email")
     magic_login_form = LoginForm()
     password_login_form = PasswordLoginForm()
 
     if password_login_form.validate_on_submit():
+        log.debug(
+            "Form validation successfull for password_login_form.validate_on_submit"
+        )
         email = password_login_form.data["email"]
+        log.debug(f"Login email was: {email}")
         password = password_login_form.data["password"]
         user = User.query.filter_by(email=email).first()
         if user is None:
-            flash(
-                "Email address not found, did you sign-up with a different email address?"  # noqa: E501
-            )
+            msg = "Email address not found, did you sign-up with a different email address?"  # noqa: E501
+            flash(msg)
+            log.debug(f"{msg}. Email: {email}")
             return redirect(url_for("auth.login"))
 
         if check_password_login(email, password):
+            log.debug(
+                f"Successful form login for '{email}'. Redirecting to admin dashboard"
+            )
             start_new_user_session(email)
             return redirect(url_for("admin.dashboard"))
         else:
             session.clear()
+            log.debug(f'Invalid password during form login using email "{email}"')
             flash("Invalid password")
+            log.debug('Redirecting user back to {url_for("auth.login")}')
             return redirect(url_for("auth.login"))
 
     if magic_login_form.validate_on_submit():
+        log.debug("In magic_login_form.validate_on_submit")
         email = magic_login_form.data["email"]
         user = User.query.filter_by(email=email).first()
         if user is None:
-            flash(
-                "Email address not found, did you sign-up with a different email address?"  # noqa: E501
-            )
+            msg = "Email address not found, did you sign-up with a different email address?"  # noqa: E501
+            flash(msg)
+            log.debug(f"User not found during magic login. Email: '{email}'")
+            log.debug('Redirecting user back to {url_for("auth.login")}')
             return redirect(url_for("auth.login"))
         try:
+            log.debug(
+                'Attempting to send_login_url for {magic_login_form.data["email"]}'
+            )
             send_login_url(magic_login_form.data["email"])
             source = ' \
                 {% extends "admin/layout.html" %} \
@@ -269,6 +286,7 @@ def send_login_token_email():
                   <p class="lead">We\'ve just sent you a login link.</p> \
                  </div> \
                 {% endblock body %} '
+            log.debug("Asking user to check their email")
             return render_template_string(source)
         except Exception as e:
             log.error(f"Failed to generate login email. {e}")
@@ -277,29 +295,40 @@ def send_login_token_email():
 
 @bp.route("/login", methods=["GET"])
 def login():
-    # If already logged in, redirect to admin dashboard
+    log.debug("In login")
     if g.user is not None:
+        log.debug(
+            f'User is already logged in, redirecting to {url_for("admin.dashboard")}'
+        )
         return redirect(url_for("admin.dashboard"))
-    # Otherwise present login form
     form = LoginForm()
+    log.debug("Sending user to login form")
     return render_template("/admin/login.html", form=form)
 
 
 @bp.route("/login/<login_token>", methods=("GET", "POST"))
 def do_login(login_token):
+    log.debug("In do_login for login_token based login")
     if len(login_token) < 10:
+        log.debug("Invalid login_token length. Refusing to login.")
         return "Invalid token"
 
     # Try to get user from login_token
     user = User.query.filter_by(login_token=login_token).first()
     if user is not None:
+        log.debug("Located user via login token on user table. Email: '{user.email}'")
         # Invalidate previous token
         new_login_token = urlsafe_b64encode(os.urandom(24))
         user.login_token = new_login_token
         database.session.commit()
     else:
         # Try and get token from LoginToken table
+        # This user.login_token is for backward compatibility
+        # LoginToken table is the prefered model to use.
         token = LoginToken.query.filter_by(login_token=login_token).first()
+        log.debug(
+            "Unable to locate login_token on user model, so attempting to locate valid login token via LoginToken table"  # noqa: E501
+        )
         if token is not None:
             user = Person.query.filter_by(uuid=token.user_uuid).first()
             # Invalidate previous token
@@ -307,42 +336,61 @@ def do_login(login_token):
             database.session.commit()
 
     if user is None:
+        log.debug(
+            "Unable to locate user via login_token for user.login_token nor LoginToken"
+        )
         return "User not found"
+    else:
+        log.degbug(
+            "Successfully located user via valid login token. Email: {user.email}"
+        )
 
     start_new_user_session(user.email)
 
     if isinstance(user, User):
+        log.debug("Starting new session for shop owner by setting session['user_id']")
         session["user_id"] = user.email
+        log.debug(f'Redirecting shop owner to: {url_for("admin.dashboard")}')
         return redirect(url_for("admin.dashboard"))
     elif isinstance(user, Person):
+        log.debug(
+            "Starting new session for subscriber by setting session['subscriber_id']"
+        )
         session["subscriber_id"] = user.email
+        log.debug(f'Redirecting subscriber to: {url_for("subscriber.account")}')
         return redirect(url_for("subscriber.account"))
 
 
 @bp.before_app_request
 def load_logged_in_user():
+    log.debug("In load_logged_in_user")
     user_id = session.get("user_id")
 
     if user_id is None:
         g.user = None
     else:
         g.user = User.query.filter_by(email=user_id).first()
+    log.debug("Set g.user to {g.user}")
 
 
 def generate_login_token():
+    log.debug("In generate_login_token")
     login_token = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
     return login_token
 
 
 def generate_login_url(email):
-    # Generate login token
+    """Generate login token url"""
+    log.debug("In generate_login_url")
     login_token = generate_login_token()
     user = User.query.filter_by(email=email.lower()).first()
 
     if user is not None:
         user.login_token = login_token
+        log.debug("The located user was: {user.email}")
     elif user is None:
         user = Person.query.filter_by(email=email.lower()).first()
+        log.debug("The located person was: {user.email}")
         if user is not None:
             # Insert login token into db
             loginToken = LoginToken()
@@ -351,6 +399,7 @@ def generate_login_url(email):
             database.session.add(loginToken)
 
     if user is None:
+        log.debug("Unable to locate user for generate_login_url. Email: {email}")
         return "Invalid valid user"
 
     database.session.commit()
