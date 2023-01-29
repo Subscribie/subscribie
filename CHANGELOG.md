@@ -1,3 +1,15 @@
+# v0.1.176 (Sun Jan 29 2023)
+
+#### ⚠️ Pushed to `master`
+
+- Ref #1054 re-compile translations de ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.175 (Sun Jan 29 2023)
 
 #### 🐛 Bug Fix
