@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-18 17:35-0400\n"
+"POT-Creation-Date: 2023-01-29 14:33+0000\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,25 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:320
+#: subscribie/__init__.py:324
 msgid "Hello"
 msgstr "Hallo"
 
-#: subscribie/models.py:509
+#: subscribie/models.py:544
 msgid "daily"
 msgstr "täglich"
 
-#: subscribie/models.py:510
+#: subscribie/models.py:545
 msgid "weekly"
 msgstr "wöchentlich"
 
-#: subscribie/models.py:511
+#: subscribie/models.py:546
 msgid "monthly"
 msgstr "monatlich"
 
-#: subscribie/models.py:512
+#: subscribie/models.py:547
 msgid "yearly"
 msgstr "jährlich"
+
+#: subscribie/blueprints/admin/templates/admin/login.html:20
+#: subscribie/themes/theme-builder/builder/login.html:42
+msgid "Need help logging into your shop?"
+msgstr "Benötigen Sie Hilfe bei der Anmeldung in Ihrem Shop?"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
@@ -148,7 +153,7 @@ msgstr "Gesamt"
 msgid "Then"
 msgstr "Dann"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:152
+#: subscribie/blueprints/checkout/templates/new_customer.html:167
 msgid "Continue to Payment"
 msgstr "Weiter zu Zahlung"
 
@@ -419,6 +424,10 @@ msgstr "Einloggen"
 msgid "Forgot your password"
 msgstr "Fügen Sie Ihren Code unten ein"
 
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:20
+msgid "Or, are you a shop admin needing help logging into your shop?"
+msgstr "Oder sind Sie Shop-Administrator und benötigen Hilfe bei der Anmeldung in Ihrem Shop?"
+
 #: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:2
 msgid "Change password"
 msgstr "Passwort ändern"
@@ -566,7 +575,7 @@ msgstr "Bestellung ausgeführt"
 msgid "No note was given"
 msgstr "Es wurde kein Hinweis gegeben"
 
-#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:84
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:99
 msgid "Details"
 msgstr "Mehr details"
 
@@ -584,6 +593,7 @@ msgid "plan has the following options"
 msgstr "Plan hat Optionen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:100
 #: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:70
 msgid "options"

@@ -1,3 +1,52 @@
+# v0.1.177 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1035 add /notification test endpoint [#1036](https://github.com/Subscribie/subscribie/pull/1036) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1037 log stripe onboarding errors dont return [#1038](https://github.com/Subscribie/subscribie/pull/1038) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.176 (Sun Jan 29 2023)
+
+#### ⚠️ Pushed to `master`
+
+- Ref #1054 re-compile translations de ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.175 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1054 additional help logging into shops docs [#1056](https://github.com/Subscribie/subscribie/pull/1056) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.174 (Tue Jan 24 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1052 provide link to help login [#1053](https://github.com/Subscribie/subscribie/pull/1053) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.173 (Thu Jan 12 2023)
 
 #### 🐛 Bug Fix
