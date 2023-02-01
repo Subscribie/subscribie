@@ -679,7 +679,6 @@ def add_plan():
             draftPlan.sell_price = dec2pence(form.sell_price.data[0])
 
         points = form.selling_points.data[0]
-
         for point in points:
             draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
