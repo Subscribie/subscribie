@@ -145,7 +145,6 @@ def create_app(test_config=None):
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     with app.app_context():
-
         database.init_app(app)
         Migrate(app, database)
 

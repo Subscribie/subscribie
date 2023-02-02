@@ -171,7 +171,6 @@ def order_summary():
             or payment_provider.stripe_livemode is False
             and payment_provider.stripe_test_connect_account_id is None
         ):
-
             return """Shop owner has not connected Stripe payments yet.
                     This can be done by the shop owner via the admin dashboard."""
         stripe_pub_key = get_stripe_publishable_key()
@@ -670,7 +669,6 @@ def stripe_webhook():
     event = request.json
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
-
         log.warn(
             f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"  # noqa: E501
         )
