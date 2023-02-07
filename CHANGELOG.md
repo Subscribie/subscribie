@@ -1,3 +1,15 @@
+# v0.1.178 (Tue Feb 07 2023)
+
+#### 🐛 Bug Fix
+
+- 1063 sqlalchemy fix version [#1064](https://github.com/Subscribie/subscribie/pull/1064) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.177 (Sun Jan 29 2023)
 
 #### 🐛 Bug Fix
