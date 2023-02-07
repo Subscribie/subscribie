@@ -62,7 +62,6 @@ def saas_api_only(f):
             resp = jsonify({"error": "SAAS_API_KEY required"})
             return resp, 401
         if SAAS_API_KEY != request.args.get("SAAS_API_KEY"):
-
             resp = jsonify({"error": "Invalid SAAS_API_KEY"})
 
             return resp, 401
@@ -127,7 +126,6 @@ def get_magic_login_link(email, password):
 
 @bp.route("/jwt-login", methods=["GET", "POST"])
 def jwt_login():
-
     if "Authorization" in request.headers:
         email = request.authorization.username
         password = request.authorization.password
