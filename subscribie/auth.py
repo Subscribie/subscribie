@@ -63,7 +63,6 @@ def saas_api_only(f):
             resp = jsonify({"error": "SAAS_API_KEY required"})
             return resp, 401
         if SAAS_API_KEY != request.args.get("SAAS_API_KEY"):
-
             resp = jsonify({"error": "Invalid SAAS_API_KEY"})
 
             return resp, 401
