@@ -1,3 +1,16 @@
+# v0.1.179 (Tue Feb 07 2023)
+
+#### 🐛 Bug Fix
+
+- 1058 improve auth logging [#1059](https://github.com/Subscribie/subscribie/pull/1059) ([@chrisjsimpson](https://github.com/chrisjsimpson) [@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.178 (Tue Feb 07 2023)
 
 #### 🐛 Bug Fix
