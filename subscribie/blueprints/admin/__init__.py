@@ -498,7 +498,6 @@ def edit():
         company.slogan = request.form["slogan"]
         # Loop plans
         for index in request.form.getlist("planIndex", type=int):
-
             # Archive existing plan then create new plan
             # (remember, edits create new plans because
             # plans are immutable)
@@ -1235,7 +1234,6 @@ def subscribers():
 
 @admin.route("/refresh-subscription-statuses")
 def refresh_subscriptions():
-
     update_stripe_subscription_statuses()
 
     if request.referrer is not None:
@@ -1324,7 +1322,6 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1441,7 +1438,6 @@ def add_shop_admin():
     """Add another shop admin"""
     form = AddShopAdminForm()
     if request.method == "POST":
-
         if form.validate_on_submit():
             # Check user dosent already exist
             email = escape(request.form["email"])
@@ -1566,7 +1562,6 @@ def edit_welcome_email():
         database.session.add(custom_template)
 
     if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
-
         new_custom_template = form.template.data
         # Validate template syntax
         env = jinja2.Environment()
@@ -1630,7 +1625,6 @@ def rename_shop():
 @admin.route("/rename-shop", methods=["POST"])
 @login_required
 def rename_shop_post():
-
     PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
     PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
@@ -1724,7 +1718,6 @@ def announce_shop_stripe_connect_ids():
         return req
 
     try:
-
         if stripe_testmode() is False and stripe_livemode() is False:
             log.info(msg)
             return jsonify("Stripe is not setup yet.")
