@@ -1,3 +1,15 @@
+# v0.1.180 (Wed Feb 08 2023)
+
+#### 🐛 Bug Fix
+
+- 1057 spanish translation [#1062](https://github.com/Subscribie/subscribie/pull/1062) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.179 (Tue Feb 07 2023)
 
 #### 🐛 Bug Fix
