@@ -765,3 +765,12 @@ def stripe_webhook():
     log.debug(msg)
 
     return jsonify(msg), 422
+
+
+@checkout.route("/donate", methods=["GET"])
+def donate_form():
+
+    return render_template(
+        "donations_form.html",
+        plan="123",
+    )
