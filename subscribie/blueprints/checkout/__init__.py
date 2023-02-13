@@ -771,6 +771,5 @@ def stripe_webhook():
 def donate_form():
 
     return render_template(
-        "donations_form.html",
-        plan="123",
+        "donations_form.html"
     )
