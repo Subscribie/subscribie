@@ -40,7 +40,7 @@
         <p class="text mb-3">{{ _('We only use your details to use it for billing purposes only.') }}.</p>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Your Name') }} <i class="fas fa-user ml-1"></i></label>
+          <label for="given_name" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Your Name') }} <i class="fas fa-user ml-1"></i></label>
           <div class="col-lg-4">
             <input type="text" class="form-control form-control-lg mb-3 mb-lg-0" name=given_name id=given_name placeholder="John" value="{{ given_name }}" required>
           </div>
@@ -50,46 +50,54 @@
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Email') }} <i class="fas fa-envelope ml-1"></i></label>
+          <label for="email" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Email') }} <i class="fas fa-envelope ml-1"></i></label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}" required>
           </div>
         </div>
-
+        <h3 class="title-2 pt-4">{{ _('Donation') }}</h3>
+        <div class="form-group row py-3 m-0">
+        <label for="donation-amount" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Amount</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name=amount id="donation-amount" placeholder="10.00" value="{{ donation }}" required>
+          </div>
+        </div>
+        <div class="form-group row py-3 m-0">
+        <label for="donation-remark" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Remark</label>
+          <div class="col-lg-8">
+            <textarea class="form-control form-control-lg" id="donation-remark" placeholder="optional" name="donation-remark" rows="5" cols="33"></textarea>
+          </div>
+        </div>
 
         <h3 class="title-2 pt-4">{{ _('Billing Address') }}</h3>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Address') }}</label>
+          <label for="address_line_one" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Address') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="address_line_one" id="address_line_one" required>
           </div>
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('City') }}</label>
+          <label for="city" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('City') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="city" id="city" required>
           </div>
         </div>
 
         <div class="form-group row pt-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Post Code') }}</label>
+          <label for="postcode" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Post Code') }}</label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="text" name="postcode" id="postcode" required>
           </div>
         </div>
         <div class="form-group row py-3 m-0">
-          <label class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Phone') }} <i class="fas fa-phone ml-1"></i></label>
+          <label for="mobile" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Phone') }} <i class="fas fa-phone ml-1"></i></label>
           <div class="col-lg-8">
             <input class="form-control form-control-lg" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
           </div>
         </div>
-        <div class="form-group row py-3 m-0">
-        <h3 class="title-2 col-lg-3 text-lg-right">Amount($)</h3>
-          <div class="col-lg-8">
-            <input class="form-control form-control-lg" type="text" name=amount id=amount placeholder="10.00" value="{{ donation }}" required>
-          </div></div>
+
 
       </div>
       </div>
