@@ -122,6 +122,7 @@ Create python environment and run flask:
 ```
 python3 -m venv venv # Create a python3.x virtual environment
 . venv/bin/activate # Activate the virtualenv
+# If you are on Windows, use: . venv/Scripts/Activate 
 pip install -r requirements.txt # Install requirements
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
