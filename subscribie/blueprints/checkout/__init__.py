@@ -769,7 +769,4 @@ def stripe_webhook():
 
 @checkout.route("/donate", methods=["GET"])
 def donate_form():
-
-    return render_template(
-        "donations_form.html"
-    )
+    return render_template("donations_form.html")
