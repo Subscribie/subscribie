@@ -1,5 +1,6 @@
 import logging
 import requests
+import uuid
 from flask import (
     Blueprint,
     render_template,
@@ -23,6 +24,7 @@ from subscribie.models import (
     SubscriptionNote,
     Setting,
     TaxRate,
+    PlanRequirements,
 )
 from subscribie.email import EmailMessageQueue
 from subscribie.utils import (
@@ -34,7 +36,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_geo_currency_code,
 )
-from subscribie.forms import CustomerForm
+from subscribie.forms import CustomerForm, DonationsForm
 from subscribie.database import database
 from subscribie.signals import signal_journey_complete, signal_payment_failed
 from subscribie.notifications import newSubscriberEmailNotification
@@ -144,6 +146,127 @@ def store_customer():
         session["note_to_seller"] = note_to_seller
 
         return redirect(url_for("checkout.order_summary"))
+    else:
+        return "There was an error processing that form, please go back and try again."
+
+
+def dec2pence(amount):
+    """Take two decimal place string and convert to pence"""
+    if amount == "":
+        return 0
+    import math
+
+    return int(math.ceil(float(amount) * 100))
+
+
+@checkout.route("/donate", methods=["POST"])
+def donations():
+
+    form = DonationsForm()  # needs creation
+    if form.validate_on_submit():
+        draftPlan = Plan()
+        database.session.add(draftPlan)
+        plan_requirements = PlanRequirements()
+        draftPlan.requirements = plan_requirements
+
+        draftPlan.uuid = str(uuid.uuid4())
+        draftPlan.title = form.title.data[0].strip()
+        plan_requirements.subscription = False
+        plan_requirements.note_to_seller_required = False
+        plan_requirements.note_to_buyer_message = str(
+            form.note_to_buyer_message.data[0]
+        )
+
+        plan_requirements.instant_payment = True
+        draftPlan.sell_price = dec2pence(form.amount.data[0])
+        draftPlan.private = 1
+        # filling plan price_list with existing price_lists
+        draftPlan.assignDefaultPriceLists()
+
+        database.session.commit()
+
+        # New Customer part
+        payment_provider = PaymentProvider.query.first()
+        plan = draftPlan.uuid
+
+        given_name = form.data["given_name"]
+        family_name = form.data["family_name"]
+        address_line_one = form.data["address_line_one"]
+        city = form.data["city"]
+        postcode = form.data["postcode"]
+        email = form.data["email"]
+        mobile = form.data["mobile"]
+        # Store customer in session
+        sid = session["sid"]
+        # Store email in session
+        session["email"] = email
+        session["given_name"] = given_name
+
+        # Store person info in session for form pre-population
+        session["given_name"] = given_name
+        session["family_name"] = family_name
+        session["address_line_one"] = address_line_one
+        session["city"] = city
+        session["postcode"] = postcode
+        session["email"] = email
+        session["mobile"] = mobile
+
+        # Don't store person if already exists
+        try:
+            person = Person.query.filter_by(email=email).one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            person = None
+        except sqlalchemy.orm.exc.MultipleResultsFound:
+            person = Person.query.filter_by(email=email).all()[0]
+
+        if person is None:
+            # Store person
+            person = Person(
+                sid=sid,
+                given_name=given_name,
+                family_name=family_name,
+                address_line1=address_line_one,
+                city=city,
+                postal_code=postcode,
+                email=email,
+                mobile=mobile,
+            )
+            database.session.add(person)
+            database.session.commit()
+        session["person_id"] = person.id
+        # creating stripe checkout session
+        if (
+            payment_provider.stripe_livemode
+            and payment_provider.stripe_live_connect_account_id is None
+            or payment_provider.stripe_livemode is False
+            and payment_provider.stripe_test_connect_account_id is None
+        ):
+            return """Shop owner has not connected Stripe payments yet.
+                    This can be done by the shop owner via the admin dashboard."""
+        stripe_pub_key = get_stripe_publishable_key()
+        stripe_create_checkout_session_url = url_for(
+            "checkout.stripe_create_checkout_session"
+        )
+
+        if payment_provider.stripe_livemode:
+            stripe_connected_account_id = (
+                payment_provider.stripe_live_connect_account_id
+            )
+        else:
+            stripe_connected_account_id = (
+                payment_provider.stripe_test_connect_account_id
+            )
+
+        return render_template(
+            "donate.html",
+            plan=plan,
+            amount=draftPlan.sell_price,
+            fname=session["given_name"],
+            stripe_pub_key=stripe_pub_key,
+            stripe_create_checkout_session_url=stripe_create_checkout_session_url,
+            stripe_connected_account_id=stripe_connected_account_id,
+        )
+
     else:
         return "There was an error processing that form, please go back and try again."
 
