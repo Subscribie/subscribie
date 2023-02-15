@@ -52,7 +52,7 @@ checkout = Blueprint("checkout", __name__, template_folder="templates")
 @checkout.route("/donate", methods=["GET"])
 def donate_form():
     form = CustomerForm()
-    return render_template("donations_form.html", form=form)
+    return render_template("donation_form.html", form=form)
 
 
 @checkout.route("/new_customer", methods=["GET"])
