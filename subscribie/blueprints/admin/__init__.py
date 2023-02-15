@@ -1899,6 +1899,28 @@ def vat_settings():
     return render_template("admin/settings/vat_settings.html", settings=settings)
 
 
+@admin.route("/donate-enabled-settings", methods=["GET", "POST"])
+@login_required
+def donations_enabled_settings():
+    settings = Setting.query.first()  # Get current shop settings
+
+    if settings is None:
+        settings = Setting()
+        database.session.add(settings)
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("donations_enabled", 0)) == 1:
+            settings.donations_enabled = 1
+        else:
+            settings.donations_enabled = 0
+        flash("donations_enabled settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.donations_enabled_settings", settings=settings))
+
+    return render_template("admin/settings/donations_enabled.html", settings=settings)
+
+
 @admin.route("/api-keys", methods=["GET", "POST"])
 @login_required
 def show_api_keys():

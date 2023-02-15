@@ -14,7 +14,9 @@
             <p class="text-light">{{ company.slogan }}</p>
         {% endif %}
         <a class="btn-outlined-lg" href="#plans" title="Subscriber login">{{ _('Choose plan') }}</a>
+        {% if settings.donations_enabled %}
         <a href='/donate' class="btn-lg btn-warning float-right">Donate</a>
+        {% endif %}
     </div>
 
   </div>

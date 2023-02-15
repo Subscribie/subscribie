@@ -512,6 +512,14 @@
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
           <div class="px-3 py-3 my-3">
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.show_api_keys') }}">
+              API Keys
+              </a>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.donations_enabled_settings') }}">
+              Donation Settings
+              </a>
               <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.rename_shop') }}">
               Rename shop web address
@@ -524,10 +532,6 @@
               </a>
               {% endif %}
 
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.show_api_keys') }}">
-              API Keys
-              </a>
           </div>
 
         </div>
