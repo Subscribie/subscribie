@@ -27,8 +27,9 @@
 <div class="section mx-auto my-4">
   <div class="container mx-auto">
 
-  <form action="" id="donate" method=post action=/donate >
+  <form id="donate" method=post action=/new_donation >
 
+    {{ form.csrf_token }}
 
     {% if error %}
       <p class=error><strong>{{ _('Error') }}:</strong> {{ error }}

@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-    StringField,
     FloatField,
     FieldList,
     validators,
@@ -127,10 +126,6 @@ class CustomerForm(FlaskForm):
     postcode = StringField("postcode", validators=[DataRequired()])
     note_to_seller = StringField("note_to_seller", validators=[Optional()])
     is_iframe = HiddenField("is_iframe")
-
-
-class DonationForm(FlaskForm):
-    pass
 
 
 class StripeConnectForm(FlaskForm):
