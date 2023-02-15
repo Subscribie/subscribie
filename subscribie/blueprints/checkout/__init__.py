@@ -105,6 +105,11 @@ def store_customer():
     """
     form = CustomerForm()
     if form.validate():
+        # Check if this checkout flow is a donation
+        session["is_donation"] = False
+        if "new_donation" in request.path:
+            session["is_donation"] = True
+
         given_name = form.data["given_name"]
         family_name = form.data["family_name"]
         address_line_one = form.data["address_line_one"]
@@ -172,48 +177,63 @@ def dec2pence(amount):
 
 @checkout.route("/order-summary", methods=["GET"])
 def order_summary():
+    plan = None
     payment_provider = PaymentProvider.query.first()
-    plan = Plan.query.filter_by(uuid=session["plan"]).first()
-    # if plan is free, skip Stripe checkout and store subscription right away
-    if plan.is_free():
-        log.info("Plan is free, so skipping Stripe checkout")
-        chosen_option_ids = session.get("chosen_option_ids", None)
 
-        create_subscription(
-            email=session["email"],
-            package=session["package"],
-            chosen_option_ids=chosen_option_ids,
-        )
+    # Check if checkout flow is a donation
+    is_donation = session["is_donation"]
 
-        return redirect(url_for("checkout.thankyou"))
-    else:
-        if (
-            payment_provider.stripe_livemode
-            and payment_provider.stripe_live_connect_account_id is None
-            or payment_provider.stripe_livemode is False
-            and payment_provider.stripe_test_connect_account_id is None
-        ):
-            return """Shop owner has not connected Stripe payments yet.
+    # If is a donation, then there is no plan associated
+    if is_donation is False:
+
+        plan = Plan.query.filter_by(uuid=session["plan"]).first()
+        # if plan is free, skip Stripe checkout and store subscription right away
+        if plan.is_free():
+            log.info("Plan is free, so skipping Stripe checkout")
+            chosen_option_ids = session.get("chosen_option_ids", None)
+
+            create_subscription(
+                email=session["email"],
+                package=session["package"],
+                chosen_option_ids=chosen_option_ids,
+            )
+
+            return redirect(url_for("checkout.thankyou"))
+
+    # Since we're about to attempt a payment, verify Stripe is connected
+    # before proceeding.
+    if (
+        payment_provider.stripe_livemode
+        and payment_provider.stripe_live_connect_account_id is None
+        or payment_provider.stripe_livemode is False
+        and payment_provider.stripe_test_connect_account_id is None
+    ):
+        return """Shop owner has not connected Stripe payments yet.
                     This can be done by the shop owner via the admin dashboard."""
-        stripe_pub_key = get_stripe_publishable_key()
-        company = Company.query.first()
-        stripe_create_checkout_session_url = url_for(
-            "checkout.stripe_create_checkout_session"
-        )
 
-        if payment_provider.stripe_livemode:
-            stripe_connected_account_id = (
-                payment_provider.stripe_live_connect_account_id
-            )
-        else:
-            stripe_connected_account_id = (
-                payment_provider.stripe_test_connect_account_id
-            )
+    # Get Stripe keys
+    stripe_pub_key = get_stripe_publishable_key()
+    stripe_create_checkout_session_url = url_for(
+        "checkout.stripe_create_checkout_session"
+    )
 
+    if payment_provider.stripe_livemode:
+        stripe_connected_account_id = payment_provider.stripe_live_connect_account_id
+    else:
+        stripe_connected_account_id = payment_provider.stripe_test_connect_account_id
+
+    if is_donation is False:
         return render_template(
             "order_summary.html",
-            company=company,
             plan=plan,
+            fname=session["given_name"],
+            stripe_pub_key=stripe_pub_key,
+            stripe_create_checkout_session_url=stripe_create_checkout_session_url,
+            stripe_connected_account_id=stripe_connected_account_id,
+        )
+    elif is_donation is True:
+        return render_template(
+            "donation_summary.html",
             fname=session["given_name"],
             stripe_pub_key=stripe_pub_key,
             stripe_create_checkout_session_url=stripe_create_checkout_session_url,
@@ -301,6 +321,13 @@ def thankyou():
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
 def stripe_create_checkout_session():
     data = request.json
+    is_donation = False
+    plan = None
+    charge = {}
+    currency_code = get_geo_currency_code()
+
+    if session["is_donation"]:
+        is_donation = True
 
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
@@ -313,13 +340,12 @@ def stripe_create_checkout_session():
     else:
         charge_vat = False
 
-    plan = Plan.query.filter_by(uuid=session["plan"]).first()
+    if is_donation is False:
+        plan = Plan.query.filter_by(uuid=session["plan"]).first()
+        charge["sell_price"] = plan.getSellPrice(currency_code)
+        charge["interval_amount"] = plan.getIntervalAmount(currency_code)
     person = Person.query.get(session["person_id"])
-    charge = {}
-    currency_code = get_geo_currency_code()
 
-    charge["sell_price"] = plan.getSellPrice(currency_code)
-    charge["interval_amount"] = plan.getIntervalAmount(currency_code)
     charge["currency"] = currency_code
     payment_method_types = ["card"]
     success_url = url_for(
