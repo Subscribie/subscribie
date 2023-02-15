@@ -102,6 +102,9 @@ def store_customer():
     - Note that this endpoint services both `/new_customer` & `/new_donation'
       because the data captured at this stage is the same regardless of reason
       for payment.
+    - Person data is common regardless of if the checkout flow is for
+       a donation or a subscription
+      (a person with an address) so we avoid duplicating that.
     """
     form = CustomerForm()
     if form.validate():
