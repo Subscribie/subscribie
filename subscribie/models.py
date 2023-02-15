@@ -1095,6 +1095,7 @@ class Setting(database.Model):
     shop_activated = database.Column(database.Boolean(), default=False)
     api_key_secret_live = database.Column(database.String(), default=None)
     api_key_secret_test = database.Column(database.String(), default=None)
+    donations_enabled = database.Column(database.Boolean(), default=False)
 
 
 class File(database.Model):
