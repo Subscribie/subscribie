@@ -34,7 +34,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_geo_currency_code,
 )
-from subscribie.forms import CustomerForm
+from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
 from subscribie.signals import signal_journey_complete, signal_payment_failed
 from subscribie.notifications import newSubscriberEmailNotification
@@ -112,6 +112,11 @@ def store_customer():
         session["is_donation"] = False
         if "new_donation" in request.path:
             session["is_donation"] = True
+            form = DonationForm()
+            if form.validate() is False:
+                log.error(f"Error validating donation form. {form.errors}")
+                return "Please try again later. We have logged the error."
+            session["donation_amount"] = form.donation_amount.data
 
         given_name = form.data["given_name"]
         family_name = form.data["family_name"]
@@ -327,132 +332,164 @@ def stripe_create_checkout_session():
     is_donation = False
     plan = None
     charge = {}
+    metadata = {}
     currency_code = get_geo_currency_code()
+    # If VAT tax is enabled, get stripe tax id
+    settings = Setting.query.first()
+    charge_vat = settings.charge_vat
+    create_stripe_tax_rate()
+    tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).first()
+    tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
+    person = Person.query.get(session["person_id"])
+    charge["currency"] = currency_code
+    payment_method_types = ["card"]
+    cancel_url = url_for("checkout.order_summary", _external=True)
+    mode = "payment"
+    # Build line_items array depending on plan requirements
+    line_items = []
+    payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
     if session["is_donation"]:
         is_donation = True
-
-    # If VAT tax is enabled, get stripe tax id
-    settings = Setting.query.first()
-    if settings is not None:
-        charge_vat = settings.charge_vat
-        create_stripe_tax_rate()
-        tax_rate = TaxRate.query.filter_by(
-            stripe_livemode=get_stripe_livemode()
-        ).first()
-    else:
-        charge_vat = False
 
     if is_donation is False:
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
         charge["sell_price"] = plan.getSellPrice(currency_code)
         charge["interval_amount"] = plan.getIntervalAmount(currency_code)
-    person = Person.query.get(session["person_id"])
+        success_url = url_for(
+            "checkout.instant_payment_complete", _external=True, plan=plan.uuid
+        )
 
-    charge["currency"] = currency_code
-    payment_method_types = ["card"]
-    success_url = url_for(
-        "checkout.instant_payment_complete", _external=True, plan=plan.uuid
-    )
-    cancel_url = url_for("checkout.order_summary", _external=True)
-
-    stripe.api_key = get_stripe_secret_key()
-
-    metadata = {
-        "person_uuid": person.uuid,
-        "plan_uuid": session["plan"],
-        "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
-        "package": session.get("package", None),
-        "subscribie_checkout_session_id": session.get(
-            "subscribie_checkout_session_id", None
-        ),
-    }
-
-    # Add note to seller if present directly on payment metadata
-    if session.get("note_to_seller", False):
-        metadata["note_to_seller"] = session.get("note_to_seller")
-
-    if plan.requirements.subscription:
-        subscription_data = {
-            "application_fee_percent": 1.25,
-            "metadata": {
-                "person_uuid": person.uuid,
-                "plan_uuid": session["plan"],
-                "chosen_option_ids": json.dumps(
-                    session.get("chosen_option_ids", None)
-                ),  # noqa
-                "package": session.get("package", None),
-                "subscribie_checkout_session_id": session.get(
-                    "subscribie_checkout_session_id", None
-                ),
-            },
-        }
-        if plan.trial_period_days > 0:
-            subscription_data["trial_period_days"] = plan.trial_period_days
-
-        if charge_vat:
-            subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
-        # Add note to seller if present on subscription_data metadata
-        if session.get("note_to_seller", False):
-            subscription_data["metadata"]["note_to_seller"] = session.get(
-                "note_to_seller"
-            )
-        # Add trial period if present
-        if plan.days_before_first_charge and plan.days_before_first_charge > 0:
-            subscription_data["trial_period_days"] = plan.days_before_first_charge
-
-    if plan.requirements.instant_payment:
-        payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
-
-    if plan.requirements.subscription:
-        mode = "subscription"
-    else:
-        mode = "payment"
-
-    # Build line_items array depending on plan requirements
-    line_items = []
-
-    # Add line item for instant_payment if required
-    if plan.requirements.instant_payment:
-        # Append "Up-front fee" to product name if also a subscription
-        plan_name = plan.title
         if plan.requirements.subscription:
-            plan_name = "(Up-front fee) " + plan_name
+            subscription_data = {
+                "application_fee_percent": 1.25,
+                "metadata": {
+                    "person_uuid": person.uuid,
+                    "plan_uuid": session["plan"],
+                    "chosen_option_ids": json.dumps(
+                        session.get("chosen_option_ids", None)
+                    ),  # noqa
+                    "package": session.get("package", None),
+                    "subscribie_checkout_session_id": session.get(
+                        "subscribie_checkout_session_id", None
+                    ),
+                },
+            }
+            if plan.trial_period_days > 0:
+                subscription_data["trial_period_days"] = plan.trial_period_days
 
-        tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
+        if plan.requirements.instant_payment:
+            payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
+
+        if plan.requirements.subscription:
+            mode = "subscription"
+
+        # Add note to seller if present directly on payment metadata
+        if session.get("note_to_seller", False):
+            metadata["note_to_seller"] = session.get("note_to_seller")
+
+            if charge_vat:
+                subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
+            # Add note to seller if present on subscription_data metadata
+            if session.get("note_to_seller", False):
+                subscription_data["metadata"]["note_to_seller"] = session.get(
+                    "note_to_seller"
+                )
+            # Add trial period if present
+            if plan.days_before_first_charge and plan.days_before_first_charge > 0:
+                subscription_data["trial_period_days"] = plan.days_before_first_charge
+
+        if plan.requirements.subscription:
+            line_items.append(
+                {
+                    "price_data": {
+                        "recurring": {
+                            "interval": format_to_stripe_interval(plan.interval_unit)
+                        },
+                        "currency": charge["currency"],
+                        "product_data": {
+                            "name": plan.title,
+                        },
+                        "unit_amount": charge["interval_amount"],
+                    },
+                    "quantity": 1,
+                }
+            )
+        # Add line item for instant_payment if required
+        if plan.requirements.instant_payment:
+            # Append "Up-front fee" to product name if also a subscription
+            plan_name = plan.title
+            if plan.requirements.subscription:
+                plan_name = "(Up-front fee) " + plan_name
+
+            line_items.append(
+                {
+                    "tax_rates": tax_rates,
+                    "price_data": {
+                        "currency": charge["currency"],
+                        "product_data": {
+                            "name": plan_name,
+                        },
+                        "unit_amount": charge["sell_price"],
+                    },
+                    "quantity": 1,
+                }
+            )
+
+    elif is_donation is True:
+        success_url = url_for("checkout.instant_payment_complete", _external=True)
+        donation_amount = int(session["donation_amount"] * 100)
         line_items.append(
             {
                 "tax_rates": tax_rates,
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
-                        "name": plan_name,
+                        "name": "Donation",
                     },
-                    "unit_amount": charge["sell_price"],
+                    "unit_amount": donation_amount,
                 },
                 "quantity": 1,
             }
         )
 
-    if plan.requirements.subscription:
-        line_items.append(
-            {
-                "price_data": {
-                    "recurring": {
-                        "interval": format_to_stripe_interval(plan.interval_unit)
-                    },
-                    "currency": charge["currency"],
-                    "product_data": {
-                        "name": plan.title,
-                    },
-                    "unit_amount": charge["interval_amount"],
-                },
-                "quantity": 1,
-            }
-        )
+    stripe.api_key = get_stripe_secret_key()
 
-    # Create Stripe checkout session for payment or subscription mode
+    try:
+        plan_uuid = session["plan"]
+    except KeyError:
+        log.warning("KeyError when generating stripe checkout session")
+        log.warning(f"is_donation was set to: {is_donation}")
+        plan_uuid = None
+
+    metadata = {
+        "person_uuid": person.uuid,
+        "plan_uuid": plan_uuid,
+        "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
+        "package": session.get("package", None),
+        "subscribie_checkout_session_id": session.get(
+            "subscribie_checkout_session_id", None
+        ),
+        "is_donation": is_donation,
+    }
+
+    # Create Stripe checkout session for in payment or subscription mode
+    if is_donation:
+        log.info("Creating Stripe checkout session for a donation")
+        stripe_session = stripe.checkout.Session.create(
+            stripe_account=data["account_id"],
+            payment_method_types=payment_method_types,
+            line_items=line_items,
+            mode=mode,
+            metadata=metadata,
+            customer_email=person.email,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            payment_intent_data=payment_intent_data,
+        )
+        return jsonify(id=stripe_session.id)
     if plan.requirements.subscription:
+        log.info("Creating Stripe checkout session for a new subscription")
         stripe_session = stripe.checkout.Session.create(
             stripe_account=data["account_id"],
             payment_method_types=payment_method_types,
@@ -466,6 +503,7 @@ def stripe_create_checkout_session():
         )
         return jsonify(id=stripe_session.id)
     elif plan.requirements.instant_payment:
+        log.info("Creating Stripe checkout session for an instant payment")
         stripe_session = stripe.checkout.Session.create(
             stripe_account=data["account_id"],
             payment_method_types=payment_method_types,
