@@ -36,7 +36,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_geo_currency_code,
 )
-from subscribie.forms import CustomerForm, DonationsForm
+from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
 from subscribie.signals import signal_journey_complete, signal_payment_failed
 from subscribie.notifications import newSubscriberEmailNotification

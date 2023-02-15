@@ -129,6 +129,10 @@ class CustomerForm(FlaskForm):
     is_iframe = HiddenField("is_iframe")
 
 
+class DonationForm(FlaskForm):
+    pass
+
+
 class StripeConnectForm(FlaskForm):
     publishable_key = StringField("publishable_key", validators=[DataRequired()])
     secret_key = StringField("secret_key", validators=[DataRequired()])
