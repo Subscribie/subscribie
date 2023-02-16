@@ -1899,6 +1899,9 @@ def vat_settings():
 @login_required
 def donations_enabled_settings():
     settings = Setting.query.first()  # Get current shop settings
+    if settings.donations_enabled is None:
+        settings.donations_enabled = False
+        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("donations_enabled", 0)) == 1:
@@ -1908,7 +1911,6 @@ def donations_enabled_settings():
         flash("donations_enabled settings updated")
         database.session.commit()
         return redirect(url_for("admin.donations_enabled_settings", settings=settings))
-
     return render_template("admin/settings/donations_enabled.html", settings=settings)
 
 
