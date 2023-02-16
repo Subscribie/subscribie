@@ -1876,10 +1876,6 @@ def getPlan(container, i, default=None):
 @login_required
 def vat_settings():
     settings = Setting.query.first()  # Get current shop settings
-    if settings is None:
-        settings = Setting()
-        database.session.add(settings)
-        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("chargeVAT", 0)) == 1:
@@ -1903,11 +1899,6 @@ def vat_settings():
 @login_required
 def donations_enabled_settings():
     settings = Setting.query.first()  # Get current shop settings
-
-    if settings is None:
-        settings = Setting()
-        database.session.add(settings)
-        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("donations_enabled", 0)) == 1:
