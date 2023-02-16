@@ -34,9 +34,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_geo_currency_code,
 )
-from subscribie.forms import (
-    CustomerForm,
-)  # DonationForm
+from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
 from subscribie.signals import signal_journey_complete, signal_payment_failed
 from subscribie.notifications import newSubscriberEmailNotification
@@ -528,6 +526,7 @@ def create_subscription(
     subscribie_checkout_session_id=None,
     stripe_external_id=None,
     stripe_subscription_id=None,
+    is_donation=False,
 ) -> Subscription:
     """Create subscription model
     Note: A subscription model is also created if a plan only has
@@ -705,9 +704,11 @@ def stripe_process_event_payment_intent_succeeded(event):
             subscribie_checkout_session_id = data["id"]
     except Exception as e:
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
+        breakpoint()
         log.error(msg)
         return msg, 500
 
+    breakpoint()
     # Locate the Subscribie subscription by its subscribie_checkout_session_id
     subscribie_subscription = (
         database.session.query(Subscription)
@@ -758,6 +759,8 @@ def stripe_webhook():
     See https://github.com/Subscribie/subscribie/issues/352
     """
     event = request.json
+    is_donation = False
+
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
         log.warn(
@@ -801,6 +804,13 @@ def stripe_webhook():
         session = event["data"]["object"]
         currency = session["currency"].upper()
         try:
+            is_donation = bool(session["metadata"]["is_donation"])
+        except KeyError as e:
+            log.error(
+                f"Could not identify if Stripe metadata was is_donation or not. {e}"
+            )
+
+        try:
             subscribie_checkout_session_id = session["metadata"][
                 "subscribie_checkout_session_id"
             ]
@@ -843,6 +853,7 @@ def stripe_webhook():
                 subscribie_checkout_session_id=subscribie_checkout_session_id,
                 stripe_subscription_id=stripe_subscription_id,
                 stripe_external_id=session["id"],
+                is_donation=is_donation,
             )
         return "OK", 200
 
