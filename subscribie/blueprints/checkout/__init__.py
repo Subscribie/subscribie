@@ -526,7 +526,6 @@ def create_subscription(
     subscribie_checkout_session_id=None,
     stripe_external_id=None,
     stripe_subscription_id=None,
-    is_donation=False,
 ) -> Subscription:
     """Create subscription model
     Note: A subscription model is also created if a plan only has
@@ -669,6 +668,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
     """
     log.info("Processing payment_intent.succeeded")
+    breakpoint()
 
     data = event["data"]["object"]
     stripe.api_key = get_stripe_secret_key()
@@ -704,11 +704,9 @@ def stripe_process_event_payment_intent_succeeded(event):
             subscribie_checkout_session_id = data["id"]
     except Exception as e:
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
-        breakpoint()
         log.error(msg)
         return msg, 500
 
-    breakpoint()
     # Locate the Subscribie subscription by its subscribie_checkout_session_id
     subscribie_subscription = (
         database.session.query(Subscription)
@@ -844,7 +842,9 @@ def stripe_webhook():
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
         """
-        if session["mode"] == "subscription" or session["mode"] == "payment":
+        if is_donation is not True and (
+            session["mode"] == "subscription" or session["mode"] == "payment"
+        ):
             create_subscription(
                 currency=currency,
                 email=session["customer_email"],
@@ -853,7 +853,6 @@ def stripe_webhook():
                 subscribie_checkout_session_id=subscribie_checkout_session_id,
                 stripe_subscription_id=stripe_subscription_id,
                 stripe_external_id=session["id"],
-                is_donation=is_donation,
             )
         return "OK", 200
 
