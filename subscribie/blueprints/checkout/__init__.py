@@ -332,7 +332,6 @@ def stripe_create_checkout_session():
     is_donation = False
     plan = None
     charge = {}
-    metadata = {}
     currency_code = get_geo_currency_code()
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
@@ -347,10 +346,12 @@ def stripe_create_checkout_session():
     mode = "payment"
     # Build line_items array depending on plan requirements
     line_items = []
-    payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
     if session["is_donation"]:
         is_donation = True
+
+    metadata = {"is_donation": is_donation, "person_id": person.id}
+    payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
     if is_donation is False:
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
@@ -668,12 +669,9 @@ def stripe_process_event_payment_intent_succeeded(event):
 
     """
     log.info("Processing payment_intent.succeeded")
-    breakpoint()
-
     data = event["data"]["object"]
     stripe.api_key = get_stripe_secret_key()
     subscribie_subscription = None
-
     # Get the Subscribie subscription id from Stripe subscription metadata
     try:
         subscribie_checkout_session_id = data["metadata"][
@@ -706,13 +704,14 @@ def stripe_process_event_payment_intent_succeeded(event):
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
         log.error(msg)
         return msg, 500
-
-    # Locate the Subscribie subscription by its subscribie_checkout_session_id
-    subscribie_subscription = (
-        database.session.query(Subscription)
-        .filter_by(subscribie_checkout_session_id=subscribie_checkout_session_id)
-        .first()
-    )
+    metadata = data["metadata"]
+    if bool(metadata["is_donation"]) is False:
+        # Locate the Subscribie subscription by its subscribie_checkout_session_id
+        subscribie_subscription = (
+            database.session.query(Subscription)
+            .filter_by(subscribie_checkout_session_id=subscribie_checkout_session_id)
+            .first()
+        )
 
     # Store the transaction in Transaction model
     # (regardless of if subscription or just one-off plan)
@@ -731,7 +730,11 @@ def stripe_process_event_payment_intent_succeeded(event):
         if subscribie_subscription is not None:
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
-        elif data["metadata"] == {}:
+        if subscribie_subscription is None:
+            breakpoint()
+            transaction.person = metadata["person_id"]
+            transaction.subscription = "Null"
+        elif metadata == {}:
             log.warn(f"Empty metadata: {data}")
             return "Empty metadata", 422
         else:
