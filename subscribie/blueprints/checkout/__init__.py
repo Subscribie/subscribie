@@ -346,11 +346,10 @@ def stripe_create_checkout_session():
     mode = "payment"
     # Build line_items array depending on plan requirements
     line_items = []
-
     if session["is_donation"]:
         is_donation = True
 
-    metadata = {"is_donation": is_donation, "person_id": person.id}
+    metadata = {"is_donation": is_donation, "person_uuid": person.uuid}
     payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
     if is_donation is False:
@@ -731,9 +730,9 @@ def stripe_process_event_payment_intent_succeeded(event):
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
         if subscribie_subscription is None:
-            breakpoint()
-            transaction.person = metadata["person_id"]
-            transaction.subscription = "Null"
+            # transaction.person = metadata["person_uuid"]
+            transaction.subscription = None
+            transaction.comment = "is_donation"
         elif metadata == {}:
             log.warn(f"Empty metadata: {data}")
             return "Empty metadata", 422
@@ -810,17 +809,21 @@ def stripe_webhook():
             log.error(
                 f"Could not identify if Stripe metadata was is_donation or not. {e}"
             )
-
-        try:
-            subscribie_checkout_session_id = session["metadata"][
-                "subscribie_checkout_session_id"
-            ]
-        except KeyError as e:
-            subscribie_checkout_session_id = None
-            log.warning(
-                f"Could not get subscribie_checkout_session_id from session metadata in webhook checkout.session.completed: {e}"  # noqa: E501
-            )
-            log.warning(f"The provided metadata (if any) was: {session['metadata']}")
+        if is_donation is True:
+            subscribie_checkout_session_id = session["id"]
+        else:
+            try:
+                subscribie_checkout_session_id = session["metadata"][
+                    "subscribie_checkout_session_id"
+                ]
+            except KeyError as e:
+                subscribie_checkout_session_id = None
+                log.warning(
+                    f"Could not get subscribie_checkout_session_id from session metadata in webhook checkout.session.completed: {e}"  # noqa: E501
+                )
+                log.warning(
+                    f"The provided metadata (if any) was: {session['metadata']}"
+                )
 
         if session["mode"] == "subscription":
             stripe_subscription_id = session["subscription"]
