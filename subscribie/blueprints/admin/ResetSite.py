@@ -72,7 +72,6 @@ def delete_connect_account():
         msg = {"msg": "stripe connect accound id deleted"}
         return jsonify(msg)
     else:
-
         msg = {"msg": "please connect to stripe"}
 
         return jsonify(msg)

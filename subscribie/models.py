@@ -738,7 +738,6 @@ class Plan(database.Model, HasArchived):
                         # Skip this rule if discount_code validation fails
                         continue
                 if rule.affects_sell_price and sell_price is not None:
-
                     if rule.percent_increase:
                         # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
@@ -772,7 +771,6 @@ class Plan(database.Model, HasArchived):
                     rule.affects_interval_amount
                     and interval_amount is not None  # noqa: E501
                 ):
-
                     if rule.percent_increase:
                         if (
                             rule.min_interval_amount

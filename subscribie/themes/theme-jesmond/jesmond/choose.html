@@ -78,9 +78,11 @@
                 {% endif %}
 
                 {% for sellingPoint in plan.selling_points%}
+                {% if sellingPoint.point|length != 0 %}
                 <div class="plan-selling-points d-flex align-items-start">
                   <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
                 </div>
+                {% endif %}
                 {% endfor %}
                 {% if plan.cancel_at %}
                   <small>{{ _('Automatically cancels on') }}: {{ plan.cancel_at | timestampToDate }}</small>
