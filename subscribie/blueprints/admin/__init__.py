@@ -465,9 +465,8 @@ def dashboard():
     saas_url = current_app.config.get("SAAS_URL")
     if Setting.query.first().donations_enabled is True:
         donation_transactions = Transaction.query.filter_by(is_donation=True).all()
-        for total_donations in donation_transactions:
-            total_donations = total_donations.amount / 100
-            total_donations = total_donations + total_donations
+        for donations in donation_transactions:
+            total_donations = (donations.amount / 100) + total_donations
 
     return render_template(
         "admin/dashboard.html",
