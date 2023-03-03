@@ -9,6 +9,9 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item active" aria-current="page">Manage My Shop</li>
+    {% if settings.donations_enabled %}
+    <li class="float-right" > Donations: {{ total_donations }} </li>
+    {% endif %}
   </ul>
 </div>
 

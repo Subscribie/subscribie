@@ -443,6 +443,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    total_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -462,6 +463,11 @@ def dashboard():
 
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
+    if Setting.query.first().donations_enabled is True:
+        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
+        for total_donations in donation_transactions:
+            total_donations = total_donations.amount / 100
+            total_donations = total_donations + total_donations
 
     return render_template(
         "admin/dashboard.html",
@@ -474,6 +480,7 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
+        total_donations=total_donations,
     )
 
 

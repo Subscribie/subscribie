@@ -130,6 +130,7 @@ class CustomerForm(FlaskForm):
 
 class DonationForm(CustomerForm):
     donation_amount = FloatField("donation_amount", validators=[DataRequired()])
+    donation_comment = StringField("donation_comment")
 
 
 class StripeConnectForm(FlaskForm):

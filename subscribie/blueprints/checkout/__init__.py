@@ -117,6 +117,7 @@ def store_customer():
                 log.error(f"Error validating donation form. {form.errors}")
                 return "Please try again later. We have logged the error."
             session["donation_amount"] = form.donation_amount.data
+            session["donation_comment"] = form.data["note_to_seller"]
 
         given_name = form.data["given_name"]
         family_name = form.data["family_name"]
@@ -332,6 +333,7 @@ def stripe_create_checkout_session():
     is_donation = False
     plan = None
     charge = {}
+    metadata = {}
     currency_code = get_geo_currency_code()
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
@@ -348,8 +350,12 @@ def stripe_create_checkout_session():
     line_items = []
     if session["is_donation"]:
         is_donation = True
+        metadata = {
+            "is_donation": is_donation,
+            "person_uuid": person.uuid,
+            "donation_comment": session["donation_comment"],
+        }
 
-    metadata = {"is_donation": is_donation, "person_uuid": person.uuid}
     payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
     if is_donation is False:
@@ -730,9 +736,12 @@ def stripe_process_event_payment_intent_succeeded(event):
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
         if subscribie_subscription is None:
-            # transaction.person = metadata["person_uuid"]
+            transaction.person = Person.query.filter_by(
+                uuid=metadata["person_uuid"]
+            ).one()
             transaction.subscription = None
-            transaction.comment = "is_donation"
+            transaction.is_donation = bool(metadata["is_donation"])
+            transaction.comment = metadata["donation_comment"]
         elif metadata == {}:
             log.warn(f"Empty metadata: {data}")
             return "Empty metadata", 422

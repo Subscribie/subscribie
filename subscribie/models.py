@@ -1019,6 +1019,7 @@ class Transaction(database.Model):
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
+    is_donation = database.Column(database.Boolean(), default=0)
 
 
 class SeoPageTitle(database.Model):
