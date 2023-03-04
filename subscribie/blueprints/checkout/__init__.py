@@ -304,7 +304,6 @@ def thankyou():
         .filter_by(subscribie_checkout_session_id=checkout_session_id)
         .first()
     )
-
     # Store note to seller if in session
     if session.get("note_to_seller", False) is not False and subscription is not None:
         note = SubscriptionNote(
@@ -348,7 +347,7 @@ def stripe_create_checkout_session():
     mode = "payment"
     # Build line_items array depending on plan requirements
     line_items = []
-    if session["is_donation"]:
+    if session["is_donation"] is True:
         is_donation = True
         metadata = {
             "is_donation": is_donation,
@@ -356,9 +355,10 @@ def stripe_create_checkout_session():
             "donation_comment": session["donation_comment"],
         }
 
-    payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
-
     if is_donation is False:
+
+        payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
+
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
         charge["sell_price"] = plan.getSellPrice(currency_code)
         charge["interval_amount"] = plan.getIntervalAmount(currency_code)
@@ -376,16 +376,32 @@ def stripe_create_checkout_session():
                         session.get("chosen_option_ids", None)
                     ),  # noqa
                     "package": session.get("package", None),
+                    "is_donation": is_donation,
                     "subscribie_checkout_session_id": session.get(
                         "subscribie_checkout_session_id", None
                     ),
                 },
             }
+            metadata = {
+                "person_uuid": person.uuid,
+                "plan_uuid": session["plan"],
+                "chosen_option_ids": json.dumps(
+                    session.get("chosen_option_ids", None)
+                ),  # noqa
+                "package": session.get("package", None),
+                "is_donation": is_donation,
+                "subscribie_checkout_session_id": session.get(
+                    "subscribie_checkout_session_id", None
+                ),
+            }
             if plan.trial_period_days > 0:
                 subscription_data["trial_period_days"] = plan.trial_period_days
 
         if plan.requirements.instant_payment:
-            payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
+            payment_intent_data = {
+                "application_fee_amount": 20,
+                "metadata": {"is_donation": is_donation},
+            }
 
         if plan.requirements.subscription:
             mode = "subscription"
@@ -478,7 +494,7 @@ def stripe_create_checkout_session():
         ),
         "is_donation": is_donation,
     }
-
+    breakpoint()
     # Create Stripe checkout session for in payment or subscription mode
     if is_donation:
         log.info("Creating Stripe checkout session for a donation")
@@ -709,8 +725,11 @@ def stripe_process_event_payment_intent_succeeded(event):
         msg = f"Unable to get subscribie_checkout_session_id from event\n{e}"
         log.error(msg)
         return msg, 500
-    metadata = data["metadata"]
-    if bool(metadata["is_donation"]) is False:
+    try:
+
+        metadata = data["metadata"]
+        is_donation = metadata["is_donation"]
+    except KeyError:
         # Locate the Subscribie subscription by its subscribie_checkout_session_id
         subscribie_subscription = (
             database.session.query(Subscription)
@@ -735,12 +754,13 @@ def stripe_process_event_payment_intent_succeeded(event):
         if subscribie_subscription is not None:
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
-        if subscribie_subscription is None:
+            transaction.is_donation = False
+        elif subscribie_subscription is None and is_donation is True:
             transaction.person = Person.query.filter_by(
                 uuid=metadata["person_uuid"]
             ).one()
             transaction.subscription = None
-            transaction.is_donation = bool(metadata["is_donation"])
+            transaction.is_donation = metadata["is_donation"]
             transaction.comment = metadata["donation_comment"]
         elif metadata == {}:
             log.warn(f"Empty metadata: {data}")
@@ -806,14 +826,13 @@ def stripe_webhook():
         except Exception as e:
             log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
         return "OK", 200
-
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
         currency = session["currency"].upper()
         try:
-            is_donation = bool(session["metadata"]["is_donation"])
+            is_donation = session["metadata"]["is_donation"]
         except KeyError as e:
             log.error(
                 f"Could not identify if Stripe metadata was is_donation or not. {e}"
