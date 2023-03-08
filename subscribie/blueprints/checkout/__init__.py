@@ -191,7 +191,6 @@ def order_summary():
 
     # Check if checkout flow is a donation
     is_donation = session["is_donation"]
-
     # If is a donation, then there is no plan associated
     if is_donation is False:
 
@@ -345,14 +344,17 @@ def stripe_create_checkout_session():
     payment_method_types = ["card"]
     cancel_url = url_for("checkout.order_summary", _external=True)
     mode = "payment"
+    payment_intent_data = {}
     # Build line_items array depending on plan requirements
     line_items = []
     if session["is_donation"] is True:
         is_donation = True
-        metadata = {
-            "is_donation": is_donation,
-            "person_uuid": person.uuid,
-            "donation_comment": session["donation_comment"],
+        payment_intent_data = {
+            "metadata": {
+                "is_donation": is_donation,
+                "person_uuid": person.uuid,
+                "donation_comment": session["donation_comment"],
+            },
         }
 
     if is_donation is False:
@@ -400,9 +402,11 @@ def stripe_create_checkout_session():
         if plan.requirements.instant_payment:
             payment_intent_data = {
                 "application_fee_amount": 20,
-                "metadata": {"is_donation": is_donation},
+                "metadata": {
+                    "is_donation": is_donation,
+                    "person_uuid": person.uuid,
+                },
             }
-
         if plan.requirements.subscription:
             mode = "subscription"
 
@@ -458,7 +462,7 @@ def stripe_create_checkout_session():
                 }
             )
 
-    elif is_donation is True:
+    else:
         success_url = url_for("checkout.instant_payment_complete", _external=True)
         donation_amount = int(session["donation_amount"] * 100)
         line_items.append(
@@ -494,7 +498,6 @@ def stripe_create_checkout_session():
         ),
         "is_donation": is_donation,
     }
-    breakpoint()
     # Create Stripe checkout session for in payment or subscription mode
     if is_donation:
         log.info("Creating Stripe checkout session for a donation")
@@ -730,13 +733,14 @@ def stripe_process_event_payment_intent_succeeded(event):
         metadata = data["metadata"]
         is_donation = metadata["is_donation"]
     except KeyError:
+        # subscription doesnt have the "is_donation" inside the metadata
         # Locate the Subscribie subscription by its subscribie_checkout_session_id
+        is_donation = False
         subscribie_subscription = (
             database.session.query(Subscription)
             .filter_by(subscribie_checkout_session_id=subscribie_checkout_session_id)
             .first()
         )
-
     # Store the transaction in Transaction model
     # (regardless of if subscription or just one-off plan)
     if (
@@ -751,16 +755,23 @@ def stripe_process_event_payment_intent_succeeded(event):
         )
         transaction.external_id = data["id"]
         transaction.external_src = "stripe"
+        # this happens when is a subscription
         if subscribie_subscription is not None:
             transaction.person = subscribie_subscription.person
             transaction.subscription = subscribie_subscription
             transaction.is_donation = False
-        elif subscribie_subscription is None and is_donation is True:
+        # this happens when is one-off
+        elif is_donation == "False" and subscribie_subscription is None:
+            transaction.is_donation = False
             transaction.person = Person.query.filter_by(
                 uuid=metadata["person_uuid"]
             ).one()
-            transaction.subscription = None
-            transaction.is_donation = metadata["is_donation"]
+        # this happens when is a donation
+        elif subscribie_subscription is None and is_donation == "True":
+            transaction.person = Person.query.filter_by(
+                uuid=metadata["person_uuid"]
+            ).one()
+            transaction.is_donation = True
             transaction.comment = metadata["donation_comment"]
         elif metadata == {}:
             log.warn(f"Empty metadata: {data}")
