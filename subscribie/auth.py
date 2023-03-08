@@ -238,7 +238,7 @@ def send_login_token_email():
         log.debug(
             "Form validation successfull for password_login_form.validate_on_submit"
         )
-        email = password_login_form.data["email"]
+        email = password_login_form.data["email"].lower()
         log.debug(f"Login email was: {email}")
         password = password_login_form.data["password"]
         user = User.query.filter_by(email=email).first()
@@ -263,7 +263,7 @@ def send_login_token_email():
 
     if magic_login_form.validate_on_submit():
         log.debug("In magic_login_form.validate_on_submit")
-        email = magic_login_form.data["email"]
+        email = magic_login_form.data["email"].lower()
         user = User.query.filter_by(email=email).first()
         if user is None:
             msg = "Email address not found, did you sign-up with a different email address?"  # noqa: E501
@@ -275,7 +275,7 @@ def send_login_token_email():
             log.debug(
                 f'Attempting to send_login_url for {magic_login_form.data["email"]}'
             )
-            send_login_url(magic_login_form.data["email"])
+            send_login_url(magic_login_form.data["email"].lower())
             source = ' \
                 {% extends "admin/layout.html" %} \
                 {% block title %} Check your email {% endblock title %} \
@@ -446,7 +446,7 @@ def forgot_password():
     log.debug("In forgot_password")
     form = ForgotPasswordForm()
     if form.validate_on_submit():
-        email = form.data["email"]
+        email = form.data["email"].lower()
         log.debug(f"Form validated for ForgotPasswordForm. Email: '{email}'")
         user = User.query.filter_by(email=email).first()
         if user is None:
