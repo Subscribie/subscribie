@@ -17,11 +17,9 @@ depends_on = None
 
 
 def upgrade():
-
     with op.batch_alter_table("setting", schema=None) as batch_op:
         batch_op.add_column(sa.Column("donations_enabled", sa.Boolean(), nullable=True))
 
 
 def downgrade():
-
     pass
