@@ -193,7 +193,6 @@ def order_summary():
     is_donation = session["is_donation"]
     # If is a donation, then there is no plan associated
     if is_donation is False:
-
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
         # if plan is free, skip Stripe checkout and store subscription right away
         if plan.is_free():
@@ -358,7 +357,6 @@ def stripe_create_checkout_session():
         }
 
     if is_donation is False:
-
         payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
@@ -729,7 +727,6 @@ def stripe_process_event_payment_intent_succeeded(event):
         log.error(msg)
         return msg, 500
     try:
-
         metadata = data["metadata"]
         is_donation = metadata["is_donation"]
     except KeyError:
