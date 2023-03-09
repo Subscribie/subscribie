@@ -8,10 +8,7 @@
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Manage My Shop</li>
-    {% if settings.donations_enabled %}
-    <li class="float-right" > Donations: {{ total_donations }} </li>
-    {% endif %}
+    <li class="breadcrumb-item active justify-content-between align-items" aria-current="page">Manage My Shop</li>
   </ul>
 </div>
 
@@ -37,7 +34,11 @@
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Stats</h3>
+    <h3 class="card-title justify-content-between d-flex">Stats
+    {% if settings.donations_enabled %}
+    <span class="badge badge-primary badge-pill" > Donations:{{ total_donations }} </span>
+    {% endif %}
+    </h3>
     <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> with <em>active</em> subscriptions.</p>
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
     <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription since starting your shop.</p>

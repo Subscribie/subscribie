@@ -31,6 +31,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
+    get_geo_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -466,8 +467,9 @@ def dashboard():
     if Setting.query.first().donations_enabled is True:
         donation_transactions = Transaction.query.filter_by(is_donation=True).all()
         for donations in donation_transactions:
-            total_donations = (donations.amount / 100) + total_donations
-
+            total_donations = donations.amount + total_donations
+    currency_code = get_geo_currency_code()
+    total_donations = currencyFormat(currency_code, total_donations)
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
