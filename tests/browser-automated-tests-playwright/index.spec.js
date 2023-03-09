@@ -143,19 +143,22 @@ test.describe("Subscribie tests:", () => {
             await page.click('text="Use test document"');
             await new Promise(x => setTimeout(x, 3000));
         }
-        // Stripe onboarding verification complete
-        const stripe_completion_content = await page.textContent('text="Other information provided"');
-        if (expect(stripe_completion_content === "Other information provided")) {
-          await new Promise(x => setTimeout(x, 1000));
+        try { 
+          // Stripe onboarding verification complete
+          const stripe_completion_content = await page.textContent('text="Other information provided"');
+          expect(stripe_completion_content === "Other information provided", {timeout: 10000 });
 
-          // Dont wait too long to click either Submit or Done
-          try {
-            await page.click('button:has-text("Submit")', { timeout: 10000 })
-            console.log("Clicking Submit");
-          } catch (e) {
-            await page.click('button:has-text("Done")');
-            console.log("Clicking Done");
-          }
+        } catch (e) {
+          console.log("all information has already  filled out");
+        }
+
+        // Dont wait too long to click either Submit or Done
+        try {
+          await page.click('button:has-text("Submit")', { timeout: 10000 })
+          console.log("Clicking Submit");
+        } catch (e) {
+          await page.click('button:has-text("Done")');
+          console.log("Clicking Done");
         }
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
