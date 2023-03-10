@@ -1019,6 +1019,7 @@ class Transaction(database.Model):
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
+    is_donation = database.Column(database.Boolean(), default=0)
 
 
 class SeoPageTitle(database.Model):
@@ -1095,6 +1096,7 @@ class Setting(database.Model):
     shop_activated = database.Column(database.Boolean(), default=False)
     api_key_secret_live = database.Column(database.String(), default=None)
     api_key_secret_test = database.Column(database.String(), default=None)
+    donations_enabled = database.Column(database.Boolean(), default=False)
 
 
 class File(database.Model):

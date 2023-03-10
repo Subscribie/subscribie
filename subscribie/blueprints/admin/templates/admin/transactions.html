@@ -73,6 +73,9 @@
         <th>Subscriber</th>
         <th>Subscription</th>
         <th>Comment</th>
+        {% if settings.donations_enabled %}
+        <th>Donation</th>
+        {% endif %}
 			</tr>
 		  </thead>
 		  <tbody>
@@ -108,6 +111,11 @@
         <td>
             {{ transaction.comment }}
         </td>
+        {% if settings.donations_enabled %}
+        <td>
+            {{ transaction.is_donation }}
+        </td>
+        {% endif %}
 			</tr>
 			{% endfor %}
 		  </tbody>
