@@ -382,18 +382,7 @@ def stripe_create_checkout_session():
                     ),
                 },
             }
-            metadata = {
-                "person_uuid": person.uuid,
-                "plan_uuid": session["plan"],
-                "chosen_option_ids": json.dumps(
-                    session.get("chosen_option_ids", None)
-                ),  # noqa
-                "package": session.get("package", None),
-                "is_donation": is_donation,
-                "subscribie_checkout_session_id": session.get(
-                    "subscribie_checkout_session_id", None
-                ),
-            }
+
             if plan.trial_period_days > 0:
                 subscription_data["trial_period_days"] = plan.trial_period_days
 
@@ -408,13 +397,13 @@ def stripe_create_checkout_session():
         if plan.requirements.subscription:
             mode = "subscription"
 
-        # Add note to seller if present directly on payment metadata
-        if session.get("note_to_seller", False):
-            metadata["note_to_seller"] = session.get("note_to_seller")
+            # Add note to seller if present directly on payment metadata
+            if session.get("note_to_seller", False):
+                metadata["note_to_seller"] = session.get("note_to_seller")
 
-            if charge_vat:
+            if charge_vat and is_donation is False:
                 subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
-            # Add note to seller if present on subscription_data metadata
+                # Add note to seller if present on subscription_data metadata
             if session.get("note_to_seller", False):
                 subscription_data["metadata"]["note_to_seller"] = session.get(
                     "note_to_seller"
@@ -460,12 +449,11 @@ def stripe_create_checkout_session():
                 }
             )
 
-    else:
+    elif is_donation is True:
         success_url = url_for("checkout.instant_payment_complete", _external=True)
         donation_amount = int(session["donation_amount"] * 100)
         line_items.append(
             {
-                "tax_rates": tax_rates,
                 "price_data": {
                     "currency": charge["currency"],
                     "product_data": {
