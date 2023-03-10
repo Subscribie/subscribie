@@ -249,6 +249,7 @@ def custom_page(path):
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
+    settings = Setting.query.first()
     if page is None:
         return "Page not found", 404
     # Check if private page & enforce
@@ -348,6 +349,7 @@ def custom_page(path):
         g=g,
         url_for=url_for,
         title=page.page_name,
+        settings=settings,
     )
 
     return template
