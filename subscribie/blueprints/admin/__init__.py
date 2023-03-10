@@ -1420,7 +1420,7 @@ def change_email():
     """Change email of existing user"""
     form = ChangeEmailForm()
     if request.method == "POST":
-        email = session.get("user_id", None)
+        email = session.get("user_id", None).lower()
         if email is None:
             return "Email not found in session"
 
@@ -1448,7 +1448,7 @@ def add_shop_admin():
     if request.method == "POST":
         if form.validate_on_submit():
             # Check user dosent already exist
-            email = escape(request.form["email"])
+            email = escape(request.form["email"].lower())
             if User.query.filter_by(email=email).first() is not None:
                 return f"Error, admin with email ({email}) already exists."
 
