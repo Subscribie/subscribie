@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ _('Donations Settings') }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">{{ _('Donations Settings') }}</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Donations Settings') }}</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>{{ _('Enable Donations feature') }}</h2>
+          <p>{{ _('Activate the Donation feature to allow subscribers or anyone to donate for your business') }}</p>
+
+          <form action="" method="POST" action="/">
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donations_enabled" value="1" id="yes" {% if settings.donations_enabled is sameas True %}checked {% endif %}>
+                <label class="form-check-label" for="yes">
+                 {{ _('Enable') }}
+                </label>
+              </div>
+              <br />
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donations_enabled" value="0" id="no" {% if settings.donations_enabled is sameas False %}checked {% endif %}>
+                <label class="form-check-label" for="no">
+                  {{ _('Disable') }}
+                </label>
+              </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary btn-block mb-3">{{ _('Save') }}</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
