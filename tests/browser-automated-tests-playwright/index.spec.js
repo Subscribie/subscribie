@@ -128,38 +128,32 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding verification summary
         //const notice_title_content = await page.textContent('.Notice-title');
-        const notice_title_content = await page.textContent('text="Information required soon"');
-        if (expect(notice_title_content === "Information required soon")) {
-          console.log("On the Let's review your details page");
-          await new Promise(x => setTimeout(x, 2000));
-          //await page.click('button:has-text("Update")');
-          await page.locator('text="Information required soon"').click();
-        }
-        // Stripe onboarding identify verification step
-        //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
-        const additional_information_content = await page.textContent('text=For additional security, please have this person finish verifying their identity');
-        if (expect(additional_information_content === "For additional security, please have this person finish verifying their identity")) {
-            await new Promise(x => setTimeout(x, 3000));
-            await page.click('text="Use test document"');
-            await new Promise(x => setTimeout(x, 3000));
-        }
-        try { 
-          // Stripe onboarding verification complete
-          const stripe_completion_content = await page.textContent('text="Other information provided"');
-          expect(stripe_completion_content === "Other information provided", {timeout: 10000 });
-
-        } catch (e) {
-          console.log("all information has already  filled out");
-        }
-
-        // Dont wait too long to click either Submit or Done
         try {
-          await page.click('button:has-text("Submit")', { timeout: 10000 })
-          console.log("Clicking Submit");
+              let notice_title_content = await page.evaluate(() => document.body.textContent);
+              if (notice_title_content.indexOf("Pending verification.") > -1) {
+                  console.log("On the Let's review your details page");
+                  await new Promise(x => setTimeout(x, 2000));
+                  //await page.click('button:has-text("Update")');
+                  await page.locator('text="Pending verification"').click();
+                  // Stripe onboarding identify verification step
+                  //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
+                  const additional_information_content = await page.textContent('text=For additional security, please have this person finish verifying their identity');
+                  if (expect(additional_information_content === "For additional security, please have this person finish verifying their identity")) {
+                      await new Promise(x => setTimeout(x, 3000));
+                      await page.click('text="Use test document"');
+                      await new Promise(x => setTimeout(x, 3000));
+                   }
+            }
         } catch (e) {
-          await page.click('button:has-text("Done")');
-          console.log("Clicking Done");
+              console.log("all information has already  filled out");
         }
+
+        // Stripe onboarding verification complete
+        const stripe_completion_content = await page.textContent('text="Other information provided"');
+        expect(stripe_completion_content === "Other information provided");
+
+
+        await page.click('[data-test="requirements-index-done-button"]')
 
       console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
       await new Promise(x => setTimeout(x, 5000));
