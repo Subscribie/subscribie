@@ -25,4 +25,6 @@ test.beforeEach(async ({ page }) => {
 
   const order_plan_cooling_off = require('./tests/133_subscriber_order_plan_with_cooling_off');
 
-
+  const enabling_donations = require('./tests/1065_shop_owner_enabling_donations');
+  
+  const checkout_donations = require('./tests/1065_subscriber_checkout_donation');
