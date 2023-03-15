@@ -148,8 +148,8 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    setting = Setting.query.first()
-    custom_code = setting.custom_code
+    settings = Setting.query.first()
+    custom_code = settings.custom_code
     geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
     currency_format = currencyFormat
@@ -164,6 +164,7 @@ def inject_template_globals():
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
         currency_format=currency_format,
+        settings=settings,
     )
 
 
@@ -248,6 +249,7 @@ def custom_page(path):
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
+    settings = Setting.query.first()
     if page is None:
         return "Page not found", 404
     # Check if private page & enforce
@@ -347,6 +349,7 @@ def custom_page(path):
         g=g,
         url_for=url_for,
         title=page.page_name,
+        settings=settings,
     )
 
     return template

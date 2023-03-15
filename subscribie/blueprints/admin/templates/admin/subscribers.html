@@ -83,7 +83,7 @@
                                 </li>
                                 <li>
                                   <strong>Interval:</strong>
-                                  {% if subscription.plan.interval_unit is not sameas None %}
+                                  {% if subscription.plan is not sameas None and subscription.plan.interval_unit is not sameas None %}
                                     {{ subscription.plan.interval_unit.capitalize() }}
                                   {% else %}
                                     {{ subscription.plan.interval_unit }}

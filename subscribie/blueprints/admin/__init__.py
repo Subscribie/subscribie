@@ -31,6 +31,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
+    get_geo_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -443,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    total_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -462,7 +464,12 @@ def dashboard():
 
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-
+    if Setting.query.first().donations_enabled is True:
+        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
+        for donations in donation_transactions:
+            total_donations = donations.amount + total_donations
+    currency_code = get_geo_currency_code()
+    total_donations = currencyFormat(currency_code, total_donations)
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -474,6 +481,7 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
+        total_donations=total_donations,
     )
 
 
@@ -1876,10 +1884,6 @@ def getPlan(container, i, default=None):
 @login_required
 def vat_settings():
     settings = Setting.query.first()  # Get current shop settings
-    if settings is None:
-        settings = Setting()
-        database.session.add(settings)
-        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("chargeVAT", 0)) == 1:
@@ -1897,6 +1901,25 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/donate-enabled-settings", methods=["GET", "POST"])
+@login_required
+def donations_enabled_settings():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings.donations_enabled is None:
+        settings.donations_enabled = False
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("donations_enabled", 0)) == 1:
+            settings.donations_enabled = 1
+        else:
+            settings.donations_enabled = 0
+        flash("donations_enabled settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.donations_enabled_settings", settings=settings))
+    return render_template("admin/settings/donations_enabled.html", settings=settings)
 
 
 @admin.route("/api-keys", methods=["GET", "POST"])
