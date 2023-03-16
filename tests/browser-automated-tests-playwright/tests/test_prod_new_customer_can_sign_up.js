@@ -5,7 +5,7 @@ const iPhone = devices['iPhone 11'];
 const assert = require('assert');
 const DEFAULT_TIMEOUT = 500000
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
-const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
+const PLAYWRIGHT_HEADLESS = false;
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
 const videoHeight = 720;
@@ -51,7 +51,7 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
 
 
     // Verify new site has come online ok
-    await new Promise(x => setTimeout(x, 10000)); //Allow 5 secconds for new site to boot
+    await new Promise(x => setTimeout(x, 20000)); //Allow 20 secconds for new site to boot
     await page.goto("https://" + 'prodtest' + epoch + ".subscriby.shop");
     const new_shop_category_title_content = await page.textContent('.title-1');
     assert(new_shop_category_title_content === 'prod-test-' + epoch)
