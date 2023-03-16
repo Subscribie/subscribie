@@ -8,7 +8,7 @@
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Manage My Shop</li>
+    <li class="breadcrumb-item active justify-content-between align-items" aria-current="page">Manage My Shop</li>
   </ul>
 </div>
 
@@ -34,7 +34,11 @@
   </div>
 
   <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Stats</h3>
+    <h3 class="card-title justify-content-between d-flex">Stats
+    {% if settings.donations_enabled %}
+    <span class="badge badge-primary badge-pill" > Donations:{{ total_donations }} </span>
+    {% endif %}
+    </h3>
     <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> with <em>active</em> subscriptions.</p>
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
     <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription since starting your shop.</p>
@@ -512,6 +516,14 @@
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
           <div class="px-3 py-3 my-3">
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.show_api_keys') }}">
+              API Keys
+              </a>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.donations_enabled_settings') }}">
+              Donation Settings
+              </a>
               <a class="btn btn-success btn-block" 
                   href="{{ url_for('admin.rename_shop') }}">
               Rename shop web address
@@ -524,10 +536,6 @@
               </a>
               {% endif %}
 
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.show_api_keys') }}">
-              API Keys
-              </a>
           </div>
 
         </div>

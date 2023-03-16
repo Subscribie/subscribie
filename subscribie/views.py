@@ -1,3 +1,4 @@
+from .logger import logger  # noqa: F401
 import logging
 from subscribie.auth import check_private_page
 from pathlib import Path
@@ -71,7 +72,7 @@ def on_each_request():
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
     except LookupError as e:  # noqa: F841
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(f"Unable to get geo country from request header: {e}")
 
     # Dynamic country detection
     if countryObj is not None:
@@ -88,7 +89,9 @@ def on_each_request():
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
         fallback_default_country = get_shop_default_country_code()
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(
+            f"Unable to get geo country from request headers. Falling back to: {fallback_default_country}"  # noqa: E501
+        )
         countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
         assert countryObj is not None
         country = {
@@ -101,6 +104,11 @@ def on_each_request():
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
         session["fallback_default_country_active"] = True
+        log.debug(f'session country is set to: {session["country"]}')
+        log.debug(f'session country_code is set to: {session["country_code"]}')
+        log.debug(
+            f'session fallback_default_country_active is: {session["fallback_default_country_active"]}'  # noqa: E501
+        )
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
@@ -140,8 +148,8 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    setting = Setting.query.first()
-    custom_code = setting.custom_code
+    settings = Setting.query.first()
+    custom_code = settings.custom_code
     geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
     currency_format = currencyFormat
@@ -156,12 +164,25 @@ def inject_template_globals():
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
         currency_format=currency_format,
+        settings=settings,
     )
 
 
 @bp.route("/health")
 def health():
     return "OK", 200
+
+
+@bp.route("/notification")
+def test_notifications():
+    log.debug("Test debug notification")
+    log.info("Test info notification")
+    log.warning("Test warning notification")
+    log.error("Test error notification")
+    log.critical("Test critical notification")
+    return """Test notification sent.\n
+    If handlers are configured correctly, then notification(s) will appear in the respective handler(s).\n
+    See also https://docs.subscribie.co.uk/docs/architecture/logging/"""  # noqa: E501
 
 
 @bp.route("/cdn/<path:filename>")
@@ -228,6 +249,7 @@ def custom_page(path):
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
+    settings = Setting.query.first()
     if page is None:
         return "Page not found", 404
     # Check if private page & enforce
@@ -327,6 +349,7 @@ def custom_page(path):
         g=g,
         url_for=url_for,
         title=page.page_name,
+        settings=settings,
     )
 
     return template

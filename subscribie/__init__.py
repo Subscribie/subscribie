@@ -58,7 +58,7 @@ def seed_db():
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     babel = Babel(app)
-    LANGUAGES = ["en", "de"]
+    LANGUAGES = ["en", "de", "es"]
 
     load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
@@ -145,7 +145,6 @@ def create_app(test_config=None):
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     with app.app_context():
-
         database.init_app(app)
         Migrate(app, database)
 

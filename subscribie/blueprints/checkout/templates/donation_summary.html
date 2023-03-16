@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %} {{ _('Order Summary') }} {% endblock %}
+{% block title %} {{ _('Donation Summary') }} {% endblock %}
 
 {% block hero %}
 <div class="section-hero px-2">
@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col col-md-8 hero-content py-5 px-3 px-sm-4 ">
             <h2 class="title-1">{{ company.name }}</h2>
-            <p class="text-light body-lg mb-0">{{ _('Order Summary') }}</p>
+            <p class="text-light body-lg mb-0">{{ _('Donation Summary') }}</p>
           </div>
           <div class="col-4 col-md-4 text-right d-none d-lg-block py-3 px-0 px-sm-4">
             <svg style="max-width:500px; width:75%" viewBox="0 0 1309 490" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -43,49 +43,13 @@
 <section class="section mx-auto my-4">
 <div class="container mx-auto">
     <div class="row row-cols-1 row-cols-lg-2">
-        <div class="col-lg-8">
-            <h3 class="title-1">{{ _('Please complete your order') }}</h3>
-            <p class="text mb-3">{{ _('Great choice') }} {{ fname }}, {{ _('please complete the form below') }}.</p>
-            <div>
-                {% if plan.trial_period_days > 0 %}
-                <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}, {{ _('then') }}</p>
-                {% endif %}
-                {% if plan.requirements.instant_payment %}
-                <p class="py-3 body-lg">
-                    <b>{{ _('Upfront Cost') }}:</b>
-                    <span class="p-1 bg-success text-white rounded ml-2">{{ plan.showSellPrice() }}</span>
-                </p>
-                {% endif %}
-
-                {% if plan.requirements.subscription %}
-                <p class="py-3 body-lg">
-                    <b>{{ _('Price') }} ({{ plan.showItervalUnit() }})</b>
-                    <span class="p-2 bg-primary text-white rounded ml-2">{{ plan.showIntervalAmount() }}</span>
-                </p>
-                {% endif %}
-                {% if plan.requirements.subscription and plan.requirements.instant_payment %}
-                <p class="py-3"><span class="body-lg">{{ _('Total') }}: <span class="p-2 bg-danger text-white rounded ml-2">{{ geo_currency_symbol }}{{ "%.2f"|format((plan.getSellPrice() + plan.getIntervalAmount())/100) }}</span></span></br></br>
-                {{ _('Then') }} {{ plan.showIntervalAmount() }} {{ plan.showItervalUnit() }}</p>
-                {% endif %}
-
-            </div>
-        </div>
-
-        <div class="col-lg-4 my-3 my-lg-0">
+        <div class="col-lg-12 my-3 my-lg-0">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h3 class="pt-3 title-1">{{ _('Order Summary') }}</h3>
+                    <h3 class="pt-3 title-1">{{ _('Donation Summary') }}</h3>
                 </div>
                 <div class="card-body">
-                    <h4 class="my-3 body-lg">{{ plan.title|capitalize() }}</h4>
-    
-                    <ul style="list-style: none;" class="pl-0 ml-0">
-                        {% for selling_point in plan.selling_points %}
-                        {% if selling_point.point|length != 0 %}
-                        <li><i class="fas fa-check-circle pr-2 mt-1"></i>{{ selling_point.point }}</li>
-                        {% endif %}
-                        {% endfor %}
-                    </ul>
+                  <p>{{ _('Please complete your donation by following the checkout below.') }}</p>
                 </div>
             </div>
         </div>

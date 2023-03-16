@@ -31,6 +31,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
+    get_geo_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -443,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    total_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -462,7 +464,12 @@ def dashboard():
 
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-
+    if Setting.query.first().donations_enabled is True:
+        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
+        for donations in donation_transactions:
+            total_donations = donations.amount + total_donations
+    currency_code = get_geo_currency_code()
+    total_donations = currencyFormat(currency_code, total_donations)
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -474,6 +481,7 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
+        total_donations=total_donations,
     )
 
 
@@ -498,7 +506,6 @@ def edit():
         company.slogan = request.form["slogan"]
         # Loop plans
         for index in request.form.getlist("planIndex", type=int):
-
             # Archive existing plan then create new plan
             # (remember, edits create new plans because
             # plans are immutable)
@@ -679,7 +686,6 @@ def add_plan():
             draftPlan.sell_price = dec2pence(form.sell_price.data[0])
 
         points = form.selling_points.data[0]
-
         for point in points:
             draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
@@ -1102,7 +1108,9 @@ def stripe_onboarding():
     try:
         return jsonify({"url": account_link_url})
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        msg = "An occurred during Stripe onboarding"
+        log.error(f"{msg}: {e}")
+        return jsonify(error=msg), 403
 
 
 def _generate_account_link(account_id):
@@ -1234,7 +1242,6 @@ def subscribers():
 
 @admin.route("/refresh-subscription-statuses")
 def refresh_subscriptions():
-
     update_stripe_subscription_statuses()
 
     if request.referrer is not None:
@@ -1323,7 +1330,6 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1414,7 +1420,7 @@ def change_email():
     """Change email of existing user"""
     form = ChangeEmailForm()
     if request.method == "POST":
-        email = session.get("user_id", None)
+        email = session.get("user_id", None).lower()
         if email is None:
             return "Email not found in session"
 
@@ -1440,10 +1446,9 @@ def add_shop_admin():
     """Add another shop admin"""
     form = AddShopAdminForm()
     if request.method == "POST":
-
         if form.validate_on_submit():
             # Check user dosent already exist
-            email = escape(request.form["email"])
+            email = escape(request.form["email"].lower())
             if User.query.filter_by(email=email).first() is not None:
                 return f"Error, admin with email ({email}) already exists."
 
@@ -1565,7 +1570,6 @@ def edit_welcome_email():
         database.session.add(custom_template)
 
     if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
-
         new_custom_template = form.template.data
         # Validate template syntax
         env = jinja2.Environment()
@@ -1629,7 +1633,6 @@ def rename_shop():
 @admin.route("/rename-shop", methods=["POST"])
 @login_required
 def rename_shop_post():
-
     PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
     PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
@@ -1723,7 +1726,6 @@ def announce_shop_stripe_connect_ids():
         return req
 
     try:
-
         if stripe_testmode() is False and stripe_livemode() is False:
             log.info(msg)
             return jsonify("Stripe is not setup yet.")
@@ -1882,10 +1884,6 @@ def getPlan(container, i, default=None):
 @login_required
 def vat_settings():
     settings = Setting.query.first()  # Get current shop settings
-    if settings is None:
-        settings = Setting()
-        database.session.add(settings)
-        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("chargeVAT", 0)) == 1:
@@ -1903,6 +1901,25 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/donate-enabled-settings", methods=["GET", "POST"])
+@login_required
+def donations_enabled_settings():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings.donations_enabled is None:
+        settings.donations_enabled = False
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("donations_enabled", 0)) == 1:
+            settings.donations_enabled = 1
+        else:
+            settings.donations_enabled = 0
+        flash("donations_enabled settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.donations_enabled_settings", settings=settings))
+    return render_template("admin/settings/donations_enabled.html", settings=settings)
 
 
 @admin.route("/api-keys", methods=["GET", "POST"])

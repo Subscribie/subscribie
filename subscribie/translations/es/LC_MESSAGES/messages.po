@@ -1,0 +1,800 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-02-15 20:07-0400\n"
+"PO-Revision-Date: 2023-01-31 21:15-0400\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: subscribie/__init__.py:323
+msgid "Hello"
+msgstr "Hola"
+
+#: subscribie/auth.py:297
+msgid ""
+"Please provide at least your email address to login, or use the forgot "
+"password feature."
+msgstr ""
+
+#: subscribie/models.py:544
+msgid "daily"
+msgstr "Diario"
+
+#: subscribie/models.py:545
+msgid "weekly"
+msgstr "Semanal"
+
+#: subscribie/models.py:546
+msgid "monthly"
+msgstr "Mensual"
+
+#: subscribie/models.py:547
+msgid "yearly"
+msgstr "Anual"
+
+#: subscribie/blueprints/admin/templates/admin/login.html:20
+#: subscribie/themes/theme-builder/builder/login.html:42
+msgid "Need help logging into your shop?"
+msgstr "Necesitas ayuda para iniciar sesión?"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:2
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:6
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:12
+msgid "Donations Settings"
+msgstr "Ajuste de Donaciones"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:22
+msgid "Enable Donations feature"
+msgstr "Habilitar la Caracteristica de Donaciones"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:23
+msgid ""
+"Activate the Donation feature to allow subscribers or anyone to donate "
+"for your business"
+msgstr "Activa la caracteristica de Donaciones para permitir que tu subscriptores o cualquier persona pueda donar a tu negocio"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:30
+msgid "Enable"
+msgstr "Habilitar"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:37
+msgid "Disable"
+msgstr "Deshabilitar"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:42
+msgid "Save"
+msgstr "Salvar"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:2
+#: subscribie/blueprints/checkout/templates/donation_form.html:12
+#: subscribie/blueprints/checkout/templates/donation_form.html:59
+#, fuzzy
+msgid "Donation"
+msgstr "Donación"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:13
+#: subscribie/blueprints/checkout/templates/new_customer.html:13
+msgid "Complete the form below"
+msgstr "Completa el formulario"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:35
+#: subscribie/blueprints/checkout/templates/new_customer.html:35
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:5
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:5
+msgid "Error"
+msgstr "Error"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:40
+#: subscribie/blueprints/checkout/templates/new_customer.html:40
+msgid "Your details"
+msgstr "Resumen"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:41
+msgid "We only use your details to use it for billing purposes only."
+msgstr "Solo usamos tus detalles para propositos del pago"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:44
+#: subscribie/blueprints/checkout/templates/new_customer.html:44
+msgid "Your Name"
+msgstr "Nombre"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:54
+#: subscribie/blueprints/checkout/templates/new_customer.html:54
+msgid "Email"
+msgstr "Correo Electrónico"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:73
+msgid "Billing Address"
+msgstr "Direccion de Pago"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:76
+#: subscribie/blueprints/checkout/templates/new_customer.html:70
+msgid "Address"
+msgstr "Dirección"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:83
+#: subscribie/blueprints/checkout/templates/new_customer.html:77
+msgid "City"
+msgstr "Ciudad"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:90
+#: subscribie/blueprints/checkout/templates/new_customer.html:84
+msgid "Post Code"
+msgstr "Código Postal"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:96
+#: subscribie/blueprints/checkout/templates/new_customer.html:61
+msgid "Phone"
+msgstr "Telefono"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:110
+#, fuzzy
+msgid "Donate"
+msgstr "Notas"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:2
+#: subscribie/blueprints/checkout/templates/donation_summary.html:11
+#: subscribie/blueprints/checkout/templates/donation_summary.html:49
+msgid "Donation Summary"
+msgstr "Resumen de Donaciones"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:15
+#: subscribie/blueprints/checkout/templates/order_summary.html:15
+msgid "Payment"
+msgstr "Pago"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:52
+msgid "Please complete your donation by following the checkout below."
+msgstr "Por favor, vaya a la caja y complete su donación"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:58
+#: subscribie/blueprints/checkout/templates/order_summary.html:94
+msgid "Checkout"
+msgstr "Pagina de Pago"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:2
+msgid "New Customer"
+msgstr "Nuevo Cliente"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:12
+msgid "Order Information"
+msgstr "Informacion de la Orden"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:41
+msgid ""
+"We only use your details in order to get in touch with you regarding the "
+"order status and for billing. No spam, no rubbish"
+msgstr ""
+"Solo usamos su información para poder contactarlos e informar sobre el "
+"estatus de su orden y la facturación. No mandamos spam."
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:67
+msgid "Your Address"
+msgstr "Dirección"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:91
+msgid "Note to seller"
+msgstr "Nota para el vendedor"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:105
+#: subscribie/blueprints/checkout/templates/order_summary.html:2
+#: subscribie/blueprints/checkout/templates/order_summary.html:11
+#: subscribie/blueprints/checkout/templates/order_summary.html:77
+msgid "Order Summary"
+msgstr "Resumen"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:120
+msgid "Choices"
+msgstr "Opciones"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:131
+#: subscribie/blueprints/checkout/templates/order_summary.html:51
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:61
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
+msgid "days free"
+msgstr "días gratis"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:131
+#: subscribie/blueprints/checkout/templates/order_summary.html:51
+msgid "then"
+msgstr "depués"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:134
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:70
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:39
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
+msgid "Upfront cost"
+msgstr "Costo inicial"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:138
+#: subscribie/blueprints/checkout/templates/order_summary.html:62
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:44
+msgid "Price"
+msgstr "Precio"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:141
+#: subscribie/blueprints/checkout/templates/order_summary.html:67
+msgid "Total"
+msgstr "Total"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:142
+#: subscribie/blueprints/checkout/templates/order_summary.html:68
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:66
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
+msgid "Then"
+msgstr "Después"
+
+#: subscribie/blueprints/checkout/templates/new_customer.html:169
+msgid "Continue to Payment"
+msgstr "Pagar"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:47
+msgid "Please complete your order"
+msgstr "Por favor, Complete su orden"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:48
+msgid "Great choice"
+msgstr "Gran Decisión"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:48
+msgid "please complete the form below"
+msgstr "por favor complete el formulario"
+
+#: subscribie/blueprints/checkout/templates/order_summary.html:55
+msgid "Upfront Cost"
+msgstr "Costo Inicial"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:2
+msgid "Thank you"
+msgstr "Gracias"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:11
+msgid "Order Complete"
+msgstr "Orden Completada"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:12
+msgid "We've received your order and will be in contact soon"
+msgstr "Hemos recibido su orden y pronto estaremos contactándolo"
+
+#: subscribie/blueprints/checkout/templates/thankyou.html:16
+msgid "Subscription Builder - Success"
+msgstr "Subscription Builder - Realizado"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:14
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:2
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:142
+msgid "Account"
+msgstr "Cuenta"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:22
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:25
+msgid "Your subscriptions"
+msgstr "Tu subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:22
+msgid "payment is pending"
+msgstr "Pago pendiente"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:27
+msgid "View your subscriptions"
+msgstr "Verifica tu subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:28
+msgid "Please contact"
+msgstr "Por favor, contactonos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:28
+msgid "if you wish to alter your subscription"
+msgstr "si quieres alterar tu subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:31
+msgid "Manage Subscriptions"
+msgstr "Maneja tu subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:36
+msgid "File access"
+msgstr "Accece a tus archivos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:38
+msgid ""
+"Some subscriptions may give you access to files. If they do, they will "
+"appear below"
+msgstr ""
+"Algunas subscripciones te permiten acceder a archivos. De estar "
+"habilitado, les apareceran debajo\""
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:41
+msgid "View Files"
+msgstr "Verifica tus archivos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:46
+msgid "Private Pages Access"
+msgstr "Acceso a Paginas Privadas"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:48
+msgid "Some subscriptions may give you access to private pages"
+msgstr "Algunas subscripciones te permiten acceder a paginas privadas"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:48
+msgid "If they do, they will appear below"
+msgstr "Si lo hacen, les aparecera debajo"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:59
+msgid "Payment Settings"
+msgstr "Ajuste de Pagos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:60
+msgid "If you have changed banks, you can update your payment method here"
+msgstr "Si ha cambiado de banco, puede actualizarlo con este método"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
+msgid "Current payment method"
+msgstr "Método de pago actual"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
+msgid "Card"
+msgstr "Tarjeta de Credito"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:64
+msgid "Brand"
+msgstr "Marca"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:65
+msgid "Last four digits"
+msgstr "Los ultimos cuatro dígitos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:70
+msgid "Note"
+msgstr "Notas"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:70
+msgid ""
+"You don't need to do anything if your card has expired or you have a new "
+"card, the details are automatically updated"
+msgstr ""
+"Si su tarjeta de credito ha expirado, sus detalles seran automáticamente "
+"actualizados cuando se genere una nueva."
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:71
+msgid ""
+"You only need to update payment details if you have changed banks or have"
+" a new card account"
+msgstr ""
+"Solo necesita actualizar el método de pago si ha cambiado de cuenta o de "
+"banco"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:74
+msgid "Update Payment Method"
+msgstr "Actualize su método de pago"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:79
+msgid "View"
+msgstr "Mire"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:79
+msgid "manage failed payments"
+msgstr "maneja los pagos fallidos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/account.html:81
+msgid "Failed Invoices"
+msgstr "Pagos Fallidos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:2
+msgid "Login"
+msgstr "Iniciar Sesión"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:6
+msgid "Reset your password"
+msgstr "Reiniciar Contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:10
+msgid "We will send you an email to reset your password"
+msgstr "Le estaremos enviando un correo para reiniciar su contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/forgot_password.html:15
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:16
+msgid "Submit"
+msgstr "Enviar"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:81
+msgid "Notification"
+msgstr "Notificación"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:97
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:70
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:176
+msgid "By"
+msgstr "Por"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:98
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "Made possible with"
+msgstr "Hecho posible con"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:101
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:103
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:138
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:146
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:180
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:182
+msgid "Logout"
+msgstr "Cerrar Sessión"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:105
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:72
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:184
+msgid "Shop owner login"
+msgstr "Inicio de Sesión para los Administradores"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:106
+msgid "or"
+msgstr "o"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:107
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:151
+msgid "Subscriber Login"
+msgstr "Inicio de sesión para Subscriptores"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/layout.html:110
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:74
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:190
+msgid "Scroll back to top"
+msgstr "Deplazar hacia el principio de la pagina"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:10
+msgid "Uploaded files"
+msgstr "Archivos subidos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:18
+msgid "Uploaded Files"
+msgstr "Archivos subidos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:19
+msgid "Files listed here will be available to your subscribers when they login"
+msgstr ""
+"Los archivos en esta lista estarán disponibles para tus subscriptores "
+"cuando inicien sesión"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:27
+msgid "File name"
+msgstr "Nombre del archivo"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:28
+msgid "Created at"
+msgstr "Creado en"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:6
+msgid "Customer Login"
+msgstr "Inicio de Sesión para Clientes"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:16
+msgid "Sign In"
+msgstr "Iniciar Sesión"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:18
+msgid "Forgot your password"
+msgstr "Olvido su contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/login.html:20
+msgid "Or, are you a shop admin needing help logging into your shop?"
+msgstr "O, eres un administrator tratando de iniciar sesión en su tienda?"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:2
+msgid "Change password"
+msgstr "Cambie la Contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:6
+msgid "Set a new password"
+msgstr "Crear nueva contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:12
+msgid "Please choose a new password"
+msgstr "Por favor elige una nueva contraseña"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:11
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:19
+msgid "Failing Payments"
+msgstr "Pagos Fallando"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+msgid "A \"failed invoice\" means that all"
+msgstr "Un \" pago fallido \" significa que todos"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
+msgid "automatic"
+msgstr "los intentos de"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
+msgid ""
+"payment collection attemps for a given invoice have failed, and there "
+"will be no further"
+msgstr "pagos automaticos para un factura ha fallado y no lo volvera a intentar"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
+msgid "payment collections for that invoices"
+msgstr "para esa factura"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:25
+msgid "Please note there may still be manual attempts made to collect the payment"
+msgstr ""
+"Pero, notese que puede intentar facturas manuales para recoletar el pago "
+"deseado"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:34
+msgid "Action"
+msgstr "Acción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:35
+msgid "Amount"
+msgstr "Monto"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:36
+msgid "Charge Date"
+msgstr "Fecha de Cargo"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:37
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:58
+msgid "Status"
+msgstr "Estatus"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:38
+msgid "Charge attempts"
+msgstr "Intentos de Pago"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:39
+msgid "Next payment attempt"
+msgstr "Próxima fecha de intento de pago"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:40
+msgid "Decline code"
+msgstr "Codigo de rechazo"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:49
+msgid "Never"
+msgstr "Nunca"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:2
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:6
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:11
+msgid "Subscriptions"
+msgstr "Subscripciones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:10
+msgid "My Account"
+msgstr "My Cuenta"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:17
+msgid "Your Subscriptions"
+msgstr "Subscripciones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:22
+msgid "Title"
+msgstr "Título"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:28
+msgid "Chosen Options"
+msgstr "Opciones Elegidas"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:36
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:2
+msgid "Update Choices"
+msgstr "Actualizar Opciones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:40
+msgid "Subscription ID"
+msgstr "ID de la Subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:41
+msgid "Date started"
+msgstr "Fecha de Inicio"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:76
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
+msgid "One-off"
+msgstr "único"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
+msgid "Not a subscription"
+msgstr "No es una subscripción"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:50
+msgid "Sell price"
+msgstr "Precio de Venta"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:55
+msgid "No up-front fee"
+msgstr "No pagos por adelantado"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:62
+msgid "Paid"
+msgstr "Pagado"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:66
+msgid "Automatically Cancels at"
+msgstr "Se cancela automaticamente en"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:74
+msgid "Order Note"
+msgstr "Nota"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:78
+msgid "No note was given"
+msgstr "No hubo notas"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:99
+msgid "Details"
+msgstr "Detalles"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:9
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:10
+msgid "Choose your options"
+msgstr "Elige tus opciones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:11
+msgid "Your"
+msgstr "Tus"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:11
+msgid "plan has the following options"
+msgstr "el plan tiene las siguientes optiones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:104
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:72
+msgid "options"
+msgstr "opciones"
+
+#: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
+msgid "choose one"
+msgstr "elige uno"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:16
+msgid "Choose plan"
+msgstr "elige el plan"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:51
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:20
+msgid "More details"
+msgstr "mas detalles"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:78
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:49
+msgid "No subscription"
+msgstr "No es una subscripción"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:90
+msgid "Automatically cancels on"
+msgstr "Se cancela automaticamente en"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:99
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:67
+msgid "See choice options"
+msgstr "Mira las opciones"
+
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:117
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:121
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:86
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:90
+msgid "Choose"
+msgstr "Elige"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:91
+msgid "Home"
+msgstr "Home"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:114
+msgid "Private pages"
+msgstr "Pagina privada"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:134
+msgid "Dashboard"
+msgstr "Menu"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
+msgid "Collect payments easily with Subscribie"
+msgstr "Recolecata los pagos de forma sencillas con Subscribie"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
+msgid "Made in"
+msgstr "Hecho en"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:186
+msgid "Subscriber login"
+msgstr "Inicio de Sesion para Subscriptores"
+
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:194
+msgid "Country"
+msgstr "País"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:28
+msgid "The"
+msgstr "El"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:28
+msgid "plan has options"
+msgstr "el plan tiene opciones"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "The choice group"
+msgstr "El grupo de opciones"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "has"
+msgstr "tiene"
+
+#: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
+msgid "Please choose one of them"
+msgstr "Por favor elige uno de esos"
+
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
+msgid "None"
+msgstr "None"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:47
+msgid "We couldn't find that page"
+msgstr "No se pudo encontrar esa pagina"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:48
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:48
+msgid "Take me home"
+msgstr "Llevame al inicio"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:63
+msgid ""
+"You may have followed a dead, old or broken link, sorry about that, click"
+" the button at the top right to go back home and try again"
+msgstr ""
+"Usted pudo haber seguido un enlance roto o viejo, Perdón por eso, Por "
+"favor, haga click en el botón arriba a la derecha para volver al comienzo"
+" e intentelo de nuevo"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
+msgid "in"
+msgstr "en"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:46
+msgid "Something's gone wrong"
+msgstr "Algo paso mal"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:47
+msgid "Sorry we encountered an error on this page"
+msgstr "Perdón hemos encontrado un error en esta pagina"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:62
+msgid "How did that happen"
+msgstr "Como sucedió"
+
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:63
+msgid ""
+"Sorry you encountered this error, we've logged it and will dispatch a "
+"team of monkeys to fix it. Click the button above to go back home"
+msgstr ""
+"Perdón por el error, lo hemos capturado y estamos en camino para "
+"arreglarlo lo mas rapido posible. Presione el botón de arriba para volver"
+" al inicio"
+

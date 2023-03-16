@@ -81,7 +81,7 @@ def check_password_login(email, password):
 def login():
     if request.method == "GET":
         if request.args.get("email"):
-            email = request.args.get("email")
+            email = request.args.get("email").lower()
             # Check if password expired, send password reset email if expired.
             subscriber = Person.query.filter_by(email=email).first()
             if subscriber is not None and subscriber.password_expired:
@@ -93,7 +93,7 @@ def login():
 
     form = PasswordLoginForm()
     if form.validate_on_submit():
-        email = form.data["email"]
+        email = form.data["email"].lower()
         password = form.data["password"]
         subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
@@ -125,7 +125,7 @@ def login():
 def forgot_password():
     form = SubscriberForgotPasswordForm()
     if form.validate_on_submit() or form.data.get("email"):
-        email = form.data["email"]
+        email = form.data["email"].lower()
         subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
             flash("Person not found with that email")

@@ -13,7 +13,6 @@ log = logging.getLogger(__name__)
 @admin.route("/export-transactions")
 @login_required
 def export_transactions():
-
     transactions = Transaction.query.execution_options(include_archived=True).all()
 
     if len(transactions) == 0:

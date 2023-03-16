@@ -81,6 +81,14 @@
                                 <li><strong>Title: </strong>
                                     <span class="subscription-title">{{ subscription.plan.title }}</span>
                                 </li>
+                                <li>
+                                  <strong>Interval:</strong>
+                                  {% if subscription.plan is not sameas None and subscription.plan.interval_unit is not sameas None %}
+                                    {{ subscription.plan.interval_unit.capitalize() }}
+                                  {% else %}
+                                    {{ subscription.plan.interval_unit }}
+                                  {% endif %}
+                                </li>
                                 {% if subscription.chosen_options %}
                                     <li>
                                         <details open>

@@ -36,3 +36,7 @@ node_modules/
 package-lock.json
 .hugo_build.lock
 .pem
+test-results
+tests/browser-automated-tests-playwright/index.spec.js-snapshots/*
+tests/browser-automated-tests-playwright/worker*
+

@@ -738,7 +738,6 @@ class Plan(database.Model, HasArchived):
                         # Skip this rule if discount_code validation fails
                         continue
                 if rule.affects_sell_price and sell_price is not None:
-
                     if rule.percent_increase:
                         # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
@@ -772,7 +771,6 @@ class Plan(database.Model, HasArchived):
                     rule.affects_interval_amount
                     and interval_amount is not None  # noqa: E501
                 ):
-
                     if rule.percent_increase:
                         if (
                             rule.min_interval_amount
@@ -1021,6 +1019,7 @@ class Transaction(database.Model):
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
+    is_donation = database.Column(database.Boolean(), default=0)
 
 
 class SeoPageTitle(database.Model):
@@ -1097,6 +1096,7 @@ class Setting(database.Model):
     shop_activated = database.Column(database.Boolean(), default=False)
     api_key_secret_live = database.Column(database.String(), default=None)
     api_key_secret_test = database.Column(database.String(), default=None)
+    donations_enabled = database.Column(database.Boolean(), default=False)
 
 
 class File(database.Model):
