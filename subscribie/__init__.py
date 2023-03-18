@@ -58,7 +58,7 @@ def seed_db():
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     babel = Babel(app)
-    LANGUAGES = ["en", "de", "es"]
+    LANGUAGES = ["en", "de", "es", "hr"]
 
     load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
