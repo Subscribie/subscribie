@@ -25,7 +25,6 @@ from subscribie.utils import (
     get_stripe_connect_account,
     create_stripe_connect_account,
     get_stripe_connect_account_id,
-    modify_stripe_account_capability,
     create_stripe_tax_rate,
     get_shop_default_currency_code,
     get_stripe_invoices,
@@ -956,7 +955,19 @@ def stripe_connect():
     payment_provider = PaymentProvider.query.first()
     try:
         account = get_stripe_connect_account()
-        if account is not None and account.charges_enabled and account.payouts_enabled:
+        if payment_provider.stripe_livemode is False:
+            card_payments_enabled = True
+        else:
+            card_payments_capability = stripe.Account.retrieve_capability(
+                account.id, "card_payments"
+            )
+            card_payments_enabled = card_payments_capability["requested"]
+        if (
+            account is not None
+            and account.charges_enabled
+            and account.payouts_enabled
+            and card_payments_enabled is True
+        ):
             payment_provider.stripe_active = True
         else:
             payment_provider.stripe_active = False
@@ -973,7 +984,6 @@ def stripe_connect():
         # Attempt to Updates an existing Account Capability to accept card payments
         try:
             account = get_stripe_connect_account()
-            modify_stripe_account_capability(account.id)
         except Exception as e:
             log.error(f"Could not update card_payments capability for account. {e}")
 
@@ -1046,6 +1056,7 @@ def stripe_connect():
         "admin/settings/stripe/stripe_connect.html",
         stripe_onboard_path=url_for("admin.stripe_onboarding"),
         account=account,
+        card_payments_enabled=card_payments_enabled,
         payment_provider=payment_provider,
         stripe_express_dashboard_url=stripe_express_dashboard_url,
         default_currency=setting.default_currency,
@@ -1102,7 +1113,6 @@ def stripe_onboarding():
             payment_provider.stripe_test_connect_account_id = account.id
 
     database.session.commit()
-
     session["account_id"] = account.id
     account_link_url = _generate_account_link(account.id)
     try:

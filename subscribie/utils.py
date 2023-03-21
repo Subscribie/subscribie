@@ -160,7 +160,7 @@ def create_stripe_connect_account(company, country_code=None, default_currency=N
         default_currency=default_currency,
         business_profile={"url": url, "name": company.name},
         capabilities={
-            "card_payments": {"requested": True},
+            "card_payments": {"requested": False},
             "transfers": {"requested": True},
         },
     )
