@@ -33,6 +33,9 @@ def export_transactions():
                 subscription_status = None
             # Backward compatibility to GB only shops
             # TODO Remove
+            if transaction.is_donation is None:
+                transaction.is_donation = False
+
             if transaction.currency is None:
                 transaction.currency = "GBP"
                 try:
@@ -55,6 +58,7 @@ def export_transactions():
                     "subscribie_transaction_uuid": transaction.uuid,
                     "subscribie_external_src": transaction.external_src,
                     "subscribie_external_id": transaction.external_id,
+                    "Donations": transaction.is_donation,
                 }
             )
         else:
