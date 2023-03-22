@@ -1,14 +1,14 @@
 ---
-title: "Add Donations"
+title: "Accept Donations"
 date: 2023-03-21
 weight: 5
 description: >
-  A guide to Add Donations to your shop.
+  A guide to Accept Donations to your shop.
 ---
 
-Learn how to add donations, on your homepage in your shop.
+Learn how to Accept donations, on your homepage in your shop.
 
-## Steps to Add Donations
+## Steps to Accept Donations
 
 **Step 1:** Log into your Shop Dashboard.
 ![](https://subscribie.co.uk/p/wp-content/uploads/2023/03/Screenshot-2023-03-21-192142-1024x472.png)
