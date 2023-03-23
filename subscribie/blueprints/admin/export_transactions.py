@@ -58,7 +58,7 @@ def export_transactions():
                     "subscribie_transaction_uuid": transaction.uuid,
                     "subscribie_external_src": transaction.external_src,
                     "subscribie_external_id": transaction.external_id,
-                    "Donations": transaction.is_donation,
+                    "Donation": transaction.is_donation,
                 }
             )
         else:
