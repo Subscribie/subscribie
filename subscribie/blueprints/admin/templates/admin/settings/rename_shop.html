@@ -67,7 +67,7 @@
  }
 
   function rename_site(e) {
-    let new_name = `document.getElementById("new_name").value`;
+    let new_name = document.getElementById("new_name").value;
     document.getElementById('submit').textContent = "Please wait...";
     console.log("Renaming shop...");
     const data = { "new_name": new_name };
