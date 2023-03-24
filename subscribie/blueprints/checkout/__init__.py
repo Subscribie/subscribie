@@ -872,19 +872,18 @@ def stripe_webhook():
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
         """
-        if is_donation is not True and (
-            session["mode"] == "subscription" or session["mode"] == "payment"
-        ):
-            create_subscription(
-                currency=currency,
-                email=session["customer_email"],
-                package=package,
-                chosen_option_ids=chosen_option_ids,
-                subscribie_checkout_session_id=subscribie_checkout_session_id,
-                stripe_subscription_id=stripe_subscription_id,
-                stripe_external_id=session["id"],
-            )
-        return "OK", 200
+        if is_donation is False:
+            if session["mode"] == "subscription" or session["mode"] == "payment":
+                create_subscription(
+                    currency=currency,
+                    email=session["customer_email"],
+                    package=package,
+                    chosen_option_ids=chosen_option_ids,
+                    subscribie_checkout_session_id=subscribie_checkout_session_id,
+                    stripe_subscription_id=stripe_subscription_id,
+                    stripe_external_id=session["id"],
+                )
+                return "OK", 200
 
     if (
         stripe_livemode == event["livemode"]
