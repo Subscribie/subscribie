@@ -317,7 +317,6 @@ def login():
 @bp.route("/login/<login_token>", methods=("GET", "POST"))
 def do_login(login_token):
     log.debug("In do_login for login_token based login")
-    breakpoint()
     if len(login_token) < 10:
         log.debug("Invalid login_token length. Refusing to login.")
         return "Invalid token"
