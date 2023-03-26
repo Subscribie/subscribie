@@ -499,7 +499,7 @@ def stripe_create_checkout_session():
             payment_intent_data=payment_intent_data,
         )
         return jsonify(id=stripe_session.id)
-    if plan.requirements.subscription:
+    elif plan.requirements.subscription:
         log.info("Creating Stripe checkout session for a new subscription")
         stripe_session = stripe.checkout.Session.create(
             stripe_account=data["account_id"],
