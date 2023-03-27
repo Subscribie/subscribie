@@ -502,8 +502,8 @@ def edit():
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     if form.validate_on_submit():
         company = Company.query.first()
-        company.name = request.form["company_name"]
-        company.slogan = request.form["slogan"]
+        company.name = escape(request.form["company_name"])
+        company.slogan = escape(request.form["slogan"])
         # Loop plans
         for index in request.form.getlist("planIndex", type=int):
             # Archive existing plan then create new plan
@@ -532,11 +532,13 @@ def edit():
             # Preserve category
             draftPlan.category_uuid = plan.category_uuid
 
-            draftPlan.title = getPlan(form.title.data, index, default="").strip()
+            draftPlan.title = getPlan(
+                escape(form.title.data), index, default=""
+            ).strip()
 
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
-                draftPlan.description = getPlan(form.description.data, index)
+                draftPlan.description = getPlan(escape(form.description.data), index)
 
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
@@ -569,7 +571,7 @@ def edit():
                 plan_requirements.note_to_seller_required = False
 
             plan_requirements.note_to_buyer_message = str(
-                getPlan(form.note_to_buyer_message, index, default="").data
+                getPlan(escape(form.note_to_buyer_message), index, default="").data
             )
 
             try:
@@ -597,7 +599,7 @@ def edit():
 
             points = getPlan(form.selling_points.data, index, default="")
             for point in points:
-                draftPlan.selling_points.append(PlanSellingPoints(point=point))
+                draftPlan.selling_points.append(PlanSellingPoints(point=escape(point)))
 
             if request.form.get("private-" + str(index)) is not None:
                 draftPlan.private = 1
@@ -631,12 +633,12 @@ def add_plan():
         draftPlan.requirements = plan_requirements
 
         draftPlan.uuid = str(uuid.uuid4())
-        draftPlan.title = form.title.data[0].strip()
+        draftPlan.title = escape(form.title.data[0].strip())
         draftPlan.position = request.form.get("position-0", 0)
         interval_unit = form.interval_unit.data[0].strip()
 
         if form.description.data[0].strip() != "":
-            draftPlan.description = form.description.data[0]
+            draftPlan.description = escape(form.description.data[0])
         if (
             "monthly" in interval_unit
             or "yearly" in interval_unit
@@ -653,8 +655,8 @@ def add_plan():
         else:
             plan_requirements.note_to_seller_required = False
 
-        plan_requirements.note_to_buyer_message = str(
-            form.note_to_buyer_message.data[0]
+        plan_requirements.note_to_buyer_message = escape(
+            str(form.note_to_buyer_message.data[0])
         )
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
@@ -687,7 +689,7 @@ def add_plan():
 
         points = form.selling_points.data[0]
         for point in points:
-            draftPlan.selling_points.append(PlanSellingPoints(point=point))
+            draftPlan.selling_points.append(PlanSellingPoints(point=escape(point)))
 
         # Primary icon image storage
         f = form.image.data[0]
@@ -872,7 +874,7 @@ def add_category():
         category_name = request.form.get("category", None)
         if category_name:
             category = Category()
-            category.name = category_name
+            category.name = escape(category_name)
             database.session.add(category)
             database.session.commit()
             flash(f"added new category: {category_name}")
@@ -886,7 +888,7 @@ def edit_category():
     category_id = request.args.get("id", None)
     category = Category.query.get(category_id)
     if request.method == "POST":
-        category.name = request.form.get("name")
+        category.name = escape(request.form.get("name"))
         category.position = request.form.get("position")
         database.session.commit()
         flash("Category name updated")
