@@ -313,22 +313,14 @@ def thankyou():
 
     # Send journey_complete signal
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
-    try:
-        session["is_donation"]
-        log.info("this is a donation")
 
-    except Exception as e:
-        # if there is no is_donation in the session is because
-        # the transaction is a subscription or one-off payment.
-        log.info(f"this is not a donation {e}")
-        session["is_donation"] = False
     # Trigger journey_complete, so that receivers will react, such
     # as sending welcome email. See receivers.py
     signal_journey_complete.send(
         current_app._get_current_object(),
         email=email,
         subscription_uuid=subscription.uuid,
-        is_donation=session["is_donation"],
+        is_donation=session.get("is_donation", False),
     )
 
     return render_template("thankyou.html")
@@ -882,7 +874,7 @@ def stripe_webhook():
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
         """
-        if is_donation is not True and (
+        if is_donation != "True" and (
             session["mode"] == "subscription" or session["mode"] == "payment"
         ):
             create_subscription(
