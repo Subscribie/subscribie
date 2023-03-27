@@ -532,9 +532,9 @@ def edit():
             # Preserve category
             draftPlan.category_uuid = plan.category_uuid
 
-            draftPlan.title = getPlan(
-                escape(form.title.data), index, default=""
-            ).strip()
+            draftPlan.title = escape(
+                getPlan(form.title.data, index, default="").strip()
+            )
 
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
@@ -570,8 +570,8 @@ def edit():
             else:
                 plan_requirements.note_to_seller_required = False
 
-            plan_requirements.note_to_buyer_message = str(
-                getPlan(escape(form.note_to_buyer_message), index, default="").data
+            plan_requirements.note_to_buyer_message = escape(
+                str(getPlan(form.note_to_buyer_message, index, default="").data)
             )
 
             try:
@@ -599,7 +599,8 @@ def edit():
 
             points = getPlan(form.selling_points.data, index, default="")
             for point in points:
-                draftPlan.selling_points.append(PlanSellingPoints(point=escape(point)))
+                point = escape(point)
+                draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
             if request.form.get("private-" + str(index)) is not None:
                 draftPlan.private = 1
@@ -689,7 +690,8 @@ def add_plan():
 
         points = form.selling_points.data[0]
         for point in points:
-            draftPlan.selling_points.append(PlanSellingPoints(point=escape(point)))
+            point = escape(point)
+            draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
         # Primary icon image storage
         f = form.image.data[0]
