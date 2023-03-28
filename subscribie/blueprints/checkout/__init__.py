@@ -256,7 +256,9 @@ def instant_payment_complete():
 
 @checkout.route("/thankyou", methods=["GET"])
 def thankyou():
-    if session.get("plan") is None:
+    is_donation = session.get("is_donation", False)
+
+    if session.get("plan") is None and is_donation is False:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
 
@@ -297,31 +299,40 @@ def thankyou():
 
     # Remove subscribie_checkout_session_id from session
     checkout_session_id = session.pop("subscribie_checkout_session_id", None)
-    subscription = (
-        database.session.query(Subscription)
-        .filter_by(subscribie_checkout_session_id=checkout_session_id)
-        .first()
-    )
-    # Store note to seller if in session
-    if session.get("note_to_seller", False) is not False and subscription is not None:
-        note = SubscriptionNote(
-            note=session["note_to_seller"], subscription_id=subscription.id
-        )
-        database.session.add(note)
-
-    database.session.commit()
-
-    # Send journey_complete signal
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
 
-    # Trigger journey_complete, so that receivers will react, such
-    # as sending welcome email. See receivers.py
-    signal_journey_complete.send(
-        current_app._get_current_object(),
-        email=email,
-        subscription_uuid=subscription.uuid,
-        is_donation=session.get("is_donation", False),
-    )
+    if is_donation is False:
+        subscription = (
+            database.session.query(Subscription)
+            .filter_by(subscribie_checkout_session_id=checkout_session_id)
+            .first()
+        )
+        # Store note to seller if in session
+        if session.get("note_to_seller", False) is not False:
+            note = SubscriptionNote(
+                note=session["note_to_seller"], subscription_id=subscription.id
+            )
+            database.session.add(note)
+        # Trigger journey_complete, so that receivers will react, such
+        # as sending welcome email. See receivers.py
+        signal_journey_complete.send(
+            current_app._get_current_object(),
+            email=email,
+            subscription_uuid=subscription.uuid,
+            is_donation=is_donation,
+        )
+    else:
+
+        # Send journey_complete signal
+        # Trigger journey_complete, so that receivers will react, such
+        # as sending welcome email. See receivers.py
+        signal_journey_complete.send(
+            current_app._get_current_object(),
+            email=email,
+            is_donation=is_donation,
+        )
+
+    database.session.commit()
 
     return render_template("thankyou.html")
 

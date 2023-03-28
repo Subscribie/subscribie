@@ -83,7 +83,7 @@ def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
 def receiver_send_welcome_email(*args, **kwargs):
     to_email = kwargs.get("email")
     is_donation = kwargs.get("is_donation")
-    if is_donation is True or is_donation == "True":
+    if is_donation is True:
         send_donation_email(to_email=to_email)
     else:
         send_welcome_email(to_email=to_email)
