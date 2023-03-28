@@ -501,7 +501,7 @@ def stripe_create_checkout_session():
             payment_intent_data=payment_intent_data,
         )
         return jsonify(id=stripe_session.id)
-    if plan.requirements.subscription:
+    elif plan.requirements.subscription:
         log.info("Creating Stripe checkout session for a new subscription")
         stripe_session = stripe.checkout.Session.create(
             stripe_account=data["account_id"],
@@ -874,18 +874,17 @@ def stripe_webhook():
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
         """
-        if is_donation != "True" and (
-            session["mode"] == "subscription" or session["mode"] == "payment"
-        ):
-            create_subscription(
-                currency=currency,
-                email=session["customer_email"],
-                package=package,
-                chosen_option_ids=chosen_option_ids,
-                subscribie_checkout_session_id=subscribie_checkout_session_id,
-                stripe_subscription_id=stripe_subscription_id,
-                stripe_external_id=session["id"],
-            )
+        if is_donation != "True":
+            if session["mode"] == "subscription" or session["mode"] == "payment":
+                create_subscription(
+                    currency=currency,
+                    email=session["customer_email"],
+                    package=package,
+                    chosen_option_ids=chosen_option_ids,
+                    subscribie_checkout_session_id=subscribie_checkout_session_id,
+                    stripe_subscription_id=stripe_subscription_id,
+                    stripe_external_id=session["id"],
+                )
         return "OK", 200
 
     if (
