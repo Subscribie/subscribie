@@ -4,10 +4,10 @@ const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("checkout a donation:", () => {
     test("@1065@subscriber@checkout a donation", async ({ page }) => {
         console.log("Ordering plan with only upfront charge...");
-        // Buy item with subscription & upfront fee
+        // Checkout a Donation
         await page.goto('/donate'); // Go to home before selecting product
 
-        // Fill in order form
+        // Fill in the donation form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
         await page.fill('#email', SUBSCRIBER_EMAIL_USER);
@@ -25,7 +25,7 @@ test.describe("checkout a donation:", () => {
         expect(await page.screenshot()).toMatchSnapshot('donation-pre-stripe-checkout.png');
         await page.click('#checkout-button');
 
-        //Verify first payment is correct (upfront charge + first recuring charge)
+        //Verify first payment is correct (donation charge)
         const first_payment_content = await page.textContent('#ProductSummary-totalAmount');
         expect(first_payment_content === "£10.55");
         const upfront_charge_content = await page.textContent('.Text-fontSize--16');
