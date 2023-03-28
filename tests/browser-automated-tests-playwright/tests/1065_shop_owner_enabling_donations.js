@@ -1,9 +1,9 @@
 
 const { test, expect } = require('@playwright/test');
-//Subscribie tests
+//Subscribie enable donation test
 test("@1065@shop-owner@enabling-donations", async ({ page }) => {
     console.log("enabling Donations...");
-     // Go to style your shop
+     // Go to enable donations
     await page.goto('/admin/donate-enabled-settings');
     const donations_settings = await page.content("text=Donations Settings");
     expect(donations_settings === "Donations Settings");
