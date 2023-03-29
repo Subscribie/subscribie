@@ -1233,13 +1233,20 @@ def subscribers():
         query = query.where(Person.email.like(f"%{subscriber_email}%"))
     if subscriber_name:
         query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
-
-    if show_active:
+    if action == "show_active":
         query = query.filter(Person.subscriptions)
         query = query.where(
             (Subscription.stripe_status == "active")
             | (Subscription.stripe_status == "trialing")
         )
+    elif action == "show_donors":
+        query = query.filter(Person.transactions)
+        query = query.where(Transaction.is_donation == True)
+
+    elif action == "show_one_off_payments":
+        query = query.filter(Person.subscriptions)
+        query = query.where(Subscription.stripe_subscription_id == None)
+
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
