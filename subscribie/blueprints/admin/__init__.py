@@ -465,6 +465,7 @@ def dashboard():
     saas_url = current_app.config.get("SAAS_URL")
     if Setting.query.first().donations_enabled is True:
         num_donations = Transaction.query.filter_by(is_donation=True).count()
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
