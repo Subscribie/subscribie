@@ -21,7 +21,13 @@
         {% else %}
           <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
       {%endif %}
-      <a href="{{url_for('admin.archived_subscribers')}}" class="btn btn-primary">Show Archived</a>
+      {% if settings.donations_enabled %}
+          {% if action == "show_donors" %}
+              <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
+          {% else %} 
+              <a href="{{url_for('admin.subscribers', action='show_donors')}}" id="show-donors" class="btn btn-primary ">Show Donors</a>
+          {% endif %}
+      {% endif %}
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
         <form action="#" method="GET">
