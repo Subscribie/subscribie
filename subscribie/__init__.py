@@ -43,7 +43,6 @@ import sqlalchemy
 from flask_migrate import Migrate
 import click
 from jinja2 import Template
-
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
 
 load_dotenv(verbose=True)
@@ -59,7 +58,6 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     babel = Babel(app)
     LANGUAGES = ["en", "de", "es", "hr"]
-
     load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
@@ -70,7 +68,12 @@ def create_app(test_config=None):
 
     @babel.localeselector
     def get_locale():
-        return request.accept_languages.best_match(LANGUAGES)
+        language_code = session["language_code"]
+        # if its not none and if its a supported language
+        if language_code and language_code in LANGUAGES:
+            return session["language_code"]
+        else:
+            return request.accept_languages.best_match(LANGUAGES)
 
     @app.before_request
     def start_session():

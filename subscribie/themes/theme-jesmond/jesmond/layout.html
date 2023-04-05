@@ -198,12 +198,14 @@
     {% endif %}
     <div>
       Language: 🌎
-      <form action="{{ url_for('views.set_language_code') }}" method="GET">
-      <select>
+      <form action="{{ url_for('views.set_language_code') }}" method="post">
+      <select name = "language_code">
         <option value="en">English</option>
         <option value="fr">Français</option>
         <option value="de">Deutsch</option>
-        <option value="es">Española</option>
+        <option value="es">Español</option>
+        <option value="hr">hrvatska</option>
+        
       </select>
       <input type="submit" value="Save" />
       </form>
