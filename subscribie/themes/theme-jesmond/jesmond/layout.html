@@ -190,12 +190,24 @@
     
     <br />
     <a href="#" class="btn-outlined mt-3">{{ _('Scroll back to top') }}</a>
-
+    <hr />
     {% if 'country' in session %}
     <div id="country-region-select" class="mt-2" style="text-align: left" title="{{ session['country']['name'] }} ({{ session['country']['alpha_3'] }})">
       {{ _('Country') }} {{ session['country']['flag'] }}
     </div>
     {% endif %}
+    <div>
+      Language: 🌎
+      <form action="{{ url_for('views.set_language_code') }}" method="GET">
+      <select>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="es">Española</option>
+      </select>
+      <input type="submit" value="Save" />
+      </form>
+    </div>
 
   </footer>
   {# end if not inside iframe_embeded, show footer #} 
