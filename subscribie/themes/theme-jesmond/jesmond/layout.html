@@ -200,11 +200,14 @@
       Language: 🌎
       <form action="{{ url_for('views.set_language_code') }}" method="post">
       <select name = "language_code">
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-        <option value="es">Español</option>
-        <option value="hr">Hrvatski</option>
+        {% if session.get("language_code") %}
+        <option value="{{ session.get("language_code") }}">{{ session.get("language_code") }}</option>
+        {% endif %}
+        <option value="en">English (en)</option>
+        <option value="fr">Français (fr)</option>
+        <option value="de">Deutsch (de)</option>
+        <option value="es">Español (es)</option>
+        <option value="hr">Hrvatski (hr)</option>
         
       </select>
       <input type="submit" value="Save" />
