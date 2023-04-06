@@ -68,11 +68,15 @@ def create_app(test_config=None):
 
     @babel.localeselector
     def get_locale():
-        language_code = session["language_code"]
-        # if its not none and if its a supported language
+        language_code = session.get("language_code", None)
+        if language_code is not None:
+            log.info(f"language_code has been manually set to: {language_code}")
+        # if language_code not none and is a supported language
         if language_code and language_code in LANGUAGES:
             return session["language_code"]
         else:
+            language_code = request.accept_languages.best_match(LANGUAGES)
+            log.info(f"language_code best match set to: {language_code}")
             return request.accept_languages.best_match(LANGUAGES)
 
     @app.before_request
