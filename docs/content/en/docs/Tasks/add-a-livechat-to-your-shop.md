@@ -17,7 +17,7 @@ Learn how to Add Live Chat to your Shop.
 **Step 2:** Create a Tawk account and copy the end of the URL in the address bar
 
 <div class="box">
-  <p>In our example, the part to be copied is 642bc7d94247f20fefe9b017 from the URL https://dashboard.tawk.to/?lang=en#/dashboard/642bc7d94247f20fefe9b017</p>
+   <p>In our example, the part to be copied is <b>642bc7d94247f20fefe9b017</b> from the URL https://dashboard.tawk.to/?lang=en#/dashboard/642bc7d94247f20fefe9b017</p>
 </div>
 
 <style>
