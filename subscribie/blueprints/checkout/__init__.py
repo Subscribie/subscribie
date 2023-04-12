@@ -313,26 +313,16 @@ def thankyou():
                 note=session["note_to_seller"], subscription_id=subscription.id
             )
             database.session.add(note)
-        # Trigger journey_complete, so that receivers will react, such
-        # as sending welcome email. See receivers.py
-        signal_journey_complete.send(
-            current_app._get_current_object(),
-            email=email,
-            subscription_uuid=subscription.uuid,
-            is_donation=is_donation,
-        )
-    else:
-
-        # Send journey_complete signal
-        # Trigger journey_complete, so that receivers will react, such
-        # as sending welcome email. See receivers.py
-        signal_journey_complete.send(
-            current_app._get_current_object(),
-            email=email,
-            is_donation=is_donation,
-        )
-
     database.session.commit()
+
+    # Send journey_complete signal
+    # Trigger journey_complete, so that receivers will react, such
+    # as sending welcome or donation email. See receivers.py
+    signal_journey_complete.send(
+        current_app._get_current_object(),
+        email=email,
+        is_donation=is_donation,
+    )
 
     return render_template("thankyou.html")
 

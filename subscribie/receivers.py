@@ -1,6 +1,6 @@
 import logging
 from subscribie.tasks import background_task
-from subscribie.email import send_welcome_email, send_donation_email
+from subscribie.email import send_email
 from subscribie.notifications import subscriberPaymentFailedNotification
 from subscribie.models import Subscription, Document
 from subscribie.database import database
@@ -80,10 +80,7 @@ def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
     subscriberPaymentFailedNotification(**messageKwArgs)
 
 
-def receiver_send_welcome_email(*args, **kwargs):
+def receiver_send_email(*args, **kwargs):
     to_email = kwargs.get("email")
     is_donation = kwargs.get("is_donation")
-    if is_donation is True:
-        send_donation_email(to_email=to_email)
-    else:
-        send_welcome_email(to_email=to_email)
+    send_email(to_email=to_email, is_donation=is_donation)
