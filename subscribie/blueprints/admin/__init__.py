@@ -81,6 +81,7 @@ from .stats import (
     get_number_of_subscribers,
     get_number_of_signups,
     get_number_of_one_off_purchases,
+    get_number_of_transactions_with_donations,
 )
 
 import stripe
@@ -460,7 +461,7 @@ def dashboard():
     num_subscribers = get_number_of_subscribers()
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
-
+    num_donations = get_number_of_transactions_with_donations()
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
     if Setting.query.first().donations_enabled is True:
@@ -474,6 +475,7 @@ def dashboard():
         num_active_subscribers=num_active_subscribers,
         num_subscribers=num_subscribers,
         num_signups=num_signups,
+        num_donations=num_donations,
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
@@ -1226,17 +1228,27 @@ def subscribers():
         query = query.where(Person.email.like(f"%{subscriber_email}%"))
     if subscriber_name:
         query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
-
-    if show_active:
+    if action == "show_active":
         query = query.filter(Person.subscriptions)
         query = query.where(
             (Subscription.stripe_status == "active")
             | (Subscription.stripe_status == "trialing")
         )
+    elif action == "show_donors":
+        query = query.filter(Person.transactions)
+        query = query.where(Transaction.is_donation == True)
+
+    elif action == "show_one_off_payments":
+        query = query.filter(Person.subscriptions)
+        query = query.where(Subscription.stripe_subscription_id == None)
+
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
-        "admin/subscribers.html", people=people.all(), show_active=show_active
+        "admin/subscribers.html",
+        people=people.all(),
+        show_active=show_active,
+        action=action,
     )
 
 
@@ -1330,6 +1342,7 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
+    action = request.args.get("action", None)
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1363,6 +1376,12 @@ def transactions():
             flash("Subscriber not found.")
             query = query.filter(False)
 
+    if action == "show_refunded":
+        query = query.filter(Transaction.external_refund_id != None)
+
+    if action == "show_donations":
+        query = query.filter(Transaction.is_donation == True)
+
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
         msg = Markup(
@@ -1374,6 +1393,7 @@ def transactions():
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),
         person=person,
+        action=action,
     )
 
 

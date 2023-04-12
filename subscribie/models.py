@@ -1021,6 +1021,12 @@ class Transaction(database.Model):
     fulfillment_state = database.Column(database.String())
     is_donation = database.Column(database.Boolean(), default=0)
 
+    def showSellPrice(self) -> str:
+        currency_symbol = get_geo_currency_symbol()
+        amount = self.amount / 100
+        result = f"{currency_symbol}{amount:.2f}"
+        return result
+
 
 class SeoPageTitle(database.Model):
     __tablename__ = "module_seo_page_title"
