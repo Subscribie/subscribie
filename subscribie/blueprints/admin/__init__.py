@@ -464,8 +464,6 @@ def dashboard():
     num_donations = get_number_of_transactions_with_donations()
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-    if Setting.query.first().donations_enabled is True:
-        num_donations = Transaction.query.filter_by(is_donation=True).count()
 
     return render_template(
         "admin/dashboard.html",
@@ -479,7 +477,6 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
-        num_donations=num_donations,
     )
 
 

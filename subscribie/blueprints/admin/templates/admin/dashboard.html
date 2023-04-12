@@ -40,7 +40,7 @@
     <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}">people</a> buy a one-off item from your shop.</p>
     <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription{% if settings.donations_enabled %} or donations {% endif %} since starting your shop.</p>
     {% if settings.donations_enabled %}
-    <p>You've had: {{ num_donations }} <a href="{{ url_for('admin.subscribers', action='show_donors')}}">Donors</a> Donations to your shop.</p>
+    <p>You've had: {{ num_donations }} <a href="{{ url_for('admin.subscribers', action='show_donors')}}">Donations</a> to your shop.</p>
     {% endif %}
     <p><a href="/" class="btn btn-success mb-2 mt-2" style="color: white" target="_blank">View my Shop</a></p>
   </div>
