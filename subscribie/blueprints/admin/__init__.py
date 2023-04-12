@@ -1349,6 +1349,7 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
+    action = request.args.get("action", None)
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1382,6 +1383,12 @@ def transactions():
             flash("Subscriber not found.")
             query = query.filter(False)
 
+    if action == "show_refunded":
+        query = query.filter(Transaction.external_refund_id != None)
+
+    if action == "show_donations":
+        query = query.filter(Transaction.is_donation == True)
+
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
         msg = Markup(
@@ -1393,6 +1400,7 @@ def transactions():
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),
         person=person,
+        action=action,
     )
 
 
