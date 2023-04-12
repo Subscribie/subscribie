@@ -39,10 +39,13 @@
     <span class="badge badge-primary badge-pill" > Donations:{{ total_donations }} </span>
     {% endif %}
     </h3>
-    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> with <em>active</em> subscriptions.</p>
+    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.</p>
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
-    <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription since starting your shop.</p>
-    <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers') }}">people</a> buy a one-off item from your shop.</p>
+    <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}">people</a> buy a one-off item from your shop.</p>
+    {% if settings.donations_enabled %}
+    <p>You've had: {{ num_donations }} <a href="{{ url_for('admin.subscribers', action='show_donors')}}">Donors</a> Donations to your shop.</p>
+    {% endif %}
+    <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription{% if settings.donations_enabled %} or donations {% endif %} since starting your shop.</p>
     <p><a href="/" class="btn btn-success mb-2 mt-2" style="color: white" target="_blank">View my Shop</a></p>
   </div>
 
