@@ -50,6 +50,8 @@ test("@1005@shop-owner@terms and condition creation", async ({ page }) => {
     const terms_and_conditions_attached = await page.textContent("text=Terms and Conditions")
     expect(terms_and_conditions_attached === "Terms and Conditions");
     console.log("terms and conditions is attached to the free plan");
+    expect(await page.screenshot()).toMatchSnapshot('terms-conditions-in-shop-owner-side.png');
+    await new Promise(x => setTimeout(x, 1000));
 
     // checking if terms and condition can be seen
     await page.click('text="Terms and Conditions"');
