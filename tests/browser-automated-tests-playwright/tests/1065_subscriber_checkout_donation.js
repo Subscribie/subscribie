@@ -69,7 +69,7 @@ test.describe("checkout a donation:", () => {
 
         // Verify that is a donation
         const donor_title_content = await page.textContent('.donation-title');
-        expect(donor_title_content === 'Donations');
+        expect(donor_title_content === 'Donation');
         expect(await page.screenshot()).toMatchSnapshot('donation-subscribers.png');
         await new Promise(x => setTimeout(x, 1000));
 
