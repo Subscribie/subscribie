@@ -58,6 +58,21 @@ test.describe("checkout a donation:", () => {
         // Verify that the transaction was a donation
         const checkout_is_a_donation = await page.textContent('role=cell[name="True"]');
         expect(checkout_is_a_donation === 'True');
+        
+
+        //clicking donations in the dashboard
+        await page.goto('/admin/subscribers?action=show_donors')
+
+        // Verify that donor is present in the list
+        const subscriber_email_content = await page.textContent('.subscriber-email');
+        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
+
+        // Verify that is a donation
+        const donor_title_content = await page.textContent('.donation-title');
+        expect(donor_title_content === 'Donations');
+        expect(await page.screenshot()).toMatchSnapshot('donation-subscribers.png');
+        await new Promise(x => setTimeout(x, 1000));
+
 
     });
 });
