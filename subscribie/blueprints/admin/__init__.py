@@ -762,14 +762,24 @@ def delete_plan_by_uuid(uuid):
 @login_required
 def list_documents():
     show_only_agreed_documents = False
+    documents = []
     if (
         "filter" in request.args
         and request.args["filter"] == "terms-and-conditions-agreed"
     ):
         show_only_agreed_documents = True
-        documents = Document.query.where(
-            Document.type == "terms-and-conditions-agreed"
-        ).all()
+        # the filter terms-and-conditions-agreed should look for people with signed contracts
+        # rather than searching for attached signed contracts
+        query = database.session.query(Person).execution_options(include_archived=True)
+        people = query.order_by(desc(Person.created_at)).all()
+        for person in people:
+            for subscriptions in person.subscriptions:
+                for documents_list in subscriptions.documents:
+                    if (
+                        documents_list.type == "terms-and-conditions-agreed"
+                        or documents_list.type == "generic-agreed"
+                    ):
+                        documents.append(documents_list)
     else:
         documents = Document.query.where(
             Document.type != "terms-and-conditions-agreed"
