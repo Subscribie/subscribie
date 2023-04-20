@@ -1956,3 +1956,12 @@ def show_api_keys():
         live_api_key=live_api_key,
         test_api_key=test_api_key,
     )
+
+
+@admin.route("/spamcheck/<string:account_name>")
+@login_required
+def check_spam(account_name) -> int:
+    """Check if shop name is likley to be spam or not"""
+    from subscribie.anti_spam_subscribie_shop_names.run import detect_spam_shop_name
+
+    return str(detect_spam_shop_name(account_name))
