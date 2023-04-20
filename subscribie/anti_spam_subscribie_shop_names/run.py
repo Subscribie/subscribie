@@ -19,7 +19,6 @@ with open(ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH, "rb") as file:
 
 
 def detect_spam_shop_name(account_name: str) -> bool:
-
     new_data = [account_name]
     # Preprocess the new data
     new_data_char = loaded_char_vectorizer.transform(new_data)
