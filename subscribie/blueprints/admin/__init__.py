@@ -1000,6 +1000,16 @@ def stripe_connect():
             "currency_code": "CAD",
         },
         {
+            "country_code": "MY",
+            "country_name": "Malaysia",
+            "currency_code": "MYR",
+        },
+        {
+            "country_code": "MX",
+            "country_name": "Mexico",
+            "currency_code": "MXN",
+        },
+        {
             "country_code": "NZ",
             "country_name": "New Zealand",
             "currency_code": "NZD",
