@@ -18,10 +18,13 @@ test('@1005@subscriber@check terms and conditions', async ({ page }) => {
   await page.goto('/account/subscriptions');
   await page.textContent('.card-title') === "Your subscriptions";
   await page.locator('text=Terms and Conditions'); 
+  await new Promise(x => setTimeout(x, 1000));
   // check the terms and conditions page
   await page.click("text=Terms and Conditions");
   await page.locator("testing");
   console.log("terms and condition are shown in the subscriber side");
-  
+  expect(await page.screenshot()).toMatchSnapshot('terms-and-conditions-attached-subscribers.png');
+  await new Promise(x => setTimeout(x, 1000));
+
 
 });
