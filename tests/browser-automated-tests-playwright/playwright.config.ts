@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
   testDir: '../browser-automated-tests-playwright',
   globalSetup: require.resolve('./global-setup.js'),
   timeout: 180000,
-  retries: 5,
+  retries: 3,
   workers: 5,
   use: {
 
