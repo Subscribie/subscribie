@@ -31,7 +31,6 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
-    get_geo_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -82,6 +81,7 @@ from .stats import (
     get_number_of_subscribers,
     get_number_of_signups,
     get_number_of_one_off_purchases,
+    get_number_of_transactions_with_donations,
 )
 
 import stripe
@@ -444,7 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
-    total_donations = 0
+    num_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -461,15 +461,10 @@ def dashboard():
     num_subscribers = get_number_of_subscribers()
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
-
+    num_donations = get_number_of_transactions_with_donations()
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-    if Setting.query.first().donations_enabled is True:
-        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
-        for donations in donation_transactions:
-            total_donations = donations.amount + total_donations
-    currency_code = get_geo_currency_code()
-    total_donations = currencyFormat(currency_code, total_donations)
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -478,10 +473,10 @@ def dashboard():
         num_active_subscribers=num_active_subscribers,
         num_subscribers=num_subscribers,
         num_signups=num_signups,
+        num_donations=num_donations,
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
-        total_donations=total_donations,
     )
 
 
@@ -502,8 +497,8 @@ def edit():
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     if form.validate_on_submit():
         company = Company.query.first()
-        company.name = request.form["company_name"]
-        company.slogan = request.form["slogan"]
+        company.name = escape(request.form["company_name"])
+        company.slogan = escape(request.form["slogan"])
         # Loop plans
         for index in request.form.getlist("planIndex", type=int):
             # Archive existing plan then create new plan
@@ -532,11 +527,13 @@ def edit():
             # Preserve category
             draftPlan.category_uuid = plan.category_uuid
 
-            draftPlan.title = getPlan(form.title.data, index, default="").strip()
+            draftPlan.title = escape(
+                getPlan(form.title.data, index, default="").strip()
+            )
 
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
-                draftPlan.description = getPlan(form.description.data, index)
+                draftPlan.description = getPlan(escape(form.description.data), index)
 
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
@@ -568,8 +565,8 @@ def edit():
             else:
                 plan_requirements.note_to_seller_required = False
 
-            plan_requirements.note_to_buyer_message = str(
-                getPlan(form.note_to_buyer_message, index, default="").data
+            plan_requirements.note_to_buyer_message = escape(
+                str(getPlan(form.note_to_buyer_message, index, default="").data)
             )
 
             try:
@@ -597,6 +594,7 @@ def edit():
 
             points = getPlan(form.selling_points.data, index, default="")
             for point in points:
+                point = escape(point)
                 draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
             if request.form.get("private-" + str(index)) is not None:
@@ -631,12 +629,12 @@ def add_plan():
         draftPlan.requirements = plan_requirements
 
         draftPlan.uuid = str(uuid.uuid4())
-        draftPlan.title = form.title.data[0].strip()
+        draftPlan.title = escape(form.title.data[0].strip())
         draftPlan.position = request.form.get("position-0", 0)
         interval_unit = form.interval_unit.data[0].strip()
 
         if form.description.data[0].strip() != "":
-            draftPlan.description = form.description.data[0]
+            draftPlan.description = escape(form.description.data[0])
         if (
             "monthly" in interval_unit
             or "yearly" in interval_unit
@@ -653,8 +651,8 @@ def add_plan():
         else:
             plan_requirements.note_to_seller_required = False
 
-        plan_requirements.note_to_buyer_message = str(
-            form.note_to_buyer_message.data[0]
+        plan_requirements.note_to_buyer_message = escape(
+            str(form.note_to_buyer_message.data[0])
         )
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
@@ -687,6 +685,7 @@ def add_plan():
 
         points = form.selling_points.data[0]
         for point in points:
+            point = escape(point)
             draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
         # Primary icon image storage
@@ -872,7 +871,7 @@ def add_category():
         category_name = request.form.get("category", None)
         if category_name:
             category = Category()
-            category.name = category_name
+            category.name = escape(category_name)
             database.session.add(category)
             database.session.commit()
             flash(f"added new category: {category_name}")
@@ -886,7 +885,7 @@ def edit_category():
     category_id = request.args.get("id", None)
     category = Category.query.get(category_id)
     if request.method == "POST":
-        category.name = request.form.get("name")
+        category.name = escape(request.form.get("name"))
         category.position = request.form.get("position")
         database.session.commit()
         flash("Category name updated")
@@ -999,6 +998,16 @@ def stripe_connect():
             "country_code": "CA",
             "country_name": "Canada",
             "currency_code": "CAD",
+        },
+        {
+            "country_code": "MY",
+            "country_name": "Malaysia",
+            "currency_code": "MYR",
+        },
+        {
+            "country_code": "MX",
+            "country_name": "Mexico",
+            "currency_code": "MXN",
         },
         {
             "country_code": "NZ",
@@ -1226,17 +1235,27 @@ def subscribers():
         query = query.where(Person.email.like(f"%{subscriber_email}%"))
     if subscriber_name:
         query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
-
-    if show_active:
+    if action == "show_active":
         query = query.filter(Person.subscriptions)
         query = query.where(
             (Subscription.stripe_status == "active")
             | (Subscription.stripe_status == "trialing")
         )
+    elif action == "show_donors":
+        query = query.filter(Person.transactions)
+        query = query.where(Transaction.is_donation == True)
+
+    elif action == "show_one_off_payments":
+        query = query.filter(Person.subscriptions)
+        query = query.where(Subscription.stripe_subscription_id == None)
+
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
-        "admin/subscribers.html", people=people.all(), show_active=show_active
+        "admin/subscribers.html",
+        people=people.all(),
+        show_active=show_active,
+        action=action,
     )
 
 
@@ -1330,6 +1349,7 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
+    action = request.args.get("action", None)
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1363,6 +1383,12 @@ def transactions():
             flash("Subscriber not found.")
             query = query.filter(False)
 
+    if action == "show_refunded":
+        query = query.filter(Transaction.external_refund_id != None)
+
+    if action == "show_donations":
+        query = query.filter(Transaction.is_donation == True)
+
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
         msg = Markup(
@@ -1374,6 +1400,7 @@ def transactions():
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),
         person=person,
+        action=action,
     )
 
 

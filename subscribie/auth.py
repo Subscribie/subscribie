@@ -349,7 +349,7 @@ def do_login(login_token):
         )
         return "User not found"
     else:
-        log.degbug(
+        log.debug(
             f"Successfully located user via valid login token. Email: {user.email}"
         )
 
