@@ -26,4 +26,6 @@ currency-symbols==2.0.1
 pycryptodome==3.14.1
 pycountry==22.3.5
 SQLAlchemy==1.4.43
-GraphLab-Create
+graphlib==0.9.5
+graphlib-backport==1.0.3
+
