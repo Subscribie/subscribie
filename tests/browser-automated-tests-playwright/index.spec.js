@@ -43,22 +43,21 @@ test.describe.parallel("Subscribie tests:", () => {
   const order_plan_with_only_upfront_charge = require('./tests/293_subscriber_order_plan_with_only_upfront_charge');
 
   const order_plan_with_free_trial = require('./tests/475_subscriber_order_plan_with_free_trial');
-  // Verify that as a shop owner i can see the terms and conditions attached
+  
   const order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
   // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
   // 1. Transacion filter by name and plan title
   // 2. 2.A pause, resume and 2.B cancel subscription test. 
-
+  const shop_owner_terms_and_conditions_creation = require('./tests/1005_shop_owner_terms_and_conditions_creation.js');
+  
   const ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
-
+  
   const subscriber_magic_login = require('./tests/623_subscriber_magic_login');
 
-  const shop_owner_terms_and_conditions_creation = require('./tests/1005_shop_owner_terms_and_conditions_creation.js');
-
   const subscriber_order_free_plan = require('./tests/939_subscriber_order_free_plan_with_terms_and_conditions.js');
+  // Verify that as a shop owner i can see the terms and conditions attached
 
   const subscriber_terms_and_condition_check_test = require('./tests/1005_subscriber_terms_and_condition_check_test.js');
 
   const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
-
 });

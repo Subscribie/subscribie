@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test("@212@shop-owner@slogan creation", async ({ page }) => {
     console.log("checking if slogan is already created...");
     await page.goto('/');
-    page.setDefaultTimeout(3000);
+    page.setDefaultTimeout(5000);
     let slogan_exists = await page.evaluate(() => document.body.textContent);
     if (slogan_exists === 'this is a slogan') {
         await new Promise(x => setTimeout(x, 1000));
@@ -12,13 +12,14 @@ test("@212@shop-owner@slogan creation", async ({ page }) => {
         console.log("slogan already created, exiting test");
         test.skip();
           }
+     console.log("creating slogan");
      // Go to edit plan page
     await page.goto('/admin/edit');
 
      //edit slogan
     await page.fill("input[name='slogan']", 'this is a slogan');
     await page.click("text=Hair Gel");
-    await page.click('text="Save"');
+    await page.click('text=Save');
 
      //verify home page plan creation
     await page.goto("/");

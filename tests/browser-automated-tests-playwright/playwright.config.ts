@@ -13,7 +13,7 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup.js'),
   timeout: 180000,
   retries: 3,
-  workers: 5,
+  workers: 10,
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
