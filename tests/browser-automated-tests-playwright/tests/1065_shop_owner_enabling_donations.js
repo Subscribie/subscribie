@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 //Subscribie enable donation test
-test("@1065@shop-owner@enabling-donations", async ({ page }) => {
+test("@1065@shop_owner@enabling-donations", async ({ page }) => {
     console.log("enabling Donations...");
      // Go to enable donations
     await page.goto('/admin/donate-enabled-settings');

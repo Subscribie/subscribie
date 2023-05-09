@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test("@872@shop-owner@uploading a plan picture", async ({ page }) => {
+test("@872@shop_owner@uploading a plan picture", async ({ page }) => {
     //uploading an image in a plan
     console.log("Uploading a plan picture");
     await page.goto("/admin/edit")

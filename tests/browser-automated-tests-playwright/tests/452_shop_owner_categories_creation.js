@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 //Subscribie tests
-test("@452@shop-owner@category creation", async ({ page }) => {
+test("@452@shop_owner@category creation", async ({ page }) => {
   try{
     console.log("checking if category is already created...");
     await page.goto('/');

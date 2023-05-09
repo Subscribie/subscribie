@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
-    test("@293@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
+    test("@293-3@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
         console.log("Ordering Plan with subscription and upfront charge");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
@@ -102,7 +102,4 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         const content_upcoming_invoice_plan_upfront_amount = await page.textContent('.plan-sell-price');
         expect(content_upcoming_invoice_plan_upfront_amount === '£1.00')
     });
-    const transaction_filter_by_name_and_by_plan_title = require('./shop_owner_transaction_filter_by_name_and_by_plan_title.js');
-    const subscriber_filter_by_name_and_by_plan_title = require('./905-subscriber-search-by-email-and-name.js');
-    const pause_resume_and_cancel_subscriptions = require('./shop_owner_pause_resume_and_cancel_subscriptions.js');
 });

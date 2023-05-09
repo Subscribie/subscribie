@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test("@147@shop-owner@Pause, Resume and Cancel transaction", async ({ page }) => {  
+    test("@147@shop_owner@Pause, Resume and Cancel transaction", async ({ page }) => {  
         console.log("Pause and Resume transaction");      
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time

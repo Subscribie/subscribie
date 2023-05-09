@@ -12,7 +12,7 @@ test.describe.parallel("Subscribie tests:", () => {
     const content = await page.textContent('.card-title')
     expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
   });
-  const plan_creation = require('./tests/shop_owner_plan_creation');
+  const plan_creation = require('./tests/133_shop_owner_plan_creation');
   
   const changing_plans_order = require('./tests/275_shop_owner_changing_plans_order');
 
@@ -38,16 +38,14 @@ test.describe.parallel("Subscribie tests:", () => {
 
   const order_plan_cooling_off = require('./tests/133_subscriber_order_plan_with_cooling_off');
  
-  const order_plan_with_only_recurring_charge = require('./tests/293_subscriber_order_plan_with_only_recurring_charge');
+  const order_plan_with_only_recurring_charge = require('./tests/293-1_subscriber_order_plan_with_only_recurring_charge');
 
-  const order_plan_with_only_upfront_charge = require('./tests/293_subscriber_order_plan_with_only_upfront_charge');
+  const order_plan_with_only_upfront_charge = require('./tests/293-2_subscriber_order_plan_with_only_upfront_charge');
 
   const order_plan_with_free_trial = require('./tests/475_subscriber_order_plan_with_free_trial');
   
-  const order_plan_with_subscription_and_upfront_charge = require('./tests/293_subscriber_order_plan_with_recurring_and_upfront_charge');
-  // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
-  // 1. Transacion filter by name and plan title
-  // 2. 2.A pause, resume and 2.B cancel subscription test. 
+  const order_plan_with_subscription_and_upfront_charge = require('./tests/293-3_subscriber_order_plan_with_recurring_and_upfront_charge');
+  
   const shop_owner_terms_and_conditions_creation = require('./tests/1005_shop_owner_terms_and_conditions_creation.js');
   
   const ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
@@ -61,3 +59,10 @@ test.describe.parallel("Subscribie tests:", () => {
 
   const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
 });
+
+  const transaction_filter_by_name_and_by_plan_title = require('./tests/619_shop_owner_transaction_filter_by_name_and_by_plan_title.js');
+  const subscriber_filter_by_name_and_by_plan_title = require('./tests/905-subscriber-search-by-email-and-name.js');
+  const pause_resume_and_cancel_subscriptions = require('./tests/147_shop_owner_pause_resume_and_cancel_subscriptions.js');
+
+  const stripe_connect = require('./tests/1_stripe_connect.js');
+
