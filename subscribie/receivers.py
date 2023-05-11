@@ -45,6 +45,7 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
             # Create copy of Document and assign it to Subscription
             newDoc = Document()
             newDoc.name = document.name
+
             # If is a terms-and-conditions-document change the document
             # from terms-and-conditions to terms-and-conditions-agreed
             # otherwise keep the type of the document
