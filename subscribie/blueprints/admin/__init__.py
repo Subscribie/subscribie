@@ -762,6 +762,7 @@ def delete_plan_by_uuid(uuid):
 @login_required
 def list_documents():
     show_only_agreed_documents = False
+    documents = []
     if (
         "filter" in request.args
         and request.args["filter"] == "terms-and-conditions-agreed"
