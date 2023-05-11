@@ -44,6 +44,9 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
                 newDoc.type = document.type
 
             newDoc.body = document.body
+            newDoc.read_only = (
+                True  # Mark Document as read-only (since its been signed up to)
+            )
             subscription.documents.append(newDoc)
             try:
                 database.session.commit()
