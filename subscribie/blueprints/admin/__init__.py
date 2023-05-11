@@ -769,7 +769,6 @@ def list_documents():
         show_only_agreed_documents = True
         documents = (
             Document.query.where(Document.type == "terms-and-conditions-agreed")
-            .execution_options(include_archived=True)
             .where(Document.read_only == True)
             .all()
         )
