@@ -93,13 +93,19 @@ def uuid_string():
 class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
-    archived = Column(Boolean, nullable=False, default=0)
+    archived = Column(Boolean, nullable=True, default=0)
 
 
 class CreatedAt(object):
     """Mixin that identifies a class as having created_at entities"""
 
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+
+class HasReadOnly(object):
+    """Mixin that identifies a class as having read_only boolean field"""
+
+    read_only = Column(Boolean, nullable=False, default=0)
 
 
 class User(database.Model):
@@ -1126,7 +1132,7 @@ class File(database.Model):
     file_name = database.Column(database.String())
 
 
-class Document(database.Model, HasArchived):
+class Document(database.Model, HasArchived, HasReadOnly):
     """Raw text Document"""
 
     __tablename__ = "document"
