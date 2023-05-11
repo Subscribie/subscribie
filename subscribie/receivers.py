@@ -40,6 +40,9 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
             # otherwise keep the type of the document
             if document.type == "terms-and-conditions":
                 newDoc.type = "terms-and-conditions-agreed"
+            else:
+                newDoc.type = document.type
+
             newDoc.body = document.body
             subscription.documents.append(newDoc)
             try:
