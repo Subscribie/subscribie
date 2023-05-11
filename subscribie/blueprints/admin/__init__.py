@@ -770,6 +770,7 @@ def list_documents():
         documents = (
             Document.query.where(Document.type == "terms-and-conditions-agreed")
             .execution_options(include_archived=True)
+            .where(Document.read_only == True)
             .all()
         )
     else:
