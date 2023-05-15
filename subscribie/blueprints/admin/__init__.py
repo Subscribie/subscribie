@@ -31,7 +31,6 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
-    get_geo_currency_code,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -445,7 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
-    total_donations = 0
+    num_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -465,15 +464,7 @@ def dashboard():
     num_donations = get_number_of_transactions_with_donations()
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-    if Setting.query.first().donations_enabled is True:
-        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
-        for donations in donation_transactions:
-            # transactions have a refund id which are saved in the transaction table
-            # Named as external_refund_id so we are skipping those transactions to get the total.
-            if donations.external_refund_id is None:
-                total_donations = donations.amount + total_donations
-        currency_code = get_geo_currency_code()
-        total_donations = currencyFormat(currency_code, total_donations)
+
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
@@ -486,7 +477,6 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
-        total_donations=total_donations,
     )
 
 
@@ -777,9 +767,11 @@ def list_documents():
         and request.args["filter"] == "terms-and-conditions-agreed"
     ):
         show_only_agreed_documents = True
-        documents = Document.query.where(
-            Document.type == "terms-and-conditions-agreed"
-        ).all()
+        documents = (
+            Document.query.where(Document.type == "terms-and-conditions-agreed")
+            .execution_options(include_archived=True)
+            .all()
+        )
     else:
         documents = Document.query.where(
             Document.type != "terms-and-conditions-agreed"
@@ -1008,6 +1000,16 @@ def stripe_connect():
             "country_code": "CA",
             "country_name": "Canada",
             "currency_code": "CAD",
+        },
+        {
+            "country_code": "MY",
+            "country_name": "Malaysia",
+            "currency_code": "MYR",
+        },
+        {
+            "country_code": "MX",
+            "country_name": "Mexico",
+            "currency_code": "MXN",
         },
         {
             "country_code": "NZ",
