@@ -14,4 +14,7 @@ test("@Clearing the DB", async ({ page }) => {
     const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
     expect(contentTransactions > -1);
 
+    await page.goto('/admin/remove-documents');
+    const contentDocuments = await page.evaluate(() => document.body.textContent.indexOf("all documents deleted"));
+    expect(contentDocuments > -1);
 }); 
