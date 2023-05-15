@@ -17,7 +17,6 @@ depends_on = None
 
 
 def upgrade():
-
     with op.batch_alter_table("price_list_rule") as batch_op:
         batch_op.add_column(
             sa.Column("has_min_sell_price", sa.Boolean(), nullable=True)
