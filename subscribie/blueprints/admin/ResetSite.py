@@ -8,6 +8,7 @@ from subscribie.models import (
     Transaction,
     PaymentProvider,
     TaxRate,
+    Document,
 )
 from flask import jsonify
 from subscribie.utils import get_stripe_connect_account_id, get_stripe_secret_key
@@ -75,3 +76,17 @@ def delete_connect_account():
         msg = {"msg": "please connect to stripe"}
 
         return jsonify(msg)
+
+
+@admin.route("/remove-documents", methods=["GET"])
+@login_required
+def remove_documents():
+    if os.getenv("FLASK_ENV") != "development":
+        msg = {"msg": "Error. Only possible in development mode"}
+        return jsonify(msg), 403
+    Document.query.where(Document.type == "terms-and-conditions-agreed").delete()
+    database.session.commit()
+
+    msg = {"msg": "all documents deleted"}
+
+    return jsonify(msg)
