@@ -14,7 +14,14 @@ log = logging.getLogger(__name__)
 
 def receiver_attach_documents_to_subscription(*args, **kwargs):
     subscription_uuid = kwargs.get("subscription_uuid")
-    if subscription_uuid is None:
+    is_donation = kwargs.get("is_donation")
+    if subscription_uuid is None and is_donation is True:
+        log.error(
+            "The checkout was a donation and therefore it can't have a document attached"  # noqa: E501
+        )
+        return None
+
+    elif subscription_uuid is None:
         log.error(
             "receiver_attach_documents_to_subscription called but no subscription_uuid was given in the signal"  # noqa: E501
         )

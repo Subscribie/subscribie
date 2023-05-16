@@ -307,12 +307,15 @@ def thankyou():
             .filter_by(subscribie_checkout_session_id=checkout_session_id)
             .first()
         )
+        uuid = subscription.uuid
         # Store note to seller if in session
         if session.get("note_to_seller", False) is not False:
             note = SubscriptionNote(
                 note=session["note_to_seller"], subscription_id=subscription.id
             )
             database.session.add(note)
+    else:
+        uuid = None
     database.session.commit()
 
     # Send journey_complete signal
@@ -322,6 +325,7 @@ def thankyou():
         current_app._get_current_object(),
         email=email,
         is_donation=is_donation,
+        subscription_uuid=uuid,
     )
 
     return render_template("thankyou.html")
