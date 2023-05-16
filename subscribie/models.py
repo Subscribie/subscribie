@@ -681,21 +681,21 @@ class Plan(database.Model, HasArchived):
         )  # noqa: E501
 
         def apply_percent_increase(base: int, percent_increase: int) -> int:
-            add = int((base / 100) * percent_increase)
+            add = int((base / 100) * int(percent_increase or 1))
             base += add
             return base
 
         def apply_percent_discount(base: int, percent_discount: int) -> int:
-            minus = int((base / 100) * percent_discount)
+            minus = int((base / 100) * int(percent_discount or 1))
             base -= minus
             return base
 
         def apply_amount_decrease(base: int, amount_decrease: int) -> int:
-            base -= amount_decrease
+            base -= int(amount_decrease or 0)
             return base
 
         def apply_amount_increase(base: int, amount_increase: int) -> int:
-            base += amount_increase
+            base += int(amount_increase or 0)
             return base
 
         def check_discount_code_valid(
@@ -747,20 +747,31 @@ class Plan(database.Model, HasArchived):
                     if rule.percent_increase:
                         # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price > sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
                             sell_price = apply_percent_increase(
                                 sell_price, rule.percent_increase
                             )  # noqa: E501
+                        else:
+                            sell_price = apply_percent_increase(
+                                sell_price, rule.percent_increase
+                            )  # noqa: E501
+
                     if rule.percent_discount:
-                        # onlt decrease percent if sell_price is higher than min_sell_price  # noqa: E501
+                        """
+                        If I want a minimum sell price
+                        Then I want a percent discount to apply if the value is equal to or greater than the minimum sell price
+                        Otherwise, always apply the percent discount regardlrss of sell price.
+                        """
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price < sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
+                            sell_price = apply_percent_discount(
+                                sell_price, rule.percent_discount
+                            )  # noqa: E501
+                        else:
                             sell_price = apply_percent_discount(
                                 sell_price, rule.percent_discount
                             )  # noqa: E501
@@ -779,7 +790,7 @@ class Plan(database.Model, HasArchived):
                 ):
                     if rule.percent_increase:
                         if (
-                            rule.min_interval_amount
+                            rule.has_min_interval_amount
                             and rule.min_interval_amount > interval_amount
                             or rule.min_interval_amount is None
                         ):
@@ -1255,8 +1266,10 @@ class PriceListRule(database.Model):
     percent_increase = database.Column(database.Integer(), default=0)
     amount_discount = database.Column(database.Integer(), default=0)
     amount_increase = database.Column(database.Integer(), default=0)
-    min_sell_price = database.Column(database.Integer(), default=0)
-    min_interval_amount = database.Column(database.Integer(), default=0)
+    min_sell_price = database.Column(database.Integer(), default=None)
+    has_min_sell_price = database.Column(database.Boolean(), default=False)
+    min_interval_amount = database.Column(database.Integer(), default=None)
+    has_min_interval_amount = database.Column(database.Boolean(), default=False)
     requires_discount_code = database.Column(database.Boolean(), default=0)
     price_lists = relationship(
         "PriceList",
