@@ -258,6 +258,7 @@ def instant_payment_complete():
 def thankyou():
     is_donation = session.get("is_donation", False)
 
+    # Prevent direct visits to /thankyou with invalid sessions
     if session.get("plan") is None and is_donation is False:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
