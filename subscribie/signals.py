@@ -18,7 +18,8 @@ from blinker import signal
 from subscribie.notifications import newSubscriberEmailNotification
 from subscribie.receivers import (
     receiver_send_subscriber_payment_failed_notification_email,
-    receiver_send_email,
+    receiver_new_subscriber,
+    receiver_new_donation,
     receiver_attach_documents_to_subscription,
 )
 
@@ -26,6 +27,10 @@ from subscribie.receivers import (
 signal_journey_complete = signal("journey-complete")
 
 signal_payment_failed = signal("payment-failed")
+
+signal_new_subscriber = signal("new-subscriber")
+
+signal_new_donation = signal("new-donation")
 
 # Signal Subscriptions / Subscribing to Signals
 """
@@ -42,8 +47,9 @@ def register_signal_handlers():
     This is called during flask app startup in views.py
     """
     signal_journey_complete.connect(newSubscriberEmailNotification)
-    signal_journey_complete.connect(receiver_send_email)
+    signal_new_subscriber.connect(receiver_new_subscriber)
     signal_journey_complete.connect(receiver_attach_documents_to_subscription)
     signal_payment_failed.connect(
         receiver_send_subscriber_payment_failed_notification_email
     )
+    signal_new_donation.connect(receiver_new_donation)

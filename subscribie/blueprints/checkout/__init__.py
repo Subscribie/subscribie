@@ -36,7 +36,12 @@ from subscribie.utils import (
 )
 from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
-from subscribie.signals import signal_journey_complete, signal_payment_failed
+from subscribie.signals import (
+    signal_journey_complete,
+    signal_new_subscriber,
+    signal_payment_failed,
+    signal_new_donation,
+)
 from subscribie.notifications import newSubscriberEmailNotification
 import stripe
 import backoff
@@ -315,13 +320,28 @@ def thankyou():
                 note=session["note_to_seller"], subscription_id=subscription.id
             )
             database.session.add(note)
+
+        # Signal that a new subscriber has signed up
+        signal_new_subscriber.send(
+            current_app._get_current_object(),
+            email=email,
+            subscription_uuid=uuid,
+        )
     else:
         uuid = None
+        # Send signal_new_donation, see receivers.py
+        signal_new_donation.send(
+            current_app._get_current_object(),
+            email=email,
+        )
     database.session.commit()
 
     # Send journey_complete signal
-    # Trigger journey_complete, so that receivers will react, such
-    # as sending welcome or donation email. See receivers.py
+    # Note: "journey_complete" is more generic than a donation or
+    # a subscriber. journey_complete means a flow has been completed,
+    # usually payment, but could involve a free plan for example.
+    # See receivers.py for all signals
+    # Trigger journey_complete, so that receivers will react.
     signal_journey_complete.send(
         current_app._get_current_object(),
         email=email,
