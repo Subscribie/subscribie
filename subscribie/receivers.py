@@ -1,6 +1,9 @@
 import logging
 from subscribie.tasks import background_task
-from subscribie.email import send_welcome_email
+from subscribie.email import (
+    send_donation_thankyou_email,
+    send_welcome_email,
+)
 from subscribie.notifications import subscriberPaymentFailedNotification
 from subscribie.models import Subscription, Document
 from subscribie.database import database
@@ -14,7 +17,14 @@ log = logging.getLogger(__name__)
 
 def receiver_attach_documents_to_subscription(*args, **kwargs):
     subscription_uuid = kwargs.get("subscription_uuid")
-    if subscription_uuid is None:
+    is_donation = kwargs.get("is_donation")
+    if subscription_uuid is None and is_donation is True:
+        log.error(
+            "The checkout was a donation and therefore it can't have a document attached"  # noqa: E501
+        )
+        return None
+
+    elif subscription_uuid is None:
         log.error(
             "receiver_attach_documents_to_subscription called but no subscription_uuid was given in the signal"  # noqa: E501
         )
@@ -35,7 +45,14 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
             # Create copy of Document and assign it to Subscription
             newDoc = Document()
             newDoc.name = document.name
-            newDoc.type = "terms-and-conditions-agreed"
+            # If is a terms-and-conditions-document change the document
+            # from terms-and-conditions to terms-and-conditions-agreed
+            # otherwise keep the type of the document
+            if document.type == "terms-and-conditions":
+                newDoc.type = "terms-and-conditions-agreed"
+            else:
+                newDoc.type = document.type
+
             newDoc.body = document.body
             subscription.documents.append(newDoc)
             try:
@@ -80,6 +97,11 @@ def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
     subscriberPaymentFailedNotification(**messageKwArgs)
 
 
-def receiver_send_welcome_email(*args, **kwargs):
+def receiver_new_subscriber(*args, **kwargs):
     to_email = kwargs.get("email")
     send_welcome_email(to_email=to_email)
+
+
+def receiver_new_donation(*args, **kwargs):
+    to_email = kwargs.get("email")
+    send_donation_thankyou_email(to_email=to_email)

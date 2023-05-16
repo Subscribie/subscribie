@@ -314,6 +314,24 @@ Example DELETE request:
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
+# Database
+
+The database store is SQL based.
+
+## Database Migrations
+
+### Adding new database field example
+
+The general steps are:
+
+1. Update `model.py` with new field
+2. Run `flask db migrate -m 'added column title to plan model'` - which generates a new migration file
+   The migration file will be in `./migrations/versions/<hash>_added_column_title_to.py`
+3. Update the migration , check it is correct (we generally *dont* add a `down` migration, see other migration files for an example).
+  Warning: It is likley the generation migratino will have more/less infromatino than needed- edit it to be correct
+  Note: We used to have to use `op.batch_alter_table` however that is no longer needed ([thanks sqlalchemy!](https://www.sqlalchemy.org/support.html))
+4. Apply the migration to your local database: `flask db upgrade`
+5. Test (+write test), commit and push
 
 # How new shops are created
 

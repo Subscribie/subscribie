@@ -18,10 +18,12 @@ For a more in depth generic explanation of signals see the [ official blinker do
 
 > By convention, signal names are prefixed with `signal_`
 
-For example:
+Subscribie has the following signals (see [signals.py](https://github.com/Subscribie/subscribie/blob/master/subscribie/signals.py) for most up to date list:
 
 - `signal_journey_complete`
 - `signal_payment_failed`
+- `signal_new_subscriber`
+- `signal_new_donation` (see [donations]({{< ref "/docs/tasks/accept-donations/_index" >}}))
 
 Structure:
 

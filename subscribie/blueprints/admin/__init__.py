@@ -767,9 +767,11 @@ def list_documents():
         and request.args["filter"] == "terms-and-conditions-agreed"
     ):
         show_only_agreed_documents = True
-        documents = Document.query.where(
-            Document.type == "terms-and-conditions-agreed"
-        ).all()
+        documents = (
+            Document.query.where(Document.type == "terms-and-conditions-agreed")
+            .execution_options(include_archived=True)
+            .all()
+        )
     else:
         documents = Document.query.where(
             Document.type != "terms-and-conditions-agreed"
