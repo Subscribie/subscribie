@@ -1,7 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
-
-test("@905@shop-owner@subscriber filter by name and by email", async ({ page }) => {
+test("@905@shop-owner@subscriber filter by name and by email @CAD", async ({ page }) => {
     console.log("subscriber filter by name and by email");
 
     await page.goto('admin/subscribers')

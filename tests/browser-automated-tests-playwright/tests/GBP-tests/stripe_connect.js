@@ -1,38 +1,7 @@
 const { test, expect } = require('@playwright/test');
-const TEST = process.env.TEST;
-//Subscribie tests
-test.describe("Subscribie tests:", () => {
-  test.beforeEach(async ({ page }) => {
-    //Login
-    await page.goto('/auth/login');
-    await page.fill('#email', 'admin@example.com');
-    await page.fill('#password', 'password');
-    await page.click('#login');
-    
-    const content = await page.textContent('.card-title')
-    expect(content === 'Checklist'); // If we see "Checklist", we're logged in to admin
-  }); 
-  //Stripe Test
-  test("@293@connect-to-stripe@shop-owner@Stripe Test @GBP @CAD", async ({ page }) => {
-    // Go to Stripe Connect payment gateways page
-    await page.goto('admin/connect/stripe-connect');
-    // Check onboarding not already completed
-    try {
-      let connectYourShopContent = await page.evaluate(() => document.body.textContent);
-      if (connectYourShopContent.indexOf("Your currently running in test mode.") > -1) {
-        expect(await page.screenshot()).toMatchSnapshot('connect_stripe-to-shop-dashboard-chromium.png');
-        console.log("Already connected Stripe sucessfully, exiting test");
-        return 0;
-      }
-    } catch (e) {
-      console.log("Exception checking if onboarding completed, looks like it's not complete");
-      console.log("Continuing with Stripe Connect onboarding");
-    }
-  });
-  const stripe_connect = require('./tests/GBP-tests/stripe_connect.js');
-
-  const order_plan_with_only_recurring_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_only_recurring_charge`);
-  test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
+const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+test.describe("@ gbp order plan with recurring and upfront charge test:", () => {
+    test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page @GBP", async ({ page }) => {
 
       // Go to Stripe Connect payment gateways page
       await page.goto('admin/connect/stripe-connect');
@@ -131,46 +100,43 @@ test.describe("Subscribie tests:", () => {
         }
         // Stripe onboarding verification summary
         //const notice_title_content = await page.textContent('.Notice-title');
-        try {
-              let notice_title_content = await page.evaluate(() => document.body.textContent);
-              if (notice_title_content.indexOf("Pending verification.") > -1) {
-                  console.log("On the Let's review your details page");
-                  await new Promise(x => setTimeout(x, 2000));
-                  //await page.click('button:has-text("Update")');
-                  await page.locator('text="Pending verification"').click();
-                  // Stripe onboarding identify verification step
-                  //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
-                  const additional_information_content = await page.textContent('text=For additional security, please have this person finish verifying their identity');
-                  if (expect(additional_information_content === "For additional security, please have this person finish verifying their identity")) {
-                      await new Promise(x => setTimeout(x, 3000));
-                      await page.click('text="Use test document"');
-                      await new Promise(x => setTimeout(x, 3000));
-                   }
-            }
-        } catch (e) {
-              console.log("all information has already  filled out");
+        const notice_title_content = await page.textContent('text="Information required soon"');
+        if (expect(notice_title_content === "Information required soon")) {
+          console.log("On the Let's review your details page");
+          await new Promise(x => setTimeout(x, 2000));
+          //await page.click('button:has-text("Update")');
+          await page.locator('text="Information required soon"').click();
         }
-
+        // Stripe onboarding identify verification step
+        //const additional_information_content = await page.textContent('.db-ConsumerUITitle');
+        const additional_information_content = await page.textContent('text=For additional security, please have this person finish verifying their identity');
+        if (expect(additional_information_content === "For additional security, please have this person finish verifying their identity")) {
+            await new Promise(x => setTimeout(x, 3000));
+            await page.click('text="Use test document"');
+            await new Promise(x => setTimeout(x, 3000));
+        }
         // Stripe onboarding verification complete
         const stripe_completion_content = await page.textContent('text="Other information provided"');
-        expect(stripe_completion_content === "Other information provided");
+        if (expect(stripe_completion_content === "Other information provided")) {
+          await new Promise(x => setTimeout(x, 1000));
 
+          // Dont wait too long to click either Submit or Done
+          try {
+            await page.click('button:has-text("Submit")', { timeout: 10000 })
+            console.log("Clicking Submit");
+          } catch (e) {
+            await page.click('button:has-text("Done")');
+            console.log("Clicking Done");
+          }
+        }
 
-        await page.click('[data-test="requirements-index-done-button"]')
-
-  const order_plan_with_only_upfront_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_only_upfront_charge`);
-
-  const order_plan_with_free_trial = require(`./tests/GBP-tests/475_subscriber_order_plan_with_free_trial`);
-  // When you run order subscription and upfront charge, it will run 2 more tests that are inside:
-  // 1. Transacion filter by name and plan title
-  // 2. 2.A pause, resume and 2.B cancel subscription test. 
-  const order_plan_with_subscription_and_upfront_charge = require(`./tests/GBP-tests/293_subscriber_order_plan_with_recurring_and_upfront_charge`);
-
-  // Tests for CAD currency
-  const stripe_connect_CAD = require('./tests/CAD-tests/stripe_connect.js');
-
-  const order_plan_with_subscription_and_upfront_charge_CAD = require(`./tests/CAD-tests/293_subscriber_order_plan_with_recurring_and_upfront_charge`);
-
-
+      console.log("Announce stripe account automatically visiting announce url. In prod this is called via uwsgi cron");
+      await new Promise(x => setTimeout(x, 5000));
+      const stripe_connected = await page.textContent("text=Your currently running in test mode.");
+      expect(stripe_connected === "Your currently running in test mode.");
+      console.log("Stripe Connected");
+      await page.goto('/admin/announce-stripe-connect'); 
+      await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";
+      console.log("Announced to Stripe connect account");
+  });
 });
-
