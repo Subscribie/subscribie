@@ -28,6 +28,7 @@ from subscribie.utils import (
 import stripe
 import json
 from enum import Enum
+
 from .database import database
 
 log = logging.getLogger(__name__)
@@ -185,7 +186,6 @@ class Person(database.Model, HasArchived):
         for invoice in invoices:
             stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
             setattr(invoice, "created", stripeRawInvoice["created"])
-
             # Get stripe_decline_code if possible
             try:
                 payment_intent_id = stripeRawInvoice["payment_intent"]
