@@ -78,7 +78,7 @@
               {{ person.postal_code }} <br />
             </address></td>
             <td data-th="Plan">
-              {% if person.subscriptions %}
+              {% if person.subscriptions and action != "show_donors" %}
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
                     <li>
