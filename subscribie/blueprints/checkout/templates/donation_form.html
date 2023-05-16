@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block title %} {% if title %} {{ title }} {% else %} {{ _('Donation') }} {% endif %} {% endblock %}
+
+{% block hero %}
+
+<div class="section-hero px-2">
+  <div class="wrapper mx-auto">
+
+    <div class="container">
+      <div class="row">
+        <div class="col col-md-8 hero-content py-5 px-3 px-sm-4 ">
+          <h2 class="title-1">{{ _('Donation') }}</h2>
+          <p class="text-light body-lg mb-0">{{ _('Complete the form below') }}</p>
+        </div>
+        <div class="col-4 col-md-4 text-right d-none d-lg-block py-5 px-0 px-sm-4">
+          <img class="pr-3" src="/static/mutli-box.svg" style="height:100%;" >
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+{% endblock %}
+
+{% block body %}
+<div class="section mx-auto my-4">
+  <div class="container mx-auto">
+
+  <form id="donate" method=post action=/new_donation >
+
+    {{ form.csrf_token }}
+
+    {% if error %}
+      <p class=error><strong>{{ _('Error') }}:</strong> {{ error }}
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-lg-2">
+      <div class="col-lg-8">
+        <h3 class="title-2">{{ _('Your details') }}</h3>
+        <p class="text mb-3">{{ _('We only use your details to use it for billing purposes only.') }}.</p>
+
+        <div class="form-group row pt-3 m-0">
+          <label for="given_name" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Your Name') }} <i class="fas fa-user ml-1"></i></label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control form-control-lg mb-3 mb-lg-0" name=given_name id=given_name placeholder="John" value="{{ given_name }}" required>
+          </div>
+          <div class="col-lg-4">
+            <input class="form-control form-control-lg" type="text" name=family_name id=family_name placeholder="Smith" value="{{ family_name }}" required>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label for="email" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Email') }} <i class="fas fa-envelope ml-1"></i></label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="email" name=email id=email placeholder="johnsmith@gmail.com" value="{{ email }}" required>
+          </div>
+        </div>
+        <h3 class="title-2 pt-4">{{ _('Donation') }}</h3>
+        <div class="form-group row py-3 m-0">
+        <label for="donation_amount" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Amount</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="number" step="any" name=donation_amount id="donation_amount" placeholder="10.00" value="{{ donation }}" required>
+          </div>
+        </div>
+        <div class="form-group row py-3 m-0">
+        <label for="note_to_seller" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">Comment</label>
+          <div class="col-lg-8">
+            <textarea class="form-control form-control-lg" id="note_to_seller" placeholder="optional" name="note_to_seller" rows="5" cols="33" value={{ note_to_seller }}></textarea>
+          </div>
+        </div>
+
+        <h3 class="title-2 pt-4">{{ _('Billing Address') }}</h3>
+
+        <div class="form-group row pt-3 m-0">
+          <label for="address_line_one" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Address') }}</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="address_line_one" id="address_line_one" required>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label for="city" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('City') }}</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="city" id="city" required>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 m-0">
+          <label for="postcode" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Post Code') }}</label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="text" name="postcode" id="postcode" required>
+          </div>
+        </div>
+        <div class="form-group row py-3 m-0">
+          <label for="mobile" class="col-lg-3 text-lg-right col-form-label col-form-label-lg">{{ _('Phone') }} <i class="fas fa-phone ml-1"></i></label>
+          <div class="col-lg-8">
+            <input class="form-control form-control-lg" type="tel" name=mobile id=mobile placeholder="+447920000000" value="{{ mobile }}" required>
+          </div>
+        </div>
+
+
+      </div>
+      </div>
+    </div>
+    <!---------------------------->
+    <!-- detect if embeded in iframe to trigger new tab if needed -->
+    <input type="hidden" name="is_iframe" id="is_iframe" value="" />
+    <!-- end detect if embeded in iframe to trigger new tab if needed -->
+    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value="{{ _('Donate') }}">
+
+  </form>
+  <script type="text/javascript">
+    let inIframeElm = document.getElementById('is_iframe');
+    if ( window.location !== window.parent.location ) {
+      // In an iframe
+      console.log("In an iframe");
+      inIframeElm.value = 'True';
+    } else {
+      // Not in an iframe
+      console.log("Not in an iframe");
+      inIframeElm.value = 'False';
+    }
+  </script>
+</div>
+</div>
+
+{% endblock %}

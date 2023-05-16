@@ -81,6 +81,7 @@ from .stats import (
     get_number_of_subscribers,
     get_number_of_signups,
     get_number_of_one_off_purchases,
+    get_number_of_transactions_with_donations,
 )
 
 import stripe
@@ -443,6 +444,7 @@ def cancel_stripe_subscription(subscription_id: str):
 def dashboard():
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
+    num_donations = 0
 
     if payment_provider is None:
         # If payment provider table is not seeded, seed it now with blank values.
@@ -459,7 +461,7 @@ def dashboard():
     num_subscribers = get_number_of_subscribers()
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
-
+    num_donations = get_number_of_transactions_with_donations()
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
 
@@ -471,6 +473,7 @@ def dashboard():
         num_active_subscribers=num_active_subscribers,
         num_subscribers=num_subscribers,
         num_signups=num_signups,
+        num_donations=num_donations,
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
@@ -494,11 +497,10 @@ def edit():
     plans = Plan.query.filter_by(archived=0).order_by(Plan.position).all()
     if form.validate_on_submit():
         company = Company.query.first()
-        company.name = request.form["company_name"]
-        company.slogan = request.form["slogan"]
+        company.name = escape(request.form["company_name"])
+        company.slogan = escape(request.form["slogan"])
         # Loop plans
         for index in request.form.getlist("planIndex", type=int):
-
             # Archive existing plan then create new plan
             # (remember, edits create new plans because
             # plans are immutable)
@@ -525,11 +527,13 @@ def edit():
             # Preserve category
             draftPlan.category_uuid = plan.category_uuid
 
-            draftPlan.title = getPlan(form.title.data, index, default="").strip()
+            draftPlan.title = escape(
+                getPlan(form.title.data, index, default="").strip()
+            )
 
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
-                draftPlan.description = getPlan(form.description.data, index)
+                draftPlan.description = getPlan(escape(form.description.data), index)
 
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
@@ -561,8 +565,8 @@ def edit():
             else:
                 plan_requirements.note_to_seller_required = False
 
-            plan_requirements.note_to_buyer_message = str(
-                getPlan(form.note_to_buyer_message, index, default="").data
+            plan_requirements.note_to_buyer_message = escape(
+                str(getPlan(form.note_to_buyer_message, index, default="").data)
             )
 
             try:
@@ -590,6 +594,7 @@ def edit():
 
             points = getPlan(form.selling_points.data, index, default="")
             for point in points:
+                point = escape(point)
                 draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
             if request.form.get("private-" + str(index)) is not None:
@@ -624,12 +629,12 @@ def add_plan():
         draftPlan.requirements = plan_requirements
 
         draftPlan.uuid = str(uuid.uuid4())
-        draftPlan.title = form.title.data[0].strip()
+        draftPlan.title = escape(form.title.data[0].strip())
         draftPlan.position = request.form.get("position-0", 0)
         interval_unit = form.interval_unit.data[0].strip()
 
         if form.description.data[0].strip() != "":
-            draftPlan.description = form.description.data[0]
+            draftPlan.description = escape(form.description.data[0])
         if (
             "monthly" in interval_unit
             or "yearly" in interval_unit
@@ -646,8 +651,8 @@ def add_plan():
         else:
             plan_requirements.note_to_seller_required = False
 
-        plan_requirements.note_to_buyer_message = str(
-            form.note_to_buyer_message.data[0]
+        plan_requirements.note_to_buyer_message = escape(
+            str(form.note_to_buyer_message.data[0])
         )
         try:
             days_before_first_charge = int(form.days_before_first_charge.data[0])
@@ -679,8 +684,8 @@ def add_plan():
             draftPlan.sell_price = dec2pence(form.sell_price.data[0])
 
         points = form.selling_points.data[0]
-
         for point in points:
+            point = escape(point)
             draftPlan.selling_points.append(PlanSellingPoints(point=point))
 
         # Primary icon image storage
@@ -762,9 +767,12 @@ def list_documents():
         and request.args["filter"] == "terms-and-conditions-agreed"
     ):
         show_only_agreed_documents = True
-        documents = Document.query.where(
-            Document.type == "terms-and-conditions-agreed"
-        ).all()
+        documents = (
+            Document.query.where(Document.type == "terms-and-conditions-agreed")
+            .execution_options(include_archived=True)
+            .where(Document.read_only == True)
+            .all()
+        )
     else:
         documents = Document.query.where(
             Document.type != "terms-and-conditions-agreed"
@@ -866,7 +874,7 @@ def add_category():
         category_name = request.form.get("category", None)
         if category_name:
             category = Category()
-            category.name = category_name
+            category.name = escape(category_name)
             database.session.add(category)
             database.session.commit()
             flash(f"added new category: {category_name}")
@@ -880,7 +888,7 @@ def edit_category():
     category_id = request.args.get("id", None)
     category = Category.query.get(category_id)
     if request.method == "POST":
-        category.name = request.form.get("name")
+        category.name = escape(request.form.get("name"))
         category.position = request.form.get("position")
         database.session.commit()
         flash("Category name updated")
@@ -994,6 +1002,26 @@ def stripe_connect():
             "country_name": "Canada",
             "currency_code": "CAD",
         },
+        {
+            "country_code": "MY",
+            "country_name": "Malaysia",
+            "currency_code": "MYR",
+        },
+        {
+            "country_code": "MX",
+            "country_name": "Mexico",
+            "currency_code": "MXN",
+        },
+        {
+            "country_code": "NZ",
+            "country_name": "New Zealand",
+            "currency_code": "NZD",
+        },
+        {
+            "country_code": "AU",
+            "country_name": "Australia",
+            "currency_code": "AUD",
+        },
         {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
         {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
         {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
@@ -1092,7 +1120,9 @@ def stripe_onboarding():
     try:
         return jsonify({"url": account_link_url})
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        msg = "An occurred during Stripe onboarding"
+        log.error(f"{msg}: {e}")
+        return jsonify(error=msg), 403
 
 
 def _generate_account_link(account_id):
@@ -1208,23 +1238,32 @@ def subscribers():
         query = query.where(Person.email.like(f"%{subscriber_email}%"))
     if subscriber_name:
         query = query.where(Person.full_name.like(f"%{subscriber_name}%"))
-
-    if show_active:
+    if action == "show_active":
         query = query.filter(Person.subscriptions)
         query = query.where(
             (Subscription.stripe_status == "active")
             | (Subscription.stripe_status == "trialing")
         )
+    elif action == "show_donors":
+        query = query.filter(Person.transactions)
+        query = query.where(Transaction.is_donation == True)
+
+    elif action == "show_one_off_payments":
+        query = query.filter(Person.subscriptions)
+        query = query.where(Subscription.stripe_subscription_id == None)
+
     people = query.order_by(desc(Person.created_at))
 
     return render_template(
-        "admin/subscribers.html", people=people.all(), show_active=show_active
+        "admin/subscribers.html",
+        people=people.all(),
+        show_active=show_active,
+        action=action,
     )
 
 
 @admin.route("/refresh-subscription-statuses")
 def refresh_subscriptions():
-
     update_stripe_subscription_statuses()
 
     if request.referrer is not None:
@@ -1313,7 +1352,7 @@ def invoices():
 @admin.route("/transactions", methods=["GET"])
 @login_required
 def transactions():
-
+    action = request.args.get("action", None)
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1347,6 +1386,12 @@ def transactions():
             flash("Subscriber not found.")
             query = query.filter(False)
 
+    if action == "show_refunded":
+        query = query.filter(Transaction.external_refund_id != None)
+
+    if action == "show_donations":
+        query = query.filter(Transaction.is_donation == True)
+
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
         msg = Markup(
@@ -1358,6 +1403,7 @@ def transactions():
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),
         person=person,
+        action=action,
     )
 
 
@@ -1404,7 +1450,7 @@ def change_email():
     """Change email of existing user"""
     form = ChangeEmailForm()
     if request.method == "POST":
-        email = session.get("user_id", None)
+        email = session.get("user_id", None).lower()
         if email is None:
             return "Email not found in session"
 
@@ -1430,10 +1476,9 @@ def add_shop_admin():
     """Add another shop admin"""
     form = AddShopAdminForm()
     if request.method == "POST":
-
         if form.validate_on_submit():
             # Check user dosent already exist
-            email = escape(request.form["email"])
+            email = escape(request.form["email"].lower())
             if User.query.filter_by(email=email).first() is not None:
                 return f"Error, admin with email ({email}) already exists."
 
@@ -1555,7 +1600,6 @@ def edit_welcome_email():
         database.session.add(custom_template)
 
     if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
-
         new_custom_template = form.template.data
         # Validate template syntax
         env = jinja2.Environment()
@@ -1619,7 +1663,6 @@ def rename_shop():
 @admin.route("/rename-shop", methods=["POST"])
 @login_required
 def rename_shop_post():
-
     PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
     PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
     SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
@@ -1713,7 +1756,6 @@ def announce_shop_stripe_connect_ids():
         return req
 
     try:
-
         if stripe_testmode() is False and stripe_livemode() is False:
             log.info(msg)
             return jsonify("Stripe is not setup yet.")
@@ -1872,10 +1914,6 @@ def getPlan(container, i, default=None):
 @login_required
 def vat_settings():
     settings = Setting.query.first()  # Get current shop settings
-    if settings is None:
-        settings = Setting()
-        database.session.add(settings)
-        database.session.commit()
 
     if request.method == "POST":
         if int(request.form.get("chargeVAT", 0)) == 1:
@@ -1893,6 +1931,25 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/donate-enabled-settings", methods=["GET", "POST"])
+@login_required
+def donations_enabled_settings():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings.donations_enabled is None:
+        settings.donations_enabled = False
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("donations_enabled", 0)) == 1:
+            settings.donations_enabled = 1
+        else:
+            settings.donations_enabled = 0
+        flash("donations_enabled settings updated")
+        database.session.commit()
+        return redirect(url_for("admin.donations_enabled_settings", settings=settings))
+    return render_template("admin/settings/donations_enabled.html", settings=settings)
 
 
 @admin.route("/api-keys", methods=["GET", "POST"])

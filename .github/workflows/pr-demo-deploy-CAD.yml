@@ -14,7 +14,7 @@ on:
       - 'docs/**'
 jobs:
   CAD-deploy-pr:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
     environment: testing
     concurrency:
@@ -128,4 +128,4 @@ jobs:
           name: Screenshots-and-video-artifacts
           path: |
             ./index.spec.js-snapshots/*
-            ./tests/browser-automated-tests-playwright/test-results/*
+            ./test-results/*

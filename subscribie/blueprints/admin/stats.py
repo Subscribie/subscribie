@@ -1,5 +1,5 @@
 from subscribie.database import database
-from subscribie.models import Person, Subscription, Plan, PlanRequirements
+from subscribie.models import Person, Subscription, Plan, PlanRequirements, Transaction
 from sqlalchemy.sql import func
 import logging
 
@@ -77,6 +77,16 @@ def get_number_of_one_off_purchases():
         .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
         .filter(PlanRequirements.subscription == 0)
         .filter(PlanRequirements.instant_payment == 1)
+        .count()
+    )
+    return count
+
+
+def get_number_of_transactions_with_donations():
+    count = (
+        database.session.query(Person)
+        .join(Transaction)
+        .filter(Transaction.is_donation == 1)
         .count()
     )
     return count

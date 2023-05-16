@@ -6,7 +6,7 @@
   <div class="wrapper mx-auto">
 
     <div class="container">
-      <div class="hero-content py-5 px-0 px-sm-4 ">
+      <div class="hero-content py-5 px-0 px-sm-4">
         <h1 class="title-1">{{ company.name }}</h1>
         {% if company.slogan is sameas None or company.slogan == "None"  %}
             <p></p>
@@ -14,9 +14,11 @@
             <p class="text-light">{{ company.slogan }}</p>
         {% endif %}
         <a class="btn-outlined-lg" href="#plans" title="Subscriber login">{{ _('Choose plan') }}</a>
+        {% if settings.donations_enabled %}
+        <a href='/donate' class="btn-lg btn-warning float-right">Donate</a>
+        {% endif %}
       </div>
     </div>
-
   </div>
 </div>
 
@@ -78,9 +80,11 @@
                 {% endif %}
 
                 {% for sellingPoint in plan.selling_points%}
+                {% if sellingPoint.point|length != 0 %}
                 <div class="plan-selling-points d-flex align-items-start">
                   <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
                 </div>
+                {% endif %}
                 {% endfor %}
                 {% if plan.cancel_at %}
                   <small>{{ _('Automatically cancels on') }}: {{ plan.cancel_at | timestampToDate }}</small>
@@ -168,7 +172,7 @@
   }
 
   $( ".plan-img-action" ).click(function() {
-    var imgURL = $.(this).attr('data-highres');
+    var imgURL = $(this).attr('data-highres');
     $(".modal-img").attr("src", imgURL);
   });
 

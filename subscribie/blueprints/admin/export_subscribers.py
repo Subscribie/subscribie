@@ -8,7 +8,6 @@ import logging
 @admin.route("/export-subscribers-email")
 @login_required
 def export_subscribers():
-
     subscriptions = Subscription.query.execution_options(include_archived=True).all()
 
     if len(subscriptions) == 0:

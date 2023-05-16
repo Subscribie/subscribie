@@ -164,7 +164,11 @@ button {
 .payment-p {
     color: white;
     min-width: 250px;
-    font-size: 1.1em;
+    font-size: 1.4em;
+}
+
+.description {
+    font-size: 1.4em;
 }
 
 .quote::first-letter {

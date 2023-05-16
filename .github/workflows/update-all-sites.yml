@@ -11,7 +11,7 @@ on:
 jobs:
   update_all_sites:
     name: Update all sites
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Setup ssh access
       run: |

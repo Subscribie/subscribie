@@ -30,6 +30,7 @@ COUNTRY_CODE_TO_CURRENCY_CODE = {
     "SI": "EUR",
     "ES": "EUR",
     "CA": "CAD",
+    "AU": "AUD",
 }
 
 
