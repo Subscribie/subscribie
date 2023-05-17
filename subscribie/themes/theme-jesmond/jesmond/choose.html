@@ -61,33 +61,29 @@
                 <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}</p>
                 {% endif %}
 
-                {# show VAT next to the price if VAT is enabled #}
-                {% if setting.charge_vat|int == 1 %}
-                  {% if plan.interval_amount|int > 0 %}
-                  {% set recurring_VAT=plan.interval_amount * 0.20/100|round|int %}
-                  {% set recurring_VAT=" +%.2f vat "|format(recurring_VAT) %}
-                  {% endif %}
-                  {% if plan.sell_price|int  > 0 %}
-                  {% set sellPrice_VAT=plan.sell_price * 0.20/100|round|int %}
-                  {% set sellPrice_VAT=" +%.2f vat "|format(sellPrice_VAT) %}
-                  {% endif %}
-                {% endif %}
 
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
                       {% if plan.trial_period_days > 0 %}{{ _('Then') }} {% endif %}
-                      <span class="price">{{ plan.showIntervalAmount() }}{{ recurring_VAT }}</span>/{{ plan.showItervalUnit() }}
+                      <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.showItervalUnit() }}
                     </span> <br>
                     {% if plan.requirements.instant_payment %}
-                    <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}{{ sellPrice_VAT }}</span>
+                    <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}</span>
                     {% endif %}
+                    {% if settings.charge_vat %}
+                    <p class="text">{{ _('Including VAT') }}</span>
+                    {% endif %}
+
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
-                      <span class="price">{{ plan.showSellPrice() }}{{ sellPrice_VAT }}</span>/{{ _('One-off') }}
-                    </span>  <br>
+                      <span class="price">{{ plan.showSellPrice() }}</span>/{{ _('One-off') }}
+                    </span>  <br />
+                    {% if settings.charge_vat %}
+                    <p class="text">{{ _('Including VAT') }}</span><br />
+                    {% endif %}
                     <span class="text">{{ _('No subscription') }}</span>
                   </div>
 

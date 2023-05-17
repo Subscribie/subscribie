@@ -821,6 +821,17 @@ class Plan(database.Model, HasArchived):
                     f"after apply_rules interval_amount is: {interval_amount}"
                 )  # noqa: E501
 
+            # If VAT is enabled, include VAT
+            settings = Setting.query.first()
+            if settings.charge_vat:
+                log.debug(f"Calculating VAT for plan {self.title}")
+                if self.requirements.instant_payment:
+                    log.debug("Applying VAT for instant_payment amount on plan {self.title}") # noqa: E501
+                    sell_price = sell_price + (sell_price * (settings.vat_percentage / 100))  # noqa: E501
+                if self.requirements.subscription:
+                    log.debug("Applying VAT for interval_amount amount on plan {self.title}") # noqa: E501
+                    interval_amount = interval_amount + (interval_amount * (settings.vat_percentage / 100))  # noqa: E501
+
             return sell_price, interval_amount
 
         sell_price, interval_amount = calculatePrice(
@@ -1113,6 +1124,7 @@ class Setting(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     reply_to_email_address = database.Column(database.String())
     charge_vat = database.Column(database.Boolean(), default=False)
+    vat_percentage = database.Column(database.Float(), default=20.0)
     custom_code = database.Column(database.String(), default=None)
     default_currency = database.Column(database.String(), default=None)
     default_country_code = database.Column(database.String(), default=None)
