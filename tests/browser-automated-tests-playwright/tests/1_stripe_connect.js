@@ -28,7 +28,12 @@ test.describe("connecting to stripe:", () => {
                 await page.goto(baseURL +'/admin/remove-transactions');
                 const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
                 expect(contentTransactions > -1);
+
+                await page.goto('/admin/remove-documents');
+                const contentDocuments = await page.evaluate(() => document.body.textContent.indexOf("all documents deleted"));
+                expect(contentDocuments > -1);
               // End Clear DB
+
                 // Go to Stripe Connect payment gateways page
                 await page.goto(baseURL + 'admin/connect/stripe-connect');
 

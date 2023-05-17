@@ -541,6 +541,19 @@ def login_required(view):
     return wrapped_view
 
 
+def development_mode_only(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if os.getenv("FLASK_ENV") != "development":
+            msg = {
+                "msg": f"Error. Only possible in development mode. Current FLASK_ENV mode is: {os.getenv('FLASK_ENV')}"  # noqa: E501
+            }
+            return jsonify(msg), 403
+        return view(**kwargs)
+
+    return wrapped_view
+
+
 def stripe_connect_id_required(view):
     """Redirect away from route if requires a Stripe Connect id
 

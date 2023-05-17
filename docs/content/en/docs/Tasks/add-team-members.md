@@ -1,14 +1,14 @@
 ---
-title: "Add Team Members to Subscription"
+title: "Add Team Members to Shop"
 date: 2022-11-28
 weight: 5
 description: >
   A guide to adding your team members to manage your shop.
 ---
 
-Learn how to add your team members as your admin to your subscription easily.
+Learn how to add your team members as your admin to your shop easily.
 
-## Steps to Add Team Members to Subscription
+## Steps to Add Team Members to Shop
 
 **Step 1:** Log into your Shop Dashboard.
 

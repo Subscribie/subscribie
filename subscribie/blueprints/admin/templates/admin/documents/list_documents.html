@@ -97,6 +97,7 @@
               <td>
                 <span class="btn" aria-disabled="true">Date: {{ document.created_at.strftime('%Y-%m-%d') }}</span>
               </td>
+              {% if document.subscriptions %}
               <td>
                 <a href="{{ url_for('admin.show_subscriber', subscriber_id=document.subscriptions[0].person.id) }}" class="btn btn-success btn-block">
                   Subscriber: {{ document.subscriptions[0].person.given_name }}
@@ -105,7 +106,16 @@
               <td>
                 <span class="btn" aria-disabled="true">Plan: {{ document.subscriptions[0].plan.title }}</span>
               </td>
+              {% else %}
+              <td>
+                  <p>No subscriptions are associated with this document.<br />
+                  This can occur if the Subscription has been completely deleted from the system.
+                  </p>
+              </td>
+              <td></td>
+              {% endif %}
             {% endif %}
+
           </tr>
         {% endfor %}
         </table>
