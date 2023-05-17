@@ -6,8 +6,6 @@ description: >
   A Guide on How to Change Your Subscription Website Web Address.
 ---
 
-Here are Easy Steps to Change Your Subscription Website Web Address
-
 ## Steps to Change Your Subscription Website Web Address
 
 ### Step 1: Scroll to the bottom of your dashboard and click *Rename shop web address*, this is under the *Shop Settings (Tax & rename shop)* tab.

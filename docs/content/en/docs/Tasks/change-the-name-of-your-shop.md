@@ -3,7 +3,7 @@ title: "Change the name of your shop"
 date: 2023-04-24
 weight: 5
 description: >
-  How to change the name of your.
+  How to change the name of your shop.
 ---
 
 ## Steps to change the name of your shop

@@ -10,19 +10,19 @@ Learn how to add a private page that is only accessable by your subscribers by f
 
 ## Steps to Create a Private Page
 
-**Step 1:** Log into your store and navigate to your Shop Dashboard.
+### Step 1: Log into your store and navigate to your Shop Dashboard.
 
 ![](https://i.imgur.com/HQylCU8.png)
 
-**Step 2:** Click the **"Modules"** tab and select **"List Pages"** under the **"Pages"** category.
+### Step 2: Click the *"Modules"* tab and select *"List Pages"* under the *"Pages"* category.
 
 ![](https://i.imgur.com/QQrwiAR.png)
 
-**Step 3:** Select **"Set Private Pages"**
+### Step 3: Select *"Set Private Pages"*
 
 ![](https://i.imgur.com/dZgLR8z.png)
 
-**Step 4:** Choose the Page and click **Submit.**
+### Step 4: Choose the Page and click *Submit.*
 
 > Select all the pages you wish to private in this step.
 
