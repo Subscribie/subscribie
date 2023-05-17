@@ -826,11 +826,19 @@ class Plan(database.Model, HasArchived):
             if settings.charge_vat:
                 log.debug(f"Calculating VAT for plan {self.title}")
                 if self.requirements.instant_payment:
-                    log.debug("Applying VAT for instant_payment amount on plan {self.title}") # noqa: E501
-                    sell_price = sell_price + (sell_price * (settings.vat_percentage / 100))  # noqa: E501
+                    log.debug(
+                        "Applying VAT for instant_payment amount on plan {self.title}"
+                    )  # noqa: E501
+                    sell_price = sell_price + (
+                        sell_price * (settings.vat_percentage / 100)
+                    )  # noqa: E501
                 if self.requirements.subscription:
-                    log.debug("Applying VAT for interval_amount amount on plan {self.title}") # noqa: E501
-                    interval_amount = interval_amount + (interval_amount * (settings.vat_percentage / 100))  # noqa: E501
+                    log.debug(
+                        "Applying VAT for interval_amount amount on plan {self.title}"
+                    )  # noqa: E501
+                    interval_amount = interval_amount + (
+                        interval_amount * (settings.vat_percentage / 100)
+                    )  # noqa: E501
 
             return sell_price, interval_amount
 
