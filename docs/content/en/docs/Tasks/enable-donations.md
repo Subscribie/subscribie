@@ -3,7 +3,7 @@ title: "Enable Donations"
 date: 2023-03-21
 weight: 5
 description: >
-  A guide to help you Enable Donations in your shop.
+  Accept donations in your shop. How to enable donations.
 ---
 
 ## Steps to Enable Donations
