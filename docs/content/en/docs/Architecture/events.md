@@ -23,7 +23,7 @@ Subscribie has the following signals (see [signals.py](https://github.com/Subscr
 - `signal_journey_complete`
 - `signal_payment_failed`
 - `signal_new_subscriber`
-- `signal_new_donation` (see [donations]({{< ref "/docs/tasks/accept-donations/_index" >}}))
+- `signal_new_donation` (see [donations]({{< ref "/docs/tasks/enable-donations/_index" >}}))
 
 Structure:
 
