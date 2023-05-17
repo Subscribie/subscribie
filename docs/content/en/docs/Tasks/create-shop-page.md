@@ -10,23 +10,23 @@ Learn how to add additional pages to your shop by following these steps.
 
 ## Steps to Create a Shop Page
 
-**Step 1:** Log into your Dashboard.
+### Step 1: Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-**Step 2:** Click the **"Modules"** tab and select **"List Pages"** under the **"pages"** category.
+### Step 2: Click the *"Modules"* tab and select *"List Pages"* under the *"pages"* category.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-94.png)
 
-**Step 3:** To add a Public Page, click **"Add Page"**
+### Step 3: To add a Public Page, click *"Add Page"*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-95.png)
 
-**Step 4:** Now add a title and contents to your new page.
+### Step 4: Now add a title and contents to your new page.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-96.png)
 
-**Step 5:** Click **"Save"**. 
+### Step 5: Click *"Save"*. 
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-97.png)
 

@@ -6,7 +6,6 @@ description: >
   How to Charge Subscribers on an Ad-hoc Basis.
 ---
 
-Learn How to Charge Subscribers on an Ad-hoc Basis
 
 >Please Note, An ad hoc charge only applies to Subscribers who have Subscribed to at least one of your plans, which can be a regular plan (e.g. £10 a month) or a free trial. This is because Subscribie needs to obtain payment authorisation, which is done when they sign up for a plan. Free Plans do not require payment authorisation, so they cannot be used for ad hoc charges.
 

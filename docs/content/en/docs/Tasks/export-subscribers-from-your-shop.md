@@ -20,7 +20,7 @@ Export a CSV file of your Subscribers.
 
 ### Step 3: Review the `csv` export
 
-The file will container your subscriber information, in the CSV file format.
+The file will contain your subscriber information, in the CSV file format.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-25.png)
 
