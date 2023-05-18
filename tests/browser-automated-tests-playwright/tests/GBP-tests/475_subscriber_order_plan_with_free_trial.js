@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with free-trial:", () => {
-    test("@475@subscriber@Ordering plan with free-trial feature", async ({ page }) => {
+    test("@475@subscriber@Ordering plan with free-trial feature @GBP", async ({ page }) => {
         console.log("Ordering Plan with free trial");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product

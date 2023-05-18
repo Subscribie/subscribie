@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
-    test("@293@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
+    test("@293@subscriber@Ordering recurring and upfront plan @CAD", async ({ page }) => {
         console.log("Ordering Plan with subscription and upfront charge");
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
@@ -25,16 +25,16 @@ test.describe("order plan with recurring and upfront charge test:", () => {
 
         //Verify first payment is correct (upfront charge + first recuring charge)
         const first_payment_content = await page.textContent('#ProductSummary-totalAmount');
-        expect(first_payment_content === "£5.99");
+        expect(first_payment_content === "$5.99");
         const recuring_charge_content = await page.textContent('.ProductSummaryDescription');
-        expect(recuring_charge_content === "Then £5.99 per week");
+        expect(recuring_charge_content === "Then $5.99 per week");
 
         // Pay with test card
         await page.fill('#cardNumber', '4242 4242 4242 4242');
         await page.fill('#cardExpiry', '04 / 24');
         await page.fill('#cardCvc', '123');
         await page.fill('#billingName', 'John Smith');
-        await page.selectOption('select#billingCountry', 'GB');
+        await page.selectOption('select#billingCountry', 'CA');
 
         await page.fill('#billingPostalCode', 'LN1 7FH');
         expect(await page.screenshot()).toMatchSnapshot('recurring-and-upfront-stripe-checkout-filled.png');
@@ -72,7 +72,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         await page.goto('admin/transactions')
         expect(await page.screenshot()).toMatchSnapshot('view-transactions.png');
         const transaction_content = await page.textContent('.transaction-amount');
-        expect (transaction_content == '£5.99');
+        expect (transaction_content == '$5.99');
 
         // Verify subscriber is linked to the transaction:
         const transaction_subscriber_content = await page.textContent('.transaction-subscriber');
@@ -85,7 +85,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         expect(content_paid_invoice_status === 'paid')
 
         const content_paid_invoice_amount = await page.textContent('.invoice-amount-paid');
-        expect(content_paid_invoice_amount === '£5.99')
+        expect(content_paid_invoice_amount === '$5.99')
 
         // Verify upcoming invoice has been generated for the subscription:
         await page.goto('admin/upcoming-invoices')
@@ -94,15 +94,14 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         await new Promise(x => setTimeout(x, 10000)); //10 secconds
         expect(await page.screenshot()).toMatchSnapshot('recurring-and-upfront-view-upcoming-invoices.png');
         const content_upcoming_invoice_amount = await page.textContent('.upcoming-invoice-amount');
-        expect(content_upcoming_invoice_amount === '£5.99')
+        expect(content_upcoming_invoice_amount === '$5.99')
         
         // Verify Plan is attached to upcoming invoice, and recuring price & upfront price are correct
         const content_upcoming_invoice_plan_recuring_amount = await page.textContent('.plan-price-interval');
-        expect(content_upcoming_invoice_plan_recuring_amount === '£5.99')
+        expect(content_upcoming_invoice_plan_recuring_amount === '$5.99')
         const content_upcoming_invoice_plan_upfront_amount = await page.textContent('.plan-sell-price');
-        expect(content_upcoming_invoice_plan_upfront_amount === '£1.00')
+        expect(content_upcoming_invoice_plan_upfront_amount === '$1.00')
     });
     const transaction_filter_by_name_and_by_plan_title = require('./shop_owner_transaction_filter_by_name_and_by_plan_title.js');
     const subscriber_filter_by_name_and_by_plan_title = require('./905-subscriber-search-by-email-and-name.js');
-    const pause_resume_and_cancel_subscriptions = require('./shop_owner_pause_resume_and_cancel_subscriptions.js');
 });

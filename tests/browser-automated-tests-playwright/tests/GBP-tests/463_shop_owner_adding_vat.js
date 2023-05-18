@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 //Subscribie tests
-test("@463@shop-owner@adding VAT", async ({ page }) => {
+test("@463@shop-owner@adding VAT @GBP", async ({ page }) => {
     console.log("enabling VAT...");
      // Go to style your shop
     await page.goto('/admin/vat-settings');
