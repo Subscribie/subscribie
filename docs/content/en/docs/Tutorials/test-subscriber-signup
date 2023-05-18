@@ -1,0 +1,38 @@
+---
+title: "Test Subscriber Signup Process in your Shop"
+date: 2022-11-11
+weight: 5
+description: >
+  How to sign-up to your Subscription as a Subscriber in Test Mode.
+---
+
+Now that you have created a subscription, here are the steps you need to follow if you want to test out your subscription while in test mode. Remember, test mode does not use real money.
+
+## Steps to Test the Subscriber Signup Process
+**Step 1:** Log into your Shop dashboard.
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-36.png)
+
+**Step 2:** Click on **Connect Stripe,** which is located under **Manage Payment Gateways.**
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-37.png)
+
+**Step 3:** Note down the test card details highlighted in the yellow box. **This is the card details you will use for the sign-up process.**
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-38.png)
+
+**Step 4:** Now, go to your shop and select a plan.
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-39.png)
+
+**Step 5:** Fill in the details for the subscription and click **Continue to Payment.**
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-40.png)
+
+**Step 6:** Enter the test card details that you noted in **Step 3**
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-41.png)
+
+When you see the **Order Complete** screen that means that you successfully completed the signup process and are now ready to take live payments!  
+
+![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-42.png)

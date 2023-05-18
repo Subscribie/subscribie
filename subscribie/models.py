@@ -13,6 +13,7 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from dateutil.relativedelta import relativedelta
 from flask import request, current_app
+from flask_babel import _
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account_id,
@@ -26,6 +27,7 @@ from subscribie.utils import (
 )
 import stripe
 import json
+from enum import Enum
 
 from .database import database
 
@@ -78,6 +80,7 @@ def filter_archived(query):
             and "instant_payment_complete" not in request.path
             and "thankyou" not in request.path
             and "uploads" not in request.path
+            and "document" not in request.path
         ):
             query = query.filter(entity.archived == 0)
             return query
@@ -90,13 +93,19 @@ def uuid_string():
 class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
-    archived = Column(Boolean, nullable=False, default=0)
+    archived = Column(Boolean, nullable=True, default=0)
 
 
 class CreatedAt(object):
     """Mixin that identifies a class as having created_at entities"""
 
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+
+class HasReadOnly(object):
+    """Mixin that identifies a class as having read_only boolean field"""
+
+    read_only = Column(Boolean, nullable=False, default=0)
 
 
 class User(database.Model):
@@ -255,6 +264,37 @@ class LoginToken(database.Model):
     login_token = database.Column(database.String)
 
 
+# Track Documents at time of subscription creation
+# Note these are kept and never altered, compared to
+# association_table_plan_to_document which store live
+# documents which may change prior to subscriptions
+# being created.
+#
+# Worked example:
+#
+# When a subscription is created, any associated document(s)
+# associated with the subscribed Plan, are coped entirely to
+# another enty in Document table as a system of record,
+# and linked to the associated subscription.
+# Should the live Document(s) be updated/altered, then the
+# saved & archived document(s) will be left intact, and attached
+# the the Subscription.
+association_table_subscription_to_document = database.Table(
+    "subscription_document_associations",
+    database.Column(
+        "subscription_uuid",
+        database.Integer,
+        ForeignKey("subscription.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "document_uuid",
+        database.Integer,
+        ForeignKey("document.uuid"),
+    ),
+)
+
+
 class Subscription(database.Model):
     __tablename__ = "subscription"
     id = database.Column(database.Integer(), primary_key=True)
@@ -273,6 +313,9 @@ class Subscription(database.Model):
         primaryjoin="foreign(Plan.uuid)==Subscription.sku_uuid",  # noqa
     )
     person = relationship("Person", back_populates="subscriptions")
+    documents = relationship(
+        "Document", secondary=association_table_subscription_to_document
+    )
     upcoming_invoice = relationship(
         "UpcomingInvoice", back_populates="subscription", uselist=False
     )
@@ -503,6 +546,29 @@ association_table_plan_to_price_lists = database.Table(
 )
 
 
+class INTERVAL_UNITS(Enum):
+    DAILY = _("daily")
+    WEEKLY = _("weekly")
+    MONTHLY = _("monthly")
+    YEARLY = _("yearly")
+
+
+association_table_plan_to_document = database.Table(
+    "plan_document_associations",
+    database.Column(
+        "plan_uuid",
+        database.Integer,
+        ForeignKey("plan.uuid"),
+        primary_key=True,
+    ),
+    database.Column(
+        "document_uuid",
+        database.Integer,
+        ForeignKey("document.uuid"),
+    ),
+)
+
+
 class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
@@ -528,6 +594,7 @@ class Plan(database.Model, HasArchived):
         secondary=association_table_plan_choice_group,
         backref=database.backref("plans", lazy="dynamic"),
     )
+    documents = relationship("Document", secondary=association_table_plan_to_document)
     position = database.Column(database.Integer(), default=0)
 
     category_uuid = database.Column(
@@ -614,21 +681,21 @@ class Plan(database.Model, HasArchived):
         )  # noqa: E501
 
         def apply_percent_increase(base: int, percent_increase: int) -> int:
-            add = int((base / 100) * percent_increase)
+            add = int((base / 100) * int(percent_increase or 1))
             base += add
             return base
 
         def apply_percent_discount(base: int, percent_discount: int) -> int:
-            minus = int((base / 100) * percent_discount)
+            minus = int((base / 100) * int(percent_discount or 1))
             base -= minus
             return base
 
         def apply_amount_decrease(base: int, amount_decrease: int) -> int:
-            base -= amount_decrease
+            base -= int(amount_decrease or 0)
             return base
 
         def apply_amount_increase(base: int, amount_increase: int) -> int:
-            base += amount_increase
+            base += int(amount_increase or 0)
             return base
 
         def check_discount_code_valid(
@@ -677,24 +744,34 @@ class Plan(database.Model, HasArchived):
                         # Skip this rule if discount_code validation fails
                         continue
                 if rule.affects_sell_price and sell_price is not None:
-
                     if rule.percent_increase:
-                        # only increase percent if the min_sell_price is higher than plan sell_price
+                        # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price > sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
                             sell_price = apply_percent_increase(
                                 sell_price, rule.percent_increase
                             )  # noqa: E501
+                        else:
+                            sell_price = apply_percent_increase(
+                                sell_price, rule.percent_increase
+                            )  # noqa: E501
+
                     if rule.percent_discount:
-                        # onlt decrease percent if sell_price is higher than min_sell_price
+                        """
+                        If I want a minimum sell price
+                        Then I want a percent discount to apply if the value is equal to or greater than the minimum sell price
+                        Otherwise, always apply the percent discount regardlrss of sell price.
+                        """
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price < sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
+                            sell_price = apply_percent_discount(
+                                sell_price, rule.percent_discount
+                            )  # noqa: E501
+                        else:
                             sell_price = apply_percent_discount(
                                 sell_price, rule.percent_discount
                             )  # noqa: E501
@@ -711,10 +788,9 @@ class Plan(database.Model, HasArchived):
                     rule.affects_interval_amount
                     and interval_amount is not None  # noqa: E501
                 ):
-
                     if rule.percent_increase:
                         if (
-                            rule.min_interval_amount
+                            rule.has_min_interval_amount
                             and rule.min_interval_amount > interval_amount
                             or rule.min_interval_amount is None
                         ):
@@ -803,6 +879,9 @@ class Plan(database.Model, HasArchived):
         result = f"{currency_symbol}{amount:.2f}"
         return result
 
+    def showItervalUnit(self) -> str:
+        return _(INTERVAL_UNITS[self.interval_unit.upper()].value)
+
     def showIntervalAmount(self) -> str:
         """Return formatted currency string of interval amount
         Utility function to avoid having to be verbose in jinja
@@ -819,7 +898,7 @@ class Plan(database.Model, HasArchived):
         amount = self.getIntervalAmount(get_geo_currency_code()) / 100
 
         log.debug(
-            f"showIntervalAmount amount calculated to amount: {amount}, with currency code {get_geo_currency_code()}"
+            f"showIntervalAmount amount calculated to amount: {amount}, with currency code {get_geo_currency_code()}"  # noqa: E501
         )
 
         result = f"{currency_symbol}{amount:.2f}"
@@ -957,6 +1036,13 @@ class Transaction(database.Model):
     subscription = relationship("Subscription", back_populates="transactions")
     payment_status = database.Column(database.String())
     fulfillment_state = database.Column(database.String())
+    is_donation = database.Column(database.Boolean(), default=0)
+
+    def showSellPrice(self) -> str:
+        currency_symbol = get_geo_currency_symbol()
+        amount = self.amount / 100
+        result = f"{currency_symbol}{amount:.2f}"
+        return result
 
 
 class SeoPageTitle(database.Model):
@@ -1033,6 +1119,7 @@ class Setting(database.Model):
     shop_activated = database.Column(database.Boolean(), default=False)
     api_key_secret_live = database.Column(database.String(), default=None)
     api_key_secret_test = database.Column(database.String(), default=None)
+    donations_enabled = database.Column(database.Boolean(), default=False)
 
 
 class File(database.Model):
@@ -1043,6 +1130,28 @@ class File(database.Model):
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
     file_name = database.Column(database.String())
+
+
+class Document(database.Model, HasArchived, HasReadOnly):
+    """Raw text Document"""
+
+    __tablename__ = "document"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    name = database.Column(database.String(), default=None)
+    type = database.Column(database.String(), default=None)
+    body = database.Column(database.String(), default=None)
+    plans = relationship(
+        "Plan",
+        secondary=association_table_plan_to_document,
+        back_populates="documents",
+    )
+    subscriptions = relationship(
+        "Subscription",
+        secondary=association_table_subscription_to_document,
+        back_populates="documents",
+    )
 
 
 class TaxRate(database.Model):
@@ -1157,8 +1266,10 @@ class PriceListRule(database.Model):
     percent_increase = database.Column(database.Integer(), default=0)
     amount_discount = database.Column(database.Integer(), default=0)
     amount_increase = database.Column(database.Integer(), default=0)
-    min_sell_price = database.Column(database.Integer(), default=0)
-    min_interval_amount = database.Column(database.Integer(), default=0)
+    min_sell_price = database.Column(database.Integer(), default=None)
+    has_min_sell_price = database.Column(database.Boolean(), default=False)
+    min_interval_amount = database.Column(database.Integer(), default=None)
+    has_min_interval_amount = database.Column(database.Boolean(), default=False)
     requires_discount_code = database.Column(database.Boolean(), default=0)
     price_lists = relationship(
         "PriceList",

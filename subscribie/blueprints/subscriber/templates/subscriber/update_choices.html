@@ -1,20 +1,20 @@
-{% extends "admin/layout.html" %}
-{% block title %} Update Choices - {{ company.name }} {% endblock %}
+{% extends "subscriber/layout.html" %}
+{% block title %} {{ _('Update Choices') }} - {{ company.name }} {% endblock %}
 
 {% block body %}
 
 <div class="section">
   <div class="container">
 
-      <h3 class="title is-4 has-text-centered is-size-4-mobile">Choose your options</h2>
+      <h3 class="title is-4 has-text-centered is-size-4-mobile">{{ _('Choose your options') }}</h2>
       
-      <p>Your <em>{{ plan.title }}</em> plan has the following options</p>
+      <p>{{ _('Your') }} <em>{{ plan.title }}</em> {{ _('plan has the following options') }}</p>
 
       <form action="" method="POST">
 
       {% for choice_group in plan.choice_groups %}
       <details open>
-        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} options) choose one:</summary>
+        <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _('options') }}) {{ _('choose one') }}:</summary>
         <ul>
           {% for option in choice_group.options %}
           <li>

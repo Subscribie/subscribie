@@ -2,14 +2,14 @@ const https = require('https');
 
 function checkSubscriberLogin() {
   console.log("executing checkSubscribierLogin")
-  SUBSCRIBER_EMAIL_HOST = process.env.SUBSCRIBER_EMAIL_HOST
-  SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER
-  SUBSCRIBER_EMAIL_PASSWORD = process.env.SUBSCRIBER_EMAIL_PASSWORD
-  IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
-  RESET_PASSWORD_IMAP_SEARCH_SUBJECT = process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT
+  const SUBSCRIBER_EMAIL_HOST = process.env.SUBSCRIBER_EMAIL_HOST
+  const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER
+  const SUBSCRIBER_EMAIL_PASSWORD = process.env.SUBSCRIBER_EMAIL_PASSWORD
+  const IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
+  const RESET_PASSWORD_IMAP_SEARCH_SUBJECT = process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT
   //global env
-  IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
-  EMAIL_SEARCH_API_HOST = process.env.EMAIL_SEARCH_API_HOST
+  const IMAP_SEARCH_SINCE_DATE = process.env.IMAP_SEARCH_SINCE_DATE
+  const EMAIL_SEARCH_API_HOST = process.env.EMAIL_SEARCH_API_HOST
 
   const data = JSON.stringify({
     email_host: SUBSCRIBER_EMAIL_HOST,
@@ -38,19 +38,19 @@ function checkSubscriberLogin() {
     }
     res.on('data', resp => {
       process.stdout.write(resp)
-      emails = JSON.parse(resp.toString())
+      const emails = JSON.parse(resp.toString())
       if ( emails.length == 0 ) {
         console.error("Zero emails were returned.")
         process.exit(5)
       }
-      lastEmail = emails[emails.length -1]['email_body']
+      const lastEmail = emails[emails.length -1]['email_body']
       if ( lastEmail.includes('/account/password-reset')) {
         //json to string
-        jsonToString = JSON.stringify(lastEmail);
+        const jsonToString = JSON.stringify(lastEmail);
 
         // filter email magic login url
         const regex = /"(http.*)(?:\\r)/gm;
-        reset_password_url = regex.exec(jsonToString)[1];
+        const reset_password_url = regex.exec(jsonToString)[1];
         module.exports.reset_password_url = reset_password_url;
         return true
       } else {

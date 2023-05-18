@@ -9,7 +9,7 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
-def newSubscriberEmailNotification():
+def newSubscriberEmailNotification(*args, **kwargs):
     """As a shop owner all shop admins email notification
     when a new subscriber joins
     https://github.com/Subscribie/subscribie/issues/602

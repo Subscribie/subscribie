@@ -129,7 +129,6 @@ def save_custom_style():
 @module_style_shop.route("/style-shop-background-colour", methods=["POST"])
 @login_required
 def save_custom_background_colour():
-
     # Save custom hsl colours
     styles = ModuleStyle.query.first()
     backgroundCssProperties = {}

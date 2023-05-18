@@ -1,0 +1,51 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Document - Assign Plan</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_documents') }}">Document</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Assign Document to Plan</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Assign Document "<em>{{ document.name}}</em>" To Plan(s)</h3>
+      <p class="card-subtitle text-muted">Check which plan you want to assign the document to.</p>
+      <p class="card-subtitle text-muted mb-3">Doing so will associate the document with the plan.</p>
+      <p class="card-subtitle text mb-3 alert alert-info">If the document type is "Terms and conditions", then
+      Subscribers will be asked to agree to these, before they may purchase the plan.</p>
+
+      <hr>
+
+      <form action="" method="POST" class="col-md-7 py-3">
+      {% for plan in plans %}
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <input type="checkbox" name="assign" value="{{ plan.id }}" id="{{ plan.id }}"
+            {% if document in plan.documents  %}
+              checked
+            {% endif %}>
+          </div>
+        </div>
+        <label class="form-control" for="{{ plan.id }}">{{ plan.title }}</label>
+      </div>
+      {% endfor %}
+
+      <input type="submit" class="btn btn-success btn-block" value="Save" />
+      </form>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

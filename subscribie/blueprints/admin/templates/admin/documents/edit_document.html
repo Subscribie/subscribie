@@ -1,0 +1,69 @@
+{% extends "admin/layout.html" %}
+{% block title %} Edit Document{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Edit Document</h2>
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_documents') }}">Documents</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Edit Document</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Edit Document:  <span class="text text-muted">'{{ document.name }}'</span></h3>
+      <p class="card-subtitle text-muted mb-3">Update your document, for example an update to your terms of service document.</p>
+
+      <p class="alert alert-primary">Note: Existing subscriptions will have their origional documents preserved automatically.<br />
+      <br />
+      For example, if you have a 'Terms of Service' document attached to a plan, and someone subscribes to your plan, this creates a
+      Subscription and any documents are copied &amp; attached to the Subscription.<br /><br />
+      If you change a document, the origional remains attached to any pre-existing Subscriptions.
+      </p>
+
+      <hr>
+
+      <form action="#" method="POST">
+        <div class="form-group row py-md-3">
+          <label for="page-title" class="col-sm-2 col-form-label">Document Name:</label>
+          <div class="col-sm-10">
+            <input name="name" id="page-title" type="text" autofocus class="form-control" value="{{ document.name }}">
+          </div> 
+        </div>
+
+    
+        <div class="form-group pb-md-3">
+          <label for="body">Document content:</label>
+          <textarea name="document_body" id="document_body" cols="80" rows="50">{{ document.body }}</textarea>
+        </div>
+
+        <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+      </form>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+  </head>
+  <body>
+    <div id="summernote"></div>
+    <script>
+      $('#document_body').summernote({
+        placeholder: 'Start typing...',
+        tabsize: 2,
+        height: 240,
+      });
+    </script>
+
+
+
+{% endblock %}

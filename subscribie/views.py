@@ -1,3 +1,4 @@
+from .logger import logger  # noqa: F401
 import logging
 from subscribie.auth import check_private_page
 from pathlib import Path
@@ -32,6 +33,8 @@ from subscribie.utils import (
     currencyFormat,
 )
 import pycountry
+from types import SimpleNamespace
+from flask_babel import Domain
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +72,7 @@ def on_each_request():
     try:
         countryObj = pycountry.countries.get(alpha_2=geo_country_code_header)
     except LookupError as e:  # noqa: F841
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(f"Unable to get geo country from request header: {e}")
 
     # Dynamic country detection
     if countryObj is not None:
@@ -86,7 +89,9 @@ def on_each_request():
         # Default to default country selection
         # TODO As a shop owner I can set the default country of my shop
         fallback_default_country = get_shop_default_country_code()
-        log.debug("Unable to get geo country from request header: {e}")
+        log.debug(
+            f"Unable to get geo country from request headers. Falling back to: {fallback_default_country}"  # noqa: E501
+        )
         countryObj = pycountry.countries.get(alpha_2=fallback_default_country)
         assert countryObj is not None
         country = {
@@ -99,10 +104,18 @@ def on_each_request():
         session["country"] = country
         session["country_code"] = countryObj.alpha_2
         session["fallback_default_country_active"] = True
+        log.debug(f'session country is set to: {session["country"]}')
+        log.debug(f'session country_code is set to: {session["country_code"]}')
+        log.debug(
+            f'session fallback_default_country_active is: {session["fallback_default_country_active"]}'  # noqa: E501
+        )
 
     # Add all plans to one
     if Category.query.count() == 0:  # If no categories, create default
         category = Category()
+        # Note this string is not translated since is populated
+        # during bootstrap. category.name titles may be edited in the
+        # admin dashboard in the 'Manage Categories' section
         category.name = "Make your choice"
         # Add all plans to this category
         plans = Plan.query.all()
@@ -135,8 +148,8 @@ def inject_template_globals():
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
-    setting = Setting.query.first()
-    custom_code = setting.custom_code
+    settings = Setting.query.first()
+    custom_code = settings.custom_code
     geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
     currency_format = currencyFormat
@@ -151,12 +164,25 @@ def inject_template_globals():
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
         currency_format=currency_format,
+        settings=settings,
     )
 
 
 @bp.route("/health")
 def health():
     return "OK", 200
+
+
+@bp.route("/notification")
+def test_notifications():
+    log.debug("Test debug notification")
+    log.info("Test info notification")
+    log.warning("Test warning notification")
+    log.error("Test error notification")
+    log.critical("Test critical notification")
+    return """Test notification sent.\n
+    If handlers are configured correctly, then notification(s) will appear in the respective handler(s).\n
+    See also https://docs.subscribie.co.uk/docs/architecture/logging/"""  # noqa: E501
 
 
 @bp.route("/cdn/<path:filename>")
@@ -219,6 +245,11 @@ def set_options(plan_uuid):
 @bp.route("/page/<path>", methods=["GET"])
 def custom_page(path):
     page = Page.query.filter_by(path=path).first()
+    company = Company.query.first()
+    integration = Integration.query.first()
+    plans = Plan.query.filter_by(archived=0)
+    pages = Page.query.all()
+    settings = Setting.query.first()
     if page is None:
         return "Page not found", 404
     # Check if private page & enforce
@@ -262,17 +293,53 @@ def custom_page(path):
         {% endblock body %}
     """
     try:
+
+        def _get_current_context():
+            if not g:
+                return None
+
+            if not hasattr(g, "_flask_babel"):
+                g._flask_babel = SimpleNamespace()
+
+            return g._flask_babel
+
+        def get_domain():
+            ctx = _get_current_context()
+            if ctx is None:
+                # this will use NullTranslations
+                return Domain()
+
+            try:
+                return ctx.babel_domain
+            except AttributeError:
+                pass
+
+            babel = current_app.extensions["babel"]
+            ctx.babel_domain = babel.domain_instance
+            return ctx.babel_domain
+
+        def get_translations():
+            """Returns the correct gettext translations that should be used for
+            this request.  This will never fail and return a dummy translation
+            object if used outside of the request or if a translation cannot be
+            found.
+            """
+            return get_domain().get_translations()
+
         rtemplate = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"]))
-        ).from_string(page_header + body + page_footer)
+            extensions=["jinja2.ext.i18n"],
+            loader=jinja2.FileSystemLoader(str(current_app.config["THEME_PATH"])),
+        )
+        rtemplate.install_gettext_callables(
+            lambda x: get_translations().ugettext(x),
+            lambda s, p, n: get_translations().ungettext(s, p, n),
+            newstyle=True,
+        )
+        rtemplate = rtemplate.from_string(page_header + body + page_footer)
     except jinja2.exceptions.TemplateAssertionError as e:
         log.error(f"Error updating custom page: {e}")
         return "Unable to update page. We have been notified. Sorry about that!", 500
 
-    company = Company.query.first()
-    integration = Integration.query.first()
-    plans = Plan.query.filter_by(archived=0)
-    pages = Page.query.all()
     template = rtemplate.render(
         company=company,
         integration=integration,
@@ -282,6 +349,7 @@ def custom_page(path):
         g=g,
         url_for=url_for,
         title=page.page_name,
+        settings=settings,
     )
 
     return template
@@ -304,3 +372,13 @@ def view_plan(uuid, plan_title=None):
         return "This plan has been archived. Visit <a href='/'>home</a>"
 
     return render_template("view-plan.html", plan=plan)
+
+
+@bp.route("/set-language", methods=["GET", "POST"])
+def set_language_code():
+    log.debug("In set_language_code")
+    # Set language code in session
+    language_code = request.form.get("language_code", None)
+    log.debug(f"selected language code was {language_code}")
+    session["language_code"] = language_code
+    return redirect("/")

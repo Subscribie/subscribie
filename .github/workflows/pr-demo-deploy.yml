@@ -11,9 +11,10 @@ on:
     paths-ignore:
       - '**/README.md'
       - '**/TESTING.md'
+      - 'docs/**'
 jobs:
   deploy-pr:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
     environment: testing
     concurrency:
@@ -93,13 +94,13 @@ jobs:
               body: "🙌 Live preview is here: http://${{ github.head_ref }}.pcpink.co.uk"
             })
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
 
       - uses: microsoft/playwright-github-action@v1
 
       - name: Install node dependencies needed for Playwright browser tests
         run: |
-          npm i -D @playwright/test@1.14.0
+          npm i -D @playwright/test@1.27.1
           npx playwright install
           sudo npx playwright install-deps 
 
@@ -127,4 +128,4 @@ jobs:
           name: Screenshots-and-video-artifacts
           path: |
             ./index.spec.js-snapshots/*
-            ./tests/browser-automated-tests-playwright/test-results/*
+            ./test-results/*

@@ -77,7 +77,7 @@
                       {% set outer_loop = loop %}
                       {% for selling_point in plan.selling_points %}
                       <div>
-                        <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md" required>
+                        <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md">
                         {% set ns.count = ns.count + 1 %}
                         <div class="invalid-feedback">
                           Please provide a selling point {{ ns.count }}

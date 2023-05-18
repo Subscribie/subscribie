@@ -26,6 +26,7 @@ from flask import (
     Blueprint,
     request,
 )
+from flask_babel import Babel, _
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme
 from flask_cors import CORS
@@ -42,7 +43,6 @@ import sqlalchemy
 from flask_migrate import Migrate
 import click
 from jinja2 import Template
-
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
 
 load_dotenv(verbose=True)
@@ -56,14 +56,32 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    babel = Babel(app)
+    LANGUAGES = ["en", "de", "es", "fr", "hr"]
     load_dotenv(verbose=True)
+    PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
+    app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
 
     if test_config is not None:
         app.config.update(test_config)
 
+    @babel.localeselector
+    def get_locale():
+        language_code = session.get("language_code", None)
+        if language_code is not None:
+            log.info(f"language_code has been manually set to: {language_code}")
+        # if language_code not none and is a supported language
+        if language_code and language_code in LANGUAGES:
+            return session["language_code"]
+        else:
+            language_code = request.accept_languages.best_match(LANGUAGES)
+            log.info(f"language_code best match set to: {language_code}")
+            return request.accept_languages.best_match(LANGUAGES)
+
     @app.before_request
     def start_session():
+        session.permanent = True
         try:
             session["sid"]
         except KeyError:
@@ -119,6 +137,7 @@ def create_app(test_config=None):
     from .blueprints.style import module_style_shop
     from .blueprints.seo import module_seo_page_title
     from .blueprints.api import apiv1
+    from .blueprints.document import document_blueprint
 
     app.register_blueprint(module_pages, url_prefix="/pages")
     app.register_blueprint(module_iframe_embed, url_prefix="/iframe")
@@ -128,11 +147,11 @@ def create_app(test_config=None):
     app.register_blueprint(checkout)
     app.register_blueprint(subscriber)
     app.register_blueprint(apiv1, url_prefix="/api/v1/")
+    app.register_blueprint(document_blueprint)
 
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     with app.app_context():
-
         database.init_app(app)
         Migrate(app, database)
 
@@ -222,6 +241,38 @@ def create_app(test_config=None):
                 log.info("Database already seeded.")
             con.close()
 
+    @app.cli.group()
+    def translate():
+        """Translation and localization commands."""
+        pass
+
+    @translate.command()
+    def update():
+        """Update all languages."""
+        if os.system("pybabel extract -F babel.cfg -k _l -o messages.pot ."):
+            raise RuntimeError("extract command failed")
+        if os.system("pybabel update -i messages.pot -d subscribie/translations"):
+            raise RuntimeError("update command failed")
+        os.remove("messages.pot")
+
+    @translate.command()
+    def compile():
+        """Compile all languages."""
+        if os.system("pybabel compile -d subscribie/translations"):
+            raise RuntimeError("compile command failed")
+
+    @translate.command()
+    @click.argument("lang")
+    def init(lang):
+        """Initialize a new language."""
+        if os.system("pybabel extract -F babel.cfg -k _l -o messages.pot ."):
+            raise RuntimeError("extract command failed")
+        if os.system(
+            "pybabel init -i messages.pot -d subscribie/translations -l " + lang
+        ):
+            raise RuntimeError("init command failed")
+        os.remove("messages.pot")
+
     @app.cli.command()
     def alert_subscribers_make_choice():
         """Alert qualifying subscribers to set their choices
@@ -273,5 +324,9 @@ def create_app(test_config=None):
                               plan: {subscription.plan.title}"
                         )
                         alert_subscriber_update_choices(person)
+
+    @app.route("/test-lanuage")
+    def test_language():
+        return _("Hello")
 
     return app

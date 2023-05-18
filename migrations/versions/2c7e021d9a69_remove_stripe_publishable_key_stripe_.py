@@ -16,7 +16,6 @@ depends_on = None
 
 
 def upgrade():
-
     with op.batch_alter_table("payment_provider") as batch_op:
         batch_op.drop_column("stripe_publishable_key")
         batch_op.drop_column("stripe_secret_key")

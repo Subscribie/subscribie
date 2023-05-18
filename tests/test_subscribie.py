@@ -156,3 +156,71 @@ def test_user_model(session):
     session.add(user)
     session.commit()
     assert user.id > 0
+
+
+def test_create_PriceList_and_price_list_rule_percent_discount(
+    session,
+    app,
+    client,
+    admin_session,
+    with_shop_owner,
+    with_default_country_code_and_default_currency,
+):
+    from subscribie.models import PriceList, PriceListRule, Plan
+    from subscribie.database import database
+
+    currency = "USD"
+    priceList = PriceList(name="Christmas USD", currency=currency)
+    # Prepare rule
+    percent_discount = 25
+
+    rule = PriceListRule(
+        percent_discount=percent_discount, name=f"{percent_discount}% Discount"
+    )
+    priceList.rules.append(rule)
+    database.session.add(priceList)
+    database.session.commit()
+    print(PriceList.query.all()[0].__dict__)
+    price_list = PriceList.query.first()
+
+    # Create a plan
+    title = "Coffee Delux"
+    interval_amount = 6.95
+    sell_price = 10000
+    user = User.query.filter_by(email="admin@example.com").first()
+    with user_set(app, user):
+        req = client.post(
+            "/admin/add",
+            follow_redirects=True,
+            data={
+                "company_name": "Coffee Castle",
+                "slogan": "None",
+                "email": "admin@example.com",
+                "title-0": title,
+                "selling_points-0-0": "Roasted by us",
+                "selling_points-0-1": "Monthly delievey",
+                "selling_points-0-3": "Highest Quality",
+                "description-0": "A long description",
+                "image-0": "",
+                "subscription-0": "yes",
+                "interval_amount-0": interval_amount,
+                "interval_unit-0": "monthly",
+                "days_before_first_charge-0": "0",
+                "trial_period_days-0": "0",
+                "instant_payment-0": "yes",
+                "sell_price-0": sell_price,
+                "note_to_buyer_message-0": "",
+                "position-0": "",
+            },
+        )
+        assert "Plan added." in req.data.decode("utf-8")
+
+    plan = Plan.query.first()
+    plan.price_lists.append(price_list)
+    database.session.add(plan)
+    database.session.commit()
+    print(f"Ensure price rule is applied {percent_discount}% Discount")
+    expected_sell_price = 750000
+    expected_inverval_amount = 522
+    assert plan.getPrice("USD")[0] == expected_sell_price
+    assert plan.getPrice("USD")[1] == expected_inverval_amount

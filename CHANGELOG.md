@@ -1,3 +1,523 @@
+# v0.1.180 (Wed Feb 08 2023)
+
+#### 🐛 Bug Fix
+
+- 1057 spanish translation [#1062](https://github.com/Subscribie/subscribie/pull/1062) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.179 (Tue Feb 07 2023)
+
+#### 🐛 Bug Fix
+
+- 1058 improve auth logging [#1059](https://github.com/Subscribie/subscribie/pull/1059) ([@chrisjsimpson](https://github.com/chrisjsimpson) [@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.178 (Tue Feb 07 2023)
+
+#### 🐛 Bug Fix
+
+- 1063 sqlalchemy fix version [#1064](https://github.com/Subscribie/subscribie/pull/1064) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.177 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1035 add /notification test endpoint [#1036](https://github.com/Subscribie/subscribie/pull/1036) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1037 log stripe onboarding errors dont return [#1038](https://github.com/Subscribie/subscribie/pull/1038) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.176 (Sun Jan 29 2023)
+
+#### ⚠️ Pushed to `master`
+
+- Ref #1054 re-compile translations de ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.175 (Sun Jan 29 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1054 additional help logging into shops docs [#1056](https://github.com/Subscribie/subscribie/pull/1056) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.174 (Tue Jan 24 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #1052 provide link to help login [#1053](https://github.com/Subscribie/subscribie/pull/1053) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.173 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- Update demo videos [#1047](https://github.com/Subscribie/subscribie/pull/1047) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.172 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- Test pr preview master [#1046](https://github.com/Subscribie/subscribie/pull/1046) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.171 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- 1041 fixing pr deploy [#1042](https://github.com/Subscribie/subscribie/pull/1042) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.170 (Sat Dec 24 2022)
+
+#### 🐛 Bug Fix
+
+- fix #1024 added new zealand support with usd [#1025](https://github.com/Subscribie/subscribie/pull/1025) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.169 (Sat Dec 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1028 set session expiration 30mins [#1029](https://github.com/Subscribie/subscribie/pull/1029) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.168 (Thu Dec 15 2022)
+
+#### 🐛 Bug Fix
+
+- 1022 australia support with usd [#1023](https://github.com/Subscribie/subscribie/pull/1023) ([@joeltejeda](https://github.com/joeltejeda))
+- Added canada to currency [#1019](https://github.com/Subscribie/subscribie/pull/1019) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 2
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.167 (Mon Nov 28 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added task for adding team members and TnC ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.166 (Fri Nov 25 2022)
+
+#### ⚠️ Pushed to `master`
+
+- proofing tasks ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.165 (Thu Nov 24 2022)
+
+#### 🐛 Bug Fix
+
+- 1005 terms and conditions subscriber [#1013](https://github.com/Subscribie/subscribie/pull/1013) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.164 (Wed Nov 23 2022)
+
+#### 🐛 Bug Fix
+
+- adding subscriber view test of terms and conditions [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+- adding playwright test termns and condition creation and checkout [#1012](https://github.com/Subscribie/subscribie/pull/1012) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.163 (Wed Nov 23 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adjust tasts ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.162 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- Merge branch 'master' of github.com:Subscribie/subscribie into 1005-terms-and-conditions [#1006](https://github.com/Subscribie/subscribie/pull/1006) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.161 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- #194 undo hardcode de locale [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- more #194 de translation new_customer plan.showItervalUnit() [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #194 de translation new_customer plan.showItervalUnit [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- adding missing quotes to the choose template [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- #194 enable gettext via flask_babel helpers to inject gettext functions after enabling the i18n extention for private pages [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #194 wip enable i18n translation for custom loaded pages [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- updating the translation file [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translation layout template for subscribers to de and adding a new layout just for the subscriber side [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating subscriber_failed_invoices, subscriptions and update_choices templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating subscriber list_files, reset_password and login templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translation subscribers account and forgot password templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- reverting back the template of the admin dashboard [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translate connect google tag manager and connect tawk manually to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating change email and password templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating add shop admin and cancel subscription templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating add custome code and add plan templates to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- fixing 404 html translation [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating 404 and 500 errors to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- fixing transaltion mispelled [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating order_summary and thankyou page to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating new_customer to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating set_options and view-plan to DE [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- translating choose theme jesmod to de [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- adding german languange to layout jesmond theme [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@joeltejeda](https://github.com/joeltejeda))
+- #194 choose german translation [#1004](https://github.com/Subscribie/subscribie/pull/1004) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.160 (Tue Nov 22 2022)
+
+#### 🐛 Bug Fix
+
+- #990 remove example docs and improve Dashboard overview page [#1011](https://github.com/Subscribie/subscribie/pull/1011) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.159 (Sun Nov 20 2022)
+
+#### 🐛 Bug Fix
+
+- partial revert 7320b43a1da1c478c109d339355b42932e3545ee #935 [#992](https://github.com/Subscribie/subscribie/pull/992) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.158 (Fri Nov 18 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.157 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- Revert "Fix #1007 tuple as no object status code" [#1010](https://github.com/Subscribie/subscribie/pull/1010) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.156 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1007 tuple as no object status code [#1008](https://github.com/Subscribie/subscribie/pull/1008) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.155 (Thu Nov 17 2022)
+
+#### 🐛 Bug Fix
+
+- document translation how to [#1002](https://github.com/Subscribie/subscribie/pull/1002) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip Fix #194 translation support multilingual [#1002](https://github.com/Subscribie/subscribie/pull/1002) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `master`
+
+- adding tasks for creation of pages, files, slogans, colours and pausing subscribers ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.154 (Wed Nov 16 2022)
+
+#### 🐛 Bug Fix
+
+- Fix #1000 correcting the baseurl in the config toml [#1001](https://github.com/Subscribie/subscribie/pull/1001) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.153 (Wed Nov 16 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides and moving to existing guides to tasks ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.152 (Tue Nov 15 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding tutorials ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.151 (Fri Nov 11 2022)
+
+#### 🐛 Bug Fix
+
+- Update shop-owners-updating-credit-card-details.md [#994](https://github.com/Subscribie/subscribie/pull/994) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Update shop-owners-updating-credit-card-details.md [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updating template [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- adding update credit card details docs [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- #993 use SAAS_URL from env -> saas_url in template not hard code url [#994](https://github.com/Subscribie/subscribie/pull/994) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- declaring a constant [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updaing node version and package.json update [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- updating playwright version [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- adding change card details test [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- changing the name of the card details test [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- #993 adding nav bar button on builder theme and link on jesmond dashboard [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+- Fix #993 adding const to variables and playwright test to changing cards details [#994](https://github.com/Subscribie/subscribie/pull/994) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.150 (Fri Nov 11 2022)
+
+#### ⚠️ Pushed to `master`
+
+- adding guides for reordering plans, signup test and subscription and stripe creation ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.149 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- update docs demonstrate which pipelines run again ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.148 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- added tutorial for create private pages ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.147 (Thu Nov 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- add plan description tutorial ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
+# v0.1.146 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- fixing smoketest [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+- getting the files inside the public folder not the folder [#999](https://github.com/Subscribie/subscribie/pull/999) ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.145 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 smoketest docs at end [#998](https://github.com/Subscribie/subscribie/pull/998) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.144 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- #990 chmod +x smoketest-docs.sh [#997](https://github.com/Subscribie/subscribie/pull/997) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.1.143 (Thu Nov 10 2022)
+
+#### 🐛 Bug Fix
+
+- removing folder instead of files [#996](https://github.com/Subscribie/subscribie/pull/996) ([@joeltejeda](https://github.com/joeltejeda) [@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
+# v0.1.142 (Wed Nov 09 2022)
+
+#### 🐛 Bug Fix
+
+- #990 wip hugo docs [#991](https://github.com/Subscribie/subscribie/pull/991) ([@chrisjsimpson](https://github.com/chrisjsimpson) [@joeltejeda](https://github.com/joeltejeda) [@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 3
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.1.141 (Sun Nov 06 2022)
 
 #### 🐛 Bug Fix
