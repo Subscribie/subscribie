@@ -565,7 +565,6 @@ def edit():
             else:
                 plan_requirements.note_to_seller_required = False
 
-
             plan_requirements.note_to_buyer_message = escape(
                 str(getPlan(form.note_to_buyer_message, index, default="").data).strip()
             )
