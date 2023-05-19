@@ -565,7 +565,6 @@ def edit():
             else:
                 plan_requirements.note_to_seller_required = False
 
-
             plan_requirements.note_to_buyer_message = escape(
                 str(getPlan(form.note_to_buyer_message, index, default="").data).strip()
             )
@@ -628,7 +627,9 @@ def edit():
                 if isinstance(item, str):
                     validation_errors.append(f"{key}: {item}")
 
-    return render_template("admin/edit.html", plans=plans, form=form, validation_errors=validation_errors)
+    return render_template(
+        "admin/edit.html", plans=plans, form=form, validation_errors=validation_errors
+    )
 
 
 @admin.route("/add", methods=["GET", "POST"])
