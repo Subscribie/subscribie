@@ -4,7 +4,7 @@ test.describe("connecting to stripe:", () => {
         console.log("Connecting to stripe...");
 
         //Stripe test start
-          await page.goto(baseURL + '/admin/connect/stripe-connect');
+          await page.goto('/admin/connect/stripe-connect');
           console.log("Stripe Status page");
           await new Promise(x => setTimeout(x, 4000));
           // Check onboarding not already completed
@@ -17,15 +17,15 @@ test.describe("connecting to stripe:", () => {
                 console.log("Exception checking if onboarding completed, looks like it's not complete");
                 console.log("Continuing with Stripe Connect onboarding");
               // Clear DB
-                await page.goto(baseURL +'/admin/remove-subscriptions');
+                await page.goto('/admin/remove-subscriptions');
                 const contentSubscriptions = await page.evaluate(() => document.body.textContent.indexOf("all subscriptions deleted"));
                 expect(contentSubscriptions > -1);
                 
-                await page.goto(baseURL +'/admin/remove-people');
+                await page.goto('/admin/remove-people');
                 const contentPeople = await page.evaluate(() => document.body.textContent.indexOf("all people deleted"));
                 expect(contentPeople > -1);
 
-                await page.goto(baseURL +'/admin/remove-transactions');
+                await page.goto('/admin/remove-transactions');
                 const contentTransactions = await page.evaluate(() => document.body.textContent.indexOf("all transactions deleted"));
                 expect(contentTransactions > -1);
 
@@ -35,15 +35,15 @@ test.describe("connecting to stripe:", () => {
               // End Clear DB
 
                 // Go to Stripe Connect payment gateways page
-                await page.goto(baseURL + 'admin/connect/stripe-connect');
+                await page.goto('admin/connect/stripe-connect');
 
                 // deleting connect account id, if stripe was not succesfully connected
-                await page.goto(baseURL + '/admin/delete-connect-account');
-                await page.goto(baseURL + '/admin/dashboard');
+                await page.goto('/admin/delete-connect-account');
+                await page.goto('/admin/dashboard');
                 console.log('deleting connect account id');
 
                 // Start Stripe connect onboarding
-                await page.goto(baseURL + '/admin/connect/stripe-connect');
+                await page.goto('/admin/connect/stripe-connect');
                 // Selecting countring to connect to stripe
                 await page.locator('select').selectOption('GB')
                 await page.click('.btn-success');

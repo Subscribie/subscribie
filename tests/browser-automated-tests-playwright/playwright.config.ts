@@ -11,8 +11,9 @@ const config: PlaywrightTestConfig = {
   testDir: 'tests',
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
-  retries: 3,
-  workers: 10,
+  retries: 2,
+  workers: 3,
+  fullyParallel: false,
   use: {
 
     baseURL: PLAYWRIGHT_HOST,
@@ -31,11 +32,6 @@ const config: PlaywrightTestConfig = {
         browserName: 'chromium',
       },
     },
-   //Test against mobile viewports.
-   // {
-   //   name: 'Mobile Safari',
-   //   use: devices['iPhone 12'],
-   // },
   ],
 };
 
