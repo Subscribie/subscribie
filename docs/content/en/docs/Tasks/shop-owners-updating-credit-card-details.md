@@ -6,8 +6,6 @@ description: >
   How to update your credit card details as a shop owner.
 ---
 
-Want to learn how to update your card details as a shop owner. Follow these steps to update and setup a new credit card.
-
 ## Steps to Update your credit card details
 
 #### Step 1: 

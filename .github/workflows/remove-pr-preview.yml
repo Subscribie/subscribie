@@ -5,7 +5,7 @@ on:
 
 jobs:
   Delete:
-    environment: production
+    environment: testing
     runs-on: ubuntu-latest
     steps:
       - name: remove pr preview
