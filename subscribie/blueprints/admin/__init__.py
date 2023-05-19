@@ -615,7 +615,20 @@ def edit():
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
-    return render_template("admin/edit.html", plans=plans, form=form)
+
+    # Form has validation errors, parse them
+    validation_errors = []
+
+    for key, value in form.errors.items():
+        if key == "note_to_buyer_message":
+            key = "Customer note"
+        for sublist in value:
+            for item in sublist:
+                # Ensure item is a string before checking if it contains the error msg
+                if isinstance(item, str):
+                    validation_errors.append(f"{key}: {item}")
+
+    return render_template("admin/edit.html", plans=plans, form=form, validation_errors=validation_errors)
 
 
 @admin.route("/add", methods=["GET", "POST"])
