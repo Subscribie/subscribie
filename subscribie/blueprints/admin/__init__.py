@@ -618,7 +618,15 @@ def edit():
 
     # Form has validation errors, parse them
     validation_errors = []
+    plansWithErrors = []
     for key, value in form.errors.items():
+        # Work out index of error for plan index
+        try:
+            plansWithErrors = [i for i, x in enumerate(value) if x]
+            for planIndex in plansWithErrors:
+                plans[planIndex].has_errors = True
+        except Exception as e:
+            log.error(f"Error parsing plan form errors. {e}")
         if key == "note_to_buyer_message":
             key = "Customer note"
         for sublist in value:
