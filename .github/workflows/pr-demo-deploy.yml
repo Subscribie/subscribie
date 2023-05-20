@@ -55,9 +55,9 @@ jobs:
           echo The PR was raised by: ${{ github.event.pull_request.user.login }}
           eval `ssh-agent -s`
           ssh-add - <<< "$SSH_PRIVATE_KEY"
-          echo Creating dokku app ${{ github.head_ref }}
+          echo Creating dokku app ${{ env.SUBDOMAIN }}.pcpink.co.uk/
           ssh dokku@$DOKKU_HOST -C "dokku apps:create ${{ env.SUBDOMAIN }}" | true
-          echo The url will be ${{ github.head_ref }}.pcpink.co.uk
+          echo The url will be ${{ env.SUBDOMAIN }}.pcpink.co.uk
           ssh dokku@$DOKKU_HOST -C "dokku git:initialize ${{ env.SUBDOMAIN }}"
           ssh dokku@$DOKKU_HOST -C "dokku git:set ${{ env.SUBDOMAIN }} deploy-branch ${{ github.head_ref }}"
           # set Stripe test keys as env vars dor dokku/docker
@@ -82,7 +82,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
         run: |
-          echo Visit your pr here: http://${{ github.head_ref }}.pcpink.co.uk
+          echo Visit your pr here: http://${{ env.SUBDOMAIN }}.pcpink.co.uk
       - name: 'Comment PR with web address of application live preview'
         uses: actions/github-script@v3
         if: github.event_name == 'pull_request'
@@ -92,7 +92,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "🙌 Live preview is here: http://${{ github.head_ref }}.pcpink.co.uk"
+              body: "🙌 Live preview is here: http://${{ env.SUBDOMAIN }}.pcpink.co.uk"
             })
 
       - uses: actions/setup-node@v3
