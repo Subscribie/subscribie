@@ -107,7 +107,7 @@ jobs:
 
       - name: Run & Record browser automated tests (Playwright)
         env:
-          PLAYWRIGHT_HOST: http://${{ SUBDOMAIN }}.pcpink.co.uk/
+          PLAYWRIGHT_HOST: http://${{ env.SUBDOMAIN }}.pcpink.co.uk/
           PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
           SUBSCRIBER_EMAIL_HOST: ${{ secrets.SUBSCRIBER_EMAIL_HOST }}
