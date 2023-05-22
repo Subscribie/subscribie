@@ -1,0 +1,43 @@
+name: Auto create git branch upon new issue
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  create-issue-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get issue number and title
+        id: issue
+        run: |
+          echo "::set-output name=number::${{ github.event.issue.number }}"
+          echo "::set-output name=title::${{ github.event.issue.title }}"
+          # Sanitize issue title to:
+          # - alnum
+          # - replace spaces with hyphen '-'
+          # Example:
+          # Given an issue title: "Fix the 2'nd bug in UI where there's a # in the form"
+          # Becomes:
+          #
+                                                             # Note there is a space here, to keep both '-' and spaces ' '
+          echo ISSUE_BRANCH_NAME=`echo "${{ github.event.issue.title }}" | \
+          # Remove non alpha/numeric chars
+          tr -cd '[:alnum:]- ' | \
+          # Convert spaces to hyphens '-'
+          tr ' ' '-' | \
+          # Remove double hyphens
+          sed 's/--/-/' | \
+          # Ensure lowercase branch name
+          tr '[:upper:]' '[:lower:]' | \
+          # Limit branch name to 60 characters
+          cut -c -60` >> $GITHUB_ENV
+
+      - name: Create new branch
+        run: |
+          echo "The issue branch name is ${{ env.ISSUE_BRANCH_NAME}} "
+          git checkout -b "${{ steps.issue.outputs.number }}-${{ env.ISSUE_BRANCH_NAME }}"
+          git push -u origin HEAD
+

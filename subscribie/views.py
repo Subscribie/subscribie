@@ -372,3 +372,13 @@ def view_plan(uuid, plan_title=None):
         return "This plan has been archived. Visit <a href='/'>home</a>"
 
     return render_template("view-plan.html", plan=plan)
+
+
+@bp.route("/set-language", methods=["GET", "POST"])
+def set_language_code():
+    log.debug("In set_language_code")
+    # Set language code in session
+    language_code = request.form.get("language_code", None)
+    log.debug(f"selected language code was {language_code}")
+    session["language_code"] = language_code
+    return redirect("/")

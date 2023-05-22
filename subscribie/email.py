@@ -30,13 +30,32 @@ class EmailMessageQueue(EmailMessage):
             )
 
 
-def send_welcome_email(to_email=None):
-    company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
-
+def send_email(to_email=None, subject=None, body_html=None, body_plaintext=None):
     if to_email is None:
         log.error("no to_email passed so send_welcome_email cannot be sent")
         return None
+    try:
+        msg = EmailMessageQueue()
+        msg["Subject"] = subject
+        msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
+        msg["To"] = to_email
+        msg.set_content(body_plaintext)
+        msg.add_alternative(body_html, subtype="html")
+        setting = Setting.query.first()
+        if setting is not None:
+            msg["Reply-To"] = setting.reply_to_email_address
+        else:
+            msg[
+                "Reply-To"
+            ] = User.query.first().email  # Fallback to first shop admin email
+        msg.queue()
+    except Exception as e:
+        log.error(f"Failed to send email. {e}")
+
+
+def send_welcome_email(to_email=None):
+    company = Company.query.first()
+    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
 
     # Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()
@@ -51,6 +70,7 @@ def send_welcome_email(to_email=None):
         fp = open(welcome_template)
         template = fp.read()
         fp.close()
+
     first_charge_date = session.get("first_charge_date", None)
     first_charge_amount = session.get("first_charge_amount", None)
     jinja_template = Template(template)
@@ -65,20 +85,33 @@ def send_welcome_email(to_email=None):
         subscriber_email=to_email,
     )
 
-    try:
-        msg = EmailMessageQueue()
-        msg["Subject"] = company.name + " " + "Subscription Confirmation"
-        msg["From"] = current_app.config["EMAIL_LOGIN_FROM"]
-        msg["To"] = to_email
-        msg.set_content("Subscription confirmation")
-        msg.add_alternative(html, subtype="html")
-        setting = Setting.query.first()
-        if setting is not None:
-            msg["Reply-To"] = setting.reply_to_email_address
-        else:
-            msg[
-                "Reply-To"
-            ] = User.query.first().email  # Fallback to first shop admin email
-        msg.queue()
-    except Exception as e:
-        log.error(f"Failed to send welcome email. {e}")
+    send_email(
+        to_email=to_email,
+        subject=company.name + " " + "Subscription Confirmation",
+        body_html=html,
+        body_plaintext="Subscription confirmation",
+    )
+
+
+def send_donation_thankyou_email(to_email=None):
+    company = Company.query.first()
+
+    donation_template = str(
+        Path(current_app.root_path + "/emails/donation.jinja2.html")
+    )
+    fp = open(donation_template)
+    template = fp.read()
+    fp.close()
+    jinja_template = Template(template)
+    html = jinja_template.render(
+        first_name=session.get("given_name", None),
+        company_name=company.name,
+        subscriber_email=to_email,
+    )
+
+    send_email(
+        to_email=to_email,
+        subject=f"{company.name} - Donation Confirmation",
+        body_html=html,
+        body_plaintext="Donation confirmation",
+    )

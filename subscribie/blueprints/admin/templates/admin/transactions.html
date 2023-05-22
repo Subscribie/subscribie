@@ -27,6 +27,18 @@
 <div class="section">
 	<div class="container" style="overflow-x:auto">
         <form action="#" method="GET">
+        {% if action ==  'show_refunded' %}
+          <a href="{{url_for('admin.transactions')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
+        {% else %}
+          <a href="{{url_for('admin.transactions', action='show_refunded')}}" id="show-active-subscribers" class="btn btn-primary ">Show Refunded</a>
+        {%endif %}
+        {% if settings.donations_enabled %}
+            {% if action == 'show_donations' %}
+          <a href="{{url_for('admin.transactions')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
+            {% else %}
+          <a href="{{url_for('admin.transactions', action='show_donations')}}" id="show-active-subscribers" class="btn btn-primary ">Show Donations</a>
+            {%endif %}
+        {%endif %}
         <h4>Search...</h4>
         <div class="form-group">
           <label for="subscriber_name">Subscriber name:</label>

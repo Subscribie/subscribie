@@ -93,13 +93,19 @@ def uuid_string():
 class HasArchived(object):
     """Mixin that identifies a class as having archived entities"""
 
-    archived = Column(Boolean, nullable=False, default=0)
+    archived = Column(Boolean, nullable=True, default=0)
 
 
 class CreatedAt(object):
     """Mixin that identifies a class as having created_at entities"""
 
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
+
+
+class HasReadOnly(object):
+    """Mixin that identifies a class as having read_only boolean field"""
+
+    read_only = Column(Boolean, nullable=False, default=0)
 
 
 class User(database.Model):
@@ -675,21 +681,21 @@ class Plan(database.Model, HasArchived):
         )  # noqa: E501
 
         def apply_percent_increase(base: int, percent_increase: int) -> int:
-            add = int((base / 100) * percent_increase)
+            add = int((base / 100) * int(percent_increase or 1))
             base += add
             return base
 
         def apply_percent_discount(base: int, percent_discount: int) -> int:
-            minus = int((base / 100) * percent_discount)
+            minus = int((base / 100) * int(percent_discount or 1))
             base -= minus
             return base
 
         def apply_amount_decrease(base: int, amount_decrease: int) -> int:
-            base -= amount_decrease
+            base -= int(amount_decrease or 0)
             return base
 
         def apply_amount_increase(base: int, amount_increase: int) -> int:
-            base += amount_increase
+            base += int(amount_increase or 0)
             return base
 
         def check_discount_code_valid(
@@ -741,20 +747,31 @@ class Plan(database.Model, HasArchived):
                     if rule.percent_increase:
                         # only increase percent if the min_sell_price is higher than plan sell_price  # noqa: E501
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price > sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
                             sell_price = apply_percent_increase(
                                 sell_price, rule.percent_increase
                             )  # noqa: E501
+                        else:
+                            sell_price = apply_percent_increase(
+                                sell_price, rule.percent_increase
+                            )  # noqa: E501
+
                     if rule.percent_discount:
-                        # onlt decrease percent if sell_price is higher than min_sell_price  # noqa: E501
+                        """
+                        If I want a minimum sell price
+                        Then I want a percent discount to apply if the value is equal to or greater than the minimum sell price
+                        Otherwise, always apply the percent discount regardlrss of sell price.
+                        """
                         if (
-                            rule.min_sell_price
-                            and rule.min_sell_price < sell_price
-                            or rule.min_sell_price is None
+                            rule.has_min_sell_price
+                            and sell_price >= rule.min_sell_price
                         ):
+                            sell_price = apply_percent_discount(
+                                sell_price, rule.percent_discount
+                            )  # noqa: E501
+                        else:
                             sell_price = apply_percent_discount(
                                 sell_price, rule.percent_discount
                             )  # noqa: E501
@@ -773,7 +790,7 @@ class Plan(database.Model, HasArchived):
                 ):
                     if rule.percent_increase:
                         if (
-                            rule.min_interval_amount
+                            rule.has_min_interval_amount
                             and rule.min_interval_amount > interval_amount
                             or rule.min_interval_amount is None
                         ):
@@ -1021,6 +1038,12 @@ class Transaction(database.Model):
     fulfillment_state = database.Column(database.String())
     is_donation = database.Column(database.Boolean(), default=0)
 
+    def showSellPrice(self) -> str:
+        currency_symbol = get_geo_currency_symbol()
+        amount = self.amount / 100
+        result = f"{currency_symbol}{amount:.2f}"
+        return result
+
 
 class SeoPageTitle(database.Model):
     __tablename__ = "module_seo_page_title"
@@ -1109,7 +1132,7 @@ class File(database.Model):
     file_name = database.Column(database.String())
 
 
-class Document(database.Model, HasArchived):
+class Document(database.Model, HasArchived, HasReadOnly):
     """Raw text Document"""
 
     __tablename__ = "document"
@@ -1243,8 +1266,10 @@ class PriceListRule(database.Model):
     percent_increase = database.Column(database.Integer(), default=0)
     amount_discount = database.Column(database.Integer(), default=0)
     amount_increase = database.Column(database.Integer(), default=0)
-    min_sell_price = database.Column(database.Integer(), default=0)
-    min_interval_amount = database.Column(database.Integer(), default=0)
+    min_sell_price = database.Column(database.Integer(), default=None)
+    has_min_sell_price = database.Column(database.Boolean(), default=False)
+    min_interval_amount = database.Column(database.Integer(), default=None)
+    has_min_interval_amount = database.Column(database.Boolean(), default=False)
     requires_discount_code = database.Column(database.Boolean(), default=0)
     price_lists = relationship(
         "PriceList",
