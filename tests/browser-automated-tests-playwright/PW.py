@@ -1,5 +1,4 @@
 from graphlib import TopologicalSorter
-import time
 import subprocess
 import multiprocessing
 
@@ -17,68 +16,72 @@ This code automatically works out which tests can run in parallel
 # To overcome that, put the values (depenants) as lists with single
 # elements. e.g. ["333"]
 graph = {
-    "452_shop-owner_categories_creation": [],
-    "334_shop-owner_private_page_creation": [],
-    "121_shop-owner_public_page_creation": [],
-    "212_shop-owner_slogan_creation": [],
-    "387_shop-owner_change_shop_colour": [],
-    "463_shop-owner_adding_vat": [],
-    "1_stripe_connect": [],
-    "133_shop-owner_plan_creation": [],
-    "275_shop-owner_changing_plans_order": [],
-    "491_shop-owner_share_private_plan_url": [],
-    "463_subscriber_ordering_plan_with_VAT": [
-        "1_stripe_connect",
-        "463_shop-owner_adding_vat",
+    "452_shop-owner_categories-creation": [],
+    "334_shop-owner_private-page-creation": [],
+    "121_shop-owner_public-page-creation": [],
+    "212_shop-owner_slogan-creation": [],
+    "387_shop-owner_change-shop-colour": [],
+    "463_shop-owner_adding-vat": [],
+    "1_shop-owner_stripe-connect": [],
+    "133_shop-owner_plan-creation": [],
+    "275_shop-owner_changing-plans-order": [],
+    "491_shop-owner_share-private-plan-url": [],
+    "463_subscriber_ordering-plan-with-VAT": [
+        "1_shop-owner_stripe-connect",
+        "463_shop-owner_adding-vat",
     ],
-    "475_subscriber_order_plan_with_free_trial": ["1_stripe_connect"],
-    "264_subscriber_order_plan_with_choice_options_and_required_note": [
-        "1_stripe_connect",
-        "133_shop-owner_plan_creation",
+    "475_subscriber_order-plan-with-free-trial": ["1_shop-owner_stripe-connect"],
+    "264_subscriber_order-plan-with-choice-options-and-required-note": [
+        "1_shop-owner_stripe-connect",
+        "133_shop-owner_plan-creation",
     ],
-    "516_subscriber_order_plan_with_cancel_at": [
-        "1_stripe_connect",
-        "133_shop-owner_plan_creation",
+    "516_subscriber_order-plan-with-cancel-at": [
+        "1_shop-owner_stripe-connect",
+        "133_shop-owner_plan-creation",
     ],
-    "133_subscriber_order_plan_with_cooling_off": [
-        "1_stripe_connect",
-        "133_shop-owner_plan_creation",
+    "133_subscriber_order-plan-with-cooling-off": [
+        "1_shop-owner_stripe-connect",
+        "133_shop-owner_plan-creation",
     ],
-    "293-1_subscriber_order_plan_with_only_recurring_charge": ["1_stripe_connect"],
-    "293-2_subscriber_order_plan_with_only_upfront_charge": ["1_stripe_connect"],
-    "293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
-        "1_stripe_connect"
+    "293-1_subscriber_order-plan-with-only-recurring-charge": [
+        "1_shop-owner_stripe-connect"
     ],
-    "623_subscriber_magic_login": [
-        "293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    "293-2_subscriber_order-plan-with-only-upfront-charge": [
+        "1_shop-owner_stripe-connect"
     ],
-    "993_subscriber_change_card_details": [
-        "293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    "293-3_subscriber_order-plan-with-recurring-and-upfront-charge": [
+        "1_shop-owner_stripe-connect"
     ],
-    "619_shop-owner_transaction_filter_by_name_and_by_plan_title": [
-        "293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    "623_subscriber_magic-login": [
+        "293-3_subscriber_order-plan-with-recurring-and-upfront-charge"
     ],
-    "905-subscriber-search-by-email-and-name": [
-        "293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    "993_subscriber_change-card-details": ["623_subscriber_magic-login"],
+    "619_shop-owner_transaction-filter-by-name-and-by-plan-title": [
+        "293-3_subscriber_order-plan-with-recurring-and-upfront-charge"
     ],
-    "147_shop-owner_pause_resume_and_cancel_subscriptions": [
-        "293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    "905_subscriber_search-by-email-and-name": [
+        "293-3_subscriber_order-plan-with-recurring-and-upfront-charge"
     ],
-    "872_shop-owner_uploading_plan_picture": [],
-    "1065_shop-owner-enabling_donations": [],
-    "1065_subscriber_checkout_donation": [
-        "1065_shop-owner_enabling_donations",
-        "133_shop-owner_plan_creation",
+    "147_shop-owner_pause-resume-and-cancel-subscriptions": [
+        "293-3_subscriber_order-plan-with-recurring-and-upfront-charge"
     ],
-    "1005_shop-owner_terms_and_conditions_creation": [
-        "475_subscriber_order_plan_with_free_trial",
-        "133_shop-owner_plan_creation",
+    "872_shop-owner_uploading-plan-picture": [],
+    "1065_shop-owner_enabling-donations": [],
+    "1065_subscriber_checkout-donation": [
+        "1065_shop-owner_enabling-donations",
+        "133_shop-owner_plan-creation",
     ],
-    "1005_subscriber_terms_and_condition_check_test": [
-        "939_subscriber_order_free_plan_with_terms_and_conditions"
+    "1005_shop-owner_terms-and-conditions-creation": [
+        "475_subscriber_order-plan-with-free-trial",
+        "133_shop-owner_plan-creation",
     ],
-    "939_subscriber_order_free_plan_with_terms_and_conditions": [
-        "1005_shop-owner_terms_and_conditions_creation"
+    "1005_subscriber_terms-and-condition-check-test": [
+        "939_subscriber_order-free-plan-with-terms-and-conditions",
+        "623_subscriber_magic-login",
+    ],
+    "939_subscriber_order-free-plan-with-terms-and-conditions": [
+        "1005_shop-owner_terms-and-conditions-creation",
+        "623_subscriber_magic-login",
     ],
 }
 
@@ -95,12 +98,11 @@ def test(ts):
 
 def run_test(tests):
     test_parts = tests.split("_")
-    test_number = test_parts[0]
-    test_type = test_parts[1]
+    test_names = test_parts[2]
     # Running the tests in the background while getting the stdout for debuggin purpose
-    print(f"Currently Running @{test_number}@{test_type}")
+    print(f"Currently Running {test_parts}")
     subprocess.run(
-        f"npx playwright test --grep @{test_number}@{test_type} --update-snapshots",
+        f"npx playwright test --grep @{test_names} --update-snapshots",
         shell=True,
     )
 
@@ -109,6 +111,7 @@ print("Test Are Running")
 
 
 for group in test(ts):
+    num_process = 5
     print("tests are starting")
-    with multiprocessing.Pool() as pool:
+    with multiprocessing.Pool(processes=num_process) as pool:
         pool.map(run_test, group)

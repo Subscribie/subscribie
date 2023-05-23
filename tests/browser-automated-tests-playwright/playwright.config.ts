@@ -11,8 +11,8 @@ const config: PlaywrightTestConfig = {
   testDir: 'tests',
   testDir: '../browser-automated-tests-playwright',
   timeout: 180000,
-  retries: 2,
-  workers: 3,
+  retries: 1,
+  workers: 1,
   fullyParallel: false,
   use: {
 
