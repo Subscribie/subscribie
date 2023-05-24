@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 const admin_login = require('./features/admin_login.js');
-test("@905@shop-owner@subscriber-filter-by-name-and-by-email", async ({ page }) => {
+test("@905@shop-owner@search-by-email-and-name", async ({ page }) => {
     console.log("subscriber filter by name and by email");
     //Admin Login
     await admin_login(page);

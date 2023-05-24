@@ -16,21 +16,24 @@ This code automatically works out which tests can run in parallel
 # To overcome that, put the values (depenants) as lists with single
 # elements. e.g. ["333"]
 graph = {
+    "1_shop-owner_stripe-connect": [],
+    "133_shop-owner_plan-creation": [],
     "452_shop-owner_categories-creation": [],
     "334_shop-owner_private-page-creation": [],
     "121_shop-owner_public-page-creation": [],
-    "212_shop-owner_slogan-creation": [],
     "387_shop-owner_change-shop-colour": [],
-    "463_shop-owner_adding-vat": [],
-    "1_shop-owner_stripe-connect": [],
-    "133_shop-owner_plan-creation": [],
-    "275_shop-owner_changing-plans-order": [],
-    "491_shop-owner_share-private-plan-url": [],
+    "212_shop-owner_slogan-creation": [],
+    "463_shop-owner_adding-vat": ["1_shop-owner_stripe-connect"],
+    "275_shop-owner_changing-plans-order": ["133_shop-owner_plan-creation"],
+    "491_shop-owner_share-private-plan-url": ["133_shop-owner_plan-creation"],
     "463_subscriber_ordering-plan-with-VAT": [
         "1_shop-owner_stripe-connect",
         "463_shop-owner_adding-vat",
     ],
-    "475_subscriber_order-plan-with-free-trial": ["1_shop-owner_stripe-connect"],
+    "475_subscriber_order-plan-with-free-trial": [
+        "1_shop-owner_stripe-connect",
+        "133_shop-owner_plan-creation",
+    ],
     "264_subscriber_order-plan-with-choice-options-and-required-note": [
         "1_shop-owner_stripe-connect",
         "133_shop-owner_plan-creation",
@@ -111,7 +114,7 @@ print("Test Are Running")
 
 
 for group in test(ts):
-    num_process = 5
+    num_process = 6
     print("tests are starting")
     with multiprocessing.Pool(processes=num_process) as pool:
         pool.map(run_test, group)

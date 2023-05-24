@@ -3,7 +3,7 @@ const checkSubscriberLogin= require('./checkSubscriberLogin.js');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 
 
-test('@623@subscriber@reset-password-receives-email', async ({ page }) => {
+test('@623@subscriber@magic-login', async ({ page }) => {
 
   await page.goto("/account/forgot-password");
   await page.fill('#email', SUBSCRIBER_EMAIL_USER);

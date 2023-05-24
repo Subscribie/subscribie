@@ -3,7 +3,7 @@ const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 const admin_login = require('./features/admin_login.js');
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
-    test("@147@shop-owner@Pause-Resume-and-Cancel-transaction", async ({ page }) => {  
+    test("@147@shop-owner@pause-resume-and-cancel-subscriptions", async ({ page }) => {  
         console.log("Pause and Resume transaction");
         //Admin Login
         await admin_login(page);
