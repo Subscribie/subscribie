@@ -1,10 +1,11 @@
 const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
 
-test('@993@subscriber@change card details', async ({ page }) => {
+test('@993 @993_subscriber_change_card_details', async ({ page }) => {
 
-  
+  await set_test_name_cookie(page, "@993_subscriber_change_card_details");
   await page.goto("/auth/logout");
   await page.goto("/account/logout");
   //login in as subscriber
@@ -32,6 +33,4 @@ test('@993@subscriber@change card details', async ({ page }) => {
   const card_details = await page.textContent("text=4444");
   expect(default_payment_updated === "4444");
   console.log("card details updated succesfully");
-  
-
 });

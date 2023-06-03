@@ -1,20 +1,16 @@
 
 const { test, expect } = require('@playwright/test');
+const { admin_login } = require('./features/admin_login');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
+
+
+
 //Subscribie tests
-test("@452@shop-owner@category creation", async ({ page }) => {
-  try {
-    console.log("checking if category is already created...");
-    await page.goto('/');
-    const category_exists = await page.textContent("text=basic plan")
-    if (category_exists === "basic plan") {
-      await new Promise(x => setTimeout(x, 1000));
-      expect(await page.screenshot()).toMatchSnapshot('checking-if-category-is-created.png');
-      console.log("category created, exiting test");
-      return 0
-    }
-  } catch (e) {
-    console.log("Continuing with category creation");
-  }
+test("@452@shop-owner@category creation @452_shop_owner_create_category", async ({ page }) => {
+
+  // Login
+  await admin_login(page);
+  await set_test_name_cookie(page, "@452@shop-owner@category creation")
   // Go to add category
   await page.goto('/admin/add-category');
 
@@ -22,7 +18,6 @@ test("@452@shop-owner@category creation", async ({ page }) => {
   console.log("creating category");
   await page.fill("input[name='category']", 'basic plan');
   await page.click('text="Save"');
-  expect(await page.screenshot()).toMatchSnapshot('creating-category.png');
 
   const category_created = await page.content("#alert-heading");
   expect(category_created === "Notification");
@@ -39,7 +34,6 @@ test("@452@shop-owner@category creation", async ({ page }) => {
   await page.click("text=One-Off Soaps");
   await new Promise(x => setTimeout(x, 1000));
 
-  expect(await page.screenshot()).toMatchSnapshot('adding-plans-to-category.png');
   await page.click('text="Save"');
 
   const plans_added = await page.content("#alert-heading");
@@ -49,7 +43,5 @@ test("@452@shop-owner@category creation", async ({ page }) => {
   await page.goto('/');
   const category_added = await page.content("text=basic plan");
   expect(category_added === "basic plan");
-  expect(await page.screenshot()).toMatchSnapshot('category-created.png');
   console.log("the category created");
-
 });

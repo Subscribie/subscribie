@@ -1,6 +1,11 @@
 const { test, expect } = require('@playwright/test');
+const { admin_login } = require('./features/admin_login');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
 test("@334@shop-owner@Creating Private Page @334-shop-owner-create-private-page", async ({ page }) => {
+  // Login
+  await admin_login(page);
+  await set_test_name_cookie(page, "@334-shop-owner-create-private-page");
   await page.goto('/page/privatetestpage');
   await new Promise(x => setTimeout(x, 5000));
   let checking_private_page_content = await page.evaluate(() => document.body.textContent);

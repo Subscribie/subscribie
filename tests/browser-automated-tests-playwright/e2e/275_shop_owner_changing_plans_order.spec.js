@@ -1,6 +1,10 @@
 const { test, expect } = require('@playwright/test');
+const { admin_login } = require('./features/admin_login');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
-test("@275@shop-owner@Changing Plans order", async ({ page }) => {
+test("@275@shop-owner @275_shop_owner_change_plan_order", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@275_shop_owner_change_plan_order")
     console.log("Changing plans order...");
     await page.goto("/admin/edit")
     const check_plan_with_choice_and_options = await page.textContent('text="Edit Plans"');

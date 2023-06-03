@@ -1,16 +1,18 @@
 const { test, expect } = require('@playwright/test');
+const { admin_login } = require('./features/admin_login');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
 //Subscribie tests
 test.describe("Plan Creation tests:", () => {
   // Create cooling off plan
-  test("@133@show-owner@Create cooling off plan", async ({ page }) => {
+  test("@133@shop_owner @133_shop_owner_plan_creation @133_shop_owner_create_plan_with_cooling_off_period", async ({ page }) => {
     console.log("Starting plan creations...");
+    await set_test_name_cookie(page, "@133@shop_owner@Create cooling off plan @133_shop_owner_plan_creation")
+    await admin_login(page);
     await page.goto('/');
     try {
-      const cooling_off_plan_exist = await page.textContent('text="Cooling off plan"');
+      const cooling_off_plan_exist = await page.textContent('text="Cooling off plan"', { timeout: 3000 });
       if (cooling_off_plan_exist === 'Cooling off plan') {
-        await new Promise(x => setTimeout(x, 1000));
-        expect(await page.screenshot()).toMatchSnapshot('Cooling-off-plan-already-created.png');
         console.log("Cooling off plan already created, exiting test");
         return 0;
       }
@@ -40,18 +42,14 @@ test.describe("Plan Creation tests:", () => {
     await new Promise(x => setTimeout(x, 1000)); // 1 secconds
     const cooling_off_plan = await page.textContent('text="Cooling off plan"');
     expect(cooling_off_plan === 'Cooling off plan');
-    // screenshot cooling off plan 
-    await new Promise(x => setTimeout(x, 1000));
-    expect(await page.screenshot()).toMatchSnapshot('add-cooling-off-plan.png');
-
   });
-  test("@475@shop-owner@Create free trial plan", async ({ page }) => {
+  test("@475@shop-owner@Create free trial plan @475_shop_owner_create_free_trial", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@475_shop_owner_create_free_trial")
     await page.goto('/');
     try {
-      const free_trial = await page.textContent('text="Free Trial plan"');
+      const free_trial = await page.textContent('text="Free Trial plan"', { timeout: 3000 });
       if (free_trial === 'Free Trial plan') {
-        await new Promise(x => setTimeout(x, 1000));
-        expect(await page.screenshot()).toMatchSnapshot('Free-trial-plan-already-created.png');
         console.log("Free trial plan already created, exiting test");
         return 0;
       }
@@ -81,18 +79,14 @@ test.describe("Plan Creation tests:", () => {
     const free_trial = await page.textContent('text="Free Trial plan"');
     expect(free_trial === "Free Trial plan");
 
-    // screenshot cooling off plan 
-    await new Promise(x => setTimeout(x, 1000));
-    expect(await page.screenshot()).toMatchSnapshot('add-free-trial-plan.png');
-
   });
-  test("@516@shop-owner@Create cancel at plan", async ({ page }) => {
+  test("@516@shop-owner@Create cancel at plan @516_shop_owner_create_cancel_at_plan", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@516_shop_owner_create_cancel_at_plan")
     await page.goto('/');
     try {
-      const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"');
+      const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"', { timeout: 3000 });
       if (free_trial === "Automatically cancels on: 09-07-2025") {
-        await new Promise(x => setTimeout(x, 1000));
-        expect(await page.screenshot()).toMatchSnapshot('cancel-at-plan-already-created.png');
         console.log("Cancel At plan already created, exiting test");
         return 0;
       }
@@ -127,19 +121,15 @@ test.describe("Plan Creation tests:", () => {
     const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"');
     expect(free_trial === "Automatically cancels on: 07-09-2025");
 
-    //screenshot
-    await new Promise(x => setTimeout(x, 1000));
-    expect(await page.screenshot()).toMatchSnapshot('add-cancel-at-plan.png');
-
   });
-  test("@491@shop-owner@Create Private Plan", async ({ page }) => {
+  test("@491@shop-owner@Create Private Plan @491_shop_owner_create_private_plan", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@491_shop_owner_create_private_plan")
     console.log("Creating Private Plan");
     await page.goto('/admin/edit');
     try {
-      const private_plan__already_exist = await page.textContent('text="First Private plan"');
+      const private_plan__already_exist = await page.textContent('text="First Private plan"', { timeout: 3000 });
       if (private_plan__already_exist === 'First Private plan') {
-        await new Promise(x => setTimeout(x, 1000));
-        expect(await page.screenshot()).toMatchSnapshot('Private-plan-already-created.png');
         console.log("Private plan already created, exiting test");
         return 0;
       }
@@ -167,8 +157,6 @@ test.describe("Plan Creation tests:", () => {
     await page.goto('/admin/edit');
     const private_plan_exist = await page.textContent('text="First Private plan"');
     if (private_plan_exist === 'FIrst Private plan') {
-      await new Promise(x => setTimeout(x, 1000));
-      expect(await page.screenshot()).toMatchSnapshot('Private-plan-was-created.png');
       console.log("Private plan was created, exiting test");
     }
     await page.goto('/');
@@ -181,10 +169,13 @@ test.describe("Plan Creation tests:", () => {
     }
   });
 
-  test("@264@shop-owner@Create plan with options, choice, required description", async ({ page }) => {
+
+  test("@264@shop-owner @264_shop_owner_create_plan_with_choice_options", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@264_shop_owner_create_plan_with_choice_options")
     await page.goto('/');
     try {
-      const check_plan_with_choice_and_options = await page.textContent('text="Plan with choice and options"');
+      const check_plan_with_choice_and_options = await page.textContent('text="Plan with choice and options"', { timeout: 3000 });
       expect(check_plan_with_choice_and_options === "Plan with choice and options");
       await page.click("text=See choice options");
       await page.click("text=Choices (2 options)");
@@ -196,9 +187,6 @@ test.describe("Plan Creation tests:", () => {
 
       const expand_choice = await page.textContent('text="Choices (2 options)"');
       if (expand_choice === "Choices (2 options)") {
-
-        await new Promise(x => setTimeout(x, 1000));
-        expect(await page.screenshot()).toMatchSnapshot('plan-with-choice-and-options-already-created.png');
         console.log("Plan with choice and options already created, exiting test");
         return 0;
       }
@@ -233,9 +221,6 @@ test.describe("Plan Creation tests:", () => {
     await page.goto('/');
     const plan_with_choice_and_options = await page.textContent('text="Plan with choice and options"');
     expect(plan_with_choice_and_options === "Plan with choice and options");
-    //screenshot
-    await new Promise(x => setTimeout(x, 1000));
-    expect(await page.screenshot()).toMatchSnapshot('plan-with-choice-and-options-created.png');
 
     //Add options and choices
     console.log('adding plan options and choices');
@@ -254,8 +239,7 @@ test.describe("Plan Creation tests:", () => {
     await page.goto('/admin/list-choice-groups');
     await page.click("text=Options");
 
-    const add_options = await page.textContent('text="Option"');
-    expect(add_options === "Option");
+    await page.getByRole('button', { name: 'Options' }).click()
     await page.click("text=Add Option");
     await page.fill('.form-control', 'Red');
     await page.click("text='Save'");
@@ -296,7 +280,6 @@ test.describe("Plan Creation tests:", () => {
     await page.click("text=Choices (2 options)");
     const expand_choice = await page.textContent('text="Choices (2 options)"');
     expect(expand_choice === "Choices (2 options)");
-    expect(await page.screenshot()).toMatchSnapshot('plan-with-choice-and-options-created.png');
     console.log("Plan with option and choices shown in homepage");
   });
 

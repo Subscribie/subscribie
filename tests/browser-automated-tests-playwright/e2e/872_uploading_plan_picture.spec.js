@@ -1,6 +1,11 @@
 const { test, expect } = require('@playwright/test');
+const { admin_login } = require('./features/admin_login');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
-test("@872@shop-owner@uploading a plan picture", async ({ page }) => {
+test("@872 @872_uploading_plan_picture", async ({ page }) => {
+    await admin_login(page);
+    await set_test_name_cookie(page, "@872_uploading_plan_picture");
+
     //uploading an image in a plan
     console.log("Uploading a plan picture");
     await page.goto("/admin/edit")
@@ -16,7 +21,7 @@ test("@872@shop-owner@uploading a plan picture", async ({ page }) => {
     await new Promise(x => setTimeout(x, 3000));
     console.log("saving plan");
     await page.click("text=Save");
-    
+
     //upload a logo
     await page.goto("/admin/upload-logo")
     console.log("going to the logo upload page")
@@ -31,10 +36,10 @@ test("@872@shop-owner@uploading a plan picture", async ({ page }) => {
     await new Promise(x => setTimeout(x, 3000));
     console.log("saving logo");
     await page.click("text=Save");
-    
+
     //verify logo
     await page.goto('/');
     await page.content('input[style="src: cdn/logo-subscribie*; id:logo"]');
     await page.content('input[style="src: cdn/logo-subscribie*; class:plan-img"]');
-    
+
 });

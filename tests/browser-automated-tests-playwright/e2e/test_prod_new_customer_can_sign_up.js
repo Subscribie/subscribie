@@ -9,7 +9,7 @@ const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() 
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
 const videoHeight = 720;
-const browserContextOptions = {...iPhone, recordVideo: { dir: videosDir, size: {width: videoWidth, height: videoHeight} }}
+const browserContextOptions = { ...iPhone, recordVideo: { dir: videosDir, size: { width: videoWidth, height: videoHeight } } }
 
 
 const browsers = ['chromium'];
@@ -18,16 +18,15 @@ const browsers = ['chromium'];
 async function test_prod_new_customer_can_sign_up(browsers, browserContextOptions) {
   for (const browserType of browsers) {
     console.log("test_prod_new_customer_can_sign_up");
-    const browser = await playwright[browserType].launch({headless: PLAYWRIGHT_HEADLESS});
+    const browser = await playwright[browserType].launch({ headless: PLAYWRIGHT_HEADLESS });
     const context = await browser.newContext(browserContextOptions);
-    context.setDefaultTimeout(DEFAULT_TIMEOUT);
     const page = await context.newPage();
 
     // Go to homepage and start signing up
     var epoch = Math.floor(+new Date() / 1000);
     await page.goto("http://subscriptionwebsitebuilder.co.uk/");
     await page.screenshot({ path: `prod-sign-up-landingpage-${browserType}.png` });
-    
+
     await page.click('text="Get Started"');
     await page.screenshot({ path: `prod-sign-up-start-now-page-${browserType}.png` });
 
@@ -61,7 +60,7 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
 
 module.exports = test_prod_new_customer_can_sign_up;
 
-(async() => {
+(async () => {
   await test_prod_new_customer_can_sign_up(browsers, browserContextOptions);
 })();
 
