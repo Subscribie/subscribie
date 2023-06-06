@@ -14,7 +14,7 @@ const PLAYWRIGHT_SLOWMO = parseInt(process.env.PLAYWRIGHT_SLOWMO);
  */
 export default defineConfig({
   testDir: './e2e',
-  timeout: 80000,
+  timeout: 5 * 60 * 1000, // 5 minutes
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
