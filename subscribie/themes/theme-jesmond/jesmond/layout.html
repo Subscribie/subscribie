@@ -57,6 +57,11 @@
 </head>
 
 <body>
+{# Display test overlay if running under testing #}
+  {% if 'test_name' in session %}
+    <div id="test_name" style="margin-left: 0.5em;position: absolute;writing-mode: vertical-lr;font-size: 2em; z-index: 999999999;">{{ session ['test_name']}}</div>
+  {% endif %}
+{# End Display test overlay if running under testing #}
 
 {# if not inside iframe_embeded, show header #}
 {% if session.get('iframe_embeded') is sameas False %}
