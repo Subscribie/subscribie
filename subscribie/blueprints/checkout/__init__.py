@@ -364,7 +364,7 @@ def stripe_create_checkout_session():
     settings = Setting.query.first()
     charge_vat = settings.charge_vat
     create_stripe_tax_rate()
-    tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).first()
+    tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).order_by(TaxRate.id.desc()).first()
     tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
     person = Person.query.get(session["person_id"])
     charge["currency"] = currency_code
