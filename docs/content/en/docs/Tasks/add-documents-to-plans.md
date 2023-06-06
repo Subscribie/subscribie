@@ -4,8 +4,16 @@ title: "Add Documents to Subscription Plans"
 date: 2023-05-31
 weight: 5
 description: >
-  How to add documents to subscription plans
+  Want to add documents to plans? Learn how to add documents to subscription plans.
 ---
+
+  When you add documents to plans, subscribers get access to those documents for easy
+  viewing. Use documents to add useful subscription related information, such as terms of   business, or simply generic text you want subscribers to read when they sign-up to
+  your plans.
+
+  For adding *files* to your plans (such as images, PDFs etc), learn [how to upload files to your shop]({{< ref "docs/tasks/upload-files" >}}).
+
+
 
 ## Steps to add documents to subscription plans
 
