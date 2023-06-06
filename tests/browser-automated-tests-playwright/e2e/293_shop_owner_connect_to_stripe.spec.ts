@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
 //Subscribie tests
 test.describe("Subscribie tests:", () => {
@@ -14,6 +15,7 @@ test.describe("Subscribie tests:", () => {
   });
   //Stripe Test
   test("@293@connect-to-stripe@shop-owner@Stripe Test", async ({ page }) => {
+    await set_test_name_cookie(page, "@293@connect-to-stripe@shop-owner@Stripe Test")
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
     // Check onboarding not already completed
@@ -30,10 +32,10 @@ test.describe("Subscribie tests:", () => {
     }
   });
   test("@293@connect-to-stripe@shop-owner@detect stripe onboarding page", async ({ page }) => {
+    await set_test_name_cookie(page, "@293@connect-to-stripe@shop-owner@detect stripe onboarding page")
 
     // Go to Stripe Connect payment gateways page
     await page.goto('admin/connect/stripe-connect');
-    //page.setDefaultTimeout(3000);
     let contentStripeConnect = await page.evaluate(() => document.body.textContent);
     test.skip(contentStripeConnect.indexOf("Your currently running in test mode.") > -1);
     //expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
@@ -70,7 +72,6 @@ test.describe("Subscribie tests:", () => {
       await page.click('button:has-text("Use test code")'); //Use Test code for SMS
     }
 
-    page.setDefaultTimeout(6000);
     // Stripe onboarding Business type
     //const business_type_content = await page.textContent('.db-ConsumerUITitle');
     const business_type_content = await page.textContent('text="Tell us about your business"');
@@ -80,7 +81,6 @@ test.describe("Subscribie tests:", () => {
       await page.click('text="Continue"');
     }
 
-    await page.setDefaultTimeout(6000);
     // Stripe onboarding personal details step
     //const personal_details_content = await page.textContent('.db-ConsumerUITitle');
     const personal_details_content = await page.textContent('text="Verify your personal details"');
