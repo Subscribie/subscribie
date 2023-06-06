@@ -113,9 +113,29 @@ export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
 
 #### Run playwright tests:
 
+There's two key ways to run tests:
+
+1.  As fast as possible (in parallel, where possible via the [DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) of tests
+  - This is whats done in CI to make pull request feedback as fast as possible, whilst
+    running *all* tests
+2. Running an individual test
+  - This is useful for debugging, such as during development of a new test
+
+##### Run all tests in parallel
+
+```
+. venv/bin/activate # activate python virtual environment
+cd tests/browser-automated-tests-playwright
+python run-playwright-tests.py
+```
+
+##### Run an individual test
 ```
 cd tests/browser-automated-tests-playwright
-npx playwright test
+# Run the test '@133_shop_owner_order_plan_with_cooling_off_period' in debug mode
+npx playwright test --debug --headed --grep @133_shop_owner_order_plan_with_cooling_off_period
+# Run test @stripe_connect in debug mode:
+npx playwright test --debug --headed --grep @stripe_connect
 ```
 Something not working?
 Debug playwright tests with the [playwright inspector](https://playwright.dev/docs/debug#playwright-inspector)
