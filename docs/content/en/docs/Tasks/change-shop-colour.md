@@ -3,7 +3,7 @@ title: "Change Shop Colour"
 date: 2022-11-17
 weight: 5
 description: >
-  How to change the colour of your shop.
+  Learn how to change the colour of your shop.
 ---
 
 Subscribie offers you the option to change the colour of your shop. This can be done with the following steps.
@@ -18,7 +18,7 @@ Subscribie offers you the option to change the colour of your shop. This can be 
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-90.png)
 
-### Step 3: Select the background and font colour ```(Blue, Green, etc)``` for your shop.
+### Step 3: Select the background and font colour *(Blue, Green, etc)* for your shop.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-91.png)
 
@@ -27,3 +27,9 @@ Subscribie offers you the option to change the colour of your shop. This can be 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-92.png)
 
 Now you have successfully changed the colour of your shop!
+
+For more customisation, learn how to [add a slogan](https://docs.subscribie.co.uk/docs/tasks/add-a-slogan/), [add a logo](https://docs.subscribie.co.uk/docs/tasks/add-a-logo-to-a-shop) and [change your shop's website address URL link](https://docs.subscribie.co.uk/docs/tasks/change-your-subscription-website-web-address/)
+
+### Watch the Tutorial to Change Shop Colour
+
+[![Watch the video](https://i.ytimg.com/an_webp/zj8iaWRD9rQ/mqdefault_6s.webp?du=3000&sqp=COC7gKQG&rs=AOn4CLA1O-A5_Sqh4wubxSfFCHx9q18GDQ)](https://youtu.be/zj8iaWRD9rQ)

@@ -3,7 +3,7 @@ title: "Charge Subscribers on an Ad-hoc Basis"
 date: 2022-04-14
 weight: 5
 description: >
-  How to Charge Subscribers on an Ad-hoc Basis.
+  Learn how to create an Ad-hoc charge to your subscribers at any time.
 ---
 
 
@@ -32,3 +32,9 @@ description: >
 ![](https://subscribie.co.uk/blog/content/images/2023/04/image-23.png)
 
 You have now successfully created an Ad Hoc charge to your customer. 
+
+Need to refund a customer? Check out our guide on [refunding a customer](https://docs.subscribie.co.uk/docs/tasks/refund-customer-subscriptions/) and [pausing a customers subscription.](https://docs.subscribie.co.uk/docs/tasks/pause-a-subscribers-subscription/)
+
+### Watch the Tutorial to Charge Subscribers on an Ad-hoc Basis
+
+[![Watch the video](https://i.ytimg.com/an_webp/5sgnrntV9SQ/mqdefault_6s.webp?du=3000&sqp=CND__6MG&rs=AOn4CLCDUmvKVzQ0hTofD1Hhs6ioHI3ddw)](https://youtu.be/5sgnrntV9SQ)

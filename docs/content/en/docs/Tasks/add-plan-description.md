@@ -3,7 +3,7 @@ title: "Add a Description to Subscription Plans"
 date: 2022-11-10
 weight: 5
 description: >
-  How to add a description to a subscription plan
+  Provide more information about your subscription plan by providing a description to your subscription plan
 ---
 
 ## Steps to add a description to your subscription plan
@@ -27,5 +27,3 @@ description: >
 ### Step 5: Now scroll down and click *Save.*
 
 ![](https://i.imgur.com/4v3NwK8.png)
-
-You have now successfully added a description to your subscription plan.

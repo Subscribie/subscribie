@@ -3,7 +3,7 @@ title: "Add Options to a Subscription Plan"
 date: 2022-11-15
 weight: 5
 description: >
-  A guide on how to add options to a subscription plan.
+  Need to provide your customers with some options? Leran how to add options to a subscription plan.
 ---
 
 Learn how to add options to a subscription plan, this will be shown when customers are signing up to your subscription plan.
@@ -29,3 +29,7 @@ Learn how to add options to a subscription plan, this will be shown when custome
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-63.png)
 
 And that's it, you have successfully added Choice Options to your Subscription Plan!
+
+### Watch the Tutorial to Add Options to a Subscription Plan
+
+[![Watch the video](https://i.ytimg.com/an_webp/SDtqCJhqMF4/mqdefault_6s.webp?du=3000&sqp=COabgKQG&rs=AOn4CLBBbOqSOYEycjhWhpfkikhNaa4JAA)](https://youtu.be/SDtqCJhqMF4)

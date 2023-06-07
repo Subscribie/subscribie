@@ -4,7 +4,7 @@ title: "Add Documents to Subscription Plans"
 date: 2023-05-31
 weight: 5
 description: >
-  Want to add documents to plans? Learn how to add documents to subscription plans.
+ Want to add documents to plans? Learn how to add documents to subscription plans.
 ---
 
   When you add documents to plans, subscribers get access to those documents for easy
@@ -43,3 +43,7 @@ description: >
 ![](https://subscribie.co.uk/blog/content/images/2023/05/image-5.png)
 
 You have now added documents to the desired plans.
+
+### Watch the Tutorial to Add Documents to Subscription Plans
+
+[![Watch the video](https://i.ytimg.com/an_webp/e_GADgZYUqQ/mqdefault_6s.webp?du=3000&sqp=CKyQgKQG&rs=AOn4CLDpgGDQLkJ0g7y82ZP34H61iC7Auw)](https://www.youtube.com/watch?v=e_GADgZYUqQ)

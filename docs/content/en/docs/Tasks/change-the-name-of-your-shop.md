@@ -1,9 +1,9 @@
 ---
-title: "Change the name of your shop"
+title: "Change the Name of Your Shop"
 date: 2023-04-24
 weight: 5
 description: >
-  How to change the name of your shop.
+  Easily change the name of your shop, this will be reflected throughout your shop.
 ---
 
 ## Steps to change the name of your shop
@@ -27,3 +27,9 @@ Please wait a short while whilst the shop name is changes.
 Congratulations! You have successfully changed your shop name.
 
 Remember your shop web address will also have changed to the new name you have chosen.
+
+For more customisation, learn how to [add a slogan](https://docs.subscribie.co.uk/docs/tasks/add-a-slogan/), [add a logo](https://docs.subscribie.co.uk/docs/tasks/add-a-logo-to-a-shop) and [change your shop's website address URL link](https://docs.subscribie.co.uk/docs/tasks/change-your-subscription-website-web-address/)
+
+### Watch the Tutorial to Change Shop Name
+
+[![Watch the video](https://i.ytimg.com/an_webp/Ou-L3tTzzQ8/mqdefault_6s.webp?du=3000&sqp=CNukgKQG&rs=AOn4CLCGZCMBqdFWokiIBHyZwN3XQNVXHw)](https://youtu.be/Ou-L3tTzzQ8)

@@ -1,9 +1,9 @@
 ---
-title: "Add Team Members to shop"
+title: "Add Team Members to Shop"
 date: 2022-11-28
 weight: 5
 description: >
-  A guide to adding your team members to manage your shop.
+  A guide to adding your team members to manage your subscription shop.
 ---
 
 Team members who are added can help manage your shop through the dashboard easily.
@@ -27,3 +27,7 @@ Team members who are added can help manage your shop through the dashboard easil
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-129.png)
 
 Now you have added a team member to your shop!
+
+### Watch the Tutorial to Add Team Members to Shop
+
+[![Watch the video](https://i.ytimg.com/an_webp/d5FTaMPmrgg/mqdefault_6s.webp?du=3000&sqp=CPCZgKQG&rs=AOn4CLB6KPrLI47LOFmd9lGmgI2_HFZa5w)](https://youtu.be/d5FTaMPmrgg)

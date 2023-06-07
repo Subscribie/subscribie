@@ -3,7 +3,7 @@ title: "Categorise Subscription Plans"
 date: 2022-11-16
 weight: 5
 description: >
-  Learn how to organize your subscription plans by categorising them.
+  Need a way to organise your plans? Organise your subscription plans by categorising them by following these steps.
 ---
 
 ## Steps to Categorise Subscription Plans
@@ -32,4 +32,10 @@ description: >
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-75.png)
 
-Now you have successfully created your category for your plans in your shop on Subscribie!
+Now you have successfully created your category for your plans! The changes will refect on your shop's page.
+
+To reorder your subscription plans, check out our guide to [reorder subscription plans.](https://docs.subscribie.co.uk/docs/tasks/reordering-plans/)
+
+### Watch the Tutorial to Categorise Subscription Plans
+
+[![Watch the video](https://i.ytimg.com/an_webp/0LcV38IlsRI/mqdefault_6s.webp?du=3000&sqp=CM6wgKQG&rs=AOn4CLCwgiFK00vySnhGyRZFYKrLLIYFcg)](https://youtu.be/0LcV38IlsRI)

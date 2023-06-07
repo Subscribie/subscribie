@@ -1,9 +1,9 @@
 ---
-title: "Collect order notes"
+title: "Collect Order Notes"
 date: 2023-04-24
 weight: 5
 description: >
-  How to collect order notes from customers as they sign-up to plans.
+  Need a way to collect notes from customers? Learn how to collect order notes from customers as they sign-up.
 ---
 
 ## Steps to allow subscribers to add notes during sign-up
@@ -25,3 +25,7 @@ description: >
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-15.png)
 
 You subscribers can now add notes during sign-up to your plan. 
+
+### Watch the Tutorial to Collect Order Notes
+
+[![Watch the video](https://i.ytimg.com/an_webp/KOrKf8AXMM0/mqdefault_6s.webp?du=3000&sqp=CJGWgKQG&rs=AOn4CLAzjPcNjz1nk4_q0m2e7OWyEIAJTw)](https://youtu.be/KOrKf8AXMM0)

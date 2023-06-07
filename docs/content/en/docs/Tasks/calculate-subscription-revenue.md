@@ -3,7 +3,7 @@ title: "Calculate Subscription Revenue"
 date: 2022-11-18
 weight: 5
 description: >
-  A guide to calculate your subscription revenue.
+  Easily calculate your potential subscription revenue according to your number of subscibers and subscription rate.
 ---
 
 ## Steps to Calculate Subscription Revenue
