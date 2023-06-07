@@ -1,7 +1,7 @@
 const { test, expect, chromium } = require('@playwright/test');
 const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
-
+const { clear_db } = require('./features/clear_db');
 test.describe("connecting to stripe:", () => {
   test("@1@stripe_connect", async ({ page }) => {
 
@@ -23,11 +23,11 @@ test.describe("connecting to stripe:", () => {
     }
     else {
       console.log("Exception checking if onboarding completed, looks like it's not complete");
+      console.log("clearing the database first")
+      await clear_db(page);
       console.log("Continuing with Stripe Connect onboarding");
-
-
       // Go to Stripe Connect payment gateways page
-      await page.goto('admin/connect/stripe-connect');
+      await page.goto('/admin/connect/stripe-connect');
 
       // deleting connect account id, if stripe was not succesfully connected
       await page.goto('/admin/delete-connect-account');

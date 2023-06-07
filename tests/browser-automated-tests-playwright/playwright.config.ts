@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Read environment variables from file.
  */
-require('dotenv').config({ debug: true })
+require('dotenv').config()
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_SLOWMO = parseInt(process.env.PLAYWRIGHT_SLOWMO);

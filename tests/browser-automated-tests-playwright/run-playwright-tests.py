@@ -1,5 +1,4 @@
 from graphlib import TopologicalSorter
-
 import subprocess
 from multiprocessing import Manager, Pool
 from graphviz import Digraph
@@ -27,6 +26,7 @@ graph = {
     "@475_subscriber_order_plan_with_free_trial": [
         "@stripe_connect",
         "@475_shop_owner_create_free_trial",
+        "@1005_shop_owner_terms_and_conditions_creation",
     ],
     "@264_subscriber_order_plan_with_choice_options_and_required_note": [
         "@stripe_connect",
@@ -45,8 +45,13 @@ graph = {
     "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
         "@stripe_connect"
     ],
-    # "@623_subscriber_magic_login_and_reset_password": [],
-    # "@993_subscriber_change_card_details": ["@stripe_connect"],
+    "@623_subscriber_magic_login_and_reset_password": [
+        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
+    ],
+    "@993_subscriber_change_card_details": [
+        "@stripe_connect",
+        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
+    ],
     "@619_shop_owner_transaction_filter_by_name_and_by_plan_title": [
         "@stripe_connect",
         "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
@@ -63,11 +68,11 @@ graph = {
         "@1065_shop_owner_enabling_donations",
     ],
     "@1005_shop_owner_terms_and_conditions_creation": [
-        "@475_subscriber_order_plan_with_free_trial",
+        "@475_shop_owner_create_free_trial"
     ],
-    #    "@1005_subscriber_terms_and_condition_check_test": [
-    #        "@939_subscriber_order_free_plan_with_terms_and_conditions"
-    #    ],
+    "@1005_subscriber_terms_and_condition_check_test": [
+        "@939_subscriber_order_free_plan_with_terms_and_conditions"
+    ],
     "@939_subscriber_order_free_plan_with_terms_and_conditions": [
         "@1005_shop_owner_terms_and_conditions_creation",
         "@stripe_connect",
