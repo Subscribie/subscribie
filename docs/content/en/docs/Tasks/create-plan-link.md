@@ -3,7 +3,7 @@ title: "Create a Plan Link"
 date: 2022-11-16
 weight: 5
 description: >
-  A guide to creating a link for a specific plan for subscribers.
+  A guide to creating a link for a specific plan to share to subscribers.
 ---
 
 A Plan link can be used to share a specific plan to your customers so that they can pay and sign up to the subscription plan.
@@ -25,3 +25,7 @@ A Plan link can be used to share a specific plan to your customers so that they 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-77.png)
 
 Now you have successfully created a limited-time Subscription Plan for your customers!
+
+### Watch the Tutorial to Create a Plan Link
+
+[![Watch the video](https://i.ytimg.com/an_webp/y1Z2Bh2MD9k/mqdefault_6s.webp?du=3000&sqp=CKbCgKQG&rs=AOn4CLB92_WBOgTWmEDnlSQBYKTyGDkgNA)](https://youtu.be/y1Z2Bh2MD9k)

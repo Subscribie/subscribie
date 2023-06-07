@@ -3,10 +3,10 @@ title: "Add Terms and Conditions"
 date: 2022-11-28
 weight: 5
 description: >
-  A guide to add terms and conditions.
+  A guide to adding terms and conditions to any plan in your shop.
 ---
 
-Adding Terms and Conditions to your plans allows you to clearly set out the details of your plans terms. 
+Adding Terms and Conditions to your plans allows you to clearly set out the details of your plans terms. This can be viewed by the subsciber when signing up to your subscription.
 
 > Terms and Conditions helpful documents to fall back on should disputes arise.
 
@@ -35,3 +35,9 @@ Adding Terms and Conditions to your plans allows you to clearly set out the deta
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-135.png)
 
 You have now added terms and conditions to your plans!
+
+Are you looking for a way to add documents to your subscription instead? Check out our guide to [adding documents to your subscription plans.](https://docs.subscribie.co.uk/docs/tasks/add-documents-to-plans)
+
+### Watch the Tutorial to Add Terms and Conditions
+
+[![Watch the video](https://i.ytimg.com/an_webp/IOP7CxmMd2A/mqdefault_6s.webp?du=3000&sqp=CPCKgKQG&rs=AOn4CLBHbXIMySahuWIL0g2DuYYadptEaA)](https://youtu.be/IOP7CxmMd2A)

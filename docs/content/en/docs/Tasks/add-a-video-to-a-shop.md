@@ -3,7 +3,7 @@ title: "Add Videos to Shop Page"
 date: 2022-11-18
 weight: 5
 description: >
-  A guide to add a video from a video platform to a page on your shop.
+  Need to add your videos? Here's a guide on how to add a video from a video platform to a page on your shop.
 ---
 
 Learn how to add a video from video platforms like YouTube and Vimeo to your page in your shop.
@@ -70,3 +70,5 @@ Step 2: Select *"Embed"* and copy the text that is shown in the *"Embed Video"* 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-116.png)
 
 Now you have a working video embeded in your shop page!
+
+If you'd like, you can [make these pages private.](https://docs.subscribie.co.uk/docs/tasks/create-private-pages/)

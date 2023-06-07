@@ -4,7 +4,7 @@ title: "Why Can't You Cancel/Pause a Subscription"
 date: 2023-06-06
 weight: 5
 description: >
-  How to Enable the Option to Cancel/Pause a Subscription
+  Cant find the option to Cancel/Pause a Subscription? Don't worry, here are the steps you need to follow to be able to pause and cancel any subscription.
 ---
 
 ## Steps to Enable the Option to Cancel/Pause a Subscription
@@ -31,3 +31,7 @@ Once the refresh is done, you will be able to see the option to pause or cancel 
 
 
 Want to know how to pause or cancel a subscription? Check out [how you can do it on Subscribie](https://docs.subscribie.co.uk/docs/tasks/pause-a-subscribers-subscription/) and [how you can refund a subscription.](https://docs.subscribie.co.uk/docs/tasks/refund-customer-subscriptions/)
+
+### Watch the Tutorial to Enable the Option to Cancel/Pause a Subscription
+
+[![Watch the video](https://i.ytimg.com/an_webp/j67Rw186oaM/mqdefault_6s.webp?du=3000&sqp=CN2GgKQG&rs=AOn4CLBX0vGqdt5VOmaNLmRnxgLuAfkUCw)](https://youtu.be/j67Rw186oaM)

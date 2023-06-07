@@ -3,8 +3,12 @@ title: "Add a New Subscription Plan"
 date: 2022-11-15
 weight: 5
 description: >
-  A guide on how you can add an additional subscription plan to your shop.
+  Need to add more pages to your shop? Here's how you can create additional subscription plans for your shop.
 ---
+
+Plans are visible on your Shop's home page. There are no limits to the number of subscription plans that can be created.
+
+If you are looking for how to edit/modify a plan, check out our guide on [how you can edit an existing subscription plan.](https://docs.subscribie.co.uk/docs/tasks/edit-an-existing-plan/)
 
 ## Steps to Add a New Subscription Plan
 
@@ -29,4 +33,11 @@ description: >
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-47.png)
 
-You have now successfully added a new plan to your shop.a
+You have now successfully added a new plan to your shop.
+
+You can now [edit your subscription plan](https://docs.subscribie.co.uk/docs/tasks/edit-an-existing-plan/) at any time or make it a [private plan.](https://docs.subscribie.co.uk/docs/tasks/create-a-private-plan/)
+Do note, [seasonal plans](https://docs.subscribie.co.uk/docs/tasks/create-a-seasonal-plan/) can not be applied to existing subscription shops.
+
+### Watch the Tutorial to Add a New Subscription Plan
+
+[![Watch the video](https://i.ytimg.com/an_webp/jnsKuzrPsN0/mqdefault_6s.webp?du=3000&sqp=CIGCgKQG&rs=AOn4CLCFuyyP-BR-G2zzKPihnx-V8vmvfA)](https://youtu.be/jnsKuzrPsN0)

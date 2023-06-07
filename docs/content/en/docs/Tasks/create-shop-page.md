@@ -3,10 +3,8 @@ title: "Create a Shop Page"
 date: 2022-11-17
 weight: 5
 description: >
-  How to add an extra page to your shop.
+  Want to add more pages to your shop? Follow these steps to add additional pages to your shop.
 ---
-
-Learn how to add additional pages to your shop by following these steps.
 
 ## Steps to Create a Shop Page
 
@@ -32,4 +30,8 @@ Learn how to add additional pages to your shop by following these steps.
 
 >Repeat these steps to add more pages to your shop.
 
-Now you have successfully created a new page!
+If you'd like to make some of your pages only visible to your subscribers, check out our guide to [creating a private page.](https://docs.subscribie.co.uk/docs/tasks/create-private-pages/)
+
+### Watch the Tutorial to Create a Shop Page
+
+[![Watch the video](https://i.ytimg.com/an_webp/QzafljOrHV8/mqdefault_6s.webp?du=3000&sqp=COX3gKQG&rs=AOn4CLDbI9RLimisMt4Cdhq0b5zUT-kzmQ)](https://youtu.be/QzafljOrHV8)

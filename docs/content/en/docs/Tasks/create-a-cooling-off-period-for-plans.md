@@ -1,9 +1,9 @@
 ---
-title: "Create a cooling-off period for Plans"
+title: "Create a Cooling-off Period for Plans"
 date: 2023-04-24
 weight: 5
 description: >
-  How to set a cooling-off period for Plans.
+  Set a cooling-off period for Plans so customers can use your subscription without being charged for a specified period of time.
 ---
 
 How to set a cooling-off period for Plans. For example, a 14 day cooling-off period where there are no charges.
@@ -42,3 +42,8 @@ should they occur during the cooling-off period.
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-39.png)
 
 And that's it! You've created your first plan with a cool off period of your choosing!
+
+Want to create a free trial instead? Check out our guide to [creating a free trial!](https://docs.subscribie.co.uk/docs/tasks/add-a-free-trial)
+
+### Watch the Tutorial for Creating a Cooling-off Period for Plans
+[![Watch the video](https://i.ytimg.com/an_webp/HO6O4jUu1kg/mqdefault_6s.webp?du=3000&sqp=CNC7gKQG&rs=AOn4CLB3qnvTz2WufbZRWbMk1aBivS25iQ)](https://youtu.be/HO6O4jUu1kg)

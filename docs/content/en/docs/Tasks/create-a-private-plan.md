@@ -6,7 +6,7 @@ description: >
   A guide to creating a private subscription plan that is not visible in your shop.
 ---
 
-Follow these steps to create an account private plan, these private plans will not be visible on your shop's signup page but can accessed through the plan's link.
+Follow these steps to create an account private plan, these private plans will not be visible on your shop's signup page but can accessed through the plan's link. Learn how to [create a subscription plan link here.](https://docs.subscribie.co.uk/docs/tasks/create-plan-link/)
 
 ## Steps to Create a Private Plan
 
@@ -22,4 +22,8 @@ Follow these steps to create an account private plan, these private plans will n
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-66.png)
 
-Now you have successfully created a private plan!
+You have successfully created a private plan! Now, it will not be visable on your shop page, it can be shared through the subscription plan link.
+
+### Watch the Tutorial for Creating a Private Plan
+
+[![Watch the video](https://i.ytimg.com/an_webp/cFpvuSMOZq0/mqdefault_6s.webp?du=3000&sqp=CMPPgKQG&rs=AOn4CLBO5Vjj4dOgxHXEJG3UiSTivGbDxA)](https://youtu.be/cFpvuSMOZq0)
