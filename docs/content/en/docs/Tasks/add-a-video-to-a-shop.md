@@ -6,7 +6,7 @@ description: >
   Need to add your videos? Here's a guide on how to add a video from a video platform to a page on your shop.
 ---
 
-Learn how to add a video from video platforms like YouTube and Vimeo to your page in your shop.
+Learn how to add a video from video platforms like YouTube and Vimeo to your page in your shop. 
 
 ## Steps to Add a Video to a Shop
 

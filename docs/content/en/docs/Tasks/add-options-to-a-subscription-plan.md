@@ -6,7 +6,7 @@ description: >
   Need to provide your customers with some options? Leran how to add options to a subscription plan.
 ---
 
-Learn how to add options to a subscription plan, this will be shown when customers are signing up to your subscription plan.
+Learn how to add options to a subscription plan, this will be shown when customers are signing up to your subscription plan. These are simple options that you can use to offer some verirty in your subscription plans.
 
 ### Step 1: Log into your Shop Dashboard.
 

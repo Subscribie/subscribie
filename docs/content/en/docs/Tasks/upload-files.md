@@ -3,7 +3,7 @@ title: "Upload Files to a Shop"
 date: 2022-11-17
 weight: 5
 description: >
-  Learn how to add files to a shop.
+  Need to upload files for your customers? Learn how to add files to a shop.
 ---
 
 Subscribie allows shop owners to upload simple files like documents, photos and short videos. These can be viewed and downloaded by customers in your shop webiste. To upload file, follow these steps.
@@ -23,3 +23,5 @@ Subscribie allows shop owners to upload simple files like documents, photos and 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-100.png)
 
 You have now successfully added Files that can only be accessed by subscribers through your shop.
+
+Need to delete a file? Check out our guide on how to [delete an uploaded file.](https://docs.subscribie.co.uk/docs/tasks/delete-files/)
