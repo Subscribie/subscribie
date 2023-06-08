@@ -4,7 +4,7 @@ title: "Send Customised Emails to Customers"
 date: 2023-06-06
 weight: 5
 description: >
-  How to Send Customised Emails to Customers
+  Need a quick way to make your automated emails feel more personal? Learn how to Send Customised Emails to Customers
 ---
 
 ## Steps to Send Customised Emails to Customers
@@ -31,6 +31,8 @@ description: >
 ![](https://subscribie.co.uk/blog/content/images/2023/06/image-13.png)
 
 That's it! You have successfully customised your customer signup confirmation email for Subscribie.
+
+Do you want to make emails even more personal? Learn how to [add a reply to email to your automated emails.](https://docs.subscribie.co.uk/docs/tasks/enable-email-replies-for-your-subscription-emails/)
 
 ### Watch the Tutorial to Send Customised Emails to Customers
 

@@ -3,7 +3,7 @@ title: "Pause a Subscriber's Subscription"
 date: 2022-11-17
 weight: 5
 description: >
-  Learn how to Pause a Subscriber's Subscription to stop charging a specific customer.
+ Need to Pause Payments from a Customer? Learn how to Pause a Subscriber's Subscription to stop charging a specific customer.
 ---
 
 Learn to pause a customers subscription, this is useful if you only want to temperarly stop charging them. 
@@ -25,3 +25,9 @@ Learn to pause a customers subscription, this is useful if you only want to temp
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-85.png)
 
 And that's it! You can now Pause and Resume Subscriptions!
+
+Need to provide a customer a refund? Check out our guide on [refunding a customer.](https://docs.subscribie.co.uk/docs/tasks/refund-customer-subscriptions/)
+
+### Video Tutorial for Pausing a Subscription
+
+[![Watch the video](https://i.ytimg.com/vi/Oigx2RzG5ng/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFfyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gSAAugCigIMCAAQARgeIC8ofzAP&rs=AOn4CLAW8OrrSGK4uLFtmWmKWhxNqErMPw)](https://youtu.be/Oigx2RzG5ng)

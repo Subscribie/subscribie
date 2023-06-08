@@ -3,7 +3,7 @@ title: "Embed Subscribie in a Website"
 date: 2022-11-18
 weight: 5
 description: >
-  A guide to embed Subscribie into your website.
+  Want to add subscribie to your site? Follow this easy guide to embed Subscribie into your website.
 ---
 
 ## Steps to Embed Subscribie in a Website
@@ -22,4 +22,8 @@ description: >
 
 ### Step 4: Paste the copied text to your page.
 
-Now, Subscribie is embedded in your website!
+> If you would like a simpler option, simply create a link to your subscription plans from your website to Subscribie. To set that up, create an account on Subscribie, and then add a link in your website menu to your subscription plans. That is the easiest least complicated approach.
+
+### Video Tutorial to Embed Subscribie in a Website
+
+[![Watch the video](https://i.ytimg.com/an_webp/jY-2q61VbjI/mqdefault_6s.webp?du=3000&sqp=CMq3haQG&rs=AOn4CLBiE32U_rYW1Ps5q1SWcVo2EYzhiQ)](https://youtu.be/jY-2q61VbjI)

@@ -3,7 +3,7 @@ title: "Enable Donations"
 date: 2023-03-21
 weight: 5
 description: >
-  Accept donations in your shop. How to enable donations.
+  Need to collect donations? Learn how to enbale donations in your shop.
 ---
 
 ## Steps to Enable Donations
@@ -22,3 +22,11 @@ description: >
 ### Donations is now enabled in your shop. You can view it at the top of your dashboard in blue.
 
 ![](https://subscribie.co.uk/p/wp-content/uploads/2023/03/Screenshot-2023-03-21-192647-1024x448.png)
+
+You can find the Donate option on the right side of your shop's header/banner.
+
+Need a way to see your donations and filter them? Check out our guide to [viewing and exporting your donation transactions.](https://docs.subscribie.co.uk/docs/tasks/view-and-export-transactions-and-donations/)
+
+### Video Tutorial to Enable Donations
+
+[![Watch the video](https://i.ytimg.com/an_webp/NaVN0LAysdU/mqdefault_6s.webp?du=3000&sqp=CPfMhaQG&rs=AOn4CLBSdrMxuWrptxH3_PxSlcXXsNpCIQ)](https://youtu.be/NaVN0LAysdU)

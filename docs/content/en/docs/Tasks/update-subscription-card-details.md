@@ -4,7 +4,7 @@ title: "Update/Change Subscription Card Details"
 date: 2023-06-06
 weight: 5
 description: >
-  How to Update/Change Subscription Card Details
+  Just changed your card and need to pay for your Subscribie subscription? Follow these steps to Update/Change Subscription Card Details
 ---
 
 ## Steps to Update/Change Subscription Card Details

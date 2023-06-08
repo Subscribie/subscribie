@@ -3,7 +3,7 @@ title: "Edit an Existing Subscription Plan"
 date: 2022-11-15
 weight: 5
 description: >
-  A guide on how to edit/modify an existing subscription plan.
+  Want to modify your plans? Here's guide on how to edit/modify an existing subscription plan.
 ---
 
 ## Steps to Edit an Existing Subscription Plan

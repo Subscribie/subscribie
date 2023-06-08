@@ -24,3 +24,6 @@ You have now successfully initiated your refund, you can rest assured that your 
 
 >Note: If this is part of an active subscription, future payments will still be taken. If you want to cancel future subscription charges, see [how to pause or cancel a subscription]({{< ref "docs/tasks/pause-a-subscribers-subscription/_index" >}})
 
+### Video Tutorial for Refunding a Subscription
+
+[![Watch the video](https://i.ytimg.com/an_webp/jgMdWjfzZSY/mqdefault_6s.webp?du=3000&sqp=CMDLhaQG&rs=AOn4CLB_-vR63FizplaYrFxUvCfQHsKOLw)](https://youtu.be/jgMdWjfzZSY)

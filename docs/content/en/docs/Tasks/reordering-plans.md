@@ -3,7 +3,7 @@ title: "Reorder Plans"
 date: 2022-11-11
 weight: 5
 description: >
-  How to Reorder Plans in your Subscription Shop.
+  Learn how to organise your subscription shop by reordering plans.
 ---
 
 ## Steps to Reorder Plans
@@ -27,3 +27,9 @@ description: >
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-2.png)
 
 Now you have successfully rearranged your plans in your shop! 
+
+Want to make your subscription shop more organised? Learn how you can [categorise your subscription plans.](https://docs.subscribie.co.uk/docs/tasks/categorise-subscription-plans/)
+
+### Watch the Tutorial to Reorder Plans
+
+[![Watch the video](https://i.ytimg.com/an_webp/45249uk_t4E/mqdefault_6s.webp?du=3000&sqp=COjihaQG&rs=AOn4CLD04xT4dzBlnIEBNNnTw8kF0E56xQ)](https://youtu.be/45249uk_t4E)
