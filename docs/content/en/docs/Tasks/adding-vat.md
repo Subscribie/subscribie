@@ -29,4 +29,4 @@ Invoices generated will automatically have vat added during checkout and subsequ
 
 ### Watch the Tutorial to Charge VAT Automatically
 
-[![Watch the video](https://i.ytimg.com/vi/XqM7Q2nvC3c/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFfyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gSAAugCigIMCAAQARgdIC8ofzAP&rs=AOn4CLBsUODOJHn9Siqs3URFNwjn_M3Amw)](https://youtu.be/XqM7Q2nvC3c)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/9614eef6-1c37-4356-962e-94a744ea4552)](https://youtu.be/XqM7Q2nvC3c)

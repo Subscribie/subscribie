@@ -46,4 +46,4 @@ You have now added documents to the desired plans.
 
 ### Watch the Tutorial to Add Documents to Subscription Plans
 
-[![Watch the video](https://i.ytimg.com/an_webp/e_GADgZYUqQ/mqdefault_6s.webp?du=3000&sqp=CKyQgKQG&rs=AOn4CLDpgGDQLkJ0g7y82ZP34H61iC7Auw)](https://www.youtube.com/watch?v=e_GADgZYUqQ)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/7ed8b014-c6fe-4195-aaeb-a669b83e06f2)](https://www.youtube.com/watch?v=e_GADgZYUqQ)

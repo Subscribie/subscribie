@@ -32,4 +32,4 @@ For more customisation, learn how to [add a slogan](https://docs.subscribie.co.u
 
 ### Watch the Tutorial to Change Shop Colour
 
-[![Watch the video](https://i.ytimg.com/an_webp/zj8iaWRD9rQ/mqdefault_6s.webp?du=3000&sqp=COC7gKQG&rs=AOn4CLA1O-A5_Sqh4wubxSfFCHx9q18GDQ)](https://youtu.be/zj8iaWRD9rQ)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/d61008fe-f38d-4624-a6e7-a662b3fbbf0e)](https://youtu.be/zj8iaWRD9rQ)

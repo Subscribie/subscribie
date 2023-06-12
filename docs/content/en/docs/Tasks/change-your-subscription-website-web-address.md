@@ -28,4 +28,4 @@ For more customisation, learn how to [add a slogan](https://docs.subscribie.co.u
 
 ### Watch the Tutorial to Change Your Subscription Website Web Address
 
-[![Watch the video](https://i.ytimg.com/an_webp/Xq1J1FqtjyM/mqdefault_6s.webp?du=3000&sqp=CML3_6MG&rs=AOn4CLDtZT-TRixFBGwP-6AT5a9GKl1dAQ)](https://youtu.be/Xq1J1FqtjyM)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/77a0e166-9893-476c-9847-307fc98f5f40)](https://youtu.be/Xq1J1FqtjyM)

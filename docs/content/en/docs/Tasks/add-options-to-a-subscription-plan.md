@@ -32,4 +32,4 @@ And that's it, you have successfully added Choice Options to your Subscription P
 
 ### Watch the Tutorial to Add Options to a Subscription Plan
 
-[![Watch the video](https://i.ytimg.com/an_webp/SDtqCJhqMF4/mqdefault_6s.webp?du=3000&sqp=COabgKQG&rs=AOn4CLBBbOqSOYEycjhWhpfkikhNaa4JAA)](https://youtu.be/SDtqCJhqMF4)
+[![Watch the video](hhttps://github.com/Subscribie/subscribie/assets/30567984/b4afd751-add0-471c-9df8-0fed20acd78b)](https://youtu.be/SDtqCJhqMF4)

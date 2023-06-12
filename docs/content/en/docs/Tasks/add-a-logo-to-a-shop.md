@@ -28,4 +28,4 @@ You can also [add a slogan](https://docs.subscribie.co.uk/docs/tasks/add-a-sloga
 
 ### Watch this Tutorial to Add a Logo
 
-[![Watch the video](https://img.youtube.com/vi/KcmhZfccR0w/sddefault.jpg)](https://youtube.com/watch?v=KcmhZfccR0w)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/733e7f6c-f3cf-4724-aae4-b652f66c5eda)](https://youtube.com/watch?v=KcmhZfccR0w)

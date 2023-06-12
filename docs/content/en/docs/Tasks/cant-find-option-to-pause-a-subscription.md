@@ -25,13 +25,8 @@ Once the refresh is done, you will be able to see the option to pause or cancel 
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-9.png)
 
-### Watch the Tutorial to Enable the Option to Cancel/Pause a Subscription 
-
-[![Watch the video](https://i.ytimg.com/an_webp/j67Rw186oaM/mqdefault_6s.webp?du=3000&sqp=CPKc-6MG&rs=AOn4CLDggsZBevVTsLt9oTWzO_GliMl6KQ)](https://www.youtube.com/watch?v=j67Rw186oaM)
-
-
 Want to know how to pause or cancel a subscription? Check out [how you can do it on Subscribie](https://docs.subscribie.co.uk/docs/tasks/pause-a-subscribers-subscription/) and [how you can refund a subscription.](https://docs.subscribie.co.uk/docs/tasks/refund-customer-subscriptions/)
 
 ### Watch the Tutorial to Enable the Option to Cancel/Pause a Subscription
 
-[![Watch the video](https://i.ytimg.com/an_webp/j67Rw186oaM/mqdefault_6s.webp?du=3000&sqp=CN2GgKQG&rs=AOn4CLBX0vGqdt5VOmaNLmRnxgLuAfkUCw)](https://youtu.be/j67Rw186oaM)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/74ef75b4-b564-4086-9b3b-e42d34a95bf6)](https://youtu.be/j67Rw186oaM)

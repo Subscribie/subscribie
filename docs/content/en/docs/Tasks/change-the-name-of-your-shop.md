@@ -32,4 +32,4 @@ For more customisation, learn how to [add a slogan](https://docs.subscribie.co.u
 
 ### Watch the Tutorial to Change Shop Name
 
-[![Watch the video](https://i.ytimg.com/an_webp/Ou-L3tTzzQ8/mqdefault_6s.webp?du=3000&sqp=CNukgKQG&rs=AOn4CLCGZCMBqdFWokiIBHyZwN3XQNVXHw)](https://youtu.be/Ou-L3tTzzQ8)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/c2ee7fb2-502e-443a-8774-f5d6c62f6bdb)](https://youtu.be/Ou-L3tTzzQ8)

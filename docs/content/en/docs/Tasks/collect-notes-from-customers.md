@@ -28,4 +28,4 @@ You subscribers can now add notes during sign-up to your plan.
 
 ### Watch the Tutorial to Collect Order Notes
 
-[![Watch the video](https://i.ytimg.com/an_webp/KOrKf8AXMM0/mqdefault_6s.webp?du=3000&sqp=CJGWgKQG&rs=AOn4CLAzjPcNjz1nk4_q0m2e7OWyEIAJTw)](https://youtu.be/KOrKf8AXMM0)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/a661a514-5ee0-4172-bc36-25cc7af7cb54)](https://youtu.be/KOrKf8AXMM0)

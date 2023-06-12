@@ -26,4 +26,4 @@ You have successfully created a private plan! Now, it will not be visable on you
 
 ### Watch the Tutorial for Creating a Private Plan
 
-[![Watch the video](https://i.ytimg.com/an_webp/cFpvuSMOZq0/mqdefault_6s.webp?du=3000&sqp=CMPPgKQG&rs=AOn4CLBO5Vjj4dOgxHXEJG3UiSTivGbDxA)](https://youtu.be/cFpvuSMOZq0)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/e38a7158-650d-4557-8786-84df86a3ee25)](https://youtu.be/cFpvuSMOZq0)

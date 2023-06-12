@@ -40,4 +40,4 @@ Are you looking for a way to add documents to your subscription instead? Check o
 
 ### Watch the Tutorial to Add Terms and Conditions
 
-[![Watch the video](https://i.ytimg.com/an_webp/IOP7CxmMd2A/mqdefault_6s.webp?du=3000&sqp=CPCKgKQG&rs=AOn4CLBHbXIMySahuWIL0g2DuYYadptEaA)](https://youtu.be/IOP7CxmMd2A)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/f7175fc3-8f28-48a3-bf21-bc881a16f7f9)](https://youtu.be/IOP7CxmMd2A)

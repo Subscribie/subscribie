@@ -40,4 +40,4 @@ Do note, [seasonal plans](https://docs.subscribie.co.uk/docs/tasks/create-a-seas
 
 ### Watch the Tutorial to Add a New Subscription Plan
 
-[![Watch the video](https://i.ytimg.com/an_webp/jnsKuzrPsN0/mqdefault_6s.webp?du=3000&sqp=CIGCgKQG&rs=AOn4CLCFuyyP-BR-G2zzKPihnx-V8vmvfA)](https://youtu.be/jnsKuzrPsN0)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/eb3f3025-7764-469a-80f6-90ec0e6ac95e)](https://youtu.be/jnsKuzrPsN0)

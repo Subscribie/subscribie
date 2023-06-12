@@ -27,4 +27,4 @@ Learn how you can [share your seasonal plans with a link.](https://docs.subscrib
 
 ### Watch the Tutorial to Create a Seasonal Plan
 
-[![Watch the video](https://i.ytimg.com/an_webp/AFYHSsXrqUE/mqdefault_6s.webp?du=3000&sqp=CLHqgKQG&rs=AOn4CLCcH9swJxcFCE-H-zemNpyfN9_Jpw)](https://youtu.be/AFYHSsXrqUE)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/c95c9e71-5d58-4095-a8fe-435d90f3d86b)](https://youtu.be/AFYHSsXrqUE)
