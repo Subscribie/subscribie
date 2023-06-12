@@ -37,4 +37,4 @@ Need to refund a customer? Check out our guide on [refunding a customer](https:/
 
 ### Watch the Tutorial to Charge Subscribers on an Ad-hoc Basis
 
-[![Watch the video](https://i.ytimg.com/an_webp/5sgnrntV9SQ/mqdefault_6s.webp?du=3000&sqp=CND__6MG&rs=AOn4CLCDUmvKVzQ0hTofD1Hhs6ioHI3ddw)](https://youtu.be/5sgnrntV9SQ)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/fe0d6df0-a7d8-4f74-9cdc-bd5644d63546)](https://youtu.be/5sgnrntV9SQ)

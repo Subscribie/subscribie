@@ -28,4 +28,4 @@ Now you have successfully created a limited-time Subscription Plan for your cust
 
 ### Watch the Tutorial to Create a Plan Link
 
-[![Watch the video](https://i.ytimg.com/an_webp/y1Z2Bh2MD9k/mqdefault_6s.webp?du=3000&sqp=CKbCgKQG&rs=AOn4CLB92_WBOgTWmEDnlSQBYKTyGDkgNA)](https://youtu.be/y1Z2Bh2MD9k)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/4c08655a-1999-4586-9e47-9ba0f0f7ab77)](https://youtu.be/y1Z2Bh2MD9k)

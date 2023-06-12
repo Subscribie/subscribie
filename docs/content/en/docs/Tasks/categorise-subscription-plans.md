@@ -38,4 +38,4 @@ To reorder your subscription plans, check out our guide to [reorder subscription
 
 ### Watch the Tutorial to Categorise Subscription Plans
 
-[![Watch the video](https://i.ytimg.com/an_webp/0LcV38IlsRI/mqdefault_6s.webp?du=3000&sqp=CM6wgKQG&rs=AOn4CLCwgiFK00vySnhGyRZFYKrLLIYFcg)](https://youtu.be/0LcV38IlsRI)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/5b32cd9d-ff64-4461-870b-b926726a5d61)](https://youtu.be/0LcV38IlsRI)

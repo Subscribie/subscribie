@@ -46,4 +46,5 @@ And that's it! You've created your first plan with a cool off period of your cho
 Want to create a free trial instead? Check out our guide to [creating a free trial!](https://docs.subscribie.co.uk/docs/tasks/add-a-free-trial)
 
 ### Watch the Tutorial for Creating a Cooling-off Period for Plans
-[![Watch the video](https://i.ytimg.com/an_webp/HO6O4jUu1kg/mqdefault_6s.webp?du=3000&sqp=CNC7gKQG&rs=AOn4CLB3qnvTz2WufbZRWbMk1aBivS25iQ)](https://youtu.be/HO6O4jUu1kg)
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/6109cc36-e300-4244-b2fc-660576e36231)](https://youtu.be/HO6O4jUu1kg)

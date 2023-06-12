@@ -30,4 +30,4 @@ Now you have added a team member to your shop!
 
 ### Watch the Tutorial to Add Team Members to Shop
 
-[![Watch the video](https://i.ytimg.com/an_webp/d5FTaMPmrgg/mqdefault_6s.webp?du=3000&sqp=CPCZgKQG&rs=AOn4CLB6KPrLI47LOFmd9lGmgI2_HFZa5w)](https://youtu.be/d5FTaMPmrgg)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/c90b6847-aef5-4edd-abb1-8973a7fbb7ba)](https://youtu.be/d5FTaMPmrgg)

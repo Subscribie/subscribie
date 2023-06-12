@@ -45,4 +45,4 @@ Now, your subscription plan offers a free trial to your subscribers.
 Want to create a cool off period instead? Check out our guide to [creating a cooling off period for plans!](https://docs.subscribie.co.uk/docs/tasks/create-a-cooling-off-period-for-plans/)
 
 ### Watch the Tutorial for Creating a Free Trial for Plans
-[![Watch the video](https://i.ytimg.com/an_webp/55vbis04qO0/mqdefault_6s.webp?du=3000&sqp=CNf9gKQG&rs=AOn4CLCCNDCddS-p446d2USZZXGvXgFMxQ)](https://youtu.be/55vbis04qO0)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/ed867d67-6b5e-4f4b-ad5a-aa04c3924714)](https://youtu.be/55vbis04qO0)
