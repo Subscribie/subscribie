@@ -34,4 +34,4 @@ If you'd like to make some of your pages only visible to your subscribers, check
 
 ### Watch the Tutorial to Create a Shop Page
 
-[![Watch the video](https://i.ytimg.com/an_webp/QzafljOrHV8/mqdefault_6s.webp?du=3000&sqp=COX3gKQG&rs=AOn4CLDbI9RLimisMt4Cdhq0b5zUT-kzmQ)](https://youtu.be/QzafljOrHV8)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/81bfe43d-19fb-482a-bbed-621e9caad11d)](https://youtu.be/fLtPDTkgSAk)

@@ -29,4 +29,4 @@ Need a way to see your donations and filter them? Check out our guide to [viewin
 
 ### Video Tutorial to Enable Donations
 
-[![Watch the video](https://i.ytimg.com/an_webp/NaVN0LAysdU/mqdefault_6s.webp?du=3000&sqp=CPfMhaQG&rs=AOn4CLBSdrMxuWrptxH3_PxSlcXXsNpCIQ)](https://youtu.be/NaVN0LAysdU)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/cbe68cbd-cacc-46b4-90ce-0c7aa634333d)](https://youtu.be/NaVN0LAysdU)

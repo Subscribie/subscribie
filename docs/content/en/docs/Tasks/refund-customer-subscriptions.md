@@ -26,4 +26,4 @@ You have now successfully initiated your refund, you can rest assured that your 
 
 ### Video Tutorial for Refunding a Subscription
 
-[![Watch the video](https://i.ytimg.com/an_webp/jgMdWjfzZSY/mqdefault_6s.webp?du=3000&sqp=CMDLhaQG&rs=AOn4CLB_-vR63FizplaYrFxUvCfQHsKOLw)](https://youtu.be/jgMdWjfzZSY)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/ee4f2ebc-e7ef-4aba-9978-375ff5ff8e4a)](https://youtu.be/jgMdWjfzZSY)

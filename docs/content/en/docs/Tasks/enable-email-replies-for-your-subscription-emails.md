@@ -31,4 +31,4 @@ Want to customise your email? Learn how you can [customise your automated emails
 
 ### Video Tutorial to Setup a Reply-to Email Address
 
-[![Watch the video](https://i.ytimg.com/an_webp/o8x3WH4VZCY/mqdefault_6s.webp?du=3000&sqp=CNaHhaQG&rs=AOn4CLCp7zW1jZbGOJWmFhtFOP8jihN_OQ)](https://youtu.be/o8x3WH4VZCY)
+[![Watch the video](![image](https://github.com/Subscribie/subscribie/assets/30567984/ae9018c9-9665-4a38-9a5b-0726f8b58846))](https://youtu.be/o8x3WH4VZCY)

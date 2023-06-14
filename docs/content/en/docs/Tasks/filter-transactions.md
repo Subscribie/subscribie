@@ -28,4 +28,4 @@ Now you can view the Filtered Transactions.
 
 ### Video Tutorial to Filter Transactions
 
-[![Watch the video](https://i.ytimg.com/an_webp/c3j2DAoxWDU/mqdefault_6s.webp?du=3000&sqp=CM_qhaQG&rs=AOn4CLDCYtyd3iMJcBS3BPXk4Do4ciHqTA)](https://youtu.be/c3j2DAoxWDU)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/935cfe90-2a89-4225-8194-b8e3a3f7007f)](https://youtu.be/c3j2DAoxWDU)

@@ -33,4 +33,4 @@ That's it! You have successfully updated your card details and can continue to u
 
 ### Watch the Tutorial to Update/Change Subscription Card Details
 
-[![Watch the video](https://i.ytimg.com/an_webp/ZWl5hRhu_xM/mqdefault_6s.webp?du=3000&sqp=CIfE-6MG&rs=AOn4CLAt6BYI9xKrD1h2Il9P0MApAhc_MQ)](https://www.youtube.com/watch?v=ZWl5hRhu_xM)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/bb49bd29-6c4a-42d0-87a9-752d13978875)](https://www.youtube.com/watch?v=ZWl5hRhu_xM)

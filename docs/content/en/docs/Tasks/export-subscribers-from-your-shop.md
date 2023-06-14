@@ -26,4 +26,4 @@ The file will contain your subscriber information, in the CSV file format.
 
 ### Video Tutorial to Export Subscriber Data
 
-[![Watch the video](https://i.ytimg.com/an_webp/6vSQcQ5nCDc/mqdefault_6s.webp?du=3000&sqp=CI2_haQG&rs=AOn4CLA7KAlC_HT66k4diBzTauy5S68uhQ)](https://youtu.be/6vSQcQ5nCDc)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/86c00f22-3add-433c-acab-1cb4e04ad85b)](https://youtu.be/6vSQcQ5nCDc)
