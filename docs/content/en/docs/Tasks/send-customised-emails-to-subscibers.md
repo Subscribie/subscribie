@@ -36,4 +36,4 @@ Do you want to make emails even more personal? Learn how to [add a reply to emai
 
 ### Watch the Tutorial to Send Customised Emails to Customers
 
-[![Watch the video](https://i.ytimg.com/an_webp/oelOLxEAq90/mqdefault_6s.webp?du=3000&sqp=COOi-6MG&rs=AOn4CLANcXGPTCJLASn6964-5k60Q6XF5w)](https://www.youtube.com/watch?v=oelOLxEAq90)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/cd096e81-0b09-4aef-a232-15930eeccbd2)](https://www.youtube.com/watch?v=oelOLxEAq90)

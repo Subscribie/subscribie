@@ -28,4 +28,4 @@ You have now successfully deleted the file.
 
 ### Watch this Tutorial to Delete Files from your Shop
 
-[![Watch the video](https://i.ytimg.com/vi/AHMx0lbSD3Y/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFfyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARg0IBMofzAP&rs=AOn4CLCPZAlAAcMV2XZu8xfAfv0BOU9x0Q)](https://youtu.be/AHMx0lbSD3Y)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/07fcafe0-d7b1-4470-93b2-16aefc37584d)](https://youtu.be/AHMx0lbSD3Y)

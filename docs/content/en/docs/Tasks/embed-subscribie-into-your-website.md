@@ -26,4 +26,4 @@ description: >
 
 ### Video Tutorial to Embed Subscribie in a Website
 
-[![Watch the video](https://i.ytimg.com/an_webp/jY-2q61VbjI/mqdefault_6s.webp?du=3000&sqp=CMq3haQG&rs=AOn4CLBiE32U_rYW1Ps5q1SWcVo2EYzhiQ)](https://youtu.be/jY-2q61VbjI)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/a5cde524-56f6-481a-ae24-b254cddc9014)](https://youtu.be/jY-2q61VbjI)

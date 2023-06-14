@@ -32,4 +32,4 @@ Want to make your subscription shop more organised? Learn how you can [categoris
 
 ### Watch the Tutorial to Reorder Plans
 
-[![Watch the video](https://i.ytimg.com/an_webp/45249uk_t4E/mqdefault_6s.webp?du=3000&sqp=COjihaQG&rs=AOn4CLD04xT4dzBlnIEBNNnTw8kF0E56xQ)](https://youtu.be/45249uk_t4E)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/f44d9e0d-b39c-4b78-b46a-7f4af69061a7)](https://youtu.be/45249uk_t4E)

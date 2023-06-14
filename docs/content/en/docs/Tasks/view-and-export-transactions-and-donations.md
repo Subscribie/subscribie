@@ -32,4 +32,4 @@ Need to view and export your subscribers? Here is our guide to [exporting subscr
 
 ### Video Tutorial to View and Export Transactions and Donations
 
-[![Watch the video](https://i.ytimg.com/an_webp/XMOlz9oMw6w/mqdefault_6s.webp?du=3000&sqp=CNzRhaQG&rs=AOn4CLASow0d3J8ZriP4l-jfZJXJeFzhcQ)](https://youtu.be/XMOlz9oMw6w)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/705f53dc-c07e-48f7-ad53-a9101591d282)](https://youtu.be/XMOlz9oMw6w)

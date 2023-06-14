@@ -80,4 +80,4 @@ If you do not have an existing plan and want to create a new one, check out our 
 
 ### Video Tutorial on Editing an Existing Subscription Plan
 
-[![Watch the video](https://i.ytimg.com/an_webp/hHW3_zheKdU/mqdefault_6s.webp?du=3000&sqp=CPTrgKQG&rs=AOn4CLCFJEnPk8bUKxug63uWrsnR-5nnow)](https://youtu.be/hHW3_zheKdU)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/5f5d9d1c-cdb1-492b-8518-a29f71bfc896)](https://youtu.be/hHW3_zheKdU)

@@ -30,4 +30,4 @@ Need to provide a customer a refund? Check out our guide on [refunding a custome
 
 ### Video Tutorial for Pausing a Subscription
 
-[![Watch the video](https://i.ytimg.com/vi/Oigx2RzG5ng/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFfyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gSAAugCigIMCAAQARgeIC8ofzAP&rs=AOn4CLAW8OrrSGK4uLFtmWmKWhxNqErMPw)](https://youtu.be/Oigx2RzG5ng)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/dfb63ce3-df40-4ffd-ac2b-320fb3a2dfcf)](https://youtu.be/Oigx2RzG5ng)
