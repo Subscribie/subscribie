@@ -10,11 +10,11 @@ Learn how to View and export Transactions and Donations.
 
 ## Steps to View Transactions and Donations
 
-### Step 1:*  Log into your Shop Dashboard.
+Step 1:*  Log into your Shop Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-### Step 2:* Go to *View Transactions / Manage Refunds* under the *All Transactions / Manage Refunds* tab.
+Step 2:* Go to *View Transactions / Manage Refunds* under the *All Transactions / Manage Refunds* tab.
 
 ![](https://subscribie.co.uk/p/wp-content/uploads/2023/03/Screenshot-2023-03-21-193527-1024x521.png)
 

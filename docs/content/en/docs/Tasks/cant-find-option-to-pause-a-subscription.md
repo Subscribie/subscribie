@@ -9,11 +9,11 @@ description: >
 
 ## Steps to Enable the Option to Cancel/Pause a Subscription
 
-### Step 1:  Go to *View Subscribers* under *My Subscribers*.
+Step 1:  Go to *View Subscribers* under *My Subscribers*.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-7.png)
 
-### Step 2: Click *Refresh Subscriptions*. This will update your subscriptions with the latest data and show you the available actions for each subscription.
+Step 2: Click *Refresh Subscriptions*. This will update your subscriptions with the latest data and show you the available actions for each subscription.
 > Please note that if you have an extremely large number of subscriptions, this will take longer to complete.
 
 
@@ -21,7 +21,7 @@ description: >
 
 Once the refresh is done, you will be able to see the option to pause or cancel a subscription for your subscribers.
 
-### Step 3: Now, your subscriber list will be updated and you can *pause or cancel* your subscriber's subscription.
+Step 3: Now, your subscriber list will be updated and you can *pause or cancel* your subscriber's subscription.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-9.png)
 

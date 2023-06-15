@@ -10,15 +10,15 @@ Learn how to add a slogan, this will be displayed in your shop's banner below yo
 
 ## Steps to Add a Logo
 
-### Step 1: Go to the *Upload Logo* section in your Subscribie dashboard.
+Step 1: Go to the *Upload Logo* section in your Subscribie dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/add-a-logo-to-subscribie-shop-1-1.webp)
 
-### Step 2: Click on "Choose File" and select your logo from your computer.
+Step 2: Click on "Choose File" and select your logo from your computer.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/add-a-logo-to-subscribie-shop-2-1.webp)
 
-### Step 3: Once you've chosen your logo, click on "Save".
+Step 3: Once you've chosen your logo, click on "Save".
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/add-a-logo-to-subscribie-shop-3-1.webp)
 

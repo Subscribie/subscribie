@@ -12,15 +12,15 @@ You learnt how to [add files to your shop](https://docs.subscribie.co.uk/docs/ta
 
 ## Steps to Delete a File from a Shop
 
-### Step 1: Log into your Shop Dashboard.
+Step 1: Log into your Shop Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-### Step 2: Click *"List Files"*
+Step 2: Click *"List Files"*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-102.png)
 
-### Step 3: Click *"Delete"* to remove the file you would like to delete.
+Step 3: Click *"Delete"* to remove the file you would like to delete.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-103.png)
 
