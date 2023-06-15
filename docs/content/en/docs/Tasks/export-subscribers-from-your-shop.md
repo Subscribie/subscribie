@@ -10,15 +10,15 @@ Subscribie allows you to export your subscriber list as a CSV file.
 
 ## Steps to export Subscribers from your shop
 
-### Step 1: Log into your Shop
+Step 1: Log into your Shop
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-26.png)
 
-### Step 2: Click *Export Subscribers* under *My Subscribers.*
+Step 2: Click *Export Subscribers* under *My Subscribers.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-24.png)
 
-### Step 3: Review the `csv` export
+Step 3: Review the `csv` export
 
 The file will contain your subscriber information, in the CSV file format.
 

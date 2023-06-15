@@ -10,15 +10,15 @@ Learn how to add a slogan, this will be displayed in your shop's banner below yo
 
 ## Steps to Add a Slogan
 
-### Step 1: Log into your Shop Dashboard.
+Step 1: Log into your Shop Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-### Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
+Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-87.png)
 
-### Step 3: Here type your Slogan in the *"Slogan"* Text box.
+Step 3: Here type your Slogan in the *"Slogan"* Text box.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-88.png)
 

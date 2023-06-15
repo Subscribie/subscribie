@@ -9,23 +9,23 @@ description: >
 
 ## Steps to Update/Change Subscription Card Details
 
-### Step 1:  In your Dashboard, Click on *Users, Passwords & Cards details.*
+Step 1:  In your Dashboard, Click on *Users, Passwords & Cards details.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-1.png)
 
-### Step 2: Click *Change my Card details.*
+Step 2: Click *Change my Card details.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-4.png)
 
-### Step 3: Enter your Login Details.
+Step 3: Enter your Login Details.
 
 ![](https://subscribie.co.uk/blog/content/images/2023/06/image-14.png)
 
-### Step 4: Click *Update Payment Method*.
+Step 4: Click *Update Payment Method*.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-5.png)
 
-### Step 5: Enter your card details and click *Save*.
+Step 5: Enter your card details and click *Save*.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-6.png)
 

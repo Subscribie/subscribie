@@ -10,19 +10,19 @@ description: >
 
 > This does not affect other subscribers in the existing subscription.
 
-### Step 1: Log into your Dashboard.
+Step 1: Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-48.png)
 
-### Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
+Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-49.png)
 
-### Step 3: Now, choose the plan you would like to edit.
+Step 3: Now, choose the plan you would like to edit.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-50.png)
 
-### Step 4: Here, you will be able to:
+Step 4: Here, you will be able to:
 
 
 
@@ -70,7 +70,7 @@ A private plan helps you to keep it hidden from the public and can not be viewed
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-57.png)
 
-### Step 5: Now Click *Save.* 
+Step 5: Now Click *Save.* 
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-58.png)
 

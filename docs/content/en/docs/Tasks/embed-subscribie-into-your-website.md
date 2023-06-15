@@ -8,19 +8,19 @@ description: >
 
 ## Steps to Embed Subscribie in a Website
 
-### Step 1: Log into your Dashboard.
+Step 1: Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-### Step 2: Go to *Modules* and choose *Get Embed Code* under *iFrame Embed.*
+Step 2: Go to *Modules* and choose *Get Embed Code* under *iFrame Embed.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-118.png)
 
-### Step 3: Copy the text under *"Copy the embed code into your website".*
+Step 3: Copy the text under *"Copy the embed code into your website".*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-119.png)
 
-### Step 4: Paste the copied text to your page.
+Step 4: Paste the copied text to your page.
 
 > If you would like a simpler option, simply create a link to your subscription plans from your website to Subscribie. To set that up, create an account on Subscribie, and then add a link in your website menu to your subscription plans. That is the easiest least complicated approach.
 

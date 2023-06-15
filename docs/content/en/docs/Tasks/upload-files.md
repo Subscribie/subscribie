@@ -10,15 +10,15 @@ Subscribie allows shop owners to upload simple files like documents, photos and 
 
 ## Steps to Upload Files to a Shop
 
-### Step 1: Log into your Dashboard.
+Step 1: Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-64.png)
 
-### Step 2: Click *"Upload Files"*
+Step 2: Click *"Upload Files"*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-99.png)
 
-### Step 3: Click *"Choose Files"* and upload the files needed and Click *"Save"*
+Step 3: Click *"Choose Files"* and upload the files needed and Click *"Save"*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-100.png)
 

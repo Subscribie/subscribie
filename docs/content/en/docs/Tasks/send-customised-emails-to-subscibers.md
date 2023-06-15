@@ -9,15 +9,15 @@ description: >
 
 ## Steps to Send Customised Emails to Customers
 
-### Step 1:  In your dashboard go to *Customer Signup Confirmation* under *Email settings*.
+Step 1:  In your dashboard go to *Customer Signup Confirmation* under *Email settings*.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-10.png)
 
-### Step 2: Change the default setting from *default* to *"use my template below"* to set the customised signup confirmation to your customised email.
+Step 2: Change the default setting from *default* to *"use my template below"* to set the customised signup confirmation to your customised email.
 
 ![](https://subscribie.co.uk/blog/content/images/2023/06/image-11.png)
 
-### Step 3: Enter your new customised signup confirmation email in the text box. You can use the following variables to insert dynamic information about your customers and your service:
+Step 3: Enter your new customised signup confirmation email in the text box. You can use the following variables to insert dynamic information about your customers and your service:
 - {{ first_name }} - The first name of the customer.
 - {{ company_name }} - The name of your company or service.
 - {{ first_charge_date }} - The date of the first charge for the subscription.
@@ -26,7 +26,7 @@ description: >
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/06/image-12.png)
 
-### Step 4: Click save to save this new email format to send out to customers when they sign up.
+Step 4: Click save to save this new email format to send out to customers when they sign up.
 
 ![](https://subscribie.co.uk/blog/content/images/2023/06/image-13.png)
 

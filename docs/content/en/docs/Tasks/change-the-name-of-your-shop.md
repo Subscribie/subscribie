@@ -10,15 +10,15 @@ description: >
 
 > Note: Changing your shop name also changes your shop web address.
 
-### Step 1: Go to *Edit Plans* under *Edit/Add Plans*
+Step 1: Go to *Edit Plans* under *Edit/Add Plans*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-6.png)
 
-### Step 2: In the *Company name* text box under Shop Details, enter the name you want to change your shop.
+Step 2: In the *Company name* text box under Shop Details, enter the name you want to change your shop.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-7.png)
 
-### Step 3: Once you have entered the new name, scroll down and click *Save*
+Step 3: Once you have entered the new name, scroll down and click *Save*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-8.png)
 

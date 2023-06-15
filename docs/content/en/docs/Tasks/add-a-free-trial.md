@@ -20,23 +20,23 @@ should they occur during the cooling-off period.
 
 ## Steps to Add a Free Trial to a Subscription
 
-### Step 1: Go to the *"Edit / Add Plans"* section in your Subscribie dashboard and choose Edit Plan.
+Step 1: Go to the *"Edit / Add Plans"* section in your Subscribie dashboard and choose Edit Plan.
 
 >If you are creating a plan for the first time and want to add a free trial to it, click Add Plan
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/image-3.png)
 
-### Step 2: Open the plan you would like to add a free trial to.
+Step 2: Open the plan you would like to add a free trial to.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/image-4.png)
 
-### Step 3: Set the number of days you would like to have under *"Free trial period number of days"*. For our example, we are setting the number of free trial days to 15. You can set it to how many days you would like to offer.
+Step 3: Set the number of days you would like to have under *"Free trial period number of days"*. For our example, we are setting the number of free trial days to 15. You can set it to how many days you would like to offer.
 
 >If you clicked add plan, don't forget to fill out the information about your plan and set the number of days for the free trial.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/image-5.png)
 
-### Step 4: Once you've set the number of days for your free trial, click on *"Save".*
+Step 4: Once you've set the number of days for your free trial, click on *"Save".*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/02/image-6.png)
 
