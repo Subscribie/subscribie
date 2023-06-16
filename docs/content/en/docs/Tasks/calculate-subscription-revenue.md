@@ -25,3 +25,7 @@ Step 4: Now, you should see the potential monthly revenue/profit with a breakdow
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-126.png)
 
 You have successfully calculated your potential subscription revenue.
+
+### Watch the Tutorial to Calculate Subscription Revenue
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/996fb1d2-89dd-4673-9838-cf51a264ca0d)](https://youtu.be/Q4gzFRXKR30)

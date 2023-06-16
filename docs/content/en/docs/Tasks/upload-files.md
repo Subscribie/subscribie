@@ -25,3 +25,7 @@ Step 3: Click *"Choose Files"* and upload the files needed and Click *"Save"*
 You have now successfully added Files that can only be accessed by subscribers through your shop.
 
 Need to delete a file? Check out our guide on how to [delete an uploaded file.](https://docs.subscribie.co.uk/docs/tasks/delete-files/)
+
+### Video Tutorial to Upload Files
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/a08471cb-f1ee-4b82-8d58-f8358cc98788)](https://www.youtube.com/watch?v=QzafljOrHV8)

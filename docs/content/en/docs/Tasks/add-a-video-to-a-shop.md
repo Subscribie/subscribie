@@ -72,3 +72,7 @@ Step 6: Click *"Insert Link".*
 Now you have a working video embeded in your shop page!
 
 If you'd like, you can [make these pages private.](https://docs.subscribie.co.uk/docs/tasks/create-private-pages/)
+
+### Video Tutorial to Add Videos to Shop Page
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/707006ed-7de4-484a-9d3c-58bcf3205742)](https://youtu.be/mcO-RTmMHzA)
