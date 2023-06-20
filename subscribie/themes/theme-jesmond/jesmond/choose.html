@@ -60,6 +60,8 @@
                 {% if plan.trial_period_days > 0 %}
                 <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}</p>
                 {% endif %}
+
+
                 {% if plan.requirements.subscription %}
                   <div class="my-md-4">
                     <span class="text">
@@ -69,14 +71,22 @@
                     {% if plan.requirements.instant_payment %}
                     <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}</span>
                     {% endif %}
+                    {% if settings.charge_vat %}
+                    <p class="text">{{ _('Including VAT') }}</span>
+                    {% endif %}
+
                   </div>
                   {% else  %} {# Not a subscription based product #}
                   <div class="my-md-4">
                     <span class="text">
                       <span class="price">{{ plan.showSellPrice() }}</span>/{{ _('One-off') }}
-                    </span>  <br>
+                    </span>  <br />
+                    {% if settings.charge_vat %}
+                    <p class="text">{{ _('Including VAT') }}</span><br />
+                    {% endif %}
                     <span class="text">{{ _('No subscription') }}</span>
                   </div>
+
                 {% endif %}
 
                 {% for sellingPoint in plan.selling_points%}

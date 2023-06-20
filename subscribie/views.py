@@ -223,13 +223,13 @@ def stats():
 def choose():
     # Note: Categories link to plans (via category.plans)
     categories = Category.query.order_by(Category.position).all()
-    return render_template("choose.html", categories=categories)
+    settings = Setting.query.first()
+    return render_template("choose.html", categories=categories, settings=settings)
 
 
 @bp.route("/set_options/<plan_uuid>", methods=["GET", "POST"])
 def set_options(plan_uuid):
     plan = Plan.query.filter_by(uuid=plan_uuid).first()
-
     if request.method == "POST":
         # Store chosen options in session
         session["chosen_option_ids"] = []
