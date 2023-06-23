@@ -3,25 +3,29 @@ title: "Calculate Subscription Revenue"
 date: 2022-11-18
 weight: 5
 description: >
-  A guide to calculate your subscription revenue.
+  Easily calculate your potential subscription revenue according to your number of subscibers and subscription rate.
 ---
 
 ## Steps to Calculate Subscription Revenue
 
-### Step 1: Go to [Subscribie.co.uk](https://subscribie.co.uk), click *Home* and navigate to the ["Subscriber Revenue Calculator"](https://subscribie.co.uk/#revenue-calculator) from the drop-down box.
+Step 1: Go to [Subscribie.co.uk](https://subscribie.co.uk), click *Home* and navigate to the ["Subscriber Revenue Calculator"](https://subscribie.co.uk/#revenue-calculator) from the drop-down box.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-124.png)
 
-### Step 2: Choose the *number of subscribers* you have using the slider under the *number of subscribers.*
+Step 2: Choose the *number of subscribers* you have using the slider under the *number of subscribers.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-124.png)
 
-### Step 3: Enter the *monthly price* you would like to charge your subscribers for your subscription plan. 
+Step 3: Enter the *monthly price* you would like to charge your subscribers for your subscription plan. 
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-125.png)
 
-### Step 4: Now, you should see the potential monthly revenue/profit with a breakdown of the costs incurred and the final revenue earned by you.
+Step 4: Now, you should see the potential monthly revenue/profit with a breakdown of the costs incurred and the final revenue earned by you.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-126.png)
 
 You have successfully calculated your potential subscription revenue.
+
+### Watch the Tutorial to Calculate Subscription Revenue
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/996fb1d2-89dd-4673-9838-cf51a264ca0d)](https://youtu.be/Q4gzFRXKR30)
