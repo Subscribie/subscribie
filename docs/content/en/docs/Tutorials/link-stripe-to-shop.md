@@ -67,4 +67,4 @@ Step 10: Review all the information once more before clicking *Submit.*
 Now you are ready to start collecting subscription payments!
 
 ### Video Tutorial to Connecting Subscription Shop to Stripe
-[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/707006ed-7de4-484a-9d3c-58bcf3205742)](https://youtu.be/JEjOdq_vWOQ)
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/64d69941-ecfd-44db-b5cc-f08d88c714d5)](https://youtu.be/JEjOdq_vWOQ)
