@@ -59,8 +59,12 @@ Step 9: Click *"Verify Now"* and upload the documents then click *Submit.*
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-34.png)
 
 Step 10: Review all the information once more before clicking *Submit.*
+
 > After completion, your account will temporarily be paused for verification. To ensure a secure environment and prevent any misuse of shops, please reply to Subscribie's verification email that will be sent shortly.
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-35.png)
 
 Now you are ready to start collecting subscription payments!
+
+### Video Tutorial to Connecting Subscription Shop to Stripe
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/707006ed-7de4-484a-9d3c-58bcf3205742)](https://youtu.be/JEjOdq_vWOQ)
