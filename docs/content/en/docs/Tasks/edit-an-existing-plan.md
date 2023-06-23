@@ -3,24 +3,26 @@ title: "Edit an Existing Subscription Plan"
 date: 2022-11-15
 weight: 5
 description: >
-  A guide on how to edit an existing subscription plan.
+  Want to modify your plans? Here's guide on how to edit/modify an existing subscription plan.
 ---
 
 ## Steps to Edit an Existing Subscription Plan
 
-### Step 1: Log into your Dashboard.
+> This does not affect other subscribers in the existing subscription.
+
+Step 1: Log into your Dashboard.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-48.png)
 
-### Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
+Step 2: Under the *"Edit/Add Plans"* section, click *"Edit Plan".*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-49.png)
 
-### Step 3: Now, choose the plan you would like to edit.
+Step 3: Now, choose the plan you would like to edit.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-50.png)
 
-### Step 4: Here, you will be able to
+Step 4: Here, you will be able to:
 
 
 
@@ -68,8 +70,14 @@ A private plan helps you to keep it hidden from the public and can not be viewed
 
 ![](https://subscribie.co.uk/blog/content/images/2022/11/image-57.png)
 
-### Step 5: Now Click *Save.* 
+Step 5: Now Click *Save.* 
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2022/11/image-58.png)
 
-Now, you have successfully edited your plan!
+Now, you have successfully edited your plan! Your changes will reflect in your shop.
+
+If you do not have an existing plan and want to create a new one, check out our guide on [creating a subscription plan.](https://docs.subscribie.co.uk/docs/tasks/add-new-subscription-plan/)
+
+### Video Tutorial on Editing an Existing Subscription Plan
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/5f5d9d1c-cdb1-492b-8518-a29f71bfc896)](https://youtu.be/hHW3_zheKdU)
