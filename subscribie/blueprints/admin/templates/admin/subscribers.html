@@ -207,7 +207,7 @@
                     </li>
                 {% endfor %}
               </ul>
-                {% else %}
+                {% elif person.transactions %}
                 {# Donations are not in the subscription table since they are not plans nor subscriptions #}
                 {# therefore we need to look at the transction table to find the donations #}
                 {% for transaction in person.transactions %}
@@ -241,7 +241,11 @@
                         </div>
                     {% endif %}
                 {% endfor %}
-              {% endif %}
+                {% else %}
+                    <div class="card">
+                    <ul class="list-unstyld px-2">
+                    <li><strong>Notice: </strong>There may be a delay in processing a recent subscription sign-up, please check back later or click the "Refresh Subscriptions" button on top</li>
+                {% endif %}
             </td>
           </tr>
         {% endfor %}
