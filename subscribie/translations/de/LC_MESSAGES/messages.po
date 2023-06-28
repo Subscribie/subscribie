@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-01-29 16:53+0000\n"
+"POT-Creation-Date: 2023-06-28 22:21+0100\n"
 "PO-Revision-Date: 2022-11-16 16:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,29 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:324
+#: subscribie/__init__.py:330
 msgid "Hello"
 msgstr "Hallo"
 
-#: subscribie/auth.py:298
+#: subscribie/auth.py:297
 msgid ""
 "Please provide at least your email address to login, or use the forgot "
 "password feature."
-msgstr "Bitte geben Sie mindestens Ihre E-Mail-Adresse an, um sich anzumelden, oder verwenden Sie die Funktion 'Passwort vergessen'."
+msgstr ""
+"Bitte geben Sie mindestens Ihre E-Mail-Adresse an, um sich anzumelden, "
+"oder verwenden Sie die Funktion 'Passwort vergessen'."
 
-#: subscribie/models.py:544
+#: subscribie/models.py:550
 msgid "daily"
 msgstr "täglich"
 
-#: subscribie/models.py:545
+#: subscribie/models.py:551
 msgid "weekly"
 msgstr "wöchentlich"
 
-#: subscribie/models.py:546
+#: subscribie/models.py:552
 msgid "monthly"
 msgstr "monatlich"
 
-#: subscribie/models.py:547
+#: subscribie/models.py:553
 msgid "yearly"
 msgstr "jährlich"
 
@@ -48,6 +50,142 @@ msgstr "jährlich"
 #: subscribie/themes/theme-builder/builder/login.html:42
 msgid "Need help logging into your shop?"
 msgstr "Benötigen Sie Hilfe bei der Anmeldung in Ihrem Shop?"
+
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:247
+msgid "Notice:"
+msgstr "Notiz:"
+
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:248
+msgid ""
+"There may be a delay in processing a recent transaction,\n"
+"                        please check back later or"
+msgstr ""
+"Bei der Bearbeitung einer kürzlich durchgeführten Transaktion kann es zu "
+"Verzögerungen kommen.\n"
+"                        Bitte versuchen Sie es später noch einmal oder"
+
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:250
+#, fuzzy
+msgid "Refresh subscriptions now"
+msgstr "Abonnements jetzt aktualisieren "
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:2
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:6
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:12
+#, fuzzy
+msgid "Donation Settings"
+msgstr "Zahlungseinstellungen"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:22
+msgid "Enable Donations feature"
+msgstr "Aktivieren Sie die Spendenfunktion"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:23
+msgid ""
+"Activate the Donation feature to allow people to donate to your "
+"organisation"
+msgstr "Aktivieren Sie die Spendenfunktion, damit andere für Sie spenden können"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:30
+msgid "Enable"
+msgstr "Ermöglichen"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:37
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:42
+msgid "Save"
+msgstr "Speichern"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:2
+#: subscribie/blueprints/checkout/templates/donation_form.html:12
+#: subscribie/blueprints/checkout/templates/donation_form.html:59
+#, fuzzy
+msgid "Donation"
+msgstr "Spende"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:13
+#: subscribie/blueprints/checkout/templates/new_customer.html:13
+msgid "Complete the form below"
+msgstr "Füllen Sie das untenstehende Formular aus"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:35
+#: subscribie/blueprints/checkout/templates/new_customer.html:35
+#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:5
+#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:5
+msgid "Error"
+msgstr "Fehler"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:40
+#: subscribie/blueprints/checkout/templates/new_customer.html:40
+msgid "Your details"
+msgstr "Mehr details"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:41
+msgid "We use your details for billing purposes only."
+msgstr "Wir verwenden Ihre Daten ausschließlich zu Abrechnungszwecken."
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:44
+#: subscribie/blueprints/checkout/templates/new_customer.html:44
+msgid "Your Name"
+msgstr "Ihren Namen"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:54
+#: subscribie/blueprints/checkout/templates/new_customer.html:54
+msgid "Email"
+msgstr "täglich"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:73
+msgid "Billing Address"
+msgstr "Rechnungsadresse"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:76
+#: subscribie/blueprints/checkout/templates/new_customer.html:70
+msgid "Address"
+msgstr "Adresse"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:83
+#: subscribie/blueprints/checkout/templates/new_customer.html:77
+msgid "City"
+msgstr "Stadt"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:90
+#: subscribie/blueprints/checkout/templates/new_customer.html:84
+msgid "Post Code"
+msgstr "Postleitzahl"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:96
+#: subscribie/blueprints/checkout/templates/new_customer.html:61
+msgid "Phone"
+msgstr "Telefon"
+
+#: subscribie/blueprints/checkout/templates/donation_form.html:110
+#, fuzzy
+msgid "Donate"
+msgstr "Spenden"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:2
+#: subscribie/blueprints/checkout/templates/donation_summary.html:11
+#: subscribie/blueprints/checkout/templates/donation_summary.html:49
+msgid "Donation Summary"
+msgstr ""
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:15
+#: subscribie/blueprints/checkout/templates/order_summary.html:15
+msgid "Payment"
+msgstr "Zahlung"
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:52
+msgid "Please complete your donation by following the checkout below."
+msgstr ""
+"Bitte schließen Sie Ihre Spende ab, indem Sie der untenstehenden "
+"Kaufabwicklung folgen."
+
+#: subscribie/blueprints/checkout/templates/donation_summary.html:58
+#: subscribie/blueprints/checkout/templates/order_summary.html:94
+msgid "Checkout"
+msgstr "Kasse"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:2
 msgid "New Customer"
@@ -57,20 +195,6 @@ msgstr "Neukunde"
 msgid "Order Information"
 msgstr "Bestellinformationen"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:13
-msgid "Complete the form below"
-msgstr "Füllen Sie das untenstehende Formular aus"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:35
-#: subscribie/themes/theme-jesmond/jesmond/errors/404.html:5
-#: subscribie/themes/theme-jesmond/jesmond/errors/500.html:5
-msgid "Error"
-msgstr "Fehler"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:40
-msgid "Your details"
-msgstr "Mehr details"
-
 #: subscribie/blueprints/checkout/templates/new_customer.html:41
 msgid ""
 "We only use your details in order to get in touch with you regarding the "
@@ -79,33 +203,9 @@ msgstr ""
 "Wir verwenden Ihre Daten nur, um Sie bezüglich des Bestellstatus und zur "
 "Rechnungsstellung zu kontaktieren. Kein Spam, kein Müll"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:44
-msgid "Your Name"
-msgstr "Ihren Namen"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:54
-msgid "Email"
-msgstr "täglich"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:61
-msgid "Phone"
-msgstr "Keiner"
-
 #: subscribie/blueprints/checkout/templates/new_customer.html:67
 msgid "Your Address"
 msgstr "Deine Adresse"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:70
-msgid "Address"
-msgstr "Adresse"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:77
-msgid "City"
-msgstr "Stadt"
-
-#: subscribie/blueprints/checkout/templates/new_customer.html:84
-msgid "Post Code"
-msgstr "Postleitzahl"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:91
 msgid "Note to seller"
@@ -118,54 +218,50 @@ msgstr "Notiz an den Verkäufer"
 msgid "Order Summary"
 msgstr "Bestellübersicht"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:118
+#: subscribie/blueprints/checkout/templates/new_customer.html:120
 msgid "Choices"
 msgstr "Auswahl"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:129
+#: subscribie/blueprints/checkout/templates/new_customer.html:131
 #: subscribie/blueprints/checkout/templates/order_summary.html:51
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:59
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:61
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:30
 msgid "days free"
 msgstr "Tage frei"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:129
+#: subscribie/blueprints/checkout/templates/new_customer.html:131
 #: subscribie/blueprints/checkout/templates/order_summary.html:51
 msgid "then"
 msgstr "Dann"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:132
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:68
+#: subscribie/blueprints/checkout/templates/new_customer.html:134
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:70
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:39
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:41
 msgid "Upfront cost"
 msgstr "Kosten im Voraus"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:136
+#: subscribie/blueprints/checkout/templates/new_customer.html:138
 #: subscribie/blueprints/checkout/templates/order_summary.html:62
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:44
 msgid "Price"
 msgstr "Preis"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:139
+#: subscribie/blueprints/checkout/templates/new_customer.html:141
 #: subscribie/blueprints/checkout/templates/order_summary.html:67
 msgid "Total"
 msgstr "Gesamt"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:140
+#: subscribie/blueprints/checkout/templates/new_customer.html:142
 #: subscribie/blueprints/checkout/templates/order_summary.html:68
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:64
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:66
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:35
 msgid "Then"
 msgstr "Dann"
 
-#: subscribie/blueprints/checkout/templates/new_customer.html:167
+#: subscribie/blueprints/checkout/templates/new_customer.html:169
 msgid "Continue to Payment"
 msgstr "Weiter zu Zahlung"
-
-#: subscribie/blueprints/checkout/templates/order_summary.html:15
-msgid "Payment"
-msgstr "Zahlung"
 
 #: subscribie/blueprints/checkout/templates/order_summary.html:47
 msgid "Please complete your order"
@@ -182,10 +278,6 @@ msgstr "Füllen Sie das untenstehende Formular aus"
 #: subscribie/blueprints/checkout/templates/order_summary.html:55
 msgid "Upfront Cost"
 msgstr "Kosten im Voraus"
-
-#: subscribie/blueprints/checkout/templates/order_summary.html:92
-msgid "Checkout"
-msgstr "Kasse"
 
 #: subscribie/blueprints/checkout/templates/thankyou.html:2
 msgid "Thank you"
@@ -209,7 +301,7 @@ msgstr "Abonnement-Builder - Erfolg"
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:14
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:2
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:2
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:139
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:144
 msgid "Account"
 msgstr "Konto"
 
@@ -353,7 +445,7 @@ msgstr "Benachrichtigung"
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:97
 #: subscribie/themes/theme-jesmond/jesmond/errors/404.html:70
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:70
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:173
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:178
 msgid "By"
 msgstr "Durch"
 
@@ -365,17 +457,17 @@ msgstr "Möglich gemacht mit"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:101
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:103
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:135
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:143
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:177
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:140
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:148
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:182
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:184
 msgid "Logout"
 msgstr "Ausloggen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:105
 #: subscribie/themes/theme-jesmond/jesmond/errors/404.html:72
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:72
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:181
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:186
 msgid "Shop owner login"
 msgstr "Shop-Besitzer-Login"
 
@@ -384,14 +476,14 @@ msgid "or"
 msgstr "Dein"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:107
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:148
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:153
 msgid "Subscriber Login"
 msgstr "Abonnenten-Login"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/layout.html:110
 #: subscribie/themes/theme-jesmond/jesmond/errors/404.html:74
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:74
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:187
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:192
 msgid "Scroll back to top"
 msgstr "Zurück nach oben scrollen"
 
@@ -432,7 +524,9 @@ msgstr "Fügen Sie Ihren Code unten ein"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/login.html:20
 msgid "Or, are you a shop admin needing help logging into your shop?"
-msgstr "Oder sind Sie Shop-Administrator und benötigen Hilfe bei der Anmeldung in Ihrem Shop?"
+msgstr ""
+"Oder sind Sie Shop-Administrator und benötigen Hilfe bei der Anmeldung in"
+" Ihrem Shop?"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:2
 msgid "Change password"
@@ -548,7 +642,7 @@ msgid "Date started"
 msgstr "Datum gestartet"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriptions.html:47
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:74
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:76
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:47
 msgid "One-off"
 msgstr "Einmal"
@@ -599,9 +693,9 @@ msgid "plan has the following options"
 msgstr "Plan hat Optionen"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/update_choices.html:17
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:100
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:104
 #: subscribie/themes/theme-jesmond/jesmond/set_options.html:29
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:70
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:72
 msgid "options"
 msgstr "Optionen"
 
@@ -613,29 +707,29 @@ msgstr "Wählen Sie einen Plan"
 msgid "Choose plan"
 msgstr "Wählen Sie einen Plan"
 
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:49
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:51
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:20
 msgid "More details"
 msgstr "Mehr details"
 
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:76
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:78
 #: subscribie/themes/theme-jesmond/jesmond/view-plan.html:49
 msgid "No subscription"
 msgstr "Kein Abonnement"
 
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:86
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:90
 msgid "Automatically cancels on"
 msgstr "Automatisches Abbrechen an"
 
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:95
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:65
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:99
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:67
 msgid "See choice options"
 msgstr "Siehe Wahlmöglichkeiten"
 
-#: subscribie/themes/theme-jesmond/jesmond/choose.html:113
 #: subscribie/themes/theme-jesmond/jesmond/choose.html:117
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:84
-#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:88
+#: subscribie/themes/theme-jesmond/jesmond/choose.html:121
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:86
+#: subscribie/themes/theme-jesmond/jesmond/view-plan.html:90
 msgid "Choose"
 msgstr "Wählen"
 
@@ -643,27 +737,27 @@ msgstr "Wählen"
 msgid "Home"
 msgstr "Wählen"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:111
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:116
 msgid "Private pages"
 msgstr "Private Seiten"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:131
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:136
 msgid "Dashboard"
 msgstr "Armaturenbrett"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:174
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
 msgid "Collect payments easily with Subscribie"
 msgstr "Sammeln Sie Zahlungen einfach mit Subscribie"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:174
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:179
 msgid "Made in"
 msgstr "Hergestellt in"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:183
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:188
 msgid "Subscriber login"
 msgstr "Abonnenten-Login"
 
-#: subscribie/themes/theme-jesmond/jesmond/layout.html:191
+#: subscribie/themes/theme-jesmond/jesmond/layout.html:196
 msgid "Country"
 msgstr "Land"
 
@@ -1110,4 +1204,22 @@ msgstr ""
 #~ "Sie sicher, dass Sie lernen, wie "
 #~ "man es benutzt, um die Vorteile zu"
 #~ " sehen"
+
+#~ msgid "Donations Settings"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Activate the Donation feature to allow"
+#~ " subscribers or anyone to donate for"
+#~ " your business"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Activate the Donation feature to allow"
+#~ " subscribers or anyone to donate for"
+#~ " to your organisation"
+#~ msgstr ""
+
+#~ msgid "We only use your details to use it for billing purposes only."
+#~ msgstr ""
 
