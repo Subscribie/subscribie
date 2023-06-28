@@ -243,8 +243,12 @@
                 {% endfor %}
                 {% else %}
                     <div class="card">
-                    <ul class="list-unstyld px-2">
-                    <li><strong>Notice: </strong>There may be a delay in processing a recent subscription sign-up, please check back later or click the "Refresh Subscriptions" button on top</li>
+                    <ul class="list-unstyled px-2">
+                    <li><strong>Notice:</strong>
+                      <p>There may be a delay in processing a recent transaction,
+                        please check back later or <a href="{{ url_for('admin.refresh_subscriptions') }}"
+                        class="btn btn-success btn-sm">Refresh subscriptions now</a>
+                    </li>
                     </ul>
                     </div>
                 {% endif %}
