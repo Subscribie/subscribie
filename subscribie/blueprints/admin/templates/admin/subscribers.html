@@ -244,10 +244,10 @@
                 {% else %}
                     <div class="card">
                     <ul class="list-unstyled px-2">
-                    <li><strong>Notice:</strong>
-                      <p>There may be a delay in processing a recent transaction,
-                        please check back later or <a href="{{ url_for('admin.refresh_subscriptions') }}"
-                        class="btn btn-success btn-sm">Refresh subscriptions now</a>
+                    <li><strong>{{ _('Notice:') }}</strong>
+                      <p>{{ _('There may be a delay in processing a recent transaction,
+                        please check back later or') }} <a href="{{ url_for('admin.refresh_subscriptions') }}"
+                        class="btn btn-success btn-sm">{{ _('Refresh subscriptions now') }}</a>
                     </li>
                     </ul>
                     </div>

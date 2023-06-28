@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-04-03 00:11+0100\n"
+"POT-Creation-Date: 2023-06-28 22:21+0100\n"
 "PO-Revision-Date: 2023-04-03 00:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: subscribie/__init__.py:323
+#: subscribie/__init__.py:330
 msgid "Hello"
 msgstr "Bonjour"
 
@@ -26,21 +26,23 @@ msgstr "Bonjour"
 msgid ""
 "Please provide at least your email address to login, or use the forgot "
 "password feature."
-msgstr "Veuillez fournir au moins votre adresse e-mail pour vous connecter ou utiliser la fonction de mot de passe oublié."
+msgstr ""
+"Veuillez fournir au moins votre adresse e-mail pour vous connecter ou "
+"utiliser la fonction de mot de passe oublié."
 
-#: subscribie/models.py:544
+#: subscribie/models.py:550
 msgid "daily"
 msgstr "quotidienne"
 
-#: subscribie/models.py:545
+#: subscribie/models.py:551
 msgid "weekly"
 msgstr "hebdomadaire"
 
-#: subscribie/models.py:546
+#: subscribie/models.py:552
 msgid "monthly"
 msgstr "mensuelle"
 
-#: subscribie/models.py:547
+#: subscribie/models.py:553
 msgid "yearly"
 msgstr "annuelle"
 
@@ -49,10 +51,27 @@ msgstr "annuelle"
 msgid "Need help logging into your shop?"
 msgstr "Besoin d'aide pour vous connecter à votre boutique ?"
 
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:247
+msgid "Notice:"
+msgstr "Avis:"
+
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:248
+msgid ""
+"There may be a delay in processing a recent transaction,\n"
+"                        please check back later or"
+msgstr "Il peut y avoir un retard dans le traitement d'une transaction récente,\n"
+"                        veuillez revenir plus tard ou"
+
+#: subscribie/blueprints/admin/templates/admin/subscribers.html:250
+#, fuzzy
+msgid "Refresh subscriptions now"
+msgstr "Actualiser les abonnements maintenant"
+
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:2
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:6
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:12
-msgid "Donations Settings"
+#, fuzzy
+msgid "Donation Settings"
 msgstr "Paramètres de don"
 
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:22
@@ -60,10 +79,13 @@ msgid "Enable Donations feature"
 msgstr "Activer la fonctionnalité de don"
 
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:23
+#, fuzzy
 msgid ""
-"Activate the Donation feature to allow subscribers or anyone to donate "
-"for your business"
-msgstr "Activez la fonction de don pour permettre à quiconque de faire un don à votre boutique."
+"Activate the Donation feature to allow people to donate to your "
+"organisation"
+msgstr ""
+"Activez la fonction de don pour permettre à quiconque de faire un don à "
+"votre boutique."
 
 #: subscribie/blueprints/admin/templates/admin/settings/donations_enabled.html:30
 msgid "Enable"
@@ -101,7 +123,8 @@ msgid "Your details"
 msgstr "Vos détails"
 
 #: subscribie/blueprints/checkout/templates/donation_form.html:41
-msgid "We only use your details to use it for billing purposes only."
+#, fuzzy
+msgid "We use your details for billing purposes only."
 msgstr "Nous utilisons vos coordonnées uniquement à des fins de facturation."
 
 #: subscribie/blueprints/checkout/templates/donation_form.html:44
@@ -155,7 +178,9 @@ msgstr "Paiement"
 
 #: subscribie/blueprints/checkout/templates/donation_summary.html:52
 msgid "Please complete your donation by following the checkout below."
-msgstr "Veuillez compléter votre don en suivant le processus de paiement ci-dessous."
+msgstr ""
+"Veuillez compléter votre don en suivant le processus de paiement ci-"
+"dessous."
 
 #: subscribie/blueprints/checkout/templates/donation_summary.html:58
 #: subscribie/blueprints/checkout/templates/order_summary.html:94
@@ -175,7 +200,8 @@ msgid ""
 "We only use your details in order to get in touch with you regarding the "
 "order status and for billing. No spam, no rubbish"
 msgstr ""
-"Nous n'utilisons vos coordonnées que pour vous contacter concernant le statut de la commande et pour la facturation. Pas de spam, pas de déchets"
+"Nous n'utilisons vos coordonnées que pour vous contacter concernant le "
+"statut de la commande et pour la facturation. Pas de spam, pas de déchets"
 
 #: subscribie/blueprints/checkout/templates/new_customer.html:67
 msgid "Your Address"
@@ -311,7 +337,8 @@ msgid ""
 "Some subscriptions may give you access to files. If they do, they will "
 "appear below"
 msgstr ""
-"Certaines adhésions peuvent vous donner accès à des fichiers. Si c'est le cas, ils apparaîtront ci-dessous"
+"Certaines adhésions peuvent vous donner accès à des fichiers. Si c'est le"
+" cas, ils apparaîtront ci-dessous"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:41
 msgid "View Files"
@@ -335,7 +362,9 @@ msgstr "Paramètres de paiement"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:60
 msgid "If you have changed banks, you can update your payment method here"
-msgstr "Si vous avez changé de banque, vous pouvez mettre à jour votre moyen de paiement ici"
+msgstr ""
+"Si vous avez changé de banque, vous pouvez mettre à jour votre moyen de "
+"paiement ici"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:62
 msgid "Current payment method"
@@ -362,14 +391,16 @@ msgid ""
 "You don't need to do anything if your card has expired or you have a new "
 "card, the details are automatically updated"
 msgstr ""
-"Vous n'avez rien à faire si votre carte a expiré ou si vous avez une nouvelle carte, les détails sont mis à jour automatiquement"
+"Vous n'avez rien à faire si votre carte a expiré ou si vous avez une "
+"nouvelle carte, les détails sont mis à jour automatiquement"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:71
 msgid ""
 "You only need to update payment details if you have changed banks or have"
 " a new card account"
 msgstr ""
-"Vous devez seulement mettre à jour les informations de paiement si vous avez changé de banque ou si vous avez un nouveau compte de carte"
+"Vous devez seulement mettre à jour les informations de paiement si vous "
+"avez changé de banque ou si vous avez un nouveau compte de carte"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/account.html:74
 msgid "Update Payment Method"
@@ -465,7 +496,9 @@ msgstr "Fichiers téléchargés"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:19
 msgid "Files listed here will be available to your subscribers when they login"
-msgstr "Les fichiers listés ici seront disponibles pour vos abonnés lorsqu'ils se connectent"
+msgstr ""
+"Les fichiers listés ici seront disponibles pour vos abonnés lorsqu'ils se"
+" connectent"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/list_files.html:27
 msgid "File name"
@@ -489,7 +522,9 @@ msgstr "Mot de passe oublié"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/login.html:20
 msgid "Or, are you a shop admin needing help logging into your shop?"
-msgstr "Ou êtes-vous un administrateur de boutique ayant besoin d'aide pour vous connecter à votre boutique ?"
+msgstr ""
+"Ou êtes-vous un administrateur de boutique ayant besoin d'aide pour vous "
+"connecter à votre boutique ?"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/reset_password.html:2
 msgid "Change password"
@@ -510,8 +545,8 @@ msgid "Failing Payments"
 msgstr "Paiements échoués"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
-msgid "A "failed invoice" means that all"
-msgstr "Une "facture échouée" signifie que tous les"
+msgid "A \"failed invoice\" means that all"
+msgstr "Une \"facture échouée\" signifie que tous les"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:21
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
@@ -522,7 +557,9 @@ msgstr "automatiques"
 msgid ""
 "payment collection attemps for a given invoice have failed, and there "
 "will be no further"
-msgstr "tentatives de prélèvement pour une facture donnée ont échoué et il n'y aura plus"
+msgstr ""
+"tentatives de prélèvement pour une facture donnée ont échoué et il n'y "
+"aura plus"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:22
 msgid "payment collections for that invoices"
@@ -530,7 +567,9 @@ msgstr "de prélèvements pour ces factures"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:25
 msgid "Please note there may still be manual attempts made to collect the payment"
-msgstr "Veuillez noter qu'il peut encore y avoir des tentatives manuelles pour percevoir le paiement"
+msgstr ""
+"Veuillez noter qu'il peut encore y avoir des tentatives manuelles pour "
+"percevoir le paiement"
 
 #: subscribie/blueprints/subscriber/templates/subscriber/subscriber_failed_invoices.html:34
 msgid "Action"
@@ -757,7 +796,10 @@ msgstr "Ramenez-moi à la maison"
 msgid ""
 "You may have followed a dead, old or broken link, sorry about that, click"
 " the button at the top right to go back home and try again"
-msgstr "Vous avez peut-être suivi un lien mort, ancien ou cassé, désolé pour cela, cliquez sur le bouton en haut à droite pour revenir à la maison et réessayer"
+msgstr ""
+"Vous avez peut-être suivi un lien mort, ancien ou cassé, désolé pour "
+"cela, cliquez sur le bouton en haut à droite pour revenir à la maison et "
+"réessayer"
 
 #: subscribie/themes/theme-jesmond/jesmond/errors/404.html:71
 #: subscribie/themes/theme-jesmond/jesmond/errors/500.html:71
@@ -780,5 +822,11 @@ msgstr "Comment cela s'est-il produit"
 msgid ""
 "Sorry you encountered this error, we've logged it and will dispatch a "
 "team of monkeys to fix it. Click the button above to go back home"
-msgstr "Désolé, vous avez rencontré cette erreur, nous l'avons enregistrée et dépêcherons une équipe de singes pour la réparer. Cliquez sur le bouton ci-dessus pour retourner à la maison"
+msgstr ""
+"Désolé, vous avez rencontré cette erreur, nous l'avons enregistrée et "
+"dépêcherons une équipe de singes pour la réparer. Cliquez sur le bouton "
+"ci-dessus pour retourner à la maison"
+
+#~ msgid "Donations Settings"
+#~ msgstr "Paramètres de don"
 
