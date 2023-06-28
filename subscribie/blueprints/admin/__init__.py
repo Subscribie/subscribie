@@ -534,7 +534,6 @@ def edit():
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
                 draftPlan.description = getPlan(escape(form.description.data), index)
-
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
             else:
@@ -548,8 +547,12 @@ def edit():
             ):
                 draftPlan.interval_unit = interval_unit
 
-            if getPlan(form.interval_amount.data, index, default=0) is None:
+            if (
+                getPlan(form.interval_amount.data, index, default=0) is None
+                or getPlan(form.interval_amount.data, index, default=0) == 0
+            ):
                 interval_amount = 0
+                plan_requirements.subscription = False
             else:
                 interval_amount = dec2pence(
                     getPlan(form.interval_amount.data, index, default=0)
@@ -585,8 +588,12 @@ def edit():
 
             draftPlan.trial_period_days = trial_period_days
 
-            if getPlan(form.sell_price.data, index, default=0) is None:
+            if (
+                getPlan(form.sell_price.data, index, default=0) is None
+                or getPlan(form.sell_price.data, index, default=0) == 0
+            ):
                 sell_price = 0
+                plan_requirements.instant_payment = False
             else:
                 sell_price = dec2pence(getPlan(form.sell_price.data, index, default=0))
 
@@ -641,7 +648,6 @@ def add_plan():
             or "weekly" in interval_unit
         ):
             draftPlan.interval_unit = interval_unit
-
         if form.subscription.data[0] == "yes":
             plan_requirements.subscription = True
         else:
@@ -668,8 +674,9 @@ def add_plan():
 
         draftPlan.trial_period_days = trial_period_days
 
-        if form.interval_amount.data[0] is None:
+        if form.interval_amount.data[0] is None or form.interval_amount.data[0] == 0:
             draftPlan.interval_amount = 0
+            plan_requirements.subscription = False
         else:
             draftPlan.interval_amount = dec2pence(form.interval_amount.data[0])
 
@@ -678,8 +685,10 @@ def add_plan():
         else:
             plan_requirements.instant_payment = False
 
-        if form.sell_price.data[0] is None:
+        if form.sell_price.data[0] is None or form.sell_price.data[0] == 0:
             draftPlan.sell_price = 0
+            plan_requirements.instant_payment = False
+
         else:
             draftPlan.sell_price = dec2pence(form.sell_price.data[0])
 

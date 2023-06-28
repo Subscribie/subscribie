@@ -200,7 +200,7 @@ def order_summary():
     if is_donation is False:
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
         # if plan is free, skip Stripe checkout and store subscription right away
-        if plan.is_free() or (plan.interval_amount == 0 and plan.sell_price == 0):
+        if plan.is_free():
             log.info("Plan is free, so skipping Stripe checkout")
             chosen_option_ids = session.get("chosen_option_ids", None)
 

@@ -167,7 +167,7 @@
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
     <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value=
-    {% if plan.is_free() or (plan.interval_amount == 0 and plan.sell_price == 0) %}
+    {% if plan.is_free() %}
         "{{_('Next') }}"
     {% else %}
         "{{ _('Continue to Payment') }}"
