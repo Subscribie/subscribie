@@ -80,13 +80,13 @@ graph = {
 }
 
 # Visualise DAG
-dot = Digraph()
-for node in graph:
-    dot.node(str(node))
-    for child in graph[node]:
-        dot.edge(str(node), str(child))
+# dot = Digraph()
+# for node in graph:
+#    dot.node(str(node))
+#    for child in graph[node]:
+#        dot.edge(str(node), str(child))
 
-dot.render("graphviz_output.gv", view=True)
+# dot.render("./graphviz_output.gv", view=True)
 
 ts = TopologicalSorter(graph)
 
