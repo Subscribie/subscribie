@@ -78,7 +78,7 @@ jobs:
           git-push-flags: '--force'
           remote-branch: ${{ github.head_ref }}
       - name: Merging branch with playwright parallel test branch
-        run: git merge 1048-parallel
+        run: git merge origin/1048-parallel
       - name: Click to see your PR web address
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
