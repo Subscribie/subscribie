@@ -1,4 +1,4 @@
-name: Check online
+name: Check online status
 
 on:
   workflow_dispatch:
@@ -12,5 +12,5 @@ jobs:
     steps:
       - name: check urls load OK
         run: |
-          curl https://subscribie.co.uk
-          curl https://subscribie.co.uk/blog
+          curl -Isf ${{ secrets.SUBSCRIBIE_URL }} | head -n 1
+          curl -Isf ${{ secrets.SUBSCRIBIE_URL }}/blog/ | head -n 1
