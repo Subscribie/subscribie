@@ -17,7 +17,7 @@ test.describe("order free plan tests:", () => {
         await page.fill('#city', 'London');
         await page.fill('#postcode', 'L01 T3U');
         expect(await page.screenshot()).toMatchSnapshot('freeplan-new-customer-form.png');
-        await page.click('text="Continue to Payment"');
+        await page.click('text="Next"');
 
         // Verify get to the thank you page order complete
         const order_complete_content = await page.textContent('.title-1');

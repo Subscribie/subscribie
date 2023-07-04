@@ -39,4 +39,4 @@ package-lock.json
 test-results
 tests/browser-automated-tests-playwright/index.spec.js-snapshots/*
 tests/browser-automated-tests-playwright/worker*
-
+tests/browser-automated-tests-playwright/tests/*spec.js-snapshots

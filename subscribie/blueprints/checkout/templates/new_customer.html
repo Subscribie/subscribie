@@ -166,7 +166,13 @@
     <!-- detect if embeded in iframe to trigger new tab if needed -->
     <input type="hidden" name="is_iframe" id="is_iframe" value="" />
     <!-- end detect if embeded in iframe to trigger new tab if needed -->
-    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value="{{ _('Continue to Payment') }}">
+    <input type=submit class="btn-primary-lg btn-block col-lg-8 my-3" value=
+    {% if plan.is_free() %}
+        "{{_('Next') }}"
+    {% else %}
+        "{{ _('Continue to Payment') }}"
+    {% endif %}
+    >
 
   </form>
   <script type="text/javascript">
