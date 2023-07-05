@@ -847,6 +847,35 @@ def stripe_webhook():
             # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
             # so that receivers (such as notify Subscriber) are notified
             signal_payment_failed.send(stripe_event=eventObj)
+        except IndexError as e:
+            log.error(f"payment_intent.payment_failed reason is {e}")
+            eventObj = event["data"]["object"]
+            personName = eventObj["last_payment_error"]["payment_method"][
+                "billing_details"
+            ]["name"]
+            personEmail = eventObj["last_payment_error"]["payment_method"][
+                "billing_details"
+            ]["email"]
+            # Notify Subscriber if payment_failed event was related to a 3D secure failed payment # noqa: E501
+            if (
+                eventObj["last_payment_error"]["payment_method"]["card"][
+                    "three_d_secure_usage"
+                ]["supported"]
+                == True
+            ):
+                emailBody = f"""Hi {personName}, \n\n A recent subscription charge failed to be collected:\n\n
+                The failure code was: {eventObj["last_payment_error"]["code"]}\n\n
+                The failure message was: {eventObj["last_payment_error"]["message"]}\n\n
+                Please note, For extra fraud proction, Some banks enable 3D secure in their cards which requires the customer to complete an additional step before completing a transaction. Please try again with the correct code."""  # noqa: E501
+                log.info(emailBody)
+                email = User.query.first().email
+                company = Company.query.first()
+                msg = EmailMessageQueue()
+                msg["Subject"] = company.name + " " + "Your subscription payment failed"
+                msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                msg["TO"] = personEmail
+                msg.set_content(emailBody)
+                msg.queue()
         except Exception as e:
             log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
         return "OK", 200
