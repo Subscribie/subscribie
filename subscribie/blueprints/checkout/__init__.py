@@ -801,6 +801,10 @@ def stripe_process_event_payment_intent_succeeded(event):
     return "OK", 200
 
 
+def stripe_process_event_payment_intent_failed(event):
+    pass
+
+
 @checkout.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     """Recieve stripe webhook from proxy (not directly from Stripe)
@@ -942,11 +946,13 @@ def stripe_webhook():
                 )
         return "OK", 200
 
-    if (
-        stripe_livemode == event["livemode"]
-        and event["type"] == "payment_intent.succeeded"
-    ):
-        return stripe_process_event_payment_intent_succeeded(event)
+    stripe_event_type = event["type"]
+
+    match stripe_event_type:
+        case "payment_intent.succeeded":
+            return stripe_process_event_payment_intent_succeeded(event)
+        case "payment_intent.payment_failed":
+            return stripe_process_event_payment_intent_failed(event)
 
     msg = {"msg": "Unknown event", "event": event}
     log.debug(msg)
