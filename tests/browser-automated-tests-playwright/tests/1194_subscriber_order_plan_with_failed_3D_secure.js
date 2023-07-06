@@ -41,9 +41,12 @@ test.describe("order plan with failed 3D secure payment:", () => {
         await page.fill('#billingPostalCode', 'LN1 7FH');
         expect(await page.screenshot()).toMatchSnapshot('upfront-stripe-checkout-filled.png');
         await page.click('.SubmitButton');
-    
+
+        await page.waitForTimeout(5000);
         // Fail the 3D secure payment on purpose
-        await page.getByRole('button', { name: 'Fail authentication' }).click();
+        await page.frame({
+            name: 'acsFrame'
+          }).getByRole('button', { name: 'Fail authentication' }).click();
 
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
