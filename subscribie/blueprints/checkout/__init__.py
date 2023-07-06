@@ -801,8 +801,27 @@ def stripe_process_event_payment_intent_succeeded(event):
     return "OK", 200
 
 
-def stripe_process_event_payment_intent_failed(event):
-    pass
+def stripe_process_event_payment_intent_failed(event, is_donation):
+    log.info("Processing payment_intent.failed")
+    data = event["data"]["object"]
+    transaction = Transaction()
+    transaction.currency = data["currency"]
+    transaction.amount = data["amount"]
+    person_email = data["last_payment_error"]["payment_method"]["billing_details"][
+        "email"
+    ]
+    transaction.payment_status = (
+        "paid" if data["status"] == "succeeded" else data["status"]
+    )
+    transaction.external_id = data["id"]
+    transaction.external_src = "stripe"
+    transaction.person = Person.query.filter_by(email=person_email).one()
+    transaction.is_donation = is_donation
+    transaction.comment = data["last_payment_error"]["message"]
+    # commit the changes
+    database.session.add(transaction)
+    database.session.commit()
+    return "OK", 200
 
 
 @checkout.route("/stripe_webhook", methods=["POST"])
@@ -817,7 +836,6 @@ def stripe_webhook():
     """
     event = request.json
     is_donation = False
-
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
         log.warn(
@@ -882,7 +900,7 @@ def stripe_webhook():
                 msg.queue()
         except Exception as e:
             log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
-        return "OK", 200
+            return "OK", 200
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
@@ -945,14 +963,17 @@ def stripe_webhook():
                     stripe_external_id=session["id"],
                 )
         return "OK", 200
-
     stripe_event_type = event["type"]
-
-    match stripe_event_type:
-        case "payment_intent.succeeded":
-            return stripe_process_event_payment_intent_succeeded(event)
-        case "payment_intent.payment_failed":
-            return stripe_process_event_payment_intent_failed(event)
+    if (
+        stripe_event_type == "payment_intent.succeeded"
+        and stripe_livemode == event["livemode"]
+    ):
+        return stripe_process_event_payment_intent_succeeded(event)
+    elif (
+        stripe_event_type == "payment_intent.payment_failed"
+        and stripe_livemode == event["livemode"]
+    ):
+        return stripe_process_event_payment_intent_failed(event, is_donation)
 
     msg = {"msg": "Unknown event", "event": event}
     log.debug(msg)

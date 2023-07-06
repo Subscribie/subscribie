@@ -389,12 +389,20 @@ def refund_stripe_subscription(payment_id):
         )
     if "confirm" in request.args and request.args["confirm"] == "1":
         try:
-            stripe_refund = stripe.Refund.create(
-                payment_intent=payment_id,
-                stripe_account=connect_account_id,
-            )
-            if Transaction.query.filter_by(external_id=payment_id).first() is None:
-                return "payment doesn't exist"
+            if (
+                Transaction.query.filter_by(external_id=payment_id).first() is None
+                or Transaction.query.filter_by(external_id=payment_id)
+                .first()
+                .payment_status
+                != "paid"
+            ):
+                flash("The transaction doesn't exist or wasn't succesful")
+                return redirect(url_for("admin.transactions"))
+            else:
+                stripe_refund = stripe.Refund.create(
+                    payment_intent=payment_id,
+                    stripe_account=connect_account_id,
+                )
             transaction = Transaction.query.filter_by(external_id=payment_id).first()
             transaction.external_refund_id = stripe_refund.id
             database.session.commit()
@@ -1398,7 +1406,6 @@ def transactions():
             f"No transactions found. <a href='{url_for('admin.transactions')}'>View all transactions</a>"  # noqa: E501
         )
         flash(msg)
-
     return render_template(
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),

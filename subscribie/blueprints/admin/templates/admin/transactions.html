@@ -104,7 +104,7 @@
         </td>
         <td>
             <!-- if there is a external_refund id then don't show refund button -->
-            {% if transaction.external_refund_id is sameas None %}
+            {% if transaction.external_refund_id is sameas None and transaction.payment_status == 'paid' %}
                 <a class="refund-action" href="{{ url_for('admin.refund_stripe_subscription', payment_id=transaction.external_id, confirm="") }}">Refund</a>
 
             {% endif %}

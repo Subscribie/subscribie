@@ -239,6 +239,24 @@
                                     </li>
                             </ul>
                         </div>
+                    {% elif transaction.payment_status != 'succeeded' %}
+                        <div class="card">
+                            <ul class="list-unstyled px-2">
+                                <li><strong>Title: </strong>
+                                    <span class="failed-payment-title">Failed Payment</span>
+                                </li>
+                                <li><strong>Transaction ID: </strong>{{ transaction.uuid }}</li>
+                                <li><strong>Date: </strong>{{ transaction.created_at.strftime('%Y-%m-%d') }}</li>
+                                <li>
+                                        <strong>Price: </strong>
+                                        <span class="failed-payment-amount">{{ transaction.showSellPrice() }}</span>
+                                </li>
+                                    </span>
+                                    <li><strong>Status:</strong>
+                                              <span class="failed-payment-status">{{ transaction.payment_status }}</span>
+                                    </li>
+                            </ul>
+                        </div>
                     {% endif %}
                 {% endfor %}
                 {% else %}
