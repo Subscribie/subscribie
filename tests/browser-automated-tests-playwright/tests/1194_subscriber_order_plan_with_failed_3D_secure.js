@@ -54,20 +54,12 @@ test.describe("order plan with failed 3D secure payment:", () => {
         await page.goto('/admin/subscribers')
         expect(await page.screenshot()).toMatchSnapshot('upfront-view-subscribers.png');
 
-        // Click Refresh Subscription
-        await page.click('#refresh_subscriptions'); // this is the refresh subscription
-        await page.textContent('.alert-heading') === "Notification";
-        // screeshot to the active subscriber
-        await page.goto('admin/dashboard');
-        expect(await page.screenshot()).toMatchSnapshot('upfront-active-subscribers.png');
-        // go back to subscriptions
-        await page.goto('/admin/subscribers')
         // Verify that subscriber is present in the list
-        const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
+        const subscriber_email_content = await page.textContent('.failed-payment-title');
+        expect(subscriber_email_content === "Failed Payment");
 
         // Verify that plan is attached to subscriber
-        const subscriber_plan_title_content = await page.textContent('.subscription-title');
-        expect(subscriber_plan_title_content === 'One-Off Soaps');
+        const subscriber_plan_title_content = await page.textContent('.failed-payment-status');
+        expect(subscriber_plan_title_content === 'requires_payment_method');
     });
 });
