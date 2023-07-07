@@ -810,9 +810,7 @@ def stripe_process_event_payment_intent_failed(event, is_donation):
     person_email = data["last_payment_error"]["payment_method"]["billing_details"][
         "email"
     ]
-    transaction.payment_status = (
-        "paid" if data["status"] == "succeeded" else data["status"]
-    )
+    transaction.payment_status = data["status"]
     transaction.external_id = data["id"]
     transaction.external_src = "stripe"
     transaction.person = Person.query.filter_by(email=person_email).one()
