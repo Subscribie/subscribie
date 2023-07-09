@@ -822,6 +822,37 @@ def stripe_process_event_payment_intent_failed(event, is_donation):
     return "OK", 200
 
 
+@backoff.on_exception(backoff.expo, Exception, max_tries=20)
+def stripe_process_event_payment_intent_requires_action(event):
+    """Process three_d_secure_redirect required action condition"""
+    log.info("Processing event payment_intent.requires_action. Event details:\n{event}")
+    try:
+        if (
+            event["data"]["object"]["next_action"]["type"] == "use_stripe_sdk"
+            and event["data"]["object"]["next_action"]["use_stripe_sdk"]["type"]
+            == "three_d_secure_redirect"
+        ):
+            log.info(f"A 3D secure payment didn't go through. three_d_secure_redirect. The event was:\n{event}")  # noqa: E501
+        else:
+            log.error(
+                f"Unknown next_action type: {event['data']['object']['next_action']['type']}"  # noqa: E501
+            )  # noqa: E501
+    except Exception as e:
+        log.error(
+            f"Unknown error in stripe_process_event_payment_intent_requires_action: {e}"
+        )  # noqa: E501
+
+
+@backoff.on_exception(backoff.expo, Exception, max_tries=20)
+def stripe_process_event_invoice_payment_failed(event):
+    breakpoint()
+    try:
+        hosted_invoice_url = event['data']['object']['hosted_invoice_url']
+        log.info(f"The invoice.payment_failed hosted_invoice_url is {hosted_invoice_url}")  # noqa: E501
+    except Exception as e:
+        log.error(f"Unable to process event invoice.payment_failed unknown exception: {e}")  # noqa: E501
+
+
 @checkout.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     """Recieve stripe webhook from proxy (not directly from Stripe)
@@ -841,6 +872,11 @@ def stripe_webhook():
         )
 
     log.info(f"Received stripe webhook event type {event['type']}")
+    if event["type"] == "payment_intent.requires_action":
+        stripe_process_event_payment_intent_requires_action(event)
+    if event["type"] == "invoice.payment_failed":
+        stripe_process_event_invoice_payment_failed(event)
+
     # Handle the payment_intent.payment_failed
     if event["type"] == "payment_intent.payment_failed":
         log.info("Stripe webhook event: payment_intent.payment_failed")
