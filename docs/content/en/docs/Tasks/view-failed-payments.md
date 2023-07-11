@@ -4,12 +4,15 @@ title: "View Failed Payments"
 date: 2023-06-28
 weight: 5
 description: >
-  Learn how you can view customer failed payments and number of retry attempts.
+  Learn how you can view customer failed payments and the number of retry attempts.
 ---
 
 Failed payments do not need to be manually managed. You automatically receive a notification of a failed payment and when it will be retried again. All failed payments are automatically retried for a maximum of 5 times. Please reach out to your subscriber and ask them to keep their payment accounts in order before the next payment attempt.
 
 If you'd like to know how to get your customer's information, check out our [documentation on subscriber information](https://docs.subscribie.co.uk/docs/tasks/export-subscribers-from-your-shop/).
+
+## How Subscribie Tackle Failed Payments?
+When an attempted payment collection is unsuccessful, it is retried a set number of times to collect the payment. If the attempt falls during the next subscription payment cycle, both the attempted payment collection and the next subscription payment will be collected. Both payments are collected because time is constant and moving. So failed payments will be retried up to 5 times* and if it overlaps with future subscription payments, both payments will be deducted.
 
 ## Steps to View Failed Payments
 
