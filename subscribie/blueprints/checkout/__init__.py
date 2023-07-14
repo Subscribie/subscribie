@@ -801,6 +801,58 @@ def stripe_process_event_payment_intent_succeeded(event):
     return "OK", 200
 
 
+def stripe_process_event_payment_intent_failed(event, is_donation):
+    log.info("Processing payment_intent.failed")
+    data = event["data"]["object"]
+    transaction = Transaction()
+    transaction.currency = data["currency"]
+    transaction.amount = data["amount"]
+    person_email = data["last_payment_error"]["payment_method"]["billing_details"][
+        "email"
+    ]
+    transaction.payment_status = data["status"]
+    transaction.external_id = data["id"]
+    transaction.external_src = "stripe"
+    transaction.person = Person.query.filter_by(email=person_email).one()
+    transaction.is_donation = is_donation
+    transaction.comment = data["last_payment_error"]["message"]
+    # commit the changes
+    database.session.add(transaction)
+    database.session.commit()
+    return "OK", 200
+
+
+@backoff.on_exception(backoff.expo, Exception, max_tries=20)
+def stripe_process_event_payment_intent_requires_action(event):
+    """Process three_d_secure_redirect required action condition"""
+    log.info("Processing event payment_intent.requires_action. Event details:\n{event}")
+    try:
+        if (
+            event["data"]["object"]["next_action"]["type"] == "use_stripe_sdk"
+            and event["data"]["object"]["next_action"]["use_stripe_sdk"]["type"]
+            == "three_d_secure_redirect"
+        ):
+            log.info(f"A 3D secure payment didn't go through. three_d_secure_redirect. The event was:\n{event}")  # noqa: E501
+        else:
+            log.error(
+                f"Unknown next_action type: {event['data']['object']['next_action']['type']}"  # noqa: E501
+            )  # noqa: E501
+    except Exception as e:
+        log.error(
+            f"Unknown error in stripe_process_event_payment_intent_requires_action: {e}"
+        )  # noqa: E501
+
+
+@backoff.on_exception(backoff.expo, Exception, max_tries=20)
+def stripe_process_event_invoice_payment_failed(event):
+    breakpoint()
+    try:
+        hosted_invoice_url = event['data']['object']['hosted_invoice_url']
+        log.info(f"The invoice.payment_failed hosted_invoice_url is {hosted_invoice_url}")  # noqa: E501
+    except Exception as e:
+        log.error(f"Unable to process event invoice.payment_failed unknown exception: {e}")  # noqa: E501
+
+
 @checkout.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
     """Recieve stripe webhook from proxy (not directly from Stripe)
@@ -813,7 +865,6 @@ def stripe_webhook():
     """
     event = request.json
     is_donation = False
-
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
         log.warn(
@@ -821,6 +872,11 @@ def stripe_webhook():
         )
 
     log.info(f"Received stripe webhook event type {event['type']}")
+    if event["type"] == "payment_intent.requires_action":
+        stripe_process_event_payment_intent_requires_action(event)
+    if event["type"] == "invoice.payment_failed":
+        stripe_process_event_invoice_payment_failed(event)
+
     # Handle the payment_intent.payment_failed
     if event["type"] == "payment_intent.payment_failed":
         log.info("Stripe webhook event: payment_intent.payment_failed")
@@ -847,9 +903,38 @@ def stripe_webhook():
             # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
             # so that receivers (such as notify Subscriber) are notified
             signal_payment_failed.send(stripe_event=eventObj)
+        except IndexError as e:
+            log.error(f"payment_intent.payment_failed reason is {e}")
+            eventObj = event["data"]["object"]
+            personName = eventObj["last_payment_error"]["payment_method"][
+                "billing_details"
+            ]["name"]
+            personEmail = eventObj["last_payment_error"]["payment_method"][
+                "billing_details"
+            ]["email"]
+            # Notify Subscriber if payment_failed event was related to a 3D secure failed payment # noqa: E501
+            if (
+                eventObj["last_payment_error"]["payment_method"]["card"][
+                    "three_d_secure_usage"
+                ]["supported"]
+                == True
+            ):
+                emailBody = f"""Hi {personName}, \n\n A recent subscription charge failed to be collected:\n\n
+                The failure code was: {eventObj["last_payment_error"]["code"]}\n\n
+                The failure message was: {eventObj["last_payment_error"]["message"]}\n\n
+                Please note, For extra fraud proction, Some banks enable 3D secure in their cards which requires the customer to complete an additional step before completing a transaction. Please try again with the correct code."""  # noqa: E501
+                log.info(emailBody)
+                email = User.query.first().email
+                company = Company.query.first()
+                msg = EmailMessageQueue()
+                msg["Subject"] = company.name + " " + "Your subscription payment failed"
+                msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+                msg["TO"] = personEmail
+                msg.set_content(emailBody)
+                msg.queue()
         except Exception as e:
             log.error(f"Unhandled error processing payment_intent.payment_failed: {e}")
-        return "OK", 200
+            return "OK", 200
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
@@ -912,12 +997,17 @@ def stripe_webhook():
                     stripe_external_id=session["id"],
                 )
         return "OK", 200
-
+    stripe_event_type = event["type"]
     if (
-        stripe_livemode == event["livemode"]
-        and event["type"] == "payment_intent.succeeded"
+        stripe_event_type == "payment_intent.succeeded"
+        and stripe_livemode == event["livemode"]
     ):
         return stripe_process_event_payment_intent_succeeded(event)
+    elif (
+        stripe_event_type == "payment_intent.payment_failed"
+        and stripe_livemode == event["livemode"]
+    ):
+        return stripe_process_event_payment_intent_failed(event, is_donation)
 
     msg = {"msg": "Unknown event", "event": event}
     log.debug(msg)

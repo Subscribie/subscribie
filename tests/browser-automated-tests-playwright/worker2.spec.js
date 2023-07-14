@@ -28,3 +28,5 @@ test.beforeEach(async ({ page }) => {
   const enabling_donations = require('./tests/1065_shop_owner_enabling_donations');
   
   const checkout_donations = require('./tests/1065_subscriber_checkout_donation');
+
+  const order_plan_failed_3D_secure = require("./tests/1194_subscriber_order_plan_with_failed_3D_secure.js");
