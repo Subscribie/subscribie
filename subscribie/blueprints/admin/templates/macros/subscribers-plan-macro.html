@@ -1,0 +1,182 @@
+{% macro subscriber_plan_title(title, class_name) -%}
+  <li><strong>Title: </strong>
+      <span class="{{ class_name }}">{{ title }}</span>
+  </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_interval(plan) -%}
+  <li>
+    <strong>Interval:</strong>
+    {% if  plan  is not sameas None and plan.interval_unit is not sameas None %}
+      {{ plan.interval_unit.capitalize() }}
+    {% else %}
+      {{ plan.interval_unit }}
+    {% endif %}
+  </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_chosen_options(chosen_options) -%}
+      <li>
+          <details open>
+              <summary><strong>Chosen Options</strong></summary>
+              <ul>
+                  {% for choice in chosen_options %}
+                      <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
+                  {% endfor %}
+              </ul>
+          </details>
+      </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_subscription_id(title, uuid) -%}
+  <li><strong>{{ title }}: </strong>{{ uuid }}</li>
+  {%- endmacro %}
+
+  {% macro subscriber_plan_started_date(created_at) -%}
+  <li><strong>Date started: </strong>{{ created_at.strftime('%Y-%m-%d') }}</li>
+  {%- endmacro %}
+
+  {% macro subscriber_plan_interval_amount(plan_requirements, subscription) -%}
+  <li><strong>Price: </strong>
+          <span class="subscribers-plan-interval_amount">
+      {% if plan_requirements and plan_requirements.subscription %}
+          {{ subscription.showIntervalAmount() }}
+      {% else %}
+          (One-off. Not a subscription)
+      {% endif %}
+          </span>
+  </li>
+  {%- endmacro %}
+
+  {% macro subscriber_plan_sell_price(title, class_name, subscription, transaction) -%}
+  <li><strong>{{ title }}: </strong>
+      <span class="{{ class_name }}">
+          {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
+              {{ subscription.showSellPrice() }}
+          {% elif transaction %}
+              {{ transaction.showSellPrice() }}
+          {% else %}
+              (No up-front fee)
+          {% endif %}
+      </span>
+  </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_status(class_name, subscription, transaction) -%}
+  <li><strong>Status:</strong>
+          {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+             {% if subscription.stripe_pause_collection == "void" %}
+                <span class="{{ class_name }}">Paused</span>
+             {% else %}
+                <span class="{{ class_name }}">{{ subscription.stripe_status }}</span>
+             {% endif %}
+          {% elif transaction %}
+             <span class="{{ class_name }}">transaction.status</span>
+          {% else %}
+             <span class="{{ class_name }}">Paid</span>
+          {% endif %}
+  </li>
+  {%- endmacro %}
+
+
+  
+  {% macro subscriber_plan_cancel_at(cancel_at) -%}
+      <li>
+        <strong>Automatically Cancels at:</strong>
+        {{ cancel_at | timestampToDate }}
+      </li>
+  {%- endmacro %}
+
+  
+  {% macro subscriber_plan_order_note(plan_requirements, subscription) -%}
+      <li>
+          {% if plan_requirements and plan_requirements.note_to_seller_required %}
+              <details open>
+                  <summary><strong>Order Note</strong></summary>
+                  {% if subscription.note %}
+                      {{ subscription.note.note }}
+                  {% else %}
+                      No note was given.
+                  {% endif %}
+              </details>
+          {% endif %}
+      </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_actions(plan_requirements, subscription) -%}
+          {% if plan_requirements and plan_requirements.subscription %}
+      <li><strong>Actions: </strong>
+              {% if subscription.stripe_status|lower in ['active', 'trialing', 'past_due', 'unpaid'] %}
+                  {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
+                  <a href="{{ url_for("admin.pause_stripe_subscription",
+                  subscription_id=subscription.stripe_subscription_id,
+                  confirm="") }}">
+                      <span class="pause-action">Pause</span>
+                  </a> |
+                  <a href="{{ url_for("admin.cancel_stripe_subscription",
+                  subscription_id=subscription.stripe_subscription_id,
+                  confirm="") }}">
+                      <span class="cancel-action">Cancel</span>
+                  </a> |
+                  {% endif %}
+              {% endif %}
+              {% if subscription.stripe_pause_collection|lower == 'void' %}
+                  <a href="{{ url_for("admin.resume_stripe_subscription",
+                  subscription_id=subscription.stripe_subscription_id,
+                  confirm="") }}">
+                      <span class="resume-action">Resume</span>
+                  </a> |
+                  <a href="{{ url_for("admin.cancel_stripe_subscription",
+                  subscription_id=subscription.stripe_subscription_id,
+                  confirm="") }}">
+                      <span class="cancel-action">Cancel</span>
+                  </a> |
+              {% endif %}
+          {% endif %}</li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_history(person_uuid)-%}
+       <li class=mt-2><strong>History: </strong>
+        <a href="{{ url_for('admin.transactions',
+          subscriber=person_uuid) }}">View Transactions
+        </a>
+       </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_plan_documents(documents)-%}
+       <li class=mt-2><strong>Documents: </strong>
+         {% if documents|length == 0 %}
+            None
+         {% else %}
+           <ul>
+           {% for document in documents %}
+           {# Show documents assocated with subscription (if any) #}
+           <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}">{{ document.name }}</a> | 
+               {{ document.created_at.strftime('%Y-%m-%d') }}</li>
+           {% endfor %}
+           </ul>
+         {% endif %}
+       </li>
+  {%- endmacro %}
+
+
+  {% macro subscriber_transaction_comment(title, comment) -%}
+     <li>
+          {% if comment %} 
+              <details open>
+                  <summary><strong>{{ title }}</strong></summary>
+                      {{ comment }}
+          {% else %}  
+                      No note was given.
+              </details>
+          {% endif %}     
+      </li>
+
+  {%- endmacro %}
