@@ -1,0 +1,91 @@
+{% macro plan_card(plan) -%}
+<div class="pricing-plan col-md p-2">
+    <div class="card h-100">
+        {% if plan.primary_icon %}
+        <a href="#" class="plan-img-action" data-toggle="modal" data-target="#imgModal" data-highres="{{ plan.primary_icon }}">
+            <img src="{{ plan.primary_icon }}" class="plan-img card-img-top">
+        </a>
+        {% endif %}
+        <div class="card-body">
+        <h5 class="body-lg">{{ plan.title|safe }}</h5>
+        {% if plan.description is not sameas None %}
+            <div>
+            <div class="btn-link-lg btn-block text-left pl-0" type="button" data-toggle="collapse" data-target="#collapse-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-{{ plan.id }}">
+            {{ _('More details') }}
+            </div>
+            <div class="collapse" id="collapse-{{ plan.id }}">
+                <p class="text mb-0 pt-2">{{ plan.description }}</p>
+            </div>
+            </div>
+        {% endif %}
+
+        <hr class="my-4">
+        {% if plan.trial_period_days > 0 %}
+        <p class="py-3 body-lg">{{ plan.trial_period_days }} {{ _('days free') }}</p>
+        {% endif %}
+        {% if plan.requirements.subscription %}
+            <div class="my-md-4">
+            <span class="text">
+                {% if plan.trial_period_days > 0 %}{{ _('Then') }} {% endif %}
+                <span class="price">{{ plan.showIntervalAmount() }}</span>/{{ plan.showItervalUnit() }}
+            </span> <br>
+            {% if plan.requirements.instant_payment %}
+            <span class="text">{{ _('Upfront cost') }}: {{ plan.showSellPrice() }}</span>
+            {% endif %}
+            </div>
+            {% else  %} {# Not a subscription based product #}
+            <div class="my-md-4">
+            <span class="text">
+                <span class="price">{{ plan.showSellPrice() }}</span>/{{ _('One-off') }}
+            </span>  <br>
+            <span class="text">{{ _('No subscription') }}</span>
+            </div>
+        {% endif %}
+
+        {% for sellingPoint in plan.selling_points%}
+        {% if sellingPoint.point|length != 0 %}
+        <div class="plan-selling-points d-flex align-items-start">
+            <i class="fas fa-check-circle pr-2 mt-1"></i><p>{{ sellingPoint.point|safe }}</p>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% if plan.cancel_at %}
+            <small>{{ _('Automatically cancels on') }}: {{ plan.cancel_at | timestampToDate }}</small>
+        {% endif %}
+        </div> <!-- end card-body -->
+
+        <div class="card-footer">
+
+        {% if plan.choice_groups %}
+            <div>
+            <div class="btn-link-lg btn-block mb-1" type="button" data-toggle="collapse" data-target="#collapse-choise-{{ plan.id }}" aria-expanded="false" aria-controls="collapse-choise-{{ plan.id }}">
+                {{ _('See choice options') }}
+            </div>
+            <div class="collapse mb-4" id="collapse-choise-{{ plan.id }}" >
+                {% for choice_group in plan.choice_groups %}
+                <details>
+                <summary>{{ choice_group.title }} ({{ choice_group.options|count }} {{ _('options') }})</summary>
+                <ul>
+                    {% for option in choice_group.options %}
+                    <li>{{ option.title }}</li>
+                    {% endfor %}
+                </ul>
+                </details>
+                {% endfor %}
+            </div>
+            </div>
+        {% endif %}
+        {% if plan.choice_groups %}
+            <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
+            {{ _('Choose') }}
+            </a>
+        {% else %}
+            <a href="/new_customer?plan={{ plan.uuid }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
+            {{ _('Choose') }}
+            </a>
+        {% endif %}
+
+        </div> <!-- end card-footer -->
+    </div> <!-- end card -->
+</div> <!-- end pricing plan -->
+{%- endmacro %}
