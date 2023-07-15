@@ -2,7 +2,7 @@
 {% block title %} Subscribers {% endblock %}                                
                                                                                  
 {% block body %}
-{% from 'macros/subscriber_subscription_plan_card.html' import subscriber_subscription_plan_card %}
+{% from 'macros/subscriber_subscription_card.html' import subscriber_subscription_card %}
 
 <h2 class="text-center text-dark mb-3">My Subscribers</h2>
 
@@ -83,7 +83,7 @@
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
                     <li>
-                        {{ subscriber_subscription_plan_card(subscription) }}
+                        {{ subscriber_subscription_card(subscription) }}
                     </li>
                 {% endfor %}
               </ul>
