@@ -987,11 +987,23 @@ def stripe_connect():
             stripe_express_dashboard_url = None
     database.session.commit()
     countryToCurrency = [
-        {"country_code": "GB", "country_name": "United Kingdom (GBP)", "currency_code": "GBP"},
-        {"country_code": "US", "country_name": "United States of America (USD)", "currency_code": "USD"},
+        {
+            "country_code": "GB",
+            "country_name": "United Kingdom (GBP)",
+            "currency_code": "GBP",
+        },
+        {
+            "country_code": "US",
+            "country_name": "United States of America (USD)",
+            "currency_code": "USD",
+        },
         {"country_code": "BR", "country_name": "Brazil (BRL)", "currency_code": "BRL"},
         {"country_code": "AT", "country_name": "Austria (EUR)", "currency_code": "EUR"},
-        {"country_code": "AU", "country_name": "Australia (AUD)", "currency_code": "AUD"},
+        {
+            "country_code": "AU",
+            "country_name": "Australia (AUD)",
+            "currency_code": "AUD",
+        },
         {"country_code": "BE", "country_name": "Belgium (EUR)", "currency_code": "EUR"},
         {"country_code": "CA", "country_name": "Canada (CAD)", "currency_code": "CAD"},
         {"country_code": "CY", "country_name": "Cyprus (EUR)", "currency_code": "EUR"},
@@ -1004,16 +1016,48 @@ def stripe_connect():
         {"country_code": "IE", "country_name": "Ireland (EUR)", "currency_code": "EUR"},
         {"country_code": "IT", "country_name": "Italy (EUR)", "currency_code": "EUR"},
         {"country_code": "LV", "country_name": "Latvia (EUR)", "currency_code": "EUR"},
-        {"country_code": "LT", "country_name": "Lithuania (EUR)", "currency_code": "EUR"},
-        {"country_code": "LU", "country_name": "Luxembourg (EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "LT",
+            "country_name": "Lithuania (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "LU",
+            "country_name": "Luxembourg (EUR)",
+            "currency_code": "EUR",
+        },
         {"country_code": "MT", "country_name": "Malta (EUR)", "currency_code": "EUR"},
         {"country_code": "MX", "country_name": "Mexico (MXN)", "currency_code": "MXN"},
-        {"country_code": "MY", "country_name": "Malaysia (MYR)", "currency_code": "MYR"},
-        {"country_code": "NL", "country_name": "Netherlands (EUR)", "currency_code": "EUR"},
-        {"country_code": "NZ", "country_name": "New Zealand (NZD)", "currency_code": "NZD"},
-        {"country_code": "PT", "country_name": "Portugal (EUR)", "currency_code": "EUR"},
-        {"country_code": "SI", "country_name": "Slovenia (EUR)", "currency_code": "EUR"},
-        {"country_code": "SK", "country_name": "Slovakia (EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "MY",
+            "country_name": "Malaysia (MYR)",
+            "currency_code": "MYR",
+        },
+        {
+            "country_code": "NL",
+            "country_name": "Netherlands (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "NZ",
+            "country_name": "New Zealand (NZD)",
+            "currency_code": "NZD",
+        },
+        {
+            "country_code": "PT",
+            "country_name": "Portugal (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "SI",
+            "country_name": "Slovenia (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "SK",
+            "country_name": "Slovakia (EUR)",
+            "currency_code": "EUR",
+        },
     ]
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
