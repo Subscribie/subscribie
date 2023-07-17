@@ -19,6 +19,7 @@ def export_transactions():
         return "You don't have any transactions yet."
     rows = []
     for transaction in transactions:
+        subscription_note = "None"
         if transaction.person is not None:
             # Transactions without an associated subscription (e.g.
             # a manual charge to a customer, will not have an associated
@@ -27,6 +28,10 @@ def export_transactions():
                 plan_title = transaction.subscription.plan.title
                 subscription_uuid = transaction.subscription.uuid
                 subscription_status = transaction.subscription.stripe_status
+                if transaction.subscription.note.note:
+                    subscription_note = (
+                        transaction.subscription.note.note.strip().replace(",", ";")
+                    )
             else:
                 plan_title = None
                 subscription_uuid = None
@@ -59,6 +64,7 @@ def export_transactions():
                     "subscribie_external_src": transaction.external_src,
                     "subscribie_external_id": transaction.external_id,
                     "is_donation": transaction.is_donation,
+                    "subscription_note": subscription_note,
                 }
             )
         else:
