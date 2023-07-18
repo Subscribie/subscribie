@@ -24,6 +24,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          set -x
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.DOKKU_HOST }}>> ~/.ssh/known_hosts
+          eval `ssh-agent -s`
+          ssh-add - <<< "$SSH_PRIVATE_KEY"
+          echo deleting dokku app ${{ github.head_ref }}
           python removing-inactive-pr-preview-after-3-days-old.py
 
