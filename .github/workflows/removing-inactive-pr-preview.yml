@@ -1,0 +1,29 @@
+name: Daily Pull Request Age
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  daily-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Get Pull Request Age
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+        run: |
+          python removing-inactive-pr-preview-after-3-days-old.py
+
