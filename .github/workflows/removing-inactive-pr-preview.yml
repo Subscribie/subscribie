@@ -1,8 +1,7 @@
 name: Daily pull request activity check
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "45 * * * *"
+  push:
 
 jobs:
   daily-job:
