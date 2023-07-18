@@ -1,8 +1,8 @@
-name: Daily Pull Request Age
+name: Daily pull request activity check
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "45 * * * *"
 
 jobs:
   daily-job:
