@@ -1,7 +1,8 @@
 name: Daily pull request activity check
 on:
   workflow_dispatch:
-  push:
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   daily-job:
@@ -22,7 +23,6 @@ jobs:
 
       - name: Get Pull Request Age
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
