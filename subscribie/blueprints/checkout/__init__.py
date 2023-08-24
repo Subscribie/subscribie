@@ -836,12 +836,12 @@ def stripe_webhook():
                 The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
                 Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
                 log.info(emailBody)
-                email = User.query.first().email
+                shop_admins = [user.email for user in User.query.all()]
                 company = Company.query.first()
                 msg = EmailMessageQueue()
                 msg["Subject"] = company.name + " " + "A payment collection failed"
                 msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
-                msg["TO"] = email
+                msg["TO"] = shop_admins
                 msg.set_content(emailBody)
                 msg.queue()
             # Signal that a Stripe payment_intent.payment_failed event has been received, # noqa: E501
