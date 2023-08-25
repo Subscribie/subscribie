@@ -32,5 +32,5 @@ jobs:
           eval `ssh-agent -s`
           ssh-add - <<< "$SSH_PRIVATE_KEY"
           echo deleting dokku app ${{ github.head_ref }}
-          python removing-inactive-pr-preview-after-3-days-old.py
+          python .github/workflows/remove-inactive-pr-previews.py
 
