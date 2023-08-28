@@ -12,6 +12,8 @@ test.beforeEach(async ({ page }) => {
   }); 
   const clear_DB = require('./tests/clear_db');
 
+  const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
+
   const categories_creation = require('./tests/452_shop_owner_categories_creation');
 
   const private_page_creation = require('./tests/334_shop_owner_private_page_creation');

@@ -24,7 +24,7 @@ def newSubscriberEmailNotification(
         shopadmins = User.query.all()  # all shop admins
         msg["to"] = [user.email for user in shopadmins]  # all shop admins
         msg.set_content(
-            f"{subscriber_name} has subscribed to your {subscriber_plan} plan!"
+            f"You have a new subscriber! \n\n Plan Title: {subscriber_plan} \n Subscriber Name: {subscriber_name}"
         )
         setting = Setting.query.first()
         if setting.reply_to_email_address is not None:
