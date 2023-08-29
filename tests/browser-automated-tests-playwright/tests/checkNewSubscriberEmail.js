@@ -45,6 +45,11 @@ function checkNewSubscriberEmail() {
       }
       const lastEmail = emails[emails.length -1]['email_body']
       if ( lastEmail.includes('You have a new subscriber!')) {
+        const jsonToString = JSON.stringify(lastEmail);
+        const regex = /Subscriber Name: (.*)(?:\\r)/gm;
+        const subscriber_name = regex.exec(jsonToString)[1];
+        console.log(subscriber_name)
+        module.exports.subscriber_name = subscriber_name;
         return true
       } else {
         console.error("Could not find login text in email");
