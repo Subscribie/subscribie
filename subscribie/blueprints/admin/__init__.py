@@ -1938,6 +1938,11 @@ def vat_settings():
     return render_template("admin/settings/vat_settings.html", settings=settings)
 
 
+@admin.route("/change-thank-you-url", methods=["GET", "POST"])
+@login_required
+def change_thank_you_url():
+    return "Todo"
+
 @admin.route("/donate-enabled-settings", methods=["GET", "POST"])
 @login_required
 def donations_enabled_settings():
