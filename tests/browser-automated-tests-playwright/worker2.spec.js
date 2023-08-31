@@ -19,8 +19,6 @@ test.beforeEach(async ({ page }) => {
 
   const share_private_plan_url = require('./tests/491_shop_owner_share_private_plan_url');
 
-  const order_plan_with_choice_options_and_required_note = require('./tests/264_subscriber_order_plan_with_choice_options_and_required_note');
-
   const order_plan_with_cancel_at = require('./tests/516_subscriber_order_plan_with_cancel_at');
 
   const order_plan_cooling_off = require('./tests/133_subscriber_order_plan_with_cooling_off');
