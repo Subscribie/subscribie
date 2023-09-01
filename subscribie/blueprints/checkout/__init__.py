@@ -343,8 +343,15 @@ def thankyou():
         is_donation=is_donation,
         subscription_uuid=uuid,
     )
-
-    return render_template("thankyou.html")
+    # here we will need to get the value from the database
+    redirect_thankyou_page = os.getenv(
+        "REDIRECT_THANKYOU_PAGE"
+    )  # this is just an example
+    breakpoint()
+    if redirect_thankyou_page == "default":
+        return render_template("thankyou.html")
+    else:
+        return redirect(redirect_thankyou_page)  # ex. https://google.com
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
