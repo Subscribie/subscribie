@@ -349,11 +349,9 @@ def thankyou():
         subscription_uuid=uuid,
     )
     # here we will need to get the value from the database
-    redirect_thankyou_page = os.getenv(
-        "REDIRECT_THANKYOU_PAGE"
-    )  # this is just an example
-    breakpoint()
-    if redirect_thankyou_page == "default":
+    settings = Setting.query.first()
+    redirect_thankyou_page = settings.custom_thank_you_url
+    if redirect_thankyou_page is None:
         return render_template("thankyou.html")
     else:
         return redirect(redirect_thankyou_page)  # ex. https://google.com

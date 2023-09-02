@@ -1946,10 +1946,13 @@ def change_thank_you_url():
     form = customThankYouUrlForm()
     if request.method == "POST":
         custom_thank_you_url = form.url.data
+        if not custom_thank_you_url.startswith(
+            "http://"
+        ) and not custom_thank_you_url.startswith("https://"):
+            custom_thank_you_url = "https://" + custom_thank_you_url
         # here we will need to insert the url inside the database
-        os.environ[
-            "REDIRECT_THANKYOU_PAGE"
-        ] = custom_thank_you_url  # this is just an example
+        settings.custom_thank_you_url = custom_thank_you_url  # secure_filename()
+        database.session.commit()
         flash(f"CUSTOM URL CHANGED to {custom_thank_you_url}")
         return redirect(url_for("admin.change_thank_you_url", settings=settings))
     return render_template(
