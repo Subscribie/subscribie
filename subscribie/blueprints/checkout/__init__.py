@@ -163,7 +163,7 @@ def store_customer():
                 address_line1=address_line_one,
                 city=city,
                 postal_code=postcode,
-                email=email,
+                email=email.lower(),
                 mobile=mobile,
                 password=str(os.urandom(16)),
                 password_expired=1,
