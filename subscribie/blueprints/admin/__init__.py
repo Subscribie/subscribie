@@ -1950,11 +1950,20 @@ def change_thank_you_url():
             "http://"
         ) and not custom_thank_you_url.startswith("https://"):
             custom_thank_you_url = "https://" + custom_thank_you_url
-        # here we will need to insert the url inside the database
-        settings.custom_thank_you_url = custom_thank_you_url  # secure_filename()
-        database.session.commit()
-        flash(f"CUSTOM URL CHANGED to {custom_thank_you_url}")
-        return redirect(url_for("admin.change_thank_you_url", settings=settings))
+
+        form.url.data = custom_thank_you_url
+        if form.validate():
+            settings.custom_thank_you_url = custom_thank_you_url
+            database.session.commit()
+            flash(f"CUSTOM URL CHANGED to {custom_thank_you_url}")
+            return redirect(
+                url_for("admin.change_thank_you_url", form=form, settings=settings)
+            )
+
+        flash(f"{form.errors}")
+        return redirect(
+            url_for("admin.change_thank_you_url", form=form, settings=settings)
+        )
     return render_template(
         "admin/settings/custom_thank_you_page.html", settings=settings, form=form
     )
