@@ -175,8 +175,14 @@ class SetReplyToEmailForm(StripWhitespaceForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
 
 
-class customThankYouUrlForm(StripWhitespaceForm):
-    url = StringField("url", validators=[DataRequired()], default="default")
+class customThankYouUrlForm(FlaskForm):
+    url = StringField(
+        "url",
+        validators=[
+            validators.URL(require_tld=True, message="Please enter a valid URL")
+        ],
+        default="default",
+    )
 
 
 class UploadFilesForm(FlaskForm):

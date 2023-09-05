@@ -22,8 +22,12 @@
           <p>
           Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. They will be taken to this page once their payment is complete.
           </p>
+          <p>
+          If you want to go back to the default checkout thank you page, please type "default" and click save
+          </p>
 
           <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
             <div class="form-group">
               <label for="email">Your URL:</label>
               <input type="text" name="url" class="form-control" 

@@ -348,10 +348,9 @@ def thankyou():
         is_donation=is_donation,
         subscription_uuid=uuid,
     )
-    # here we will need to get the value from the database
     settings = Setting.query.first()
     redirect_thankyou_page = settings.custom_thank_you_url
-    if redirect_thankyou_page is None:
+    if redirect_thankyou_page is None or redirect_thankyou_page == "https://default":
         return render_template("thankyou.html")
     else:
         return redirect(redirect_thankyou_page)  # ex. https://google.com
