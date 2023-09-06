@@ -35,9 +35,9 @@ for pull_request in pull_requests:
 
     if age >= timedelta(days=3):
         head_ref = pull_request["head"]["ref"]
-        find_hyphen = head_ref.rfind('-')
+        find_hyphen = head_ref.rfind("-")
         head_ref = head_ref[:60].lower()
-        container_name = head_ref[:find_hyphen] + head_ref[find_hyphen + 1:]
+        container_name = head_ref[:find_hyphen] + head_ref[find_hyphen + 1 :]
         print(
             f"Pull Request #{pull_request_number} has a commit older than 3 days. Head ref: {head_ref}"
         )
