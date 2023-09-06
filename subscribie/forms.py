@@ -179,7 +179,7 @@ class customThankYouUrlForm(FlaskForm):
     url = StringField(
         "url",
         validators=[
-            validators.URL(require_tld=True, message="Please enter a valid URL")
+            validators.URL(require_tld=False, message="Please enter a valid URL")
         ],
         default="default",
     )
