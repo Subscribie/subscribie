@@ -1955,7 +1955,7 @@ def change_thank_you_url():
         if form.validate():
             settings.custom_thank_you_url = custom_thank_you_url
             database.session.commit()
-            flash(f"CUSTOM URL CHANGED to {custom_thank_you_url}")
+            flash(f"custom url changed to {custom_thank_you_url}")
             return redirect(
                 url_for("admin.change_thank_you_url", form=form, settings=settings)
             )

@@ -14,6 +14,8 @@ test.beforeEach(async ({ page }) => {
 }); 
 
   const plan_creation = require('./tests/shop_owner_plan_creation');
+
+  const custom_url = require('./tests/1219_shop_owner_enable_custom_url');
   
   const changing_plans_order = require('./tests/275_shop_owner_changing_plans_order');
 
@@ -28,3 +30,4 @@ test.beforeEach(async ({ page }) => {
   const enabling_donations = require('./tests/1065_shop_owner_enabling_donations');
   
   const checkout_donations = require('./tests/1065_subscriber_checkout_donation');
+  
