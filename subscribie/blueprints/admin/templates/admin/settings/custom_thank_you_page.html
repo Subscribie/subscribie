@@ -20,16 +20,16 @@
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col-md-7">
           <p>
-          Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. They will be taken to this page once their payment is complete.
+          Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. Your subscribers will be taken to this page once their payment is complete.
           </p>
           <p>
-          If you want to go back to the default checkout thank you page, please type "default" and click save
+          If you want to go back to the default checkout Thank You Page, please type "default" and click Save.
           </p>
 
           <form action="" method="POST" action="/">
             {{ form.csrf_token }}
             <div class="form-group">
-              <label for="email">Your URL:</label>
+              <label for="email"><b>Your URL:</b></label>
               <input type="text" name="url" class="form-control" 
                       id="url" aria-describedby="emailHelp" 
                       placeholder="https://google.com" required>
