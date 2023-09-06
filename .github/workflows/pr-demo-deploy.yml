@@ -116,7 +116,8 @@ jobs:
           EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
           RESET_PASSWORD_IMAP_SEARCH_SUBJECT: ${{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
           IMAP_SEARCH_UNSEEN: "1"
-          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2022"
+          NEW_SUBSCRIBER_IMAP_SEARCH_SUBJECT: "new subscriber"
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
