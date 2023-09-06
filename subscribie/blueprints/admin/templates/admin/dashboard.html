@@ -510,7 +510,7 @@
       <div class="card">
         <div class="card-header" id="headingShopSettings">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
-            Shop Settings (TAX{% if shop_default_country_code == "GB" %}, VAT {% endif %} &amp; Rename shop)
+            Shop Settings (TAX{% if shop_default_country_code == "GB" %}, VAT {% endif %}, Rename Shop, Donations & Thank you Page URL)
             </button>
         </div>
         <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
@@ -534,6 +534,10 @@
               VAT Settings
               </a>
               {% endif %}
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.change_thank_you_url') }}">
+              Change Thank You Page/ Payment Successful Page URL
+              </a>
 
           </div>
 
