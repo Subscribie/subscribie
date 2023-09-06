@@ -14,8 +14,6 @@ test.beforeEach(async ({ page }) => {
 
   const categories_creation = require('./tests/452_shop_owner_categories_creation');
   
-  const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
-
   const private_page_creation = require('./tests/334_shop_owner_private_page_creation');
 
   const public_page_creation = require('./tests/121_shop_owner_public_page_creation');
@@ -26,5 +24,6 @@ test.beforeEach(async ({ page }) => {
 
   const uploading_plan_picture = require('./tests/872_uploading_plan_picture.js');
 
-  const subscriber_magic_login = require('./tests/623_subscriber_magic_login');
+  const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
+
 
