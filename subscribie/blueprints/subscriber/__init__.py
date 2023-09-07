@@ -287,6 +287,8 @@ def account():
                 )
         except stripe.error.InvalidRequestError as e:
             log.error(f"stripe.error.InvalidRequestError: {e}")
+        except stripe.error.APIConnectionError as e:
+            log.error(f"stripe.error.APIConnectionError: {e}")
     return render_template(
         "subscriber/account.html",
         stripe_session=stripe_session,
