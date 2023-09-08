@@ -33,7 +33,7 @@ test('@1226@shop-owner@check new subscriber email', async ({ page }) => {
   await new Promise(r => setTimeout(r, 10000));
   checkNewSubscriberEmail.checkNewSubscriberEmail();
   console.log("checking new subscriber email template");
-  await new Promise(r => setTimeout(r, 5000));
+  await new Promise(r => setTimeout(r, 10000));
   const subscriber_name = checkNewSubscriberEmail.subscriber_name;
   expect(subscriber_name === "John Smith");
   
