@@ -165,7 +165,6 @@ test.describe("Subscribie tests:", () => {
       console.log("Announced to Stripe connect account");
 
   }); 
-  const order_plan_with_only_recurring_charge = require('./tests/293_subscriber_order_plan_with_only_recurring_charge');
 
   const order_plan_with_only_upfront_charge = require('./tests/293_subscriber_order_plan_with_only_upfront_charge');
 
