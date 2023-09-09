@@ -151,6 +151,9 @@ test.describe("connecting to stripe:", () => {
       const stripe_connected = await page.textContent("text=Your currently running in test mode.");
       expect(stripe_connected === "Your currently running in test mode.");
       console.log("Stripe Connected");
+      await page.goto('/admin/announce-stripe-connect'); 
+      await page.textContent(':has-text("Announced Stripe connect account")') === "Announced Stripe connect account";
+      console.log("Announced to Stripe connect account");
     }
   });
 });
