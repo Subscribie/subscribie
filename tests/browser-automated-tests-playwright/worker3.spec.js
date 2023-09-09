@@ -24,5 +24,5 @@ test.beforeEach(async ({ page }) => {
 
   const uploading_plan_picture = require('./tests/872_uploading_plan_picture.js');
 
-
+  const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
 
