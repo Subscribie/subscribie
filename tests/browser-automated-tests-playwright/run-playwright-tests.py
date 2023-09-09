@@ -9,7 +9,6 @@ graph = {
     "@121_shop-owner-create-public-page": [],
     "@212_shop_owner_slogan_creation": [],
     "@387_shop_owner_change_shop_colour": [],
-    "@463_shop_owner_adding_vat": [],
     "@133_shop_owner_plan_creation": ["@334-shop-owner-create-private-page"],
     "@275_shop_owner_change_plan_order": [
         "@133_shop_owner_plan_creation",
@@ -18,7 +17,6 @@ graph = {
         "@491_shop_owner_create_private_plan",
         "@264_shop_owner_create_plan_with_choice_options",
     ],
-    "@463_order_plan_with_vat": ["@stripe_connect", "@463_shop_owner_adding_vat"],
     "@475_subscriber_order_plan_with_free_trial": [
         "@stripe_connect",
         "@475_shop_owner_create_free_trial",
@@ -59,8 +57,6 @@ graph = {
         "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
     ],
     "@872_uploading_plan_picture": [],
-    "@1065_shop_owner_enabling_donations": [],
-    "@1065_subscriber_checkout_donation": ["@1065_shop_owner_enabling_donations"],
     "@1005_shop_owner_terms_and_conditions_creation": [
         "@475_shop_owner_create_free_trial"
     ],
