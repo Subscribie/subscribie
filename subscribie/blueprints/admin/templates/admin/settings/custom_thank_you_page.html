@@ -29,9 +29,9 @@
           <form action="" method="POST" action="/">
             {{ form.csrf_token }}
             <div class="form-group">
-              <label for="email"><b>Your URL:</b></label>
-              <input type="text" name="url" class="form-control" 
-                      id="url" aria-describedby="emailHelp" 
+              <label for="url"><b>Your URL:</b></label>
+              <input type="url" name="url" class="form-control" 
+                      id="url" aria-describedby="customUrl" 
                       placeholder="https://google.com" required>
             </div>
             <button name="Save" type="submit" class="btn btn-primary btn-block mb-3">Save</button>
