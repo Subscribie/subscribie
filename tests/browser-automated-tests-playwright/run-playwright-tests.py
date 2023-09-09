@@ -1,7 +1,6 @@
 from graphlib import TopologicalSorter
 import subprocess
 from multiprocessing import Manager, Pool
-from graphviz import Digraph
 
 
 graph = {
@@ -19,10 +18,7 @@ graph = {
         "@491_shop_owner_create_private_plan",
         "@264_shop_owner_create_plan_with_choice_options",
     ],
-    "@463_order_plan_with_vat": [
-        "@stripe_connect",
-        "@463_shop_owner_adding_vat",
-    ],
+    "@463_order_plan_with_vat": ["@stripe_connect", "@463_shop_owner_adding_vat"],
     "@475_subscriber_order_plan_with_free_trial": [
         "@stripe_connect",
         "@475_shop_owner_create_free_trial",
@@ -64,9 +60,7 @@ graph = {
     ],
     "@872_uploading_plan_picture": [],
     "@1065_shop_owner_enabling_donations": [],
-    "@1065_subscriber_checkout_donation": [
-        "@1065_shop_owner_enabling_donations",
-    ],
+    "@1065_subscriber_checkout_donation": ["@1065_shop_owner_enabling_donations"],
     "@1005_shop_owner_terms_and_conditions_creation": [
         "@475_shop_owner_create_free_trial"
     ],
