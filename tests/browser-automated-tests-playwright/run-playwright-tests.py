@@ -9,6 +9,7 @@ graph = {
     "@121_shop-owner-create-public-page": [],
     "@212_shop_owner_slogan_creation": [],
     "@387_shop_owner_change_shop_colour": [],
+    "@463_shop_owner_adding_vat": [],
     "@133_shop_owner_plan_creation": ["@334-shop-owner-create-private-page"],
     "@275_shop_owner_change_plan_order": [
         "@133_shop_owner_plan_creation",
@@ -17,6 +18,7 @@ graph = {
         "@491_shop_owner_create_private_plan",
         "@264_shop_owner_create_plan_with_choice_options",
     ],
+    "@463_order_plan_with_vat": ["@stripe_connect", "@463_shop_owner_adding_vat"],
     "@475_subscriber_order_plan_with_free_trial": [
         "@stripe_connect",
         "@475_shop_owner_create_free_trial",
@@ -63,6 +65,8 @@ graph = {
     "@1005_subscriber_terms_and_condition_check_test": [
         "@939_subscriber_order_free_plan_with_terms_and_conditions"
     ],
+    "@1065_shop_owner_enabling_donations": [],
+    "@1065_subscriber_checkout_donation": ["@1065_shop_owner_enabling_donations"],
     "@939_subscriber_order_free_plan_with_terms_and_conditions": [
         "@1005_shop_owner_terms_and_conditions_creation",
         "@stripe_connect",
@@ -131,7 +135,7 @@ for group in test(ts):
         shared_event = manager.Event()
         # create and configure the process pool
         with Pool(
-            processes=None, initializer=init_worker, initargs=(shared_event,)
+            processes=3, initializer=init_worker, initargs=(shared_event,)
         ) as pool:
             # issue tasks into the process pool
             result = pool.map(run_test, group)

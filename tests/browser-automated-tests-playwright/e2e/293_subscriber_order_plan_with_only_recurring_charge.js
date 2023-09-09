@@ -40,7 +40,7 @@ test.describe("order plan with only recurring charge test:", () => {
         await page.click('.SubmitButton');
     
         // Verify get to the thank you page order complete
-        await new Promise(x => setTimeout(x, 5000)); //5 secconds
+        await new Promise(x => setTimeout(x, 8000)); //8 secconds
         const order_complete_content = await page.textContent('.title-1');
         expect(order_complete_content === "Order Complete!");
         expect(await page.screenshot()).toMatchSnapshot('recurring-order-complete.png');
