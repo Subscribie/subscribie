@@ -150,6 +150,20 @@ class Person(database.Model, HasArchived):
     subscriptions = relationship("Subscription", back_populates="person")
     transactions = relationship("Transaction", back_populates="person")
 
+    def get_subscriptions(self, include_archived=True):
+        subscriptions = (
+            database.session.query(Subscription)
+            .execution_options(include_archived=include_archived)
+            .join(Person, Subscription.person_id == Person.id)
+            .join(Plan, Subscription.sku_uuid == Plan.uuid)
+            .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+            .where(Person.id == self.id)
+            .order_by(Subscription.id.desc())
+            .all()
+        )
+
+        return subscriptions
+
     def invoices(self, refetchCachedStripeInvoices=False):
         """Get all cached Stripe invoices for a given person
 
@@ -654,7 +668,7 @@ class Plan(database.Model, HasArchived):
                     rules=foundRules, context=context
                 )
         if price_list_found_for_currency is False:
-            msg = f"Could not find price_list for currency: {currency}. There are {len(self.price_lists)} connected to this plan, but none of them are for currency {currency}"  # noqa: E501
+            msg = f"Could not find price_list for currency: {currency}. There are {len(self.price_lists)} connected to this plan ({self.uuid}), but none of them are for currency {currency}"  # noqa: E501
             log.warning(msg)
             return False, msg
         log.debug(

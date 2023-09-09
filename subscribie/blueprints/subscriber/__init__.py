@@ -3,7 +3,6 @@ import stripe
 import functools
 import binascii
 import os
-from sqlalchemy.sql import func
 from pathlib import Path
 from flask import (
     Blueprint,
@@ -43,6 +42,7 @@ from subscribie.utils import (
 from subscribie.email import EmailMessageQueue
 from jinja2 import Template
 import requests
+from sqlalchemy.sql import func
 
 log = logging.getLogger(__name__)
 subscriber = Blueprint(
@@ -72,7 +72,7 @@ def subscriber_login_required(view):
 
 
 def check_password_login(email, password):
-    subscriber = Person.query.filter(func.lower(email) == email).first()
+    subscriber = Person.query.filter(func.lower(Person.email) == email.lower()).first()
     if subscriber.check_password(password):
         return True
     return False
@@ -84,7 +84,7 @@ def login():
         if request.args.get("email"):
             email = request.args.get("email").lower()
             # Check if password expired, send password reset email if expired.
-            subscriber = Person.query.filter(func.lower(email) == email).first()
+            subscriber = Person.query.filter_by(email=email).first()
             if subscriber is not None and subscriber.password_expired:
                 requests.post(
                     url_for("subscriber.forgot_password", _external=True),
@@ -96,9 +96,10 @@ def login():
     if form.validate_on_submit():
         email = form.data["email"].lower()
         password = form.data["password"]
-        subscriber = Person.query.filter(func.lower(email) == email).first()
+        subscriber = Person.query.filter(func.lower(Person.email) == email.lower()).first()  # noqa: E501
+
         if subscriber is None:
-            shopowner = User.query.filter(func.lower(email) == email).first()
+            shopowner = User.query.filter_by(email=email).first()
             if shopowner is not None:
                 flash("You are a shop admin, please login here")
                 return redirect(url_for("auth.login", email=email))
@@ -127,7 +128,7 @@ def forgot_password():
     form = SubscriberForgotPasswordForm()
     if form.validate_on_submit() or form.data.get("email"):
         email = form.data["email"].lower()
-        subscriber = Person.query.filter(func.lower(email) == email).first()
+        subscriber = Person.query.filter_by(email=email).first()
         if subscriber is None:
             flash("Person not found with that email")
             return redirect(url_for("subscriber.forgot_password"))
@@ -288,6 +289,8 @@ def account():
                 )
         except stripe.error.InvalidRequestError as e:
             log.error(f"stripe.error.InvalidRequestError: {e}")
+        except stripe.error.APIConnectionError as e:
+            log.error(f"stripe.error.APIConnectionError: {e}")
     return render_template(
         "subscriber/account.html",
         stripe_session=stripe_session,
