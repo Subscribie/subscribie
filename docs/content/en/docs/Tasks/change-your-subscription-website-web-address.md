@@ -8,18 +8,24 @@ description: >
 
 ## Steps to Change Your Subscription Website Web Address
 
-### Step 1: Scroll to the bottom of your dashboard and click *Rename shop web address*, this is under the *Shop Settings (Tax & rename shop)* tab.
+Step 1: Scroll to the bottom of your dashboard and click *Rename shop web address*, this is under the *Shop Settings (Tax & rename shop)* tab.
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-3.png)
 
-### Step 2: Here, enter the address you would like to rename the shop to.
+Step 2: Here, enter the address you would like to rename the shop to.
 
 >When changing your shop's address, make sure you add ".subscriby.shop" after your desired name. For example: test.subscriby.shop
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-5.png)
 
-### Step 3: Now click *save.*
+Step 3: Now click *save.*
 
 ![](https://subscribie.co.uk/blog/content/images/size/w1000/2023/04/image-4.png)
 
 Now your new web address will reflect in your subscription shop! 
+
+For more customisation, learn how to [add a slogan](https://docs.subscribie.co.uk/docs/tasks/add-a-slogan/), [add a logo](https://docs.subscribie.co.uk/docs/tasks/add-a-logo-to-a-shop) and [change the name of your shop](https://docs.subscribie.co.uk/docs/tasks/change-the-name-of-your-shop/)
+
+### Watch the Tutorial to Change Your Subscription Website Web Address
+
+[![Watch the video](https://github.com/Subscribie/subscribie/assets/30567984/77a0e166-9893-476c-9847-307fc98f5f40)](https://youtu.be/Xq1J1FqtjyM)

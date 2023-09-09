@@ -989,70 +989,75 @@ def stripe_connect():
     countryToCurrency = [
         {
             "country_code": "GB",
-            "country_name": "United Kingdom(GBP)",
+            "country_name": "United Kingdom (GBP)",
             "currency_code": "GBP",
         },
         {
             "country_code": "US",
-            "country_name": "United States of America(USD)",
+            "country_name": "United States of America (USD)",
             "currency_code": "USD",
         },
-        {
-            "country_code": "CA",
-            "country_name": "Canada",
-            "currency_code": "CAD",
-        },
-        {
-            "country_code": "MY",
-            "country_name": "Malaysia",
-            "currency_code": "MYR",
-        },
-        {
-            "country_code": "MX",
-            "country_name": "Mexico",
-            "currency_code": "MXN",
-        },
-        {
-            "country_code": "NZ",
-            "country_name": "New Zealand",
-            "currency_code": "NZD",
-        },
+        {"country_code": "BR", "country_name": "Brazil (BRL)", "currency_code": "BRL"},
+        {"country_code": "AT", "country_name": "Austria (EUR)", "currency_code": "EUR"},
         {
             "country_code": "AU",
-            "country_name": "Australia",
+            "country_name": "Australia (AUD)",
             "currency_code": "AUD",
         },
-        {"country_code": "AT", "country_name": "Austria(EUR)", "currency_code": "EUR"},
-        {"country_code": "BE", "country_name": "Belgium(EUR)", "currency_code": "EUR"},
-        {"country_code": "CY", "country_name": "Cyprus(EUR)", "currency_code": "EUR"},
-        {"country_code": "EE", "country_name": "Estonia(EUR)", "currency_code": "EUR"},
-        {"country_code": "FI", "country_name": "Finland(EUR)", "currency_code": "EUR"},
-        {"country_code": "FR", "country_name": "France(EUR)", "currency_code": "EUR"},
-        {"country_code": "DE", "country_name": "Germany(EUR)", "currency_code": "EUR"},
-        {"country_code": "GR", "country_name": "Greece(EUR)", "currency_code": "EUR"},
-        {"country_code": "IE", "country_name": "Ireland(EUR)", "currency_code": "EUR"},
-        {"country_code": "IT", "country_name": "Italy(EUR)", "currency_code": "EUR"},
-        {"country_code": "LV", "country_name": "Latvia(EUR)", "currency_code": "EUR"},
+        {"country_code": "BE", "country_name": "Belgium (EUR)", "currency_code": "EUR"},
+        {"country_code": "CA", "country_name": "Canada (CAD)", "currency_code": "CAD"},
+        {"country_code": "CY", "country_name": "Cyprus (EUR)", "currency_code": "EUR"},
+        {"country_code": "DE", "country_name": "Germany (EUR)", "currency_code": "EUR"},
+        {"country_code": "EE", "country_name": "Estonia (EUR)", "currency_code": "EUR"},
+        {"country_code": "ES", "country_name": "Spain (EUR)", "currency_code": "EUR"},
+        {"country_code": "FI", "country_name": "Finland (EUR)", "currency_code": "EUR"},
+        {"country_code": "FR", "country_name": "France (EUR)", "currency_code": "EUR"},
+        {"country_code": "GR", "country_name": "Greece (EUR)", "currency_code": "EUR"},
+        {"country_code": "IE", "country_name": "Ireland (EUR)", "currency_code": "EUR"},
+        {"country_code": "IT", "country_name": "Italy (EUR)", "currency_code": "EUR"},
+        {"country_code": "LV", "country_name": "Latvia (EUR)", "currency_code": "EUR"},
         {
             "country_code": "LT",
-            "country_name": "Lithuania(EUR)",
+            "country_name": "Lithuania (EUR)",
             "currency_code": "EUR",
         },
         {
             "country_code": "LU",
-            "country_name": "Luxembourg(EUR)",
+            "country_name": "Luxembourg (EUR)",
             "currency_code": "EUR",
         },
-        {"country_code": "MT", "country_name": "Malta(EUR)", "currency_code": "EUR"},
+        {"country_code": "MT", "country_name": "Malta (EUR)", "currency_code": "EUR"},
+        {"country_code": "MX", "country_name": "Mexico (MXN)", "currency_code": "MXN"},
+        {
+            "country_code": "MY",
+            "country_name": "Malaysia (MYR)",
+            "currency_code": "MYR",
+        },
         {
             "country_code": "NL",
-            "country_name": "Netherlands(EUR)",
+            "country_name": "Netherlands (EUR)",
             "currency_code": "EUR",
         },
-        {"country_code": "PT", "country_name": "Portugal(EUR)", "currency_code": "EUR"},
-        {"country_code": "SK", "country_name": "Slovakia(EUR)", "currency_code": "EUR"},
-        {"country_code": "SI", "country_name": "Slovenia(EUR)", "currency_code": "EUR"},
-        {"country_code": "ES", "country_name": "Spain(EUR)", "currency_code": "EUR"},
+        {
+            "country_code": "NZ",
+            "country_name": "New Zealand (NZD)",
+            "currency_code": "NZD",
+        },
+        {
+            "country_code": "PT",
+            "country_name": "Portugal (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "SI",
+            "country_name": "Slovenia (EUR)",
+            "currency_code": "EUR",
+        },
+        {
+            "country_code": "SK",
+            "country_name": "Slovakia (EUR)",
+            "currency_code": "EUR",
+        },
     ]
     return render_template(
         "admin/settings/stripe/stripe_connect.html",
@@ -1969,3 +1974,12 @@ def show_api_keys():
         live_api_key=live_api_key,
         test_api_key=test_api_key,
     )
+
+
+@admin.route("/spamcheck/<string:account_name>")
+@login_required
+def check_spam(account_name) -> int:
+    """Check if shop name is likley to be spam or not"""
+    from subscribie.anti_spam_subscribie_shop_names.run import detect_spam_shop_name
+
+    return str(detect_spam_shop_name(account_name))

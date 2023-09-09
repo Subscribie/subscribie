@@ -15,7 +15,7 @@
 <div class="container">
 
     <h3 class="card-title">{{ _('Your Subscriptions') }}</h3>
-    {% for subscription in g.subscriber.subscriptions %}
+    {% for subscription in g.subscriber.get_subscriptions(include_archived=True) %}
       {% if subscription.plan %}
       <div class="card px-3 py-3 my-3">
         <ul class="list-unstyled px-2">

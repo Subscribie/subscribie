@@ -207,7 +207,7 @@
                     </li>
                 {% endfor %}
               </ul>
-                {% else %}
+                {% elif person.transactions %}
                 {# Donations are not in the subscription table since they are not plans nor subscriptions #}
                 {# therefore we need to look at the transction table to find the donations #}
                 {% for transaction in person.transactions %}
@@ -241,7 +241,18 @@
                         </div>
                     {% endif %}
                 {% endfor %}
-              {% endif %}
+                {% else %}
+                    <div class="card">
+                    <ul class="list-unstyled px-2">
+                    <li><strong>{{ _('Notice:') }}</strong>
+                      <p>{{ _('There may be a delay in processing a recent transaction,
+                        please check back later or') }} <br />
+                        <a href="{{ url_for('admin.refresh_subscriptions') }}"
+                        class="btn btn-success btn-sm mt-4">{{ _('Refresh subscriptions now') }}</a>
+                    </li>
+                    </ul>
+                    </div>
+                {% endif %}
             </td>
           </tr>
         {% endfor %}

@@ -1,0 +1,16 @@
+name: Check online status
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs "at minute 50 past every hour" (see https://crontab.guru)
+    - cron: '50 * * * *'
+jobs:
+  build:
+    name: Check public urls OK
+    runs-on: ubuntu-latest
+    steps:
+      - name: check urls load OK
+        run: |
+          curl -Isf ${{ secrets.SUBSCRIBIE_URL }} | head -n 1
+          curl -Isf ${{ secrets.SUBSCRIBIE_URL }}/blog/ | head -n 1

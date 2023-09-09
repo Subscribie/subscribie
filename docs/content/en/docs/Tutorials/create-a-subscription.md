@@ -8,15 +8,15 @@ description: >
 
 ## Steps to Create a Subscription
 
-### Step 1: On the main page of Subscribie.co.uk, click *Get Started*
+Step 1: On the main page of Subscribie.co.uk, click *Get Started*
 
 ![](https://i.imgur.com/mcejWLl.png)
 
-### Step 2: Fill in your *Business Name, E-mail* and type a *password* then scroll down.
+Step 2: Fill in your *Business Name, E-mail* and type a *password* then scroll down.
 
 ![](https://i.imgur.com/qgi8ELb.png)
 
-### Step 3: Provide the necessary information to set up your subscription.
+Step 3: Provide the necessary information to set up your subscription.
 
  Here you will have to fill in:
 - The *name* you would like to give your subscription (Example: Membership Subscription)
@@ -28,7 +28,7 @@ Once you have provided the following information, click *Save.*
 
 ![](https://i.imgur.com/8X3gc36.png)
 
-### Step 4: Once you have clicked *Save*, Subscribie will build your website and redirect you to the shop dashboard.
+Step 4: Once you have clicked *Save*, Subscribie will build your website and redirect you to the shop dashboard.
 
 ![](https://i.imgur.com/mh6qlyX.png)
 

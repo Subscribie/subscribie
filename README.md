@@ -6,7 +6,8 @@
 [![Verify Prod Onbording](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml)
 [![Login Emails Sending](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml)
 [![Release](https://github.com/Subscribie/subscribie/actions/workflows/release.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/release.yml)
-
+[![Blog](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml)
+[![Deploy pr preview](https://github.com/Subscribie/subscribie/actions/workflows/pr-demo-deploy.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/pr-demo-deploy.yml)
 # Subscribie  - Collect recurring payments easily
 
 **Subscribie** helps you automatically collect money from your customers, clients and members, without the hassle of manual payments. Save time by having people signup themselves, and easily track payments.
