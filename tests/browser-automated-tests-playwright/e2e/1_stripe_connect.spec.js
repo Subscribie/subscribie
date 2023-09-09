@@ -55,8 +55,8 @@ test.describe("connecting to stripe:", () => {
       }
 
       // Use SME verify with test code
-      const phone_content = await page.textContent('text="Enter the verification code we sent to your phone"');
-      if (expect(phone_content === "Enter the verification code we sent to your phone")) {
+      const phone_content = await page.textContent('text="Enter the verification code we sent to your number ending in ••00"');
+      if (expect(phone_content === "Enter the verification code we sent to your number ending in ••00")) {
         console.log("Clicking Use test code")
         await page.click('button:has-text("Use test code")'); //Use Test code for SMS
       }
