@@ -41,9 +41,6 @@ graph = {
     "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
         "@stripe_connect"
     ],
-    "@623_subscriber_magic_login_and_reset_password": [
-        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge"
-    ],
     "@993_subscriber_change_card_details": [
         "@stripe_connect",
         "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
