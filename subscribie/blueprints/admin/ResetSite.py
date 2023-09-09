@@ -17,11 +17,12 @@ import stripe
 @admin.route("/set-test-name/<test_name>", methods=["GET"])
 @development_mode_only
 def set_test_name(test_name):
-    session['test_name'] = test_name
+    session["test_name"] = test_name
 
     msg = {"msg": f"test_name set to {test_name}"}
 
     return jsonify(msg)
+
 
 @admin.route("/remove-subscriptions", methods=["GET"])
 @login_required
