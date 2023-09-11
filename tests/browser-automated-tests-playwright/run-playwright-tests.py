@@ -132,7 +132,7 @@ for group in test(ts):
         shared_event = manager.Event()
         # create and configure the process pool
         with Pool(
-            processes=3, initializer=init_worker, initargs=(shared_event,)
+            processes=None, initializer=init_worker, initargs=(shared_event,)
         ) as pool:
             # issue tasks into the process pool
             result = pool.map(run_test, group)
