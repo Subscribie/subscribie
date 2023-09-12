@@ -41,10 +41,6 @@ graph = {
     "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
         "@stripe_connect"
     ],
-    "@993_subscriber_change_card_details": [
-        "@stripe_connect",
-        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
-    ],
     "@619_shop_owner_transaction_filter_by_name_and_by_plan_title": [
         "@stripe_connect",
         "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
