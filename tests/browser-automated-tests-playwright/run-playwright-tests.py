@@ -55,9 +55,6 @@ graph = {
     "@1005_shop_owner_terms_and_conditions_creation": [
         "@475_shop_owner_create_free_trial"
     ],
-    "@1005_subscriber_terms_and_condition_check_test": [
-        "@939_subscriber_order_free_plan_with_terms_and_conditions"
-    ],
     "@1065_shop_owner_enabling_donations": [],
     "@1065_subscriber_checkout_donation": ["@1065_shop_owner_enabling_donations"],
     "@939_subscriber_order_free_plan_with_terms_and_conditions": [
