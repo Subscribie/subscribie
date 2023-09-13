@@ -103,9 +103,10 @@ def run_test(test_name: str):
         print("Event is NOT set")
         print("#" * 80)
     print(f"Running test {test_name}")
+    output_path = "./video/" + test_name[1:]
     result = subprocess.run(
         # f"npx playwright test --grep {test_name} --headed --update-snapshots",
-        f"npx playwright test --update-snapshots --grep '{test_name}'",
+        f"npx playwright test --update-snapshots --grep '{test_name}' --output '{output_path}'",
         shell=True,
     )
     if result.returncode != 0:
