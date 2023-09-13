@@ -119,6 +119,7 @@ jobs:
           IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
         run: |
           set -x
+          mkdir -p tests/browser-automated-tests-playwright/video
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
           cp .env.example .env
           cd tests/browser-automated-tests-playwright
@@ -130,4 +131,4 @@ jobs:
           name: Screenshots-and-video-artifacts
           path: |
             ./index.spec.js-snapshots/*
-            ./test-results/
+            ./tests/browser-automated-tests-playwright/video
