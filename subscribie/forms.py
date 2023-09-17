@@ -176,7 +176,7 @@ class SetReplyToEmailForm(StripWhitespaceForm):
 
 
 class customThankYouUrlForm(FlaskForm):
-    url = StringField(
+    custom_thank_you_url = StringField(
         "url",
         validators=[
             validators.URL(
