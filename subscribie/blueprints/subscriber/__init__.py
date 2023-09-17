@@ -96,7 +96,9 @@ def login():
     if form.validate_on_submit():
         email = form.data["email"].lower()
         password = form.data["password"]
-        subscriber = Person.query.filter(func.lower(Person.email) == email.lower()).first()  # noqa: E501
+        subscriber = Person.query.filter(
+            func.lower(Person.email) == email.lower()
+        ).first()  # noqa: E501
 
         if subscriber is None:
             shopowner = User.query.filter_by(email=email).first()
