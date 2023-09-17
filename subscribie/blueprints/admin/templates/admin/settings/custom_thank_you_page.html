@@ -19,20 +19,29 @@
 
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col-md-7">
+          <h2>Custom Thank You page URL</h2>
+          <p>
+          By default, your Subscribers get sent to the default thank you page '/thankyou'.<br />
+          For most shop owners the default is perfect and no change is needed.<br/><br />
+          Some shop owners, however, prefer to direct their Subscribers <em>somehwere else</em> after they
+          have subscribed.</p>
+          <p>If you would like to set a custom thank you page URL, set one below.</p>
+          <p>Otherwise, keep the default.</p>
+          <br /><br />
           <p>
           Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. Your subscribers will be taken to this page once their payment is complete.
           </p>
           <p>
-          If you want to go back to the default checkout Thank You Page, please type "default" and click Save.
+          Click here to reset your shop to use the default Thank You page.
           </p>
 
           <form action="" method="POST" action="/">
             {{ form.csrf_token }}
             <div class="form-group">
-              <label for="url"><b>Your URL:</b></label>
+              <label for="url"><b>Custom Thank You page URL:</b></label>
               <input type="url" name="url" class="form-control" 
                       id="url" aria-describedby="customUrl" 
-                      placeholder="https://google.com" required>
+                      placeholder="https://example.com/thankyou" required>
             </div>
             <button name="Save" type="submit" class="btn btn-primary btn-block mb-3">Save</button>
           </form>
