@@ -75,6 +75,7 @@
       </div>
     </section> -->
     <main>
+          {% if form and form.errors %}
           <div class="card alert-warning my-3 mx-3 px-3 py-2" role="alert">
             <h4 class="alert-heading">Form help</h4>
             <hr>
@@ -84,6 +85,7 @@
               {% endfor %}
             </ul>
           </div>
+          {% endif %}
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <div class="card alert-primary my-3 mx-3 px-3 py-2" role="alert">
