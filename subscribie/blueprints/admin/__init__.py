@@ -1959,10 +1959,8 @@ def change_thank_you_url():
             return redirect(
                 url_for("admin.change_thank_you_url", form=form, settings=settings)
             )
-
-        flash(f"{form.errors}")
-        return redirect(
-            url_for("admin.change_thank_you_url", form=form, settings=settings)
+        return render_template(
+            "admin/settings/custom_thank_you_page.html", settings=settings, form=form
         )
     return render_template(
         "admin/settings/custom_thank_you_page.html", settings=settings, form=form
