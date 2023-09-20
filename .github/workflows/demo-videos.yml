@@ -99,7 +99,9 @@ jobs:
             set -x
             cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
             cp .env.example .env
-            cd tests/browser-automated-tests-playwright; npx playwright test --grep-invert @704 --update-snapshots
+            cd tests/browser-automated-tests-playwright
+            python3 run-playwright-tests.py
+
         - name: upload videos to site
           run: |
             set -x
@@ -107,7 +109,7 @@ jobs:
             eval `ssh-agent -s`
             ssh-add - <<< "${{ secrets.SUBWEBBUILD_PRIVATE_KEY }}"
             ssh-keyscan ${{secrets.ONBOARDING_HOST}} >> ~/.ssh/known_hosts
-            scp -Cr ./test-results/* ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}}:${{secrets.ONBOARDING_VIDEOS_PATH}}
+            scp -Cr ./tests/browser-automated-tests-playwright/test-videos/* ${{secrets.SUBWEBBUILD_USER}}@${{secrets.ONBOARDING_HOST}}:${{secrets.ONBOARDING_VIDEOS_PATH}}
         - name: Organise videos into list on webpage
           run: |
             # Organise playwright videos into a single
