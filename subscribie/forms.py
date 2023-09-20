@@ -176,10 +176,13 @@ class SetReplyToEmailForm(StripWhitespaceForm):
 
 
 class customThankYouUrlForm(FlaskForm):
-    url = StringField(
+    custom_thank_you_url = StringField(
         "url",
         validators=[
-            validators.URL(require_tld=False, message="Please enter a valid URL")
+            validators.URL(
+                require_tld=True,
+                message="Please enter a valid URL. e.g https://example.com/thankyou",
+            )
         ],
         default="default",
     )

@@ -1945,24 +1945,15 @@ def change_thank_you_url():
     settings = Setting.query.first()  # Get current shop settings
     form = customThankYouUrlForm()
     if request.method == "POST":
-        custom_thank_you_url = form.url.data
-        if not custom_thank_you_url.startswith(
-            "http://"
-        ) and not custom_thank_you_url.startswith("https://"):
-            custom_thank_you_url = "https://" + custom_thank_you_url
-
-        form.url.data = custom_thank_you_url
         if form.validate():
-            settings.custom_thank_you_url = custom_thank_you_url
+            settings.custom_thank_you_url = form.custom_thank_you_url.data
             database.session.commit()
-            flash(f"custom url changed to {custom_thank_you_url}")
+            flash(f"Custom thank you url changed to: {form.custom_thank_you_url.data}")
             return redirect(
                 url_for("admin.change_thank_you_url", form=form, settings=settings)
             )
-
-        flash(f"{form.errors}")
-        return redirect(
-            url_for("admin.change_thank_you_url", form=form, settings=settings)
+        return render_template(
+            "admin/settings/custom_thank_you_page.html", settings=settings, form=form
         )
     return render_template(
         "admin/settings/custom_thank_you_page.html", settings=settings, form=form
