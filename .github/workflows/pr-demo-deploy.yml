@@ -116,10 +116,9 @@ jobs:
           EMAIL_SEARCH_API_HOST: ${{ secrets.EMAIL_SEARCH_API_HOST }}
           RESET_PASSWORD_IMAP_SEARCH_SUBJECT: ${{ secrets.RESET_PASSWORD_IMAP_SEARCH_SUBJECT }}
           IMAP_SEARCH_UNSEEN: "1"
-          IMAP_SEARCH_SINCE_DATE: "01-Sep-2021"
+          IMAP_SEARCH_SINCE_DATE: "01-Sep-2022"
         run: |
           set -x
-          mkdir -p tests/browser-automated-tests-playwright/video
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
           cp .env.example .env
           cd tests/browser-automated-tests-playwright
@@ -130,5 +129,4 @@ jobs:
         with:
           name: Screenshots-and-video-artifacts
           path: |
-            ./index.spec.js-snapshots/*
-            ./tests/browser-automated-tests-playwright/video
+            ./tests/browser-automated-tests-playwright/test-videos
