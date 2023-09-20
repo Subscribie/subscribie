@@ -5,7 +5,7 @@ const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoice
 
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with cooling off:", () => {
-    test("@133 @133_shop_owner_order_plan_with_cooling_off_period", async ({ page }) => {
+    test("@133 @133_subscriber_order_plan_with_cooling_off_period", async ({ page }) => {
         console.log("Ordering plan with cooling off");
         await admin_login(page);
         await set_test_name_cookie(page, "@133_shop_owner_order_plan_with_cooling_off_period");
