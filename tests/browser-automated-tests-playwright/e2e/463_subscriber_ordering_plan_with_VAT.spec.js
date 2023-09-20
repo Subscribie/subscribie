@@ -4,7 +4,7 @@ const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoices');
 
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
-test("@463@subscriber@Ordering plan with VAT @463_order_plan_with_vat", async ({ page }) => {
+test("@463@subscriber@Ordering plan with VAT @463_subscriber_order_plan_with_vat", async ({ page }) => {
         await admin_login(page);
         await set_test_name_cookie(page, "@463_order_plan_with_vat")
         console.log("Ordering plan with only recurring charge + VAT...");
