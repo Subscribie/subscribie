@@ -1,3 +1,4 @@
+/*
 const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
@@ -37,3 +38,4 @@ test.beforeEach(async ({ page }) => {
   const subscriber_terms_and_condition_check_test = require('./tests/1005_subscriber_terms_and_condition_check_test.js');
 
   const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
+*/

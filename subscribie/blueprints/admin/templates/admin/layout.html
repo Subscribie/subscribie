@@ -49,7 +49,11 @@
 </head>
 
 <body>
-
+  {# Display test overlay if running under testing #}
+  {% if 'test_name' in session %}
+    <div id="test_name" style="margin-left: 0.5em;position: absolute;writing-mode: vertical-lr;font-size: 2em; z-index: 999999999;">{{ session ['test_name']}}</div>
+  {% endif %}
+  {# End Display test overlay if running under testing #}
   <nav class="jumbotron jumbotron-fluid text-light kcBlue">
     <div class="container">
       <div class="navbar-brand">

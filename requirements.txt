@@ -1,3 +1,5 @@
+graphviz
+graphlib
 wheel
 Flask>=2,<3
 flask_cors

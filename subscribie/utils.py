@@ -259,22 +259,22 @@ def create_stripe_tax_rate():
         livemode = False
 
     # If there's no tax rate for current live mode create and save one:
-    if TaxRate.query.filter_by(stripe_livemode=livemode).first() is None:
-        stripe.api_key = get_stripe_secret_key()
-        tax_rate = stripe.TaxRate.create(
-            stripe_account=get_stripe_connect_account_id(),
-            display_name="VAT",
-            description="VAT UK",
-            jurisdiction="GB",
-            percentage=20,
-            inclusive=False,
-        )
-        # Save tax_rate id and livemode to db
-        newTaxRate = TaxRate()
-        newTaxRate.stripe_livemode = tax_rate.livemode
-        newTaxRate.stripe_tax_rate_id = tax_rate.id
-        database.session.add(newTaxRate)
-        database.session.commit()
+    # if TaxRate.query.filter_by(stripe_livemode=livemode).first() is None:
+    stripe.api_key = get_stripe_secret_key()
+    tax_rate = stripe.TaxRate.create(
+        stripe_account=get_stripe_connect_account_id(),
+        display_name="VAT",
+        description="VAT UK",
+        jurisdiction="GB",
+        percentage=20,
+        inclusive=False,
+    )
+    # Save tax_rate id and livemode to db
+    newTaxRate = TaxRate()
+    newTaxRate.stripe_livemode = tax_rate.livemode
+    newTaxRate.stripe_tax_rate_id = tax_rate.id
+    database.session.add(newTaxRate)
+    database.session.commit()
 
     return True
 
@@ -315,8 +315,7 @@ def get_stripe_invoices(app):
         stripe.api_key = get_stripe_secret_key()
         stripe_connect_account_id = get_stripe_connect_account_id()
         invoices = stripe.Invoice.list(
-            stripe_account=stripe_connect_account_id,
-            limit=100,
+            stripe_account=stripe_connect_account_id, limit=100
         )
         for latest_stripe_invoice in invoices.auto_paging_iter():
             # Upsert each Stripe Invoice into stripe_invoice.
