@@ -28,10 +28,6 @@ graph = {
         "@stripe_connect",
         "@264_shop_owner_create_plan_with_choice_options",
     ],
-    "@516_shop_owner_order_plan_with_cancel_at": [
-        "@stripe_connect",
-        "@516_shop_owner_create_cancel_at_plan",
-    ],
     "@133_shop_owner_order_plan_with_cooling_off_period": [
         "@stripe_connect",
         "@133_shop_owner_create_plan_with_cooling_off_period",
