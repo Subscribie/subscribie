@@ -184,7 +184,7 @@ class customThankYouUrlForm(FlaskForm):
                 message="Please enter a valid URL. e.g https://example.com/thankyou",
             )
         ],
-        default="default",
+        default=None,
     )
 
 

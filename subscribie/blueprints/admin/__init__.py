@@ -1944,20 +1944,24 @@ def vat_settings():
 def change_thank_you_url():
     settings = Setting.query.first()  # Get current shop settings
     form = customThankYouUrlForm()
+
     if request.method == "POST":
-        if form.validate():
+        if request.form.get("default"):
+            settings.custom_thank_you_url = None
+            database.session.commit()
+            flash(f"Custom thank you url changed to default")
+            return render_template(
+                "admin/settings/custom_thank_you_page.html",
+                form=form,
+            )
+
+        elif form.validate():
             settings.custom_thank_you_url = form.custom_thank_you_url.data
             database.session.commit()
             flash(f"Custom thank you url changed to: {form.custom_thank_you_url.data}")
-            return redirect(
-                url_for("admin.change_thank_you_url", form=form, settings=settings)
-            )
-        return render_template(
-            "admin/settings/custom_thank_you_page.html", settings=settings, form=form
-        )
-    return render_template(
-        "admin/settings/custom_thank_you_page.html", settings=settings, form=form
-    )
+            return redirect(url_for("admin.change_thank_you_url", form=form))
+        return render_template("admin/settings/custom_thank_you_page.html", form=form)
+    return render_template("admin/settings/custom_thank_you_page.html", form=form)
 
 
 @admin.route("/donate-enabled-settings", methods=["GET", "POST"])

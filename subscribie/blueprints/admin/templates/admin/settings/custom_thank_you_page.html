@@ -27,7 +27,6 @@
           have subscribed.</p>
           <p>If you would like to set a custom thank you page URL, set one below.</p>
           <p>Otherwise, keep the default.</p>
-          <br /><br />
           <p>
           Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. Your subscribers will be taken to this page once their payment is complete.
           </p>
@@ -44,6 +43,10 @@
                       placeholder="https://example.com/thankyou" required>
             </div>
             <button name="Save" type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <button for="default_thank_you_url" value = "default" name="default" type="submit" class="btn btn-info btn-block mb-3">Default Url</button>
           </form>
         </div>
 
