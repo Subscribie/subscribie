@@ -348,7 +348,7 @@ def thankyou():
     if redirect_thankyou_page is None:
         return render_template("thankyou.html")
     else:
-        return redirect(redirect_thankyou_page)  # ex. https://google.com
+        return redirect(redirect_thankyou_page)
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
