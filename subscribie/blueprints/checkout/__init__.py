@@ -345,7 +345,7 @@ def thankyou():
     )
     settings = Setting.query.first()
     redirect_thankyou_page = settings.custom_thank_you_url
-    if redirect_thankyou_page is None or redirect_thankyou_page == "https://default":
+    if redirect_thankyou_page is None:
         return render_template("thankyou.html")
     else:
         return redirect(redirect_thankyou_page)  # ex. https://google.com
