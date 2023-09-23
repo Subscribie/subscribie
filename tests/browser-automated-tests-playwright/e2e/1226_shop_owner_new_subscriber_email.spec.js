@@ -3,7 +3,7 @@ const checkNewSubscriberEmail= require('./checkNewSubscriberEmail.js');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 const { admin_login } = require('./features/admin_login');
 
-test('@1226@shop-owner@check new subscriber email', async ({ page }) => {
+test('@1226@shop-owner@check new subscriber email @1226_shop-owner_check_new_subscriber_email', async ({ page }) => {
 
   await admin_login(page);
   await page.goto("/admin/add-shop-admin"); // Go to home before selecting product

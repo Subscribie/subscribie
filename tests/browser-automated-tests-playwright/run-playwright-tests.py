@@ -24,6 +24,7 @@ graph = {
         "@475_shop_owner_create_free_trial",
         "@1005_shop_owner_terms_and_conditions_creation",
     ],
+    "@1226_shop-owner_check_new_subscriber_email": [],
     "@264_subscriber_order_plan_with_choice_options_and_required_note": [
         "@stripe_connect",
         "@264_shop_owner_create_plan_with_choice_options",
