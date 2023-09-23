@@ -323,17 +323,12 @@ def thankyou():
 
         # Signal that a new subscriber has signed up
         signal_new_subscriber.send(
-            current_app._get_current_object(),
-            email=email,
-            subscription_uuid=uuid,
+            current_app._get_current_object(), email=email, subscription_uuid=uuid
         )
     else:
         uuid = None
         # Send signal_new_donation, see receivers.py
-        signal_new_donation.send(
-            current_app._get_current_object(),
-            email=email,
-        )
+        signal_new_donation.send(current_app._get_current_object(), email=email)
     database.session.commit()
 
     # Send journey_complete signal
@@ -364,7 +359,11 @@ def stripe_create_checkout_session():
     settings = Setting.query.first()
     charge_vat = settings.charge_vat
     create_stripe_tax_rate()
-    tax_rate = TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode()).first()
+    tax_rate = (
+        TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode())
+        .order_by(TaxRate.id.desc())
+        .first()
+    )
     tax_rates = [tax_rate.stripe_tax_rate_id] if charge_vat is True else []
     person = Person.query.get(session["person_id"])
     charge["currency"] = currency_code
@@ -381,7 +380,7 @@ def stripe_create_checkout_session():
                 "is_donation": is_donation,
                 "person_uuid": person.uuid,
                 "donation_comment": session["donation_comment"],
-            },
+            }
         }
 
     if is_donation is False:
@@ -417,10 +416,7 @@ def stripe_create_checkout_session():
         if plan.requirements.instant_payment:
             payment_intent_data = {
                 "application_fee_amount": 20,
-                "metadata": {
-                    "is_donation": is_donation,
-                    "person_uuid": person.uuid,
-                },
+                "metadata": {"is_donation": is_donation, "person_uuid": person.uuid},
             }
         if plan.requirements.subscription:
             mode = "subscription"
@@ -448,9 +444,7 @@ def stripe_create_checkout_session():
                             "interval": format_to_stripe_interval(plan.interval_unit)
                         },
                         "currency": charge["currency"],
-                        "product_data": {
-                            "name": plan.title,
-                        },
+                        "product_data": {"name": plan.title},
                         "unit_amount": charge["interval_amount"],
                     },
                     "quantity": 1,
@@ -468,9 +462,7 @@ def stripe_create_checkout_session():
                     "tax_rates": tax_rates,
                     "price_data": {
                         "currency": charge["currency"],
-                        "product_data": {
-                            "name": plan_name,
-                        },
+                        "product_data": {"name": plan_name},
                         "unit_amount": charge["sell_price"],
                     },
                     "quantity": 1,
@@ -484,9 +476,7 @@ def stripe_create_checkout_session():
             {
                 "price_data": {
                     "currency": charge["currency"],
-                    "product_data": {
-                        "name": "Donation",
-                    },
+                    "product_data": {"name": "Donation"},
                     "unit_amount": donation_amount,
                 },
                 "quantity": 1,

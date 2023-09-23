@@ -1,3 +1,4 @@
+/*
 const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
@@ -26,3 +27,17 @@ test.beforeEach(async ({ page }) => {
 
   const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
 
+<<<<<<< HEAD
+=======
+  const ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
+
+  const subscriber_magic_login = require('./tests/623_subscriber_magic_login');
+
+  const shop_owner_terms_and_conditions_creation = require('./tests/1005_shop_owner_terms_and_conditions_creation.js');
+
+  const subscriber_order_free_plan = require('./tests/939_subscriber_order_free_plan_with_terms_and_conditions.js');
+
+  const subscriber_terms_and_condition_check_test = require('./tests/1005_subscriber_terms_and_condition_check_test.js');
+
+  const subscriber_change_card_details = require('./tests/993_subscriber_change_card_details.js');
+*/

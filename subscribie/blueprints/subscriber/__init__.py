@@ -252,9 +252,7 @@ def account():
                 mode="setup",
                 customer=stripe_customer_id,
                 setup_intent_data={
-                    "metadata": {
-                        "subscription_id": stripe_subscription.id,
-                    },
+                    "metadata": {"subscription_id": stripe_subscription.id}
                 },
                 success_url=url_for("subscriber.account", _external=True)
                 + "?stripe_session_id={CHECKOUT_SESSION_ID}",

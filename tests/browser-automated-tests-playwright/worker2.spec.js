@@ -1,3 +1,4 @@
+/*
 const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
@@ -28,3 +29,4 @@ test.beforeEach(async ({ page }) => {
   const enabling_donations = require('./tests/1065_shop_owner_enabling_donations');
   
   const checkout_donations = require('./tests/1065_subscriber_checkout_donation');
+*/

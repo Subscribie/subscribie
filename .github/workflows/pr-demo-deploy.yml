@@ -101,7 +101,7 @@ jobs:
 
       - name: Install node dependencies needed for Playwright browser tests
         run: |
-          npm i -D @playwright/test@1.27.1
+          npm i -D @playwright/test@1.33.0
           npx playwright install
           sudo npx playwright install-deps 
 
@@ -122,12 +122,12 @@ jobs:
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
           cp .env.example .env
-          cd tests/browser-automated-tests-playwright; npx playwright test --grep-invert @704 --update-snapshots
+          cd tests/browser-automated-tests-playwright
+          python3 run-playwright-tests.py
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: Screenshots-and-video-artifacts
           path: |
-            ./index.spec.js-snapshots/*
-            ./test-results/*
+            ./tests/browser-automated-tests-playwright/test-videos
