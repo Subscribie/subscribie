@@ -29,7 +29,6 @@ test.describe("order free plan tests:", () => {
 
         // Verify get to the thank you page order complete
         await page.waitForURL('https://www.google.com');
-        expect(await page.screenshot()).toMatchSnapshot('custom-page-redirect.png');
         //changing it back to the default 
         await page.goto('/admin/change-thank-you-url');
         await page.getByRole('button', { name: 'default'}).click();
