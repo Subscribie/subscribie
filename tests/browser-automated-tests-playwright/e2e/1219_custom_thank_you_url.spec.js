@@ -2,13 +2,12 @@ const { test, expect } = require('@playwright/test');
 const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
 const { admin_login } = require('./features/admin_login');
 test.describe("order free plan tests:", () => {
-    test("@1219 @shop-owner @enable custom url @1219_shop-owner_enable_custom_url", async ({ page }) => {
+    test("@1219 @shop-owner @1219_custom_thank_you_url @1219_shop-owner_enable_custom_url", async ({ page }) => {
 
         await admin_login(page);
         await page.goto('/admin/change-thank-you-url');
         await page.fill('#custom_thank_you_url', 'https://www.google.com');
         await page.click('role=button[name="Save"]');
-        await new Promise(x => setTimeout(x, 2000));
         const custom_url = await page.textContent('text="Custom thank you url changed to: https://www.google.com"');
         expect(custom_url  === 'Custom thank you url changed to: https://www.google.com');
 
