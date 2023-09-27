@@ -30,9 +30,6 @@
           <p>
           Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. Your subscribers will be taken to this page once they have completed sign-up for a plan.
           </p>
-          <p>
-          Click here to reset your shop to use the default Thank You page.
-          </p>
 
           <form action="" method="POST" action="/">
             {{ form.csrf_token }}
@@ -47,7 +44,7 @@
           </form>
           <form action="" method="POST" action="/">
             {{ form.csrf_token }}
-            <button for="default_thank_you_url" value = "default" name="default" type="submit" class="btn btn-info btn-block mb-3">Default Url</button>
+            <button for="default_thank_you_url" value = "default" name="default" type="submit" class="btn btn-info btn-block mb-3">Use default thank you page</button>
           </form>
         </div>
 
