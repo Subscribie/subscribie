@@ -343,12 +343,18 @@ def thankyou():
         is_donation=is_donation,
         subscription_uuid=uuid,
     )
+
+    # If a custom_thank_you_url is set,
+    # redirect subscriber to the custom_thank_you_url
+    # otherwise use default thankyou.html
+    # https://github.com/Subscribie/subscribie/issues/1219
     settings = Setting.query.first()
-    redirect_thankyou_page = settings.custom_thank_you_url
-    if redirect_thankyou_page is None:
+
+    custom_thank_you_url = settings.custom_thank_you_url
+    if custom_thank_you_url is None:
         return render_template("thankyou.html")
     else:
-        return redirect(redirect_thankyou_page)
+        return redirect(custom_thank_you_url)
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
