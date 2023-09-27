@@ -40,6 +40,7 @@
               <label for="custom_thank_you_url"><b>Custom Thank You page URL:</b></label>
               <input type="url" name="custom_thank_you_url" class="form-control"
                       id="custom_thank_you_url" aria-describedby="custom_thank_you_url"
+                      value="{{ settings.custom_thank_you_url or '' }}"
                       placeholder="https://example.com/thankyou" required>
             </div>
             <button name="Save" type="submit" class="btn btn-primary btn-block mb-3">Save</button>
