@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block title %} Add Custom Thank you page{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Custom Thank You Page url</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Custom Thank You Page URL</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Custom Thank You page URL</h2>
+          <p>
+          By default, your Subscribers get sent to the default thank you page '/thankyou'.<br />
+          For most shop owners the default is perfect and no change is needed.<br/><br />
+          Some shop owners, however, prefer to direct their Subscribers <em>somehwere else</em> after they
+          have subscribed.</p>
+          <p>If you would like to set a custom thank you page URL, set one below.</p>
+          <p>Otherwise, keep the default.</p>
+          <p>
+          Please type the exact URL you want your subscribers taken to automatically after subscribing to a plan. Your subscribers will be taken to this page once they have completed sign-up for a plan.
+          </p>
+
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              <label for="custom_thank_you_url"><b>Custom Thank You page URL:</b></label>
+              <input type="url" name="custom_thank_you_url" class="form-control"
+                      id="custom_thank_you_url" aria-describedby="custom_thank_you_url"
+                      value="{{ settings.custom_thank_you_url or '' }}"
+                      placeholder="https://example.com/thankyou" required>
+            </div>
+            <button name="Save" type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+          </form>
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <button for="default_thank_you_url" value = "default" name="default" type="submit" class="btn btn-info btn-block mb-3">Use default thank you page</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}

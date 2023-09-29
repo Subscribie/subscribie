@@ -15,6 +15,8 @@ test.beforeEach(async ({ page }) => {
 }); 
 
   const plan_creation = require('./tests/shop_owner_plan_creation');
+
+  const custom_url = require('./tests/1219_shop_owner_enable_custom_url');
   
   const changing_plans_order = require('./tests/275_shop_owner_changing_plans_order');
 

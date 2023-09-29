@@ -175,5 +175,18 @@ class SetReplyToEmailForm(StripWhitespaceForm):
     email = StringField("email", validators=[DataRequired(), EmailValid()])
 
 
+class customThankYouUrlForm(FlaskForm):
+    custom_thank_you_url = StringField(
+        "url",
+        validators=[
+            validators.URL(
+                require_tld=True,
+                message="Please enter a valid URL. e.g https://example.com/thankyou",
+            )
+        ],
+        default=None,
+    )
+
+
 class UploadFilesForm(FlaskForm):
     upload = MultipleFileField("Files")

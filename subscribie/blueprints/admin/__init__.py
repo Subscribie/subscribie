@@ -43,6 +43,7 @@ from subscribie.forms import (
     WelcomeEmailTemplateForm,
     SetReplyToEmailForm,
     UploadFilesForm,
+    customThankYouUrlForm,
 )
 from subscribie.auth import (
     login_required,
@@ -1936,6 +1937,31 @@ def vat_settings():
         return redirect(url_for("admin.vat_settings", settings=settings))
 
     return render_template("admin/settings/vat_settings.html", settings=settings)
+
+
+@admin.route("/change-thank-you-url", methods=["GET", "POST"])
+@login_required
+def change_thank_you_url():
+    settings = Setting.query.first()  # Get current shop settings
+    form = customThankYouUrlForm()
+
+    if request.method == "POST":
+        if request.form.get("default"):
+            settings.custom_thank_you_url = None
+            database.session.commit()
+            flash(f"Custom thank you url changed to default")
+            return render_template(
+                "admin/settings/custom_thank_you_page.html",
+                form=form,
+            )
+
+        elif form.validate():
+            settings.custom_thank_you_url = form.custom_thank_you_url.data
+            database.session.commit()
+            flash(f"Custom thank you url changed to: {form.custom_thank_you_url.data}")
+            return redirect(url_for("admin.change_thank_you_url", form=form))
+        return render_template("admin/settings/custom_thank_you_page.html", form=form)
+    return render_template("admin/settings/custom_thank_you_page.html", form=form)
 
 
 @admin.route("/donate-enabled-settings", methods=["GET", "POST"])
