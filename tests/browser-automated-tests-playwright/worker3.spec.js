@@ -25,8 +25,10 @@ test.beforeEach(async ({ page }) => {
 
   const uploading_plan_picture = require('./tests/872_uploading_plan_picture.js');
 
-  const adding_vat = require('./tests/463_shop_owner_adding_vat');
+  const new_subscriber_email = require('./tests/1226_shop_owner_new_subscriber_email.js');
 
+<<<<<<< HEAD
+=======
   const ordering_plan_with_VAT = require('./tests/463_subscriber_ordering_plan_with_VAT');
 
   const subscriber_magic_login = require('./tests/623_subscriber_magic_login');

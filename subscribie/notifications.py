@@ -9,7 +9,9 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
-def newSubscriberEmailNotification(*args, **kwargs):
+def newSubscriberEmailNotification(
+    subscriber_name=None, subscriber_plan=None, **kwargs
+):
     """As a shop owner all shop admins email notification
     when a new subscriber joins
     https://github.com/Subscribie/subscribie/issues/602
@@ -21,7 +23,9 @@ def newSubscriberEmailNotification(*args, **kwargs):
         msg["from"] = current_app.config["EMAIL_LOGIN_FROM"]
         shopadmins = User.query.all()  # all shop admins
         msg["to"] = [user.email for user in shopadmins]  # all shop admins
-        msg.set_content("you have a new subscriber!")
+        msg.set_content(
+            f"You have a new subscriber! \n\n Plan Title: {subscriber_plan} \n Subscriber Name: {subscriber_name}"
+        )
         setting = Setting.query.first()
         if setting.reply_to_email_address is not None:
             msg["reply-to"] = setting.reply_to_email_address

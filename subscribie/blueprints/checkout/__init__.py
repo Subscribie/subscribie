@@ -678,8 +678,9 @@ def create_subscription(
                 database.session.commit()
             except Exception as e:  # noqa
                 log.error("Could not set cancel_at: {e}")
-
-    newSubscriberEmailNotification()
+    subscriber_name = subscription.person.full_name
+    subscriber_plan = subscription.plan.title
+    newSubscriberEmailNotification(subscriber_name, subscriber_plan)
     return subscription
 
 
