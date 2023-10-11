@@ -827,6 +827,12 @@ def stripe_webhook():
         log.info("Stripe webhook event: payment_intent.payment_failed")
         plan_title = None
         try:
+            # Get plan metadata by retrieving the stripe invoice id
+            # and then the metadata (stripe ultimatly puts plan metadata
+            # on the invoice->lines->data[0] object. Metadata is not available
+            # directly on the payment_intent.payment_failed event, hence the need
+            # to extract and fetch the stripe invoice id -> invoice and work backwards
+            # to identify the associated Subscribie plan.
             eventObj = event["data"]["object"]
             stripe_invoice_id = eventObj["invoice"]
             try:
