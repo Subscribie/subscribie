@@ -1,7 +1,8 @@
-{% extends "admin/layout.html" %}                                                
+{% extends "admin/layout.html" %}
 {% block title %} Subscribers {% endblock %}                                
                                                                                  
 {% block body %}
+{% from 'macros/subscriber_subscription_card.html' import subscriber_subscription_card %}
 
 <h2 class="text-center text-dark mb-3">My Subscribers</h2>
 
@@ -82,128 +83,7 @@
               <ul class="list-unstyled">
                 {% for subscription in person.subscriptions %}
                     <li>
-                        <div class="card">
-                            <ul class="list-unstyled px-2">
-                                <li><strong>Title: </strong>
-                                    <span class="subscription-title">{{ subscription.plan.title }}</span>
-                                </li>
-                                <li>
-                                  <strong>Interval:</strong>
-                                  {% if subscription.plan is not sameas None and subscription.plan.interval_unit is not sameas None %}
-                                    {{ subscription.plan.interval_unit.capitalize() }}
-                                  {% else %}
-                                    {{ subscription.plan.interval_unit }}
-                                  {% endif %}
-                                </li>
-                                {% if subscription.chosen_options %}
-                                    <li>
-                                        <details open>
-                                            <summary><strong>Chosen Options</strong></summary>
-                                            <ul>
-                                                {% for choice in subscription.chosen_options %}
-                                                    <li><strong>{{ choice.choice_group_title }}:</strong> {{ choice.option_title }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </details>
-                                    </li>
-                                {% endif %}
-                                <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
-                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
-                                <li>
-                                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                        <strong>Price: </strong>
-                                        <span class="subscribers-plan-interval_amount">{{ subscription.showIntervalAmount() }}</span>
-                                    {% else %}
-                                        (One-off. Not a subscription)
-                                    {% endif %}
-                                </li>
-                                <li><strong>Sell price: </strong>
-                                    <span class="subscribers-plan-sell-price">
-                                        {% if subscription.plan.requirements and subscription.plan.requirements.instant_payment %}
-                                            {{ subscription.showSellPrice() }}</li>
-                            {% else %}
-                                (No up-front fee)
-                            {% endif %}
-                                    </span>
-                                    <li><strong>Status:</strong>
-                                        {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                           {% if subscription.stripe_pause_collection == "void" %}
-                                              <span class="subscription-status">Paused</span>
-                                           {% else %}
-                                              <span class="subscription-status">{{ subscription.stripe_status }}</span>
-                                           {% endif %}
-                                        {% else %}
-                                           <span class="subscription-status">Paid</span>
-                                        {% endif %}
-                                    </li>
-                                    {% if subscription.stripe_cancel_at %}
-                                      <strong>Automatically Cancels at:</strong>
-                                      {{ subscription.stripe_cancel_at | timestampToDate }}
-                                    {% endif %}
-                                    <li>
-                                    </li>
-                                    <li>
-                                        {% if subscription.plan.requirements and subscription.plan.requirements.note_to_seller_required %}
-                                            <details open>
-                                                <summary><strong>Order Note</strong></summary>
-                                                {% if subscription.note %}
-                                                    {{ subscription.note.note }}
-                                                {% else %}
-                                                    No note was given.
-                                                {% endif %}
-                                            </details>
-                                        {% endif %}
-                                    </li>
-                                    <li><strong>Actions: </strong>
-                                        {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                            {% if subscription.stripe_status|lower in ['active', 'trialing', 'past_due', 'unpaid'] %}
-                                                {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
-                                                <a href="{{ url_for("admin.pause_stripe_subscription",
-                                                subscription_id=subscription.stripe_subscription_id,
-                                                confirm="") }}">
-                                                    <span class="pause-action">Pause</span>
-                                                </a> |
-                                                <a href="{{ url_for("admin.cancel_stripe_subscription",
-                                                subscription_id=subscription.stripe_subscription_id,
-                                                confirm="") }}">
-                                                    <span class="cancel-action">Cancel</span>
-                                                </a> |
-                                                {% endif %}
-                                            {% endif %}
-                                            {% if subscription.stripe_pause_collection|lower == 'void' %}
-                                                <a href="{{ url_for("admin.resume_stripe_subscription",
-                                                subscription_id=subscription.stripe_subscription_id,
-                                                confirm="") }}">
-                                                    <span class="resume-action">Resume</span>
-                                                </a> |
-                                                <a href="{{ url_for("admin.cancel_stripe_subscription",
-                                                subscription_id=subscription.stripe_subscription_id,
-                                                confirm="") }}">
-                                                    <span class="cancel-action">Cancel</span>
-                                                </a> |
-                                            {% endif %}
-                                        {% endif %}</li>
-                                     <li class=mt-2><strong>History: </strong>
-                                      <a href="{{ url_for('admin.transactions',
-                                        subscriber=subscription.person.uuid) }}">View Transactions
-                                      </a>
-                                     </li>
-                                     <li class=mt-2><strong>Documents: </strong>
-                                       {% if subscription.documents|length == 0 %}
-                                          None
-                                       {% else %}
-                                         <ul>
-                                         {% for document in subscription.documents %}
-                                         {# Show documents assocated with subscription (if any) #}
-                                         <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}">
-                                             {{ document.name }}</a> | 
-                                             {{ document.created_at.strftime('%Y-%m-%d') }}</li>
-                                         {% endfor %}
-                                         </ul>
-                                       {% endif %}
-                                     </li>
-                            </ul>
-                        </div>
+                        {{ subscriber_subscription_card(subscription) }}
                     </li>
                 {% endfor %}
               </ul>
