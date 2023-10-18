@@ -31,6 +31,35 @@ def failed_invoices():
     )
 
 
+@admin.route("/invoices/failed/<badInvoice>/actions/paid")
+@login_required
+@stripe_connect_id_required
+def payBadInvoices(badInvoice: str):
+    stripe.api_key = get_stripe_secret_key()
+    connect_account = get_stripe_connect_account()
+
+    if "confirm" in request.args and request.args["confirm"] != "1":
+        return render_template(
+            "admin/invoice/pay_invoice.html",
+            confirm=False,
+            badInvoice=badInvoice,
+        )
+    if "confirm" in request.args and request.args["confirm"] == "1":
+        try:
+            stripe.Invoice.pay(
+                badInvoice, stripe_account=connect_account.id, paid_out_of_band=True
+            )
+            # it refresh invoices after paid
+            get_stripe_invoices()
+            flash("Invoice marked as paid")
+        except Exception as e:
+            msg = "Error changing invoice as paid"
+            flash(f"{msg}. {e}")
+            log.error("{msg}. {e}")
+
+    return redirect(url_for("admin.invoices"))
+
+
 @admin.route("/fetch-upcoming_invoices")
 def fetch_upcoming_invoices():
     fetch_stripe_upcoming_invoices()
