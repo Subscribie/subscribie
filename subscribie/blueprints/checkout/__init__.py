@@ -811,6 +811,7 @@ def stripe_webhook():
 
     See https://github.com/Subscribie/subscribie/issues/352
     """
+    connect_account_id = get_stripe_connect_account_id()
     event = request.json
     is_donation = False
 
@@ -824,14 +825,46 @@ def stripe_webhook():
     # Handle the payment_intent.payment_failed
     if event["type"] == "payment_intent.payment_failed":
         log.info("Stripe webhook event: payment_intent.payment_failed")
+        plan_title = None
         try:
+            # Get plan metadata by retrieving the stripe invoice id
+            # and then the metadata (stripe ultimatly puts plan metadata
+            # on the invoice->lines->data[0] object. Metadata is not available
+            # directly on the payment_intent.payment_failed event, hence the need
+            # to extract and fetch the stripe invoice id -> invoice and work backwards
+            # to identify the associated Subscribie plan.
             eventObj = event["data"]["object"]
+            stripe_invoice_id = eventObj["invoice"]
+            try:
+                stripe_invoice = stripe.Invoice.retrieve(
+                    stripe_invoice_id, stripe_account=connect_account_id
+                )  # noqa: E501
+                stripe_invoice_metadata = stripe_invoice.lines.data[0]["metadata"]
+                subscribie_plan_uuid = stripe_invoice_metadata.plan_uuid
+                plan = (
+                    Plan.query.filter_by(uuid=subscribie_plan_uuid)
+                    .execution_options(include_archived=True)
+                    .first()
+                )  # noqa: E501
+                if plan is None:
+                    log.warning(
+                        f"Plan not found from invoice metadata. Stripe invoice_id: {stripe_invoice_id}"  # noqa: E501
+                    )
+                else:
+                    plan_title = plan.title
+            except Exception as e:
+                log.error(
+                    f"Error whilst extracting invoice from payment_intent.payment_failed event. {e}."  # noqa: E501
+                )
+                stripe_invoice_id = eventObj["id"]
+
             log.info(eventObj)
             personName = eventObj["charges"]["data"][0]["billing_details"]["name"]
             personEmail = eventObj["charges"]["data"][0]["billing_details"]["email"]
             # Notify Shop owner if payment_failed event was related to a Subscription charge # noqa: E501
             if eventObj["charges"]["data"][0]["description"] == "Subscription update":
                 emailBody = f"""A recent subscription charge failed to be collected from Subscriber:\n\n{personName}\n\nEmail: {personEmail}\n\n
+                Plan title: {plan_title}\n\n
                 The failure code was: {eventObj['charges']['data'][0]['failure_code']}\n\n
                 The failure message was: {eventObj['charges']['data'][0]['failure_message']}\n\n
                 Please note, payments are automatically retried and no action is required unless you wish to pause or stop the subscription from your admin dashboard."""  # noqa: E501
@@ -839,7 +872,9 @@ def stripe_webhook():
                 shop_admins = [user.email for user in User.query.all()]
                 company = Company.query.first()
                 msg = EmailMessageQueue()
-                msg["Subject"] = company.name + " " + "A payment collection failed"
+                msg["Subject"] = (
+                    company.name + " " + f"A payment collection failed. {plan_title}"
+                )  # noqa: E501
                 msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
                 msg["TO"] = shop_admins
                 msg.set_content(emailBody)
