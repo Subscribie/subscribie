@@ -4,7 +4,7 @@ from .logger import logger  # noqa: F401
 import logging
 from flask import current_app
 from subscribie.database import database
-from subscribie.models import Setting
+from subscribie.models import Setting, Plan, Category
 
 log = logging.getLogger(__name__)
 
@@ -35,4 +35,21 @@ def set_app_default_settings():
     if setting is None:
         setting = Setting()
         database.session.add(setting)
+        database.session.commit()
+
+
+def set_plans_default_category():
+    """Add all plans to a default category if they are not associated with one"""
+    # Add all plans to one
+    if Category.query.count() == 0:  # If no categories, create default
+        category = Category()
+        # Note this string is not translated since is populated
+        # during bootstrap. category.name titles may be edited in the
+        # admin dashboard in the 'Manage Categories' section
+        category.name = "Make your choice"
+        # Add all plans to this category
+        plans = Plan.query.all()
+        for plan in plans:
+            plan.category = category
+        database.session.add(category)
         database.session.commit()

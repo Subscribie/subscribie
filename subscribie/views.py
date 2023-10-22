@@ -18,7 +18,6 @@ from flask import (
 )
 from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
 from subscribie.blueprints.style import inject_custom_style
-from subscribie.database import database
 from subscribie.signals import register_signal_handlers
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
@@ -99,19 +98,6 @@ def on_each_request():
         log.debug(
             f'session fallback_default_country_active is: {session["fallback_default_country_active"]}'  # noqa: E501
         )
-
-    # Add all plans to one
-    if Category.query.count() == 0:  # If no categories, create default
-        category = Category()
-        # Note this string is not translated since is populated
-        # during bootstrap. category.name titles may be edited in the
-        # admin dashboard in the 'Manage Categories' section
-        category.name = "Make your choice"
-        # Add all plans to this category
-        plans = Plan.query.all()
-        for plan in plans:
-            plan.category = category
-        database.session.add(category)
 
 
 @bp.before_app_request

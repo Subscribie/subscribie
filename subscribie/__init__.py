@@ -44,7 +44,11 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
-from .bootstrap_app import migrate_database, set_app_default_settings
+from .bootstrap_app import (
+    migrate_database,
+    set_app_default_settings,
+    set_plans_default_category,
+)
 
 load_dotenv(verbose=True)
 
@@ -75,6 +79,7 @@ def create_app(test_config=None):
         # Note: flask_migrate calls database migrations 'upgrades'.
         migrate_database()
         set_app_default_settings()
+        set_plans_default_category()
 
     if test_config is not None:
         app.config.update(test_config)
