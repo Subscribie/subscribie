@@ -1202,17 +1202,9 @@ def connect_tawk_manually():
 @login_required
 def add_custom_code():
     setting = Setting.query.first()
-    if setting is None:
-        setting = Setting()
-        database.session.add(setting)
-
     if request.method == "POST":
         custom_code = request.form.get("code", None)
         if custom_code is not None:
-            setting = Setting.query.first()
-            if setting is None:
-                setting = Setting()
-                database.session.add(setting)
             setting.custom_code = custom_code
             database.session.commit()
             flash("Custom code added")

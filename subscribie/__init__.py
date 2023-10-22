@@ -44,7 +44,7 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
-from .bootstrap_app import migrate_database
+from .bootstrap_app import migrate_database, set_app_default_settings
 
 load_dotenv(verbose=True)
 
@@ -67,10 +67,14 @@ def create_app(test_config=None):
     with app.app_context():
         database.init_app(app)
         # Initialize flask_migrate using Migrate
+        # Note: Migrate configures the flask_migrate addon- it does not
+        # *perform* a migration
         Migrate(app, database)
-        # Trigger a programatic database migration during application boot
+
+        # Perform a programatic database migration during application boot
         # Note: flask_migrate calls database migrations 'upgrades'.
         migrate_database()
+        set_app_default_settings()
 
     if test_config is not None:
         app.config.update(test_config)
