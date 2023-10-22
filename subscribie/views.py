@@ -17,9 +17,7 @@ from flask import (
     Markup,
 )
 from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
-from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
-from subscribie.database import database
 from subscribie.signals import register_signal_handlers
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
@@ -43,15 +41,6 @@ bp = Blueprint("views", __name__, url_prefix=None)
 
 # Connect signals to recievers
 register_signal_handlers()
-
-
-@bp.before_app_first_request
-def migrate_database():
-    """Migrate database when app first boots"""
-    log.info("Migrating database")
-    upgrade(
-        directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
-    )
 
 
 @bp.before_app_request
@@ -109,19 +98,6 @@ def on_each_request():
         log.debug(
             f'session fallback_default_country_active is: {session["fallback_default_country_active"]}'  # noqa: E501
         )
-
-    # Add all plans to one
-    if Category.query.count() == 0:  # If no categories, create default
-        category = Category()
-        # Note this string is not translated since is populated
-        # during bootstrap. category.name titles may be edited in the
-        # admin dashboard in the 'Manage Categories' section
-        category.name = "Make your choice"
-        # Add all plans to this category
-        plans = Plan.query.all()
-        for plan in plans:
-            plan.category = category
-        database.session.add(category)
 
 
 @bp.before_app_request

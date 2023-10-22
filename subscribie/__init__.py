@@ -44,6 +44,11 @@ from flask_migrate import Migrate
 import click
 from jinja2 import Template
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
+from .bootstrap_app import (
+    migrate_database,
+    set_app_default_settings,
+    set_plans_default_category,
+)
 
 load_dotenv(verbose=True)
 
@@ -62,6 +67,19 @@ def create_app(test_config=None):
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
     app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
+
+    with app.app_context():
+        database.init_app(app)
+        # Initialize flask_migrate using Migrate
+        # Note: Migrate configures the flask_migrate addon- it does not
+        # *perform* a migration
+        Migrate(app, database)
+
+        # Perform a programatic database migration during application boot
+        # Note: flask_migrate calls database migrations 'upgrades'.
+        migrate_database()
+        set_app_default_settings()
+        set_plans_default_category()
 
     if test_config is not None:
         app.config.update(test_config)
@@ -152,9 +170,6 @@ def create_app(test_config=None):
     app.add_url_rule("/", "index", views.__getattribute__("choose"))
 
     with app.app_context():
-        database.init_app(app)
-        Migrate(app, database)
-
         try:
             payment_provider = PaymentProvider.query.first()
             if payment_provider is None:
