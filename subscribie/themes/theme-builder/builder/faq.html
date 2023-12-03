@@ -4,6 +4,72 @@
   text-decoration: none !important;
   padding: 1em 2.5em;
 }
+/* 
+New optional basic style settings for layout
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+body{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #E3F2FD;
+}
+.row {
+  max-width: 530px;
+  width: 100%;
+  background: #FFF;
+  margin: 0 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+}
+.row .col-sm-12 {
+  margin: 10px 0;
+  border-radius: 4px;
+  background: #FFF7F0;
+  border: 1px solid #FFD6B3; 
+  overflow: hidden;   
+}
+.col-sm-12.open{
+  padding-bottom: 10px;
+}
+.col-sm-12 header{
+  display: flex;
+  min-height: 50px;
+  padding: 0 15px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s linear;
+}
+.col-sm-12.open header{
+  min-height: 35px;
+}
+.col-sm-12 header .title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+.col-sm-12 header i{
+  font-size: 15px;
+  color: #333; 
+}
+.col-sm-12 header .description{
+  height: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  padding: 0 15px;
+  transition: all 0.2s linear;
+}
+
+
+*/
 </style>
 
 <div class="header-content py-4">
@@ -21,16 +87,44 @@
 </div>
 </div>
 </div><!-- end header header-bg -->
+<!--///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////-->
 
+<!-- Start of new section template layout -->
 <div class="container">
-<div class="row">
-  <div class="col-sm-12">
-    <h3>How much do you charge?</h3>
-    <p>
-    Please see <a href="/page/pricing" title="subscription billing pricing">pricing</a>.
-    </p>
+  <div class="row">
+    <div class="col-sm-12">
+      <header>
+        <span class="title">How much do you charge?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Please see <a href="/page/pricing" title="subscription billing pricing">pricing</a>.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">How much do you charge?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Please see <a href="/page/pricing" title="subscription billing pricing">pricing</a>.
+      </p>
+    </div>
   </div>
-</div>
+  <!--
+<script src="faq.js">
+
+</script>
+ Optional JS  -->
+<!-- End of new section template layout -->
+
+
+
+
+
 
 <div class="row">
   <div class="col-sm-12">
