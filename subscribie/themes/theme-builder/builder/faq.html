@@ -4,8 +4,8 @@
   text-decoration: none !important;
   padding: 1em 2.5em;
 }
-/* 
-New optional basic style settings for layout
+
+/*New optional basic style settings for layout*/
 *{
   margin: 0;
   padding: 0;
@@ -35,6 +35,20 @@ body{
   border: 1px solid #FFD6B3; 
   overflow: hidden;   
 }
+
+.col-sm-12:nth-child(2){
+  background-color: #F0FAFF;
+  border-color: #CCEEFF;
+}
+.col-sm-12:nth-child(3){
+  background-color: #FFF0F3;
+  border-color: #FFCCD6;
+}
+.col-sm-12:nth-child(4){
+  background-color: #F0F0FF;
+  border-color: #CCCCFF;
+}
+
 .col-sm-12.open{
   padding-bottom: 10px;
 }
@@ -67,10 +81,10 @@ body{
   padding: 0 15px;
   transition: all 0.2s linear;
 }
-
-
-*/
 </style>
+<!--//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////-->
 
 <div class="header-content py-4">
   <div class="row">
@@ -106,150 +120,165 @@ body{
 
     <div class="col-sm-12">
       <header>
-        <span class="title">How much do you charge?</span>
+        <span class="title">How do I login?</span>
         <i class="fa-solid fa-plus"></i>
       </header>
       <p class="description">
-        Please see <a href="/page/pricing" title="subscription billing pricing">pricing</a>.
+        Visit your shop url, press 'login' and enter your email address.
+        You will receive an email with a link which logs you into your shop.
       </p>
     </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">What are the features?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Please see <a href="/page/features" title="subscription billing features">subscription billing features</a>.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">What is my shop URL?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        We make your shop URL out of the business name you enter during the sign-up process.
+        After Sign-up is complete you will be able to find your shop URL in the Welcome Email you receive from us.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">Can I use Subscribie with my existing website?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Yes. You don't need to have an existing website, but if you do, then
+        you can embed your subscription website into an existing website using
+        the 'embed' option from your shops dashboard.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">When I get orders, how will I see them and track them?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        New orders appear as a new customer on the customers list on your
+        shop dashboard. Also, there's a transactions list to see payments which have
+        come through, and also invoices generated.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">Can I take order notes from customers?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Yes. For each subscription plan you sell, you can choose to request customers
+        leave a note alongside their order. You can then see these on you shop
+        dashboard under 'order notes'.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">Is it possible to have both a recurring price and a one-off price on the same product?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Yes. In this scenario, you can easily create two plans. For example:<br />
+        Title one: (Your product name) - Pay one-off <br />
+        Title two: (Your product name) - Pay monthly<br />
+        You would then configure only an up-front cost for item one, and
+        a monthly fee for item two. Easy!
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">How many orders can Subscribie handle, does the price change?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        There is no enforced limit on the number of orders your shop can take,
+        and the price remains the same regardless of how many orders your shop
+        processes.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">May I use my own web address/domain name?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Yes, after activating your shop you can either use an existing web address you
+        own, or purchase an additional domain through us. We recommend
+        <a href="https://domains.karmacomputing.co.uk" target="_blank">Karma Domains</a>
+        for .co.uk subscription websites. You don't have to do this, all shops get a
+        Subscribie branded web address for free!
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">What happens if my customers card expires or they get a new card due to renewal?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        No action needed, stripe automatically attempts to update saved card details
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">Which countries do you support?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        We support a wide range of countries across the world. You can find the complete <a
+          href="https://subscribie.co.uk/blog/how-to-start-an-international-subscription/">list of our supported countries
+          here</a>. We are constantly working to expand our coverage and add new countries to our list. Please check back
+        regularly for updates.
+      </p>
+    </div>
+
+    <div class="col-sm-12">
+      <header>
+        <span class="title">What languages do you support?</span>
+        <i class="fa-solid fa-plus"></i>
+      </header>
+      <p class="description">
+        Subscribie currently supports:
+      </p>
+      <ul>
+        <li>English</li>
+        <li>French</li>
+        <li>Spanish</li>
+        <li>Dutch</li>
+        <li>Croatian</li>
+      </ul>
+      <p>To <a href="https://subscribie.co.uk/blog/create-your-subscription-in-many-languages/">change the language
+          manually</a> check out our <a
+          href="https://subscribie.co.uk/blog/create-your-subscription-in-many-languages/">support page here</a>. Be sure to
+        check back as we are always updating our multi-language support.</p>
+      <p><br></p>
+    </div>
+
   </div>
-  <!--
+  
 <script src="faq.js">
 
 </script>
- Optional JS  -->
+ 
 <!-- End of new section template layout -->
 
-
-
-
-
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>How do I login?</h3>
-    <p>Visit your shop url, press 'login' and enter your email address.
-       You will receive an email with a link which logs you into your shop.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>What are the features?</h3>
-    <p>
-    Please see <a href="/page/features" title="subscription billing features">subscription billing features</a>.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>What is my shop URL?</h3>
-    <p>We make your shop URL out of the business name you enter during the sign-up process.
-        After Sign-up is complete you will be able to find your shop URL in the Welcome Email you receive from us.</p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>Can I use Subscribie with my existing website?</h3>
-    <p>
-    Yes. You don't need to have an existing website, but if you do, then 
-    you can embed your subscription website into an existing website using
-    the 'embed' option from your shops dashboard.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>When I get orders, how will I see them and track them?</h3>
-    <p>
-    New orders appear as a new customer on the customers list on your 
-    shop dashboard. Also, there's a transactions list to see payments which have
-    come through, and also invoices generated.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>Can I take order notes from customers?</h3>
-    <p>
-    Yes. For each subscription plan you sell, you can choose to request customers
-    leave a note alongside their order. You can then see these on you shop 
-    dashboard under 'order notes'.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>Is it possible to have both a recurring price and a one-off price on the same product?</h3>
-    <p>
-     Yes. In this scenario, you can easily create two plans. For example:<br />
-     Title one: (Your product name) - Pay one-off <br />
-     Title two: (Your product name) - Pay monthly<br />
-      You would then configure only an up-front cost for item one, and 
-      a monthly fee for item two. Easy!
-    </p>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>How many orders can Subscribie handle, does the price change?</h3>
-    <p>
-    There is no enforced limit on the number of orders your shop can take,
-    and the price remains the same regardless of how many orders your shop
-    processes.
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>May I use my own web address/domain name?</h3>
-    <p>Yes, after activating your shop you can either use an existing web address you 
-       own, or purchase an additional domain through us. We recommend 
-       <a href="https://domains.karmacomputing.co.uk" target="_blank">Karma Domains</a> 
-       for .co.uk subscription websites. You don't have to do this, all shops get a 
-       Subscribie branded web address for free!
-    </p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>What happens if my customers card expires or they get a new card due to renewal?</h3>
-    <p>No action needed, stripe automatically attempts to update saved card details</p>
-  </div>
-</div>
-  
-<div class="row">
-  <div class="col-sm-12">
-    <h3>Which countries do you support?</h3>
-    <p>We support a wide range of countries across the world. You can find the complete <a href="https://subscribie.co.uk/blog/how-to-start-an-international-subscription/">list of our supported countries here</a>. We are constantly working to expand our coverage and add new countries to our list. Please check back regularly for updates.</p>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <h3>What languages do you support?</h3>
-    <p>We display your shop in the preferred language of your customers when they signup and allow them to switch it at any time.</p>
-    <p>Subscribie currently supports:</p>
-      <ul>
-       <li>English</li>
-       <li>French</li>
-       <li>Spanish</li>
-       <li>Dutch</li>
-       <li>Croatian</li>
-      </ul>
-    <p>To <a href="https://subscribie.co.uk/blog/create-your-subscription-in-many-languages/">change the language manually</a> check out our <a href="https://subscribie.co.uk/blog/create-your-subscription-in-many-languages/">support page here</a>. Be sure to check back as we are always updating our multi-language support.</p>
-    <p><br></p>
-  </div>
-</div>
 
 <div class="row col-sm-12 mt-2">
   <div class="col-sm-12 d-flex align-items-center justify-content-center text-center">
