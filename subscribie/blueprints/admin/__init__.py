@@ -1365,6 +1365,7 @@ def transactions():
 
     pay_issues = {"outstanding_number": "1"}
 
+
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1419,6 +1420,7 @@ def transactions():
         person=person,
         action=action,
     )
+
 
 @admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
 @login_required

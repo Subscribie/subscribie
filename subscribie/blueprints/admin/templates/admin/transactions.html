@@ -62,9 +62,20 @@
           <input type="text" name="plan_title" id="plan_title" class="form-control" placeholder="Enter plan title...">
           <input type="submit" class="btn btn-primary mt-4" />
         </div>
+
+        <div class="container" style="overflow-x:auto">
+          <div class="button-divider" style="display:flex; justify-content: center; align-items: center">
+            <div class="block"><input type="submit" class="btn btn-primary mt-4" /></div>
+            <div class="block">
+              <button class="btn btn-warning ml-3" onclick="window.location.href='/admin/issues'">Pay issues
+              <span class="badge badge-light">{{ pay_issues["outstanding_number"] }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
         </form>
 
-        </div>
+  </div>
         <div class="container" style="overflow-x:auto">
         {% if person %}
           <h1>All transactions: {{ full_name|capitalize }} ({{ transactions.total }})</h1>
@@ -90,6 +101,7 @@
               <a href="{{ url_for('admin.transactions') }}">View all transactions</a>
               </div>
         {% endif %}
+        </div>
 
 		<table class="table">
 		  <thead>
