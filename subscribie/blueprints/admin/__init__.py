@@ -31,7 +31,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
-    get_payment_issues
+    get_payment_issues,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -444,7 +444,6 @@ def cancel_stripe_subscription(subscription_id: str):
 @admin.route("/dashboard")
 @login_required
 def dashboard():
-
     integration = Integration.query.first()
     payment_provider = PaymentProvider.query.first()
     num_donations = 0
@@ -480,7 +479,7 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
-        pay_issues=get_payment_issues()
+        pay_issues=get_payment_issues(),
     )
 
 
@@ -774,7 +773,7 @@ def list_documents():
         documents = (
             Document.query.where(Document.type == "terms-and-conditions-agreed")
             .execution_options(include_archived=True)
-            .where(Document.read_only == True)
+            .where(Document.read_only == True)  # noqa: E712
             .all()
         )
     else:
@@ -1255,11 +1254,11 @@ def subscribers():
         )
     elif action == "show_donors":
         query = query.filter(Person.transactions)
-        query = query.where(Transaction.is_donation == True)
+        query = query.where(Transaction.is_donation == True)  # noqa: E712
 
     elif action == "show_one_off_payments":
         query = query.filter(Person.subscriptions)
-        query = query.where(Subscription.stripe_subscription_id == None)
+        query = query.where(Subscription.stripe_subscription_id == None)  # noqa: E711
 
     people = query.order_by(desc(Person.created_at))
 
@@ -1363,9 +1362,6 @@ def invoices():
 def transactions():
     action = request.args.get("action", None)
 
-    pay_issues = {"outstanding_number": "1"}
-
-
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1400,10 +1396,10 @@ def transactions():
             query = query.filter(False)
 
     if action == "show_refunded":
-        query = query.filter(Transaction.external_refund_id != None)
+        query = query.filter(Transaction.external_refund_id != None)  # noqa: E711
 
     if action == "show_donations":
-        query = query.filter(Transaction.is_donation == True)
+        query = query.filter(Transaction.is_donation == True)  # noqa: E712
 
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
@@ -1414,27 +1410,40 @@ def transactions():
 
     return render_template(
         "admin/transactions.html",
-        transactions=query.paginate(page=page,per_page=10),
+        transactions=query.paginate(page=page, per_page=10),
         person=person,
         pay_issues=get_payment_issues(),
-        person=person,
         action=action,
     )
 
 
-@admin.route("/issues", methods=["GET"]) #Route is "/issues" but may be changed to a more suitable name. Following Issue #773 spec image
+@admin.route("/issues", methods=["GET"])
 @login_required
 def outstanding_payments():
+    """Route is "/issues" but may be changed to a more suitable name.
+    Ref Issue #773
+    """
     customer = {
-        "name": "John Doe", # Example customer
-        "debt": "1000", # £10.00
-        "missed": int(1), # 1 missed payment
-        "balance": "0"
+        "name": "John Doe",  # Example customer
+        "debt": "1000",  # £10.00
+        "missed": int(1),  # 1 missed payment
+        "balance": "0",
     }
-    list_control_number=int(1) # This variable controls how many missed payments are considered critical (Card changes to red in list)
-    # In this hardcoded example, user John Doe has missed 1 payment of a value of £10 (1000)
-    customer["balance"] = int(customer["balance"])-int(customer["debt"])
-    return render_template("admin/issues.html",customer=customer,pay_issues=get_payment_issues(),list_control_number=list_control_number)
+    # Global threshold how many missed payments are considered critical
+    # (UI changes to red)
+    global_num_missed_payments_threshold = os.getenv(
+        "GLOBAL_NUM_MISSED_PAYMENTS_THRESHOLD", 1
+    )
+
+    # In this hardcoded example, user John Doe has missed 1
+    # payment of a value of £10 (1000)
+    customer["balance"] = int(customer["balance"]) - int(customer["debt"])
+    return render_template(
+        "admin/issues.html",
+        customer=customer,
+        pay_issues=get_payment_issues(),
+        global_num_missed_payments_threshold=global_num_missed_payments_threshold,
+    )
 
 
 @admin.route("/order-notes", methods=["GET"])
@@ -1973,7 +1982,7 @@ def change_thank_you_url():
         if request.form.get("default"):
             settings.custom_thank_you_url = None
             database.session.commit()
-            flash(f"Custom thank you url changed to default")
+            flash("Thank page has been set back to the to the default thank you page.")
             return render_template(
                 "admin/settings/custom_thank_you_page.html",
                 form=form,

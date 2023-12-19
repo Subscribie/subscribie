@@ -39,7 +39,7 @@
     <div class="d-flex justify-content-center">
     <ul class="list-group">
       <li>
-        {% if customer["missed"] > list_control_number %}
+        {% if customer["missed"] > global_num_missed_payments_threshold %}
         <div class="card text-center text-white bg-danger mb-3" style="width: 18rem;">
         {% else %}
         <div class="card text-center text-white bg-warning mb-3" style="width: 18rem;">
