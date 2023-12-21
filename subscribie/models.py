@@ -164,6 +164,34 @@ class Person(database.Model, HasArchived):
 
         return subscriptions
 
+    def balance(self):
+        """Return the customer balance
+        Customer balance is the total charged - total collected over the lifetime
+        of their account.
+        """
+        total_charged = 0
+        total_collected = 0
+        customer_balance = 0
+        invoices = self.invoices()
+        for invoice in invoices:
+            total_charged += invoice.amount_due
+
+        # Calculate total_collected by adding up all invoices amount_due,
+        # minus any invoices which still have amounts remaining
+        # (Warning: partial payments on invoices is ignored, since a subscriber
+        # cannot currently partially pay their invoice anyway)
+        for invoice in invoices:
+            if invoice.amount_remaining == 0:
+                total_collected += invoice.amount_due
+
+        customer_balance = total_charged - total_collected
+
+        return {
+            "total_charged": total_charged,
+            "total_collected": total_collected,
+            "customer_balance": customer_balance,
+        }
+
     def invoices(self, refetchCachedStripeInvoices=False):
         """Get all cached Stripe invoices for a given person
 

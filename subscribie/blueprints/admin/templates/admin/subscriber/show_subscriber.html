@@ -3,6 +3,8 @@
 
 {% block body %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <h2 class="text-center text-dark mb-3">Subscriber: {{ person.given_name }}</h2>
 
 <div class="container">
@@ -39,6 +41,98 @@
         </div>
       </div>
       {# end subscriber basic details #}
+
+      <div class="row mt-5">
+        <div class="card col-md-12">
+          <div class="card-body">
+            <h3>Subscriber Balance</h3>
+            <p>Subscriber balance is the total charged <em>minus</em> total successfully collected over the lifetime
+            of their account.</p>
+
+      <dl class="row">
+       <dt class="col-sm-3">All-Time<dt>
+       <dd class="col-sm-9"></dd>
+       <dt class="col-sm-3">Total Charged:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['total_charged']) }}</dd>
+              <dt class="col-sm-3">Total Collected:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['total_collected']) }}</dd>
+              <dt class="col-sm-3">Balance:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['customer_balance']) }} (not collected)</dd>
+           </dl>
+
+     <div>
+      <canvas id="customerBalancePieChart"></canvas>
+     </div>
+
+     <script>
+     // Subscriber balance Pie chart
+     const ctx = document.getElementById('customerBalancePieChart');
+
+     var data = {
+      labels: ['Total Collected', 'Total Outstanding'],
+      datasets: [
+       {
+        label: '',
+        data: [{{ customer_balance_list['total_collected']/100 }}, {{ customer_balance_list['customer_balance']/100 }}]
+       }
+      ]
+     }
+
+     var pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: data,
+            options: {
+              responsive: false,
+              title: {
+                display: true,
+                text: 'Total collected, Total outstanding'
+              },
+       plugins: {
+         tooltip: {
+           callbacks: {
+             label: function(context) {
+                              console.log(context);
+               let label = context.dataset.label || '';
+
+               if (label) {
+                 label += ': ';
+               }
+               if (context.parsed.y !== null) {
+                 label += new Intl.NumberFormat('en-GB', { style: 'currency', currency: '{{ get_geo_currency_code() }}' }).format(context.parsed);
+               }
+               return label;
+             }
+           }
+         }
+       }
+            }
+     });
+     </script>
+          {% if customer_balance_list['customer_balance'] > 0 %}
+              {% if collection_decline_codes|count != 0 %}
+              <br />
+              <h4>Why might this Subscriber owe money?</h4>
+              <p>Over the lifetime of this account, Subscribie has seen the following decline codes (from the bank, payment processor or credit network) when collecting payments from {{ person.given_name }}:</p>
+                  <ul style="list-style-type: disc" class="p-3">
+                  {% for  decline_code in collection_decline_codes %}
+                      <li>{{ decline_code }}</li>
+                  {% endfor %}
+                  </ul>
+              <p>For per-payment collection issue, see <a href="#invoices">Invoices</a> for a break-down.</p>
+              {% endif %}
+
+
+              {% if collection_decline_codes|count > 0 %}<h4>Exactly which payment collections are failing or failed?</h4>{% endif %}
+              <p>Examine {{ person.given_name }}'s <a href="#invoices">Invoices</a> and look for errors such as
+              "<em>insufficient_funds</em>" to get an idea of their situation.
+              </p>
+              <p>Read the <a href="#invoice-heading-explanations">Invoice heading explanations</a> such as "attempts" to get an idea of any patterns to payments collection issues.</p>
+          {% endif %}
+
+          </div>
+        </div>
+      </div>
+
       <div class="row mt-5">
         <div class="card col-md-12">
           <div class="card-body">
@@ -95,7 +189,7 @@
             {% endfor %}
           </ul>
           <!-- invoices list -->
-          <div class="card-body">
+          <div class="card-body" id="invoices">
             <h3>Invoices</h3>
             <div id="scroll-alert" class="alert alert-info" style="display:none;">
               <em>&lt;---- Swipe invoice table to the left to see all</em>
@@ -141,7 +235,7 @@
               <th>Errors</th>
               <th>Next retry</th>
             </tr>
-              {% for invoice in person.invoices() %}
+              {% for invoice in invoices %}
               <tr>
                 <td>{{ currencyFormat(invoice.currency, invoice.amount_due) }}</td>
                 <td>{{ invoice.status }}</td>
@@ -156,7 +250,7 @@
               </tr>
               {% endfor %}
             </table>
-            <hr />
+            <hr id="invoice-heading-explanations" />
             <h4>Invoice heading explanations</h4>
             <dl>
                 <dt>open</dt>
