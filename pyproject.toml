@@ -1,0 +1,61 @@
+[project]
+name = "subscribie"
+version = "v0.1.181"
+description = "Collect recurring payments online - subscription payments collection automation"
+authors = [
+    { name = "chrisjsimpson", email = "chris.j.simpson@live.co.uk" }
+]
+dependencies = [
+    "graphviz",
+    "graphlib",
+    "wheel",
+    "Flask",
+    "flask_cors",
+    "Flask-Reuploaded",
+    "Flask-WTF",
+    "email-validator",
+    "Flask-Mail",
+    "requests",
+    "blinker",
+    "stripe",
+    "GitPython",
+    "pathlib",
+    "pytest",
+    "Flask-SQLAlchemy",
+    "Flask-Migrate",
+    "Flask-Babel",
+    "python-dotenv",
+    "pyjwt[crypto]",
+    "py-auth-header-parser",
+    "pydantic",
+    "backoff",
+    "coloredlogs",
+    "env-validate",
+    "python-dateutil",
+    "currency-symbols",
+    "pycryptodome",
+    "pycountry",
+    "SQLAlchemy",
+    "scipy",
+    "pandas",
+    "scikit-learn",
+    "black>=23.12.1",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[project.scripts]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["./"]
