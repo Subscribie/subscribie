@@ -45,8 +45,8 @@
         <div class="card text-center text-white bg-warning mb-3" style="width: 18rem;">
         {% endif %}
         <h5 class="card-title">{{ customer["name"] }}</h5>
-        <div class="card-header">Missed {{ customer["missed"] }} payments worth {{ customer["debt"] | currencyFormat }} </div>
-        <span class="badge badge-warning">Balance: {{ customer["balance"] | currencyFormat }}</span>
+        <div class="card-header">Missed {{ customer["missed"] }} payments worth {{ customer["debt"] }} </div>
+        <span class="badge badge-warning">Balance: {{ customer["balance"] }}</span>
       </li>
     </div>
 	</div><!-- end .container -->
