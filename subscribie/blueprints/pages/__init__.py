@@ -7,9 +7,8 @@ from flask import (
     current_app,
     url_for,
     flash,
-    Markup,
-    escape,
 )
+from markupsafe import Markup, escape
 from subscribie.auth import login_required
 from subscribie.models import database, Page
 from pathlib import Path

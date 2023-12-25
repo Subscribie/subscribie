@@ -14,10 +14,9 @@ from flask import (
     current_app,
     g,
     send_from_directory,
-    Markup,
 )
+from markupsafe import Markup
 from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
-from flask_migrate import upgrade
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
 from subscribie.signals import register_signal_handlers
@@ -43,15 +42,6 @@ bp = Blueprint("views", __name__, url_prefix=None)
 
 # Connect signals to recievers
 register_signal_handlers()
-
-
-@bp.before_app_first_request
-def migrate_database():
-    """Migrate database when app first boots"""
-    log.info("Migrating database")
-    upgrade(
-        directory=Path(current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations")
-    )
 
 
 @bp.before_app_request

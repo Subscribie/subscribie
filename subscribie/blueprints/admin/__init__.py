@@ -15,9 +15,8 @@ from flask import (
     request,
     session,
     Response,
-    Markup,
-    escape,
 )
+from markupsafe import Markup, escape
 import jinja2
 import requests
 from subscribie.utils import (
