@@ -12,8 +12,8 @@ from flask import (
     url_for,
     current_app,
     render_template_string,
-    Markup,
 )
+from markupsafe import Markup
 from subscribie.email import EmailMessageQueue
 from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account
 from base64 import urlsafe_b64encode

@@ -14,8 +14,8 @@ from flask import (
     g,
     current_app,
     request,
-    Markup,
 )
+from markupsafe import Markup
 from subscribie.forms import (
     PasswordLoginForm,
     SubscriberForgotPasswordForm,

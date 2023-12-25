@@ -34,13 +34,12 @@ from flask_uploads import (
     configure_uploads,
     UploadSet,
     IMAGES,
-    patch_request_class,
 )  # noqa: E501
 import importlib
 import urllib
 from pathlib import Path
 import sqlalchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 import click
 from jinja2 import Template
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
@@ -56,17 +55,16 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    babel = Babel(app)
     LANGUAGES = ["en", "de", "es", "fr", "hr"]
     load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
     app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
+    app.config["MAX_CONTENT_LENGTH"] = int(os.getenv("MAX_CONTENT_LENGTH", 52428800))
 
     if test_config is not None:
         app.config.update(test_config)
 
-    @babel.localeselector
     def get_locale():
         language_code = session.get("language_code", None)
         if language_code is not None:
@@ -79,6 +77,8 @@ def create_app(test_config=None):
             log.info(f"language_code best match set to: {language_code}")
             return request.accept_languages.best_match(LANGUAGES)
 
+    Babel(app, locale_selector=get_locale)
+
     @app.before_request
     def start_session():
         session.permanent = True
@@ -88,38 +88,8 @@ def create_app(test_config=None):
             session["sid"] = urllib.parse.quote_plus(b64encode(os.urandom(10)))
             log.info(f"Starting with sid {session['sid']}")
 
-    @app.before_first_request
-    def register_modules():
-        """Import any custom modules"""
-        # Set custom modules path
-        sys.path.append(app.config["MODULES_PATH"])
-        modules = Module.query.all()
-        log.info(f"sys.path contains: {sys.path}")
-        for module in modules:
-            # Assume standard python module
-            try:
-                log.info(f"Attempting to importing module: {module.name}")
-                importlib.import_module(module.name)
-            except ModuleNotFoundError:
-                log.debug(f"Error: Could not import module: {module.name}")
-            # Register modules as blueprint (if it is one)
-            try:
-                importedModule = importlib.import_module(module.name)
-                if isinstance(getattr(importedModule, module.name), Blueprint):
-                    # Load any config the Blueprint declares
-                    blueprint = getattr(importedModule, module.name)
-                    blueprintConfig = "".join([blueprint.root_path, "/", "config.py"])
-                    app.config.from_pyfile(blueprintConfig, silent=True)
-                    # Register the Blueprint
-                    app.register_blueprint(getattr(importedModule, module.name))
-                    log.info(f"Imported {module.name} as flask Blueprint")
-
-            except (ModuleNotFoundError, AttributeError):
-                log.error(f"Error: Could not import module as blueprint: {module.name}")
-
     CORS(app)
     images = UploadSet("images", IMAGES)
-    patch_request_class(app, int(app.config.get("MAX_CONTENT_LENGTH", 2 * 1024 * 1024)))
     configure_uploads(app, images)
 
     from . import auth
@@ -154,6 +124,41 @@ def create_app(test_config=None):
     with app.app_context():
         database.init_app(app)
         Migrate(app, database)
+
+        """Migrate database when app first boots"""
+        log.info("Migrating database")
+        upgrade(
+            directory=Path(
+                current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations"
+            )
+        )
+
+        """Import any custom modules"""
+        # Set custom modules path
+        sys.path.append(app.config["MODULES_PATH"])
+        modules = Module.query.all()
+        log.info(f"sys.path contains: {sys.path}")
+        for module in modules:
+            # Assume standard python module
+            try:
+                log.info(f"Attempting to importing module: {module.name}")
+                importlib.import_module(module.name)
+            except ModuleNotFoundError:
+                log.debug(f"Error: Could not import module: {module.name}")
+            # Register modules as blueprint (if it is one)
+            try:
+                importedModule = importlib.import_module(module.name)
+                if isinstance(getattr(importedModule, module.name), Blueprint):
+                    # Load any config the Blueprint declares
+                    blueprint = getattr(importedModule, module.name)
+                    blueprintConfig = "".join([blueprint.root_path, "/", "config.py"])
+                    app.config.from_pyfile(blueprintConfig, silent=True)
+                    # Register the Blueprint
+                    app.register_blueprint(getattr(importedModule, module.name))
+                    log.info(f"Imported {module.name} as flask Blueprint")
+
+            except (ModuleNotFoundError, AttributeError):
+                log.error(f"Error: Could not import module as blueprint: {module.name}")
 
         try:
             payment_provider = PaymentProvider.query.first()
