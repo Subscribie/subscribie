@@ -222,6 +222,23 @@ def account():
     stripe_default_payment_method = None
     stripe_session = None
     bad_invoices = g.subscriber.bad_invoices()
+
+    # Add hosted_invoice_url attribute to all bad invoices
+    try:
+        for index, bad_invoice in enumerate(bad_invoices):
+            stripe_invoice = stripe.Invoice.retrieve(
+                id=bad_invoice.id, stripe_account=stripe_connect_account_id
+            )
+            setattr(
+                bad_invoices[index],
+                "hosted_invoice_url",
+                stripe_invoice.hosted_invoice_url,
+            )
+    except Exception as e:
+        log.error(
+            f"Unable to get/set hosted_invoice_url for invoice: {bad_invoice.id}. {e}"
+        )
+
     # Get subscribers first subscription to determine stripe customer id
     # excluding one-off plans.
     subscription = (

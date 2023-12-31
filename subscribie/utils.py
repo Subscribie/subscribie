@@ -500,6 +500,7 @@ def get_stripe_failed_subscription_invoices():
             )
             # Means invoice is no longer being auto collected
             failedInvoices.append(stripeInvoice)
+    breakpoint()
     return failedInvoices
 
 
@@ -541,8 +542,3 @@ def get_discount_code():
     :rtype: str
     """
     return session.get("discount_code", None)
-
-
-def get_payment_issues():
-    pay_issues = {"outstanding_number": "1"}
-    return pay_issues

@@ -217,7 +217,7 @@ class Person(database.Model, HasArchived):
 
         stripe.api_key = get_stripe_secret_key()
         stripe_account_id = get_stripe_connect_account_id()
-        query = database.session.query(StripeInvoice)
+        query = database.session.query(StripeInvoice).execution_options(include_archived=True)
         query = query.join(
             Subscription,
             StripeInvoice.subscribie_subscription_id == Subscription.id,  # noqa: E501

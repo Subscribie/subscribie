@@ -31,7 +31,6 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
-    get_payment_issues,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -119,11 +118,39 @@ def dec2pence(amount):
     return int(math.ceil(float(amount) * 100))
 
 
+def ordinal(n):
+    """
+    Convert 1 -> 1st, 2 -> 2nd etc...
+    Credit Dr. Drang 2020 https://leancrew.com/all-this/2020/06/ordinals-in-python/
+    """
+    return str(n) + (
+        "th" if 4 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    )  # noqa: E501
+
+
 @admin.app_template_filter()
 def timestampToDate(timestamp: str):
     if timestamp is None:
         return None
     return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
+
+
+def dtStylish(dt, f):
+    """
+    Add "nd", "th" and "rd" to date formatting for
+    human readable dates.
+    Credit https://stackoverflow.com/a/16671271
+    """
+    return dt.strftime(f).replace("{th}", ordinal(dt.day))
+
+
+@admin.app_template_filter()
+def timestampToHumanReadableDate(timestamp: str):
+    if timestamp is None:
+        return None
+    dt = datetime.fromtimestamp(int(timestamp))
+
+    return dtStylish(dt, "{th} %B %Y")
 
 
 def store_stripe_transaction(stripe_external_id):
@@ -479,7 +506,6 @@ def dashboard():
         num_one_off_purchases=num_one_off_purchases,
         shop_default_country_code=shop_default_country_code,
         saas_url=saas_url,
-        pay_issues=get_payment_issues(),
     )
 
 
@@ -1412,37 +1438,7 @@ def transactions():
         "admin/transactions.html",
         transactions=query.paginate(page=page, per_page=10),
         person=person,
-        pay_issues=get_payment_issues(),
         action=action,
-    )
-
-
-@admin.route("/issues", methods=["GET"])
-@login_required
-def outstanding_payments():
-    """Route is "/issues" but may be changed to a more suitable name.
-    Ref Issue #773
-    """
-    customer = {
-        "name": "John Doe",  # Example customer
-        "debt": "1000",  # £10.00
-        "missed": int(1),  # 1 missed payment
-        "balance": "0",
-    }
-    # Global threshold how many missed payments are considered critical
-    # (UI changes to red)
-    global_num_missed_payments_threshold = os.getenv(
-        "GLOBAL_NUM_MISSED_PAYMENTS_THRESHOLD", 1
-    )
-
-    # In this hardcoded example, user John Doe has missed 1
-    # payment of a value of £10 (1000)
-    customer["balance"] = int(customer["balance"]) - int(customer["debt"])
-    return render_template(
-        "admin/issues.html",
-        customer=customer,
-        pay_issues=get_payment_issues(),
-        global_num_missed_payments_threshold=global_num_missed_payments_threshold,
     )
 
 

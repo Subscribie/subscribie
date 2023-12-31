@@ -5,27 +5,6 @@
 
 <h2 class="text-center text-dark mb-3">Manage My Shop</h2>
 
-{% if pay_issues["outstanding_number"] == "0" %}
-<div class="alert alert-success" style="text-align: center;" role="alert">
-  There are {{ pay_issues["outstanding_number"] }} outstanding payments
-</div>
-{% elif pay_issues["outstanding_number"] == "1" %}
-<div class="alert alert-warning" style="text-align: center;" role="alert">
-  There is {{ pay_issues["outstanding_number"] }} outstanding payment!
-  <button type="button" class="btn btn-warning ml-3" onclick="window.location.href='/admin/issues'">Action</button>
-</div>
-</div>
-{% else %}
-<div class="alert alert-danger" style="text-align: center;" role="alert">
-  There are {{ pay_issues["outstanding_number"] }} outstanding payments!
-  <button type="button" class="btn btn-danger ml-3" onclick="window.location.href='/admin/issues'">Action</button>
-</div>
-{% endif %}
-
-
-
-
-
 <div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>

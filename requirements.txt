@@ -3,6 +3,7 @@ graphlib
 wheel
 Flask>=2,<3
 flask_cors
+Werkzeug==2.0.3
 Flask-Reuploaded==0.3.2
 Flask-WTF==1.0.0
 email-validator==1.1.3
