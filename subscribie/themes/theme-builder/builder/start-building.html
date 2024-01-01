@@ -204,7 +204,7 @@
     const subst = ``;
     const scheme = document.location.protocol;
     const port = document.location.port;
-    const shop_url = scheme + "//" + company_name.replace(regex, subst).toLowerCase() + ".subscriby.shop:" + port;
+    const shop_url = scheme + "//" + company_name.replace(regex, subst).toLowerCase() + ".{{ SUBSCRIBIE_DOMAIN }}:" + port;
     console.log('The shop_url will be: ', shop_url);
 
     // Define what happens on successful data submission
