@@ -39,7 +39,8 @@ dependencies = [
     "scipy",
     "pandas",
     "scikit-learn",
-    "black>=23.12.1",
+    "black",
+    "strictyaml",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

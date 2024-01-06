@@ -3,6 +3,7 @@ import stripe
 import functools
 import binascii
 import os
+from subscribie.settings import settings
 from pathlib import Path
 from flask import (
     Blueprint,
@@ -145,7 +146,7 @@ def forgot_password():
             )
         )
         company = Company.query.first()
-        FLASK_ENV = os.getenv("FLASK_ENV")
+        FLASK_ENV = settings.get("FLASK_ENV")
         if FLASK_ENV == "development":
             password_reset_url = (
                 "http://" + request.host + "/account/password-reset?token=" + token

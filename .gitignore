@@ -1,3 +1,5 @@
+settings.yaml
+settings.yml
 venv/
 *.sql
 *.swp

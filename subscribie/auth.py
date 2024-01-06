@@ -1,6 +1,6 @@
 import logging
 import functools
-
+from subscribie.settings import settings
 from flask import (
     Blueprint,
     flash,
@@ -544,9 +544,9 @@ def login_required(view):
 def development_mode_only(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if os.getenv("FLASK_ENV") != "development":
+        if settings.get("FLASK_ENV") != "development":
             msg = {
-                "msg": f"Error. Only possible in development mode. Current FLASK_ENV mode is: {os.getenv('FLASK_ENV')}"  # noqa: E501
+                "msg": f"Error. Only possible in development mode. Current FLASK_ENV mode is: {settings.get('FLASK_ENV')}"  # noqa: E501
             }
             return jsonify(msg), 403
         return view(**kwargs)

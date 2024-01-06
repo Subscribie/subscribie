@@ -775,8 +775,10 @@ class Plan(database.Model, HasArchived):
                     if rule.percent_discount:
                         """
                         If I want a minimum sell price
-                        Then I want a percent discount to apply if the value is equal to or greater than the minimum sell price
-                        Otherwise, always apply the percent discount regardlrss of sell price.
+                        Then I want a percent discount to apply if the value is
+                        equal to or greater than the minimum sell price.
+                        Otherwise, always apply the percent discount regardlrss
+                        of sell price.
                         """
                         if (
                             rule.has_min_sell_price

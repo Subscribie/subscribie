@@ -1,9 +1,9 @@
 import pickle
 from scipy.sparse import hstack
 from flask import Flask
-import os
+from subscribie.settings import settings
 
-ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH = os.getenv(
+ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH = settings.get(
     "ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH", "./classifier.pkl"
 )
 

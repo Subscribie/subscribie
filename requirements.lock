@@ -69,6 +69,7 @@ scipy==1.11.4
 six==1.16.0
 smmap==5.0.1
 sqlalchemy==2.0.23
+strictyaml==1.7.3
 stripe==7.10.0
 threadpoolctl==3.2.0
 typing-extensions==4.9.0

@@ -1,7 +1,7 @@
 import logging
 import threading
 import json
-from dotenv import load_dotenv
+from subscribie import settings
 from subscribie.database import database  # noqa
 from flask import (
     Blueprint,
@@ -104,8 +104,6 @@ from .export_transactions import export_transactions  # noqa: F401, E402a
 from .invoice import failed_invoices  # noqa: F401
 from .priceList import list_priceLists  # noqa: F401
 from .priceListRule import list_priceListRules  # noqa: F401
-
-load_dotenv(verbose=True)  # get environment variables from .env
 
 
 def dec2pence(amount):
@@ -946,7 +944,7 @@ def set_stripe_livemode():
 def stripe_connect():
     setting = Setting.query.first()
     shop_activated = setting.shop_activated
-    SERVER_NAME = os.getenv("SERVER_NAME")
+    SERVER_NAME = settings.get("SERVER_NAME")
     saas_url = current_app.config.get("SAAS_URL")
     saas_activate_account_path = current_app.config.get("SAAS_ACTIVATE_ACCOUNT_PATH")
     saas_activate_account_url = (
@@ -1661,17 +1659,17 @@ def set_reply_to_email():
 @admin.route("/rename-shop", methods=["GET"])
 @login_required
 def rename_shop():
-    SERVER_NAME = os.getenv("SERVER_NAME")
+    SERVER_NAME = settings.get("SERVER_NAME")
     return render_template("admin/settings/rename_shop.html", SERVER_NAME=SERVER_NAME)
 
 
 @admin.route("/rename-shop", methods=["POST"])
 @login_required
 def rename_shop_post():
-    PATH_TO_RENAME_SCRIPT = os.getenv("PATH_TO_RENAME_SCRIPT", False)
-    PATH_TO_SITES = os.getenv("PATH_TO_SITES", False)
-    SUBSCRIBIE_DOMAIN = os.getenv("SUBSCRIBIE_DOMAIN", False)
-    SERVER_NAME = os.getenv("SERVER_NAME")
+    PATH_TO_RENAME_SCRIPT = settings.get("PATH_TO_RENAME_SCRIPT", False)
+    PATH_TO_SITES = settings.get("PATH_TO_SITES", False)
+    SUBSCRIBIE_DOMAIN = settings.get("SUBSCRIBIE_DOMAIN", False)
+    SERVER_NAME = settings.get("SERVER_NAME")
 
     new_name = request.json["new_name"].replace(SUBSCRIBIE_DOMAIN, "").replace(".", "")
     NEW_DOMAIN = secure_filename(new_name + "." + SUBSCRIBIE_DOMAIN)
@@ -1680,8 +1678,8 @@ def rename_shop_post():
     if new_name.isalnum() is False:
         return {"msg": "Shop name can only contain letters and numbers"}
 
-    base_path = os.getenv("PATH_TO_SITES")
-    new_path = Path(os.getenv("PATH_TO_SITES") + f"{NEW_DOMAIN}")
+    base_path = settings.get("PATH_TO_SITES")
+    new_path = Path(settings.get("PATH_TO_SITES") + f"{NEW_DOMAIN}")
 
     if not new_path.startswith(base_path):
         log.error("Invalid path for shop rename")
@@ -1691,7 +1689,7 @@ def rename_shop_post():
         msg = "This name already exists"
         flash(msg)
         log.debug(
-            f"Attempt to rename site {NEW_DOMAIN} but dir {os.getenv('PATH_TO_SITES')} already exists"  # noqa
+            f"Attempt to rename site {NEW_DOMAIN} but dir {settings.get('PATH_TO_SITES')} already exists"  # noqa
         )
         return {"msg": msg}
     else:
@@ -1948,7 +1946,7 @@ def change_thank_you_url():
         if request.form.get("default"):
             settings.custom_thank_you_url = None
             database.session.commit()
-            flash(f"Custom thank you url changed to default")
+            flash("Custom thank you url changed to default")
             return render_template(
                 "admin/settings/custom_thank_you_page.html",
                 form=form,

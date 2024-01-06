@@ -7,10 +7,8 @@ from subscribie.email import (
 from subscribie.notifications import subscriberPaymentFailedNotification
 from subscribie.models import Subscription, Document
 from subscribie.database import database
-from dotenv import load_dotenv
 import sqlalchemy
 
-load_dotenv(verbose=True)
 
 log = logging.getLogger(__name__)
 

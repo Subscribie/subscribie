@@ -5,11 +5,10 @@ from .models import Plan, PlanRequirements, PlanSellingPoints, User, Setting
 from .auth import generate_login_url
 from .auth import get_magic_login_link
 import pydantic
-from subscribie import schemas, database
+from subscribie import settings, schemas, database
 import json
 import secrets
 from Crypto.Cipher import AES
-import os
 import base64
 
 log = logging.getLogger(__name__)
@@ -22,7 +21,7 @@ def shop_name_taken(shop_name):
     from builder import Shop
 
     shop_name = shop_name.replace(" ", "").lower()
-    shop_name = f"https://{shop_name}.{os.getenv('SUBSCRIBIE_DOMAIN')}"
+    shop_name = f"https://{shop_name}.{settings.get('SUBSCRIBIE_DOMAIN')}"
     lookup = database.session.query(Shop).where(Shop.site_url == shop_name).all()
     log.debug(f"Running shop_name_taken lookup for: {lookup}")
     if len(lookup) == 0:
@@ -56,7 +55,7 @@ def get_login_link():
         return {"msg": "Could not generate login link"}
 
 
-def encrypt_secret(data=None, key=os.getenv("SECRET_KEY")):
+def encrypt_secret(data=None, key=settings.get("SECRET_KEY")):
     assert data is not None
     data = data.encode("utf-8")
     key = key[:16].encode("utf-8")
@@ -66,7 +65,7 @@ def encrypt_secret(data=None, key=os.getenv("SECRET_KEY")):
     return nonce, ciphertext, tag
 
 
-def decrypt_secret(data, key=os.getenv("SECRET_KEY")):
+def decrypt_secret(data, key=settings.get("SECRET_KEY")):
     nonce = base64.b64decode(data.split(":")[0])
     ciphertext = base64.b64decode(data.split(":")[1])
     tag = base64.b64decode(data.split(":")[2])

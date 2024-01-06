@@ -1,17 +1,15 @@
 import logging
 import coloredlogs
+from subscribie.settings import settings
 from flask import has_request_context, request
 from logging.handlers import QueueHandler, QueueListener
 from subscribie.TelegramHTTPHandler import TelegramHTTPHandler
-import os
 import sys
 import queue
-from dotenv import load_dotenv
 
-load_dotenv(verbose=True)
 
-PYTHON_LOG_LEVEL = os.getenv("PYTHON_LOG_LEVEL", "DEBUG")
-TELEGRAM_PYTHON_LOG_LEVEL = os.getenv("TELEGRAM_PYTHON_LOG_LEVEL", "ERROR")
+PYTHON_LOG_LEVEL = settings.get("PYTHON_LOG_LEVEL", "DEBUG")
+TELEGRAM_PYTHON_LOG_LEVEL = settings.get("TELEGRAM_PYTHON_LOG_LEVEL", "ERROR")
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()  # sys.stderr will be used by default
@@ -52,13 +50,13 @@ sys.excepthook = handle_exception
 
 
 # Telegram logging
-if os.getenv("FLASK_ENV", None) != "development":
+if settings.get("FLASK_ENV", None) != "development":
     # See https://docs.python.org/3/howto/logging-cookbook.html#dealing-with-handlers-that-block # noqa
     que = queue.Queue(-1)  # no limit on size
     queue_handler = QueueHandler(que)
 
-    telegram_token = os.getenv("TELEGRAM_TOKEN", None)
-    telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID", None)
+    telegram_token = settings.get("TELEGRAM_TOKEN", None)
+    telegram_chat_id = settings.get("TELEGRAM_CHAT_ID", None)
     telegramHandlerHost = "api.telegram.org"
 
     telegramHandlerUrl = (

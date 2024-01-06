@@ -7,8 +7,7 @@
 
     :copyright: (c) 2018 by Karma Computing Ltd
 """
-from dotenv import load_dotenv
-
+from subscribie.settings import settings
 from .logger import logger  # noqa: F401
 import logging
 import os
@@ -44,8 +43,6 @@ import click
 from jinja2 import Template
 from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
 
-load_dotenv(verbose=True)
-
 log = logging.getLogger(__name__)
 
 
@@ -55,12 +52,12 @@ def seed_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    app.config.update(settings)
     LANGUAGES = ["en", "de", "es", "fr", "hr"]
-    load_dotenv(verbose=True)
     PERMANENT_SESSION_LIFETIME = int(os.environ.pop("PERMANENT_SESSION_LIFETIME", 1800))
     app.config.update(os.environ)
     app.config["PERMANENT_SESSION_LIFETIME"] = PERMANENT_SESSION_LIFETIME
-    app.config["MAX_CONTENT_LENGTH"] = int(os.getenv("MAX_CONTENT_LENGTH", 52428800))
+    app.config["MAX_CONTENT_LENGTH"] = int(settings.get("MAX_CONTENT_LENGTH", 52428800))
 
     if test_config is not None:
         app.config.update(test_config)
@@ -180,21 +177,18 @@ def create_app(test_config=None):
             # therefore needs its inital PriceLists created
             if len(price_lists) == 0:
                 # Create defaul PriceList with zero rules for each suported currency
-                if os.getenv("SUPPORTED_CURRENCIES", False) is not False:
-                    for currency in os.getenv("SUPPORTED_CURRENCIES").split(","):
-                        log.debug(
-                            f"Creating PriceList with zero rules for currency {currency}"  # noqa: E501
-                        )
-                        price_list = PriceList(
-                            currency=currency, name=f"Default {currency}"
-                        )  # noqa: E501
-                        database.session.add(price_list)
-                        database.session.commit()
-                        log.debug(
-                            f"Created PriceList with zero rules for currency {currency}"
-                        )
-                else:
-                    log.debug("SUPPORTED_CURRENCIES is not set")
+                for currency in settings.get("SUPPORTED_CURRENCIES"):
+                    log.debug(
+                        f"Creating PriceList with zero rules for currency {currency}"  # noqa: E501
+                    )
+                    price_list = PriceList(
+                        currency=currency, name=f"Default {currency}"
+                    )  # noqa: E501
+                    database.session.add(price_list)
+                    database.session.commit()
+                    log.debug(
+                        f"Created PriceList with zero rules for currency {currency}"
+                    )
             # Ensure every plan has a PriceList attached for each supported currency
             plans = Plan.query.all()
             price_lists = (

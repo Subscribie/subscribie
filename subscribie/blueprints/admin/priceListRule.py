@@ -1,18 +1,18 @@
 from . import admin
+from subscribie.settings import settings
 from subscribie.auth import login_required
 from subscribie.models import PriceListRule
 from subscribie.database import database
 from flask import render_template, request, redirect, url_for, flash
 import logging
-import os
 from datetime import datetime
 
 dog = 1
 log = logging.getLogger(__name__)
 
-if os.getenv("SUPPORTED_CURRENCIES", False) is not False:
+if settings.get("SUPPORTED_CURRENCIES", False) is not False:
     supported_currencies = []
-    for currency in os.getenv("SUPPORTED_CURRENCIES").split(","):
+    for currency in settings.get("SUPPORTED_CURRENCIES"):
         supported_currencies.append(currency)
 
 
