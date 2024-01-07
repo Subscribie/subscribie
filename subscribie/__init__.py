@@ -124,11 +124,14 @@ def create_app(test_config=None):
 
         """Migrate database when app first boots"""
         log.info("Migrating database")
-        upgrade(
-            directory=Path(
-                current_app.config["SUBSCRIBIE_REPO_DIRECTORY"] + "/migrations"
-            )
+        migrations_dir = (
+            Path(os.path.join(os.path.dirname(__file__)))
+            .parent.absolute()
+            .joinpath("migrations")
         )
+        log.info(f"migrations_dir is resolved to: {migrations_dir}")
+        log.info("Performing database migration (if any)")
+        upgrade(directory=migrations_dir)
 
         """Import any custom modules"""
         # Set custom modules path
