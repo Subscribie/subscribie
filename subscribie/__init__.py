@@ -239,7 +239,14 @@ def create_app(test_config=None):
     def initdb():
         """Initialize the database."""
         click.echo("Init the db")
-        with open("seed.sql") as fp:
+        DBseedFile = Path("seed.sql")
+        if DBseedFile.exists() is False:
+            log.warning(f"DBseedFile does not exist in {os.getcwd()}")
+            DBseedFile = Path(Path(__file__).parent.parent, "seed.sql")
+            log.warning(
+                f"Attempting to load DBseedFile from package dir at {DBseedFile}"
+            )
+        with open(DBseedFile) as fp:
             con = sqlite3.connect(app.config["DB_FULL_PATH"])
             cur = con.cursor()
             # Check not already seeded
