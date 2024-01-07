@@ -1,5 +1,9 @@
 import jinja2
 from pathlib import Path
+import logging
+from flask import abort
+
+log = logging.getLogger(__name__)
 
 
 def load_theme(app):
@@ -31,11 +35,51 @@ def load_theme(app):
         app.config["THEME_NAME"],
     ).resolve()
 
+    if themePath.exists() is False:
+        log.warning(f"Configured themePath ({themePath}) does not exist.")
+
+        log.warning("Attempting theme path from built-in package (if exists)")
+
+        themePath = (
+            Path(__file__)
+            .parent.joinpath(
+                f'themes/theme-{app.config["THEME_NAME"]}/{app.config["THEME_NAME"]}'
+            )
+            .resolve()
+        )
+        if themePath.exists() is False:
+            abort(
+                f"Unable to determine valid themePath. Check TEMPLATE_BASE_DIR in settings and THEME_NAME. TEMPLATE_BASE_DIR is set to {TEMPLATE_BASE_DIR} and THEME_NAME: {THEME_NAME}"  # noqa :E501
+            )
+        log.info(f"Default package themePath is set to {themePath} and exists.")
+    else:
+        log.info(f"Custom themePath is set to {themePath} and exists.")
+
     staticFolder = Path(
         app.config["TEMPLATE_BASE_DIR"],
         "theme-" + app.config["THEME_NAME"],
         "static",
     ).resolve()
+
+    if staticFolder.exists() is False:
+        log.warning(f"Configured staticFolder ({staticFolder}) does not exist.")
+
+        log.warning(
+            "Attempting to resolve staticFolder from built-in package (if exists)"
+        )
+
+        staticFolder = (
+            Path(__file__)
+            .parent.joinpath(Path(f'themes/theme-{app.config["THEME_NAME"]}', "static"))
+            .resolve()
+        )
+        if staticFolder.exists() is False:
+            abort(
+                f"Unable to determine valid staticFolder. Check TEMPLATE_BASE_DIR in settings and THEME_NAME. TEMPLATE_BASE_DIR is set to {TEMPLATE_BASE_DIR} and THEME_NAME: {THEME_NAME}"  # noqa :E501
+            )
+        log.info(f"Default package staticFolder is set to {staticFolder} and exists.")
+    else:
+        log.info(f"Custom staticFolder is set to {staticFolder} and exists.")
 
     # Set THEME_PATH
     app.config["THEME_PATH"] = themePath

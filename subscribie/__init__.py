@@ -24,6 +24,7 @@ from flask import (
     current_app,
     Blueprint,
     request,
+    abort,
 )
 from flask_babel import Babel, _
 from subscribie.email import EmailMessageQueue
@@ -135,6 +136,12 @@ def create_app(test_config=None):
 
         """Import any custom modules"""
         # Set custom modules path
+        modulesPath = Path(app.config["MODULES_PATH"])
+        if modulesPath.exists() is False:
+            msg = f"Configured MODULES_PATH '{modulesPath}' does not exist"
+            log.error(msg)
+            abort(msg)
+
         sys.path.append(app.config["MODULES_PATH"])
         modules = Module.query.all()
         log.info(f"sys.path contains: {sys.path}")
