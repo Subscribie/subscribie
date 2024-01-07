@@ -3,7 +3,7 @@ name = "subscribie"
 version = "v0.1.181"
 description = "Collect recurring payments online - subscription payments collection automation"
 authors = [
-    { name = "chrisjsimpson", email = "chris.j.simpson@live.co.uk" }
+    { name = "Karma Computing", email = "subscribie@karmacomputing.co.uk" }
 ]
 dependencies = [
     "graphviz",
@@ -24,13 +24,11 @@ dependencies = [
     "Flask-SQLAlchemy",
     "Flask-Migrate",
     "Flask-Babel",
-    "python-dotenv",
     "pyjwt[crypto]",
     "py-auth-header-parser",
     "pydantic",
     "backoff",
     "coloredlogs",
-    "env-validate",
     "python-dateutil",
     "currency-symbols",
     "pycryptodome",
