@@ -38,6 +38,7 @@ from flask_uploads import (
 import importlib
 import urllib
 from pathlib import Path
+from importlib.resources import files, as_file
 import sqlalchemy
 from flask_migrate import Migrate, upgrade
 import click
@@ -125,14 +126,20 @@ def create_app(test_config=None):
 
         """Migrate database when app first boots"""
         log.info("Migrating database")
-        migrations_dir = (
-            Path(os.path.join(os.path.dirname(__file__)))
-            .parent.absolute()
-            .joinpath("migrations")
-        )
-        log.info(f"migrations_dir is resolved to: {migrations_dir}")
-        log.info("Performing database migration (if any)")
-        upgrade(directory=migrations_dir)
+        migrations_dir_context = files("migrations")
+        # See:
+        # https://importlib-resources.readthedocs.io/en/latest/using.html#using-importlib-resources
+        # https://docs.python.org/3.11/library/importlib.resources.html#importlib.resources.as_file
+        # https://docs.python.org/3/whatsnew/3.12.html#importlib-resources
+        # https://bugs.python.org/issue45427
+        # https://github.com/python/importlib_resources/pull/255
+        with as_file(migrations_dir_context) as migrations_dir_tmp:
+            log.info(f"migrations_dir_tmp is {migrations_dir_tmp}")
+            log.info(
+                "https://docs.python.org/3.11/library/importlib.resources.html#importlib.resources.as_file"  # noqa: E501
+            )
+            log.info("Performing database migration (if any)")
+            upgrade(directory=migrations_dir_tmp)
 
         """Import any custom modules"""
         # Set custom modules path
@@ -242,7 +249,7 @@ def create_app(test_config=None):
         DBseedFile = Path("seed.sql")
         if DBseedFile.exists() is False:
             log.warning(f"DBseedFile does not exist in {os.getcwd()}")
-            DBseedFile = Path(Path(__file__).parent.parent, "seed.sql")
+            DBseedFile = files("subscribie").parent.joinpath("seed.sql")
             log.warning(
                 f"Attempting to load DBseedFile from package dir at {DBseedFile}"
             )
