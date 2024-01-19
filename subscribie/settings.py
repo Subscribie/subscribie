@@ -49,7 +49,6 @@ schema = Map(
         "TELEGRAM_PYTHON_LOG_LEVEL": Str(),
         "TEST_SHOP_OWNER_EMAIL_ISSUE_704": Email(),
         "TEST_SHOP_OWNER_LOGIN_URL": Url(),
-        "MAIL_SERVER": Str(),
     }
 )
 
