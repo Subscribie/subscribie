@@ -1,6 +1,3 @@
-#Only values in uppercase are actually stored in the config object later on. So make sure to use uppercase letters for your config keys.
-
-# Change FLASK_ENV=live for live
 FLASK_ENV=${FLASK_ENV}
 
 # Software as a service (SAAS)
@@ -39,6 +36,8 @@ SERVER_NAME=${SERVER_NAME}
 #SESSION_COOKIE_HTTPONLY=True
 #SESSION_COOKIE_SAMESITE=None
 
+PERMANENT_SESSION_LIFETIME=${PERMANENT_SESSION_LIFETIME}
+
 MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
 
 # Supported currencies
@@ -53,16 +52,8 @@ STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY}
 # Internal server where shop should send its stripe connect account id to. See https://github.com/Subscribie/subscribie/issues/352
 STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=${STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST}
 
-# Google oauth (signin / up with Google
-GOOGLE_CLIENT_ID=???.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=???
-GOOGLE_REDIRECT_URI="http://127.0.0.1:5000/google-oauth2callback/"
-GOOGLE_RESPONSE_TYPE=code
-GOOGLE_SCOPE="email openid profile"
 
 # For development: 
-
-HONEYCOMB_API_KEY=
 
 # Python log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 # See https://docs.python.org/3/howto/logging.html
@@ -79,6 +70,8 @@ SUBSCRIBIE_DOMAIN="subscriby.shop"
 
 PRIVATE_KEY="/tmp/private.pem"
 PUBLIC_KEY="/tmp/public.pem"
+
+ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH=/changeme
 
 
 # Optional
