@@ -15,6 +15,7 @@ def get_number_of_active_subscribers():
         .join(Plan, Subscription.sku_uuid == Plan.uuid)
         .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
         .filter(PlanRequirements.subscription == 1)
+        .execution_options(include_archived=True)
     )
     # Check if their subscriptions are active
     for subscriber in subscribers_with_subscriptions:
