@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11, 3.12]
+        python-version: [3.12]
 
     steps:
     - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest coverage
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -r requirements.lock
     - name: Lint with flake8
       run: |
         true
@@ -38,9 +38,12 @@ jobs:
         #flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Copy .env.example to .env
+    - name: Copy settings.yaml.example to settings.yaml
       run: |
-        cp .env.example .env
+        cp settings.yaml.example settings.yaml
+    - name: Create empty modules path
+      run: |
+        mkdir -p ./modules
     - name: Migrate database using flask db upgrade
       run: |
         pwd
