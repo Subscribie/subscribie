@@ -500,7 +500,6 @@ def get_stripe_failed_subscription_invoices():
             )
             # Means invoice is no longer being auto collected
             failedInvoices.append(stripeInvoice)
-    breakpoint()
     return failedInvoices
 
 
