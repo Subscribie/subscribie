@@ -17,13 +17,78 @@ var stripe = Stripe('{{ stripe_publishable_key }}');
 
 <div class="container">
 
+  {% if bad_invoices  %}
   <div class="card px-3 py-3 my-3">
-    {% if bad_invoices  %}
-    <h3 class="card-title">{{ _('Your subscriptions') }} <a style="color: red" href="{{ url_for('subscriber.subscriber_view_failed_invoices')}}">{{ _('payment is pending') }} </a></h3>
-    {% else %}
+    <h3 class="card-title">⏰ {{ _('You have overdue payments') }}</h3>
+    <p>The following invoices have failed to be paid.</p>
+    <p>A "failed invoice" means that all automatic payment collection attemps for a given invoice have failed, and there will be no further automatic payment collections for that invoices.</p>
+    <p>Please use the 'Pay now' link next to each invoice to settle the payment.</p>
+    <div class="alert alert-warning">
+    After you pay an overdue invoices, they may still show as unpaid for a short while. Please allow as least 12 hours for them to be processed.
+    </div>
+    <style>
+      #subscriber-invoices {
+        border-collapse: collapse;
+      }
+      #subscriber-invoices tbody {
+        display: block;
+        overflow-x: scroll;
+      }
+      @media (max-width: 850px) {
+        /* Scroll invoices table on mobile */
+        #scroll-alert {
+          display: block !important;
+        }
+        #subscriber-invoices tbody {
+          max-width: 450px;
+        }
+      }
+      @media (max-width: 400px) {
+        #subscriber-invoices tbody {
+          max-width: 265px;
+        }
+      }
+      #subscriber-invoices th {
+        padding: 8px;
+      }
+      #subscriber-invoices tr {
+        border-bottom: 1px solid lightgray;
+      }
+      #subscriber-invoices td {
+        text-align: center;
+        padding: 0.75em;
+      }
+    </style>
+    <div id="scroll-alert" class="alert alert-info" style="display:none;">
+      <em>&lt;---- Swipe table to the left to see all columns</em>
+    </div>
+    <table id="subscriber-invoices">
+      <tr>
+        <th>Plan title</th>
+        <th>Due Date</th>
+        <th>Payment URL</th>
+        <th>Amount Unpaid</th>
+        <th>Collection attempts</th>
+        <th>Decline Code</th>
+        <th>Invoice Reference</th>
+      </tr>
+      {% for bad_invoice in bad_invoices  %}
+      <tr>
+        <td>{{ bad_invoice.subscribie_subscription.plan.title }}</td>
+        <td>{{ bad_invoice.created | timestampToHumanReadableDate }}</td>
+        <td><a href="{{ bad_invoice.hosted_invoice_url }}" title="Send this bad_invoice url to your subscriber to chase payment" target="_blank">Pay now</a></td>
+        <td>{{ currency_format(bad_invoice.currency, bad_invoice.amount_due) }}</td>
+        <td>{{ bad_invoice.attempt_count }}</td>
+        <td>{{ bad_invoice['stripe_decline_code'] or '' }}</td>
+        <td>{{ bad_invoice.id }}</td>
+      </tr>
+      {% endfor %}
+      </table>
+  </div>
+  {% endif %}
 
+  <div class="card px-3 py-3 my-3">
     <h3 class="card-title">{{ _('Your subscriptions') }}</h3>
-    {% endif %}
     <p>{{ _('View your subscriptions') }}.</p>
     <p>{{ _('Please contact') }} {{ company.name }} {{ _('if you wish to alter your subscription') }}.</p>
       <a class="btn btn-success mb-3" 

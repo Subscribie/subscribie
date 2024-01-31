@@ -115,11 +115,39 @@ def dec2pence(amount):
     return int(math.ceil(float(amount) * 100))
 
 
+def ordinal(n):
+    """
+    Convert 1 -> 1st, 2 -> 2nd etc...
+    Credit Dr. Drang 2020 https://leancrew.com/all-this/2020/06/ordinals-in-python/
+    """
+    return str(n) + (
+        "th" if 4 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    )  # noqa: E501
+
+
 @admin.app_template_filter()
 def timestampToDate(timestamp: str):
     if timestamp is None:
         return None
     return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
+
+
+def dtStylish(dt, f):
+    """
+    Add "nd", "th" and "rd" to date formatting for
+    human readable dates.
+    Credit https://stackoverflow.com/a/16671271
+    """
+    return dt.strftime(f).replace("{th}", ordinal(dt.day))
+
+
+@admin.app_template_filter()
+def timestampToHumanReadableDate(timestamp: str):
+    if timestamp is None:
+        return None
+    dt = datetime.fromtimestamp(int(timestamp))
+
+    return dtStylish(dt, "{th} %B %Y")
 
 
 def store_stripe_transaction(stripe_external_id):
@@ -768,7 +796,7 @@ def list_documents():
         documents = (
             Document.query.where(Document.type == "terms-and-conditions-agreed")
             .execution_options(include_archived=True)
-            .where(Document.read_only == True)
+            .where(Document.read_only == True)  # noqa: E712
             .all()
         )
     else:
@@ -1249,11 +1277,11 @@ def subscribers():
         )
     elif action == "show_donors":
         query = query.filter(Person.transactions)
-        query = query.where(Transaction.is_donation == True)
+        query = query.where(Transaction.is_donation == True)  # noqa: E712
 
     elif action == "show_one_off_payments":
         query = query.filter(Person.subscriptions)
-        query = query.where(Subscription.stripe_subscription_id == None)
+        query = query.where(Subscription.stripe_subscription_id == None)  # noqa: E711
 
     people = query.order_by(desc(Person.created_at))
 
@@ -1356,6 +1384,7 @@ def invoices():
 @login_required
 def transactions():
     action = request.args.get("action", None)
+
     page = request.args.get("page", 1, type=int)
     plan_title = request.args.get("plan_title", None)
     subscriber_name = request.args.get("subscriber_name", None)
@@ -1390,10 +1419,10 @@ def transactions():
             query = query.filter(False)
 
     if action == "show_refunded":
-        query = query.filter(Transaction.external_refund_id != None)
+        query = query.filter(Transaction.external_refund_id != None)  # noqa: E711
 
     if action == "show_donations":
-        query = query.filter(Transaction.is_donation == True)
+        query = query.filter(Transaction.is_donation == True)  # noqa: E712
 
     transactions = query.paginate(page=page, per_page=10)
     if transactions.total == 0:
@@ -1946,7 +1975,7 @@ def change_thank_you_url():
         if request.form.get("default"):
             settings.custom_thank_you_url = None
             database.session.commit()
-            flash("Custom thank you url changed to default")
+            flash("Thank page has been set back to the to the default thank you page.")
             return render_template(
                 "admin/settings/custom_thank_you_page.html",
                 form=form,

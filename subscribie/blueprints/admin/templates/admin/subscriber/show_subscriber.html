@@ -3,7 +3,9 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Subscriber: {{ person.given_name }}</h2>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<h2 class="text-center text-dark mb-3">Subscriber: {{ person.full_name | title }}</h2>
 
 <div class="container">
   <ul class="breadcrumb">
@@ -20,12 +22,12 @@
       <div class="row">
         <div class="card col-md-12">
           <div class="card-body">
-            <h3 class="card-title">{{ person.given_name }} {{ person.family_name }}</h3>
+            <h3 class="card-title">👤 {{ person.full_name | title }}</h3>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">{{ person.email }}</li>
-            <li class="list-group-item">{{ person.mobile }}</li>
-            <li class="list-group-item"><strong>Address</strong>
+            <li class="list-group-item">📧 {{ person.email }}</li>
+            <li class="list-group-item">📱 {{ person.mobile }}</li>
+            <li class="list-group-item">🏠 <strong>Address</strong>
               <address>
                 {{ person.address_line1  }} <br />
                 {{ person.city }} <br />
@@ -39,6 +41,155 @@
         </div>
       </div>
       {# end subscriber basic details #}
+
+      <div class="row mt-5">
+        <div class="card col-md-12">
+          <div class="card-body">
+            <h3>Subscriber Balance</h3>
+            <p>Subscriber balance is the total charged <em>minus</em> total successfully collected over the lifetime
+            of their account.</p>
+
+      <dl class="row">
+       <dt class="col-sm-3">All-Time<dt>
+       <dd class="col-sm-9"></dd>
+       <dt class="col-sm-3">Total Charged:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['total_charged']) }}</dd>
+              <dt class="col-sm-3">Total Collected:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['total_collected']) }}</dd>
+              <dt class="col-sm-3">Balance:</dt>
+       <dd class="col-sm-9">{{ currencyFormat( get_geo_currency_code(), customer_balance_list['customer_balance']) }} (not collected- <a href="#whyNegativeBalance">why?</a>)</dd>
+           </dl>
+
+     <div>
+      <canvas id="customerBalancePieChart"></canvas>
+     </div>
+
+     <script>
+     // Subscriber balance Pie chart
+     const ctx = document.getElementById('customerBalancePieChart');
+
+     var data = {
+      labels: ['Total Collected', 'Total Outstanding'],
+      datasets: [
+       {
+        label: '',
+        data: [{{ customer_balance_list['total_collected']/100 }}, {{ customer_balance_list['customer_balance']/100 }}]
+       }
+      ]
+     }
+
+     var pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: data,
+            options: {
+              responsive: false,
+              title: {
+                display: true,
+                text: 'Total collected, Total outstanding'
+              },
+       plugins: {
+         tooltip: {
+           callbacks: {
+             label: function(context) {
+                              console.log(context);
+               let label = context.dataset.label || '';
+
+               if (label) {
+                 label += ': ';
+               }
+               if (context.parsed.y !== null) {
+                 label += new Intl.NumberFormat('en-GB', { style: 'currency', currency: '{{ get_geo_currency_code() }}' }).format(context.parsed);
+               }
+               return label;
+             }
+           }
+         }
+       }
+            }
+     });
+     </script>
+          {% if customer_balance_list['customer_balance'] > 0 %}
+              {% if collection_decline_codes|count != 0 %}
+              <br />
+              <h4 id="whyNegativeBalance">Why might this Subscriber owe money?</h4>
+              <p>Over the lifetime of this account, Subscribie has seen the following decline codes (from the bank, payment processor or credit network) when collecting payments from {{ person.given_name }}:</p>
+                  <ul style="list-style-type: disc" class="p-3">
+                  {% for  decline_code in collection_decline_codes %}
+                        <li>
+                        {{ decline_code }}
+                        {% if decline_code  == "do_not_honor" %}
+                            <details><summary>What does "<em>{{ decline_code }}</em>" mean?</summary>
+                              <p>The only way to resolve this is to ask your customer to reach out to 
+                                their card-issuing bank to look at the transaction and determine why it was declined.</p>
+                              <p>Customers should provide the bank with the charge amount, date/time, and the company name for assistance</p>
+                        {% elif decline_code  == "insufficient_funds" %}
+                            <details><summary>What does "<em>{{ decline_code }}</em>" mean?</summary>
+                              <p>The card had insufficient funds to complete the purchase at the time it was charged</p>
+                        {% elif decline_code  == "generic_decline" %}
+                        <details><summary>What does "<em>{{ decline_code }}</em>" mean?</summary>
+                          <p>The card was declined for an unknown reason or incorrectly flaged as a risky payment.</p>
+                          <p>The customer needs to contact their card issuer for more information.</p>
+                        {% endif %}
+                      </li>
+                  {% endfor %}
+                  </ul>
+
+              <h4>Missing Payments</h4>
+              {% if open_invoices|count == 0 %}
+                  <p>There are no failed payments for {{ person.given_name }}.{% if customer_balance_list['customer_balance'] > 0 %} However one or more payment collections failed their first attempt.{% endif %}</p>
+                  {% if customer_balance_list['customer_balance'] > 0 %}
+                   <p>Automatic payment retries are taking place soon to collect outstanding payments.</p>
+                   <p>We recommend you allow the automatic retries to take place before sending the subscriber a payment URL to 
+                   avoid double payment.</p>
+                   <p>If retries completely fail for a payment, a payment url is generated to chase the subscriber manually.</p>
+                  {% endif %}
+
+              {% endif %}
+              {% if open_invoices|count > 0 %}
+              <p>Easily identify failed payments for which no more automatic retries will take place.</p>
+              <p>You may wish to manually chase the subscriber, and send them the 'Invoice Payment URL' <em>for each invoice</em> in order
+                for them to settle the outstanding amount(s) for each unsettled invoice.
+              </p>
+
+              <div id="scroll-alert" class="alert alert-info" style="display:none;">
+                <em>&lt;---- Swipe table to the left to see all</em>
+              </div>
+              <table id="subscriber-invoices">
+                <tr>
+                  <th>Plan title</th>
+                  <th>When?</th>
+                  <th>Amount Unpaid</th>
+                  <th>Invoice payment URL</th>
+                  <th>Invoice Reference</th>
+                </tr>
+                {% for open_invoice in open_invoices %}
+                <tr>
+                  <td>{{ open_invoice.subscribie_subscription.plan.title }}</td>
+                  <td>{{ open_invoice.created | timestampToHumanReadableDate }}</td>
+                  <td>£23</td>
+                  <td><a href="{{ open_invoice.hosted_invoice_url }}" title="Send this invoice url to your subscriber to chase payment" target="_blank">Payment link</a></td>
+                  <td>{{ open_invoice.id }}</td>
+                </tr>
+                {% endfor %}
+                </table>
+              {% endif %} {# end if open_invoices|count > 0 #}
+
+              {% endif %}
+
+
+              {% if collection_decline_codes|count > 0 %}
+                <h4 class="mt-5">Exactly which payment collections are failing or failed?</h4>
+              {% endif %}
+              <p>Examine {{ person.given_name }}'s <a href="#invoices">Invoices</a> and look for errors such as
+              "<em>insufficient_funds</em>" to get an idea of their situation.
+              </p>
+              <p>Read the <a href="#invoice-heading-explanations">Invoice heading explanations</a> such as "attempts" to get an idea of any patterns to payments collection issues.</p>
+          {% endif %}
+
+          </div>
+        </div>
+      </div>
+
       <div class="row mt-5">
         <div class="card col-md-12">
           <div class="card-body">
@@ -95,7 +246,7 @@
             {% endfor %}
           </ul>
           <!-- invoices list -->
-          <div class="card-body">
+          <div class="card-body" id="invoices">
             <h3>Invoices</h3>
             <div id="scroll-alert" class="alert alert-info" style="display:none;">
               <em>&lt;---- Swipe invoice table to the left to see all</em>
@@ -130,6 +281,7 @@
             }
             #subscriber-invoices td {
               text-align: center;
+              padding: 0.75em;
             }
             </style>
             <table id="subscriber-invoices">
@@ -141,7 +293,7 @@
               <th>Errors</th>
               <th>Next retry</th>
             </tr>
-              {% for invoice in person.invoices() %}
+              {% for invoice in invoices %}
               <tr>
                 <td>{{ currencyFormat(invoice.currency, invoice.amount_due) }}</td>
                 <td>{{ invoice.status }}</td>
@@ -156,7 +308,7 @@
               </tr>
               {% endfor %}
             </table>
-            <hr />
+            <hr id="invoice-heading-explanations" />
             <h4>Invoice heading explanations</h4>
             <dl>
                 <dt>open</dt>
