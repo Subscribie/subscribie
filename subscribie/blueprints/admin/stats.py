@@ -52,6 +52,7 @@ def get_number_of_subscribers():
         .join(Plan, Subscription.sku_uuid == Plan.uuid)
         .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
         .filter(PlanRequirements.subscription == 1)
+        .execution_options(include_archived=True)
         .count()
     )
     return count
@@ -64,6 +65,7 @@ def get_number_of_signups():
         .join(Subscription)
         .join(Plan, Subscription.sku_uuid == Plan.uuid)
         .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
+        .execution_options(include_archived=True)
         .count()
     )
     return count
@@ -78,6 +80,7 @@ def get_number_of_one_off_purchases():
         .join(PlanRequirements, Plan.id == PlanRequirements.plan_id)
         .filter(PlanRequirements.subscription == 0)
         .filter(PlanRequirements.instant_payment == 1)
+        .execution_options(include_archived=True)
         .count()
     )
     return count
@@ -88,6 +91,7 @@ def get_number_of_transactions_with_donations():
         database.session.query(Person)
         .join(Transaction)
         .filter(Transaction.is_donation == 1)
+        .execution_options(include_archived=True)
         .count()
     )
     return count
