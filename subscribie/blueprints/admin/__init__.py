@@ -559,7 +559,7 @@ def edit():
 
             draftPlan.position = getPlan(form.position.data, index)
             if getPlan(form.description.data, index) != "":
-                draftPlan.description = getPlan(escape(form.description.data), index)
+                draftPlan.description = escape(getPlan(form.description.data, index))
 
             if getPlan(form.subscription.data, index) == "yes":
                 plan_requirements.subscription = True
