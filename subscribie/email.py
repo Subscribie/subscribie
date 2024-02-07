@@ -8,10 +8,10 @@ from subscribie.models import (
     Plan,
     EmailTemplate,
 )
+from subscribie import settings
 from pathlib import Path
 from jinja2 import Template
 import time
-import os
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ class EmailMessageQueue(EmailMessage):
     def queue(self):
         fileName = time.time_ns()
         try:
-            email_queue_folder = os.environ.get("EMAIL_QUEUE_FOLDER")
+            email_queue_folder = settings.get("EMAIL_QUEUE_FOLDER")
             with open(f"{email_queue_folder}/{fileName}", "wb") as f:
                 f.write(self.as_bytes())
                 log.debug(f"Written email to queue folder {email_queue_folder}")
