@@ -33,6 +33,7 @@ from subscribie.utils import (
     get_stripe_livemode,
     get_stripe_connect_account_id,
     get_geo_currency_code,
+    get_stripe_invoices
 )
 from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
@@ -701,6 +702,8 @@ def stripe_process_event_payment_intent_succeeded(event):
     If the backoff fails (max_tries is exceeded) then Stripe will
     retry the event at a later time.
 
+    Finally, refresh stripe invoices cache (via get_stripe_invoices)
+
     See also
     - https://stripe.com/docs/api/events/types#event_types-checkout.session.completed
     - https://stripe.com/docs/api/events/types#event_types-payment_intent.succeeded
@@ -798,6 +801,8 @@ def stripe_process_event_payment_intent_succeeded(event):
             raise Exception
         database.session.add(transaction)
         database.session.commit()
+    # Refresh stripe invoices cache
+    get_stripe_invoices()  # non-blocking
     return "OK", 200
 
 
