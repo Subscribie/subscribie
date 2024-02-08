@@ -1,5 +1,4 @@
 import logging
-import threading
 import json
 from subscribie import settings
 from subscribie.database import database  # noqa
@@ -1314,11 +1313,8 @@ def refresh_invoices():
 
     https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202
     """
-    bgInvoices = threading.Thread(
-        target=get_stripe_invoices, kwargs={"app": current_app._get_current_object()}
-    )
-    bgInvoices.daemon = True
-    bgInvoices.start()
+    get_stripe_invoices()  # Is non-blocking (runs in background thread)
+
     return "Refresh invoices request accepted.", 202
 
 
