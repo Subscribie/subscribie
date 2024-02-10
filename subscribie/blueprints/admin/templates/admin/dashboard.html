@@ -35,6 +35,7 @@
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title justify-content-between d-flex">Stats</h3>
     <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.</p>
+    <p>You've had: {{ num_recent_subscription_cancellations }} <a href="{{ url_for('admin.show_recent_subscription_cancellations')}}">subscription cancellations</a> in the last 30 days.</p>
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
     <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}">people</a> buy a one-off item from your shop.</p>
     <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription{% if settings.donations_enabled %} or donations {% endif %} since starting your shop.</p>

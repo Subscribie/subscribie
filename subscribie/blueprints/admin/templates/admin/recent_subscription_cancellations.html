@@ -1,0 +1,87 @@
+{% extends "admin/layout.html" %}
+{% block title %} Recent Subscription Cancellations{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Recent Subscription Cancellations</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Recent Subscription Cancellations</li>
+  </ul>
+</div>
+<main>
+  <div class="section">
+    <div class="container">
+
+      <p>
+        Below is the list of recent subscription cancellations (if any) within the last 30 days.
+      </p>
+      <p>
+        Be sure to click the subscriber name to investigate further, since they may have since signed-up to a new, or different plan.
+      </p>
+
+      <h3>Reason Code</h3>
+      <ul style="list-style: disc">
+        <li><em>payment_failed</em> - means all retry attempts have failed and the subscription is cancelled</li>
+        <li><em>payment_disputed</em> - means the subscriber disputed the charge(s) at their bank or card issuer</li>
+        <li><em>cancellation_requested</em> - means a cancellation was requested which caused the subscription to be cancelled. If plans have a "Cancel at" date set, they will natually cancel at the "Cancel at" date set on the plan</li>
+      </ul>
+
+      <p class="alert alert-warning" role="alert">Please note this list only goes back 30 days</p>
+
+      <table class="table mobile-optimised">
+        <thead>
+          <tr>
+            <th>Subscriber</th>
+            <th>Subscription</th>
+            <th>Cancellation Date</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for cancellation in cancellations %}
+          <tr>
+            <td data-th="Name">
+              <a href="{{ url_for('admin.show_subscriber', subscriber_id=cancellation['person'].id) }}">{{ cancellation['person'].given_name }} {{ cancellation['person'].family_name }}</a>
+              <br />
+            </td>
+            <td data-th="Plan">
+              {{ cancellation['subscription'].plan.title }}
+            </td>
+            <td>
+              {{ cancellation['cancellation_date'] | timestampToDate }}
+            </td>
+            <td>
+              {{ cancellation['cancellation_reason'] }}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div> <!-- end .container -->
+  </div><!-- end .section -->
+</main>
+
+<script>
+{# give UI feedback whilst waiting for active subscribers to load #}
+document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
+  e.target.textContent = "Please wait...";
+});
+
+{# Refresh subscription statuses when button clicked #}
+btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
+
+btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
+
+function refreshSubscriptionStatuses() {
+  fetch("{{ url_for('admin.refresh_subscriptions') }}")
+  .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
+}
+{# End Refresh subscription statuses when button clicked #}
+
+</script>
+
+{% endblock body %}
