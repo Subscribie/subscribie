@@ -1,6 +1,8 @@
 from subscribie.database import database
 from subscribie.models import Person, Subscription, Plan, PlanRequirements, Transaction
+from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account_id
 from sqlalchemy.sql import func
+import stripe
 import logging
 
 
@@ -95,3 +97,16 @@ def get_number_of_transactions_with_donations():
         .count()
     )
     return count
+
+
+def get_number_of_recent_subscription_cancellations():
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+
+    subscription_cancellations = stripe.Event.list(
+        stripe_account=connect_account_id,
+        limit=100,
+        types=["customer.subscription.deleted"],
+    )
+
+    return len(subscription_cancellations)
