@@ -22,6 +22,13 @@
       <p>
         Be sure to click the subscriber name to investigate further, since they may have since signed-up to a new, or different plan.
       </p>
+      <h3>Total Collected &amp; Monies Owed</h3>
+      <p><em>"Total Collected"</em> is the total collected from that Subscriber <em>all time</em> accross <em>all</em> their subscriptions.</p>
+      <p><em>"Monies owed"</em> is the amount not collected, for instance due to insufficient funds accross <em>all</em> the Subscriber's account.
+      <br />To investigate further, click a Subscribers name.</p>
+
+      <p>Please note: 'Monies owed' is a guide: Subscribie isn't aware of payments if they are made outside of this system (such as cash).</p>
+
 
       <h3>Reason Code</h3>
       <ul style="list-style: disc">
@@ -39,6 +46,8 @@
             <th>Subscription</th>
             <th>Cancellation Date</th>
             <th>Reason</th>
+            <th>Total Collected</th>
+            <th>Monies Owed</th>
           </tr>
         </thead>
         <tbody>
@@ -56,6 +65,12 @@
             </td>
             <td>
               {{ cancellation['cancellation_reason'] }}
+            </td>
+            <td>
+              {{ currencyFormat(get_geo_currency_code(), cancellation['person'].balance(skipFetchDeclineCode=True)['total_collected']) }}
+            </td>
+            <td>
+              {{ currencyFormat(get_geo_currency_code(), cancellation['person'].balance(skipFetchDeclineCode=True)['customer_balance']) }}
             </td>
           </tr>
         {% endfor %}
