@@ -28,7 +28,9 @@ def export_transactions():
                 plan_title = transaction.subscription.plan.title
                 subscription_uuid = transaction.subscription.uuid
                 subscription_status = transaction.subscription.stripe_status
-                if transaction.subscription.note:
+                if transaction.subscription.note and isinstance(
+                    transaction.subscription.note.note, str
+                ):
                     subscription_note = (
                         transaction.subscription.note.note.strip().replace(",", ";")
                     )
