@@ -65,23 +65,4 @@
   </div><!-- end .section -->
 </main>
 
-<script>
-{# give UI feedback whilst waiting for active subscribers to load #}
-document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
-  e.target.textContent = "Please wait...";
-});
-
-{# Refresh subscription statuses when button clicked #}
-btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
-
-btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
-
-function refreshSubscriptionStatuses() {
-  fetch("{{ url_for('admin.refresh_subscriptions') }}")
-  .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
-}
-{# End Refresh subscription statuses when button clicked #}
-
-</script>
-
 {% endblock body %}
