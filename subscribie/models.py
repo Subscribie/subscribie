@@ -164,7 +164,7 @@ class Person(database.Model, HasArchived):
 
         return subscriptions
 
-    def balance(self):
+    def balance(self, skipFetchDeclineCode=False):
         """Return the customer balance
         Customer balance is the total charged - total collected over the lifetime
         of their account.
@@ -172,7 +172,7 @@ class Person(database.Model, HasArchived):
         total_charged = 0
         total_collected = 0
         customer_balance = 0
-        invoices = self.invoices()
+        invoices = self.invoices(skipFetchDeclineCode=skipFetchDeclineCode)
         for invoice in invoices:
             total_charged += invoice.amount_due
 
@@ -192,7 +192,7 @@ class Person(database.Model, HasArchived):
             "customer_balance": customer_balance,
         }
 
-    def invoices(self, refetchCachedStripeInvoices=False):
+    def invoices(self, refetchCachedStripeInvoices=False, skipFetchDeclineCode=False):
         """Get all cached Stripe invoices for a given person
 
         NOTE: This is a **cached** view of Stripe invoices,
@@ -217,7 +217,9 @@ class Person(database.Model, HasArchived):
 
         stripe.api_key = get_stripe_secret_key()
         stripe_account_id = get_stripe_connect_account_id()
-        query = database.session.query(StripeInvoice).execution_options(include_archived=True)
+        query = database.session.query(StripeInvoice).execution_options(
+            include_archived=True
+        )
         query = query.join(
             Subscription,
             StripeInvoice.subscribie_subscription_id == Subscription.id,  # noqa: E501
@@ -230,12 +232,16 @@ class Person(database.Model, HasArchived):
             setattr(invoice, "created", stripeRawInvoice["created"])
             # Get stripe_decline_code if possible
             try:
-                payment_intent_id = stripeRawInvoice["payment_intent"]
-                stripe_decline_code = stripe.PaymentIntent.retrieve(
-                    payment_intent_id,
-                    stripe_account=stripe_account_id,
-                ).last_payment_error.decline_code
-                setattr(invoice, "stripe_decline_code", stripe_decline_code)
+                if skipFetchDeclineCode is not True:
+                    payment_intent_id = stripeRawInvoice["payment_intent"]
+                    stripe_decline_code = stripe.PaymentIntent.retrieve(
+                        payment_intent_id,
+                        stripe_account=stripe_account_id,
+                    ).last_payment_error.decline_code
+                    setattr(invoice, "stripe_decline_code", stripe_decline_code)
+                else:
+                    setattr(invoice, "stripe_decline_code", "unknown")
+
             except Exception as e:
                 log.debug(
                     f"Failed to get stripe_decline_code for invoice {invoice.id}. Exeption: {e}"  # noqa: E501
