@@ -109,13 +109,4 @@ def get_number_of_recent_subscription_cancellations():
         types=["customer.subscription.deleted"],
     )
 
-    for event in subscription_cancellations.auto_paging_iter():
-        log.info("appending event")
-        log.info(
-            f"Length of subscription_cancellations.data is {len(subscription_cancellations.data)}"  # noqa: E501
-        )
-        if len(subscription_cancellations.data) > 100:
-            break
-        subscription_cancellations.data.append(event)
-
     return len(subscription_cancellations)
