@@ -24,7 +24,9 @@ def update_stripe_subscription_statuses(app):
         stripe.api_key = get_stripe_secret_key()
         connect_account = get_stripe_connect_account()
         if stripe.api_key is None:
-            log.warning("Stripe api key not set refusing to update subscription statuses")  # noqa: E501
+            log.warning(
+                "Stripe api key not set refusing to update subscription statuses"
+            )  # noqa: E501
         if connect_account is None:
             log.warning(
                 "Stripe connect account not set. Refusing to update subscription statuses"  # noqa: E501
@@ -53,6 +55,9 @@ def update_stripe_subscription_statuses(app):
                         )
 
                         subscription.stripe_status = stripeSubscription.status
+                        # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
+                        if stripeSubscription.ended_at is not None:
+                            subscription.stripe_ended_at = stripeSubscription.ended_at
                         log.info(subscription.stripe_status)
                         log.info(subscription.stripe_subscription_id)
                         database.session.commit()

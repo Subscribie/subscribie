@@ -136,6 +136,11 @@
                                            <span class="subscription-status">Paid</span>
                                         {% endif %}
                                     </li>
+                                    {% if subscription.stripe_status == 'canceled' %}
+                                    <li>
+                                      <strong>Date ended at:</strong> {{ subscription.stripe_ended_at | timestampToDate }}
+                                    </li>
+                                    {% endif %}
                                     {% if subscription.stripe_cancel_at %}
                                       <strong>Automatically Cancels at:</strong>
                                       {{ subscription.stripe_cancel_at | timestampToDate }}
