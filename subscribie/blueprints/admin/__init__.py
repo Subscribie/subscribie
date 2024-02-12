@@ -789,6 +789,25 @@ def delete_plan_by_uuid(uuid):
     return render_template("admin/delete_plan_choose.html", plans=plans)
 
 
+@admin.route("assign-managers-to-plan")
+@login_required
+def assign_managers_to_plan():
+    """
+    assign users (managers) to a plan.
+
+    Some shop owners want/need to assign managers (users) to
+    plans. For example large clubs or membership organisations which
+    assign a 'manager' to one or more plans.
+
+    The plan_user_associations table begins to make possible the
+    assignment of Users to Plans. Recall that Users (see class User
+    in models.py) is a shop owner (admin) which may login to the
+    Subscribie application.
+    """
+    users = User.query.all()
+    return render_template("admin/assign_managers_to_plan.html", users=users)
+
+
 @admin.route("/list-documents", methods=["get"])
 @login_required
 def list_documents():
