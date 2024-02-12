@@ -579,7 +579,16 @@ association_table_plan_choice_group = database.Table(
     database.Column("plan_id", database.Integer, ForeignKey("plan.id")),
 )
 
+"""
+Some shop owners want/need to assign managers (users) to
+plans. For example large clubs or membership organisations which
+assign a 'manager' to one or more plans.
 
+The plan_user_associations table begins to make possible the
+assignment of Users to Plans. Recall that Users (see class User
+in models.py) is a shop owner (admin) which may login to the
+Subscribie application.
+"""
 association_table_plan_to_price_lists = database.Table(
     "plan_price_list_associations",
     database.Column(
@@ -593,6 +602,12 @@ association_table_plan_to_price_lists = database.Table(
         database.String,
         ForeignKey("price_list.uuid"),
     ),
+)
+
+association_table_plan_to_users = database.Table(
+    "plan_user_associations",
+    database.Column("plan_uuid", database.String, ForeignKey("plan.uuid")),
+    database.Column("user_id", database.String, ForeignKey("user.id")),
 )
 
 
@@ -655,6 +670,11 @@ class Plan(database.Model, HasArchived):
     cancel_at = database.Column(database.Integer(), default=0)
     price_lists = relationship(
         "PriceList", secondary=association_table_plan_to_price_lists
+    )
+    managers = relationship(
+        "User",
+        secondary=association_table_plan_to_users,
+        backref=database.backref("plans", lazy="dynamic"),
     )
 
     def getPrice(self, currency):
