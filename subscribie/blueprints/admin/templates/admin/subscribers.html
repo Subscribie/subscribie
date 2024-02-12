@@ -108,7 +108,7 @@
                                     </li>
                                 {% endif %}
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
-                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%Y-%m-%d') }}</li>
+                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d-%m-%Y') }}</li>
                                 <li>
                                     {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                         <strong>Price: </strong>
@@ -128,12 +128,18 @@
                                     <li><strong>Status:</strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                            {% if subscription.stripe_pause_collection == "void" %}
-                                              <span class="subscription-status">Paused</span>
+                                              <div class="subscription-status alert alert-warning">Paused</div>
+                                           {% elif subscription.stripe_status == "canceled" %}
+                                              <div class="subscription-status alert alert-secondary">Canceled</div>
+                                           {% elif subscription.stripe_status == 'active'  %}
+                                              <div class="subscription-status alert alert-success">Active</div>
+                                           {% elif subscription.stripe_status == 'past_due'  %}
+                                              <div class="subscription-status alert alert-danger">past_due</div>
                                            {% else %}
-                                              <span class="subscription-status">{{ subscription.stripe_status }}</span>
+                                              <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                            {% endif %}
                                         {% else %}
-                                           <span class="subscription-status">Paid</span>
+                                           <div class="subscription-status alert alert-success">Paid</div>
                                         {% endif %}
                                     </li>
                                     {% if subscription.stripe_status == 'canceled' %}
