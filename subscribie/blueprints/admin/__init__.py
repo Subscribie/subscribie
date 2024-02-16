@@ -807,6 +807,33 @@ def assign_managers_to_plan():
     return render_template("admin/assign_managers_to_plan.html", users=users)
 
 
+@admin.route("/assign-managers-to-plans/<user_id>/assign-plan", methods=["GET", "POST"])
+@login_required
+def user_assign_to_plans(user_id):
+    user = User.query.get(user_id)
+    plans = Plan.query.execution_options(include_archived=True)
+
+    if request.method == "POST":
+        # Remove if not selected
+        for plan in plans:
+            if plan in user.plans:
+                user.plans.remove(plan)
+
+        for plan_id in request.form.getlist("assign"):
+            plan = Plan.query.execution_options(include_archived=True).get(plan_id)
+            plan.managers.append(user)
+
+        database.session.commit()
+        flash("User has been assigned the selected plan(s) as a manager of them")
+        return redirect(url_for("admin.assign_managers_to_plan"))
+
+    return render_template(
+        "admin/user_assign_plan.html",
+        user=user,
+        plans=plans,
+    )
+
+
 @admin.route("/list-documents", methods=["get"])
 @login_required
 def list_documents():

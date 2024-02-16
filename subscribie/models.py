@@ -60,6 +60,9 @@ def filter_archived(query):
         if desc["type"] is Person and "archived-subscribers" in request.path:
             query = query.filter(entity.archived == 1)
             return query
+        elif desc["type"] is User and "assign-managers-to-plan" in request.path:
+            query = query.execution_options(include_archived=True)
+            return query
         elif (
             desc["type"] is Person
             and request.path != "/"
@@ -108,6 +111,13 @@ class HasReadOnly(object):
     read_only = Column(Boolean, nullable=False, default=0)
 
 
+association_table_plan_to_users = database.Table(
+    "plan_user_associations",
+    database.Column("plan_uuid", database.String, ForeignKey("plan.uuid")),
+    database.Column("user_id", database.String, ForeignKey("user.id")),
+)
+
+
 class User(database.Model):
     __tablename__ = "user"
     id = database.Column(database.Integer(), primary_key=True)
@@ -118,6 +128,7 @@ class User(database.Model):
     login_token = database.Column(database.String)
     password_reset_string = database.Column(database.String())
     password_expired = database.Column(database.Boolean(), default=0)
+    plans = relationship("Plan", secondary=association_table_plan_to_users)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -604,12 +615,6 @@ association_table_plan_to_price_lists = database.Table(
     ),
 )
 
-association_table_plan_to_users = database.Table(
-    "plan_user_associations",
-    database.Column("plan_uuid", database.String, ForeignKey("plan.uuid")),
-    database.Column("user_id", database.String, ForeignKey("user.id")),
-)
-
 
 class INTERVAL_UNITS(Enum):
     DAILY = _("daily")
@@ -671,10 +676,13 @@ class Plan(database.Model, HasArchived):
     price_lists = relationship(
         "PriceList", secondary=association_table_plan_to_price_lists
     )
+    subscriptions = relationship(
+        "Subscription", primaryjoin="foreign(Subscription.sku_uuid)==Plan.uuid"
+    )
     managers = relationship(
         "User",
         secondary=association_table_plan_to_users,
-        backref=database.backref("plans", lazy="dynamic"),
+        backref=database.backref("managers", lazy="dynamic"),
     )
 
     def getPrice(self, currency):
