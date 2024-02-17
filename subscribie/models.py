@@ -624,6 +624,7 @@ class Plan(database.Model, HasArchived):
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
+    parent_plan_revision_uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
     description = database.Column(database.String())
     interval_unit = database.Column(database.String())  # Charge interval
