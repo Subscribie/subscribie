@@ -544,6 +544,7 @@ def edit():
             plan_requirements = PlanRequirements()
             draftPlan.cancel_at = cancel_at
             draftPlan.uuid = str(uuid.uuid4())
+            draftPlan.parent_plan_revision_uuid = plan.uuid
             draftPlan.requirements = plan_requirements
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
