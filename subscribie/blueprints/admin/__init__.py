@@ -546,6 +546,16 @@ def edit():
             draftPlan.uuid = str(uuid.uuid4())
             draftPlan.parent_plan_revision_uuid = plan.uuid
             draftPlan.requirements = plan_requirements
+
+            # Preserve / update managers assigned to plan
+            managers = []
+            managersUserIds = request.form.getlist(f'managers-index-{index}')
+            for userId in managersUserIds:
+                user = User.query.get(int(userId))
+                managers.append(user)
+            draftPlan.managers.clear()
+            draftPlan.managers.extend(managers)
+
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
 
@@ -646,7 +656,8 @@ def edit():
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
-    return render_template("admin/edit.html", plans=plans, form=form)
+    users = User.query.all()
+    return render_template("admin/edit.html", plans=plans, form=form, users=users)
 
 
 @admin.route("/add", methods=["GET", "POST"])
@@ -654,7 +665,16 @@ def edit():
 def add_plan():
     form = PlansForm()
     if form.validate_on_submit():
+        # Get managers if assigned
+        users = User.query.all()
+        managers = []
+        for user in users:
+            if request.form.get(f"user-{user.id}"):
+                user = User.query.get(int(request.form.get(f"user-{user.id}")))
+                managers.append(user)
+
         draftPlan = Plan()
+        draftPlan.managers.extend(managers)
         database.session.add(draftPlan)
         plan_requirements = PlanRequirements()
         draftPlan.requirements = plan_requirements
@@ -759,7 +779,8 @@ def add_plan():
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_plan.html", form=form)
+    users = User.query.all()
+    return render_template("admin/add_plan.html", form=form, users=users)
 
 
 @admin.route("/delete", methods=["GET"])

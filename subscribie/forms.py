@@ -79,6 +79,9 @@ class PlansForm(StripWhitespaceForm):
     description = FieldList(
         StringField("Description", [validators.optional()], default=False)
     )
+    managers = FieldList(
+        BooleanField("Managers", [validators.optional()])
+    )
 
 
 class ChoiceGroupForm(FlaskForm):
