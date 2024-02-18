@@ -556,6 +556,11 @@ def edit():
             draftPlan.managers.clear()
             draftPlan.managers.extend(managers)
 
+            # Update plan-revisions with managers
+            for planRevision in plan.get_plan_revisions():
+                planRevision.managers.clear()
+                planRevision.managers.extend(managers)
+
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
 
