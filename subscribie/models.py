@@ -6,6 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import event
 from sqlalchemy import Column
 from sqlalchemy import Boolean
+from sqlalchemy import text
 
 from typing import Optional
 from datetime import datetime
@@ -743,6 +744,23 @@ class Plan(database.Model, HasArchived):
             f"getPrice returning interval_amount: {interval_amount} for plan {self.title}"  # noqa: E501
         )
         return sell_price, interval_amount
+
+    def get_plan_revisions(self):
+        textual_sql = text(f"""
+        WITH RECURSIVE RevisionChain AS
+        (SELECT id, created_at, uuid, title, parent_plan_revision_uuid
+            FROM plan WHERE uuid = '{self.uuid}'
+            UNION ALL
+                SELECT p.id, p.created_at, p.uuid, p.title, p.parent_plan_revision_uuid
+                FROM plan p
+                INNER JOIN RevisionChain rc
+                ON p.uuid = rc.parent_plan_revision_uuid
+        )
+        SELECT * FROM RevisionChain""")
+        textual_sql = textual_sql.columns(Plan.id, Plan.created_at, Plan.uuid, Plan.title, Plan.parent_plan_revision_uuid)
+        orm_sql = database.select(Plan).from_statement(textual_sql)
+        plan_decendants = database.session.execute(orm_sql).scalars().all()
+        return plan_decendants
 
     def applyRules(self, rules=[], context={}):
         """Apply pricelist rules to a given plan
