@@ -18,7 +18,7 @@
       <div class="mb-4">
         {% if show_active %}
           <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
-        {% else %}
+        {% elif show_plans_i_manage is sameas False %}
           <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
       {%endif %}
       {% if settings.donations_enabled %}
@@ -28,10 +28,18 @@
               <a href="{{url_for('admin.subscribers', action='show_donors')}}" id="show-donors" class="btn btn-primary ">Show Donors</a>
           {% endif %}
       {% endif %}
+      <a href="{{ url_for('admin.subscribers', action='show_plans_i_manage') }}" id="show-plans-I-manage" class="btn btn-primary active">Show only plans I manage</a>
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
         <form action="#" method="GET">
         <h4>Search...</h4>
+        {% if g.user.plans | length == 0 %}
+        <div class="alert alert-warning">
+          You don't currently have any plans assigned to your user. To assign plans to your user login,
+          <a href="{{ url_for('admin.edit') }}">Edit an existing plan</a> or <a href="{{ url_for('admin.add_plan') }}">Create a new plan</a> and click 'Managers' when editing or adding
+          a plan to assign manager(s).
+        </div>
+        {% endif %}
         {% if request.args.get("subscriber_email") or request.args.get("subscriber_name") %}
         <div class="alert alert-warning">
           You currently have a search filter active. <a href="{{ url_for('admin.subscribers') }}">Click here to show all subscribers again</a>.

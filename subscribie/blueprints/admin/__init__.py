@@ -14,6 +14,7 @@ from flask import (
     request,
     session,
     Response,
+    g,
 )
 from markupsafe import Markup, escape
 import jinja2
@@ -73,6 +74,7 @@ from subscribie.models import (
     Category,
     UpcomingInvoice,
     Document,
+    association_table_plan_to_users,
 )
 from .subscription import update_stripe_subscription_statuses
 from .stats import (
@@ -1337,6 +1339,7 @@ def inject_template_globals():
 def subscribers():
     action = request.args.get("action")
     show_active = action == "show_active"
+    show_plans_i_manage = action == "show_plans_i_manage"
     subscriber_email = request.args.get("subscriber_email", None)
     subscriber_name = request.args.get("subscriber_name", None)
 
@@ -1359,6 +1362,33 @@ def subscribers():
     elif action == "show_one_off_payments":
         query = query.filter(Person.subscriptions)
         query = query.where(Subscription.stripe_subscription_id == None)  # noqa: E711
+    elif action == "show_plans_i_manage":
+        """
+        Only show plans for which the current logged in user is a manager
+        of. This orm query runs:
+
+        SELECT plan.title, person.given_name, plan_user_associations.user_id, user.email, user.id -- # noqa: E501
+        FROM person
+        JOIN subscription ON
+        subscription.person_id = person.id
+        JOIN plan ON
+        subscription.sku_uuid = plan.uuid
+        JOIN plan_user_associations ON
+        plan.uuid = plan_user_associations.plan_uuid
+        JOIN user ON
+        user.id = plan_user_associations.user_id
+
+        WHERE plan_user_associations.user_id = 1
+        """
+        query = (
+            query.join(Subscription, Person.id == Subscription.person_id)
+            .join(Plan, Subscription.sku_uuid == Plan.uuid)
+            .join(
+                association_table_plan_to_users,
+                Plan.uuid == association_table_plan_to_users.c.plan_uuid,
+            )
+            .where(association_table_plan_to_users.c.user_id == g.user.id)
+        )
 
     people = query.order_by(desc(Person.created_at))
 
@@ -1366,6 +1396,7 @@ def subscribers():
         "admin/subscribers.html",
         people=people.all(),
         show_active=show_active,
+        show_plans_i_manage=show_plans_i_manage,
         action=action,
     )
 
