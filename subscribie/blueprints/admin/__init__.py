@@ -551,7 +551,7 @@ def edit():
 
             # Preserve / update managers assigned to plan
             managers = []
-            managersUserIds = request.form.getlist(f'managers-index-{index}')
+            managersUserIds = request.form.getlist(f"managers-index-{index}")
             for userId in managersUserIds:
                 user = User.query.get(int(userId))
                 managers.append(user)
@@ -815,6 +815,43 @@ def delete_plan_by_uuid(uuid):
     flash("Plan deleted.")
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
+
+
+@admin.route("assign-manager-to-plan", methods=["POST"])
+@login_required
+def assign_manager_to_plan():
+    """
+    assign user (manager) to a plan.
+
+    Some shop owners want/need to assign managers (users) to
+    plans. For example large clubs or membership organisations which
+    assign a 'manager' to one or more plans.
+
+    The plan_user_associations table begins to make possible the
+    assignment of Users to Plans. Recall that Users (see class User
+    in models.py) is a shop owner (admin) which may login to the
+    Subscribie application.
+    """
+    managers = []
+    chosen_user_ids = request.form.getlist("user_id")
+    for chosen_user_id in chosen_user_ids:
+        user = User.query.where(User.id == chosen_user_id).first()
+        managers.append(user)
+    plan_uuid = request.form.get("plan_uuid")
+    plan = (
+        database.session.query(Plan)
+        .execution_options(include_archived=True)
+        .where(Plan.uuid == plan_uuid)
+        .first()
+    )
+
+    plan.managers.extend(managers)
+
+    flash("Manager(s) have assigned to the plan")
+
+    database.session.commit()
+
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("assign-managers-to-plan")
@@ -1391,10 +1428,11 @@ def subscribers():
         )
 
     people = query.order_by(desc(Person.created_at))
-
+    users = User.query.all()
     return render_template(
         "admin/subscribers.html",
         people=people.all(),
+        users=users,
         show_active=show_active,
         show_plans_i_manage=show_plans_i_manage,
         action=action,

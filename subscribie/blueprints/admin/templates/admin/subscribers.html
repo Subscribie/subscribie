@@ -16,23 +16,26 @@
   <div class="section">
     <div class="container">
       <div class="mb-4">
-        {% if show_active %}
-          <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
-        {% elif show_plans_i_manage is sameas False %}
-          <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show Active</a>
-      {%endif %}
+         <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary">Show all</a>
+         <a href="{{url_for('admin.subscribers', action='show_active')}}" id="show-active-subscribers" class="btn btn-primary ">Show all Active</a>
       {% if settings.donations_enabled %}
           {% if action == "show_donors" %}
-              <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary active">Show all</a>
+              <a href="{{url_for('admin.subscribers')}}" id="show-active-subscribers" class="btn btn-primary">Show all</a>
           {% else %} 
               <a href="{{url_for('admin.subscribers', action='show_donors')}}" id="show-donors" class="btn btn-primary ">Show Donors</a>
           {% endif %}
       {% endif %}
-      <a href="{{ url_for('admin.subscribers', action='show_plans_i_manage') }}" id="show-plans-I-manage" class="btn btn-primary active">Show only plans I manage</a>
+      <a href="{{ url_for('admin.subscribers', action='show_plans_i_manage') }}" id="show-plans-I-manage" class="btn btn-primary">Show only plans I manage</a>
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
         <form action="#" method="GET">
         <h4>Search...</h4>
+        {% if show_plans_i_manage %}
+          <div class="alert alert-warning">
+            <p>Showing only subscribers with plans you are a manager of</p>
+          </div>
+        {% endif %}
+
         {% if g.user.plans | length == 0 %}
         <div class="alert alert-warning">
           You don't currently have any plans assigned to your user. To assign plans to your user login,
@@ -91,6 +94,24 @@
                 {% for subscription in person.subscriptions %}
                     <li>
                         <div class="card">
+                            {% if subscription.plan.managers | length == 0 %}
+                              <div class="alert alert-warning">
+                                <h5>Assign a manager</h5>
+                                No manager(s) are assigned to this plan.
+                                <form action="{{ url_for("admin.assign_manager_to_plan") }}" method="POST">
+                                  {% for user in users %}
+                                    <div class="form-check">
+                                      <input type="checkbox" class="form-check-input" name="user_id" id="{{ user.id }}" value="{{ user.id }}" />
+                                      <label for="{{ user.id }}" class="form-check-label">{{ user.email }}</label>
+                                    </div>
+                                  {% endfor %}
+                                  <input type="hidden" name="plan_uuid" value="{{ subscription.plan.uuid }}" />
+                                  <div class="form-group row mt-4">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                  </div>
+                                </form>
+                              </div>
+                            {% endif %}
                             <ul class="list-unstyled px-2">
                                 <li><strong>Title: </strong>
                                     <span class="subscription-title">{{ subscription.plan.title }}</span>
@@ -283,7 +304,7 @@
 
 <script>
 {# give UI feedback whilst waiting for active subscribers to load #}
-document.getElementById('show-active-subscribers').addEventListener('click', function(e) {
+document.getElementById('refresh_subscriptions').addEventListener('click', function(e) {
   e.target.textContent = "Please wait...";
 });
 
