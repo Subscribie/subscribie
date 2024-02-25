@@ -1,0 +1,19 @@
+{% macro plan_assign_managers_form(plan, users) -%}
+
+<form action="{{ url_for("admin.assign_manager_to_plan") }}" method="POST">
+  {% for user in users %}
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" name="user_id" id="{{ user.id }}" value="{{ user.id }}"
+        {% if user in plan.users %}
+             checked
+        {% endif %} />
+      <label for="{{ user.id }}" class="form-check-label">{{ user.email }}</label>
+    </div>
+  {% endfor %}
+  <input type="hidden" name="plan_uuid" value="{{ plan.uuid }}" />
+  <div class="form-group row mt-4">
+    <input type="submit" value="Update" class="btn btn-primary" />
+  </div>
+</form>
+
+{%- endmacro %}

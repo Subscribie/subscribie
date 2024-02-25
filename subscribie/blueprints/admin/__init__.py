@@ -496,8 +496,15 @@ def dashboard():
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
 
+    # Query user object including archived plans, see models.py
+    # _do_orm_execute_hide_archived for details.
+    user_id = g.user.id
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        user = User.query.where(User.id == user_id).first()
     return render_template(
         "admin/dashboard.html",
+        user=user,
         stripe_connected=stripe_connected,
         integration=integration,
         loadedModules=getLoadedModules(),
@@ -555,13 +562,13 @@ def edit():
             for userId in managersUserIds:
                 user = User.query.get(int(userId))
                 managers.append(user)
-            draftPlan.managers.clear()
-            draftPlan.managers.extend(managers)
+            draftPlan.users.clear()
+            draftPlan.users.extend(managers)
 
             # Update plan-revisions with managers
             for planRevision in plan.get_plan_revisions():
-                planRevision.managers.clear()
-                planRevision.managers.extend(managers)
+                planRevision.users.clear()
+                planRevision.users.extend(managers)
 
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
@@ -845,13 +852,13 @@ def assign_manager_to_plan():
         .first()
     )
 
-    plan.managers.extend(managers)
+    plan.users.extend(managers)
 
     flash("Manager(s) have assigned to the plan")
 
     database.session.commit()
 
-    return redirect(url_for("admin.subscribers"))
+    return redirect(url_for("admin.subscribers", action="show_active"))
 
 
 @admin.route("assign-managers-to-plan")
@@ -869,29 +876,46 @@ def assign_managers_to_plan():
     in models.py) is a shop owner (admin) which may login to the
     Subscribie application.
     """
-    users = User.query.all()
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        users = User.query.execution_options(include_archived=True).all()
     return render_template("admin/assign_managers_to_plan.html", users=users)
 
 
 @admin.route("/assign-managers-to-plans/<user_id>/assign-plan", methods=["GET", "POST"])
 @login_required
 def user_assign_to_plans(user_id):
-    user = User.query.get(user_id)
-    plans = Plan.query.execution_options(include_archived=True)
-
+    """
+    Note the use of application context to include archived plans
+    Remember that "plan in user.plans" won't be true if, for example,
+    'plan' is defined outside of the new/enclused application context.
+    """
     if request.method == "POST":
-        # Remove if not selected
-        for plan in plans:
-            if plan in user.plans:
-                user.plans.remove(plan)
+        with current_app.app_context():
+            database.session.info["include_archived"] = True
+            plans = Plan.query.execution_options(include_archived=True).all()
+            user = User.query.get(user_id)
+            # Remove if not selected
+            for plan in plans:
+                log.info(f"Checking if plan {plan} is in user {user}")
+                if plan in user.plans:
+                    user.plans.remove(plan)
 
-        for plan_id in request.form.getlist("assign"):
-            plan = Plan.query.execution_options(include_archived=True).get(plan_id)
-            plan.managers.append(user)
+            # If all deselected, remove all plan assignments
+            if len(request.form.getlist("assign")) == 0:
+                user.plans.clear()
 
-        database.session.commit()
+            # Assign requested managers to plan
+            for plan_id in request.form.getlist("assign"):
+                plan = Plan.query.execution_options(include_archived=True).get(plan_id)
+                plan.users.append(user)
+
+            database.session.commit()
         flash("User has been assigned the selected plan(s) as a manager of them")
         return redirect(url_for("admin.assign_managers_to_plan"))
+
+    plans = Plan.query.execution_options(include_archived=True).all()
+    user = User.query.execution_options(include_archived=True).where(User.id == user_id).first()
 
     return render_template(
         "admin/user_assign_plan.html",
@@ -1429,10 +1453,16 @@ def subscribers():
 
     people = query.order_by(desc(Person.created_at))
     users = User.query.all()
+    user_id = g.user.id
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        user = User.query.where(User.id == user_id).first()
+
     return render_template(
         "admin/subscribers.html",
         people=people.all(),
         users=users,
+        user=user,
         show_active=show_active,
         show_plans_i_manage=show_plans_i_manage,
         action=action,

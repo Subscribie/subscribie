@@ -35,8 +35,8 @@
 
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title justify-content-between d-flex">Stats</h3>
-    {% if g.user.plans | length > 0 %}
-    <p>You manage {{ g.user.plans | length }} plan(s). <a style="display:inline" href="{{ url_for('admin.subscribers')}}?action=show_plans_i_manage">Show my subscribers</a></p>
+    {% if user.plans | length > 0 %}
+    <p>You manage {{ user.plans | length }} plan(s). <a style="display:inline" href="{{ url_for('admin.subscribers')}}?action=show_plans_i_manage">Show my subscribers</a></p>
     {% endif %}
     <hr />
     <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.

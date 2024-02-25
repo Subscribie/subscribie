@@ -1,4 +1,5 @@
 {% extends "admin/layout.html" %}                                                
+{% from 'macros/plan_assign_managers_form.html' import plan_assign_managers_form %}
 {% block title %} Subscribers {% endblock %}                                
                                                                                  
 {% block body %}
@@ -25,18 +26,18 @@
               <a href="{{url_for('admin.subscribers', action='show_donors')}}" id="show-donors" class="btn btn-primary ">Show Donors</a>
           {% endif %}
       {% endif %}
-      <a href="{{ url_for('admin.subscribers', action='show_plans_i_manage') }}" id="show-plans-I-manage" class="btn btn-primary">Show only plans I manage</a>
+      <a href="{{ url_for('admin.subscribers', action='show_plans_i_manage') }}" id="show-plans-I-manage" class="btn btn-primary">Show only Subscribers with plans I manage</a>
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
         <form action="#" method="GET">
         <h4>Search...</h4>
         {% if show_plans_i_manage %}
           <div class="alert alert-warning">
-            <p>Showing only subscribers with plans you are a manager of</p>
+            <p>Showing only subscribers with plans you are a manager of.</p>
           </div>
         {% endif %}
 
-        {% if g.user.plans | length == 0 %}
+        {% if user.plans | length == 0 %}
         <div class="alert alert-warning">
           You don't currently have any plans assigned to your user. To assign plans to your user login,
           <a href="{{ url_for('admin.edit') }}">Edit an existing plan</a> or <a href="{{ url_for('admin.add_plan') }}">Create a new plan</a> and click 'Managers' when editing or adding
@@ -94,22 +95,11 @@
                 {% for subscription in person.subscriptions %}
                     <li>
                         <div class="card">
-                            {% if subscription.plan.managers | length == 0 %}
+                            {% if subscription.plan.users| length == 0 %}
                               <div class="alert alert-warning">
                                 <h5>Assign a manager</h5>
                                 No manager(s) are assigned to this plan.
-                                <form action="{{ url_for("admin.assign_manager_to_plan") }}" method="POST">
-                                  {% for user in users %}
-                                    <div class="form-check">
-                                      <input type="checkbox" class="form-check-input" name="user_id" id="{{ user.id }}" value="{{ user.id }}" />
-                                      <label for="{{ user.id }}" class="form-check-label">{{ user.email }}</label>
-                                    </div>
-                                  {% endfor %}
-                                  <input type="hidden" name="plan_uuid" value="{{ subscription.plan.uuid }}" />
-                                  <div class="form-group row mt-4">
-                                    <input type="submit" value="Save" class="btn btn-primary" />
-                                  </div>
-                                </form>
+                                {{ plan_assign_managers_form(subscription.plan, users) }}
                               </div>
                             {% endif %}
                             <ul class="list-unstyled px-2">
@@ -242,6 +232,13 @@
                                          </ul>
                                        {% endif %}
                                      </li>
+                                     {% if subscription.plan.users | length > 0 %}
+                                     <li class="mt-2" style="padding: 0.75rem 1.25rem;"><strong>Manager(s):</strong>
+                                       {{ plan_assign_managers_form(subscription.plan, users) }}
+                                     </li>
+                                     {% endif %}
+
+
                             </ul>
                         </div>
                     </li>
