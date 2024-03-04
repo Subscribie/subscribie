@@ -1293,6 +1293,9 @@ class Setting(database.Model):
     api_key_secret_test = database.Column(database.String(), default=None)
     donations_enabled = database.Column(database.Boolean(), default=False)
     custom_thank_you_url = database.Column(database.String(), default=None)
+    feature_can_assign_users_to_plans = database.Column(
+        database.Boolean(), default=False
+    )
 
 
 class File(database.Model):

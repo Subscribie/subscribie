@@ -688,7 +688,7 @@ def add_plan():
                 managers.append(user)
 
         draftPlan = Plan()
-        draftPlan.managers.extend(managers)
+        draftPlan.users.extend(managers)
         database.session.add(draftPlan)
         plan_requirements = PlanRequirements()
         draftPlan.requirements = plan_requirements
@@ -915,7 +915,11 @@ def user_assign_to_plans(user_id):
         return redirect(url_for("admin.assign_managers_to_plan"))
 
     plans = Plan.query.execution_options(include_archived=True).all()
-    user = User.query.execution_options(include_archived=True).where(User.id == user_id).first()
+    user = (
+        User.query.execution_options(include_archived=True)
+        .where(User.id == user_id)
+        .first()
+    )
 
     return render_template(
         "admin/user_assign_plan.html",
@@ -2228,6 +2232,34 @@ def donations_enabled_settings():
         database.session.commit()
         return redirect(url_for("admin.donations_enabled_settings", settings=settings))
     return render_template("admin/settings/donations_enabled.html", settings=settings)
+
+
+@admin.route("/assign-users-to-plans-feature-toggle", methods=["GET", "POST"])
+@login_required
+def feature_assign_users_to_plans_enable_disable():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings.feature_can_assign_users_to_plans is None:
+        settings.feature_can_assign_users_to_plans = False
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("feature_can_assign_users_to_plans", 0)) == 1:
+            settings.feature_can_assign_users_to_plans = 1
+            effect = "enabled"
+        else:
+            settings.feature_can_assign_users_to_plans = 0
+            effect = "disabled"
+        flash(f"Assign managers to plan feature has been {effect}")
+        database.session.commit()
+        return redirect(
+            url_for(
+                "admin.feature_assign_users_to_plans_enable_disable", settings=settings
+            )
+        )
+    return render_template(
+        "admin/settings/feature_assign_users_to_plans_enable_disable.html",
+        settings=settings,
+    )
 
 
 @admin.route("/api-keys", methods=["GET", "POST"])

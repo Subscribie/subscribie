@@ -37,7 +37,7 @@
           </div>
         {% endif %}
 
-        {% if user.plans | length == 0 %}
+        {% if user.plans | length == 0 and settings.feature_can_assign_users_to_plans %}
         <div class="alert alert-warning">
           You don't currently have any plans assigned to your user. To assign plans to your user login,
           <a href="{{ url_for('admin.edit') }}">Edit an existing plan</a> or <a href="{{ url_for('admin.add_plan') }}">Create a new plan</a> and click 'Managers' when editing or adding

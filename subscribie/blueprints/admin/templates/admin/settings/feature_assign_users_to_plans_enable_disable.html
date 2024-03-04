@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ _('Assign Manager(s) to plans feature enable/disable') }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">{{ _('Assign Manager(s) to plans feature enable/disable') }}</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">{{ _('Assign Manager(s) to plans feature enable/disable') }}</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>{{ _('Assign Manager(s) to plans feature') }}</h2>
+          <p>{{ _('Enable this feature to allow you to assign admins to manage plans. If you have a lot of plans/subscribers, this makes it easier to divide the work of managing groups of subscribers. This is especially useful for large clubs and membership organisations where you might not know all of the subscribers in your organisaton, but other coworkers know and manage them.') }}</p>
+
+          <form action="" method="POST" action="/">
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="feature_can_assign_users_to_plans" value="1" id="yes" {% if settings.feature_can_assign_users_to_plans is sameas True %}checked {% endif %}>
+                <label class="form-check-label" for="yes">
+                 {{ _('Enable') }}
+                </label>
+              </div>
+              <br />
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="feature_can_assign_users_to_plans" value="0" id="no" {% if settings.feature_can_assign_users_to_plans is sameas False %}checked {% endif %}>
+                <label class="form-check-label" for="no">
+                  {{ _('Disable') }}
+                </label>
+              </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary btn-block mb-3">{{ _('Save') }}</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+
+
+{% endblock %}
