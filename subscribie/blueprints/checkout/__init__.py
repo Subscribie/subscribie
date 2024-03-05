@@ -829,7 +829,6 @@ def stripe_webhook():
     log.info(f"Received stripe webhook event type {event['type']}")
 
     if event["type"] == "customer.subscription.deleted":
-        breakpoint()
         eventObj = event["data"]["object"]
         cancellation_reason = eventObj["cancellation_details"]["reason"]
         if cancellation_reason == "payment_failed":
