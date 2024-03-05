@@ -33,7 +33,7 @@ from subscribie.utils import (
     get_stripe_livemode,
     get_stripe_connect_account_id,
     get_geo_currency_code,
-    get_stripe_invoices
+    get_stripe_invoices,
 )
 from subscribie.forms import CustomerForm, DonationForm
 from subscribie.database import database
@@ -818,6 +818,7 @@ def stripe_webhook():
     """
     event = request.json
     is_donation = False
+    company = Company.query.first()
 
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
@@ -826,6 +827,108 @@ def stripe_webhook():
         )
 
     log.info(f"Received stripe webhook event type {event['type']}")
+
+    if event["type"] == "customer.subscription.deleted":
+        breakpoint()
+        eventObj = event["data"]["object"]
+        cancellation_reason = eventObj["cancellation_details"]["reason"]
+        if cancellation_reason == "payment_failed":
+            log.info(
+                f"Subscription has been automatically cancelled. Reason code: {cancellation_reason}, possibly due to hardship"  # noqa: E501
+            )
+        elif cancellation_reason == "cancellation_requested":
+            log.info(
+                f"Subscription has been cancelled upon request. Reason code: {cancellation_reason}"  # noqa: E501
+            )
+
+        # Attempt to locate person associated with the Subscription
+        person = None
+        try:
+            person_uuid = eventObj["metadata"]["person_uuid"]
+            person = Person.query.filter_by(uuid=person_uuid).one()
+        except Exception:
+            log.error(
+                "Unable to locate person associated with event customer.subscription.deleted"  # noqa: E501
+            )
+
+        # Attempt to locate plan associated with customer.subscription.deleted event
+        plan = None
+        try:
+            plan_uuid = eventObj["metadata"]["plan_uuid"]
+            plan = (
+                Plan.query.execution_options(include_archived=True)
+                .filter_by(uuid=plan_uuid)
+                .one()
+            )
+        except Exception:
+            log.error(
+                "Unable to locate plan associated with event customer.subscription.deleted"  # noqa: E501
+            )
+
+        # Attempt to locate subscription association with customer.subscription.deleted
+        # event
+        subscription = None
+        try:
+            subscribie_checkout_session_id = eventObj["metadata"][
+                "subscribie_checkout_session_id"
+            ]
+            subscription = Subscription.query.filter_by(
+                subscribie_checkout_session_id=subscribie_checkout_session_id
+            ).one()
+        except Exception:
+            log.error(
+                "Unable to locate subscription associated with event customer.subscription.deleted"
+            )
+
+        if person is not None:
+            subject = (
+                f"{company.name}: A Subscription has ended for: {person.given_name}"
+            )
+            # Send email notification to shop owner about subscription ending
+            emailBody = (
+                f"A Subscription has ended for: {person.given_name}\n\n"
+                f"Email: {person.email}\n\n"
+                f"The reason code for the cancellation was: {cancellation_reason}\n"
+            )
+
+            if cancellation_reason == "payment_failed":
+                emailBody += (
+                    "Given the reason code was payment_failed, this means multiple "
+                    "attempts to collect this payment have failed, and the "
+                    "subscription has therefore been cancelled.\n\n"
+                    "Please reach out to the person where possible to resolve.\n\n"
+                    "You can find further details by logging into your shop, and "
+                    "clicking 'subscription cancellations' under 'Stats'."
+                )
+            log.info(emailBody)
+        else:
+            subject = f"A Subscription has ended for: {person.given_name}"
+            emailBody = (
+                "A subscription has just ended.\n\n"
+                "Login to your shop dashboard and click"
+                "'subscription cancellations' under 'Stats' for details."
+            )
+
+        if plan is not None:
+            emailBody += "\n\nThe plan title was:\n" f"{plan.title}"
+
+        if subscription is not None:
+            if subscription.note.note is not None and subscription.note.note != "":
+                emailBody += (
+                    "When the subscriber originally signed-up, "
+                    "they provided the following note:\n\n"
+                    f'"{subscription.note.note}"'
+                )
+
+        shop_admins = [user.email for user in User.query.all()]
+        msg = EmailMessageQueue()
+        msg["Subject"] = subject
+        msg["FROM"] = current_app.config["EMAIL_LOGIN_FROM"]
+        msg["TO"] = shop_admins
+        msg.set_content(emailBody)
+        msg.queue()
+        return "OK", 200
+
     # Handle the payment_intent.payment_failed
     if event["type"] == "payment_intent.payment_failed":
         log.info("Stripe webhook event: payment_intent.payment_failed")
