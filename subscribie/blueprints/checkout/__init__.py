@@ -876,7 +876,7 @@ def stripe_webhook():
             ).one()
         except Exception:
             log.error(
-                "Unable to locate subscription associated with event customer.subscription.deleted"
+                "Unable to locate subscription associated with event customer.subscription.deleted"  # noqa: E501
             )
 
         if person is not None:
