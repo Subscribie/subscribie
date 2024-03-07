@@ -3,7 +3,7 @@ Issue ref: #
 Screenshot before:
 
 
-Screenhot after:
+Screenshot after:
 
 
-How to run test(s) for this pr (see [testing]([url](https://docs.subscribie.co.uk/docs/architecture/testing/)https://docs.subscribie.co.uk/docs/architecture/testing/)):
+How to run test(s) for this PR see: [Testing](https://docs.subscribie.co.uk/docs/architecture/testing/)
