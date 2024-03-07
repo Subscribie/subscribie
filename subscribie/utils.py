@@ -249,14 +249,7 @@ def modify_stripe_account_capability(account_id):
 
 
 def create_stripe_tax_rate():
-    from .models import PaymentProvider
     from subscribie.models import TaxRate
-
-    payment_provider = PaymentProvider.query.first()
-    if payment_provider.stripe_livemode:
-        livemode = True
-    else:
-        livemode = False
 
     # If there's no tax rate for current live mode create and save one:
     # if TaxRate.query.filter_by(stripe_livemode=livemode).first() is None:

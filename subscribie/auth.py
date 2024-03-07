@@ -579,7 +579,7 @@ def stripe_connect_id_required(view):
             stripe_connect_url = url_for("admin.stripe_connect")
             flash(
                 Markup(
-                    f"You must <a href='{ stripe_connect_url }'>connect Stripe first.</a>"  # noqa: E501
+                    f"You must <a href='{stripe_connect_url}'>connect Stripe first.</a>"  # noqa: E501
                 )
             )
             log.debug(f'Redirecting user to {url_for("admin.dashboard")}')

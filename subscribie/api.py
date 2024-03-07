@@ -265,7 +265,7 @@ def create_plan():
         plan = Plan()
         database.session.add(plan)
         for field in planData:
-            if type(field[1]) == list:
+            if isinstance(field[1], list):
                 for sellingPoint in field[1]:
                     plan.selling_points.append(
                         PlanSellingPoints(point=sellingPoint.point)
