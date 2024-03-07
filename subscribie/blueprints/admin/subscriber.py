@@ -2,7 +2,7 @@ from . import admin
 from subscribie.auth import login_required
 from subscribie.models import Person
 from flask import render_template
-from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account, get_stripe_connect_account_id
+from subscribie.utils import get_stripe_secret_key, get_stripe_connect_account_id
 import stripe
 import logging
 
@@ -22,10 +22,18 @@ def show_subscriber(subscriber_id):
     # Add hosted_invoice_url attribute to all open invoices
     try:
         for index, open_invoice in enumerate(open_invoices):
-            stripe_invoice = stripe.Invoice.retrieve(id=open_invoice.id, stripe_account=stripe_connect_account_id)
-            setattr(open_invoices[index], 'hosted_invoice_url', stripe_invoice.hosted_invoice_url)
+            stripe_invoice = stripe.Invoice.retrieve(
+                id=open_invoice.id, stripe_account=stripe_connect_account_id
+            )
+            setattr(
+                open_invoices[index],
+                "hosted_invoice_url",
+                stripe_invoice.hosted_invoice_url,
+            )
     except Exception as e:
-        log.error(f"Unable to get/set hosted_invoice_url for invoice: {open_invoice.id}. {e}")
+        log.error(
+            f"Unable to get/set hosted_invoice_url for invoice: {open_invoice.id}. {e}"
+        )
 
     # Try to be helpful to the shop owner by highlighting recent payment
     # payment stripe_decline_code errors (if any).
