@@ -206,8 +206,10 @@ def create_app(test_config=None):
                     log.debug(
                         f"Created PriceList with zero rules for currency {currency}"
                     )
-            # Ensure every plan has a PriceList attached for each supported currency
-            plans = Plan.query.all()
+            # Ensure every plan (including archived) has a PriceList attached
+            # for each supported currency
+            # https://github.com/Subscribie/subscribie/issues/1317
+            plans = Plan.query.execution_options(include_archived=True).all()
             price_lists = (
                 PriceList.query.all()
             )  # TODO only get default pricelist for given currency
