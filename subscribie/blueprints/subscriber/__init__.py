@@ -222,7 +222,7 @@ def account():
     stripe_publishable_key = get_stripe_publishable_key()
     stripe_default_payment_method = None
     stripe_session = None
-    bad_invoices = g.subscriber.bad_invoices()
+    bad_invoices = g.subscriber.bad_invoices(skipFetchDeclineCode=False)
 
     # Add hosted_invoice_url attribute to all bad invoices
     try:
@@ -380,7 +380,7 @@ def subscriber_view_failed_invoices():
     no further *automated* payment collections for this invoice.
     """
     get_stripe_invoices()
-    bad_invoices = g.subscriber.bad_invoices()
+    bad_invoices = g.subscriber.bad_invoices(skipFetchDeclineCode=False)
     return render_template(
         "subscriber/subscriber_failed_invoices.html", bad_invoices=bad_invoices
     )
