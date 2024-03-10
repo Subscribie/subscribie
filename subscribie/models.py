@@ -658,6 +658,21 @@ class Plan(database.Model, HasArchived):
         "PriceList", secondary=association_table_plan_to_price_lists
     )
 
+    def __getattribute__(self, name):
+        if name == 'trial_period_days':
+            """
+            Ensure all shops return an int (and not None)
+            for trial_period_days
+            (using __getattribute__ avoids touching preexisting data on
+            existing shops)
+            See https://github.com/Subscribie/subscribie/issues/1315
+            """
+            if super(Plan, self).__getattribute__(name) is None:
+                log.warning(f"trial_period_days is none for plan {self.title}")
+                breakpoint()
+            return super(Plan, self).__getattribute__(name) or 0
+        return super(Plan, self).__getattribute__(name)
+
     def getPrice(self, currency):
         """Returns a tuple of sell_price and interval_amount of the plan for
         a given currency, or a tuple False, and an error message str.
