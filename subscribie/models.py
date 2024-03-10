@@ -669,7 +669,6 @@ class Plan(database.Model, HasArchived):
             """
             if super(Plan, self).__getattribute__(name) is None:
                 log.warning(f"trial_period_days is none for plan {self.title}")
-                breakpoint()
             return super(Plan, self).__getattribute__(name) or 0
         return super(Plan, self).__getattribute__(name)
 
