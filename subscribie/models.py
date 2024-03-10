@@ -230,9 +230,13 @@ class Person(database.Model, HasArchived):
         for invoice in invoices:
             stripeRawInvoice = json.loads(invoice.stripe_invoice_raw_json)
             setattr(invoice, "created", stripeRawInvoice["created"])
-            # Get stripe_decline_code if possible
+            # Get stripe_decline_code if possible, ignoring paid invoices
             try:
-                if skipFetchDeclineCode is not True:
+                if (
+                    skipFetchDeclineCode is not True
+                    # No point checking decline_code of a paid invoice
+                    and invoice.status != "paid"
+                ):
                     payment_intent_id = stripeRawInvoice["payment_intent"]
                     stripe_decline_code = stripe.PaymentIntent.retrieve(
                         payment_intent_id,
@@ -275,10 +279,10 @@ class Person(database.Model, HasArchived):
                 failing_invoices.append(invoice)
         return failing_invoices
 
-    def bad_invoices(self):
+    def bad_invoices(self, skipFetchDeclineCode=False):
         """List Subscribers failing and failed invoices"""
         bad_invoices = []
-        invoices = self.invoices()
+        invoices = self.invoices(skipFetchDeclineCode=skipFetchDeclineCode)
         for invoice in invoices:
             if stripe_invoice_failed(invoice) or stripe_invoice_failing(
                 invoice
@@ -659,7 +663,7 @@ class Plan(database.Model, HasArchived):
     )
 
     def __getattribute__(self, name):
-        if name == 'trial_period_days':
+        if name == "trial_period_days":
             """
             Ensure all shops return an int (and not None)
             for trial_period_days
