@@ -912,7 +912,7 @@ def stripe_webhook():
             emailBody += "\n\nThe plan title was:\n" f"{plan.title}"
 
         if subscription is not None:
-            if subscription.note.note is not None and subscription.note.note != "":
+            if subscription.note is not None and subscription.note.note != "":
                 emailBody += (
                     "When the subscriber originally signed-up, "
                     "they provided the following note:\n\n"
