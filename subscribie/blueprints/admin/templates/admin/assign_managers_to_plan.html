@@ -1,0 +1,68 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Assign manager(s) to plans</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item active"><a href="{{ url_for('admin.assign_managers_to_plan') }}">Assign Manager(s) to plan(s)</a></li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+      <h3>Allow managers to quickly see plans they're responsible for</h3>
+      <div class="col-md-7">
+        <p>Some larger organisations like to assign people to 'manage' Subscribers who are subscribed to specific plans.<br />
+        For example, if you're a sports club or large membership organisation you can assign specific staff to
+        become 'managers' of specific plans. This helps them see only the Subscribers they are responsible for.</p>
+
+        <p>
+        Once you do so, when they login to their account, the visibility of plans they manage
+        will be highlighted, and by default any Subscribers they are <em>not</em> a manager of given less Precedence, based
+        on the Plans they are assigned to as a manager.</p>
+        <br />
+        <p>
+        Please note this is <em>not</em> a security feature- it does <em>not</em> stop managers being able to access
+        all plans, it simply makes it easier for a manager of specific plans to quickly see the Subscribers
+        who are subscribed to the plans <em>they</em> are a manager of.
+        </p>
+        
+        <p>Select a user to assign plan(s) to them.</p>
+          
+      </div>
+
+      <table class="table table-hover table-scroll">
+        <thead>
+          <th>User</th>
+          <th>Number of plans managing</th>
+          <th>Action</th>
+        </thead>
+      {% for user in users %}
+        <tr>
+          <td>
+              {{ user.email}}
+          </td>
+          <td>
+            {{ user.plans | length }}
+          </td>
+          <td>
+            <a href="{{ url_for('admin.user_assign_to_plans', user_id=user.id) }}"
+            class="btn btn-success btn-block" style="display: inline-block" role="button">
+            Assign Plan(s)
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+      
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

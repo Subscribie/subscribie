@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
@@ -6,6 +7,11 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import event
 from sqlalchemy import Column
 from sqlalchemy import Boolean
+from sqlalchemy import text
+from sqlalchemy import MetaData
+from sqlalchemy.orm import Mapped
+from typing import List
+
 
 from typing import Optional
 from datetime import datetime
@@ -33,9 +39,46 @@ from .database import database
 
 log = logging.getLogger(__name__)
 
+metadata_obj = MetaData()
+
 
 @event.listens_for(database.session, "do_orm_execute")
 def _do_orm_execute_hide_archived(orm_execute_state):
+    """
+    By default, archived plans are excluded from all queries.
+    So when you want to *include* archived plans, there are two
+    ways to achieve that:
+
+    Example toggling back *on* in include archived plans
+
+    - Method 1: Use query.execution_options(include_archived=1)
+    - Method 2: Object based
+
+    Object based: Create a new app context (because sqlalchemy's listens_for event
+    will apply listeners to all Session instances globally), creating a
+    new app contexts side-steps this.
+
+    from subscribie.database import database
+    from subscribie.models import User
+    from subscribie import create_app
+
+    app = create_app()
+
+    with app.app_context():
+        # Add include_archived to the session.info dict
+        database.session.info["include_archived"] = True
+
+        # Perform query
+        user = User.query.all()[0]
+        print(user.plans)
+
+
+
+    See also:
+    - https://flask.palletsprojects.com/en/2.3.x/appcontext/
+    - https://stackoverflow.com/q/74900879
+
+    """
     if (
         orm_execute_state.is_select
         and not orm_execute_state.is_column_load
@@ -43,7 +86,9 @@ def _do_orm_execute_hide_archived(orm_execute_state):
         and not orm_execute_state.execution_options.get(
             "include_archived", False
         )  # noqa: E501
+        and "include_archived" not in database.session.info
     ):
+        log.info("Archived plans are being excluded in orm execution by default")
         orm_execute_state.statement = orm_execute_state.statement.options(
             with_loader_criteria(
                 HasArchived,
@@ -55,11 +100,16 @@ def _do_orm_execute_hide_archived(orm_execute_state):
 
 @event.listens_for(Query, "before_compile", retval=True, bake_ok=True)
 def filter_archived(query):
+    return query
+    breakpoint()
     for desc in query.column_descriptions:
         entity = desc["entity"]
         if desc["type"] is Person and "archived-subscribers" in request.path:
             query = query.filter(entity.archived == 1)
             return query
+        # elif desc["type"] is User and "assign-managers-to-plan" in request.path:
+        #    query = query.execution_options(include_archived=True)
+        #    return query
         elif (
             desc["type"] is Person
             and request.path != "/"
@@ -108,25 +158,28 @@ class HasReadOnly(object):
     read_only = Column(Boolean, nullable=False, default=0)
 
 
-class User(database.Model):
-    __tablename__ = "user"
-    id = database.Column(database.Integer(), primary_key=True)
-    email = database.Column(database.String())
-    password = database.Column(database.String())
-    created_at = database.Column(database.DateTime, default=datetime.utcnow)
-    active = database.Column(database.String)
-    login_token = database.Column(database.String)
-    password_reset_string = database.Column(database.String())
-    password_expired = database.Column(database.Boolean(), default=0)
+association_table_plan_to_users = database.Table(
+    "plan_user_associations",
+    database.Model.metadata,
+    database.Column(
+        "plan_uuid", database.String, ForeignKey("plan.uuid"), primary_key=True
+    ),
+    database.Column(
+        "user_id", database.String, ForeignKey("user.id"), primary_key=True
+    ),
+)
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
 
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    def __repr__(self):
-        return "<User {}>".format(self.email)
+association_table_plan_to_users_yolo = database.Table(
+    "yolo",
+    database.Model.metadata,
+    database.Column(
+        "plan_uuid", database.String, ForeignKey("plan.uuid"), primary_key=True
+    ),
+    database.Column(
+        "user_id", database.String, ForeignKey("user.id"), primary_key=True
+    ),
+)
 
 
 class Person(database.Model, HasArchived):
@@ -583,7 +636,16 @@ association_table_plan_choice_group = database.Table(
     database.Column("plan_id", database.Integer, ForeignKey("plan.id")),
 )
 
+"""
+Some shop owners want/need to assign managers (users) to
+plans. For example large clubs or membership organisations which
+assign a 'manager' to one or more plans.
 
+The plan_user_associations table begins to make possible the
+assignment of Users to Plans. Recall that Users (see class User
+in models.py) is a shop owner (admin) which may login to the
+Subscribie application.
+"""
 association_table_plan_to_price_lists = database.Table(
     "plan_price_list_associations",
     database.Column(
@@ -625,6 +687,7 @@ association_table_plan_to_document = database.Table(
 
 class Plan(database.Model, HasArchived):
     __tablename__ = "plan"
+    metadata_obj,
     id = database.Column(database.Integer(), primary_key=True)
     created_at = database.Column(database.DateTime, default=datetime.utcnow)
     uuid = database.Column(database.String(), default=uuid_string)
@@ -660,6 +723,12 @@ class Plan(database.Model, HasArchived):
     cancel_at = database.Column(database.Integer(), default=0)
     price_lists = relationship(
         "PriceList", secondary=association_table_plan_to_price_lists
+    )
+    subscriptions = relationship(
+        "Subscription", primaryjoin="foreign(Subscription.sku_uuid)==Plan.uuid"
+    )
+    users: Mapped[List["User"]] = relationship(
+        secondary=association_table_plan_to_users, back_populates="plans"
     )
 
     def __getattribute__(self, name):
@@ -733,6 +802,31 @@ class Plan(database.Model, HasArchived):
             f"getPrice returning interval_amount: {interval_amount} for plan {self.title}"  # noqa: E501
         )
         return sell_price, interval_amount
+
+    def get_plan_revisions(self):
+        textual_sql = text(
+            f"""
+        WITH RECURSIVE RevisionChain AS
+        (SELECT id, created_at, uuid, title, parent_plan_revision_uuid
+            FROM plan WHERE uuid = '{self.uuid}'
+            UNION ALL
+                SELECT p.id, p.created_at, p.uuid, p.title, p.parent_plan_revision_uuid
+                FROM plan p
+                INNER JOIN RevisionChain rc
+                ON p.uuid = rc.parent_plan_revision_uuid
+        )
+        SELECT * FROM RevisionChain"""
+        )
+        textual_sql = textual_sql.columns(
+            Plan.id,
+            Plan.created_at,
+            Plan.uuid,
+            Plan.title,
+            Plan.parent_plan_revision_uuid,
+        )
+        orm_sql = database.select(Plan).from_statement(textual_sql)
+        plan_decendants = database.session.execute(orm_sql).scalars().all()
+        return plan_decendants
 
     def applyRules(self, rules=[], context={}):
         """Apply pricelist rules to a given plan
@@ -1002,6 +1096,31 @@ class Plan(database.Model, HasArchived):
         return False
 
 
+class User(database.Model):
+    __tablename__ = "user"
+    database.Model.metadata,
+    id = database.Column(database.Integer(), primary_key=True)
+    email = database.Column(database.String())
+    password = database.Column(database.String())
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    active = database.Column(database.String)
+    login_token = database.Column(database.String)
+    password_reset_string = database.Column(database.String())
+    password_expired = database.Column(database.Boolean(), default=0)
+    plans: Mapped[List["Plan"]] = relationship(
+        secondary=association_table_plan_to_users, back_populates="users", lazy=False
+    )
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    def __repr__(self):
+        return "<User {}>".format(self.email)
+
+
 class Category(database.Model):
     __tablename__ = "category"
     id = database.Column(database.Integer(), primary_key=True)
@@ -1192,6 +1311,9 @@ class Setting(database.Model):
     api_key_secret_test = database.Column(database.String(), default=None)
     donations_enabled = database.Column(database.Boolean(), default=False)
     custom_thank_you_url = database.Column(database.String(), default=None)
+    feature_can_assign_users_to_plans = database.Column(
+        database.Boolean(), default=False
+    )
 
 
 class File(database.Model):
