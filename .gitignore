@@ -53,3 +53,4 @@ tests/browser-automated-tests-playwright
 *.pkl
 emails
 *.bk
+email-queue

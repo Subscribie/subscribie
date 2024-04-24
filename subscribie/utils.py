@@ -4,6 +4,7 @@ from subscribie import database
 from currency_symbols import CurrencySymbols
 import logging
 from subscribie.tasks import background_task
+from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
@@ -282,7 +283,7 @@ def get_stripe_livemode():
 
 
 @background_task
-def get_stripe_invoices(app):
+def get_stripe_invoices(app, last_n_days=30):
     """Upsert Stripe invoices into stripe_invoices
 
     Fetches all Stripe Invoices for a given connect customer,
@@ -302,13 +303,20 @@ def get_stripe_invoices(app):
     log.debug("get_stripe_invoices called")
     from subscribie.models import StripeInvoice, Subscription
 
+    # Calculate the date last_n_days before today
+    today = datetime.now()
+    days_before_today = today - timedelta(days=last_n_days)
+    days_before_today_timestamp = int(days_before_today.timestamp())
+
     # Remember: "Subscription" is a Subscribie model, not a Stripe one
     # because Subscribie does not assume all Subscriptions are from Stripe
     with app.app_context():
         stripe.api_key = get_stripe_secret_key()
         stripe_connect_account_id = get_stripe_connect_account_id()
         invoices = stripe.Invoice.list(
-            stripe_account=stripe_connect_account_id, limit=100
+            stripe_account=stripe_connect_account_id,
+            limit=100,
+            created={"gte": days_before_today_timestamp},
         )
         for latest_stripe_invoice in invoices.auto_paging_iter():
             # Upsert each Stripe Invoice into stripe_invoice.
