@@ -285,6 +285,8 @@ btnRefreshSubscriptions = document.getElementById('refresh_subscriptions');
 btnRefreshSubscriptions.addEventListener('click', refreshSubscriptionStatuses);
 
 function refreshSubscriptionStatuses() {
+  document.getElementById('refresh_subscriptions').textContent = "Please wait...";
+  document.getElementById('refresh_subscriptions').disabled = true;
   fetch("{{ url_for('admin.refresh_subscriptions') }}")
   .then(response => { document.location = "{{ url_for('admin.refresh_subscriptions') }}" });
 }
