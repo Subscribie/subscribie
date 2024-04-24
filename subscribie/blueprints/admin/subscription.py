@@ -6,6 +6,7 @@ from subscribie.utils import (
     stripe_connect_active,
 )
 from subscribie.tasks import background_task
+from subscribie.blueprints.checkout import create_subscription
 import stripe
 import logging
 
@@ -16,7 +17,25 @@ log = logging.getLogger(__name__)
 @background_task
 def update_stripe_subscription_statuses(app):
     """Update Stripe subscriptions with their current status
-    by querying Stripe api
+    by querying Stripe api.
+
+    A subscription status can include: incomplete, incomplete_expired,
+    trialing, active, past_due, canceled, unpaid, or paused.
+
+    If a subscription object exists in Stripe, but does
+    not exist in Subscribie*, it's metadata is pulled from
+    Stripe and Subscribie's database is brought up to date.
+
+    *In the majority case, a Subscribie Subscription object
+    is created upon Stripe Subscription creation right after
+    a Stripe `checkout.session.completed` event is processed by
+    the /stripe_webhook endpoint, however, if webhook fails all retrys
+    this task also recovers from those webhook delivery failures (and
+    can be triggered manually via 'Refresh Subscriptions' on the
+    admin subscribers page.
+
+    See also:
+    - https://docs.stripe.com/api/subscriptions/object#subscription_object-status
 
     :param: app (required) note app is automatically injected by @background_task decorator # noqa: E501
     """
@@ -31,6 +50,7 @@ def update_stripe_subscription_statuses(app):
             log.warning(
                 "Stripe connect account not set. Refusing to update subscription statuses"  # noqa: E501
             )
+        count = 0
         if stripe_connect_active():
             try:
                 # See https://stripe.com/docs/api/subscriptions/list#list_subscriptions-status # noqa: E501
@@ -38,6 +58,8 @@ def update_stripe_subscription_statuses(app):
                     stripe_account=connect_account.id, status="all", limit=100
                 )
                 for stripeSubscription in stripeSubscriptions.auto_paging_iter():
+                    count += 1
+                    print(f"Subscription refresh tally: {count}")
                     log.debug(
                         f"processing subscription status for Stripe subscription: {stripeSubscription.id}"  # noqa: E501
                     )
@@ -63,7 +85,30 @@ def update_stripe_subscription_statuses(app):
                         database.session.commit()
                     else:
                         log.warning(
-                            "subscription is in stripe but not in the subscribie database"  # noqa: E501
+                            f"subscription {stripeSubscription.id} is in stripe but not in the subscribie database"  # noqa: E501
+                        )
+                        log.warning(
+                            "Trying to recover missed subscription creation from Stripe"
+                        )
+                        email = stripe.Customer.retrieve(
+                            stripeSubscription.customer,
+                            stripe_account=connect_account.id,
+                        ).email
+                        currency = stripeSubscription.currency.upper()
+                        metadata = stripeSubscription.metadata
+                        package = metadata.package
+                        chosen_option_ids = metadata.chosen_option_ids
+                        subscribie_checkout_session_id = (
+                            metadata.subscribie_checkout_session_id
+                        )
+                        stripe_subscription_id = stripeSubscription.id
+                        create_subscription(
+                            currency=currency,
+                            email=email,
+                            package=package,
+                            chosen_option_ids=chosen_option_ids,
+                            subscribie_checkout_session_id=subscribie_checkout_session_id,  # noqa: E501
+                            stripe_subscription_id=stripe_subscription_id,
                         )
             except Exception as e:
                 log.warning(f"Could not update stripe subscription status: {e}")

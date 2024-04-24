@@ -50,6 +50,7 @@ import os
 import json
 from uuid import uuid4
 import sqlalchemy
+from sqlalchemy import desc
 
 log = logging.getLogger(__name__)
 checkout = Blueprint("checkout", __name__, template_folder="templates")
@@ -573,114 +574,123 @@ def create_subscription(
     the storing of chosen options againt their plan choice.
     Chosen option ids may be passed via webhook or through session
     """
-    log.info("Creating Subscription model if needed")
-    subscription = None  # Initalize subscription model to None
-    # Get the associated plan they have purchased
-    plan = database.session.query(Plan).filter_by(uuid=package).one()
-    if currency is not None:
-        sell_price, interval_amount = plan.getPrice(currency)
-    else:
-        log.warning(
-            "currency was set to None, so setting Subscription sell_price and interval_amount to zero"  # noqa: E501
-        )
-        sell_price = 0
-        interval_amount = 0
-
-    # Store Subscription against Person locally
-    if email is None:
-        email = session["email"]
-
-    if package is None:
-        package = session["package"]
-
-    person = database.session.query(Person).filter_by(email=email).one()
-
-    # subscribie_checkout_session_id can be passed by stripe metadata (webhook) or
-    # via session (e.g. when session only with no up-front payment)
-    if subscribie_checkout_session_id is None:
-        subscribie_checkout_session_id = session.get(
-            "subscribie_checkout_session_id", None
-        )
-    log.info(f"subscribie_checkout_session_id is: {subscribie_checkout_session_id}")
-
-    # Verify Subscription not already created (e.g. stripe payment webhook)
-    # another hook or mandate only payment may have already created the Subscription
-    # model, if so, fetch it via its subscribie_checkout_session_id
-    if subscribie_checkout_session_id is not None:
-        subscription = (
-            Subscription.query.filter_by(
-                subscribie_checkout_session_id=subscribie_checkout_session_id
-            )
-            .filter(Subscription.person.has(email=email))
-            .first()
+    with current_app.test_request_context("/"):  # TODO remove need for request context
+        log.info("Creating Subscription model if needed")
+        subscription = None  # Initalize subscription model to None
+        # Get the associated plan they have purchased
+        plan = (
+            Plan.query.execution_options(include_archived=True)
+            .order_by(desc("created_at"))
+            .where(Plan.uuid == package)
+            .one()
         )
 
-    if subscription is None:
-        log.info("No existing subscription model found, creating Subscription model")
-        # Create new subscription model
-        # - Get current pricing
-        # - TODO address race condition:
-        #   - add validation for potential discrepency between Stripe
-        #     webhook delivery delay and price rules changing
-        subscription = Subscription(
-            sku_uuid=package,
-            person=person,
-            subscribie_checkout_session_id=subscribie_checkout_session_id,
-            stripe_external_id=stripe_external_id,
-            stripe_subscription_id=stripe_subscription_id,
-            interval_unit=plan.interval_unit,
-            interval_amount=interval_amount,
-            sell_price=sell_price,
-            currency=currency,
-        )
-        # Add chosen options (if any)
-        if chosen_option_ids is None:
-            chosen_option_ids = session.get("chosen_option_ids", None)
-
-        if chosen_option_ids:
-            log.info(f"Applying chosen_option_ids to subscription: {chosen_option_ids}")
-            chosen_options = []
-            for option_id in chosen_option_ids:
-                log.info(f"Locating option id: {option_id}")
-                option = Option.query.get(option_id)
-                # Store as ChosenOption because options may change after the order
-                # has processed. This preserves integrity of the actual chosen options
-                chosen_option = ChosenOption()
-                if option is not None:
-                    chosen_option.option_title = option.title
-                    chosen_option.choice_group_title = option.choice_group.title
-                    chosen_option.choice_group_id = (
-                        option.choice_group.id
-                    )  # Used for grouping latest choice
-                    chosen_options.append(chosen_option)
-                else:
-                    log.error(f"Failed to get Open from session option_id: {option_id}")
-            subscription.chosen_options = chosen_options
+        if currency is not None:
+            sell_price, interval_amount = plan.getPrice(currency)
         else:
-            log.info("No chosen_option_ids were found or applied.")
+            log.warning(
+                "currency was set to None, so setting Subscription sell_price and interval_amount to zero"  # noqa: E501
+            )
+            sell_price = 0
+            interval_amount = 0
 
-        database.session.add(subscription)
-        database.session.commit()
-        session["subscription_uuid"] = subscription.uuid
+        # Store Subscription against Person locally
+        # TODO enforce unique email address per Person object
+        person = database.session.query(Person).filter_by(email=email).all()[0]
 
-        # If subscription plan has cancel_at set, modify Stripe subscription
-        # charge_at property
-        stripe.api_key = get_stripe_secret_key()
-        connect_account_id = get_stripe_connect_account_id()
-        if subscription.plan.cancel_at:
-            cancel_at = subscription.plan.cancel_at
-            try:
-                stripe.Subscription.modify(
-                    sid=subscription.stripe_subscription_id,
-                    stripe_account=connect_account_id,
-                    cancel_at=cancel_at,
+        # subscribie_checkout_session_id can be passed by stripe metadata (webhook) or
+        # via session (e.g. when session only with no up-front payment)
+        if subscribie_checkout_session_id is None:
+            subscribie_checkout_session_id = session.get(
+                "subscribie_checkout_session_id", None
+            )
+        log.info(f"subscribie_checkout_session_id is: {subscribie_checkout_session_id}")
+
+        # Verify Subscription not already created (e.g. stripe payment webhook)
+        # another hook or mandate only payment may have already created the Subscription
+        # model, if so, fetch it via its subscribie_checkout_session_id
+        if subscribie_checkout_session_id is not None:
+            subscription = (
+                Subscription.query.filter_by(
+                    stripe_subscription_id=stripe_subscription_id
                 )
-                subscription.stripe_cancel_at = cancel_at
-                database.session.commit()
-            except Exception as e:  # noqa
-                log.error("Could not set cancel_at: {e}")
+                .filter(Subscription.person.has(email=email))
+                .first()
+            )
 
-    newSubscriberEmailNotification()
+        if subscription is None:
+            log.info(
+                "No existing subscription model found, creating Subscription model"
+            )
+            # Create new subscription model
+            # - Get current pricing
+            # - TODO address race condition:
+            #   - add validation for potential discrepency between Stripe
+            #     webhook delivery delay and price rules changing
+            subscription = Subscription(
+                sku_uuid=package,
+                person=person,
+                subscribie_checkout_session_id=subscribie_checkout_session_id,
+                stripe_external_id=stripe_external_id,
+                stripe_subscription_id=stripe_subscription_id,
+                interval_unit=plan.interval_unit,
+                interval_amount=interval_amount,
+                sell_price=sell_price,
+                currency=currency,
+            )
+            # Add chosen options (if any)
+            if chosen_option_ids is None:
+                chosen_option_ids = session.get("chosen_option_ids", None)
+
+            if chosen_option_ids and chosen_option_ids != "null":
+                log.info(
+                    f"Applying chosen_option_ids to subscription: {chosen_option_ids}"
+                )
+                chosen_options = []
+                for option_id in chosen_option_ids:
+                    log.info(f"Locating option id: {option_id}")
+                    option = Option.query.get(option_id)
+                    # Store as ChosenOption because options may change after the order
+                    # has processed. This preserves integrity of the actual
+                    # chosen options
+                    chosen_option = ChosenOption()
+                    if option is not None:
+                        chosen_option.option_title = option.title
+                        chosen_option.choice_group_title = option.choice_group.title
+                        chosen_option.choice_group_id = (
+                            option.choice_group.id
+                        )  # Used for grouping latest choice
+                        chosen_options.append(chosen_option)
+                    else:
+                        log.error(
+                            f"Failed to get Open from session option_id: {option_id}"
+                        )
+                subscription.chosen_options = chosen_options
+            else:
+                log.info("No chosen_option_ids were found or applied.")
+
+            database.session.add(subscription)
+            database.session.commit()
+            session["subscription_uuid"] = subscription.uuid
+
+            # If subscription plan has cancel_at set, modify Stripe subscription
+            # charge_at property
+            stripe.api_key = get_stripe_secret_key()
+            connect_account_id = get_stripe_connect_account_id()
+            if subscription.plan.cancel_at:
+                cancel_at = subscription.plan.cancel_at
+                try:
+                    stripe.Subscription.modify(
+                        sid=subscription.stripe_subscription_id,
+                        stripe_account=connect_account_id,
+                        cancel_at=cancel_at,
+                    )
+                    subscription.stripe_cancel_at = cancel_at
+                    database.session.commit()
+                except Exception as e:  # noqa
+                    log.error("Could not set cancel_at: {e}")
+
+        newSubscriberEmailNotification()
     return subscription
 
 
