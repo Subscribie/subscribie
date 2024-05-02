@@ -1324,6 +1324,13 @@ def show_recent_subscription_cancellations():
             .filter_by(uuid=value.data.object.metadata.person_uuid)
             .one()
         )
+        if person is None:
+            log.info(
+                f"""Person query retruned None- probably archived.\n
+                Skipping Person with uuid {value.data.object.metadata.person_uuid}"""
+            )
+            continue
+
         # Get Subscription
         subscription = (
             Subscription.query.execution_options(include_archived=True)
