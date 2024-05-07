@@ -1322,7 +1322,7 @@ def show_recent_subscription_cancellations():
         person = (
             Person.query.execution_options(include_archived=True)
             .filter_by(uuid=value.data.object.metadata.person_uuid)
-            .one()
+            .one_or_none()
         )
         if person is None:
             log.info(
