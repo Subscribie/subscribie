@@ -107,7 +107,7 @@
                         <div class="form-check">
                           <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
                           <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" {% if plan.requirements.subscription  %} checked {% endif %}>
-                          <label class="form-check-label font-weight-bolder" for="subscription-{{ loop.index0 }}">Recurring Charge?</label>
+                          <label class="form-check-label font-weight-bolder" for="subscription-{{ loop.index0 }}">Recurring charge?</label>
                         </div>
                       </div>
 
@@ -233,11 +233,44 @@
                           Then, you can send a link to your customer(s) to sign-up to the private plan.
                         </small>
                       </div>
+
+
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input type="checkbox" value="yes" class="form-check-input toggle" name="manager-{{ loop.index0 }}" id="manager-{{ loop.index0 }}"
+                           {% if plan.managers | length > 0 %} checked {% endif %} />
+
+                          <label class="form-check-label font-weight-bolder" for="manager-{{ loop.index0 }}">Manager(s)</label>
+                        </div>
+                        <small class="form-text text-muted">
+                        If you have lots of plans, and have multiple people in your business, you may want to
+                        assign your shop admin(s) to those plans.
+                        </small>
+                      </div>
+
+                      <div class="extra_fields">
+                        <div class="form-group">
+                          {% set outer_loop = loop %}
+                          {% for user in users  %}
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="managers-index-{{ outer_loop.index0 }}" value="{{ user.id }}" id="manager-{{ user.id }}"
+                                {% if user in plan.managers %}
+                                  checked
+                                {% endif %} />
+                              <label class="form-check-label" for="manager-{{ user.id }}">
+                                {{ user.email }}
+                              </label>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+
+
                       <a href="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title)}}" target="_blank">Share URL</a>
                     </fieldset>
                     <!-- end plan description & settings -->
                   </div><!-- end card-wrapper -->
-                  <button type="submit" class="disable-on-click btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
+                  <button type="submit" class="disable-on-click btn btn-primary btn-block col-md-6 my-3 mx-auto">Save all</button>
                 </div><!-- end card body -->
               </div><!-- end plan collapse header -->
             </div><!-- end plan cards-->

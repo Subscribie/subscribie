@@ -14,6 +14,7 @@ from flask import (
     request,
     session,
     Response,
+    g,
 )
 from markupsafe import Markup, escape
 import jinja2
@@ -73,6 +74,7 @@ from subscribie.models import (
     Category,
     UpcomingInvoice,
     Document,
+    association_table_plan_to_users,
 )
 from .subscription import update_stripe_subscription_statuses
 from .stats import (
@@ -494,8 +496,15 @@ def dashboard():
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
 
+    # Query user object including archived plans, see models.py
+    # _do_orm_execute_hide_archived for details.
+    user_id = g.user.id
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        user = User.query.where(User.id == user_id).first()
     return render_template(
         "admin/dashboard.html",
+        user=user,
         stripe_connected=stripe_connected,
         integration=integration,
         loadedModules=getLoadedModules(),
@@ -546,6 +555,21 @@ def edit():
             draftPlan.uuid = str(uuid.uuid4())
             draftPlan.parent_plan_revision_uuid = plan.uuid
             draftPlan.requirements = plan_requirements
+
+            # Preserve / update managers assigned to plan
+            managers = []
+            managersUserIds = request.form.getlist(f"managers-index-{index}")
+            for userId in managersUserIds:
+                user = User.query.get(int(userId))
+                managers.append(user)
+            draftPlan.users.clear()
+            draftPlan.users.extend(managers)
+
+            # Update plan-revisions with managers
+            for planRevision in plan.get_plan_revisions():
+                planRevision.users.clear()
+                planRevision.users.extend(managers)
+
             # Preserve primary icon if exists
             draftPlan.primary_icon = plan.primary_icon
 
@@ -646,7 +670,8 @@ def edit():
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
-    return render_template("admin/edit.html", plans=plans, form=form)
+    users = User.query.all()
+    return render_template("admin/edit.html", plans=plans, form=form, users=users)
 
 
 @admin.route("/add", methods=["GET", "POST"])
@@ -654,7 +679,16 @@ def edit():
 def add_plan():
     form = PlansForm()
     if form.validate_on_submit():
+        # Get managers if assigned
+        users = User.query.all()
+        managers = []
+        for user in users:
+            if request.form.get(f"user-{user.id}"):
+                user = User.query.get(int(request.form.get(f"user-{user.id}")))
+                managers.append(user)
+
         draftPlan = Plan()
+        draftPlan.users.extend(managers)
         database.session.add(draftPlan)
         plan_requirements = PlanRequirements()
         draftPlan.requirements = plan_requirements
@@ -759,7 +793,8 @@ def add_plan():
         database.session.commit()
         flash("Plan added.")
         return redirect(url_for("admin.dashboard"))
-    return render_template("admin/add_plan.html", form=form)
+    users = User.query.all()
+    return render_template("admin/add_plan.html", form=form, users=users)
 
 
 @admin.route("/delete", methods=["GET"])
@@ -787,6 +822,110 @@ def delete_plan_by_uuid(uuid):
     flash("Plan deleted.")
     plans = Plan.query.filter_by(archived=0).all()
     return render_template("admin/delete_plan_choose.html", plans=plans)
+
+
+@admin.route("assign-manager-to-plan", methods=["POST"])
+@login_required
+def assign_manager_to_plan():
+    """
+    assign user (manager) to a plan.
+
+    Some shop owners want/need to assign managers (users) to
+    plans. For example large clubs or membership organisations which
+    assign a 'manager' to one or more plans.
+
+    The plan_user_associations table begins to make possible the
+    assignment of Users to Plans. Recall that Users (see class User
+    in models.py) is a shop owner (admin) which may login to the
+    Subscribie application.
+    """
+    managers = []
+    chosen_user_ids = request.form.getlist("user_id")
+    for chosen_user_id in chosen_user_ids:
+        user = User.query.where(User.id == chosen_user_id).first()
+        managers.append(user)
+    plan_uuid = request.form.get("plan_uuid")
+    plan = (
+        database.session.query(Plan)
+        .execution_options(include_archived=True)
+        .where(Plan.uuid == plan_uuid)
+        .first()
+    )
+
+    plan.users.extend(managers)
+
+    flash("Manager(s) have assigned to the plan")
+
+    database.session.commit()
+
+    return redirect(url_for("admin.subscribers", action="show_active"))
+
+
+@admin.route("assign-managers-to-plan")
+@login_required
+def assign_managers_to_plan():
+    """
+    assign users (managers) to a plan.
+
+    Some shop owners want/need to assign managers (users) to
+    plans. For example large clubs or membership organisations which
+    assign a 'manager' to one or more plans.
+
+    The plan_user_associations table begins to make possible the
+    assignment of Users to Plans. Recall that Users (see class User
+    in models.py) is a shop owner (admin) which may login to the
+    Subscribie application.
+    """
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        users = User.query.execution_options(include_archived=True).all()
+    return render_template("admin/assign_managers_to_plan.html", users=users)
+
+
+@admin.route("/assign-managers-to-plans/<user_id>/assign-plan", methods=["GET", "POST"])
+@login_required
+def user_assign_to_plans(user_id):
+    """
+    Note the use of application context to include archived plans
+    Remember that "plan in user.plans" won't be true if, for example,
+    'plan' is defined outside of the new/enclused application context.
+    """
+    if request.method == "POST":
+        with current_app.app_context():
+            database.session.info["include_archived"] = True
+            plans = Plan.query.execution_options(include_archived=True).all()
+            user = User.query.get(user_id)
+            # Remove if not selected
+            for plan in plans:
+                log.info(f"Checking if plan {plan} is in user {user}")
+                if plan in user.plans:
+                    user.plans.remove(plan)
+
+            # If all deselected, remove all plan assignments
+            if len(request.form.getlist("assign")) == 0:
+                user.plans.clear()
+
+            # Assign requested managers to plan
+            for plan_id in request.form.getlist("assign"):
+                plan = Plan.query.execution_options(include_archived=True).get(plan_id)
+                plan.users.append(user)
+
+            database.session.commit()
+        flash("User has been assigned the selected plan(s) as a manager of them")
+        return redirect(url_for("admin.assign_managers_to_plan"))
+
+    plans = Plan.query.execution_options(include_archived=True).all()
+    user = (
+        User.query.execution_options(include_archived=True)
+        .where(User.id == user_id)
+        .first()
+    )
+
+    return render_template(
+        "admin/user_assign_plan.html",
+        user=user,
+        plans=plans,
+    )
 
 
 @admin.route("/list-documents", methods=["get"])
@@ -1265,6 +1404,7 @@ def inject_template_globals():
 def subscribers():
     action = request.args.get("action")
     show_active = action == "show_active"
+    show_plans_i_manage = action == "show_plans_i_manage"
     subscriber_email = request.args.get("subscriber_email", None)
     subscriber_name = request.args.get("subscriber_name", None)
 
@@ -1287,13 +1427,48 @@ def subscribers():
     elif action == "show_one_off_payments":
         query = query.filter(Person.subscriptions)
         query = query.where(Subscription.stripe_subscription_id == None)  # noqa: E711
+    elif action == "show_plans_i_manage":
+        """
+        Only show plans for which the current logged in user is a manager
+        of. This orm query runs:
+
+        SELECT plan.title, person.given_name, plan_user_associations.user_id, user.email, user.id -- # noqa: E501
+        FROM person
+        JOIN subscription ON
+        subscription.person_id = person.id
+        JOIN plan ON
+        subscription.sku_uuid = plan.uuid
+        JOIN plan_user_associations ON
+        plan.uuid = plan_user_associations.plan_uuid
+        JOIN user ON
+        user.id = plan_user_associations.user_id
+
+        WHERE plan_user_associations.user_id = 1
+        """
+        query = (
+            query.join(Subscription, Person.id == Subscription.person_id)
+            .join(Plan, Subscription.sku_uuid == Plan.uuid)
+            .join(
+                association_table_plan_to_users,
+                Plan.uuid == association_table_plan_to_users.c.plan_uuid,
+            )
+            .where(association_table_plan_to_users.c.user_id == g.user.id)
+        )
 
     people = query.order_by(desc(Person.created_at))
+    users = User.query.all()
+    user_id = g.user.id
+    with current_app.app_context():
+        database.session.info["include_archived"] = True
+        user = User.query.where(User.id == user_id).first()
 
     return render_template(
         "admin/subscribers.html",
         people=people.all(),
+        users=users,
+        user=user,
         show_active=show_active,
+        show_plans_i_manage=show_plans_i_manage,
         action=action,
     )
 
@@ -2064,6 +2239,34 @@ def donations_enabled_settings():
         database.session.commit()
         return redirect(url_for("admin.donations_enabled_settings", settings=settings))
     return render_template("admin/settings/donations_enabled.html", settings=settings)
+
+
+@admin.route("/assign-users-to-plans-feature-toggle", methods=["GET", "POST"])
+@login_required
+def feature_assign_users_to_plans_enable_disable():
+    settings = Setting.query.first()  # Get current shop settings
+    if settings.feature_can_assign_users_to_plans is None:
+        settings.feature_can_assign_users_to_plans = False
+        database.session.commit()
+
+    if request.method == "POST":
+        if int(request.form.get("feature_can_assign_users_to_plans", 0)) == 1:
+            settings.feature_can_assign_users_to_plans = 1
+            effect = "enabled"
+        else:
+            settings.feature_can_assign_users_to_plans = 0
+            effect = "disabled"
+        flash(f"Assign managers to plan feature has been {effect}")
+        database.session.commit()
+        return redirect(
+            url_for(
+                "admin.feature_assign_users_to_plans_enable_disable", settings=settings
+            )
+        )
+    return render_template(
+        "admin/settings/feature_assign_users_to_plans_enable_disable.html",
+        settings=settings,
+    )
 
 
 @admin.route("/api-keys", methods=["GET", "POST"])

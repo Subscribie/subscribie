@@ -15,6 +15,7 @@
 <div class="container">
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title">Checklist</h3>
+      <a href="{{ url_for("admin.assign_managers_to_plan") }}">Assign managers to plan</a>
       <p class="card-subtitle mb-3 text-muted">
           Make sure everything's in order. If tasks appear below, then
           you'll need to complete them to get the most out of your shop.
@@ -34,7 +35,12 @@
 
   <div class="card px-3 py-3 my-3">
     <h3 class="card-title justify-content-between d-flex">Stats</h3>
-    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.</p>
+    {% if user.plans | length > 0 %}
+    <p>You manage {{ user.plans | length }} plan(s). <a style="display:inline" href="{{ url_for('admin.subscribers')}}?action=show_plans_i_manage">Show my subscribers</a></p>
+    {% endif %}
+    <hr />
+    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.
+    </p>
     <p>You've had: {{ num_recent_subscription_cancellations }} <a href="{{ url_for('admin.show_recent_subscription_cancellations')}}">subscription cancellations</a> in the last 30 days.</p>
     <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
     <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}">people</a> buy a one-off item from your shop.</p>
@@ -537,6 +543,10 @@
               <a class="btn btn-success btn-block"
                   href="{{ url_for('admin.change_thank_you_url') }}">
               Change Thank You Page/Payment Successful Page URL
+              </a>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.feature_assign_users_to_plans_enable_disable') }}">
+              Assign Manager(s) to plans feature (enable/disable)
               </a>
 
           </div>
