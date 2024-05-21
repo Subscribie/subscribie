@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Set Question Order</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Questions</a></li> 
+    <li class="breadcrumb-item active" aria-current="page">Set Plan Questions order</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <h3>Set question order</h3>
+      <p class="card-subtitle mb-3 text-muted">Set the question order for plan: <em>{{ plan.title }}</em>.</p>
+      <p>(Questions are orderd lowest number to highest)</p>
+
+      <hr>
+      <form action="#" method="POST">
+        <table>
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Order</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for plan_question_assoc in plan.questions %}
+                <tr>
+                    <td>
+                        <span title="{{ plan_question_assoc.question.title }}">{{ plan_question_assoc.question.title|truncate(30) }}</span>
+                    </td>
+                    <td>
+                        <input name="plan_question_assoc_id" type="hidden" value="{{ plan_question_assoc.question_id }}" />
+                        <input name="question_id-for-question_assoc-id-{{ plan_question_assoc.question_id }}" type="hidden" value="{{ plan_question_assoc.question_id }}" />
+                        <input name="order-value-for-question_assoc-id-{{ plan_question_assoc.question_id }}" id="title" type="number" value="{{ plan_question_assoc.order or 0 }}" autofocus class="form-control" required>
+                    </td>
+                <tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+      </form>
+
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+
+
+{% endblock body %}

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %} Questions - {{ title }} {% endblock title %}
+
+{% block hero %}
+    <div class="section-hero px-2">
+      <div class="wrapper mx-auto">
+    
+        <div class="container">
+          <div class="hero-content py-5 px-0 px-sm-4 ">
+            <h2 class="title-1">{{ _('Questions') }}</h2>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
+
+<main>
+<div class="section mx-auto my-4">
+  <div class="container mx-auto">
+      <form action="" method="POST" class="col-md-6 pb-3">
+
+      {% if plan.questions %}
+        <h3 class="body">{{ _('The') }} <span class="body-lg">{{ plan.title }}</span> {{ _('plan has') }} {{ plan.questions|count }} {{  _('question(s)') }}</h3>
+        
+        {% for plan_question_assoc in plan.questions %}
+        <div class="form-group">
+          <label for="{{ plan_question_assoc.question.id }}">{{ plan_question_assoc.question.title }}</label>
+          {% if plan_question_assoc.question.options %}
+            <select name="question-{{ plan_question_assoc.question.id }}" class="form-control" required>
+              <option>Select</option>
+              {% for option in plan_question_assoc.question.options %}
+                  <option value="{{ option.id }}">{{ option.title }}</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input class="form-control" type="text" name="question-{{ plan_question_assoc.question.id }}" placeholder="Please enter..." id="{{ plan_question_assoc.question.id }}" required>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <input type="submit" class="btn-primary-lg btn-block"  value="Save" />
+      </form>
+  </div>
+</div>
+</main>
+{% endblock %}

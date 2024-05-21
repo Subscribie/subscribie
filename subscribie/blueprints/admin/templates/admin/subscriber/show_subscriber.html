@@ -213,6 +213,19 @@
                   <strong>Next date:</strong> {{ subscription.next_date().strftime('%d-%m-%Y') }} <br />
                   {% endif %}
                 {% endif %}
+                {% if subscription.question_answers %}
+                <strong>Question Answers:</strong>
+                  {% for answer in subscription.question_answers %}
+                    <details>
+                      <summary>
+                        {{ answer.question_title }}
+                      </summary>
+                      {{ answer.response }}
+                    </details>
+                  {% endfor %}
+
+                {% endif %}
+
                 {% if subscription.chosen_options %}
                 <strong>Choices:</strong>
                   

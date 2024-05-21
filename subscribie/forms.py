@@ -85,7 +85,15 @@ class ChoiceGroupForm(FlaskForm):
     title = StringField("title", validators=[DataRequired()])
 
 
+class QuestionForm(FlaskForm):
+    title = StringField("title", validators=[DataRequired()])
+
+
 class OptionForm(FlaskForm):
+    title = StringField("title", validators=[DataRequired()])
+
+
+class QuestionOptionForm(FlaskForm):
     title = StringField("title", validators=[DataRequired()])
 
 

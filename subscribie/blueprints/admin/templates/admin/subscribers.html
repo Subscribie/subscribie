@@ -95,6 +95,23 @@
                                     {{ subscription.plan.interval_unit }}
                                   {% endif %}
                                 </li>
+                                {% if subscription.question_answers %}
+                                    <li>
+                                      <details>
+                                          <summary><strong>Question Answers</strong></summary>
+                                          <ul>
+                                              {% for answer in subscription.question_answers %}
+                                                  <li>
+                                                    <strong title="{{ answer.question_title }}">
+                                                    {{ answer.question_title|truncate(40) }}:</strong><br />
+                                                    {{ answer.response }}
+                                                  </li>
+                                              {% endfor %}
+                                          </ul>
+                                      </details>
+                                  </li>
+                                {% endif %}
+
                                 {% if subscription.chosen_options %}
                                     <li>
                                         <details open>

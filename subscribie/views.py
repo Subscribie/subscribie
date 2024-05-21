@@ -16,7 +16,17 @@ from flask import (
     send_from_directory,
 )
 from markupsafe import Markup
-from .models import Company, Plan, Integration, Page, Category, Setting, PaymentProvider
+from .models import (
+    Company,
+    Plan,
+    Integration,
+    Page,
+    Category,
+    Setting,
+    PaymentProvider,
+    Question,
+    QuestionOption,
+)
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
 from subscribie.signals import register_signal_handlers
@@ -223,13 +233,45 @@ def set_options(plan_uuid):
     if request.method == "POST":
         # Store chosen options in session
         session["chosen_option_ids"] = []
-        for choice_group_id in request.form.keys():
-            for option_id in request.form.getlist(choice_group_id):
-                session["chosen_option_ids"].append(option_id)
-
+        session["chosen_question_ids_answers"] = []
+        for form_control_id in request.form.keys():
+            chosen_option_id = int(request.form.getlist(form_control_id)[0])
+            session["chosen_option_ids"].append(chosen_option_id)
+        # If plan has Questions, ask them:
+        if plan.questions:
+            return redirect(url_for("views.set_questions", plan_uuid=plan_uuid))
         return redirect(url_for("checkout.new_customer", plan=plan_uuid))
 
     return render_template("set_options.html", plan=plan)
+
+
+@bp.route("/set_questions/<plan_uuid>", methods=["GET", "POST"])
+def set_questions(plan_uuid):
+    plan = Plan.query.filter_by(uuid=plan_uuid).first()
+
+    if request.method == "POST":
+        # Store question answers in session
+        session["chosen_question_ids_answers"] = []
+        for form_control_id in request.form.keys():
+            # Question form are named 'question-<index>'
+            # Choice group options are named: '<index>'
+            question_id = int(form_control_id.replace("question-", ""))
+            question = Question.query.get(question_id)
+            # If question has options, store the value chosen,
+            # otherwise, take the form contol <input /> value
+            if question.options:
+                question_answer = QuestionOption.query.get(
+                    request.form.get(form_control_id)
+                ).title
+            else:
+                question_answer = request.form.get(form_control_id)
+            answer = {"question_id": question_id, "answer": question_answer}
+            session["chosen_question_ids_answers"].append(answer)
+        session["questions_form_completed"] = True
+        return redirect(url_for("checkout.new_customer", plan=plan_uuid))
+    # Sort the questions
+    plan.questions.sort(key=lambda question: question.order or 0, reverse=False)
+    return render_template("set_questions.html", plan=plan)
 
 
 @bp.route("/page/<path>", methods=["GET"])

@@ -3,7 +3,7 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Choice Group</h2>
+<h2 class="text-center text-dark mb-3">Choice Groups</h2>
 
 <div class="container">
   <ul class="breadcrumb">
@@ -19,29 +19,37 @@
     <div class="container">
 
       <div class="col-md-7">
-        <h3>Add / Edit / Delete Choice Group</h3>
-        <p class="card-subtitle text-muted">Select a choice group to edit.</p>
+              <h3>Add / Edit / Delete Choice Group</h3>
+              {% if request.args.get('confirm') is not sameas 'None' or  request.args.get('confirm')| int is not sameas 0 %}
+              <p class="card-subtitle text-muted">Select a choice group to edit.</p>
 
-        <a href="{{ url_for('admin.add_choice_group') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
-          Add Choice Group
-        </a>  
+              <a href="{{ url_for('admin.add_choice_group') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+                Add Choice Group
+              </a>
+              {% endif %}
       </div>
 
       {% if confirm is sameas false %}
         <div class="card mx-auto my-3 py-3 col-md-7">
           <h3 class="card-title mx-auto">Are you sure?</h3>
           <div class="mx-auto">
-            <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id) }}" 
-                class="btn btn-danger mx-3 px-5" role="button">
-                Yes
-            </a>
-            <a href="{{ url_for('admin.list_choice_groups', cancel=1) }}" 
-                class="btn btn-success mx-3 px-5" role="button">
-                No
-            </a>
+
+              <a href="{{ url_for('admin.delete_choice_group', id=choice_group.id) }}"
+                  class="btn btn-danger mx-3 px-5" role="button">
+                  Yes
+              </a>
+              <a href="{{ url_for('admin.list_choice_groups', cancel=1) }}"
+                  class="btn btn-success mx-3 px-5" role="button">
+                  No
+              </a>
           </div>
         </div>
       {% else %}
+        <h3>Choice Groups</h3>
+        <p>
+          Choice groups are for small variants of products which your customers may choose from to refine their plan, for example, by chosing a colour
+          (<a href="https://docs.subscribie.co.uk/docs/tutorials/subscribie-dashboard-guide/#choice-groups" title="Choice Group Docs" target="_blank">Docs</a>).
+        </p>
         <table class="table table-hover table-scroll">
           <thead>
             <th>Title</th>
