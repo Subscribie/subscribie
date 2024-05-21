@@ -75,10 +75,21 @@
             </div>
             </div>
         {% endif %}
+
+        {#
+            If a plan has both choice groups and questions, collect choice groups first,
+            then `views.set_options` view will url-redirect to collect question answers
+            afterwards.
+            If plan does not have choice groups, ask questions right away.
+        #}
         {% if plan.choice_groups %}
             <a href="{{ url_for('views.set_options', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
             {{ _('Choose') }}
             </a>
+        {% elif plan.questions %}
+        <a href="{{ url_for('views.set_questions', plan_uuid=plan.uuid) }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
+            {{ _('Choose') }}
+        </a>
         {% else %}
             <a href="/new_customer?plan={{ plan.uuid }}" class="btn-outlined-lg btn-block" name="{{ plan.title }}">
             {{ _('Choose') }}

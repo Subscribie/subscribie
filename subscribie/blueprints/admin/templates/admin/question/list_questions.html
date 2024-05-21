@@ -1,0 +1,112 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Questions</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_questions') }}">Questions</a></li>   
+    <li class="breadcrumb-item active" aria-current="page"> Add / Edit / Delete Questions</li>
+  </ul>
+</div>
+      
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="col-md-7">
+              <h3>Add / Edit / Delete Question</h3>
+              {% if request.args.get('confirm') is not sameas 'None' or  request.args.get('confirm')| int is not sameas 0 %}
+              <p class="card-subtitle text-muted">Select a question to edit.</p>
+
+              <a href="{{ url_for('admin.add_question') }}" class="btn btn-success my-3 btn-block btn-lg col-md-7">
+                Add Question
+              </a>
+              {% endif %}
+      </div>
+
+      {% if confirm is sameas false %}
+        <div class="card mx-auto my-3 py-3 col-md-7">
+          <h3 class="card-title mx-auto">Are you sure?</h3>
+          <div class="mx-auto">
+            {% if is_question_delete_request %}
+              <a href="{{ url_for('admin.delete_question', id=question.id) }}" 
+                  class="btn btn-danger mx-3 px-5" role="button">
+                  Yes
+              </a>
+              <a href="{{ url_for('admin.list_questions', cancel=1) }}" 
+                  class="btn btn-success mx-3 px-5" role="button">
+                  No
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+
+        <h3>Questions</h3>
+        <p>Ask simple questions before your subscribers sign up to a plan. Click 'Add Question'
+          to create a question, and then 'Assign Plan' to assign question(s) to plan(s).
+        </p>
+        <p>When people start to sign-up to one of your plans, they will be asked to asnwer the questions
+          you assign.
+        </p>
+        <table class="table table-hover table-scroll">
+          <thead>
+            <th>Title</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </thead>
+        {% for question in questions %}
+          <tr>
+            <td>
+                {{ question.title }}
+            </td>
+            <td>
+              <a href="{{ url_for('admin.edit_question', id=question.id) }}" 
+              class="btn btn-success btn-block" role="button">
+              Edit
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.list_question_options', question_id=question.id) }}" 
+              class="btn btn-success btn-block" role="button">
+              Options (optional)
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.question_assign_plan', question_id=question.id) }}" 
+              class="btn btn-success btn-block" style="display: inline-block" role="button">
+              Assign Plan
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.delete_question', id=question.id, confirm=0) }}" 
+              class="btn btn-danger btn-block" role="button">
+              Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+
+        <h3>Assigned Plans</h3>
+        <p class="alert alert-light">Plan(s) which have questions associated with them.</p>
+        <ul style="list-style: circle;">
+        {% for plan in plans %}
+          {% if plan.questions %}
+            <li>{{ plan.title }} ({{ plan.questions| length }} questions) <a href="{{ url_for('admin.set_question_order_by_plan', plan_id=plan.id) }}">change question order</a></li>
+          {% endif %}
+        {% endfor %}
+        <ul>
+      {% endif %}
+      
+    </div><!--end container-->
+  </div><!--end section-->
+</main>
+
+{% endblock body %}

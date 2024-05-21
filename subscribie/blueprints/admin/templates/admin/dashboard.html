@@ -180,6 +180,25 @@
         </div>
       </div>
       <div class="card">
+        <div class="card-header" id="questions">
+            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseQuestions" aria-expanded="false" aria-controls="collapseFive">
+              Questions (Simple Forms)
+            </button>
+        </div>
+        <div id="collapseQuestions" class="collapse" aria-labelledby="questions">
+          <div class="px-3 py-3 my-3">
+            <p>
+              Ask questions before people sign up to your plans and store their answers
+              for future reporting.
+            </p>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.list_questions') }}">
+                Add / Edit / Delete Questions
+              </a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <div class="card-header" id="headingSix">
             <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
               All Transactions / Manage Refunds
