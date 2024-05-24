@@ -5,9 +5,10 @@ from flask_migrate import upgrade
 from flask_migrate import Migrate
 
 from subscribie import create_app
-from subscribie import database as _db
+# from subscribie import database as _db
 from subscribie.models import User, Company, Setting
 from subscribie import seed_db
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 TESTDB = "test_project.db"
@@ -45,52 +46,53 @@ def client(app):
 
 def apply_migrations(app):
     """Applies all alembic migrations."""
-    _db.init_app(app)
-    Migrate(app, _db)
+    pass
+    from subscribie import database as db
+    Migrate(app, db)
     upgrade("./migrations")
     seed_db()
 
 
+# @pytest.fixture(scope="session")
+# def db(app, request):
+#     """Session-wide test database."""
+
+
+#     breakpoint()
+#     request.addfinalizer(teardown)
+#     return _db
+
+
 @pytest.fixture(scope="session")
-def db(app, request):
-    """Session-wide test database."""
-    if os.path.exists(TESTDB_PATH):
-        os.unlink(TESTDB_PATH)
-
-    def teardown():
-        _db.drop_all()
-        if os.path.exists(TESTDB_PATH):
-            os.unlink(TESTDB_PATH)
-
-    _db.app = app
-    apply_migrations(app)
-
-    request.addfinalizer(teardown)
-    return _db
-
-
-@pytest.fixture(scope="function")
-def session(db, request):
+def session(app, request):
     """Creates a new database session for a test."""
+    from subscribie import database as db
+
     connection = db.engine.connect()
     transaction = connection.begin()
 
-    options = dict(bind=connection, binds={})
-    session = db.create_scoped_session(options=options)
+    #options = dict(bind=connection, binds={})
+    #session = db.create_scoped_session(options=options)
+    session = scoped_session(sessionmaker(bind=connection))
 
     db.session = session
+    apply_migrations(app)
 
     def teardown():
         transaction.rollback()
         connection.close()
+        connection.engine.dispose()
+        session.close()
         session.remove()
+        if os.path.exists(TESTDB_PATH):
+            os.unlink(TESTDB_PATH)
 
     request.addfinalizer(teardown)
     return session
 
 
 @pytest.fixture(scope="function")
-def with_shop_owner(db, session):
+def with_shop_owner(session):
     user = User()
     user.email = "admin@example.com"
     session.add(user)
@@ -102,7 +104,7 @@ def with_shop_owner(db, session):
 
 
 @pytest.fixture(scope="function")
-def with_default_country_code_and_default_currency(db, session):
+def with_default_country_code_and_default_currency(session):
     # Add minimal settings
     setting = Setting()
     setting.default_currency = "GBP"
