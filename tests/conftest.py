@@ -5,7 +5,6 @@ from flask_migrate import upgrade
 from flask_migrate import Migrate
 
 from subscribie import create_app
-# from subscribie import database as _db
 from subscribie.models import User, Company, Setting
 from subscribie import seed_db
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -53,26 +52,13 @@ def apply_migrations(app):
     seed_db()
 
 
-# @pytest.fixture(scope="session")
-# def db(app, request):
-#     """Session-wide test database."""
-
-
-#     breakpoint()
-#     request.addfinalizer(teardown)
-#     return _db
-
-
 @pytest.fixture(scope="session")
-def session(app, request):
+def db_session(app, request):
     """Creates a new database session for a test."""
     from subscribie import database as db
 
     connection = db.engine.connect()
     transaction = connection.begin()
-
-    #options = dict(bind=connection, binds={})
-    #session = db.create_scoped_session(options=options)
     session = scoped_session(sessionmaker(bind=connection))
 
     db.session = session
@@ -92,22 +78,22 @@ def session(app, request):
 
 
 @pytest.fixture(scope="function")
-def with_shop_owner(session):
+def with_shop_owner(db_session):
     user = User()
     user.email = "admin@example.com"
-    session.add(user)
+    db_session.add(user)
     # Add a company
     company = Company()
     company.name = "Subscription Shop"
     company.slogan = "Buy plans on subscription"
-    session.commit()
+    db_session.commit()
 
 
 @pytest.fixture(scope="function")
-def with_default_country_code_and_default_currency(session):
+def with_default_country_code_and_default_currency(db_session):
     # Add minimal settings
     setting = Setting()
     setting.default_currency = "GBP"
     setting.default_country_code = "GB"
-    session.add(setting)
-    session.commit()
+    db_session.add(setting)
+    db_session.commit()
