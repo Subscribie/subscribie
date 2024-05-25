@@ -16,6 +16,7 @@ class OrmBase(BaseModel):
         if isinstance(v, Query):
             return v.all()
         return v
+
     model_config = ConfigDict(from_attributes=True)
 
 
