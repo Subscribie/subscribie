@@ -2,6 +2,9 @@ draft.toml
 charts/
 NOTICE
 LICENSE
-README.md
 data.db*
 venv
+.venv
+__pycache__
+dist
+.git
