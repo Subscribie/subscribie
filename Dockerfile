@@ -1,12 +1,9 @@
 # syntax = docker/dockerfile:experimental
 FROM python:3.12-slim-bullseye
 WORKDIR /usr/src/app
-#RUN apt-get update && apt-get install -y \
-#  libffi-dev libcurl4-openssl-dev bash gcc sqlite3 \
-#  build-essential curl
 RUN apt-get update && apt-get install -y \
-  bash sqlite3 \
-  curl
+  libffi-dev libcurl4-openssl-dev bash gcc sqlite3 \
+  build-essential curl
 
 COPY . /usr/src/app/subscribie/
 WORKDIR /usr/src/app/subscribie/
