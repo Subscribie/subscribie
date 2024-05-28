@@ -32,7 +32,6 @@ test.describe("order free plan tests:", () => {
         await page.goto('/admin/change-thank-you-url');
         await page.getByRole('button', { name: 'default'}).click();
         await new Promise(x => setTimeout(x, 2000));
-        const default_custom_url = await page.textContent('text="Thank page has been set back to the to the default thank you page"');
-        expect(default_custom_url === 'Custom thank you url changed to default');
+        await expect(page.getByText('Notification Thank page has')).toContainText("Thank page has been set back to the to the default thank you page");
     });
 });
