@@ -6,6 +6,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import event
 from sqlalchemy import Column
 from sqlalchemy import Boolean
+from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy import desc
 
 from typing import Optional
 import datetime
@@ -392,6 +394,7 @@ class Subscription(database.Model):
     chosen_options = relationship(
         "ChosenOption", back_populates="subscription"
     )  # noqa: E501
+    question_answers = relationship("Answer", back_populates="subscription")
     currency = database.Column(database.String(), default="USD")
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
@@ -617,6 +620,22 @@ association_table_plan_to_price_lists = database.Table(
 )
 
 
+# Enables: As a shop owner I can order the order in which questions are presented
+# to subscribers during sign up
+# See:
+# https://github.com/sqlalchemy/sqlalchemy/discussions/8556#discussioncomment-3700971
+class PlanQuestionAssociation(database.Model):
+    __tablename__ = "plan_question_associations"
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    uuid = database.Column(database.String(), default=uuid_string)
+    question_id = database.Column(database.Integer, ForeignKey("question.id"))
+    question = relationship("Question")
+    plan_id = database.Column(database.Integer, ForeignKey("plan.id"))
+    plan = relationship("Plan")
+    order = database.Column(database.Integer(), nullable=True)
+    __table_args__ = (PrimaryKeyConstraint("question_id", "plan_id"),)
+
+
 class INTERVAL_UNITS(Enum):
     DAILY = _("daily")
     WEEKLY = _("weekly")
@@ -668,6 +687,8 @@ class Plan(database.Model, HasArchived):
         secondary=association_table_plan_choice_group,
         backref=database.backref("plans", lazy="dynamic"),
     )
+    # TODO associationproxy
+    questions = relationship(PlanQuestionAssociation, backref="plans")
     documents = relationship("Document", secondary=association_table_plan_to_document)
     position = database.Column(database.Integer(), default=0)
 
@@ -1165,6 +1186,41 @@ class ChoiceGroup(database.Model):
     )
     title = database.Column(database.String())
     options = relationship("Option", back_populates="choice_group")
+
+
+class Question(database.Model):
+    __tablename__ = "question"
+    id = database.Column(database.Integer(), primary_key=True)
+    uuid = database.Column(database.String(), default=uuid_string)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    options = relationship("QuestionOption", back_populates="question")
+    title = database.Column(database.String())
+
+
+class QuestionOption(database.Model):
+    __tablename__ = "question_option"
+    id = database.Column(database.Integer(), primary_key=True)
+    question_id = database.Column(database.Integer(), ForeignKey("question.id"))  # noqa
+    question = relationship("Question", back_populates="options")
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    title = database.Column(database.String())
+    description = database.Column(database.Text())
+    primary_icon = database.Column(database.String())
+
+
+class Answer(database.Model):
+    __tablename__ = "answer"
+    id = database.Column(database.Integer(), primary_key=True)
+    created_at = database.Column(database.DateTime, default=datetime.utcnow)
+    question_id = database.Column(database.Integer())
+    question_title = database.Column(database.String())
+    response = database.Column(database.String())
+    subscription_id = database.Column(
+        database.Integer(), ForeignKey("subscription.id")
+    )  # noqa
+    subscription = relationship(
+        "Subscription", back_populates="question_answers"
+    )  # noqa
 
 
 class Option(database.Model):
