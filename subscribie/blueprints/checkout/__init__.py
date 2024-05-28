@@ -212,7 +212,9 @@ def order_summary():
                 package=session["package"],
                 chosen_option_ids=chosen_option_ids,
                 chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
-                subscribie_checkout_session_id=session.get("subscribie_checkout_session_id")  # noqa: E501
+                subscribie_checkout_session_id=session.get(
+                    "subscribie_checkout_session_id"
+                ),  # noqa: E501
             )
 
             return redirect(url_for("checkout.thankyou"))
@@ -512,7 +514,9 @@ def stripe_create_checkout_session():
         "person_uuid": person.uuid,
         "plan_uuid": plan_uuid,
         "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
-        "chosen_question_ids_answers": json.dumps(session.get("chosen_question_ids_answers", None)),  # noqa
+        "chosen_question_ids_answers": json.dumps(
+            session.get("chosen_question_ids_answers", None)
+        ),  # noqa
         "package": session.get("package", None),
         "subscribie_checkout_session_id": session.get(
             "subscribie_checkout_session_id", None
@@ -646,11 +650,11 @@ def create_subscription(
             )
             database.session.add(subscription)
             # Add question answers (if any)
+            answers = []
             if chosen_question_ids_answers:
-                answers = []
                 for answer in chosen_question_ids_answers:
-                    question_id = answer['question_id']
-                    answer_response = answer['answer']
+                    question_id = answer["question_id"]
+                    answer_response = answer["answer"]
                     question = Question.query.get(question_id)
                     if question is not None:
                         # We will store Question responses as Answer
@@ -1036,9 +1040,11 @@ def stripe_webhook():
 
         chosen_question_ids_answers = None
         try:
-            chosen_question_ids_answers = json.loads(session["metadata"]["chosen_question_ids_answers"])  # noqa
+            chosen_question_ids_answers = json.loads(
+                session["metadata"]["chosen_question_ids_answers"]
+            )  # noqa
         except KeyError:
-            msg = "KeyError on subscription metadata chosen_question_ids_answers (maybe none for this plan)" # noqa
+            msg = "KeyError on subscription metadata chosen_question_ids_answers (maybe none for this plan)"  # noqa
             log.warning(msg)
         except json.decoder.JSONDecodeError:
             log.warning("Unable to decode chosen_question_ids_answers")
