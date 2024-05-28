@@ -56,9 +56,9 @@ def subscriberPaymentFailedNotification(
             kwargs["subscriber_first_name"] = subscriber_name.split(" ")[0]
             kwargs["failure_message"] = failure_message
             kwargs["failure_code"] = failure_code
-            kwargs[
-                "subscriber_login_url"
-            ] = f"https://{app.config['SERVER_NAME']}/account/login"
+            kwargs["subscriber_login_url"] = (
+                f"https://{app.config['SERVER_NAME']}/account/login"
+            )
             msg = EmailMessageQueue()
             msg["subject"] = f"{company.name} - A payment collection failed"
             msg["from"] = current_app.config["EMAIL_LOGIN_FROM"]

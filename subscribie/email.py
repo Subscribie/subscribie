@@ -45,9 +45,9 @@ def send_email(to_email=None, subject=None, body_html=None, body_plaintext=None)
         if setting is not None:
             msg["Reply-To"] = setting.reply_to_email_address
         else:
-            msg[
-                "Reply-To"
-            ] = User.query.first().email  # Fallback to first shop admin email
+            msg["Reply-To"] = (
+                User.query.first().email
+            )  # Fallback to first shop admin email
         msg.queue()
     except Exception as e:
         log.error(f"Failed to send email. {e}")

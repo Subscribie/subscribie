@@ -109,6 +109,7 @@ locally.
 ```
 export PLAYWRIGHT_HEADLESS=false
 export PLAYWRIGHT_HOST=http://127.0.0.1:5000/
+export SUBSCRIBER_EMAIL_USER=test@example.com
 ```
 
 #### Run playwright tests:

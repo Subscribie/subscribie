@@ -1,6 +1,6 @@
-from pydantic import BaseModel, validator
+from pydantic import field_validator, ConfigDict, BaseModel
 from enum import Enum
-from datetime import datetime
+import datetime
 from typing import List, Optional
 from sqlalchemy.orm import Query
 import uuid as _uuid
@@ -10,22 +10,22 @@ class OrmBase(BaseModel):
     # Common properties across orm models
     # Credit: https://github.com/samuelcolvin/pydantic/issues/1334#issuecomment-679207580 # noqa
 
-    @validator("*", pre=True)
+    @field_validator("*", mode="before")
+    @classmethod
     def evaluate_lazy_columns(cls, v):
         if isinstance(v, Query):
             return v.all()
         return v
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PlanRequirementsBase(OrmBase):
-    created_at: datetime = datetime.utcnow()
+    created_at: datetime.datetime
     instant_payment: bool
     subscription: bool
-    note_to_seller_required: Optional[bool]
-    note_to_buyer_message: Optional[str]
+    note_to_seller_required: Optional[bool] = None
+    note_to_buyer_message: Optional[str] = None
 
 
 class PlanRequirements(PlanRequirementsBase):
@@ -38,7 +38,7 @@ class PlanRequirementsCreate(PlanRequirementsBase):
 
 
 class PlanSellingPointBase(OrmBase):
-    created_at: datetime = datetime.utcnow()
+    created_at: datetime.datetime
     point: str
 
 
@@ -72,14 +72,12 @@ class PlanBase(OrmBase):
 
 
 class PlanInDBBase(PlanBase):
-    created_at: datetime = datetime.utcnow()
+    created_at: datetime.datetime
 
 
 class Plan(PlanBase):
-    id: Optional[int]
-
-    class Config:
-        orm_mode = True
+    id: Optional[int] = None
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PlanUpdate(PlanBase):
@@ -88,7 +86,7 @@ class PlanUpdate(PlanBase):
 
 class PlanCreate(PlanBase):
     title: str
-    created_at: datetime = datetime.utcnow()
+    created_at: datetime.datetime
 
 
 class Company(OrmBase):

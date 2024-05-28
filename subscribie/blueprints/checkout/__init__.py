@@ -15,6 +15,8 @@ from subscribie.models import (
     Plan,
     Option,
     ChosenOption,
+    Question,
+    Answer,
     Person,
     PaymentProvider,
     Company,
@@ -205,11 +207,14 @@ def order_summary():
         if plan.is_free():
             log.info("Plan is free, so skipping Stripe checkout")
             chosen_option_ids = session.get("chosen_option_ids", None)
-
             create_subscription(
                 email=session["email"],
                 package=session["package"],
                 chosen_option_ids=chosen_option_ids,
+                chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
+                subscribie_checkout_session_id=session.get(
+                    "subscribie_checkout_session_id"
+                ),  # noqa: E501
             )
 
             return redirect(url_for("checkout.thankyou"))
@@ -310,6 +315,7 @@ def thankyou():
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
 
     if is_donation is False:
+        # TODO if checkout_session_id is None (because free plan)
         subscription = (
             database.session.query(Subscription)
             .filter_by(subscribie_checkout_session_id=checkout_session_id)
@@ -508,6 +514,9 @@ def stripe_create_checkout_session():
         "person_uuid": person.uuid,
         "plan_uuid": plan_uuid,
         "chosen_option_ids": json.dumps(session.get("chosen_option_ids", None)),
+        "chosen_question_ids_answers": json.dumps(
+            session.get("chosen_question_ids_answers", None)
+        ),  # noqa
         "package": session.get("package", None),
         "subscribie_checkout_session_id": session.get(
             "subscribie_checkout_session_id", None
@@ -564,6 +573,7 @@ def create_subscription(
     email=None,
     package=None,
     chosen_option_ids=None,
+    chosen_question_ids_answers=None,
     subscribie_checkout_session_id=None,
     stripe_external_id=None,
     stripe_subscription_id=None,
@@ -638,10 +648,28 @@ def create_subscription(
                 sell_price=sell_price,
                 currency=currency,
             )
-            # Add chosen options (if any)
-            if chosen_option_ids is None:
-                chosen_option_ids = session.get("chosen_option_ids", None)
+            database.session.add(subscription)
+            # Add question answers (if any)
+            answers = []
+            if chosen_question_ids_answers:
+                for answer in chosen_question_ids_answers:
+                    question_id = answer["question_id"]
+                    answer_response = answer["answer"]
+                    question = Question.query.get(question_id)
+                    if question is not None:
+                        # We will store Question responses as Answer
+                        # because Question.title may change after the order
+                        # has processed. This preserves integrity of the actual
+                        # answered questions
+                        answer = Answer()
+                        answer.question_id = question_id
+                        answer.question_title = question.title
+                        answer.response = answer_response
+                        database.session.add(answer)
+                        answers.append(answer)
+            subscription.question_answers = answers
 
+            # Add chosen options (if any)
             if chosen_option_ids and chosen_option_ids != "null":
                 log.info(
                     f"Applying chosen_option_ids to subscription: {chosen_option_ids}"
@@ -669,7 +697,6 @@ def create_subscription(
             else:
                 log.info("No chosen_option_ids were found or applied.")
 
-            database.session.add(subscription)
             database.session.commit()
             session["subscription_uuid"] = subscription.uuid
 
@@ -688,7 +715,13 @@ def create_subscription(
                     subscription.stripe_cancel_at = cancel_at
                     database.session.commit()
                 except Exception as e:  # noqa
-                    log.error("Could not set cancel_at: {e}")
+                    # OK to fail if plan is free since
+                    # there may not be a Stripe object for
+                    # free plans (but there could be for plans
+                    # which started paid then became free, which
+                    # is why we still attempt the lookup)
+                    if subscription.plan.is_free() is False:
+                        log.error("Could not set cancel_at: {e}")
 
         newSubscriberEmailNotification()
     return subscription
@@ -1004,6 +1037,18 @@ def stripe_webhook():
             chosen_option_ids = json.loads(chosen_option_ids)
         except KeyError:
             chosen_option_ids = None
+
+        chosen_question_ids_answers = None
+        try:
+            chosen_question_ids_answers = json.loads(
+                session["metadata"]["chosen_question_ids_answers"]
+            )  # noqa
+        except KeyError:
+            msg = "KeyError on subscription metadata chosen_question_ids_answers (maybe none for this plan)"  # noqa
+            log.warning(msg)
+        except json.decoder.JSONDecodeError:
+            log.warning("Unable to decode chosen_question_ids_answers")
+
         try:
             package = session["metadata"]["package"]
         except KeyError:
@@ -1024,6 +1069,7 @@ def stripe_webhook():
                     email=session["customer_email"],
                     package=package,
                     chosen_option_ids=chosen_option_ids,
+                    chosen_question_ids_answers=chosen_question_ids_answers,
                     subscribie_checkout_session_id=subscribie_checkout_session_id,
                     stripe_subscription_id=stripe_subscription_id,
                     stripe_external_id=session["id"],

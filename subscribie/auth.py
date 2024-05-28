@@ -184,7 +184,8 @@ def jwt_login():
         private_key = open(current_app.config["PRIVATE_KEY"]).read()
         jwt_payload = jwt.encode(
             {
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+                "exp": datetime.datetime.now(datetime.UTC)
+                + datetime.timedelta(minutes=30),
                 "user_id": user.id,
             },
             private_key,

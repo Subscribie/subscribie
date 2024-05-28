@@ -5,74 +5,176 @@
 #   pre: false
 #   features: []
 #   all-features: false
+#   with-sources: false
+#   generate-hashes: false
 
 -e file:.
 alembic==1.13.1
-annotated-types==0.6.0
-babel==2.14.0
+    # via flask-migrate
+annotated-types==0.7.0
+    # via pydantic
+babel==2.15.0
+    # via flask-babel
 backoff==2.2.1
-black==23.12.1
-blinker==1.7.0
-certifi==2023.11.17
+    # via subscribie
+black==24.4.2
+    # via subscribie
+blinker==1.8.2
+    # via flask
+    # via flask-mail
+    # via subscribie
+certifi==2024.2.2
+    # via requests
 cffi==1.16.0
+    # via cryptography
 charset-normalizer==3.3.2
+    # via requests
 click==8.1.7
+    # via black
+    # via flask
 coloredlogs==15.0.1
-cryptography==41.0.7
+    # via subscribie
+cryptography==42.0.7
+    # via pyjwt
 currency-symbols==2.0.3
-dnspython==2.4.2
-email-validator==2.1.0.post1
-flask==3.0.0
+    # via subscribie
+dnspython==2.6.1
+    # via email-validator
+email-validator==2.1.1
+    # via subscribie
+flask==3.0.3
+    # via flask-babel
+    # via flask-cors
+    # via flask-mail
+    # via flask-migrate
+    # via flask-reuploaded
+    # via flask-sqlalchemy
+    # via flask-wtf
+    # via subscribie
 flask-babel==4.0.0
-flask-cors==4.0.0
-flask-mail==0.9.1
-flask-migrate==4.0.5
+    # via subscribie
+flask-cors==4.0.1
+    # via subscribie
+flask-mail==0.10.0
+    # via subscribie
+flask-migrate==4.0.7
+    # via subscribie
 flask-reuploaded==1.4.0
+    # via subscribie
 flask-sqlalchemy==3.1.1
+    # via flask-migrate
+    # via subscribie
 flask-wtf==1.2.1
+    # via subscribie
 gitdb==4.0.11
-gitpython==3.1.40
+    # via gitpython
+gitpython==3.1.43
+    # via subscribie
 graphlib==0.9.5
-graphviz==0.20.1
+    # via subscribie
+graphviz==0.20.3
+    # via subscribie
 greenlet==3.0.3
+    # via sqlalchemy
 humanfriendly==10.0
-idna==3.6
+    # via coloredlogs
+idna==3.7
+    # via email-validator
+    # via requests
 iniconfig==2.0.0
-itsdangerous==2.1.2
-jinja2==3.1.2
-joblib==1.3.2
-mako==1.3.0
-markupsafe==2.1.3
+    # via pytest
+itsdangerous==2.2.0
+    # via flask
+    # via flask-wtf
+jinja2==3.1.4
+    # via flask
+    # via flask-babel
+joblib==1.4.2
+    # via scikit-learn
+mako==1.3.5
+    # via alembic
+markupsafe==2.1.5
+    # via jinja2
+    # via mako
+    # via werkzeug
+    # via wtforms
 mypy-extensions==1.0.0
-numpy==1.26.2
-packaging==23.2
-pandas==2.1.4
+    # via black
+numpy==1.26.4
+    # via pandas
+    # via scikit-learn
+    # via scipy
+packaging==24.0
+    # via black
+    # via pytest
+pandas==2.2.2
+    # via subscribie
 pathlib==1.0.1
+    # via subscribie
 pathspec==0.12.1
-platformdirs==4.1.0
-pluggy==1.3.0
+    # via black
+platformdirs==4.2.2
+    # via black
+pluggy==1.5.0
+    # via pytest
 py-auth-header-parser==1.0.2
+    # via subscribie
 pycountry==23.12.11
-pycparser==2.21
-pycryptodome==3.19.0
-pydantic==2.5.3
-pydantic-core==2.14.6
+    # via subscribie
+pycparser==2.22
+    # via cffi
+pycryptodome==3.20.0
+    # via subscribie
+pydantic==2.7.1
+    # via subscribie
+pydantic-core==2.18.2
+    # via pydantic
 pyjwt==2.8.0
-pytest==7.4.3
-python-dateutil==2.8.2
-pytz==2023.3.post1
-requests==2.31.0
-scikit-learn==1.3.2
-scipy==1.11.4
+    # via subscribie
+pytest==8.2.1
+    # via subscribie
+python-dateutil==2.9.0.post0
+    # via pandas
+    # via strictyaml
+    # via subscribie
+pytz==2024.1
+    # via flask-babel
+    # via pandas
+requests==2.32.2
+    # via stripe
+    # via subscribie
+scikit-learn==1.5.0
+    # via subscribie
+scipy==1.13.1
+    # via scikit-learn
+    # via subscribie
 six==1.16.0
+    # via python-dateutil
 smmap==5.0.1
-sqlalchemy==2.0.23
+    # via gitdb
+sqlalchemy==2.0.30
+    # via alembic
+    # via flask-sqlalchemy
+    # via subscribie
 strictyaml==1.7.3
-stripe==7.10.0
-threadpoolctl==3.2.0
-typing-extensions==4.9.0
-tzdata==2023.3
-urllib3==2.1.0
-werkzeug==3.0.1
-wheel==0.42.0
-wtforms==3.1.1
+    # via subscribie
+stripe==9.8.0
+    # via subscribie
+threadpoolctl==3.5.0
+    # via scikit-learn
+typing-extensions==4.12.0
+    # via alembic
+    # via pydantic
+    # via pydantic-core
+    # via sqlalchemy
+    # via stripe
+tzdata==2024.1
+    # via pandas
+urllib3==2.2.1
+    # via requests
+werkzeug==3.0.3
+    # via flask
+wheel==0.43.0
+    # via subscribie
+wtforms==3.1.2
+    # via flask-wtf
