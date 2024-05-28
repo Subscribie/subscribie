@@ -622,7 +622,7 @@ def create_subscription(
         if subscribie_checkout_session_id is not None:
             subscription = (
                 Subscription.query.filter_by(
-                    stripe_subscription_id=stripe_subscription_id
+                    subscribie_checkout_session_id=subscribie_checkout_session_id
                 )
                 .filter(Subscription.person.has(email=email))
                 .first()
