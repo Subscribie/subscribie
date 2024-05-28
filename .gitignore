@@ -48,7 +48,6 @@ tests/browser-automated-tests-playwright/e2e/*-snapshots
 subscribie/static/*
 subscribie/custom_pages/*
 playwright-report
-tests/browser-automated-tests-playwright
 .terraform
 *.pkl
 emails
