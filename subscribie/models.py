@@ -179,7 +179,7 @@ class Person(database.Model, HasArchived):
         total_charged = 0
         total_collected = 0
         customer_balance = 0
-        breakpoint()
+
         invoices = self.invoices(skipFetchDeclineCode=skipFetchDeclineCode)
         for invoice in invoices:
             total_charged += invoice.amount_due
