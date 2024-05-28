@@ -305,8 +305,7 @@ def custom_page(path):
                 pass
 
             babel = current_app.extensions["babel"]
-            ctx.babel_domain = babel.domain_instance
-            return ctx.babel_domain
+            return babel.instance.domain_instance
 
         def get_translations():
             """Returns the correct gettext translations that should be used for
