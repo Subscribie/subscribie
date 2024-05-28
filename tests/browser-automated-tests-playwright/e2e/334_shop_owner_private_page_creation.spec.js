@@ -8,12 +8,6 @@ test("@334@shop-owner@Creating Private Page @334-shop-owner-create-private-page"
   await set_test_name_cookie(page, "@334-shop-owner-create-private-page");
   await page.goto('/page/privatetestpage');
   await new Promise(x => setTimeout(x, 5000));
-  let checking_private_page_content = await page.evaluate(() => document.body.textContent);
-  if (checking_private_page_content.indexOf("This is a Private Page") > -1) {
-    expect(await page.screenshot()).toMatchSnapshot('Private-page-already-checked.png');
-    console.log("Private plan already set, exiting test");
-    test.skip();
-  }
 
   console.log("Continuing with Private page creation");
   await page.goto('/pages/add-page');
