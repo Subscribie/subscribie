@@ -10,7 +10,7 @@
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.33.0"
+    "@playwright/test": "^1.44.1"
   },
   "scripts": {
     "test": "node tests/browser-automated-tests-playwright/index.js"

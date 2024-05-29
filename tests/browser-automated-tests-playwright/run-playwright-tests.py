@@ -18,7 +18,27 @@ graph = {
         "@491_shop_owner_create_private_plan",
         "@264_shop_owner_create_plan_with_choice_options",
     ],
-    "@1219_shop-owner_enable_custom_url": [],
+    "@1219_shop-owner_enable_custom_url": [
+        "@463_subscriber_order_plan_with_vat",
+        "@475_subscriber_order_plan_with_free_trial",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293_shop_owner_order_recurring_plan",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
+        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
+        "@939_subscriber_order_free_plan_with_terms_and_conditions",
+    ],
+    "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
+        "@stripe_connect",
+        "@293_shop_owner_order_recurring_plan",
+        "@463_subscriber_order_plan_with_vat",
+        "@475_subscriber_order_plan_with_free_trial",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293_shop_owner_order_recurring_plan",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
+        "@939_subscriber_order_free_plan_with_terms_and_conditions",
+    ],
     "@463_subscriber_order_plan_with_vat": [
         "@stripe_connect",
         "@463_shop_owner_adding_vat",
@@ -27,6 +47,13 @@ graph = {
         "@stripe_connect",
         "@475_shop_owner_create_free_trial",
         "@1005_shop_owner_terms_and_conditions_creation",
+        "@293_shop_owner_order_recurring_plan",
+        "@463_subscriber_order_plan_with_vat",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293_shop_owner_order_recurring_plan",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
+        "@939_subscriber_order_free_plan_with_terms_and_conditions",
     ],
     "@264_subscriber_order_plan_with_choice_options_and_required_note": [
         "@stripe_connect",
@@ -40,9 +67,6 @@ graph = {
         "@stripe_connect",
     ],
     "@293-2_subscriber_order_plan_with_only_upfront_charge": [
-        "@stripe_connect",
-    ],
-    "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge": [
         "@stripe_connect",
     ],
     "@619_shop_owner_transaction_filter_by_name_and_by_plan_title": [

@@ -31,7 +31,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
 
         // Pay with test card
         await page.fill('#cardNumber', '4242 4242 4242 4242');
-        await page.fill('#cardExpiry', '04 / 24');
+        await page.fill('#cardExpiry', '04 / 30');
         await page.fill('#cardCvc', '123');
         await page.fill('#billingName', 'John Smith');
         await page.selectOption('select#billingCountry', 'GB');
