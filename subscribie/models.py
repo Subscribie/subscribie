@@ -448,7 +448,7 @@ class Subscription(database.Model):
                     interval=1,
                     until=datetime.datetime.now(datetime.UTC)
                     + relativedelta(months=+1),
-                    dtstart=self.created_at,
+                    dtstart=pytz.utc.localize(self.created_at),
                 )
             )[-1]
 
