@@ -222,11 +222,16 @@ def check_password_login(email, password):
 
 
 def start_new_user_session(email):
+    # Check for requested_url (e.g. if their session had expired)
+    requested_url = None
+    if session.get("requested_url"):
+        requested_url = session.get("requested_url")
     session.clear()
     log.debug(
         f"session cleared & new session started for email '{email}' in start_new_user_session"  # noqa: E501
     )
     session["user_id"] = email
+    session["requested_url"] = requested_url
 
 
 @bp.route("/login", methods=["POST"])
@@ -254,6 +259,12 @@ def send_login_token_email():
                 f"Successful form login for '{email}'. Redirecting to admin dashboard"
             )
             start_new_user_session(email)
+            # If requested_url is in session, take
+            # user back to the page they were on.
+            if session.get("requested_url"):
+                log.debug("Taking user back to their requested_url")
+                return redirect(session.get("requested_url"))
+
             return redirect(url_for("admin.dashboard"))
         else:
             session.clear()
@@ -535,6 +546,10 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            # Save requested url so can take user back to
+            # page before they were logged out (e.g. due to
+            # expiry)
+            session['requested_url'] = request.url
             return redirect(url_for("auth.login"))
 
         return view(**kwargs)
