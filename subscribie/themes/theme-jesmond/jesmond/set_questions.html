@@ -31,7 +31,7 @@
           <label for="{{ plan_question_assoc.question.id }}">{{ plan_question_assoc.question.title }}</label>
           {% if plan_question_assoc.question.options %}
             <select name="question-{{ plan_question_assoc.question.id }}" class="form-control" required>
-              <option>Select</option>
+	       <option selected disabled value="">Select</option>
               {% for option in plan_question_assoc.question.options %}
                   <option value="{{ option.id }}">{{ option.title }}</option>
               {% endfor %}
