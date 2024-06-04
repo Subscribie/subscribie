@@ -234,6 +234,7 @@ def create_app(test_config=None):
     # Handling Errors Gracefully
     @app.errorhandler(404)
     def page_not_found(e):
+        log.debug(f"Route does not exist {request.url}")
         return render_template("errors/404.html"), 404
 
     @app.errorhandler(413)
