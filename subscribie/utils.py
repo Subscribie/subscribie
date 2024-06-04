@@ -34,6 +34,15 @@ COUNTRY_CODE_TO_CURRENCY_CODE = {
 }
 
 
+class SubscribieStripeNotConnectedYet(Exception):
+    """
+    Exception to raise/inform when Subscribie shop is not
+    yet connected to Stripe but client code attempts
+    to get information from Stripe apis.
+    """
+    pass
+
+
 def get_geo_currency_code():
     """Return currency code based on current detected (or selected)
     country code.
@@ -181,7 +190,7 @@ def get_stripe_connect_account():
         account_id = payment_provider.stripe_test_connect_account_id
 
     if account_id is None or account_id == "":
-        return None
+        raise SubscribieStripeNotConnectedYet()
 
     try:
         account = stripe.Account.retrieve(account_id)
