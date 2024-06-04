@@ -16,6 +16,13 @@
   <div class="section">
     <div class="container">
 
+    {% if stripe_connected is sameas False %}
+       Stripe connection is not yet complete.
+       <a class="btn btn-warning"
+           href="{{ url_for('admin.stripe_connect') }}">
+           Review Stripe
+       </a>
+    {% else %}
       <p>
         Below is the list of recent subscription cancellations (if any) within the last 30 days.
       </p>
@@ -76,6 +83,7 @@
         {% endfor %}
         </tbody>
       </table>
+    {% endif %}
     </div> <!-- end .container -->
   </div><!-- end .section -->
 </main>

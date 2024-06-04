@@ -19,6 +19,7 @@ from markupsafe import Markup, escape
 import jinja2
 import requests
 from subscribie.utils import (
+    SubscribieStripeNotConnectedYet,
     get_stripe_secret_key,
     get_stripe_connect_account,
     create_stripe_connect_account,
@@ -488,9 +489,15 @@ def dashboard():
     num_signups = get_number_of_signups()
     num_one_off_purchases = get_number_of_one_off_purchases()
     num_donations = get_number_of_transactions_with_donations()
-    num_recent_subscription_cancellations = (
-        get_number_of_recent_subscription_cancellations()
-    )
+
+    try:
+        num_recent_subscription_cancellations = (
+            get_number_of_recent_subscription_cancellations()
+        )
+    except stripe._error.APIConnectionError as e:
+        log.error(f"stripe._error.APIConnectionError: {e}")
+        num_recent_subscription_cancellations = "unknown"
+
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
 
@@ -991,8 +998,9 @@ def stripe_connect():
         account = get_stripe_connect_account()
         if account is not None and account.charges_enabled and account.payouts_enabled:
             payment_provider.stripe_active = True
-        else:
+    except SubscribieStripeNotConnectedYet as e:
             payment_provider.stripe_active = False
+
     except (
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
@@ -1132,6 +1140,7 @@ def stripe_onboarding():
             shop_is_changing_default_currency = True
             raise AttributeError
     except (
+        SubscribieStripeNotConnectedYet,
         stripe.error.PermissionError,
         stripe.error.InvalidRequestError,
         AttributeError,
@@ -1307,49 +1316,55 @@ def show_recent_subscription_cancellations():
     see StripeInvoice for possible improvements
     """
     stripe.api_key = get_stripe_secret_key()
-    connect_account = get_stripe_connect_account()
-
-    subscription_cancellations = stripe.Event.list(
-        stripe_account=connect_account.id,
-        limit=100,
-        types=["customer.subscription.deleted"],
-    )
-
     cancellations = []
-    # subscription id
-    for index, value in enumerate(subscription_cancellations):
-        # Get Person
-        person = (
-            Person.query.execution_options(include_archived=True)
-            .filter_by(uuid=value.data.object.metadata.person_uuid)
-            .one_or_none()
+    try:
+        connect_account = get_stripe_connect_account()
+        stripe_connected = True
+        subscription_cancellations = stripe.Event.list(
+            stripe_account=connect_account.id,
+            limit=100,
+            types=["customer.subscription.deleted"],
         )
-        if person is None:
-            log.info(
-                f"""Person query retruned None- probably archived.\n
-                Skipping Person with uuid {value.data.object.metadata.person_uuid}"""
-            )
-            continue
 
-        # Get Subscription
-        subscription = (
-            Subscription.query.execution_options(include_archived=True)
-            .filter_by(stripe_subscription_id=value.data.object.id)
-            .one()
-        )
-        cancellation_date = value.data.object.canceled_at
-        cancellation_reason = value.data.object.cancellation_details.reason
-        cancellations.append(
-            {
-                "subscription": subscription,
-                "person": person,
-                "cancellation_date": cancellation_date,
-                "cancellation_reason": cancellation_reason,
-            }
-        )
+        # subscription id
+        for index, value in enumerate(subscription_cancellations):
+            # Get Person
+            person = (
+                Person.query.execution_options(include_archived=True)
+                .filter_by(uuid=value.data.object.metadata.person_uuid)
+                .one_or_none()
+            )
+            if person is None:
+                log.info(
+                    f"""Person query retruned None- probably archived.\n
+                    Skipping Person with uuid {value.data.object.metadata.person_uuid}"""
+                )
+                continue
+
+            # Get Subscription
+            subscription = (
+                Subscription.query.execution_options(include_archived=True)
+                .filter_by(stripe_subscription_id=value.data.object.id)
+                .one()
+            )
+            cancellation_date = value.data.object.canceled_at
+            cancellation_reason = value.data.object.cancellation_details.reason
+            cancellations.append(
+                {
+                    "subscription": subscription,
+                    "person": person,
+                    "cancellation_date": cancellation_date,
+                    "cancellation_reason": cancellation_reason,
+                }
+            )
+    except SubscribieStripeNotConnectedYet as e:
+        log.error(f"SubscribieStripeNotConnectedYet: {e}")
+        stripe_connected = False
+
     return render_template(
         "admin/recent_subscription_cancellations.html",
         cancellations=cancellations,
+        stripe_connected=stripe_connected
     )
 
 
