@@ -25,11 +25,9 @@ def add_choice_group():
 @login_required
 def list_choice_groups():
     choice_groups = ChoiceGroup.query.all()
-    questions = Question.query.all()
     return render_template(
         "admin/choice_group/list_choice_groups.html",
         choice_groups=choice_groups,
-        questions=questions,
     )
 
 
