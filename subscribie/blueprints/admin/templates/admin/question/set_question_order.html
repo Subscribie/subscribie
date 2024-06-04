@@ -9,7 +9,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_choice_groups') }}">Questions</a></li> 
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_questions') }}">Questions</a></li> 
     <li class="breadcrumb-item active" aria-current="page">Set Plan Questions order</li>
   </ul>
 </div>
@@ -34,7 +34,7 @@
             <tbody>
             {% for plan_question_assoc in plan.questions %}
                 <tr>
-                    <td>
+                    <td style="padding-right: 5px">
                         <span title="{{ plan_question_assoc.question.title }}">{{ plan_question_assoc.question.title|truncate(30) }}</span>
                     </td>
                     <td>
