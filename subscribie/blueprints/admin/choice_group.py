@@ -175,7 +175,6 @@ def delete_question(id):
             is_question_delete_request=True,
             confirm=False,
         )
-    breakpoint()
     question = Question.query.get(id)
 
     # Delete PlanQuestionAssociation with that question:
