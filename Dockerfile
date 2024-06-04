@@ -9,5 +9,5 @@ COPY . /usr/src/app/subscribie/
 WORKDIR /usr/src/app/subscribie/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.lock
 RUN --mount=type=cache,target=/root/.cache/pip pip install uwsgi
-EXPOSE 5000
+EXPOSE 80
 ENTRYPOINT [ "./entrypoint.sh" ]
