@@ -626,7 +626,9 @@ association_table_plan_to_price_lists = database.Table(
 # https://github.com/sqlalchemy/sqlalchemy/discussions/8556#discussioncomment-3700971
 class PlanQuestionAssociation(database.Model):
     __tablename__ = "plan_question_associations"
-    created_at = database.Column(database.DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = database.Column(
+        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+    )
     uuid = database.Column(database.String(), default=uuid_string)
     question_id = database.Column(database.Integer, ForeignKey("question.id"))
     question = relationship("Question")
@@ -1192,7 +1194,9 @@ class Question(database.Model):
     __tablename__ = "question"
     id = database.Column(database.Integer(), primary_key=True)
     uuid = database.Column(database.String(), default=uuid_string)
-    created_at = database.Column(database.DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = database.Column(
+        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+    )
     options = relationship("QuestionOption", back_populates="question")
     title = database.Column(database.String())
 
@@ -1202,7 +1206,9 @@ class QuestionOption(database.Model):
     id = database.Column(database.Integer(), primary_key=True)
     question_id = database.Column(database.Integer(), ForeignKey("question.id"))  # noqa
     question = relationship("Question", back_populates="options")
-    created_at = database.Column(database.DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = database.Column(
+        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+    )
     title = database.Column(database.String())
     description = database.Column(database.Text())
     primary_icon = database.Column(database.String())
@@ -1211,7 +1217,9 @@ class QuestionOption(database.Model):
 class Answer(database.Model):
     __tablename__ = "answer"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(database.DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = database.Column(
+        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+    )
     question_id = database.Column(database.Integer())
     question_title = database.Column(database.String())
     response = database.Column(database.String())

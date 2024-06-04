@@ -40,7 +40,9 @@ def export_subscribers():
         import io
 
         outfile = io.StringIO()
-        outcsv = csv.DictWriter(outfile, fieldnames=subscribers[0].keys(), extrasaction='ignore')
+        outcsv = csv.DictWriter(
+            outfile, fieldnames=subscribers[0].keys(), extrasaction="ignore"
+        )
         outcsv.writeheader()
         for subscriber in subscribers:
             outcsv.writerow(subscriber)
