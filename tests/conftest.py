@@ -46,6 +46,7 @@ def client(app):
 def apply_migrations(app):
     """Applies all alembic migrations."""
     from subscribie import database as db
+
     Migrate(app, db)
     upgrade("./migrations")
     seed_db()
