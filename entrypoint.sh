@@ -6,7 +6,7 @@ export FLASK_DEBUG=1
 
 if [ -a settings.yaml ]
 then
-  echo "settings.yaml.example exists already so not copying from settings.yaml.example"
+  echo "settings.yaml exists already so not copying from settings.yaml.example"
 else
   echo "settings.yaml not found, so copying from settings.yaml.example"
   cp settings.yaml.example settings.yaml
