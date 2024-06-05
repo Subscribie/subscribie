@@ -23,8 +23,23 @@ jobs:
           curl -L -o /tmp/auto.gz https://github.com/intuit/auto/releases/download/v11.1.6/auto-linux.gz
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
+
+      - name: Temporarily allow force pushes
+        uses: benjefferies/branch-protection-bot@master
+        if: always()
+        with:
+          access_token: ${{ secrets.GH_PAT }}
+          branch: ${{ github.event.repository.default_branch }}
+
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx /tmp/auto shipit
+
+      - name: Disable allow force pushes
+        uses: benjefferies/branch-protection-bot@master
+        if: always()
+        with:
+          access_token: ${{ secrets.GH_PAT }}
+          branch: ${{ github.event.repository.default_branch }}
