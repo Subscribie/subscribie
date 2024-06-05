@@ -1,3 +1,15 @@
+# v0.1.182 (Wed Jun 05 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1341 As shop owner, if my login expires, I'm redirected to previous page after re-authenticating [#1342](https://github.com/Subscribie/subscribie/pull/1342) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.181 (Wed Jun 05 2024)
 
 :tada: This release contains work from a new contributor! :tada:
