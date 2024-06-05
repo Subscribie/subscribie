@@ -30,6 +30,8 @@ jobs:
         with:
           access_token: ${{ secrets.ACCESS_TOKEN }}
           branch: ${{ github.event.repository.default_branch }}
+          owner: subscribie-bot
+          repo: subscribie
 
       - name: Create Release
         env:
@@ -43,4 +45,6 @@ jobs:
         with:
           access_token: ${{ secrets.ACCESS_TOKEN }}
           branch: ${{ github.event.repository.default_branch }}
+          owner: subscribie-bot
+          repo: subscribie
 
