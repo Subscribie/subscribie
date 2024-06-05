@@ -23,15 +23,13 @@ jobs:
           curl -L -o /tmp/auto.gz https://github.com/intuit/auto/releases/download/v11.1.6/auto-linux.gz
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
-
-
+	  
       - name: Temporarily disable "Do not allow bypassing the above settings" branch protection
-	uses: benjefferies/branch-protection-bot@master
-	if: always()
-	with:
-	  access_token: ${{ secrets.ACCESS_TOKEN }}
-	  branch: ${{ github.event.repository.default_branch }}
-
+        uses: benjefferies/branch-protection-bot@master
+        if: always()
+        with:
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          branch: ${{ github.event.repository.default_branch }}
 
       - name: Create Release
         env:
@@ -40,10 +38,9 @@ jobs:
           npx /tmp/auto shipit
 
       - name: Enable "Do not allow bypassing the above settings" branch protection
-	uses: benjefferies/branch-protection-bot@master
-	if: always()  # Force to always run this step to ensure "Do not allow bypassing the above settings" is always turned back on
-	with:
-	  access_token: ${{ secrets.ACCESS_TOKEN }}
-	  owner: benjefferies
-	  repo: branch-protection-bot
-	  branch: ${{ github.event.repository.default_branch }}
+        uses: benjefferies/branch-protection-bot@master
+        if: always()  # Force to always run this step to ensure "Do not allow bypassing the above settings" is always turned back on
+        with:
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          branch: ${{ github.event.repository.default_branch }}
+
