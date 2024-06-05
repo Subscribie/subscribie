@@ -73,6 +73,7 @@ from subscribie.models import (
     Category,
     UpcomingInvoice,
     Document,
+    PlanQuestionAssociation,
 )
 from .subscription import update_stripe_subscription_statuses
 from .stats import (
@@ -644,6 +645,16 @@ def edit():
                 filename = images.save(f)
                 src = url_for("views.custom_static", filename=filename)
                 draftPlan.primary_icon = src
+
+            # Preserve questions
+            for plan_question_association in plan.questions:
+                new_plan_question_assoc = PlanQuestionAssociation()
+                new_plan_question_assoc.question_id = (
+                    plan_question_association.question_id
+                )
+                new_plan_question_assoc.plan_id = draftPlan.id
+                database.session.add(new_plan_question_assoc)
+
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
