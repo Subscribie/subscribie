@@ -20,7 +20,7 @@ jobs:
 
       - name: Display the environment variables and their values
         run: |
-          curl -L -o /tmp/auto.gz https://github.com/intuit/auto/releases/download/v10.32.1/auto-linux.gz
+          curl -L -o /tmp/auto.gz https://github.com/intuit/auto/releases/download/v11.1.6/auto-linux.gz
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
       - name: Create Release
