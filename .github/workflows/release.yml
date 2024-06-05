@@ -29,7 +29,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx /tmp/auto shipit
-          branch: ${{ github.event.repository.default_branch }}
-          owner: subscribie-bot
-          repo: subscribie
 
