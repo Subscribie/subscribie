@@ -24,12 +24,14 @@ jobs:
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
 
+
       - name: Temporarily disable "Do not allow bypassing the above settings" branch protection
 	uses: benjefferies/branch-protection-bot@master
 	if: always()
 	with:
 	  access_token: ${{ secrets.ACCESS_TOKEN }}
 	  branch: ${{ github.event.repository.default_branch }}
+
 
       - name: Create Release
         env:
@@ -45,4 +47,3 @@ jobs:
 	  owner: benjefferies
 	  repo: branch-protection-bot
 	  branch: ${{ github.event.repository.default_branch }}
-
