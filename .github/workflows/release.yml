@@ -24,12 +24,14 @@ jobs:
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
 
-      - name: Temporarily allow force pushes
-        uses: benjefferies/branch-protection-bot@master
-        if: always()
-        with:
-          access_token: ${{ secrets.GH_PAT }}
-          branch: ${{ github.event.repository.default_branch }}
+
+      - name: Temporarily disable "Do not allow bypassing the above settings" branch protection
+	uses: benjefferies/branch-protection-bot@master
+	if: always()
+	with:
+	  access_token: ${{ secrets.ACCESS_TOKEN }}
+	  branch: ${{ github.event.repository.default_branch }}
+
 
       - name: Create Release
         env:
@@ -37,9 +39,11 @@ jobs:
         run: |
           npx /tmp/auto shipit
 
-      - name: Disable allow force pushes
-        uses: benjefferies/branch-protection-bot@master
-        if: always()
-        with:
-          access_token: ${{ secrets.GH_PAT }}
-          branch: ${{ github.event.repository.default_branch }}
+      - name: Enable "Do not allow bypassing the above settings" branch protection
+	uses: benjefferies/branch-protection-bot@master
+	if: always()  # Force to always run this step to ensure "Do not allow bypassing the above settings" is always turned back on
+	with:
+	  access_token: ${{ secrets.ACCESS_TOKEN }}
+	  owner: benjefferies
+	  repo: branch-protection-bot
+	  branch: ${{ github.event.repository.default_branch }}
