@@ -549,7 +549,7 @@ def login_required(view):
             # Save requested url so can take user back to
             # page before they were logged out (e.g. due to
             # expiry)
-            session['requested_url'] = request.url
+            session["requested_url"] = request.url
             return redirect(url_for("auth.login"))
 
         return view(**kwargs)

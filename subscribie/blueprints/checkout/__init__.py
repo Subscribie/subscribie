@@ -184,15 +184,6 @@ def store_customer():
         return "There was an error processing that form, please go back and try again."
 
 
-def dec2pence(amount):
-    """Take two decimal place string and convert to pence"""
-    if amount == "":
-        return 0
-    import math
-
-    return int(math.ceil(float(amount) * 100))
-
-
 @checkout.route("/order-summary", methods=["GET"])
 def order_summary():
     plan = None
