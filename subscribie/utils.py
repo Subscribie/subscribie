@@ -542,3 +542,19 @@ def get_discount_code():
     :rtype: str
     """
     return session.get("discount_code", None)
+
+
+def dec2pence(amount: str) -> int:
+    """Take a two decimal place string and convert to pence"""
+    from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
+
+    if not amount:
+        return 0
+    try:
+        # Using ROUND_HALF_UP for typical financial rounding
+        pence = Decimal(amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) * 100
+        return int(pence)
+    except (ValueError, InvalidOperation):
+        raise ValueError(
+            "Invalid input: amount should be a string representing a decimal number"
+        )

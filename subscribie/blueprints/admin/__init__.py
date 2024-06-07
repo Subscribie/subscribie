@@ -29,6 +29,7 @@ from subscribie.utils import (
     get_stripe_invoices,
     currencyFormat,
     get_shop_default_country_code,
+    dec2pence,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -106,15 +107,6 @@ from .export_transactions import export_transactions  # noqa: F401, E402a
 from .invoice import failed_invoices  # noqa: F401
 from .priceList import list_priceLists  # noqa: F401
 from .priceListRule import list_priceListRules  # noqa: F401
-
-
-def dec2pence(amount):
-    """Take two decimal place string and convert to pence"""
-    if amount == "":
-        return 0
-    import math
-
-    return int(math.ceil(float(amount) * 100))
 
 
 def ordinal(n):

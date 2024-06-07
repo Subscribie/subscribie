@@ -212,3 +212,27 @@ def test_create_PriceList_and_price_list_rule_percent_discount(
     expected_inverval_amount = 522
     assert plan.getPrice("USD")[0] == expected_sell_price
     assert plan.getPrice("USD")[1] == expected_inverval_amount
+
+
+def test_dec2pence():
+    from subscribie.utils import dec2pence
+
+    test_cases = {
+        "154.80": 15480,
+        "12.34": 1234,
+        "0": 0,
+        0: 0,
+        "": 0,
+        "12.999": 1300,
+        "0.01": 1,
+        "100.05": 10005,
+        "0.005": 1,  # Tests edge case where rounding up from 0.005
+        "1.005": 101,  # Tests edge case where rounding up from 1.005
+    }
+
+    # Results dictionary
+    results = {}
+
+    for test_input, expected_output in test_cases.items():
+        result = dec2pence(test_input)
+        assert result == expected_output
