@@ -1,3 +1,15 @@
+# v0.1.185 (Fri Jun 07 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1353 dec2pence floating point precision [#1354](https://github.com/Subscribie/subscribie/pull/1354) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.184 (Wed Jun 05 2024)
 
 #### ⚠️ Pushed to `master`
