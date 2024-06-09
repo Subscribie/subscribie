@@ -18,5 +18,6 @@ jobs:
           ssh-keyscan ${{ secrets.DOKKU_HOST }}>> ~/.ssh/known_hosts
           eval `ssh-agent -s` 
           ssh-add - <<< "$SSH_PRIVATE_KEY"
-          echo deleting dokku app ${{ github.head_ref }}
-          ssh dokku@$DOKKU_HOST -C "dokku -- --force apps:destroy ${{ github.head_ref }}"
+          echo SUBDOMAIN=`echo "${{ github.head_ref }}" | tr '[:upper:]' '[:lower:]' | cut -c -60 | rev | sed 's/[^[:alnum:]]//1' | rev` >> $GITHUB_ENV
+          echo deleting dokku app ${{ env.SUBDOMAIN }}
+          ssh dokku@$DOKKU_HOST -C "dokku -- --force apps:destroy ${{ env.SUBDOMAIN }}"
