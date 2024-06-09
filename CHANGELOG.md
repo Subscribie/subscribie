@@ -1,3 +1,15 @@
+# v0.1.186 (Sun Jun 09 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1355 remove-pr-preview.yml by SUBDOMAIN [#1356](https://github.com/Subscribie/subscribie/pull/1356) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.185 (Fri Jun 07 2024)
 
 #### 🐛 Bug Fix
