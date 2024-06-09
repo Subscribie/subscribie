@@ -1,3 +1,15 @@
+# v0.1.187 (Sun Jun 09 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1357 fix verify prod onboarding workflow [#1358](https://github.com/Subscribie/subscribie/pull/1358) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.186 (Sun Jun 09 2024)
 
 #### 🐛 Bug Fix
