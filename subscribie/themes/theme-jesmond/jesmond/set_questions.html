@@ -37,7 +37,11 @@
               {% endfor %}
             </select>
           {% else %}
-            <input class="form-control" type="text" name="question-{{ plan_question_assoc.question.id }}" placeholder="Please enter..." id="{{ plan_question_assoc.question.id }}" required>
+            {% if plan_question_assoc.question.is_longform_question %}
+              <textarea cols="30" rows="10" name="question-{{ plan_question_assoc.question.id }}" placeholder="Please enter..." id="{{ plan_question_assoc.question.id }}" required></textarea>
+            {% else %}
+              <input class="form-control" type="text" name="question-{{ plan_question_assoc.question.id }}" placeholder="Please enter..." id="{{ plan_question_assoc.question.id }}" required>
+            {% endif %}
           {% endif %}
         </div>
         {% endfor %}

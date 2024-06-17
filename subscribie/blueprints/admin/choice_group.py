@@ -108,6 +108,11 @@ def add_question():
     if form.validate_on_submit():
         question = Question()
         question.title = request.form["title"]
+        if request.form.get("is_longform_question"):
+            question.is_longform_question = True
+        else:
+            question.is_longform_question = False
+
         database.session.add(question)
         database.session.commit()
         flash("Added new question")
@@ -122,6 +127,10 @@ def edit_question(id):
     question = Question.query.get(id)
     if request.method == "POST":
         question.title = request.form["title"]
+        if request.form.get("is_longform_question"):
+            question.is_longform_question = True
+        else:
+            question.is_longform_question = False
         database.session.commit()
         flash("Question updated")
     return render_template("admin/question/edit_question.html", question=question)
