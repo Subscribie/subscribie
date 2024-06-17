@@ -11601,3 +11601,8 @@ h3{
   margin: .5em;
   padding: 0;
 }
+
+
+.text-muted {
+  color: #717d84 !important;
+}

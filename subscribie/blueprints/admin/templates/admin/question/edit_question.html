@@ -1,5 +1,5 @@
 {% extends "admin/layout.html" %}
-{% block title %} {{ title }} {% endblock %}
+{% block title %} Add Shop Admin{% endblock %}
 
 {% block body %}
 
@@ -9,7 +9,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_questions') }}">Questions</a></li> 
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.list_questions') }}">Questions</a></li>
     <li class="breadcrumb-item active" aria-current="page">Edit Question</li>
   </ul>
 </div>
@@ -19,23 +19,38 @@
     <div class="container">
 
       <h3>Edit Question</h3>
-      <p class="card-subtitle mb-3 text-muted">Edit the Question below.</p>
 
       <hr>
 
-      <form action="#" method="POST">
-        <div class="form-group row py-md-3">
-          <label for="title" class="col-sm-2 col-form-label">Question:</label>
-          <div class="col-sm-10">
-            <input name="title" id="title" type="text" value="{{ question.title }}" autofocus class="form-control">
+      <form action="" method="POST" action="/" class="col-md-7 py-3">
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label" for="title">Title:</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="title" name="title" value="{{ question.title }}" required>
           </div>
         </div>
 
-        <input type="submit" value="Save" class="btn btn-primary btn-block col-md-6 my-3 mx-auto">
+        <div class="form-group row mt-4 mb-4" style="padding-left: 1.25rem;">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="is_longform_question" name="is_longform_question"
+            {% if question.is_longform_question %}
+              checked
+            {% endif %}
+            />
+            <label class="form-check-label" for="is_longform_question">
+              Is this a longform question?
+            </label>
+          </div>
+          <p class="text-muted">A long-form question shows as a large text box rather than a small box.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
       </form>
 
-    </div><!--end container-->
-  </div><!--end section-->
+    </div> <!-- end container-->
+  </div> <!-- end section-->
 </main>
 
-{% endblock body %}
+
+
+{% endblock %}
