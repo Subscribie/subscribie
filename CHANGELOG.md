@@ -1,3 +1,16 @@
+# v0.1.188 (Fri Jun 21 2024)
+
+#### 🐛 Bug Fix
+
+- #1359 typo page slug [#1360](https://github.com/Subscribie/subscribie/pull/1360) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1359 Can mark questions as longform question as shopw owner [#1360](https://github.com/Subscribie/subscribie/pull/1360) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.187 (Sun Jun 09 2024)
 
 #### 🐛 Bug Fix
