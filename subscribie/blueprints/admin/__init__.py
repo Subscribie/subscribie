@@ -1692,7 +1692,7 @@ def edit_welcome_email():
         custom_template = EmailTemplate()
         database.session.add(custom_template)
 
-    if form.validate_on_submit() and form.use_custom_welcome_email.data is True:
+    if form.validate_on_submit():
         new_custom_template = form.template.data
         # Validate template syntax
         env = jinja2.Environment()
@@ -1700,14 +1700,18 @@ def edit_welcome_email():
             env.parse(new_custom_template)
             # Store the validated template
             custom_template.custom_welcome_email_template = new_custom_template
-            custom_template.use_custom_welcome_email = True
+            if form.use_custom_welcome_email.data is True:
+                custom_template.use_custom_welcome_email = True
+            else:
+                custom_template.use_custom_welcome_email = False
             flash("Email template has been saved.")
             flash("Using custom template for welcome email")
         except jinja2.exceptions.TemplateSyntaxError as e:
             form.template.errors.append(e)
 
     else:
-        custom_template.use_custom_welcome_email = False
+        if custom_template.use_custom_welcome_email is not True:
+            custom_template.use_custom_welcome_email = False
         if request.method == "POST":
             flash("Using default template for welcome email")
 
