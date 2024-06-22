@@ -1,3 +1,15 @@
+# v0.1.189 (Sat Jun 22 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1361 Preserve custom thank you email template if chosen [#1362](https://github.com/Subscribie/subscribie/pull/1362) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.188 (Fri Jun 21 2024)
 
 #### 🐛 Bug Fix
