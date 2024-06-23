@@ -44,6 +44,10 @@ from subscribie.utils import (
 import pycountry
 from types import SimpleNamespace
 from flask_babel import Domain
+from urllib.parse import urlparse
+from pathlib import PurePosixPath
+from urllib.parse import unquote
+from sqlalchemy import func
 
 log = logging.getLogger(__name__)
 
@@ -390,13 +394,23 @@ def custom_page(path):
 @bp.route("/plan/<uuid>/<plan_title>")
 def view_plan(uuid, plan_title=None):
     """
-    Note: "plan_name" is not used, and is also
-          optional. It's just there to make
-          urls look 'pretty'
-          when humans share them.
+    Match on plan uuid, or fallback to plan name.
+
+    Note: "uuid" may refer to an archived plan for backward
+         compatibility with published links.
+         See https://github.com/Subscribie/subscribie/issues/1364
     """
     # fetch plan from db
     plan = Plan.query.filter_by(uuid=uuid).first()
+    if plan is None:
+        # Try to locate plan by title only
+        url = urlparse(request.url)
+        request_path = PurePosixPath(url.path).parts
+        requested_plan_name_slug = unquote(request_path[3])
+        plan = Plan.query.filter(
+            func.lower(Plan.title) == requested_plan_name_slug.lower()
+        ).first()
+
     if plan is None:
         return "Plan not found. Visit <a href='/'>home</a>"
     elif plan.archived:
