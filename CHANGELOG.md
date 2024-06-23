@@ -1,3 +1,15 @@
+# v0.1.190 (Sun Jun 23 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1364 load plan share urls by plan name when uuid fallsback [#1365](https://github.com/Subscribie/subscribie/pull/1365) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.189 (Sat Jun 22 2024)
 
 #### 🐛 Bug Fix
