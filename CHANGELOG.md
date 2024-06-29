@@ -1,3 +1,17 @@
+# v0.1.191 (Sat Jun 29 2024)
+
+#### 🐛 Bug Fix
+
+- #1366 bump actions/checkout in action container-publish.yml [#1367](https://github.com/Subscribie/subscribie/pull/1367) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1366 bump actions/checkout & actions/setup-python in action python-package.yml [#1367](https://github.com/Subscribie/subscribie/pull/1367) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1366 announce-stripe-connect error handle endpoint downtime gracefully [#1367](https://github.com/Subscribie/subscribie/pull/1367) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.190 (Sun Jun 23 2024)
 
 #### 🐛 Bug Fix
