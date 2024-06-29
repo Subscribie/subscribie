@@ -17,7 +17,6 @@ from flask import (
 )
 from markupsafe import Markup, escape
 import jinja2
-import requests
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
@@ -27,6 +26,9 @@ from subscribie.utils import (
     create_stripe_tax_rate,
     get_shop_default_currency_code,
     get_stripe_invoices,
+    stripe_livemode,
+    announce_stripe_connect_account,
+    stripe_testmode,
     currencyFormat,
     get_shop_default_country_code,
     dec2pence,
@@ -1811,110 +1813,27 @@ def announce_shop_stripe_connect_ids():
     up to date should they change. It can also be called manually.
     It does not matter how many times this is called.
     """
-    stripe_live_connect_account_id = None
-    stripe_test_connect_account_id = None
+    status = 200
     msg = None
-    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
 
-    def stripe_livemode():
-        payment_provider = PaymentProvider.query.first()
-        if payment_provider.stripe_live_connect_account_id is not None:
-            return True
-        return False
-
-    def stripe_testmode():
-        payment_provider = PaymentProvider.query.first()
-        if payment_provider.stripe_test_connect_account_id is not None:
-            return True
-        return False
-
-    payment_provider = PaymentProvider.query.first()
-
-    def announce_stripe_connect_account(account_id, live_mode=0):
-        log.debug(f"Announcing stripe account to {url_for('index', _external=True)}")
-        req = requests.post(
-            ANNOUNCE_HOST,
-            json={
-                "stripe_connect_account_id": account_id,
-                "live_mode": live_mode,
-                "site_url": url_for("index", _external=True),
-            },
-            timeout=10,
-        )
-        if req.status_code != 200:
-            return (
-                jsonify(
-                    {
-                        "msg": f"Error Announcing stripe account for: {account_id}. Status code: {req.status_code}"  # noqa
-                    }
-                ),
-                500,
-            )
-        return req
+    if stripe_testmode() is False and stripe_livemode() is False:
+        return jsonify("Stripe is not setup yet.")
 
     try:
-        if stripe_testmode() is False and stripe_livemode() is False:
-            log.info(msg)
-            return jsonify("Stripe is not setup yet.")
+        stripe_connect_account_id = get_stripe_connect_account_id()
 
-        if payment_provider.stripe_live_connect_account_id is not None:
-            stripe_live_connect_account_id = (
-                payment_provider.stripe_live_connect_account_id
-            )
-            try:
-                req = announce_stripe_connect_account(
-                    stripe_live_connect_account_id, live_mode=1
-                )
-            except requests.exceptions.ConnectionError as e:
-                msg = f"Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
-                log.error(msg)
-                return (
-                    jsonify(
-                        "Failed to announce stripe connect account live mode. requests.exceptions.ConnectionError"  # noqa: E501
-                    ),
-                    500,
-                )  # noqa: E501
-
-        if payment_provider.stripe_test_connect_account_id is not None:
-            # send test connect account id
-            stripe_test_connect_account_id = (
-                payment_provider.stripe_test_connect_account_id
-            )
-            try:
-                req = announce_stripe_connect_account(
-                    stripe_test_connect_account_id, live_mode=0
-                )
-            except requests.exceptions.ConnectionError as e:
-                msg = f"Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError {e}"  # noqa: 501
-                log.error(msg)
-                return (
-                    jsonify(
-                        "Failed to announce stripe connect account test mode. requests.exceptions.ConnectionError"  # noqa: E501
-                    ),
-                    500,
-                )  # noqa: E501
-
-        stripe_connect_account_id = None
-        if stripe_live_connect_account_id is not None:
-            stripe_connect_account_id = stripe_live_connect_account_id
-        elif stripe_test_connect_account_id is not None:
-            stripe_connect_account_id = stripe_test_connect_account_id
-
-        msg = {
-            "msg": f"Announced Stripe connect account {stripe_connect_account_id} \
-for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
-{current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
-WARNING: Check logs to verify recipt"
-        }
+        announce_stripe_connect_account(
+            stripe_connect_account_id, live_mode=1 if stripe_livemode() else 0
+        )
+        msg = f"Shop id {stripe_connect_account_id} has been announced. live_mode: {stripe_livemode()}"  # noqa: E501
         log.info(msg)
     except Exception as e:
         msg = f"Failed to announce stripe connect id:\n{e}"
+        status = 500
         log.error(msg)
-        return jsonify("Failed to account stripe connect id"), 500
+        return jsonify(msg), 500
 
-    return Response(
-        json.dumps(msg), status=req.status_code, mimetype="application/json"
-    )
+    return Response(json.dumps(msg), status=status, mimetype="application/json")
 
 
 @admin.route("/upload-files", methods=["GET", "POST"])

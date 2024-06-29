@@ -1,10 +1,11 @@
-from flask import current_app, request, g, session
+from flask import current_app, request, g, session, url_for
 import stripe
 from subscribie import database
 from currency_symbols import CurrencySymbols
 import logging
 from subscribie.tasks import background_task
 from datetime import datetime, timedelta
+import requests
 
 log = logging.getLogger(__name__)
 
@@ -280,6 +281,48 @@ def get_stripe_livemode():
     if payment_provider.stripe_livemode:
         return True
     return False
+
+
+def stripe_livemode():
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_live_connect_account_id is not None:
+        return True
+    return False
+
+
+def stripe_testmode():
+    from .models import PaymentProvider
+
+    payment_provider = PaymentProvider.query.first()
+    if payment_provider.stripe_test_connect_account_id is not None:
+        return True
+    return False
+
+
+def announce_stripe_connect_account(account_id, live_mode=0):
+    log.debug(f"Announcing stripe account to {url_for('index', _external=True)}")
+    from subscribie.models import PaymentProvider  # noqa: F401
+
+    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
+    req = requests.post(
+        ANNOUNCE_HOST,
+        json={
+            "stripe_connect_account_id": account_id,
+            "live_mode": live_mode,
+            "site_url": url_for("index", _external=True),
+        },
+        timeout=10,
+    )
+    msg = {
+        "msg": f"Announced Stripe connect account {account_id} \
+for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
+{current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
+WARNING: Check logs to verify recipt"
+    }
+    log.debug(msg)
+    req.raise_for_status()
 
 
 @background_task

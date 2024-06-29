@@ -1198,9 +1198,7 @@ class Question(database.Model):
         database.DateTime, default=datetime.datetime.now(datetime.UTC)
     )
     options = relationship("QuestionOption", back_populates="question")
-    is_longform_question = database.Column(
-        database.Boolean(), default=False
-    )
+    is_longform_question = database.Column(database.Boolean(), default=False)
     title = database.Column(database.String())
 
 
