@@ -190,7 +190,8 @@ def order_summary():
     payment_provider = PaymentProvider.query.first()
     chosen_option_ids = session.get("chosen_option_ids", None)
 
-    # We create a subscription object regardless of payment,
+    # We create a subscription object regardless of payment
+    # See https://github.com/Subscribie/subscribie/issues/1369
     # note this occurs *before* directing the user to checkouts
     # (such as Stripe) since payment is separate from the
     # *intent* to create a subscription (that is, a subscription may
