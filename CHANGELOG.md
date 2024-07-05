@@ -1,3 +1,17 @@
+# v0.1.192 (Fri Jul 05 2024)
+
+#### 🐛 Bug Fix
+
+- #1370 add issue link for context [#1371](https://github.com/Subscribie/subscribie/pull/1371) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1370 graceful handling of webhook endpoint downtime [#1371](https://github.com/Subscribie/subscribie/pull/1371) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- WIP Fix #1370 Store note_to_seller regardless of if plan is a subscription or not [#1371](https://github.com/Subscribie/subscribie/pull/1371) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.191 (Sat Jun 29 2024)
 
 #### 🐛 Bug Fix
