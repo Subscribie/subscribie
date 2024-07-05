@@ -188,6 +188,35 @@ def store_customer():
 def order_summary():
     plan = None
     payment_provider = PaymentProvider.query.first()
+    chosen_option_ids = session.get("chosen_option_ids", None)
+
+    # We create a subscription object regardless of payment,
+    # note this occurs *before* directing the user to checkouts
+    # (such as Stripe) since payment is separate from the
+    # *intent* to create a subscription (that is, a subscription may
+    # be created, with a failure to pay in a business context, and
+    # such subscription would be in arrears (so long as the subscription
+    # plan is not free).
+    # Marking a subscription as having a checkout flow attached to it
+    # is a therefore a separate asynchronous event which may or may not happen
+    # right after a subscription creation, at which point, the created subscription
+    # must be updated with checkout session attributes such as
+    # `stripe_subscription_id=stripe_subscription_id` and `stripe_external_id`
+    # The existance of a subscription object may be located by its
+    # `subscribie_checkout_session_id` (an identifier created by subscribie, not
+    # an external payment provider such as Stripe)
+    subscribie_checkout_session_id = session.get("subscribie_checkout_session_id")
+    log.info(
+        f"Calling create_subscription with subscribie_checkout_session_id: {subscribie_checkout_session_id}"  # noqa: E501
+    )
+    create_subscription(
+        email=session["email"],
+        package=session["package"],
+        currency=get_geo_currency_code(),
+        chosen_option_ids=chosen_option_ids,
+        chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
+        subscribie_checkout_session_id=subscribie_checkout_session_id,  # noqa: E501
+    )
 
     # Check if checkout flow is a donation
     is_donation = session["is_donation"]
@@ -197,16 +226,6 @@ def order_summary():
         # if plan is free, skip Stripe checkout and store subscription right away
         if plan.is_free():
             log.info("Plan is free, so skipping Stripe checkout")
-            chosen_option_ids = session.get("chosen_option_ids", None)
-            create_subscription(
-                email=session["email"],
-                package=session["package"],
-                chosen_option_ids=chosen_option_ids,
-                chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
-                subscribie_checkout_session_id=session.get(
-                    "subscribie_checkout_session_id"
-                ),  # noqa: E501
-            )
 
             return redirect(url_for("checkout.thankyou"))
 
@@ -363,6 +382,33 @@ def stripe_create_checkout_session():
     plan = None
     charge = {}
     metadata = {}
+    # Store the fact the person at least attempted to go to stripe
+    # checkout (https://github.com/Subscribie/subscribie/issues/1370)
+    # so that can distingish between drop-offs before or after attempting
+    # payment via checkout flow.
+
+    # Store stripe_checkout_attampted True or similar against
+    # subscription object using subscribie_checkout_session_id
+    # to determine subscription object
+    email = session["email"]
+    subscribie_checkout_session_id = session.get("subscribie_checkout_session_id")
+    subscription = (
+        Subscription.query.filter_by(
+            subscribie_checkout_session_id=subscribie_checkout_session_id
+        )
+        .filter(Subscription.person.has(email=email))
+        .first()
+    )
+    if subscription is not None:
+        subscription.stripe_user_attempted_checkout_flow = True
+        database.session.commit()
+        log.info(
+            "Updated subscription object with stripe_user_attempted_checkout_flow: True"
+        )
+    else:
+        msg = "Could not locate subscription during stripe_create_checkout_session"
+        log.error(msg)
+
     currency_code = get_geo_currency_code()
     # If VAT tax is enabled, get stripe tax id
     settings = Setting.query.first()
@@ -996,6 +1042,7 @@ def stripe_webhook():
         log.info("Processing checkout.session.completed event")
         session = event["data"]["object"]
         currency = session["currency"].upper()
+        email = session["customer_email"]
         try:
             is_donation = session["metadata"]["is_donation"]
         except KeyError as e:
@@ -1029,22 +1076,6 @@ def stripe_webhook():
         except KeyError:
             chosen_option_ids = None
 
-        chosen_question_ids_answers = None
-        try:
-            chosen_question_ids_answers = json.loads(
-                session["metadata"]["chosen_question_ids_answers"]
-            )  # noqa
-        except KeyError:
-            msg = "KeyError on subscription metadata chosen_question_ids_answers (maybe none for this plan)"  # noqa
-            log.warning(msg)
-        except json.decoder.JSONDecodeError:
-            log.warning("Unable to decode chosen_question_ids_answers")
-
-        try:
-            package = session["metadata"]["package"]
-        except KeyError:
-            package = None
-
         """
         We treat Stripe checkout session.mode equally because
         a subscribie plan may either be a one-off plan or a
@@ -1055,16 +1086,33 @@ def stripe_webhook():
         """
         if is_donation != "True":
             if session["mode"] == "subscription" or session["mode"] == "payment":
-                create_subscription(
-                    currency=currency,
-                    email=session["customer_email"],
-                    package=package,
-                    chosen_option_ids=chosen_option_ids,
-                    chosen_question_ids_answers=chosen_question_ids_answers,
-                    subscribie_checkout_session_id=subscribie_checkout_session_id,
-                    stripe_subscription_id=stripe_subscription_id,
-                    stripe_external_id=session["id"],
+                # Rather than call create_subscription here (as we used to do)
+                # https://github.com/Subscribie/subscribie/issues/1370
+                # Instead, locate the existing subscription object (which are created
+                # irrespective of payments) by it's subscribie_checkout_session_id
+                # which will be stored in the payment providers webhook metadata
+                # and update the subscription object with the currency of the payment,
+                # and relevant Payment
+                # provider checkout attributes (such as `stripe_subscription_id`
+                # and `stripe_external_id`) for Stripe.
+                subscription = (
+                    Subscription.query.filter_by(
+                        subscribie_checkout_session_id=subscribie_checkout_session_id
+                    )
+                    .filter(Subscription.person.has(email=email))
+                    .first()
                 )
+                if subscription is not None:
+                    subscription.stripe_subscription_id = stripe_subscription_id
+                    subscription.stripe_external_id = session["id"]
+                    subscription.currency = currency
+                    database.session.commit()
+                    msg = f"Updated subscription object with stripe_subscription_id: {stripe_subscription_id} and stripe_external_id {session['id']}"  # noqa: E501
+                    log.info(msg)
+                else:
+                    msg = "Webhook event failure. Could not locate subscription object for checkout.session.completed event."  # noqa: E501
+                    log.error(msg)
+                    return msg, 500
         return "OK", 200
 
     if (

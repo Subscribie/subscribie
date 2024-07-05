@@ -396,6 +396,7 @@ class Subscription(database.Model):
     )  # noqa: E501
     question_answers = relationship("Answer", back_populates="subscription")
     currency = database.Column(database.String(), default="USD")
+    stripe_user_attempted_checkout_flow = database.Column(database.Boolean(), default=0)
     subscribie_checkout_session_id = database.Column(database.String())
     stripe_subscription_id = database.Column(database.String())
     stripe_external_id = database.Column(database.String())
