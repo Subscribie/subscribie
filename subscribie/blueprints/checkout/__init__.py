@@ -392,6 +392,10 @@ def stripe_create_checkout_session():
             }
         }
 
+    # Add note to seller if present directly on payment metadata
+    if session.get("note_to_seller", False):
+        metadata["note_to_seller"] = session.get("note_to_seller")
+
     if is_donation is False:
         payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
@@ -429,10 +433,6 @@ def stripe_create_checkout_session():
             }
         if plan.requirements.subscription:
             mode = "subscription"
-
-            # Add note to seller if present directly on payment metadata
-            if session.get("note_to_seller", False):
-                metadata["note_to_seller"] = session.get("note_to_seller")
 
             if charge_vat and is_donation is False:
                 subscription_data["default_tax_rates"] = [tax_rate.stripe_tax_rate_id]
