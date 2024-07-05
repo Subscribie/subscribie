@@ -213,7 +213,7 @@
                                         {% endif %}</li>
                                      <li class=mt-2><strong>History: </strong>
                                       <a href="{{ url_for('admin.transactions',
-                                        subscriber=subscription.person.uuid) }}">View Transactions
+                                        subscriber=subscription.person.uuid) }}">View Transactions ({{ subscription.transactions|length }})
                                       </a>
                                      </li>
                                      <li class=mt-2><strong>Documents: </strong>
@@ -230,6 +230,31 @@
                                          </ul>
                                        {% endif %}
                                      </li>
+                                     {% if subscription.stripe_user_attempted_checkout_flow is sameas True and subscription.transactions|length == 0
+                                        or
+                                           subscription.stripe_user_attempted_checkout_flow is sameas False and subscription.transactions|length == 0
+                                     %}
+
+                                       <li class="mt-2"><strong>Insights:</strong>
+                                         <ul>
+                                           {% if subscription.stripe_user_attempted_checkout_flow is sameas True and subscription.transactions|length == 0 %}
+                                             <li>🔎 During sign-up, the <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">Subscriber</a>
+                                         clicked to visit the payment page but no transactions have been registered yet.
+                                             <a href="{{ url_for("views.view_plan", plan_title=subscription.plan.title, uuid=subscription.plan.uuid ) }}">Share Plan URL</a>
+                                             or contact this subscriber.
+                                             </li>
+                                           {% endif %}
+                                           {% if subscription.stripe_user_attempted_checkout_flow is sameas False and subscription.transactions|length == 0 %}
+                                             <li>🔭 During sign-up the <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">Subscriber</a>
+                                                left before getting to the payment page.
+                                                <a href="{{ url_for("views.view_plan", plan_title=subscription.plan.title, uuid=subscription.plan.uuid ) }}">Share Plan URL</a>
+                                                or contact this subscriber.
+                                             </li>
+
+                                           {% endif %}
+                                         </ul>
+                                       </li>
+                                     {% endif %}
                             </ul>
                         </div>
                     </li>

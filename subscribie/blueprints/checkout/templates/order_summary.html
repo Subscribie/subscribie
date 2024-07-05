@@ -97,10 +97,6 @@
 
 
         <script type="text/javascript">
-        // Create an instance of the Stripe
-        var stripe = Stripe('{{ stripe_pub_key }}', {
-            stripeAccount: "{{ stripe_connected_account_id }}"
-        });
         var checkoutButton = document.getElementById('checkout-button');
 
         checkoutButton.addEventListener('click', function(e) {
@@ -120,6 +116,12 @@
                 return response.json();
             })
             .then(function(session) {
+                // Create an instance of the Stripe
+                // intentionally late to allow stripe_create_checkout_session_url
+                // metrics if / when stripe object creation errors/network
+                var stripe = Stripe('{{ stripe_pub_key }}', {
+                    stripeAccount: "{{ stripe_connected_account_id }}"
+                });
                 return stripe.redirectToCheckout({ sessionId: session.id });
             })
             .then(function(result) {
