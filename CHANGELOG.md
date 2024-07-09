@@ -1,3 +1,16 @@
+# v0.1.193 (Tue Jul 09 2024)
+
+#### 🐛 Bug Fix
+
+- #1368 black [#1372](https://github.com/Subscribie/subscribie/pull/1372) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1368 As a shop owner I can disable multicurrency support [#1372](https://github.com/Subscribie/subscribie/pull/1372) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.192 (Fri Jul 05 2024)
 
 #### 🐛 Bug Fix
