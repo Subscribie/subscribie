@@ -2012,6 +2012,23 @@ def show_api_keys():
     )
 
 
+@admin.route("/enable-geo-currency", methods=["GET", "POST"])
+@login_required
+def enable_geo_currency():
+    settings = Setting.query.first()  # Get current shop settings
+
+    if request.method == "POST":
+        if int(request.form.get("enableGeoCurrency", 0)) == 1:
+            settings.geo_currency_enabled = 1
+        else:
+            settings.geo_currency_enabled = 0
+        flash("Geo currency updated")
+        database.session.commit()
+        return redirect(url_for("admin.enable_geo_currency", settings=settings))
+
+    return render_template("admin/settings/geo_currency_settings.html", settings=settings)
+
+
 @admin.route("/spamcheck/<string:account_name>")
 @login_required
 def check_spam(account_name) -> int:

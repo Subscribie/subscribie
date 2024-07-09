@@ -36,17 +36,31 @@ COUNTRY_CODE_TO_CURRENCY_CODE = {
 
 
 def get_geo_currency_code():
-    """Return currency code based on current detected (or selected)
-    country code.
+    """If geo currency is enabled,
+    Return currency code based on current detected (or selected)
+    country code, otherwise, return the shops default currency code.
     """
-    country_code = get_geo_country_code()
-    # Get currency code from COUNTRY_CODE_TO_CURRENCY_CODE mapping
-    try:
-        currency_code = COUNTRY_CODE_TO_CURRENCY_CODE[country_code]
-    except KeyError as e:
-        log.info(f"Could not map country_code {country_code} to a currency code. {e}")
+    from subscribie.models import Setting
+
+    settings = Setting.query.first()
+    geo_currency_enabled = settings.geo_currency_enabled
+    if geo_currency_enabled is True:
+        country_code = get_geo_country_code()
+        # Get currency code from COUNTRY_CODE_TO_CURRENCY_CODE mapping
+        try:
+            currency_code = COUNTRY_CODE_TO_CURRENCY_CODE[country_code]
+        except KeyError as e:
+            log.info(
+                f"Could not map country_code {country_code} to a currency code. {e}"
+            )
+            currency_code = get_shop_default_currency_code()
+        log.info(f"get_geo_currency_code returned currency_code: {currency_code}")
+    else:
+        log.info(
+            f"geo_currency_enabled is {geo_currency_enabled} so returning shops default currency code"  # noqa: E501
+        )
         currency_code = get_shop_default_currency_code()
-    log.info(f"get_geo_currency_code returned currency_code: {currency_code}")
+        log.info(f"Default currency code returned: {currency_code}")
     return currency_code
 
 
