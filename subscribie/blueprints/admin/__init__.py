@@ -2026,7 +2026,9 @@ def enable_geo_currency():
         database.session.commit()
         return redirect(url_for("admin.enable_geo_currency", settings=settings))
 
-    return render_template("admin/settings/geo_currency_settings.html", settings=settings)
+    return render_template(
+        "admin/settings/geo_currency_settings.html", settings=settings
+    )
 
 
 @admin.route("/spamcheck/<string:account_name>")
