@@ -1,3 +1,15 @@
+# v0.1.194 (Thu Jul 11 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1374 clear session chosen_question_ids_answers betweeen plan sign ups [#1375](https://github.com/Subscribie/subscribie/pull/1375) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.193 (Tue Jul 09 2024)
 
 #### 🐛 Bug Fix
