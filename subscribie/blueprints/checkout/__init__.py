@@ -762,6 +762,9 @@ def create_subscription(
                         log.error("Could not set cancel_at: {e}")
 
         newSubscriberEmailNotification()
+    # Clear chosen_question_ids_answers from session since we've now stored them
+    # Ref https://github.com/Subscribie/subscribie/issues/1374
+    session.pop("chosen_question_ids_answers", None)
     return subscription
 
 
