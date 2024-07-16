@@ -305,6 +305,7 @@
               <th>Attempts</th>
               <th>Errors</th>
               <th>Next retry</th>
+              <th>Download</th>
             </tr>
               {% for invoice in invoices %}
               <tr>
@@ -318,6 +319,7 @@
                 {% else %}
                 <td>{{ invoice.next_payment_attempt | timestampToDate or ''}}</td>
                 {% endif %}
+                <td><a href="{{ url_for('admin.download_invoice', invoice_id=invoice.id) }}" title="Download invoice">Download</a></td>
               </tr>
               {% endfor %}
             </table>
