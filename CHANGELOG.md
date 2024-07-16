@@ -1,3 +1,16 @@
+# v0.1.195 (Tue Jul 16 2024)
+
+#### 🐛 Bug Fix
+
+- #1376 black format [#1377](https://github.com/Subscribie/subscribie/pull/1377) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1376 As a shop owner, I can download invoices when I view an individual subscriber [#1377](https://github.com/Subscribie/subscribie/pull/1377) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.194 (Thu Jul 11 2024)
 
 #### 🐛 Bug Fix
