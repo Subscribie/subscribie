@@ -1363,6 +1363,7 @@ def show_recent_subscription_cancellations():
 
 
 @admin.route("/refresh-subscription-status/<subscription_uuid>", methods=["GET"])
+@login_required
 def refresh_subscription(subscription_uuid: str):
     update_stripe_subscription_status(subscription_uuid)
     flash("The subscription status has been force refreshed")
