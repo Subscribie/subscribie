@@ -106,6 +106,23 @@ def failed_invoices():
     )
 
 
+@admin.route("/download-invoice/<invoice_id>", methods=["GET"])
+@login_required
+def download_invoice(invoice_id:str):
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    try:
+        stripe_invoice = stripe.Invoice.retrieve(
+            id=invoice_id, stripe_account=stripe_connect_account_id
+        )
+        return redirect(stripe_invoice.hosted_invoice_url)
+    except stripe._error.InvalidRequestError as e:
+        msg = f"Unable to download invoice {e}"
+        log.error(msg)
+        return msg
+
+
 @admin.route("/fetch-upcoming_invoices")
 def fetch_upcoming_invoices():
     fetch_stripe_upcoming_invoices()
