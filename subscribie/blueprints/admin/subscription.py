@@ -3,6 +3,7 @@ from subscribie.database import database
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
+    get_stripe_connect_account_id,
     stripe_connect_active,
 )
 from subscribie.tasks import background_task
@@ -12,6 +13,50 @@ import logging
 
 
 log = logging.getLogger(__name__)
+
+
+def update_stripe_subscription_status(subscription_uuid):
+    """Fetch the status of a single Stripe subscription
+    by querying the status of the subscription object at
+    Stripe.
+    """
+    stripe.api_key = get_stripe_secret_key()
+    connect_account_id = get_stripe_connect_account_id()
+    if stripe.api_key is None:
+        msg = "Stripe must be connected first"
+        log.warning(msg)
+        return msg, 500
+
+    if stripe_connect_active() is False:
+        msg = "Stripe connect must be connected."
+        log.ingo(msg)
+        return msg, 500
+
+    subscription = (
+        database.session.query(Subscription)
+        .where(Subscription.uuid == subscription_uuid)
+        .first()
+    )
+    if subscription:
+        # Get associated stripe subscription object & update status
+        try:
+            stripeSubscription = stripe.Subscription.retrieve(
+                subscription.stripe_subscription_id, stripe_account=connect_account_id
+            )
+            log.debug(
+                f"setting Subscribie subscription {subscription.uuid} status to: {stripeSubscription.status} for Stripe subscription: {stripeSubscription.id}"  # noqa: E501
+            )
+
+            subscription.stripe_status = stripeSubscription.status
+            # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
+            if stripeSubscription.ended_at is not None:
+                subscription.stripe_ended_at = stripeSubscription.ended_at
+            log.info(subscription.stripe_status)
+            log.info(subscription.stripe_subscription_id)
+            database.session.commit()
+        except Exception as e:
+            log.error("Failed updating individual subscription status. {e}")
+            return "Failed updating individual subscription status.", 500
 
 
 @background_task

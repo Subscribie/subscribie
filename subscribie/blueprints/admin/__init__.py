@@ -78,7 +78,10 @@ from subscribie.models import (
     Document,
     PlanQuestionAssociation,
 )
-from .subscription import update_stripe_subscription_statuses
+from .subscription import (
+    update_stripe_subscription_statuses,
+    update_stripe_subscription_status,
+)
 from .stats import (
     get_number_of_active_subscribers,
     get_number_of_subscribers,
@@ -1357,6 +1360,13 @@ def show_recent_subscription_cancellations():
         "admin/recent_subscription_cancellations.html",
         cancellations=cancellations,
     )
+
+
+@admin.route("/refresh-subscription-status/<subscription_uuid>", methods=["GET"])
+def refresh_subscription(subscription_uuid: str):
+    update_stripe_subscription_status(subscription_uuid)
+    flash("The subscription status has been force refreshed")
+    return redirect(url_for("admin.subscribers"))
 
 
 @admin.route("/refresh-subscription-statuses")

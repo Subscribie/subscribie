@@ -152,6 +152,10 @@
                                               <div class="subscription-status alert alert-success">Active</div>
                                            {% elif subscription.stripe_status == 'past_due'  %}
                                               <div class="subscription-status alert alert-danger">past_due</div>
+                                           {% elif subscription.stripe_status is sameas None and subscription.transactions|length > 0 %}
+                                              <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }} <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
+                                                (Force Refresh)</a>
+                                              </div>
                                            {% else %}
                                               <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                            {% endif %}
