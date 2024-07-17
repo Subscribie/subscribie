@@ -1,3 +1,15 @@
+# v0.1.196 (Wed Jul 17 2024)
+
+#### 🐛 Bug Fix
+
+- 1376 as a shop owner i can view all invoices of a specific subscriber and refresh individual subscription statuses [#1378](https://github.com/Subscribie/subscribie/pull/1378) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.195 (Tue Jul 16 2024)
 
 #### 🐛 Bug Fix
