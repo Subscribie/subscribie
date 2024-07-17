@@ -59,7 +59,7 @@
         {% for person in people %}
           <tr>
             <td data-th="Name">
-              <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}">{{ person.given_name }} {{ person.family_name }}</a>
+              <a href="{{ url_for('admin.show_subscriber', subscriber_id=person.id) }}" id="person-{{ person.uuid }}">{{ person.given_name }} {{ person.family_name }}</a>
               <br />
             </td>
             <td data-th="Date">{% if person.created_at %} 
@@ -155,6 +155,7 @@
                                            {% else %}
                                               <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                            {% endif %}
+                                           {# always show Force Refresh link so long as there's > 0 transactions against a subscription #}
                                         {% else %}
                                            <div class="subscription-status alert alert-success">Paid</div>
                                         {% endif %}
@@ -182,7 +183,12 @@
                                             </details>
                                         {% endif %}
                                     </li>
-                                    <li><strong>Actions: </strong>
+                                    <li><strong>Actions: </strong><br />
+                                        {% if subscription.transactions|length > 0 %}
+                                              <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
+                                                Refresh Status
+                                              </a> |
+                                        {% endif %}
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if subscription.stripe_status|lower in ['active', 'trialing', 'past_due', 'unpaid'] %}
                                                 {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}
