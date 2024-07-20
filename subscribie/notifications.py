@@ -17,11 +17,28 @@ def newSubscriberEmailNotification(*args, **kwargs):
     try:
         company = Company.query.first()
         msg = EmailMessageQueue()
-        msg["subject"] = f"{company.name} - new subscriber"
+        subscriber_email = kwargs.get("subscriber_email")
+        log.debug(
+            f"newSubscriberEmailNotification subscriber_email is: {subscriber_email}"
+        )
+        msg["subject"] = f"{company.name} - new subscriber ({subscriber_email})"
         msg["from"] = current_app.config["EMAIL_LOGIN_FROM"]
         shopadmins = User.query.all()  # all shop admins
         msg["to"] = [user.email for user in shopadmins]  # all shop admins
-        msg.set_content("you have a new subscriber!")
+        # use user-new-subscriber-notification.jinja2.html
+        email_template = str(
+            Path(
+                current_app.root_path
+                + "/emails/user-new-subscriber-notification.jinja2.html"
+            )
+        )
+        with open(email_template) as file_:
+            template = Template(file_.read())
+            html = template.render(**kwargs)
+            msg.add_alternative(html, subtype="html")
+            log.debug(
+                f"newSubscriberEmailNotification rendered as:\nSubject: {msg['subject']}\n{html}"  # noqa: E501
+            )
         setting = Setting.query.first()
         if setting.reply_to_email_address is not None:
             msg["reply-to"] = setting.reply_to_email_address

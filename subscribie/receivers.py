@@ -4,7 +4,10 @@ from subscribie.email import (
     send_donation_thankyou_email,
     send_welcome_email,
 )
-from subscribie.notifications import subscriberPaymentFailedNotification
+from subscribie.notifications import (
+    subscriberPaymentFailedNotification,
+    newSubscriberEmailNotification,
+)
 from subscribie.models import Subscription, Document
 from subscribie.database import database
 import sqlalchemy
@@ -100,8 +103,31 @@ def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
 
 
 def receiver_new_subscriber(*args, **kwargs):
-    to_email = kwargs.get("email")
-    send_welcome_email(to_email=to_email)
+    subscription_uuid = kwargs.get("subscription_uuid")
+    subscription = None
+    try:
+        subscription = (
+            Subscription.query.where(Subscription.uuid == subscription_uuid)
+            .execution_options(include_archived=True)
+            .one()
+        )
+        subscriber_email = subscription.person.email
+    except sqlalchemy.exc.NoResultFound:
+        if subscription is None and subscription_uuid != "test":
+            msg = "Got receiver_new_subscriber event but no associated subscription found."  # noqa: E501
+            log.error(msg)
+            return
+        elif subscription_uuid == "test":
+            log.info("Testing receiver_new_subscriber with dummy subscription")
+            subscriber_email = "test-subscriber@example.com"
+
+    kwargs = {}
+    kwargs["subscription_uuid"] = subscription_uuid
+    kwargs["subscriber_email"] = subscriber_email
+    kwargs["subscription"] = subscription
+
+    send_welcome_email(to_email=subscriber_email, subscription=subscription)
+    newSubscriberEmailNotification(**kwargs)
 
 
 def receiver_new_donation(*args, **kwargs):

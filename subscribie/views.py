@@ -29,7 +29,8 @@ from .models import (
 )
 from subscribie.blueprints.style import inject_custom_style
 from subscribie.database import database
-from subscribie.signals import register_signal_handlers
+from subscribie.signals import register_signal_handlers, signal_new_subscriber
+
 from subscribie.blueprints.admin.stats import (
     get_number_of_active_subscribers,
     get_monthly_revenue,
@@ -48,6 +49,7 @@ from urllib.parse import urlparse
 from pathlib import PurePosixPath
 from urllib.parse import unquote
 from sqlalchemy import func
+from subscribie.notifications import newSubscriberEmailNotification
 
 log = logging.getLogger(__name__)
 
@@ -175,6 +177,12 @@ def inject_template_globals():
 @bp.route("/health")
 def health():
     return "OK", 200
+
+
+@bp.route("/test-signal_new_subscriber")
+def test_email():
+    signal_new_subscriber.send(subscription_uuid="test")
+    return "Test signal_new_subscriber email generated."
 
 
 @bp.route("/notification")
