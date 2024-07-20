@@ -1,0 +1,9 @@
+You have a new subscriber! <br />
+
+{% if subscriber_email %}
+Email: {{ subscriber_email }}<br />
+{% endif %}
+
+{% if subscription %}
+Name: {{ subscription.person.given_name }} {{ subscription.person.family_name }}<br />
+{% endif %}

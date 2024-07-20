@@ -5,7 +5,6 @@ from subscribie.models import (
     Setting,
     User,
     Company,
-    Plan,
     EmailTemplate,
 )
 from subscribie import settings
@@ -53,9 +52,12 @@ def send_email(to_email=None, subject=None, body_html=None, body_plaintext=None)
         log.error(f"Failed to send email. {e}")
 
 
-def send_welcome_email(to_email=None):
+def send_welcome_email(to_email=None, subscription=None, **kwargs):
     company = Company.query.first()
-    plan = Plan.query.filter_by(uuid=session.get("plan", None)).first()
+    if subscription is None:
+        log.error("Cannot send_welcome_email because subscription is None")
+        return
+    plan = subscription.plan
 
     # Send welcome email (either default template of custom, if active)
     custom_template = EmailTemplate.query.first()

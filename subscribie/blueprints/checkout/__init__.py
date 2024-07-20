@@ -277,6 +277,20 @@ def instant_payment_complete():
     return redirect(url_for("checkout.thankyou", _scheme=scheme, _external=True))
 
 
+def return_thankyou_page():
+    settings = Setting.query.first()
+    # If a custom_thank_you_url is set,
+    # get custom_thank_you_url
+    # so can redirect subscriber to the custom_thank_you_url
+    # otherwise use default thankyou.html
+    # https://github.com/Subscribie/subscribie/issues/1219
+    custom_thank_you_url = settings.custom_thank_you_url
+    if custom_thank_you_url is None:
+        return render_template("thankyou.html")
+    else:
+        return redirect(custom_thank_you_url)
+
+
 @checkout.route("/thankyou", methods=["GET"])
 def thankyou():
     is_donation = session.get("is_donation", False)
@@ -285,6 +299,15 @@ def thankyou():
     if session.get("plan") is None and is_donation is False:
         log.warn("Visit to /thankyou with no plan in session")
         return redirect("/")
+
+    # Remove subscribie_checkout_session_id from session
+    checkout_session_id = session.pop("subscribie_checkout_session_id", None)
+    if checkout_session_id is None:
+        log.warning(
+            """checkout_session_id returned None. redirecting to thank you page.\n
+            This can happen if the thank you page is reloaded, for example."""
+        )
+        return return_thankyou_page()
 
     # Activate shop if session["sitename"] present
     if session.get("sitename"):
@@ -321,8 +344,6 @@ def thankyou():
                 f"Unable to activate shop {sitename}. Unhandled reason: {e}."
             )  # noqa: E501
 
-    # Remove subscribie_checkout_session_id from session
-    checkout_session_id = session.pop("subscribie_checkout_session_id", None)
     email = session.get("email", current_app.config["MAIL_DEFAULT_SENDER"])
 
     if is_donation is False:
@@ -342,7 +363,7 @@ def thankyou():
 
         # Signal that a new subscriber has signed up
         signal_new_subscriber.send(
-            current_app._get_current_object(), email=email, subscription_uuid=uuid
+            current_app._get_current_object(), subscription_uuid=uuid
         )
     else:
         uuid = None
@@ -363,17 +384,7 @@ def thankyou():
         subscription_uuid=uuid,
     )
 
-    # If a custom_thank_you_url is set,
-    # redirect subscriber to the custom_thank_you_url
-    # otherwise use default thankyou.html
-    # https://github.com/Subscribie/subscribie/issues/1219
-    settings = Setting.query.first()
-
-    custom_thank_you_url = settings.custom_thank_you_url
-    if custom_thank_you_url is None:
-        return render_template("thankyou.html")
-    else:
-        return redirect(custom_thank_you_url)
+    return return_thankyou_page()
 
 
 @checkout.route("/stripe-create-checkout-session", methods=["POST"])
@@ -761,7 +772,6 @@ def create_subscription(
                     if subscription.plan.is_free() is False:
                         log.error("Could not set cancel_at: {e}")
 
-        newSubscriberEmailNotification()
     # Clear chosen_question_ids_answers from session since we've now stored them
     # Ref https://github.com/Subscribie/subscribie/issues/1374
     session.pop("chosen_question_ids_answers", None)
