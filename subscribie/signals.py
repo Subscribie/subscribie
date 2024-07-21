@@ -46,7 +46,6 @@ def register_signal_handlers():
     """Connect signals to recievers
     This is called during flask app startup in views.py
     """
-    signal_journey_complete.connect(newSubscriberEmailNotification)
     signal_new_subscriber.connect(receiver_new_subscriber)
     signal_journey_complete.connect(receiver_attach_documents_to_subscription)
     signal_payment_failed.connect(

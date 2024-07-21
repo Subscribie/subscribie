@@ -86,7 +86,7 @@ def send_welcome_email(to_email=None, subscription=None, **kwargs):
         plan=plan,
         subscriber_email=to_email,
     )
-
+    log.info(f"send_welcome_email rendered as:\n{html}")
     send_email(
         to_email=to_email,
         subject=company.name + " " + "Subscription Confirmation",
