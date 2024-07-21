@@ -189,6 +189,8 @@ def order_summary():
     plan = None
     payment_provider = PaymentProvider.query.first()
     chosen_option_ids = session.get("chosen_option_ids", None)
+    # Check if checkout flow is a donation
+    is_donation = session.get("is_donation", False)
 
     # We create a subscription object regardless of payment
     # See https://github.com/Subscribie/subscribie/issues/1369
@@ -210,17 +212,16 @@ def order_summary():
     log.info(
         f"Calling create_subscription with subscribie_checkout_session_id: {subscribie_checkout_session_id}"  # noqa: E501
     )
-    create_subscription(
-        email=session["email"],
-        package=session["package"],
-        currency=get_geo_currency_code(),
-        chosen_option_ids=chosen_option_ids,
-        chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
-        subscribie_checkout_session_id=subscribie_checkout_session_id,  # noqa: E501
-    )
+    if is_donation is False:
+        create_subscription(
+            email=session["email"],
+            package=session.get("package", None),
+            currency=get_geo_currency_code(),
+            chosen_option_ids=chosen_option_ids,
+            chosen_question_ids_answers=session.get("chosen_question_ids_answers"),
+            subscribie_checkout_session_id=subscribie_checkout_session_id,  # noqa: E501
+        )
 
-    # Check if checkout flow is a donation
-    is_donation = session["is_donation"]
     # If is a donation, then there is no plan associated
     if is_donation is False:
         plan = Plan.query.filter_by(uuid=session["plan"]).first()
