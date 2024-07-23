@@ -14,6 +14,7 @@ def export_subscribers():
     if len(subscriptions) == 0:
         return "You don't have any subscribers yet."
     subscribers = []
+    all_fieldnames = set()
     for subscription in subscriptions:
         if subscription.person is not None:
             person = {
@@ -26,10 +27,12 @@ def export_subscribers():
             # Include subscription question answers in export, if any
             if subscription.question_answers:
                 for answer in subscription.question_answers:
-                    person[
-                        f"question_id-{answer.question_id}-{json.dumps(answer.question_title)}"  # noqa: E501
-                    ] = json.dumps(answer.response)
+                    field_name = f"question_id-{answer.question_id}-{json.dumps(answer.question_title)}"  # noqa: E501
+                    person[field_name] = json.dumps(answer.response)
+                    all_fieldnames.add(field_name)
             subscribers.append(person)
+            # Collect static fieldnames
+            all_fieldnames.update(person.keys())
         else:
             logging.info(
                 f"Excluding subscription {subscription.id} as no person attached"
@@ -41,7 +44,7 @@ def export_subscribers():
 
         outfile = io.StringIO()
         outcsv = csv.DictWriter(
-            outfile, fieldnames=subscribers[0].keys(), extrasaction="ignore"
+            outfile, fieldnames=list(all_fieldnames), extrasaction="ignore"
         )
         outcsv.writeheader()
         for subscriber in subscribers:
