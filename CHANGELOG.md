@@ -1,3 +1,17 @@
+# v0.1.197 (Tue Jul 23 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1381 Include all question columns in CSV export [#1382](https://github.com/Subscribie/subscribie/pull/1382) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix: Dont attempt to create subscription if donation [#1380](https://github.com/Subscribie/subscribie/pull/1380) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1379 as a shop owner I see the subscriber name and email in new subscriber email notifications [#1380](https://github.com/Subscribie/subscribie/pull/1380) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.196 (Wed Jul 17 2024)
 
 #### 🐛 Bug Fix
