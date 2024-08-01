@@ -45,7 +45,6 @@ from subscribie.signals import (
     signal_payment_failed,
     signal_new_donation,
 )
-from subscribie.notifications import newSubscriberEmailNotification
 import stripe
 import backoff
 import os
@@ -1090,6 +1089,39 @@ def stripe_webhook():
             chosen_option_ids = json.loads(chosen_option_ids)
         except KeyError:
             chosen_option_ids = None
+
+        # Set proration_behavior if is a subscription
+        # https://github.com/Subscribie/subscribie/issues/1133
+        # TODO proration_behavior should be set regarless of
+        # payment provider.
+        if stripe_subscription_id:
+            subscription = (
+                Subscription.query.filter_by(
+                    subscribie_checkout_session_id=subscribie_checkout_session_id
+                )
+                .filter(Subscription.person.has(email=email))
+                .first()
+            )
+            if subscription is not None:
+                stripe.api_key = get_stripe_secret_key()
+                connect_account_id = get_stripe_connect_account_id()
+                proration_behavior = subscription.plan.proration_behavior or "none"
+                log.info(
+                    f"Updating stripe proration_behavior to {proration_behavior}"
+                )  # noqa: E501
+                try:
+                    stripe.Subscription.modify(
+                        stripe_subscription_id,
+                        stripe_account=connect_account_id,
+                        proration_behavior=proration_behavior,
+                    )
+                    # Set the local db model stripe_proration_behavior
+                    subscription.stripe_proration_behavior = proration_behavior
+                    database.session.commit()
+                except Exception as e:  # noqa
+                    log.error(
+                        "Could not update proration_behavior: '{e}' for stripe_subscription_id {stripe_subscription_id}"  # noqa: E501
+                    )
 
         """
         We treat Stripe checkout session.mode equally because
