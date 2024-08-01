@@ -64,7 +64,7 @@ from pathlib import Path
 from .getLoadedModules import getLoadedModules
 import uuid
 from sqlalchemy import desc
-from datetime import datetime
+from datetime import datetime, time
 from subscribie.models import (
     Transaction,
     EmailTemplate,
@@ -135,10 +135,10 @@ def ordinal(n):
 
 
 @admin.app_template_filter()
-def timestampToDate(timestamp: str):
+def timestampToDate(timestamp: str, date_format="%d-%m-%Y"):
     if timestamp is None:
         return None
-    return datetime.fromtimestamp(int(timestamp)).strftime("%d-%m-%Y")
+    return datetime.fromtimestamp(int(timestamp)).strftime(date_format)
 
 
 def dtStylish(dt, f):
@@ -617,6 +617,16 @@ def edit():
             database.session.add(draftPlan)
             plan_requirements = PlanRequirements()
             draftPlan.cancel_at = cancel_at
+            proration_behavior = getPlan(form.proration_behavior.data, index)
+            if proration_behavior == "on":
+                proration_behavior = "create_prorations"
+                msg = f"Updating plan proration_behavior to '{proration_behavior}'"
+                log.debug(msg)
+            else:
+                proration_behavior = "none"
+                msg = f"Updating plan proration_behavior to '{proration_behavior}'"
+                log.debug(msg)
+            draftPlan.proration_behavior = proration_behavior
             draftPlan.uuid = str(uuid.uuid4())
             draftPlan.parent_plan_revision_uuid = plan.uuid
             draftPlan.requirements = plan_requirements
@@ -727,6 +737,22 @@ def edit():
                 new_plan_question_assoc.plan_id = draftPlan.id
                 database.session.add(new_plan_question_assoc)
 
+            # If cancel_at is not set, ensure plan cancel_at is not set
+            if request.form.get(f"cancel_at_set-{index}") is None:
+                draftPlan.cancel_at = None
+            else:
+                # If cancel_at_set is set get date and time and convert to
+                # timestamp
+                if getPlan(form.cancel_at.data, index) != "":
+                    cancel_at_date = datetime.strptime(
+                        getPlan(form.cancel_at.data, index), "%Y-%m-%d"
+                    )
+                    cancel_at_time = getPlan(form.cancel_at_time.data, index) or time(
+                        hour=0, minute=0, second=0, microsecond=0
+                    )  # noqa: E501
+                    cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time)
+                    draftPlan.cancel_at = int(float(cancel_at.timestamp()))
+
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
@@ -836,6 +862,22 @@ def add_plan():
 
             cancel_at = datetime.combine(cancel_at_date.date(), cancel_at_time.time())
             draftPlan.cancel_at = int(float(cancel_at.timestamp()))
+
+        # Set proration_behavior
+        # See:
+        # - https://github.com/Subscribie/subscribie/issues/1133
+        # - https://docs.stripe.com/api/subscriptions/create#create_subscription-proration_behavior  # noqa: E501
+        proration_behavior = request.form.get("proration_behavior-0")
+        if proration_behavior == "on":
+            proration_behavior = "create_prorations"
+            msg = f"Setting plan proration_behavior to '{proration_behavior}'"
+            log.debug(msg)
+        else:
+            proration_behavior = "none"
+            msg = f"Setting plan proration_behavior to '{proration_behavior}'"
+            log.debug(msg)
+
+        draftPlan.proration_behavior = proration_behavior
 
         # filling plan price_list with existing price_lists
         draftPlan.assignDefaultPriceLists()

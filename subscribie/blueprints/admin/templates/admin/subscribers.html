@@ -155,6 +155,13 @@
                                         {% else %}
                                           <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                         {% endif %}
+                                        <li><strong>Proration mode: </strong>
+                                          {% if subscription.stripe_proration_behavior == "create_prorations" %}
+                                            Apply Pro Rata Charges
+                                          {% elif subscription.stripe_proration_behavior == "none" %}
+                                            No Pro Rata Charges
+                                          {% endif %}
+                                        </li>                                        
                                     {% else %}
                                         <div class="subscription-status alert alert-success">Paid</div>
                                     {% endif %}
