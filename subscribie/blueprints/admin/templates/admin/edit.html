@@ -233,6 +233,51 @@
                           Then, you can send a link to your customer(s) to sign-up to the private plan.
                         </small>
                       </div>
+                      <div class="form-group ">
+                            <div class="form-check">
+                              <input type="checkbox" value="yes" class="form-check-input toggle" name="cancel_at_set-{{ loop.index0 }}" id="cancel_at_set-{{ loop.index0 }}" {% if plan.cancel_at and plan.cancel_at != 0 %} checked {% endif %}>
+                              <label class="form-check-label font-weight-bolder" for="cancel_at_set-{{ loop.index0 }}">Cancel at</label>
+                            </div>
+                            <small class="form-text text-muted">
+                              Cancel all subscriptions to this plan at this date / time. This is useful if you run a
+                              membership style organisation with seasons (such as a Football club).
+                            </small>
+                      </div>
+                      <div class="form-group extra_fields" id="cancel_at" >
+                        <label for="cancel_at_date-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Date &amp; time to Cancel at</label>
+                        <input type="date" class="form-control" name="cancel_at-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%Y-%m-%d") }}" {% endif %} id="cancel_at_date-{{ loop.index0 }}">
+                        <small class="form-text text-muted mb-2">
+                          Date (e.g. 30th June 2022) {{ plan.cancel_at|timestampToDate("%H:%M") }}
+                        </small>
+                        <input type="time" class="form-control" name="cancel_at_time-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%H:%M") }}" {% endif %} id="cancel_at_time-{{ loop.index0 }}">
+                        <small class="form-text text-muted">
+                          Time (e.g. midnight) {{ plan.proration_behavior }}
+                        </small>
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="off" id="prorate_option2-{{ loop.index0 }}" checked>
+                          <label class="form-check-label" for="prorate_option2-{{ loop.index0 }}">
+                            Do not prorate
+                          </label>
+                          <small class="form-text text-muted">
+                            Charge subscribers the full amount of the subscription, even
+                            if it ends before the period is over.
+                          </small>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="on" id="prorate_option1-{{ loop.index0 }}" {% if plan.proration_behavior == "create_prorations" %} checked {% endif %} />
+                          <label class="form-check-label" for="prorate_option1-{{ loop.index0 }}">
+                            Prorate
+                          </label>
+                          <small class="form-text text-muted">
+                            Don't charge subscribers the full amount if the subscription
+                            ends before the period is over. For example, if a monthly
+                            subscription ends partway through the month, the final charge
+                            will be less since it is prorated based on the time used.
+                          </small>
+                        </div>
+                      </div>
+
                       <a href="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title)}}" target="_blank">Share URL</a>
                     </fieldset>
                     <!-- end plan description & settings -->
