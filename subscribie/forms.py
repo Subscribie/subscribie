@@ -9,10 +9,12 @@ from wtforms import (
     TextAreaField,
     IntegerField,
     MultipleFileField,
+    TimeField,
 )
 from wtforms.validators import Optional, DataRequired, Email as EmailValid
 from flask_wtf.file import FileField, FileAllowed
 from flask_uploads import UploadSet, IMAGES
+from datetime import time
 
 
 class StripWhitespaceForm(FlaskForm):
@@ -76,6 +78,14 @@ class PlansForm(StripWhitespaceForm):
     cancel_at = FieldList(
         StringField("Cancel at", [validators.optional()], default=False)
     )
+    cancel_at_time = FieldList(
+        TimeField(
+            "Cancel at time",
+            [validators.optional()],
+            default=time(hour=0, minute=0, second=0, microsecond=0),
+        )
+    )  # noqa: E501
+    proration_behavior = FieldList(StringField("proration_behavior"))
     description = FieldList(
         StringField("Description", [validators.optional()], default=False)
     )

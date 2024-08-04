@@ -142,6 +142,15 @@
                                 (No up-front fee)
                             {% endif %}
                                     </span>
+                                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+                                    <li><strong>Proration mode: </strong>
+                                      {% if subscription.stripe_proration_behavior == "create_prorations" %}
+                                        Apply Pro Rata Charges
+                                      {% elif subscription.stripe_proration_behavior == "none" %}
+                                        No Pro Rata Charges
+                                      {% endif %}
+                                    </li>
+                                   {% endif %}
                                     <li><strong>Status:</strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                            {% if subscription.stripe_pause_collection == "void" %}
