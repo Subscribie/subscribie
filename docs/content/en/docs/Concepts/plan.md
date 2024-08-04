@@ -1,5 +1,6 @@
 ---
 title: "Plans"
+linkTitle: "Plan"
 date: 2022-11-05
 weight: 2
 description: >
