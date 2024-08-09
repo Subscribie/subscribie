@@ -201,7 +201,18 @@
                 <strong>{{ subscription.plan.title }}</strong><br />
                 <strong>Status:</strong> {{ subscription.stripe_status or 'Unknown' }} {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
                 <br />
-                <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
+                <strong>Date Started: </strong>
+                {% if subscription.stripe_start_date %}
+                    {{ subscription.stripe_start_date| timestampToDate }}
+                {% elif subscription.stripe_subscription_id is not sameas None %}
+                    <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
+                      (Fetch)
+                    </a>
+                {% endif %}
+                {% if subscription.stripe_subscription_id is sameas None %}
+                    Never
+                {% endif %}
+                <br />
                 <strong>Interval Unit:</strong> 
                         {% if subscription.plan.requirements.subscription %}
                           {{ subscription.plan.interval_unit|capitalize }} 

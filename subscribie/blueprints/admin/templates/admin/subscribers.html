@@ -125,7 +125,18 @@
                                     </li>
                                 {% endif %}
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
-                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d-%m-%Y') }}</li>
+                                <li><strong>Date started: </strong>
+                                    {% if subscription.stripe_start_date %}
+                                      {{ subscription.stripe_start_date| timestampToDate }}
+                                    {% elif subscription.stripe_subscription_id is not sameas None %}
+                                      <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
+                                        Refresh
+                                      </a>
+                                    {% endif %}
+                                    {% if subscription.stripe_subscription_id is sameas None %}
+                                        Never
+                                    {% endif %}
+                                </li>
                                 <li>
                                     {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                         <strong>Price: </strong>

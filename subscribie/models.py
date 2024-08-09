@@ -387,6 +387,7 @@ class Subscription(database.Model):
 
     # List of associated Stripe Invoices (may not be live synced)
     stripe_invoices = relationship("StripeInvoice")
+    stripe_start_date = database.Column(database.Integer(), nullable=True)
     created_at = database.Column(
         database.DateTime, default=datetime.datetime.now(datetime.UTC)
     )
@@ -447,9 +448,13 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.MONTHLY,
                     interval=1,
-                    until=datetime.datetime.now(datetime.UTC)
-                    + relativedelta(months=+1),
-                    dtstart=pytz.utc.localize(self.created_at),
+                    dtstart=pytz.utc.localize(
+                        datetime.datetime.fromtimestamp(int(self.stripe_start_date))
+                    ),  # noqa: E501
+                ).between(  # TODO revisit this 'improvement' the key is to take away elapsed time (paritial periods) and not blindly report the next date and the next period from datetime.now()
+                    datetime.datetime.now(datetime.UTC),
+                    datetime.datetime.now(datetime.UTC) + relativedelta(months=+1),
+                    inc=True,
                 )
             )[-1]
 

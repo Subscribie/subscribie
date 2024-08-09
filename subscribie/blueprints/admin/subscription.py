@@ -48,6 +48,9 @@ def update_stripe_subscription_status(subscription_uuid):
             )
 
             subscription.stripe_status = stripeSubscription.status
+            if stripeSubscription.created is not None:
+                subscription.stripe_start_date = stripeSubscription.created
+
             # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
             if stripeSubscription.ended_at is not None:
                 subscription.stripe_ended_at = stripeSubscription.ended_at
@@ -125,6 +128,8 @@ def update_stripe_subscription_statuses(app):
                         # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
                         if stripeSubscription.ended_at is not None:
                             subscription.stripe_ended_at = stripeSubscription.ended_at
+                        if stripeSubscription.created is not None:
+                            subscription.stripe_start_date = stripeSubscription.created
                         log.info(subscription.stripe_status)
                         log.info(subscription.stripe_subscription_id)
                         database.session.commit()
