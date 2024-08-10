@@ -1,3 +1,15 @@
+# v0.1.198 (Sat Aug 10 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1387 create_at run at insertion time hotfix [#1388](https://github.com/Subscribie/subscribie/pull/1388) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.197 (Tue Jul 23 2024)
 
 #### 🐛 Bug Fix
