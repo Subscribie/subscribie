@@ -99,11 +99,11 @@ class HasArchived(object):
     archived = Column(Boolean, nullable=True, default=0)
 
 
-class CreatedAt(object):
-    """Mixin that identifies a class as having created_at entities"""
+class HasCreatedAt(object):
+    """Mixin that identifies a class as having created_at column"""
 
     created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+        database.DateTime, default=lambda: datetime.datetime.now(datetime.UTC)
     )
 
 
@@ -113,14 +113,11 @@ class HasReadOnly(object):
     read_only = Column(Boolean, nullable=False, default=0)
 
 
-class User(database.Model):
+class User(database.Model, HasCreatedAt):
     __tablename__ = "user"
     id = database.Column(database.Integer(), primary_key=True)
     email = database.Column(database.String())
     password = database.Column(database.String())
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     active = database.Column(database.String)
     login_token = database.Column(database.String)
     password_reset_string = database.Column(database.String())
@@ -136,15 +133,14 @@ class User(database.Model):
         return "<User {}>".format(self.email)
 
 
-class Person(database.Model, HasArchived):
+class Person(database.Model, HasArchived, HasCreatedAt):
     __tablename__ = "person"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     sid = database.Column(database.String())
-    ts = database.Column(database.DateTime, default=datetime.datetime.now(datetime.UTC))
+    ts = database.Column(
+        database.DateTime, default=lambda: datetime.datetime.now(datetime.UTC)
+    )
     given_name = database.Column(database.String())
     family_name = database.Column(database.String())
     full_name = database.column_property(given_name + " " + family_name)
@@ -357,7 +353,7 @@ association_table_subscription_to_document = database.Table(
 )
 
 
-class Subscription(database.Model):
+class Subscription(database.Model, HasCreatedAt):
     __tablename__ = "subscription"
     id = database.Column(database.Integer(), primary_key=True)
     uuid = database.Column(database.String(), default=uuid_string)
@@ -387,9 +383,6 @@ class Subscription(database.Model):
 
     # List of associated Stripe Invoices (may not be live synced)
     stripe_invoices = relationship("StripeInvoice")
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     transactions = relationship("Transaction", back_populates="subscription")
     chosen_options = relationship(
         "ChosenOption", back_populates="subscription"
@@ -429,7 +422,8 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.YEARLY,
                     interval=1,
-                    until=datetime.datetime.now(datetime.UTC) + relativedelta(years=+1),
+                    until=lambda: datetime.datetime.now(datetime.UTC)
+                    + relativedelta(years=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )
             )[-1]
@@ -438,7 +432,8 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.WEEKLY,
                     interval=1,
-                    until=datetime.datetime.now(datetime.UTC) + relativedelta(weeks=+1),
+                    until=lambda: datetime.datetime.now(datetime.UTC)
+                    + relativedelta(weeks=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )
             )[-1]
@@ -447,7 +442,7 @@ class Subscription(database.Model):
                 rrule.rrule(
                     rrule.MONTHLY,
                     interval=1,
-                    until=datetime.datetime.now(datetime.UTC)
+                    until=lambda: datetime.datetime.now(datetime.UTC)
                     + relativedelta(months=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )
@@ -498,12 +493,9 @@ class Subscription(database.Model):
         return result
 
 
-class SubscriptionNote(database.Model):
+class SubscriptionNote(database.Model, HasCreatedAt):
     __tablename__ = "subscription_note"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     note = database.Column(database.String())
     subscription_id = database.Column(
         database.Integer(), ForeignKey("subscription.id")
@@ -511,7 +503,7 @@ class SubscriptionNote(database.Model):
     subscription = relationship("Subscription", back_populates="note")
 
 
-class UpcomingInvoice(database.Model):
+class UpcomingInvoice(database.Model, HasCreatedAt):
     """
     A temporary view of upcoming invoices.
 
@@ -525,9 +517,6 @@ class UpcomingInvoice(database.Model):
 
     __tablename__ = "upcoming_invoice"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     # Note, upcoming invoices do not have an id https://stripe.com/docs/api/invoices/upcoming # noqa
     stripe_subscription_id = database.Column(database.String())
     stripe_invoice_status = database.Column(database.String())
@@ -543,7 +532,7 @@ class UpcomingInvoice(database.Model):
     )  # noqa: E501
 
 
-class StripeInvoice(database.Model, CreatedAt):
+class StripeInvoice(database.Model, HasCreatedAt):
     """
     Reflection of Stripe Invoices
 
@@ -585,12 +574,9 @@ class StripeInvoice(database.Model, CreatedAt):
     stripe_invoice_raw_json = database.Column(database.JSON(), nullable=True)
 
 
-class Company(database.Model):
+class Company(database.Model, HasCreatedAt):
     __tablename__ = "company"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     name = database.Column(database.String())
     slogan = database.Column(database.String())
     logo_src = database.Column(database.String())
@@ -625,11 +611,8 @@ association_table_plan_to_price_lists = database.Table(
 # to subscribers during sign up
 # See:
 # https://github.com/sqlalchemy/sqlalchemy/discussions/8556#discussioncomment-3700971
-class PlanQuestionAssociation(database.Model):
+class PlanQuestionAssociation(database.Model, HasCreatedAt):
     __tablename__ = "plan_question_associations"
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     question_id = database.Column(database.Integer, ForeignKey("question.id"))
     question = relationship("Question")
@@ -662,12 +645,9 @@ association_table_plan_to_document = database.Table(
 )
 
 
-class Plan(database.Model, HasArchived):
+class Plan(database.Model, HasArchived, HasCreatedAt):
     __tablename__ = "plan"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     parent_plan_revision_uuid = database.Column(database.String(), default=uuid_string)
     title = database.Column(database.String())
@@ -1045,24 +1025,18 @@ class Plan(database.Model, HasArchived):
         return False
 
 
-class Category(database.Model):
+class Category(database.Model, HasCreatedAt):
     __tablename__ = "category"
     id = database.Column(database.Integer(), primary_key=True)
     uuid = database.Column(database.String(), default=uuid_string)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     name = database.Column(database.String())
     plans = relationship("Plan", back_populates="category")
     position = database.Column(database.Integer(), default=0)
 
 
-class PlanRequirements(database.Model):
+class PlanRequirements(database.Model, HasCreatedAt):
     __tablename__ = "plan_requirements"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     plan_id = database.Column(database.Integer(), ForeignKey("plan.id"))
     plan = relationship("Plan", back_populates="requirements")
     instant_payment = database.Column(database.Boolean(), default=False)
@@ -1071,23 +1045,17 @@ class PlanRequirements(database.Model):
     note_to_buyer_message = database.Column(database.String())
 
 
-class PlanSellingPoints(database.Model):
+class PlanSellingPoints(database.Model, HasCreatedAt):
     __tablename__ = "plan_selling_points"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     point = database.Column(database.String())
     plan_id = database.Column(database.Integer(), ForeignKey("plan.id"))
     plan = relationship("Plan", back_populates="selling_points")
 
 
-class Integration(database.Model):
+class Integration(database.Model, HasCreatedAt):
     __tablename__ = "integration"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     google_tag_manager_active = database.Column(database.Boolean())
     google_tag_manager_container_id = database.Column(database.String())
     tawk_active = database.Column(database.Boolean())
@@ -1102,12 +1070,9 @@ class Integration(database.Model):
 # False(0) if stripe is in test mode
 
 
-class PaymentProvider(database.Model):
+class PaymentProvider(database.Model, HasCreatedAt):
     __tablename__ = "payment_provider"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     gocardless_active = database.Column(database.Boolean())
     gocardless_access_token = database.Column(database.String())
     gocardless_environment = database.Column(database.String())
@@ -1121,34 +1086,25 @@ class PaymentProvider(database.Model):
     stripe_livemode = database.Column(database.Boolean(), default=False)
 
 
-class Page(database.Model):
+class Page(database.Model, HasCreatedAt):
     __tablename__ = "page"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     page_name = database.Column(database.String())
     path = database.Column(database.String())
     template_file = database.Column(database.String())
     private = database.Column(database.Boolean(), default=0)
 
 
-class Module(database.Model):
+class Module(database.Model, HasCreatedAt):
     __tablename__ = "module"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     name = database.Column(database.String())
     src = database.Column(database.String())
 
 
-class Transaction(database.Model):
+class Transaction(database.Model, HasCreatedAt):
     __tablename__ = "transactions"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     currency = database.Column(database.String(), nullable=False)
     amount = database.Column(database.Integer())
@@ -1181,47 +1137,35 @@ class SeoPageTitle(database.Model):
     title = database.Column(database.String())
 
 
-class ChoiceGroup(database.Model):
+class ChoiceGroup(database.Model, HasCreatedAt):
     __tablename__ = "choice_group"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     title = database.Column(database.String())
     options = relationship("Option", back_populates="choice_group")
 
 
-class Question(database.Model):
+class Question(database.Model, HasCreatedAt):
     __tablename__ = "question"
     id = database.Column(database.Integer(), primary_key=True)
     uuid = database.Column(database.String(), default=uuid_string)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     options = relationship("QuestionOption", back_populates="question")
     is_longform_question = database.Column(database.Boolean(), default=False)
     title = database.Column(database.String())
 
 
-class QuestionOption(database.Model):
+class QuestionOption(database.Model, HasCreatedAt):
     __tablename__ = "question_option"
     id = database.Column(database.Integer(), primary_key=True)
     question_id = database.Column(database.Integer(), ForeignKey("question.id"))  # noqa
     question = relationship("Question", back_populates="options")
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     title = database.Column(database.String())
     description = database.Column(database.Text())
     primary_icon = database.Column(database.String())
 
 
-class Answer(database.Model):
+class Answer(database.Model, HasCreatedAt):
     __tablename__ = "answer"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     question_id = database.Column(database.Integer())
     question_title = database.Column(database.String())
     response = database.Column(database.String())
@@ -1233,27 +1177,21 @@ class Answer(database.Model):
     )  # noqa
 
 
-class Option(database.Model):
+class Option(database.Model, HasCreatedAt):
     __tablename__ = "option"
     id = database.Column(database.Integer(), primary_key=True)
     choice_group_id = database.Column(
         database.Integer(), ForeignKey("choice_group.id")
     )  # noqa
     choice_group = relationship("ChoiceGroup", back_populates="options")
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     title = database.Column(database.String())
     description = database.Column(database.Text())
     primary_icon = database.Column(database.String())
 
 
-class ChosenOption(database.Model):
+class ChosenOption(database.Model, HasCreatedAt):
     __tablename__ = "chosen_option"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     choice_group_id = database.Column(database.Integer())
     choice_group_title = database.Column(database.String())
     option_title = database.Column(database.String())
@@ -1263,14 +1201,11 @@ class ChosenOption(database.Model):
     subscription = relationship("Subscription", back_populates="chosen_options")  # noqa
 
 
-class ModuleStyle(database.Model):
+class ModuleStyle(database.Model, HasCreatedAt):
     """For custom css style injection"""
 
     __tablename__ = "module_style"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     css_properties_json = database.Column(database.String())
     css = database.Column(database.String())
 
@@ -1304,26 +1239,20 @@ class Setting(database.Model):
     geo_currency_enabled = database.Column(database.Boolean(), default=False)
 
 
-class File(database.Model):
+class File(database.Model, HasCreatedAt):
     """File uploads meta"""
 
     __tablename__ = "file"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     file_name = database.Column(database.String())
 
 
-class Document(database.Model, HasArchived, HasReadOnly):
+class Document(database.Model, HasArchived, HasReadOnly, HasCreatedAt):
     """Raw text Document"""
 
     __tablename__ = "document"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     name = database.Column(database.String(), default=None)
     type = database.Column(database.String(), default=None)
@@ -1340,16 +1269,13 @@ class Document(database.Model, HasArchived, HasReadOnly):
     )
 
 
-class TaxRate(database.Model):
+class TaxRate(database.Model, HasCreatedAt):
     """Stripe Tax Rate ids"""
 
     __tablename__ = "tax_rate"
     id = database.Column(database.Integer(), primary_key=True)
     stripe_tax_rate_id = database.Column(database.String())
     stripe_livemode = database.Column(database.Boolean())
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
 
 
 association_table_price_list_to_rule = database.Table(
@@ -1368,7 +1294,7 @@ association_table_price_list_to_rule = database.Table(
 )
 
 
-class PriceList(database.Model):
+class PriceList(database.Model, HasCreatedAt):
     """
     PriceList table
 
@@ -1399,13 +1325,10 @@ class PriceList(database.Model):
 
     __tablename__ = "price_list"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     name = database.Column(database.String())
     start_date = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+        database.DateTime, default=lambda: datetime.datetime.now(datetime.UTC)
     )
     expire_date = database.Column(database.DateTime, default=None)
     currency = database.Column(database.String())
@@ -1419,7 +1342,7 @@ class PriceList(database.Model):
     )
 
 
-class PriceListRule(database.Model):
+class PriceListRule(database.Model, HasCreatedAt):
     """
     PriceListRule table
 
@@ -1445,13 +1368,10 @@ class PriceListRule(database.Model):
 
     __tablename__ = "price_list_rule"
     id = database.Column(database.Integer(), primary_key=True)
-    created_at = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
-    )
     uuid = database.Column(database.String(), default=uuid_string)
     name = database.Column(database.String())
     start_date = database.Column(
-        database.DateTime, default=datetime.datetime.now(datetime.UTC)
+        database.DateTime, default=lambda: datetime.datetime.now(datetime.UTC)
     )
     expire_date = database.Column(database.DateTime, default=None)
     active = database.Column(database.Boolean(), default=1)
