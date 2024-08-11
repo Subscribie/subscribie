@@ -32,6 +32,10 @@ from subscribie.utils import (
     currencyFormat,
     get_shop_default_country_code,
     dec2pence,
+    backfill_transactions,
+    backfill_subscriptions,
+    backfill_persons,
+    backfill_stripe_invoices
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -238,7 +242,7 @@ def update_payment_fulfillment(stripe_external_id):
 
 
 @admin.route("/stripe/charge", methods=["POST", "GET"])
-# @login_required
+@login_required
 def stripe_create_charge():
     """Charge an existing subscriber x ammount immediately
 
@@ -2062,3 +2066,38 @@ def check_spam(account_name) -> int:
     from subscribie.anti_spam_subscribie_shop_names.run import detect_spam_shop_name
 
     return str(detect_spam_shop_name(account_name))
+
+
+@admin.route("/backfill/transactions/<int:days>")
+@login_required
+def admin_backfill_transactions(days):
+    backfill_transactions(days)
+    return jsonify({"msg": f"backfill_transactions for {days} days completed"})
+
+
+@admin.route("/backfill/subscriptions/<int:days>")
+@login_required
+def admin_backfill_subscriptions(days):
+    backfill_subscriptions(days)
+    return jsonify({"msg": f"backfill_subscriptions for {days} days completed"})
+
+
+@admin.route("/backfill/persons/<int:days>")
+@login_required
+def admin_backfill_persons(days):
+    backfill_persons(days)
+    return jsonify({"msg": f"backfill_persons for {days} days completed"})
+
+
+@admin.route("/backfill/stripe-invoices/<int:days>")
+@login_required
+def admin_backfill_stripe_invoices(days):
+    backfill_stripe_invoices(days)
+    return jsonify({"msg": f"backfill_stripe_invoices for {days} days completed"})
+
+
+@admin.route("/backfill/stripe-upcoming-invoices/<int:days>")
+@login_required
+def admin_backfill_stripe_upcoming_invoices(days):
+    backfill_stripe_upcoming_invoices(days)
+    return jsonify({"msg": f"backfill_stripe_upcoming_invoices for {days} days completed"})  # noqa: E501

@@ -615,3 +615,223 @@ def dec2pence(amount: str) -> int:
         raise ValueError(
             "Invalid input: amount should be a string representing a decimal number"
         )
+
+
+def backfill_transactions(days=30):
+    """Backfill transaction data in an idempotent way
+    Useful for fixing webhook delivery misses (such as if all webhook delivery retires
+    exausted), and data corrections from Hotfixes.
+
+    - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
+    """
+    from subscribie.models import Transaction
+
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    today = datetime.now()
+    days_before_today = today - timedelta(days=days)
+    days_before_today_timestamp = int(days_before_today.timestamp())
+    paymentIntents = stripe.PaymentIntent.list(
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+        created={"gte": days_before_today_timestamp},
+    )
+    for paymentIntent in paymentIntents.auto_paging_iter():
+        transaction = (
+            database.session.query(Transaction)
+            .filter_by(external_id=paymentIntent.id)
+            .first()
+        )
+
+        if transaction is not None:
+            # Update the transaction in Transaction model
+            msg = f"Current transaction.id {transaction.id} created_at: {transaction.created_at}"  # noqa: E501
+            log.info(msg)
+
+            stripe_transaction_created_at = datetime.fromtimestamp(
+                paymentIntent.created
+            )  # noqa: E501
+            msg = f"Upstream transaction.id {transaction.id} created_at set to {stripe_transaction_created_at}"  # noqa: E501
+            log.info(msg)
+
+            if transaction.created_at != stripe_transaction_created_at:
+                msg = f"Setting transaction.id {transaction.id} created_at to {stripe_transaction_created_at}"  # noqa: E501
+                log.info(msg)
+                transaction.created_at = stripe_transaction_created_at
+                database.session.commit()
+            else:
+                log.info(
+                    "Skipping transaction.created_at update as source data is equal to local"  # noqa: E501
+                )  # noqa: E501
+
+
+def backfill_subscriptions(days=30):
+    """Backfill subscription data in an idempotent way
+    Useful for fixing webhook delivery misses (such as if all webhook delivery retires
+    exausted), and data corrections from Hotfixes.
+
+    - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
+    """
+    from subscribie.models import Subscription
+
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    today = datetime.now()
+    days_before_today = today - timedelta(days=days)
+    days_before_today_timestamp = int(days_before_today.timestamp())
+    subscriptions = stripe.Subscription.list(
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+        created={"gte": days_before_today_timestamp},
+    )
+    for stripe_subscription in subscriptions.auto_paging_iter():
+        subscribie_subscription = (
+            database.session.query(Subscription)
+            .filter_by(stripe_subscription_id=stripe_subscription.id)
+            .first()
+        )
+
+        if subscribie_subscription is not None:
+            # Update the subscribie_subscription in Subscription model
+            msg = f"Current subscription.id {subscribie_subscription.id} created_at: {subscribie_subscription.created_at}"  # noqa: E501
+            log.info(msg)
+
+            # TODO Stripe incorporate subscription.start_date into Subscription model
+            # https://docs.stripe.com/api/subscriptions/object#subscription_object-start_date
+            stripe_subscription_created_at = datetime.fromtimestamp(
+                stripe_subscription.created
+            )  # noqa: E501
+            msg = f"Upstream subscription.id {subscribie_subscription.id} created_at set to {stripe_subscription_created_at}"  # noqa: E501
+            log.info(msg)
+
+            if subscribie_subscription.created_at != stripe_subscription_created_at:
+                msg = f"Setting subscription.id {subscribie_subscription.id} created_at to {stripe_subscription_created_at}"  # noqa: E501
+                log.info(msg)
+                subscribie_subscription.created_at = stripe_subscription_created_at
+                database.session.commit()
+            else:
+                log.info(
+                    "Skipping subscription.created_at update for subscription id {subscribie_subscription.id} as source data is equal to local"  # noqa: E501
+                )  # noqa: E501
+
+
+def backfill_persons(days=30):
+    """Backfill person data in an idempotent way
+    Useful for fixing webhook delivery misses (such as if all webhook delivery retires
+    exausted), and data corrections from Hotfixes.
+
+    NOTE: The Stripe session checkout object is used here to
+    signify the earliest known date/time for Person.created_at time
+    since a Person record is created during checkout, this is a reasonable
+    source for created_at time during a backfill recovery run.
+
+    - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
+
+    Subscribie stores checkout metadata useful for associating checkouts with
+    a person on the Subscription table(see models.py) these fields include:
+
+    - subscribie_checkout_session_id
+    - stripe_external_id
+    - stripe_subscription_id
+    And a Subscription object is *always* linked to a Person entity.
+
+    """
+    from subscribie.models import Subscription
+
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    today = datetime.now()
+    days_before_today = today - timedelta(days=days)
+    days_before_today_timestamp = int(days_before_today.timestamp())
+    stripe_checkout_sessions = stripe.checkout.Session.list(
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+        created={"gte": days_before_today_timestamp},
+    )
+    for stripe_session in stripe_checkout_sessions.auto_paging_iter():
+        if stripe_session.metadata.get("subscribie_checkout_session_id") is None:
+            log.warning(f"No subscribie_checkout_session_id found on metadata for stripe_session {stripe_session.id}")  # noqa: E501
+            continue
+
+        subscribie_subscription = (
+            database.session.query(Subscription)
+            .filter_by(
+                subscribie_checkout_session_id=stripe_session.metadata[
+                    "subscribie_checkout_session_id"
+                ]
+            )
+            .first()
+        )
+        if subscribie_subscription is not None:
+            if subscribie_subscription.person is None:
+                log.warning(f"Skipping stripe_session {stripe_session.id} as person is None for subscription {subscribie_subscription.id}")  # noqa: E501
+                continue
+            # Update the subscribie_subscription in Subscription model
+            log.debug(f"At stripe_session.id: {stripe_session.id}")
+            msg = f"Current person.created_at: {subscribie_subscription.person.created_at}"  # noqa: E501
+            log.info(msg)
+
+            # TODO Stripe incorporate subscription.start_date into Subscription model
+            # https://docs.stripe.com/api/subscriptions/object#subscription_object-start_date
+            stripe_session_created_at = datetime.fromtimestamp(
+                stripe_session.created
+            )  # noqa: E501
+            msg = f"Infering person create_at from stripe_session_created_at: {stripe_session_created_at}"  # noqa: E501
+            log.info(msg)
+            msg = f"Setting person.created_at to {stripe_session_created_at}"  # noqa: E501
+            log.info(msg)
+            subscribie_subscription.person.created_at = stripe_session_created_at
+            database.session.commit()
+
+
+def backfill_stripe_invoices(days=30):
+    """Backfill stripe_invoice data in an idempotent way
+    Useful for fixing webhook delivery misses (such as if all webhook delivery retires
+    exausted), and data corrections from Hotfixes.
+
+    - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
+
+    """
+    from subscribie.models import StripeInvoice
+    stripe_connect_account_id = get_stripe_connect_account_id()
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    today = datetime.now()
+    days_before_today = today - timedelta(days=days)
+    days_before_today_timestamp = int(days_before_today.timestamp())
+    stripe_invoices = stripe.Invoice.list(
+        stripe_account=stripe_connect_account_id,
+        limit=100,
+        created={"gte": days_before_today_timestamp},
+    )
+    for stripe_invoice in stripe_invoices.auto_paging_iter():
+
+        local_stripe_invoice = (
+            database.session.query(StripeInvoice)
+            .filter_by(
+                id=stripe_invoice.id
+            )
+            .first()
+        )
+        if local_stripe_invoice is not None:
+            # Update the local_stripe_invoice in DtripeInvoice model
+            log.debug(f"At local_stripe_invoice.id: {local_stripe_invoice.id}")
+            msg = f"Current local_stripe_invoice.created_at: {local_stripe_invoice.created_at}"  # noqa: E501
+            log.info(msg)
+
+            stripe_invoice_created_at = datetime.fromtimestamp(
+                stripe_invoice.created
+            )  # noqa: E501
+            msg = f"stripe_invoice create_at: {stripe_invoice_created_at}"  # noqa: E501
+            log.info(msg)
+            msg = f"Setting local_stripe_invoice.created_at to {stripe_invoice_created_at}"  # noqa: E501
+            log.info(msg)
+            local_stripe_invoice.created_at = stripe_invoice_created_at
+            database.session.commit()
