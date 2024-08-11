@@ -422,8 +422,7 @@ class Subscription(database.Model, HasCreatedAt):
                 rrule.rrule(
                     rrule.YEARLY,
                     interval=1,
-                    until=lambda: datetime.datetime.now(datetime.UTC)
-                    + relativedelta(years=+1),
+                    until=datetime.datetime.now(datetime.UTC) + relativedelta(years=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )
             )[-1]
@@ -432,8 +431,7 @@ class Subscription(database.Model, HasCreatedAt):
                 rrule.rrule(
                     rrule.WEEKLY,
                     interval=1,
-                    until=lambda: datetime.datetime.now(datetime.UTC)
-                    + relativedelta(weeks=+1),
+                    until=datetime.datetime.now(datetime.UTC) + relativedelta(weeks=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )
             )[-1]
@@ -442,7 +440,7 @@ class Subscription(database.Model, HasCreatedAt):
                 rrule.rrule(
                     rrule.MONTHLY,
                     interval=1,
-                    until=lambda: datetime.datetime.now(datetime.UTC)
+                    until=datetime.datetime.now(datetime.UTC)
                     + relativedelta(months=+1),
                     dtstart=pytz.utc.localize(self.created_at),
                 )

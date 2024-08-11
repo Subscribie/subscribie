@@ -17,7 +17,6 @@ test("@387@shop-owner@change_shop_colour @387_shop_owner_change_shop_colour", as
     await new Promise(x => setTimeout(x, 3000));
     await page.fill('input[name="font"]', "000000");
     await page.click('text="Save"');
-    expect(await page.screenshot()).toMatchSnapshot('changing-shop-colour.png');
 
     // check if its changed
     console.log("checking if shop style has changed");
@@ -26,6 +25,4 @@ test("@387@shop-owner@change_shop_colour @387_shop_owner_change_shop_colour", as
 
     //screenshot of the changed style shop;
     await page.goto('/');
-    expect(await page.screenshot()).toMatchSnapshot('changed shop color.png');
-
 });

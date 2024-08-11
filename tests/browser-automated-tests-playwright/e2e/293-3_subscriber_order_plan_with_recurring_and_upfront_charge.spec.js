@@ -29,7 +29,7 @@ test.describe("order plan with recurring and upfront charge test:", () => {
         //Verify first payment is correct (upfront charge + first recuring charge)
         const first_payment_content = await page.textContent('#ProductSummary-totalAmount');
         expect(first_payment_content === "£5.99");
-        const recuring_charge_content = await page.textContent('.ProductSummaryDescription');
+        const recuring_charge_content = await page.textContent('#ProductSummary-description');
         expect(recuring_charge_content === "Then £5.99 per week");
 
         // Pay with test card
