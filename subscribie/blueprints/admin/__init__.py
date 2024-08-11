@@ -35,7 +35,7 @@ from subscribie.utils import (
     backfill_transactions,
     backfill_subscriptions,
     backfill_persons,
-    backfill_stripe_invoices
+    backfill_stripe_invoices,
 )
 from subscribie.forms import (
     TawkConnectForm,
