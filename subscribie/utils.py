@@ -756,7 +756,9 @@ def backfill_persons(days=30):
     )
     for stripe_session in stripe_checkout_sessions.auto_paging_iter():
         if stripe_session.metadata.get("subscribie_checkout_session_id") is None:
-            log.warning(f"No subscribie_checkout_session_id found on metadata for stripe_session {stripe_session.id}")  # noqa: E501
+            log.warning(
+                f"No subscribie_checkout_session_id found on metadata for stripe_session {stripe_session.id}"
+            )  # noqa: E501
             continue
 
         subscribie_subscription = (
@@ -770,7 +772,9 @@ def backfill_persons(days=30):
         )
         if subscribie_subscription is not None:
             if subscribie_subscription.person is None:
-                log.warning(f"Skipping stripe_session {stripe_session.id} as person is None for subscription {subscribie_subscription.id}")  # noqa: E501
+                log.warning(
+                    f"Skipping stripe_session {stripe_session.id} as person is None for subscription {subscribie_subscription.id}"
+                )  # noqa: E501
                 continue
             # Update the subscribie_subscription in Subscription model
             log.debug(f"At stripe_session.id: {stripe_session.id}")
@@ -799,6 +803,7 @@ def backfill_stripe_invoices(days=30):
 
     """
     from subscribie.models import StripeInvoice
+
     stripe_connect_account_id = get_stripe_connect_account_id()
 
     stripe.api_key = get_stripe_secret_key()
@@ -815,9 +820,7 @@ def backfill_stripe_invoices(days=30):
 
         local_stripe_invoice = (
             database.session.query(StripeInvoice)
-            .filter_by(
-                id=stripe_invoice.id
-            )
+            .filter_by(id=stripe_invoice.id)
             .first()
         )
         if local_stripe_invoice is not None:
