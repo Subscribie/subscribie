@@ -1,5 +1,5 @@
 import pytest
-from subscribie.models import User
+from subscribie.models import User, Transaction, Person
 
 from contextlib import contextmanager
 from flask import appcontext_pushed, g
@@ -230,9 +230,35 @@ def test_dec2pence():
         "1.005": 101,  # Tests edge case where rounding up from 1.005
     }
 
-    # Results dictionary
-    results = {}
-
     for test_input, expected_output in test_cases.items():
         result = dec2pence(test_input)
         assert result == expected_output
+
+
+def test_create_at_date_is_not_constant(
+    db_session,
+    app,
+):
+    """Verify that created_at timestamp is changing upon insert and not static
+
+    https://github.com/Subscribie/subscribie/issues/1385
+    """
+
+    transaction1 = Transaction()
+    db_session.add(transaction1)
+    db_session.commit()
+    transaction2 = Transaction()
+    db_session.add(transaction2)
+    db_session.commit()
+
+    assert transaction1.created_at != transaction2.created_at
+
+    person1 = Person()
+    db_session.add(person1)
+    db_session.commit()
+
+    person2 = Person()
+    db_session.add(person2)
+    db_session.commit()
+
+    assert person1.created_at != person2.created_at

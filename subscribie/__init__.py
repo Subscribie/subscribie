@@ -14,7 +14,6 @@ import os
 import sys
 import sqlite3
 from .database import database
-import datetime
 from base64 import b64encode
 from flask import (
     Flask,
@@ -43,7 +42,21 @@ import sqlalchemy
 from flask_migrate import Migrate, upgrade
 import click
 from jinja2 import Template
-from .models import PaymentProvider, Person, Company, Module, Plan, PriceList
+from .models import (
+    PaymentProvider,
+    Person,
+    Company,
+    Module,
+    Plan,
+    PriceList,
+)
+from subscribie.utils import (
+    backfill_transactions as call_backfill_transactions,
+    backfill_subscriptions as call_backfill_subscriptions,
+    backfill_persons as call_backfill_persons,
+    backfill_stripe_invoices as call_backfill_stripe_invoices,
+)
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -266,6 +279,30 @@ def create_app(test_config=None):
             else:
                 log.info("Database already seeded.")
             con.close()
+
+    @app.cli.command()
+    @click.argument("days", type=int)
+    def backfill_transactions(days):
+        click.echo(f"Beginning transaction backfill for {days} days")
+        call_backfill_transactions(days=days)
+
+    @app.cli.command()
+    @click.argument("days", type=int)
+    def backfill_subscriptions(days):
+        click.echo(f"Beginning subscription backfill for {days} days")
+        call_backfill_subscriptions(days=days)
+
+    @app.cli.command()
+    @click.argument("days", type=int)
+    def backfill_persons(days):
+        click.echo(f"Beginning person backfill for {days} days")
+        call_backfill_persons(days=days)
+
+    @app.cli.command()
+    @click.argument("days", type=int)
+    def backfill_stripe_invoices(days):
+        click.echo(f"Beginning stripe invoices backfill for {days} days")
+        call_backfill_stripe_invoices(days=days)
 
     @app.cli.group()
     def translate():
