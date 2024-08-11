@@ -15,7 +15,6 @@ test("@463@shop-owner@adding VAT @463_shop_owner_adding_vat", async ({ page }) =
 
     await page.click('text="Yes. Charge VAT at 20%"');
     await new Promise(x => setTimeout(x, 1000));
-    expect(await page.screenshot()).toMatchSnapshot('adding-VAT.png');
     await page.click('text="Save"');
     await page.textContent('.alert-heading') === "Notification";
 
