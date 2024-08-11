@@ -1,3 +1,18 @@
+# v0.1.199 (Sun Aug 11 2024)
+
+#### 🐛 Bug Fix
+
+- #1386 update playwright tests [#1389](https://github.com/Subscribie/subscribie/pull/1389) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1386 black format [#1389](https://github.com/Subscribie/subscribie/pull/1389) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1386 remove undeeded backfill_stripe_upcoming_invoices since they're updated in-place anyway [#1389](https://github.com/Subscribie/subscribie/pull/1389) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1386 add backfill endpoints and cli for backfill_transactions, backfill_subscriptions, backfill_persons and backfill_stripe_invoices [#1389](https://github.com/Subscribie/subscribie/pull/1389) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.198 (Sat Aug 10 2024)
 
 #### 🐛 Bug Fix
