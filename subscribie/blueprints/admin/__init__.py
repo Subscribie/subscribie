@@ -2094,10 +2094,3 @@ def admin_backfill_persons(days):
 def admin_backfill_stripe_invoices(days):
     backfill_stripe_invoices(days)
     return jsonify({"msg": f"backfill_stripe_invoices for {days} days completed"})
-
-
-@admin.route("/backfill/stripe-upcoming-invoices/<int:days>")
-@login_required
-def admin_backfill_stripe_upcoming_invoices(days):
-    backfill_stripe_upcoming_invoices(days)
-    return jsonify({"msg": f"backfill_stripe_upcoming_invoices for {days} days completed"})  # noqa: E501
