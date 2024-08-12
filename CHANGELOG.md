@@ -1,3 +1,18 @@
+# v0.1.200 (Mon Aug 12 2024)
+
+#### 🐛 Bug Fix
+
+- #1390 only show date in person_created_at_date csv export [#1391](https://github.com/Subscribie/subscribie/pull/1391) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1390 person_created_at_date and person_created_at_time is included in CSV export [#1391](https://github.com/Subscribie/subscribie/pull/1391) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1390 black format [#1391](https://github.com/Subscribie/subscribie/pull/1391) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1390 show person.created_at in subscriber csv export [#1391](https://github.com/Subscribie/subscribie/pull/1391) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.199 (Sun Aug 11 2024)
 
 #### 🐛 Bug Fix
