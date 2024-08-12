@@ -19,7 +19,7 @@ def export_subscribers():
         if subscription.person is not None:
             person = {
                 "person_created_at_date": subscription.person.created_at.strftime(
-                    "%d-%m-%Y %H:%M"
+                    "%d-%m-%Y"
                 ),  # noqa: E501
                 "person_created_at_time": subscription.person.created_at.strftime(
                     "%H:%M"
