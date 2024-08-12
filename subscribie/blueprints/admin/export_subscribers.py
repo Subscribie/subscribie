@@ -18,6 +18,7 @@ def export_subscribers():
     for subscription in subscriptions:
         if subscription.person is not None:
             person = {
+                "person_created_at": subscription.person.created_at.strftime("%d-%m-%Y"),  # noqa: E501
                 "given_name": subscription.person.given_name,
                 "family_name": subscription.person.family_name,
                 "email": subscription.person.email,
