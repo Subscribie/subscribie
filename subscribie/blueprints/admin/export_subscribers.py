@@ -18,8 +18,11 @@ def export_subscribers():
     for subscription in subscriptions:
         if subscription.person is not None:
             person = {
-                "person_created_at": subscription.person.created_at.strftime(
-                    "%d-%m-%Y"
+                "person_created_at_date": subscription.person.created_at.strftime(
+                    "%d-%m-%Y %H:%M"
+                ),  # noqa: E501
+                "person_created_at_time": subscription.person.created_at.strftime(
+                    "%H:%M"
                 ),  # noqa: E501
                 "given_name": subscription.person.given_name,
                 "family_name": subscription.person.family_name,
@@ -47,7 +50,7 @@ def export_subscribers():
 
         outfile = io.StringIO()
         outcsv = csv.DictWriter(
-            outfile, fieldnames=list(all_fieldnames), extrasaction="ignore"
+            outfile, fieldnames=list(sorted(all_fieldnames)), extrasaction="ignore"
         )
         outcsv.writeheader()
         for subscriber in subscribers:
