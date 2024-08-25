@@ -8,9 +8,11 @@ from subscribie.notifications import (
     subscriberPaymentFailedNotification,
     newSubscriberEmailNotification,
 )
-from subscribie.models import Subscription, Document
+from subscribie.models import Subscription, Document, Integration
 from subscribie.database import database
 import sqlalchemy
+import requests
+from requests.auth import HTTPBasicAuth
 
 
 log = logging.getLogger(__name__)
@@ -128,6 +130,80 @@ def receiver_new_subscriber(*args, **kwargs):
 
     send_welcome_email(to_email=subscriber_email, subscription=subscription)
     newSubscriberEmailNotification(**kwargs)
+
+
+def receiver_new_subscriber_send_to_mailchimp(*args, **kwargs) -> None:
+    """
+    Send new subscriber contact information to Mainchimp.
+    For this to work, Subscribie needs to have:
+
+    - Mailchimp api key
+    - Mainchimp Audience id (maichimp lets you add contacts
+        to *audiences* (aka lists), not simply one large pot
+        of contacts- which is good.
+    - It is the responsibility of the Shop owner to create the
+    Mailchimp api key, and Audience within their Mailchimp account.
+    Then, the shop own must input these items (MailChimp API key,
+    and audience id) into their Subscribie shop, under 'integrations'.
+    """
+
+    integration = Integration.query.first()
+    if integration.mailchimp_active is False:
+        log.debug(
+            """Refusing receiver_new_subscriber_send_to_mailchimp because
+            integration.mailchimp_active is false"""
+        )
+        return None
+    mailchimp_api_key, dc = integration.mailchimp_api_key.split("-")
+    mailchimp_list_id = integration.mailchimp_list_id
+
+    subscription_uuid = kwargs.get("subscription_uuid")
+    subscription = None
+    try:
+        subscription = (
+            Subscription.query.where(Subscription.uuid == subscription_uuid)
+            .execution_options(include_archived=True)
+            .one()
+        )
+        subscriber_email = subscription.person.email
+        # Send subscriber to mailchimp audience
+        data = {
+            "email_address": subscriber_email,
+            "status": "subscribed",
+            "merge_fields": {
+                "FNAME": subscription.person.given_name,
+                "LNAME": subscription.person.family_name,
+            },
+            "tags": ["subscribie"],
+        }
+
+        # Post to Mailchimp lists endpoint
+        url = f"https://{dc}.api.mailchimp.com/3.0/lists/{mailchimp_list_id}/members"
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            url,
+            headers=headers,
+            auth=HTTPBasicAuth("key", mailchimp_api_key),
+            json=data,
+        )
+
+        if response.status_code == 200:
+            log.debug("Success adding subscriber to mailchimp audience.")
+        elif (
+            response.status_code == 400 and response.json()["title"] == "Member Exists"
+        ):
+            log.debug("Member already exists in list")
+        else:
+            log.error(
+                f"Failed to add member to the list. Status code: {response.status_code}"
+            )
+    except sqlalchemy.exc.NoResultFound:
+        if subscription is None and subscription_uuid != "test":
+            msg = "Got receiver_new_subscriber_send_to_mailchimp event but no associated subscription found."  # noqa: E501
+            log.error(msg)
+            return
+    except Exception as e:
+        log.error(f"Unable to receiver_new_subscriber_send_to_mailchimp: {e}")
 
 
 def receiver_new_donation(*args, **kwargs):

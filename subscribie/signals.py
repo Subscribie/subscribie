@@ -48,6 +48,7 @@ def register_signal_handlers():
     This is called during flask app startup in views.py
     """
     signal_new_subscriber.connect(receiver_new_subscriber)
+    signal_new_subscriber.connect(receiver_new_subscriber_send_to_mailchimp)
     signal_journey_complete.connect(receiver_attach_documents_to_subscription)
     signal_payment_failed.connect(
         receiver_send_subscriber_payment_failed_notification_email

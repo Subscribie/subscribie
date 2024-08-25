@@ -838,3 +838,33 @@ def backfill_stripe_invoices(days=30):
             log.info(msg)
             local_stripe_invoice.created_at = stripe_invoice_created_at
             database.session.commit()
+
+
+def get_mailchimp_list_name(list_id: str) -> str:
+    """
+    Internally (api) mailchimp calls lists
+    Externally (human facing) mailchimp calls
+    lists 'audiences'
+    """
+    from subscribie.models import Integration
+    from requests.auth import HTTPBasicAuth
+
+    mailchimp_audience_name = None
+    integration = Integration.query.first()
+    try:
+        mailchimp_api_key, dc = integration.mailchimp_api_key.split("-")
+
+        if integration.mailchimp_active:
+            url = f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}"
+
+            # Make the GET request
+            response = requests.get(
+                url, auth=HTTPBasicAuth("anystring", mailchimp_api_key)
+            )
+
+            # Return the name of the list from the JSON response
+            mailchimp_audience_name = response.json().get("name")
+    except Exception as e:
+        log.error(f"Could not get_mailchimp_list_name: {e}")
+
+    return mailchimp_audience_name
