@@ -19,6 +19,7 @@ from subscribie.notifications import newSubscriberEmailNotification
 from subscribie.receivers import (
     receiver_send_subscriber_payment_failed_notification_email,
     receiver_new_subscriber,
+    receiver_new_subscriber_send_to_mailchimp,
     receiver_new_donation,
     receiver_attach_documents_to_subscription,
 )
