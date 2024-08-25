@@ -39,6 +39,7 @@ from subscribie.utils import (
 )
 from subscribie.forms import (
     TawkConnectForm,
+    MailchimpConnectForm,
     ChangePasswordForm,
     GoogleTagManagerConnectForm,
     PlansForm,
@@ -1238,6 +1239,26 @@ def connect_tawk_manually():
     else:
         return render_template(
             "admin/connect_tawk_manually.html", form=form, integration=integration
+        )
+
+
+@admin.route("/connect/mailchimp/manually", methods=["GET", "POST"])
+@login_required
+def connect_mailchimp_manually():
+    integration = Integration.query.first()
+    form = MailchimpConnectForm()
+    if form.validate_on_submit():
+        api_key = form.data["api_key"]
+        list_id = form.data["list_id"]
+        integration.mailchimp_api_key = api_key
+        integration.mailchimp_list_id = list_id
+        integration.mailchimp_active = True
+
+        database.session.commit()
+        return redirect(url_for("admin.dashboard"))
+    else:
+        return render_template(
+            "admin/connect_mailchimp_manually.html", form=form, integration=integration
         )
 
 

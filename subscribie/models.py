@@ -1059,6 +1059,10 @@ class Integration(database.Model, HasCreatedAt):
     tawk_active = database.Column(database.Boolean())
     tawk_property_id = database.Column(database.String())
 
+    mailchimp_api_key = database.Column(database.String())
+    mailchimp_list_id = database.Column(database.String())
+    mailchimp_active = database.Column(database.Boolean(), default=False)
+
 
 # stripe_active:
 # True(1) if the subscriber has connected to stripe either in test mode or live mode

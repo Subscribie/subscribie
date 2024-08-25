@@ -154,6 +154,11 @@ class TawkConnectForm(FlaskForm):
     property_id = StringField("property_id", validators=[DataRequired()])
 
 
+class MailchimpConnectForm(FlaskForm):
+    api_key = StringField("api_key")
+    list_id = StringField("list_id")
+
+
 class ChangePasswordForm(FlaskForm):
     password = StringField("password", validators=[DataRequired()])
 

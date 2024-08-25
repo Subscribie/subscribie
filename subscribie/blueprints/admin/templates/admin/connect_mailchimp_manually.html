@@ -1,0 +1,116 @@
+{% extends "admin/layout.html" %}
+{% block title %} Connect Mailchimp{% endblock %}:
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Connect Mailchimp</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Connect Mailchimp</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-7">
+          <h2>Connect Mailchimp to your shop</h2>
+          <div class="alert
+            {% if integration.Mailchimp_property_id %}
+            alert-success
+            {% else %}
+            alert-light
+            {% endif %}">
+            <p><b>Status: </b>
+            {% if integration.mailchimp_active %}
+              <div class="alert alert-success">
+                Mailchimp is already connected!
+              </div>
+            {% else %}
+              <div class="alert alert-warning">
+                Mailchimp isn't yet configured, use the form below.
+              </div>
+            {% endif %}
+            </p>
+          </div>
+
+          <div class="py-3">
+            <p>To start using Mailchimp, copy &amp; paste your Mailchimp 
+              <em>API key</em> into the box below.</p>
+            <p>You can generate your
+              api key from your Mailchimp account.
+              See <a href="About API Keys: https://eepurl.com/dyijVH">
+              about API keys</a>
+            </p>
+            <p>
+              You can find your Mailchimp audience id by logging into your Mailchimp account,
+              "Audience Dashboard" -> "Manage Audience" -> "Settings", then scroll to the bottom
+              you'll see "Unique Audience ID for: <em>>Your audience name</em>".              "
+            </p>
+          </div>
+
+          <form action="" method="POST" action="/">
+            {{ form.csrf_token }}
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="api_key">Mailchimp API key:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" name="api_key"
+                      id="api_key" placeholder="defjkkdfjkk-us12" required>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="list_id">Audience (list) id:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" name="list_id"
+                      id="list_id" placeholder="abc123" required>
+                <small id="list_idHelp" class="form-text text-muted">
+                  New subscribers will automatically get added to this Audience list</small>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-3">
+            {% if integration.Mailchimp_property_id %}
+              Reconnect
+            {% else %}
+              Connect
+            {% endif %} 
+              Mailchimp
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+            <img src="{{ url_for('admin.static', filename='Mailchimp-logo.png') }}" 
+                 class="card-img-top my-3"    
+                 style="width:20%; display:block; margin:auto">
+            <div class="card-body">
+              <h4 class="card-title">How does this work?</h4>
+              <p>If you have a Mailchimp account, you can use this to automatically
+                add new subscribers to a Mailchimp Audience (List) you have created
+                in Mailchimp. You have to first create the Mailchimp Audience within
+                your Mailchimp account (or use an existing audience), then, fill in
+                your Audience id and Mailchimp API key on this page.
+              </p>
+              <h4 class="card-title">Need some help?</h4>
+              <p>In order to link Mailchimp, you must already have an account 
+                created. If you want to use Mailchimp, go to
+                <a href="https://mailchimp.com" target="_blank">Mailchimp
+                </a> and register for an account.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}
