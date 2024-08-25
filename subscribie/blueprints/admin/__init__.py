@@ -36,6 +36,7 @@ from subscribie.utils import (
     backfill_subscriptions,
     backfill_persons,
     backfill_stripe_invoices,
+    get_mailchimp_list_name,
 )
 from subscribie.forms import (
     TawkConnectForm,
@@ -100,6 +101,8 @@ import stripe
 from werkzeug.utils import secure_filename
 import subprocess
 from subscribie.api import decrypt_secret
+import requests
+from requests.auth import HTTPBasicAuth
 
 log = logging.getLogger(__name__)
 
@@ -1247,6 +1250,14 @@ def connect_tawk_manually():
 def connect_mailchimp_manually():
     integration = Integration.query.first()
     form = MailchimpConnectForm()
+    integration = Integration.query.first()
+
+    mailchimp_audience_name = None
+    mailchimp_list_id = None
+    if integration.mailchimp_active:
+        mailchimp_audience_name = get_mailchimp_list_name(integration.mailchimp_list_id)
+        mailchimp_list_id = integration.mailchimp_list_id
+
     if form.validate_on_submit():
         api_key = form.data["api_key"]
         list_id = form.data["list_id"]
@@ -1258,8 +1269,58 @@ def connect_mailchimp_manually():
         return redirect(url_for("admin.dashboard"))
     else:
         return render_template(
-            "admin/connect_mailchimp_manually.html", form=form, integration=integration
+            "admin/connect_mailchimp_manually.html",
+            form=form,
+            integration=integration,
+            mailchimp_list_id=mailchimp_list_id,
+            mailchimp_audience_name=mailchimp_audience_name,
         )
+
+
+@admin.route("/verify/connect/mailchimp/manually", methods=["GET", "POST"])
+@login_required
+def verify_connect_mailchimp_manually():
+
+    try:
+        mailchimp_api_key, dc = request.form.get("api_key").split("-")
+    except ValueError as e:
+        log.error(f"verify_connect_mailchimp_manually failure. {e}")
+        return "❌ Invalid api key"
+
+    list_id = request.form.get("list_id")
+
+    # Define the URL with the data center
+    url = f"https://{dc}.api.mailchimp.com/3.0/ping"
+
+    # Make the GET request
+    response = requests.get(url, auth=HTTPBasicAuth("anystring", mailchimp_api_key))
+
+    # Check the response
+    if response.status_code == 200:
+        validation_msg = "✅ API key is good!\n"
+        # Now check the list_id
+        # Verify list_id also since we've validated the mailchimp_api_key is OK
+
+        if list_id != "":
+            response = requests.get(
+                f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}",
+                auth=HTTPBasicAuth("anystring", mailchimp_api_key),
+            )
+            # Check the response
+            if response.status_code == 200:
+                validation_msg += "✅ Audience list id is good!\n"
+                return validation_msg
+            else:
+                log.error(
+                    f"Failed fetching list details. Status code: {response.status_code}"
+                    f"Response: {response.text}"
+                )
+                return "❌ Audience list id is bad!"
+        return validation_msg
+    else:
+        msg = f"Failed to ping Mailchimp API. Status code: {response.status_code}. Response: {response.text}"  # noqa: E501
+        log.error(msg)
+        return msg
 
 
 @admin.route("/add/custom/code", methods=["GET", "POST"])

@@ -29,7 +29,8 @@
             <p><b>Status: </b>
             {% if integration.mailchimp_active %}
               <div class="alert alert-success">
-                Mailchimp is already connected!
+                Mailchimp is already connected to audience name: {{ mailchimp_audience_name }}<br />
+                Which has audience list id: {{ mailchimp_list_id }}
               </div>
             {% else %}
               <div class="alert alert-warning">
@@ -60,7 +61,11 @@
               <label class="col-sm-3 col-form-label" for="api_key">Mailchimp API key:</label>
               <div class="col-sm-9">
                 <input class="form-control" type="text" name="api_key"
-                      id="api_key" placeholder="defjkkdfjkk-us12" required>
+                      id="api_key" placeholder="defjkkdfjkk-us12"
+                      hx-post="{{ url_for('admin.verify_connect_mailchimp_manually') }}"
+                      hx-swap="innerHTML" hx-target="#result-verify_connect_mailchimp_manually"
+                      hx-trigger="keyup changed delay:1s"
+                      required>
               </div>
             </div>
 
@@ -68,19 +73,26 @@
               <label class="col-sm-3 col-form-label" for="list_id">Audience (list) id:</label>
               <div class="col-sm-9">
                 <input class="form-control" type="text" name="list_id"
-                      id="list_id" placeholder="abc123" required>
+                      id="list_id" placeholder="abc123"
+                      hx-post="{{ url_for('admin.verify_connect_mailchimp_manually') }}"
+                      hx-swap="innerHTML" hx-target="#result-verify_connect_mailchimp_manually"
+                      hx-trigger="keyup changed delay:1s"
+                      required>
                 <small id="list_idHelp" class="form-text text-muted">
                   New subscribers will automatically get added to this Audience list</small>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block mb-3">
-            {% if integration.Mailchimp_property_id %}
-              Reconnect
-            {% else %}
-              Connect
-            {% endif %} 
-              Mailchimp
+            <p id="result-verify_connect_mailchimp_manually">
+              {% if integration.mailchimp_active is sameas false  %}
+                API settings not checked yet
+              {% else %}
+                Re-enter settings if you want to overwrite the active configuration.
+              {% endif %}
+            </p>
+
+            <button type="submit" class="btn btn-primary btn-block mb-3 mt-4">
+            Save Mailchimp settings
             </button>
           </form>
         </div>

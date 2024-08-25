@@ -180,7 +180,7 @@ def health():
 
 
 @bp.route("/test-signal_new_subscriber")
-def test_email():
+def test_signal_new_subscriber():
     signal_new_subscriber.send(subscription_uuid="test")
     return "Test signal_new_subscriber email generated."
 
