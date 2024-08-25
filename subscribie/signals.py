@@ -21,6 +21,7 @@ from subscribie.receivers import (
     receiver_new_subscriber,
     receiver_new_donation,
     receiver_attach_documents_to_subscription,
+    receiver_new_subscriber_add_to_convertkit
 )
 
 # Subscribie Core signals.  For usage examples grep the source code
@@ -52,3 +53,4 @@ def register_signal_handlers():
         receiver_send_subscriber_payment_failed_notification_email
     )
     signal_new_donation.connect(receiver_new_donation)
+    signal_journey_complete.connect(receiver_new_subscriber_add_to_convertkit)

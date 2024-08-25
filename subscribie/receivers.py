@@ -130,6 +130,30 @@ def receiver_new_subscriber(*args, **kwargs):
     newSubscriberEmailNotification(**kwargs)
 
 
+def receiver_new_subscriber_add_to_convertkit()
+    subscription_uuid = kwargs.get("subscription_uuid")
+    subscription = None
+    try:
+        subscription = (
+            Subscription.query.where(Subscription.uuid == subscription_uuid)
+            .execution_options(include_archived=True)
+            .one()
+        )
+        subscriber_email = subscription.person.email
+    except sqlalchemy.exc.NoResultFound:
+        if subscription is None and subscription_uuid != "test":
+            msg = "Got receiver_new_subscriber_add_to_convertkit event but no associated subscription found."  # noqa: E501
+            log.error(msg)
+            return
+        elif subscription_uuid == "test":
+            log.info("Testing receiver_new_subscriber_add_to_convertkit with dummy subscription")
+            subscriber_email = "test-subscriber@example.com"
+
+
+
+    create_convertkit_subscriber_enttry_name_thihng()
+
+
 def receiver_new_donation(*args, **kwargs):
     to_email = kwargs.get("email")
     send_donation_thankyou_email(to_email=to_email)
