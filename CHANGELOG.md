@@ -1,3 +1,18 @@
+# v0.1.201 (Mon Aug 26 2024)
+
+#### 🐛 Bug Fix
+
+- #1398 remove duplicate Integration.query.first() [#1394](https://github.com/Subscribie/subscribie/pull/1394) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1393 run mailchimp submission as background task [#1394](https://github.com/Subscribie/subscribie/pull/1394) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1393 As a shop owner, new Subscribers can be sent to my Mailchimp audience list [#1394](https://github.com/Subscribie/subscribie/pull/1394) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip Fix #1393 As a shop owner, I can connect Mailchimp to my shop [#1394](https://github.com/Subscribie/subscribie/pull/1394) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.200 (Mon Aug 12 2024)
 
 #### 🐛 Bug Fix
