@@ -7,12 +7,11 @@ from subscribie.email import (
 from subscribie.notifications import (
     subscriberPaymentFailedNotification,
     newSubscriberEmailNotification,
+    newSubscriberSendToMailchimpNotification,
 )
 from subscribie.models import Subscription, Document, Integration
 from subscribie.database import database
 import sqlalchemy
-import requests
-from requests.auth import HTTPBasicAuth
 
 
 log = logging.getLogger(__name__)
@@ -146,9 +145,8 @@ def receiver_new_subscriber_send_to_mailchimp(*args, **kwargs) -> None:
     Then, the shop own must input these items (MailChimp API key,
     and audience id) into their Subscribie shop, under 'integrations'.
     """
-
     integration = Integration.query.first()
-    if integration.mailchimp_active is False:
+    if integration.mailchimp_active is not True:
         log.debug(
             """Refusing receiver_new_subscriber_send_to_mailchimp because
             integration.mailchimp_active is false"""
@@ -166,6 +164,7 @@ def receiver_new_subscriber_send_to_mailchimp(*args, **kwargs) -> None:
             .one()
         )
         subscriber_email = subscription.person.email
+
         # Send subscriber to mailchimp audience
         data = {
             "email_address": subscriber_email,
@@ -177,26 +176,13 @@ def receiver_new_subscriber_send_to_mailchimp(*args, **kwargs) -> None:
             "tags": ["subscribie"],
         }
 
-        # Post to Mailchimp lists endpoint
-        url = f"https://{dc}.api.mailchimp.com/3.0/lists/{mailchimp_list_id}/members"
-        headers = {"Content-Type": "application/json"}
-        response = requests.post(
-            url,
-            headers=headers,
-            auth=HTTPBasicAuth("key", mailchimp_api_key),
-            json=data,
+        newSubscriberSendToMailchimpNotification(
+            subscriber_email=subscriber_email,
+            mailchimp_list_id=mailchimp_list_id,
+            mailchimp_api_key=mailchimp_api_key,
+            dc=dc,
+            data=data,
         )
-
-        if response.status_code == 200:
-            log.debug("Success adding subscriber to mailchimp audience.")
-        elif (
-            response.status_code == 400 and response.json()["title"] == "Member Exists"
-        ):
-            log.debug("Member already exists in list")
-        else:
-            log.error(
-                f"Failed to add member to the list. Status code: {response.status_code}"
-            )
     except sqlalchemy.exc.NoResultFound:
         if subscription is None and subscription_uuid != "test":
             msg = "Got receiver_new_subscriber_send_to_mailchimp event but no associated subscription found."  # noqa: E501
