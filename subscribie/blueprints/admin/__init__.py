@@ -1250,7 +1250,6 @@ def connect_tawk_manually():
 def connect_mailchimp_manually():
     integration = Integration.query.first()
     form = MailchimpConnectForm()
-    integration = Integration.query.first()
 
     mailchimp_audience_name = None
     mailchimp_list_id = None
