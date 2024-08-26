@@ -3,8 +3,11 @@ import logging
 from flask import current_app
 from .email import EmailMessageQueue
 from subscribie.models import Company, Setting, User
+from subscribie.tasks import background_task
 from jinja2 import Template
 from pathlib import Path
+import requests
+from requests.auth import HTTPBasicAuth
 
 log = logging.getLogger(__name__)
 
@@ -48,6 +51,46 @@ def newSubscriberEmailNotification(*args, **kwargs):
         msg.queue()
     except Exception as e:
         log.error(f"failed to send newsubscriberemailnotification email: {e}")
+
+
+@background_task
+def newSubscriberSendToMailchimpNotification(
+    subscriber_email: str,
+    mailchimp_list_id: str,
+    data: dict,
+    mailchimp_api_key: str,
+    dc: str,
+    *args,
+    **kwargs,
+) -> bool:
+    log.debug("newSubscriberSendToMailchimpNotification called")
+
+    # Post to Mailchimp lists endpoint
+    url = f"https://{dc}.api.mailchimp.com/3.0/lists/{mailchimp_list_id}/members"
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(
+        url,
+        headers=headers,
+        auth=HTTPBasicAuth("key", mailchimp_api_key),
+        json=data,
+    )
+
+    if response.status_code == 200:
+        log.debug(
+            f"Success adding subscriber to mailchimp audience."
+            f"Response: {response.text}"
+        )
+    elif response.status_code == 400 and response.json()["title"] == "Member Exists":
+        log.debug("Member already exists in list")
+        return False
+    else:
+        log.error(
+            f"Failed to add member to the list. Status code: {response.status_code}."
+            f"Response: {response.text}"
+        )
+        return False
+    log.debug("newSubscriberSendToMailchimpNotification completed")
+    return True
 
 
 def subscriberPaymentFailedNotification(
