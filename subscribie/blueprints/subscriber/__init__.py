@@ -370,6 +370,34 @@ def list_files():
     return render_template("subscriber/list_files.html", files=files)
 
 
+@subscriber.route("/account/invoices")
+@subscriber_login_required
+def subscriber_invoices():
+    """
+    As a subscriber I can view and download
+    my own invoices:
+    https://github.com/Subscribie/subscribie/issues/1395
+    """
+    get_stripe_invoices()
+    invoices = g.subscriber.invoices(skipFetchDeclineCode=False)
+    invoices.reverse()
+    return render_template(
+        "subscriber/subscriber_invoices.html", invoices=invoices
+    )
+
+
+@subscriber.route("/account/invoice/download/<invoice_id>")
+@subscriber_login_required
+def subscriber_invoice_download(invoice_id: str):
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    invoice = stripe.Invoice.retrieve(
+        invoice_id, stripe_account=stripe_connect_account_id
+    )
+    return redirect(invoice.hosted_invoice_url)
+
+
 @subscriber.route("/account/failed-invoices")
 @subscriber_login_required
 def subscriber_view_failed_invoices():
