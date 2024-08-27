@@ -1,3 +1,16 @@
+# v0.1.202 (Tue Aug 27 2024)
+
+#### 🐛 Bug Fix
+
+- #1395 black format [#1396](https://github.com/Subscribie/subscribie/pull/1396) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1395 as a Subscriber I can download my own invoices [#1396](https://github.com/Subscribie/subscribie/pull/1396) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.201 (Mon Aug 26 2024)
 
 #### 🐛 Bug Fix
