@@ -381,9 +381,7 @@ def subscriber_invoices():
     get_stripe_invoices()
     invoices = g.subscriber.invoices(skipFetchDeclineCode=False)
     invoices.reverse()
-    return render_template(
-        "subscriber/subscriber_invoices.html", invoices=invoices
-    )
+    return render_template("subscriber/subscriber_invoices.html", invoices=invoices)
 
 
 @subscriber.route("/account/invoice/download/<invoice_id>")
