@@ -1,3 +1,15 @@
+# v0.1.203 (Tue Aug 27 2024)
+
+#### 🐛 Bug Fix
+
+- 1395 as a subscriber i can download my own invoices [#1397](https://github.com/Subscribie/subscribie/pull/1397) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.202 (Tue Aug 27 2024)
 
 #### 🐛 Bug Fix
