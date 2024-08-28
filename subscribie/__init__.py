@@ -219,25 +219,6 @@ def create_app(test_config=None):
                     log.debug(
                         f"Created PriceList with zero rules for currency {currency}"
                     )
-            # Ensure every plan (including archived) has a PriceList attached
-            # for each supported currency
-            # https://github.com/Subscribie/subscribie/issues/1317
-            plans = Plan.query.execution_options(include_archived=True).all()
-            price_lists = (
-                PriceList.query.all()
-            )  # TODO only get default pricelist for given currency
-            # since there is danger here that newly created pricelists may be added # noqa: E501
-            for plan in plans:
-                # Note we are careful to skip plans which already have a PriceList attached # noqa: E501
-                # to handle the case of an already updated shop.
-                if len(plan.price_lists) == 0:
-                    for price_list in price_lists:
-                        log.debug(
-                            f"Adding price_list {price_list.name} to {plan.title}"
-                        )
-                        plan.price_lists.append(price_list)
-                        database.session.commit()
-                        log.debug(f"Added price_list {price_list.name} to {plan.title}")
         except sqlalchemy.exc.OperationalError as e:
             # Allow to fail until migrations run (flask upgrade requires app reboot)
             log.debug(e)
