@@ -1,3 +1,15 @@
+# v0.1.204 (Wed Aug 28 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1398 Remove uneeded plans iteration on app startup [#1399](https://github.com/Subscribie/subscribie/pull/1399) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.203 (Tue Aug 27 2024)
 
 #### 🐛 Bug Fix
