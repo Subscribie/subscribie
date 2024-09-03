@@ -1055,6 +1055,10 @@ def stripe_webhook():
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         log.info("Processing checkout.session.completed event")
+        if event["data"]["object"]["mode"] == "setup":
+            log.info("checkout.session.completed mode is setup, returning 200 OK early")
+            return "OK", 200
+
         session = event["data"]["object"]
         currency = session["currency"].upper()
         email = session["customer_email"]
