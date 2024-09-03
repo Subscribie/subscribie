@@ -1,3 +1,15 @@
+# v0.1.205 (Tue Sep 03 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1400 handle webhook checkout.session.completed mode setup correctly return 200 [#1401](https://github.com/Subscribie/subscribie/pull/1401) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.204 (Wed Aug 28 2024)
 
 #### 🐛 Bug Fix
