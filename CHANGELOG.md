@@ -1,3 +1,15 @@
+# v0.1.207 (Sun Sep 08 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1404 seed plan price lists during development [#1405](https://github.com/Subscribie/subscribie/pull/1405) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.206 (Sun Sep 08 2024)
 
 #### 🐛 Bug Fix
