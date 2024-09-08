@@ -722,7 +722,6 @@ class Plan(database.Model, HasArchived, HasCreatedAt):
             f"Searching for price_list in currency {currency} for plan {self.title}"  # noqa: E501
         )
 
-        # Not all plans will have a price_list, if not, return error
         price_list_found_for_currency = False
         for price_list in self.price_lists:
             log.debug(f"only use price list if currency {currency}")
@@ -745,7 +744,7 @@ class Plan(database.Model, HasArchived, HasCreatedAt):
                 )
         if price_list_found_for_currency is False:
             msg = f"Could not find price_list for currency: {currency}. There are {len(self.price_lists)} connected to this plan ({self.uuid}), but none of them are for currency {currency}"  # noqa: E501
-            log.warning(msg)
+            log.error(msg)
             return False, msg
         log.debug(
             f"getPrice returning sell price: {sell_price} for plan {self.title}"  # noqa: E501
