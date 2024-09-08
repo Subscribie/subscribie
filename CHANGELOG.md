@@ -1,3 +1,15 @@
+# v0.1.206 (Sun Sep 08 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1402 remove bottom -100px causing footer to overlap pay button on smaller devices [#1403](https://github.com/Subscribie/subscribie/pull/1403) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.205 (Tue Sep 03 2024)
 
 #### 🐛 Bug Fix
