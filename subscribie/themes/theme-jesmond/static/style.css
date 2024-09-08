@@ -241,7 +241,9 @@ body {
 
 .footer {
   position: absolute;
-  bottom: -100px;
+  /* Do not use bottom -100px without testing on smaller devices first
+   * https://github.com/Subscribie/subscribie/issues/1402
+   * */
   width: 100%;
 }
 
