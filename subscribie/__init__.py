@@ -260,6 +260,11 @@ def create_app(test_config=None):
             else:
                 log.info("Database already seeded.")
             con.close()
+        # assignDefaultPriceLists to each plan
+        plans = Plan.query.all()
+        for plan in plans:
+            plan.assignDefaultPriceLists()
+        database.session.commit()
 
     @app.cli.command()
     @click.argument("days", type=int)
