@@ -39,6 +39,7 @@ dependencies = [
     "scikit-learn",
     "black",
     "strictyaml",
+    "sentry-sdk[flask]>=2.14.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.12"

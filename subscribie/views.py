@@ -150,12 +150,14 @@ def check_if_inside_iframe():
 
 @bp.app_context_processor
 def inject_template_globals():
+    from subscribie.settings import settings as internal_settings
     company = Company.query.first()
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
     pages = Page.query.all()
     settings = Setting.query.first()
     custom_code = settings.custom_code
+    SENTRY_SDK_SESSION_REPLAY_ID = internal_settings.get("SENTRY_SDK_SESSION_REPLAY_ID")
     geo_currency_symbol = get_geo_currency_symbol()
     default_currency_symbol = get_shop_default_currency_symbol()
     currency_format = currencyFormat
@@ -166,6 +168,7 @@ def inject_template_globals():
         plans=plans,
         pages=pages,
         custom_code=Markup(custom_code),
+        SENTRY_SDK_SESSION_REPLAY_ID=SENTRY_SDK_SESSION_REPLAY_ID,
         geo_currency_symbol=geo_currency_symbol,
         get_geo_currency_code=get_geo_currency_code,
         default_currency_symbol=default_currency_symbol,
