@@ -1,3 +1,15 @@
+# v0.1.208 (Sat Sep 14 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1406 introduce sentry to better diagnose runtime errors [#1407](https://github.com/Subscribie/subscribie/pull/1407) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.207 (Sun Sep 08 2024)
 
 #### 🐛 Bug Fix
