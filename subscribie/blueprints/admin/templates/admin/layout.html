@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='custom_style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Lato:900,400" rel="stylesheet">
 <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+<script src="https://js-de.sentry-cdn.com/{{ SENTRY_SDK_SESSION_REPLAY_ID }}.min.js" crossorigin="anonymous"></script>
 
 {% if integration.google_tag_manager_container_id
    and integration.google_tag_manager_active

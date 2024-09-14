@@ -7,6 +7,7 @@
 
     :copyright: (c) 2018 by Karma Computing Ltd
 """
+import sentry_sdk
 from subscribie.settings import settings
 from .logger import logger  # noqa: F401
 import logging
@@ -24,6 +25,17 @@ from flask import (
     Blueprint,
     request,
     abort,
+)
+
+sentry_sdk.init(
+    dsn=settings.get("SENTRY_SDK_DSN"),
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
 )
 from flask_babel import Babel, _
 from subscribie.email import EmailMessageQueue
@@ -377,5 +389,15 @@ def create_app(test_config=None):
     @app.route("/test-lanuage")
     def test_language():
         return _("Hello")
+
+    @app.route("/error")
+    def raise_error():
+        1 / 0  # raises an error
+        return ""
+
+    @app.route("/ui-error")
+    def raise_ui_error():
+        """Raises UI error"""
+        return render_template("errors/ui-error.html"), 200
 
     return app

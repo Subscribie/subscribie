@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<script>
+    window.onload = () => {
+        throw new Error('This is a test error');
+    };
+</script>
+
+{% endblock %}

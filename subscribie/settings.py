@@ -1,4 +1,5 @@
 from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSeparated
+import os
 
 # Load application settings according to schema
 
@@ -7,6 +8,8 @@ from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSepara
 schema = Map(
     {
         "FLASK_ENV": Str(),
+        "SENTRY_SDK_DSN": Str(),
+        "SENTRY_SDK_SESSION_REPLAY_ID": Str(),
         "SAAS_URL": Url(),
         "SAAS_API_KEY": Str(),
         "SAAS_ACTIVATE_ACCOUNT_PATH": Str(),
@@ -57,6 +60,10 @@ def load_settings():
     with open("settings.yaml") as fp:
         settings_string = fp.read()
         settings = load(settings_string, schema)
+        for key in schema._required_keys:
+            if key in os.environ:
+                print(f"Overriding setting {key} with environ value: {os.getenv(key)}")
+                settings[key] = os.getenv(key)
         return settings
 
 
