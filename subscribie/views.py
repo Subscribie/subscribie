@@ -151,6 +151,7 @@ def check_if_inside_iframe():
 @bp.app_context_processor
 def inject_template_globals():
     from subscribie.settings import settings as internal_settings
+
     company = Company.query.first()
     integration = Integration.query.first()
     plans = Plan.query.filter_by(archived=0)
