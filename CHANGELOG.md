@@ -1,3 +1,15 @@
+# v0.1.209 (Sun Sep 15 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1408 don't announce shops not connected to stripe connect [#1409](https://github.com/Subscribie/subscribie/pull/1409) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.208 (Sat Sep 14 2024)
 
 #### 🐛 Bug Fix
