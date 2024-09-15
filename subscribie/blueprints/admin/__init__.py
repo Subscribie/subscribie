@@ -20,6 +20,7 @@ import jinja2
 from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
+    stripe_connect_active,
     create_stripe_connect_account,
     get_stripe_connect_account_id,
     modify_stripe_account_capability,
@@ -28,7 +29,6 @@ from subscribie.utils import (
     get_stripe_invoices,
     stripe_livemode,
     announce_stripe_connect_account,
-    stripe_testmode,
     currencyFormat,
     get_shop_default_country_code,
     dec2pence,
@@ -1925,8 +1925,8 @@ def announce_shop_stripe_connect_ids():
     status = 200
     msg = None
 
-    if stripe_testmode() is False and stripe_livemode() is False:
-        return jsonify("Stripe is not setup yet.")
+    if stripe_connect_active() is False:
+        return jsonify("Stripe connect is not setup yet.")
 
     try:
         stripe_connect_account_id = get_stripe_connect_account_id()
