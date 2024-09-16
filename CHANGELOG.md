@@ -1,3 +1,15 @@
+# v0.1.210 (Mon Sep 16 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1411 log custom template pages not found as debug not error [#1412](https://github.com/Subscribie/subscribie/pull/1412) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.209 (Sun Sep 15 2024)
 
 #### 🐛 Bug Fix
