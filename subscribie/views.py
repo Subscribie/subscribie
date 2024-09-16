@@ -310,7 +310,7 @@ def custom_page(path):
         ) as fh:
             body = fh.read()
     except FileNotFoundError as e:
-        log.error(f"Template not found FileNotFoundError. {e}")
+        log.debug(f"Template not found FileNotFoundError. {e}")
         return "Template not found for this page.", 404
 
     page_header = """
