@@ -1,3 +1,15 @@
+# v0.1.211 (Sat Sep 21 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1413 ensure plans always have default pricelists attached (regression) [#1414](https://github.com/Subscribie/subscribie/pull/1414) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.210 (Mon Sep 16 2024)
 
 #### 🐛 Bug Fix
