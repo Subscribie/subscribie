@@ -721,8 +721,15 @@ class Plan(database.Model, HasArchived, HasCreatedAt):
         log.debug(
             f"Searching for price_list in currency {currency} for plan {self.title}"  # noqa: E501
         )
-
         price_list_found_for_currency = False
+
+        # Ensure plan has at least default price lists attached
+        # https://github.com/Subscribie/subscribie/issues/1413
+        if len(self.price_lists) == 0:
+            log.debug("plan price_lists is zero. Calling assignDefaultPriceLists")
+            self.assignDefaultPriceLists()
+            database.session.commit()
+
         for price_list in self.price_lists:
             log.debug(f"only use price list if currency {currency}")
 
