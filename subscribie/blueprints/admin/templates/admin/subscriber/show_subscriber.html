@@ -25,7 +25,13 @@
             <h3 class="card-title">👤 {{ person.full_name | title }}</h3>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">📧 {{ person.email }}</li>
+            <span hx-target="this" hx-swap="outerHTML">
+              <li class="list-group-item">📧 {{ person.email }}
+               <button hx-get="{{ url_for('admin.edit_subscriber', subscriber_id = person.id) }}">
+                Edit
+               </button>
+              </li>
+            </span>
             <li class="list-group-item">📱 {{ person.mobile }}</li>
             <li class="list-group-item">🏠 <strong>Address</strong>
               <address>
