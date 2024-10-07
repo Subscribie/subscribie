@@ -1,3 +1,15 @@
+# v0.1.212 (Mon Oct 07 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1415 As shop owner I can change the email address of a subscriber [#1416](https://github.com/Subscribie/subscribie/pull/1416) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.211 (Sat Sep 21 2024)
 
 #### 🐛 Bug Fix
