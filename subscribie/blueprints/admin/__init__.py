@@ -1351,7 +1351,14 @@ def add_custom_code():
 
 @admin.app_context_processor
 def inject_template_globals():
-    return dict(currencyFormat=currencyFormat)
+    reply_to_email_address = None
+    setting = Setting.query.first()
+    if setting is not None:
+        reply_to_email_address = setting.reply_to_email_address
+    return dict(
+        currencyFormat=currencyFormat,
+        reply_to_email_address=reply_to_email_address,  # noqa: E501
+    )
 
 
 @admin.route("/subscribers")
