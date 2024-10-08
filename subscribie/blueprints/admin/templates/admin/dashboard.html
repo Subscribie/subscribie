@@ -29,6 +29,11 @@
           </a>
           </li>
           {% endif %}
+          {% if reply_to_email_address is sameas None %}
+          <li>
+            🔔 Improve support for your subscribers by <a href="{{ url_for('admin.set_reply_to_email') }}">setting your support email address 🔔</a>
+          </li>
+          {% endif %}
       </ul>
   </div>
 
