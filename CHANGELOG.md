@@ -1,3 +1,15 @@
+# v0.1.213 (Tue Oct 08 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1417 As a shop owner I'm warned when I've not configured the reply-to (support) email address [#1418](https://github.com/Subscribie/subscribie/pull/1418) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.212 (Mon Oct 07 2024)
 
 #### 🐛 Bug Fix
