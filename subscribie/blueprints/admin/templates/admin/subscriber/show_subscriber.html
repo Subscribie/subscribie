@@ -22,12 +22,15 @@
       <div class="row">
         <div class="card col-md-12">
           <div class="card-body">
+            <span hx-target="this" hx-swap="outerHTML">
             <h3 class="card-title">👤 {{ person.full_name | title }}</h3>
+            <button hx-get="{{ url_for('admin.edit_subscriber_full_name', subscriber_id = person.id) }}" class="btn btn-primary">Edit</button>
+            </span>
           </div>
           <ul class="list-group list-group-flush">
             <span hx-target="this" hx-swap="outerHTML">
               <li class="list-group-item">📧 {{ person.email }}
-               <button hx-get="{{ url_for('admin.edit_subscriber', subscriber_id = person.id) }}">
+               <button hx-get="{{ url_for('admin.edit_subscriber_email', subscriber_id = person.id) }}" class="btn btn-primary" >
                 Edit
                </button>
               </li>
