@@ -1,3 +1,15 @@
+# v0.1.214 (Sun Nov 03 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1419 as a subscriber I can edit the subscriber name last name and first name [#1420](https://github.com/Subscribie/subscribie/pull/1420) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.213 (Tue Oct 08 2024)
 
 #### 🐛 Bug Fix
