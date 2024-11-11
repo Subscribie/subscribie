@@ -992,6 +992,13 @@ def set_stripe_livemode():
 @admin.route("/connect/stripe-connect", methods=["GET"])
 @login_required
 def stripe_connect():
+    # Verify that shop owner email address is not
+    # a suspected SUSPECTED_SPAM_EMAIL_DOMAINS
+    user = User.query.first()
+    SUSPECTED_SPAM_EMAIL_DOMAINS = settings.get("SUSPECTED_SPAM_EMAIL_DOMAINS")
+    user_email_domain = user.email.split("@")[1]
+    if user_email_domain in SUSPECTED_SPAM_EMAIL_DOMAINS:
+        return "<h1>Please contact support before connecting Stripe, thank you.</h1>"
     setting = Setting.query.first()
     shop_activated = setting.shop_activated
     SERVER_NAME = settings.get("SERVER_NAME")

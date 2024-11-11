@@ -73,7 +73,9 @@ SUPPORTED_CURRENCIES: "GBP,USD,EUR"
 
 # Anti spam
 ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH: "/path/to/classifier.pkl"
-
+SUSPECTED_SPAM_EMAIL_DOMAINS:
+  - example.com
+  - mailfence.com
 
 # Optional
 TELEGRAM_TOKEN: 
