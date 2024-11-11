@@ -25,6 +25,7 @@ from subscribie.models import (
     SubscriptionNote,
     Setting,
     TaxRate,
+    SpamEmailDomain,
 )
 from subscribie.email import EmailMessageQueue
 from subscribie.utils import (
@@ -45,7 +46,6 @@ from subscribie.signals import (
     signal_payment_failed,
     signal_new_donation,
 )
-from subscribie.notifications import newSubscriberEmailNotification
 import stripe
 import backoff
 import os
@@ -66,6 +66,15 @@ def donate_form():
 
 @checkout.route("/new_customer", methods=["GET"])
 def new_customer():
+    # Verify that shop owner email address is not
+    # a suspected SUSPECTED_SPAM_EMAIL_DOMAINS
+    user = User.query.first()
+    SUSPECTED_SPAM_EMAIL_DOMAINS = [d.domain for d in SpamEmailDomain.query.all()]
+    user_email_domain = user.email.split("@")[1]
+    if user_email_domain in SUSPECTED_SPAM_EMAIL_DOMAINS:
+        log.error(f"SUSPECTED_SPAM_EMAIL_DOMAIN {user.email} " "attempted to sign up")
+        return "<h1>Please contact support before signing-up, thank you.</h1>"
+
     session["subscribie_checkout_session_id"] = str(uuid4())
     plan = Plan.query.filter_by(uuid=request.args["plan"]).first()
     if plan is None:
