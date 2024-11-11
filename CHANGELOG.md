@@ -1,3 +1,15 @@
+# v0.1.216 (Mon Nov 11 2024)
+
+#### 🐛 Bug Fix
+
+- #1421 expand spam email check to new_customer checkout step [#1423](https://github.com/Subscribie/subscribie/pull/1423) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.215 (Mon Nov 11 2024)
 
 #### 🐛 Bug Fix
