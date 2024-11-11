@@ -7,7 +7,6 @@ from sqlalchemy import event
 from sqlalchemy import Column
 from sqlalchemy import Boolean
 from sqlalchemy import PrimaryKeyConstraint
-from sqlalchemy import desc
 
 from typing import Optional
 import datetime
@@ -1400,3 +1399,13 @@ class PriceListRule(database.Model, HasCreatedAt):
         secondary=association_table_price_list_to_rule,
         back_populates="rules",
     )
+
+
+class SpamEmailDomain(database.Model, HasArchived, HasCreatedAt):
+    __tablename__ = "spam_email_domain"
+    id = database.Column(database.Integer(), primary_key=True)
+    uuid = database.Column(database.String(), default=uuid_string)
+    ts = database.Column(
+        database.DateTime, default=lambda: datetime.datetime.now(datetime.UTC)
+    )
+    domain = database.Column(database.String())

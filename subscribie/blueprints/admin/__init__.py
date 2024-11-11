@@ -83,6 +83,7 @@ from subscribie.models import (
     UpcomingInvoice,
     Document,
     PlanQuestionAssociation,
+    SpamEmailDomain,
 )
 from .subscription import (
     update_stripe_subscription_statuses,
@@ -995,9 +996,13 @@ def stripe_connect():
     # Verify that shop owner email address is not
     # a suspected SUSPECTED_SPAM_EMAIL_DOMAINS
     user = User.query.first()
-    SUSPECTED_SPAM_EMAIL_DOMAINS = settings.get("SUSPECTED_SPAM_EMAIL_DOMAINS")
+    SUSPECTED_SPAM_EMAIL_DOMAINS = [d.domain for d in SpamEmailDomain.query.all()]
     user_email_domain = user.email.split("@")[1]
     if user_email_domain in SUSPECTED_SPAM_EMAIL_DOMAINS:
+        log.error(
+            f"SUSPECTED_SPAM_EMAIL_DOMAIN {user_email_domain} "
+            "attempted to connect stripe"
+        )
         return "<h1>Please contact support before connecting Stripe, thank you.</h1>"
     setting = Setting.query.first()
     shop_activated = setting.shop_activated
