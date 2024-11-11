@@ -1,3 +1,17 @@
+# v0.1.215 (Mon Nov 11 2024)
+
+#### 🐛 Bug Fix
+
+- bump action/download-artifact @v2 -> @v4 in pr-demo-deploy.yml [#1422](https://github.com/Subscribie/subscribie/pull/1422) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1421 as an operator I can maintain a list of suspected spam email domains and block them from connecting to a payment provider [#1422](https://github.com/Subscribie/subscribie/pull/1422) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- WIP Fix #1421 as-a-shop-owner-i-can-block-sign-ups-from-email-domains-i-choose [#1422](https://github.com/Subscribie/subscribie/pull/1422) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.214 (Sun Nov 03 2024)
 
 #### 🐛 Bug Fix
