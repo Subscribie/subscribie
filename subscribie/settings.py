@@ -1,4 +1,4 @@
-from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSeparated, Seq
+from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSeparated
 import os
 
 # Load application settings according to schema
@@ -47,7 +47,6 @@ schema = Map(
         "PUBLIC_KEY": Str(),
         "SUPPORTED_CURRENCIES": CommaSeparated(Str()),
         "ANTI_SPAM_SHOP_NAMES_MODEL_FULL_PATH": Str(),
-        "SUSPECTED_SPAM_EMAIL_DOMAINS": Seq(Str()),
         "TELEGRAM_TOKEN": Str(),
         "TELEGRAM_CHAT_ID": Str(),
         "TELEGRAM_PYTHON_LOG_LEVEL": Str(),
