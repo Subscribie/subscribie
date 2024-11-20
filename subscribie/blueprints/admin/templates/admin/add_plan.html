@@ -235,6 +235,29 @@
               <small class="form-text text-muted">
                 Time (e.g. midnight)
               </small>
+              <br />
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="proration_behavior-0" value="off" id="prorate_option2" checked>
+                <label class="form-check-label" for="prorate_option2">
+                  Do not prorate
+                </label>
+                <small class="form-text text-muted">
+                  Charge subscribers the full amount of the subscription, even
+                  if it ends before the period is over.
+                </small>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="proration_behavior-0" value="on" id="prorate_option1">
+                <label class="form-check-label" for="prorate_option1">
+                  Prorate
+                </label>
+                <small class="form-text text-muted">
+                  Don't charge subscribers the full amount if the subscription
+                  ends before the period is over. For example, if a monthly
+                  subscription ends partway through the month, the final charge
+                  will be less since it is prorated based on the time used.
+                </small>
+              </div>
             </div>
           </fieldset>
         

@@ -21,7 +21,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Preprocess the data: character-level features
 char_vectorizer = CountVectorizer(analyzer="char", ngram_range=(2, 5))
-breakpoint()
 X_train_char = char_vectorizer.fit_transform(X_train)
 X_test_char = char_vectorizer.transform(X_test)
 

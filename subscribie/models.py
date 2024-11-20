@@ -401,6 +401,16 @@ class Subscription(database.Model, HasCreatedAt):
     # which creates subscriptions.
     stripe_cancel_at = database.Column(database.Integer(), default=0)
     stripe_pause_collection = database.Column(database.String())
+    # By default Subscribie chooses to set proration_behavior to none (off) since
+    # https://github.com/Subscribie/subscribie/issues/1133
+    # See
+    # - https://github.com/Subscribie/subscribie/issues/1133
+    # - https://docs.stripe.com/api/subscriptions/create#create_subscription-proration_behavior  # noqa: E501
+    # - https://docs.stripe.com/api/subscriptions/update?lang=python
+    # proration_behavior indentionally string "none" not to be confused with None
+    # See
+    # https://docs.stripe.com/api/subscriptions/create#create_subscription-proration_behavior
+    stripe_proration_behavior = database.Column(database.String(), default="none")
 
     def stripe_subscription_active(self):
         if self.stripe_subscription_id is not None:
@@ -678,6 +688,10 @@ class Plan(database.Model, HasArchived, HasCreatedAt):
     category = relationship("Category", back_populates="plans")
     private = database.Column(database.Boolean(), default=0)
     cancel_at = database.Column(database.Integer(), default=0)
+    # proration_behavior indentionally string "none" not to be confused with None
+    # See
+    # https://docs.stripe.com/api/subscriptions/create#create_subscription-proration_behavior
+    proration_behavior = database.Column(database.String(), default="none")
     price_lists = relationship(
         "PriceList", secondary=association_table_plan_to_price_lists
     )
