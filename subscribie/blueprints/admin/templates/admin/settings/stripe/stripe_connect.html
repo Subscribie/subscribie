@@ -81,6 +81,11 @@
                 you can switch to live mode using real money.</b>
               </div>
             {% endif %}
+            {% if card_payments_enabled is not sameas True %}
+              <div class="alert alert-warning" role="alert">
+                <b>Your account is currently disabled from payments, please wait a few days for us to finish the screening process to prove the account's veracity</b>
+              </div>
+            {% endif %}
 
             <a href="{{ stripe_express_dashboard_url }}" class="btn btn-success">
                 View balance, payouts and change bank account settings
