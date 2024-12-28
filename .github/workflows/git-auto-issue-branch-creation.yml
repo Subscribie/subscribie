@@ -36,7 +36,7 @@ jobs:
           ALLOWED_BRANCH_NAME_CHARS='[^a-zA-Z0-9-]'
           # Loop through each character in the branch name, replacing any not allowed characer with a hyphen '-'
           while [[ $ISSUE_BRANCH_NAME =~ $ALLOWED_BRANCH_NAME_CHARS ]]; do
-            ISSUE_BRANCH_NAME=`echo $ISSUE_BRANCH_NAME | sed -r "s/($ALLOWED_BRANCH_NAME_CHARS)/-/g" | sed 's/--/-/'`
+            ISSUE_BRANCH_NAME=`echo $ISSUE_BRANCH_NAME | sed -r "s/($ALLOWED_BRANCH_NAME_CHARS)/-/g" | sed 's/--/-/g'`
           done
 
           echo $ISSUE_BRANCH_NAME >> $GITHUB_ENV
