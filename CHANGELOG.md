@@ -1,3 +1,15 @@
+# v0.1.218 (Sat Dec 28 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #1426 ALLOWED_BRANCH_NAME_CHARS in auto issue branch creation [#1429](https://github.com/Subscribie/subscribie/pull/1429) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.217 (Sat Dec 28 2024)
 
 #### 🐛 Bug Fix
