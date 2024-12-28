@@ -28,12 +28,18 @@ jobs:
           tr -cd '[:alnum:]- ' | \
           # Convert spaces to hyphens '-'
           tr ' ' '-' | \
-          # Remove double hyphens
-          sed 's/--/-/' | \
           # Ensure lowercase branch name
           tr '[:upper:]' '[:lower:]' | \
           # Limit branch name to 60 characters
           cut -c -60` >> $GITHUB_ENV
+
+          ALLOWED_BRANCH_NAME_CHARS='[^a-zA-Z0-9-]'
+          # Loop through each character in the branch name, replacing any not allowed characer with a hyphen '-'
+          while [[ $ISSUE_BRANCH_NAME =~ $ALLOWED_BRANCH_NAME_CHARS ]]; do
+            ISSUE_BRANCH_NAME=`echo $ISSUE_BRANCH_NAME | sed -r "s/($ALLOWED_BRANCH_NAME_CHARS)/-/g" | sed 's/--/-/'`
+          done
+
+          echo $ISSUE_BRANCH_NAME >> $GITHUB_ENV
 
       - name: Create new branch
         run: |
