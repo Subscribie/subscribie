@@ -7,7 +7,7 @@ name: Deploy pr preview
 on:
   workflow_dispatch: # Allow choosing from which branch to run action on
   pull_request:
-  # (pull_request_target get fired on external contributer pull requests)
+  # (pull_request_target get fired on external contributor pull requests)
   #pull_request_target
     paths-ignore:
       - '**/README.md'
@@ -47,7 +47,7 @@ jobs:
           # Enforce max 60 chars, always end with alnum char
           echo SUBDOMAIN=`echo "${{ github.head_ref }}" | tr '[:upper:]' '[:lower:]' | cut -c -60 | rev | sed 's/[^[:alnum:]]//1' | rev` >> $GITHUB_ENV
           echo $GITHUB_ENV
-      - name: Create dokku app for pr branch if dosent already exist using dokku apps:create
+      - name: Create dokku app for pr branch if doesn't already exist using dokku apps:create
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
@@ -67,6 +67,7 @@ jobs:
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST=${{ secrets.STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST }}"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} FLASK_ENV=development"
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} EMAIL_QUEUE_FOLDER=${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }}"
+          ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} SERVER_NAME=${{ env.SUBDOMAIN }}.pcpink.co.uk"
           # mount email-queue folder
           ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ github.head_ref }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ github.head_ref }} || true"
 
