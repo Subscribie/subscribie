@@ -142,10 +142,46 @@
                                 (No up-front fee)
                             {% endif %}
                                     </span>
-                                    <li><strong>Status:</strong>
+                                  <li><strong>Subscription Status:</strong>
+                                    {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+                                        {% if subscription.stripe_pause_collection == "void" %}
+                                          <div class="subscription-status alert alert-warning">Paused - void future invoices</div>
+                                        {% elif subscription.stripe_status == "canceled" %}
+                                          <div class="subscription-status alert alert-secondary">Canceled</div>
+                                        {% elif subscription.stripe_status == 'active'  %}
+                                          <div class="subscription-status alert alert-success">Active</div>
+                                        {% elif subscription.stripe_status == 'past_due'  %}
+                                          <div class="subscription-status alert alert-danger">past_due</div>
+                                        {% else %}
+                                          <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="subscription-status alert alert-success">Paid</div>
+                                    {% endif %}
+                                  </li>                                    
+                                    <li><strong>Payment Collection:</strong>
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
-                                           {% if subscription.stripe_pause_collection == "void" %}
-                                              <div class="subscription-status alert alert-warning">Paused</div>
+                                           {% if subscription.stripe_pause_collection == "keep_as_draft" %}
+                                           <div class="subscription-status alert alert-warning">Paused - (keep_as_draft) 
+                                             <details style="display: inline">
+                                              <summary><em><small>explain</small></em></summary>
+                                              <div class="alert alert-info">
+                                               <p>Temporarily offer services for free and have the possibility of collecting payment later.</p>
+                                               <p>Invoices are still generated, however no payment collection attempts are made against them.
+                                              </div>
+                                             </details>
+                                           </div>
+                                           {% elif subscription.stripe_pause_collection == "void" %}
+                                              <div class="subscription-status alert alert-warning">Paused - void future invoices
+                                                <details style="display: inline">
+                                                  <summary><em><small>explain</small></em></summary>
+                                                  <div class="alert alert-info">
+                                                  <p>Temporarily offer services for free and never collect payment.</p>
+                                                  <p>Invoices are still generated, however they are marked as <em>void</em> (also known as 'cancelled invoice'),
+                                                      so you'll still have an invoice as a record</p>
+                                                  </div>
+                                                </details>
+                                              </div>                          
                                            {% elif subscription.stripe_status == "canceled" %}
                                               <div class="subscription-status alert alert-secondary">Canceled</div>
                                            {% elif subscription.stripe_status == 'active'  %}
@@ -155,7 +191,6 @@
                                            {% else %}
                                               <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                            {% endif %}
-                                           {# always show Force Refresh link so long as there's > 0 transactions against a subscription #}
                                         {% else %}
                                            <div class="subscription-status alert alert-success">Paid</div>
                                         {% endif %}
@@ -184,6 +219,7 @@
                                         {% endif %}
                                     </li>
                                     <li><strong>Actions: </strong><br />
+                                      {# always show Force Refresh link so long as there's > 0 transactions against a subscription #}
                                         {% if subscription.transactions|length > 0 %}
                                               <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
                                                 Refresh Status
@@ -228,7 +264,7 @@
                                        {% else %}
                                          <ul>
                                          {% for document in subscription.documents %}
-                                         {# Show documents assocated with subscription (if any) #}
+                                         {# Show documents associated with subscription (if any) #}
                                          <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}">
                                              {{ document.name }}</a> | 
                                              {{ document.created_at.strftime('%Y-%m-%d') }}</li>
@@ -268,7 +304,7 @@
               </ul>
                 {% elif person.transactions %}
                 {# Donations are not in the subscription table since they are not plans nor subscriptions #}
-                {# therefore we need to look at the transction table to find the donations #}
+                {# therefore we need to look at the transaction table to find the donations #}
                 {% for transaction in person.transactions %}
                     {% if transaction.is_donation %}
                         <div class="card">

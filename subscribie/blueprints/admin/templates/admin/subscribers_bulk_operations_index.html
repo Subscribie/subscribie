@@ -1,0 +1,56 @@
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Subscribers Bulk Operations</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
+    <li class="breadcrumb-item active" aria-current="page">Pages</li>
+  </ul>
+</div>
+      
+
+<main>
+  <div class="section">
+    <div class="container">
+      {% if 'confirm' not in request.args %}
+      <div class="col-md-12">
+        <p>These bulk operations effect <em>all</em> Subscribers in your shop. This can save you time, for example,
+          if you want to pause payment collection from every subscriber in your shop.</p>
+      </div>
+      <div class="col-md-12">
+        <h3>Pause payment collection for every Subscription</h3>
+        <p>When you pause payment collection for every Subscription in your shop, no payment collections will be
+          attempted for the Subscriptions. Invoices will still be generated so you have a record, but no 
+          payment collection attempts will be made.
+        </p>
+        <div class="">
+          <a href="{{ url_for('admin.subscribers_bulk_operations_index', confirm=0) }}" class="btn btn-danger">
+            Pause payment collection for every Subscription in this Shop
+          </a>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-md-12">
+        <h3>Are you sure you want to pause payment collection for <em>all</em> Subscriptions for every Subscriber?</h3>
+        <p>Once paused, payment collection won't take place. Invoices will still be generated (so you have a record)
+          but payments won't be collected.
+        </p>
+        <div class="">
+          <a href="{{ url_for('admin.pause_all_subscribers_subscriptions', confirm=1) }}" class="btn btn-danger">
+            <span class="cancel-yes">Yes</span>
+          </a>
+          <a href="{{ url_for('admin.subscribers_bulk_operations_index') }}" class="btn btn-success">
+            <span class="cancel-no">No</span>
+          </a>
+        </div>
+      </div>
+      {% endif %}
+    </div> <!--end container-->
+  </div><!--end section-->
+</main>
+{% endblock body %}

@@ -2,7 +2,7 @@
 """
     subscribie.app
     ~~~~~~~~~
-    A microframework for buiding subsciption websites.
+    A microframework for building Subscription websites.
     This module implements the central subscribie application.
 
     :copyright: (c) 2018 by Karma Computing Ltd
@@ -216,9 +216,9 @@ def create_app(test_config=None):
             # Note that PriceLists must also be assigned to plan(s) to be in effect.
             price_lists = PriceList.query.all()
             # If there are zero PriceLists this may mean shop is outdated and
-            # therefore needs its inital PriceLists created
+            # therefore needs its initial PriceLists created
             if len(price_lists) == 0:
-                # Create defaul PriceList with zero rules for each suported currency
+                # Create default PriceList with zero rules for each supported currency
                 for currency in settings.get("SUPPORTED_CURRENCIES"):
                     log.debug(
                         f"Creating PriceList with zero rules for currency {currency}"  # noqa: E501
@@ -386,7 +386,7 @@ def create_app(test_config=None):
                         )
                         alert_subscriber_update_choices(person)
 
-    @app.route("/test-lanuage")
+    @app.route("/test-language")
     def test_language():
         return _("Hello")
 

@@ -71,7 +71,7 @@ def receiver_attach_documents_to_subscription(*args, **kwargs):
 
 @background_task
 def receiver_send_subscriber_payment_failed_notification_email(*args, **kwargs):
-    """Recieve stripe payment_intent.payment_failed signal"""
+    """Receive stripe payment_intent.payment_failed signal"""
     log.debug("In receiver_send_subscriber_payment_failed_notification_email")
     if "stripe_event" not in kwargs:
         log.error(
@@ -133,11 +133,11 @@ def receiver_new_subscriber(*args, **kwargs):
 
 def receiver_new_subscriber_send_to_mailchimp(*args, **kwargs) -> None:
     """
-    Send new subscriber contact information to Mainchimp.
+    Send new subscriber contact information to Mailchimp.
     For this to work, Subscribie needs to have:
 
     - Mailchimp api key
-    - Mainchimp Audience id (maichimp lets you add contacts
+    - Mailchimp Audience id (Mailchimp lets you add contacts
         to *audiences* (aka lists), not simply one large pot
         of contacts- which is good.
     - It is the responsibility of the Shop owner to create the

@@ -26,8 +26,8 @@ def newSubscriberEmailNotification(*args, **kwargs):
         )
         msg["subject"] = f"{company.name} - new subscriber ({subscriber_email})"
         msg["from"] = current_app.config["EMAIL_LOGIN_FROM"]
-        shopadmins = User.query.all()  # all shop admins
-        msg["to"] = [user.email for user in shopadmins]  # all shop admins
+        shop_admins = User.query.all()  # all shop admins
+        msg["to"] = [user.email for user in shop_admins]  # all shop admins
         # use user-new-subscriber-notification.jinja2.html
         email_template = str(
             Path(
@@ -50,7 +50,7 @@ def newSubscriberEmailNotification(*args, **kwargs):
         log.info("queueing new subscriber notification email")
         msg.queue()
     except Exception as e:
-        log.error(f"failed to send newsubscriberemailnotification email: {e}")
+        log.error(f"failed to send newSubscriberEmailNotification email: {e}")
 
 
 @background_task
