@@ -1,3 +1,15 @@
+# v0.1.219 (Fri Jan 03 2025)
+
+#### ⚠️ Pushed to `master`
+
+- Add TOC to README and tidy ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.218 (Sat Dec 28 2024)
 
 #### 🐛 Bug Fix
