@@ -15,7 +15,6 @@
       and a Subscriber wants to know, and a logging system etc)
 """
 from blinker import signal
-from subscribie.notifications import newSubscriberEmailNotification
 from subscribie.receivers import (
     receiver_send_subscriber_payment_failed_notification_email,
     receiver_new_subscriber,
@@ -44,7 +43,7 @@ See https://blinker.readthedocs.io/en/stable/#subscribing-to-signals
 
 
 def register_signal_handlers():
-    """Connect signals to recievers
+    """Connect signals to receivers
     This is called during flask app startup in views.py
     """
     signal_new_subscriber.connect(receiver_new_subscriber)

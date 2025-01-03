@@ -1,6 +1,6 @@
-from flask import current_app, request, g, session, url_for
+from flask import request, g, session, url_for
 import stripe
-from subscribie import database
+from subscribie import settings, database
 from currency_symbols import CurrencySymbols
 import logging
 from subscribie.tasks import background_task
@@ -144,9 +144,9 @@ def get_stripe_secret_key():
 
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
-        return current_app.config.get("STRIPE_LIVE_SECRET_KEY", None)
+        return settings.get("STRIPE_LIVE_SECRET_KEY", None)
     else:
-        return current_app.config.get("STRIPE_TEST_SECRET_KEY", None)
+        return settings.get("STRIPE_TEST_SECRET_KEY", None)
 
 
 def get_stripe_publishable_key():
@@ -154,9 +154,9 @@ def get_stripe_publishable_key():
 
     payment_provider = PaymentProvider.query.first()
     if payment_provider.stripe_livemode:
-        return current_app.config.get("STRIPE_LIVE_PUBLISHABLE_KEY", None)
+        return settings.get("STRIPE_LIVE_PUBLISHABLE_KEY", None)
     else:
-        return current_app.config.get("STRIPE_TEST_PUBLISHABLE_KEY", None)
+        return settings.get("STRIPE_TEST_PUBLISHABLE_KEY", None)
 
 
 def create_stripe_connect_account(company, country_code=None, default_currency=None):
@@ -319,7 +319,7 @@ def announce_stripe_connect_account(account_id, live_mode=0):
     log.debug(f"Announcing stripe account to {url_for('index', _external=True)}")
     from subscribie.models import PaymentProvider  # noqa: F401
 
-    ANNOUNCE_HOST = current_app.config["STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST"]
+    ANNOUNCE_HOST = settings.get("STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST")
     req = requests.post(
         ANNOUNCE_HOST,
         json={
@@ -332,8 +332,8 @@ def announce_stripe_connect_account(account_id, live_mode=0):
     msg = {
         "msg": f"Announced Stripe connect account {account_id} \
 for site_url {request.host_url}, to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: \
-{current_app.config['STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST']}\n\
-WARNING: Check logs to verify recipt"
+{settings.get('STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST')}\n\
+WARNING: Check logs to verify receipt"
     }
     log.debug(msg)
     req.raise_for_status()
@@ -476,7 +476,7 @@ def get_stripe_invoices(app, last_n_days=30):
 
 
 def stripe_invoice_failed(stripeInvoice):
-    """Returns true/false if a Stripe Invoice has failed all collection attemts
+    """Returns true/false if a Stripe Invoice has failed all collection attempts
     and no further *automated* collection will take place."""
     if stripeInvoice.subscribie_subscription_id:
         if (
@@ -507,7 +507,7 @@ def stripe_invoice_failing(stripeInvoice):
 
 
 def getBadInvoices():
-    """Return both failed and failing invocies
+    """Return both failed and failing invoices
 
     What's a bad invoice?
 
@@ -524,7 +524,7 @@ def getBadInvoices():
 def get_stripe_failing_subscription_invoices():
     """Return list of stripe failing invoices
     Note: remember that failing invoices may still
-    get automatic attemps to be collected
+    get automatic attempts to be collected
     """
     failingInvoices = []
     from subscribie.models import StripeInvoice
@@ -620,7 +620,7 @@ def dec2pence(amount: str) -> int:
 def backfill_transactions(days=30):
     """Backfill transaction data in an idempotent way
     Useful for fixing webhook delivery misses (such as if all webhook delivery retires
-    exausted), and data corrections from Hotfixes.
+    exhausted), and data corrections from Hotfixes.
 
     - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
     """
@@ -670,7 +670,7 @@ def backfill_transactions(days=30):
 def backfill_subscriptions(days=30):
     """Backfill subscription data in an idempotent way
     Useful for fixing webhook delivery misses (such as if all webhook delivery retires
-    exausted), and data corrections from Hotfixes.
+    exhausted), and data corrections from Hotfixes.
 
     - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
     """
@@ -722,7 +722,7 @@ def backfill_subscriptions(days=30):
 def backfill_persons(days=30):
     """Backfill person data in an idempotent way
     Useful for fixing webhook delivery misses (such as if all webhook delivery retires
-    exausted), and data corrections from Hotfixes.
+    exhausted), and data corrections from Hotfixes.
 
     NOTE: The Stripe session checkout object is used here to
     signify the earliest known date/time for Person.created_at time
@@ -757,7 +757,7 @@ def backfill_persons(days=30):
     for stripe_session in stripe_checkout_sessions.auto_paging_iter():
         if stripe_session.metadata.get("subscribie_checkout_session_id") is None:
             log.warning(
-                f"No subscribie_checkout_session_id found on metadata for stripe_session {stripe_session.id}"
+                f"No subscribie_checkout_session_id found on metadata for stripe_session {stripe_session.id}"  # noqa: E501
             )  # noqa: E501
             continue
 
@@ -773,7 +773,7 @@ def backfill_persons(days=30):
         if subscribie_subscription is not None:
             if subscribie_subscription.person is None:
                 log.warning(
-                    f"Skipping stripe_session {stripe_session.id} as person is None for subscription {subscribie_subscription.id}"
+                    f"Skipping stripe_session {stripe_session.id} as person is None for subscription {subscribie_subscription.id}"  # noqa: E501
                 )  # noqa: E501
                 continue
             # Update the subscribie_subscription in Subscription model
@@ -786,7 +786,7 @@ def backfill_persons(days=30):
             stripe_session_created_at = datetime.fromtimestamp(
                 stripe_session.created
             )  # noqa: E501
-            msg = f"Infering person create_at from stripe_session_created_at: {stripe_session_created_at}"  # noqa: E501
+            msg = f"Inferring person create_at from stripe_session_created_at: {stripe_session_created_at}"  # noqa: E501
             log.info(msg)
             msg = f"Setting person.created_at to {stripe_session_created_at}"  # noqa: E501
             log.info(msg)
@@ -797,7 +797,7 @@ def backfill_persons(days=30):
 def backfill_stripe_invoices(days=30):
     """Backfill stripe_invoice data in an idempotent way
     Useful for fixing webhook delivery misses (such as if all webhook delivery retires
-    exausted), and data corrections from Hotfixes.
+    exhausted), and data corrections from Hotfixes.
 
     - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
 
@@ -824,7 +824,7 @@ def backfill_stripe_invoices(days=30):
             .first()
         )
         if local_stripe_invoice is not None:
-            # Update the local_stripe_invoice in DtripeInvoice model
+            # Update the local_stripe_invoice in StripeInvoice model
             log.debug(f"At local_stripe_invoice.id: {local_stripe_invoice.id}")
             msg = f"Current local_stripe_invoice.created_at: {local_stripe_invoice.created_at}"  # noqa: E501
             log.info(msg)

@@ -46,6 +46,7 @@ tests/browser-automated-tests-playwright/index.spec.js-snapshots/*
 tests/browser-automated-tests-playwright/worker*
 tests/browser-automated-tests-playwright/e2e/*-snapshots
 tests/browser-automated-tests-playwright/test-videos/*
+tests/browser-automated-tests-playwright/graphviz_output*
 subscribie/static/*
 subscribie/custom_pages/*
 playwright-report
@@ -54,3 +55,4 @@ playwright-report
 emails
 *.bk
 email-queue
+uploads/*
