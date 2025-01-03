@@ -1,3 +1,13 @@
+# Subscribie  - Collect recurring payments easily
+
+**Subscribie** helps you automatically collect money from your customers, clients and members, without the hassle of manual payments. Save time by having people sign-up themselves, and easily track payments.
+
+You don't need to be technical, and can integrate it with your existing business by [creating your account](https://subscribie.co.uk/).
+
+Subscribie is an open source Subscription Billing management software.
+
+https://user-images.githubusercontent.com/1718624/196006904-3f00f852-3b86-4ecc-b940-85e3357c275b.mp4
+
 [![Gitter](https://badges.gitter.im/Subscribie/community.svg)](https://gitter.im/Subscribie/community)
 [![Recording demo videos](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/demo-videos.yml)
 [![Update All Sites](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml)
@@ -8,27 +18,36 @@
 [![Release](https://github.com/Subscribie/subscribie/actions/workflows/release.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/release.yml)
 [![Blog](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml)
 [![Deploy pr preview](https://github.com/Subscribie/subscribie/actions/workflows/pr-demo-deploy.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/pr-demo-deploy.yml)
-# Subscribie  - Collect recurring payments easily
 
-**Subscribie** helps you automatically collect money from your customers, clients and members, without the hassle of manual payments. Save time by having people signup themselves, and easily track payments.
-
-You don't need to be technical, and can integrate it with your existing business by [creating your account](https://subscribie.co.uk/).
-
-
-https://user-images.githubusercontent.com/1718624/196006904-3f00f852-3b86-4ecc-b940-85e3357c275b.mp4
-
+## Table of Contents
 
 - [Features](https://docs.subscribie.co.uk/docs/overview/features/)
 - [Demo & Hosting](#demo--hosting)
+- [Why is this project useful?](#why-is-this-project-useful)
 - [Quickstart](#quickstart-without-docker)
-- [Testing](https://docs.subscribie.co.uk/architecture/testing)
+  - [Quickstart (without Docker)](#quickstart-without-docker)
+  - [Quickstart (with Docker)](#quickstart-with-docker)
+- [Testing](https://docs.subscribie.co.uk/docs/architecture/testing/)
 - [SaaS Deployment](#saas-deployment)
   - [Architecture Overview](#architecture)
-  - [Application server](#application-server-uwsgi)
-#### Open Source subscription billing and management
+  - [Application Server](#application-server-uwsgi)
+- [Contributing](#contributing)
+- [Logging & Debugging](#logging--debugging---how-to-change-the-loglevel)
+- [Themes- how to change the theme](#how-to-change-theme-theme-development)
+- [API based authentication with jwt token](#api-based-authentication-with-jwt-token)
+- [Database](#database)
+  - [Database Migrations](#database-migrations)
+- [How new shops are created](#how-new-shops-are-created)
+- [SaaS Deployment](#saas-deployment)
+  - [Architecture](#architecture)
+  - [Other Services](#subscribie-saas-other-services)
+- [Where can I get more help?](#where-can-i-get-more-help-if-i-need-it)
+- [Docker help](#docker-help)
 
 ## Demo
-https://footballclub.subscriby.shop/
+
+[https://footballclub.subscriby.shop/](https://footballclub.subscriby.shop/)
+
 <a href="https://footballclub.subscriby.shop/" target="_blank">
 <img src="https://user-images.githubusercontent.com/1718624/157171840-6d19fdea-397d-4686-b812-a80f0e15f81e.png" /></a>
 
@@ -36,16 +55,12 @@ https://footballclub.subscriby.shop/
 
 <details>
   <summary>View video demos</summary>
-  
   ### subscriber-Ordering-recurring-plan
   https://user-images.githubusercontent.com/1718624/162085566-eff392b1-ae9e-4ff1-a3f7-2c5a2e2b7c5a.mp4
-
-
 </details>
 
-
-
 ## What does this project do?
+
 Use Subscribie to collect recurring payments online.
 
 Quickly build a subscription based website, taking weekly/monthly/yearly payments- including one-off charges.
@@ -54,35 +69,13 @@ Quickly build a subscription based website, taking weekly/monthly/yearly payment
 - Each of your plans have unique selling points (USPs)
 - Each have a different recurring price, and/or an up-front charge
 
-# Demo & Hosting
+## Demo & Hosting
+
 Don't want/know how to code? Pay for the hosted service.
 
 https://subscribie.co.uk
 
-# Developer Quickstart
-Quickly run Subscribie from a container:
-
-If you use `podman`:
-```
-podman run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
-```
-
-Or, if you prefer Docker:
-```
-docker run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
-```
-Then visit: http://127.0.0.1:8082/auth/login
-
-Username: admin@example.com
-
-Password: password
-
-[More about containers](https://mkdev.me/en/posts/the-tool-that-really-runs-your-containers-deep-dive-into-runc-and-oci-specifications).
-
-
-
-
-# Why is this project useful?                                                    
+## Why is this project useful?
 
 A lot of the hard work has been done for you. If you're a devloper, you can
 impress your clients quickly, if you're a small business owner, you might want
@@ -94,13 +87,37 @@ to try the [subscription website hosting service](http://subscriptionwebsitebuil
 - Upload a picture
 - Uses Stripe for subscriptions & one-off payments
 
-# Contributing & Help finding things: Where do I find x? Where is file y?
+## Developer Quickstart
+Quickly run Subscribie from a container:
+
+If you use `podman`:
+```
+podman run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
+```
+
+Or, if you prefer Docker:
+
+```shell
+docker run -p 8082:80 ghcr.io/subscribie/subscribie/subscribie:latest
+```
+
+Then visit: http://127.0.0.1:8082/auth/login
+
+Username: admin@example.com
+
+Password: password
+
+[More about containers](https://mkdev.me/en/posts/the-tool-that-really-runs-your-containers-deep-dive-into-runc-and-oci-specifications).
+
+## Contributing
+
+### Help finding things: Where do I find x? Where is file y?
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and quickstart below.
 
-# Quickstart (without Docker)
+## Quickstart (without Docker)
 
-```
+```shell
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
 cp .env.example .env # Copy default .env settings (read it)
@@ -112,7 +129,7 @@ cp .env.example .env # Copy default .env settings (read it)
 > Notice that `sqlite:///` starts with *three* forward slashes. So, if you want to store the database in `/home/sam/data.db` then,
 you should put `sqlite:////home/sam/data.db` (note four `/`'s)
 
-```
+```shell
 # Open the .env file, and change the database path to store somewhere else (e.g. your `/home/Documents/data.db` folder):
 
 DB_FULL_PATH="/tmp/data.db"
@@ -120,7 +137,8 @@ SQLALCHEMY_DATABASE_URI="sqlite:////tmp/data.db"
 ```
 
 Create python environment and run flask:
-```
+
+```shell
 python3 -m venv venv # Create a python3.x virtual environment
 . venv/bin/activate # Activate the virtualenv
 # If you are on Windows, use: . venv/Scripts/Activate 
@@ -135,6 +153,7 @@ The database file is called `data.db`. Note,
 `flask initdb` inserts pretend data into your database for testing.
 
 ### Set Stripe API key
+
 You need a Stripe api key.
 
 1. Create a stripe account
@@ -149,18 +168,20 @@ STRIPE_TEST_SECRET_KEY=sk_test_<your-Secret-key>
 ```
 
 ## Start Subscribie
-```
+
+```shell
 export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask run
 ```
+
 Now visit http://127.0.0.1:5000
 
-# Quickstart (with Docker)
+## Quickstart (with Docker)
 
 If you like to use docker-compose workflow for local development:
 
-```
+```shell
 git clone https://github.com/Subscribie/subscribie.git
 cd subscribie
 cp .env.example .env
@@ -191,8 +212,7 @@ See https://docs.python.org/3/howto/logging.html
 
 Flask *does* need to be restarted for the log level to change.
 
-
-# How to change theme (theme development)
+## How to change theme (theme development)
 
 ### How to change from the default jesmond theme to the builder theme.
 
@@ -213,7 +233,7 @@ If you're creating a *new* theme, then change `TEMPLATE_BASE_DIR` to a directory
 subscribie root project.
 
 
-# API based authentication with jwt token
+## API based authentication with jwt token
 
 #### Locally
 Locally you'll need to create public/private keys for secure
@@ -239,35 +259,37 @@ PUBLIC_KEY="/path/to/public.pem"
 Provide the username & password in a POST request, and a jwt token is returned for 
 use in further requests. 
 
-# API Basics
+## API Basics
 
-## Oauth style login:
+## Oauth style login
 
-```
+```shell
 curl -v -d "username=admin@example.com" -d "password=password" http://127.0.0.1:5000/auth/jwt-login
 ```
 ## Http Basic auth login:
 
-```
+```shell
 curl -v --user "fred:password" http://127.0.0.1:5000/auth/jwt-login
 ```
 
 Then use the bearer token in a request to a protect path.
 e.g.
-```
+
+```shell
 curl -v -H "Authorization: Bearer <token>" http://127.0.0.1:5000/auth/protected
 ```
 
 ## Get all plans
 
-```
+```shell
 curl -v -H "Content-Type: application/json" -H "Authorization: Bearer <token> " http://127.0.0.1:5000/api/plans
 ```
 
 ## Create Plan 
 
 Example POST request:
-```
+
+```shell
     curl -v -H "Content-Type: application/json" 
     -H "Authorization: Bearer <token>" -d '
     {
@@ -289,7 +311,8 @@ Example POST request:
 ## Update Plan
 
 Example PUT request:
-```
+
+```shell
     curl -v -H 'Content-Type: application/json' -X PUT 
     -d '
     {
@@ -311,15 +334,16 @@ Example PUT request:
 ## Delete Plan
 
 Example DELETE request:
-```
+
+```shell
 curl -v -X DELETE -H "Authorization: Bearer <token>" http://127.0.0.1:5000/api/plan/229
 ```
 
-# Database
+## Database
 
 The database store is SQL based.
 
-## Database Migrations
+### Database Migrations
 
 ### Adding new database field example
 
@@ -334,17 +358,16 @@ The general steps are:
 4. Apply the migration to your local database: `flask db upgrade`
 5. Test (+write test), commit and push
 
-# How new shops are created
+## How new shops are created
 
 1. New shop owner submits a form to create a new shop which hits `/start-building` endpoint
 2. Shop is created and a new shop is started (Shop owner sees *"Please wait"*)
 3. New Shop is ready
 4. Shop owner is automatically redirected to the new shop, loged in using automated one-time login
 
+### Saas Deployment
 
-# Saas Deployment
-
-## Architecture
+### Architecture
 
 ### Subscribie `shop`
 
@@ -369,7 +392,7 @@ Receives [Stripe webhook events](https://stripe.com/docs/webhooks#webhooks-def),
 
 > Note, in previous implementations there was one webhook endpoint per shop- this isn't compatible with Stripe when using Stripe Connect because there's a limmit on the number of webhooks, and connect events need to be routed based on their Stripe connect id anyway, hence the `stripe-connect-webhook-endpoint-router` performs this role.
 
-#### Failure modes:
+#### Failure modes
 
 If the `stripe-connect-account-announcer` suffers an outage, this means new shops can't announce their Stripe account to `stripe-connect-webhook-endpoint-router` meaning, when a new Stripe event arrives from Stripe, then, Subscribie's `stripe-connect-webhook-endpoint-router` would not know which shop to send it to. Stripe [automatically retries the delivery of events](https://stripe.com/docs/webhooks/best-practices#retry-logic) which allows time for the system to recover in an outage.
 
@@ -411,7 +434,6 @@ uWSGI **Emperor mode** starts and manages all running Subscribie shops as `uWSGI
   The uWSGI emperor and the vassals it sawns is defined as a single systemd service called `subscribie`.
 </details>
 
-
 <details>
 <summary>subscribie-deployer</summary>
   Responsible for listening for new Shop requests, and creating the Shop config which uWSGI needs to spawn a new Shop (aka uwsgi vassal).
@@ -435,15 +457,16 @@ Socker activation is enabled by using the uWSGI feature `emperor-on-demand-exten
 
 OnDemandVassals is enable by using the following config in the injected vassal config for every shop:
 
-```
+```bash
 # idle time in seconds
 idle = 60
 # kill the application after idle time is reached
 die-on-idle = true
 ```
+
 See: [Combining on demand vassals with `--idle` and `--die-on-idle`](https://uwsgi-docs.readthedocs.io/en/latest/OnDemandVassals.html#combining-on-demand-vassals-with-idle-and-die-on-idle)
 
-### Subscribie Saas other services
+### Subscribie SaaS other services
 
 Needed components / services. Check the `.env.example` for each of them.
 
@@ -461,18 +484,16 @@ Needed components / services. Check the `.env.example` for each of them.
 - [ ] Hostname is setup for stripe-connect-webhook-endpoint-router
 - [ ] Hostname is setup for stripe-connect-account-announcer (listening on port 8001 by default)
 
-# Where can I get more help, if I need it?
+## Where can I get more help, if I need it?
 
 - Read through all these docs
 - Submit a detailed [issue](https://github.com/Subscribie/subscribie/issues)
-
 
 ## Docker help
 
 ### How do I rebuild the container?
 Sometimes you need to rebuild the container if you've made changes to the `Dockerfile`.
-```
+
+```shell
 docker-compose up --build --force-recreate
 ```
-
-
