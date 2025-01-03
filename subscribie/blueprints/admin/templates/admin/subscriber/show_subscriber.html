@@ -136,7 +136,7 @@
                               <p>The card had insufficient funds to complete the purchase at the time it was charged</p>
                         {% elif decline_code  == "generic_decline" %}
                         <details><summary>What does "<em>{{ decline_code }}</em>" mean?</summary>
-                          <p>The card was declined for an unknown reason or incorrectly flaged as a risky payment.</p>
+                          <p>The card was declined for an unknown reason or incorrectly flagged as a risky payment.</p>
                           <p>The customer needs to contact their card issuer for more information.</p>
                         {% endif %}
                       </li>
@@ -208,7 +208,19 @@
             {% for subscription in person.subscriptions %}
               <li class="list-group-item">
                 <strong>{{ subscription.plan.title }}</strong><br />
-                <strong>Status:</strong> {{ subscription.stripe_status or 'Unknown' }} {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
+                <strong>Subscription Status:</strong> {{ subscription.stripe_status or 'Unknown' }} {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
+                <br />
+                <strong>Payment Collection Status:</strong>
+                  {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
+                     {% if subscription.stripe_pause_collection == "keep_as_draft" %}
+                     Paused - (keep_as_draft) 
+                    <details style="display: inline">
+                      <summary><em><small>explain</small></em></summary>
+                      <p class="alert alert-info">Temporarily offer services for free and have the possibility of collecting payment later.</p>
+                      <p>Invoices are still generated, however no payment collection attempts are made against them.
+                    </details>
+                    {% endif %}
+                  {% endif %}
                 <br />
                 <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
                 <strong>Interval Unit:</strong> 
@@ -258,7 +270,7 @@
                 {% else %}
                   <ul>
                   {% for document in subscription.documents %}
-                  {# Show documents assocated with subscription (if any) #}
+                  {# Show documents associated with subscription (if any) #}
                   <li><a href="{{ url_for('document.show_document', document_uuid=document.uuid) }}">
                       {{ document.name }}</a> | 
                       {{ document.created_at.strftime('%Y-%m-%d') }}</li>
@@ -300,7 +312,7 @@
               padding: 8px;
             }
             #subscriber-invoices tr {
-              border-bottom: 1px solid lightgray;
+              border-bottom: 1px solid lightgrey;
             }
             #subscriber-invoices td {
               text-align: center;

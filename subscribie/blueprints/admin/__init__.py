@@ -2,6 +2,7 @@ import logging
 import json
 from subscribie import settings
 from subscribie.database import database  # noqa
+from subscribie.tasks import background_task
 from flask import (
     Blueprint,
     render_template,
@@ -249,7 +250,7 @@ def update_payment_fulfillment(stripe_external_id):
 @admin.route("/stripe/charge", methods=["POST", "GET"])
 @login_required
 def stripe_create_charge():
-    """Charge an existing subscriber x ammount immediately
+    """Charge an existing subscriber x amount immediately
 
     :param stripe_customer_id: Stripe customer id
     :param amount: Positive integer amount to charge in smallest currency unit
@@ -267,7 +268,7 @@ def stripe_create_charge():
         currency = data["currency"]
         statement_descriptor_suffix = data["statement_descriptor_suffix"]
     except Exception:
-        # Assumme form submission
+        # Assume form submission
         # Get stripe customer_id from subscribers subscription -> customer reference
         person = Person.query.get(request.form.get("person_id"))
         stripe_subscription_id = person.subscriptions[0].stripe_subscription_id
@@ -334,12 +335,84 @@ def stripe_create_charge():
     return jsonify(paymentIntent.status)
 
 
+@background_task
+def do_pause_stripe_subscription_payment_collection(
+    subscription_id, pause_collection_behavior="keep_as_draft", app=None
+):
+    """Pause pause_stripe_subscription payment collections via its
+    Stripe subscription_id
+
+    Choices of `pause_collection_behavior` include:
+
+    - keep_as_draft (Subscribie default- Temporarily offer services for free, and
+                    collect payment later)
+    - void (Temporarily offer services for free and never collect payment)
+    - mark_uncollectible (Temporarily offer services for free and
+                    mark invoice as uncollectible)
+    See also: https://docs.stripe.com/billing/subscriptions/pause-payment
+    """
+    with app.app_context():
+        stripe.api_key = get_stripe_secret_key()
+        connect_account_id = get_stripe_connect_account_id()
+
+        if subscription_id is None:
+            log.error("subscription_id cannot be None")
+            return False
+        try:
+            stripe_subscription = stripe.Subscription.retrieve(
+                subscription_id, stripe_account=connect_account_id
+            )
+            if stripe_subscription.status != "canceled":
+                stripe_pause = stripe.Subscription.modify(
+                    subscription_id,
+                    stripe_account=connect_account_id,
+                    pause_collection={"behavior": pause_collection_behavior},
+                )
+                # filtering for the pause_collection value
+                stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
+
+                # adding the pause_collection status to the
+                # stripe_pause_collection column
+                pause_collection = Subscription.query.filter_by(
+                    stripe_subscription_id=subscription_id
+                ).first()
+
+                pause_collection.stripe_pause_collection = stripe_pause_filter
+                database.session.commit()
+                log.debug(f"Subscription paused ({subscription_id})")
+            else:
+                log.debug(
+                    f"Skipping. Subscription {subscription_id} because it's canceled."
+                )
+        except Exception as e:
+            msg = f"Error pausing subscription ({subscription_id})"
+            log.error(f"{msg}. {e}")
+            raise
+
+
+@background_task
+def do_pause_all_stripe_subscriptions(app=None):
+    # For each Subscription object, get it's Stripe subscription
+    # object and pause it using pause_stripe_subscription.
+    with app.app_context():
+        subscriptions = Subscription.query.all()
+        for subscription in subscriptions:
+            log.debug(f"Attempting to pause subscription {subscription.uuid}")
+            stripe_subscription_id = subscription.stripe_subscription_id
+            try:
+                do_pause_stripe_subscription_payment_collection(
+                    stripe_subscription_id, app=current_app
+                )
+            except Exception as e:
+                log.error(
+                    f"Error trying to pause subscription {subscription.uuid}. Error: {e}"  # noqa: E501
+                )
+
+
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/pause")
 @login_required
 def pause_stripe_subscription(subscription_id: str):
     """Pause a Stripe subscription"""
-    stripe.api_key = get_stripe_secret_key()
-    connect_account_id = get_stripe_connect_account_id()
 
     if "confirm" in request.args and request.args["confirm"] != "1":
         return render_template(
@@ -349,29 +422,22 @@ def pause_stripe_subscription(subscription_id: str):
         )
     if "confirm" in request.args and request.args["confirm"] == "1":
         try:
-            stripe_pause = stripe.Subscription.modify(
-                subscription_id,
-                stripe_account=connect_account_id,
-                pause_collection={"behavior": "void"},
+            do_pause_stripe_subscription_payment_collection(
+                subscription_id, pause_collection_behavior="void", app=current_app
             )
-            # filtering for the pause_collection value
-            stripe_pause_filter = stripe_pause["pause_collection"]["behavior"]
-
-            # adding the pause_collection status to the stripe_pause_collection column
-            pause_collection = Subscription.query.filter_by(
-                stripe_subscription_id=subscription_id
-            ).first()
-
-            pause_collection.stripe_pause_collection = stripe_pause_filter
-            database.session.commit()
-
             flash("Subscription paused")
-        except Exception as e:
-            msg = "Error pausing subscription"
+        except Exception:
+            msg = f"Error pausing subscription ({subscription_id})"
             flash(msg)
-            log.error(f"{msg}. {e}")
-
     return redirect(url_for("admin.subscribers"))
+
+
+@admin.route("/stripe/subscriptions/all/actions/pause")
+@login_required
+def pause_all_subscribers_subscriptions():
+    """Bulk action to pause all subscriptions in the shop"""
+    do_pause_all_stripe_subscriptions()  # Background task
+    return """All payment collections are being paused in the background. You can move away from this page."""  # noqa: E501
 
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/resume")
@@ -525,7 +591,7 @@ def edit():
 
     Note plans are immutable, when a change is made to plan, its old
     plan is archived and a new plan is created with a new uuid. This is to
-    protect data integriry and make sure plan history is retained, via its uuid.
+    protect data integrity and make sure plan history is retained, via its uuid.
     If a user needs to change a subscription, they should change to a different
     plan with a different uuid.
 
@@ -1030,7 +1096,7 @@ def stripe_connect():
         log.error(e)
         account = None
 
-    # Setup Stripe webhook endpoint if it dosent already exist
+    # Setup Stripe webhook endpoint if it doesn't already exist
     if account:
         # Attempt to Updates an existing Account Capability to accept card payments
         try:
@@ -1411,11 +1477,23 @@ def subscribers():
     )
 
 
+@admin.route("/subscribers/bulk-operations")
+@login_required
+def subscribers_bulk_operations_index():
+
+    num_active_subscribers = get_number_of_active_subscribers()
+    return render_template(
+        "admin/subscribers_bulk_operations_index.html",
+        num_active_subscribers=num_active_subscribers,
+        confirm=request.args.get("confirm"),
+    )
+
+
 @admin.route("/recent-subscription-cancellations")
 @login_required
 def show_recent_subscription_cancellations():
     """Get the last 30 days subscription cancellations (if any)
-    Note: Stripe api only guarentees the last 30 days of events.
+    Note: Stripe api only guarantees the last 30 days of events.
     At time of writing this method performs no caching of events,
     see StripeInvoice for possible improvements
     """
@@ -1439,7 +1517,7 @@ def show_recent_subscription_cancellations():
         )
         if person is None:
             log.info(
-                f"""Person query retruned None- probably archived.\n
+                f"""Person query returned None- probably archived.\n
                 Skipping Person with uuid {value.data.object.metadata.person_uuid}"""
             )
             continue
@@ -1700,7 +1778,7 @@ def add_shop_admin():
     form = AddShopAdminForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            # Check user dosent already exist
+            # Check user doesn't already exist
             email = escape(request.form["email"].lower())
             if User.query.filter_by(email=email).first() is not None:
                 return f"Error, admin with email ({email}) already exists."
@@ -1747,7 +1825,7 @@ def delete_admin_confirmation(id: int):
             else:
                 User.query.filter_by(id=id).delete()
                 database.session.commit()
-                flash("Account was deleted succesfully")
+                flash("Account was deleted successfully")
 
         except Exception as e:
             msg = "Error deleting the admin account"
@@ -1926,7 +2004,7 @@ def rename_shop_post():
 
 @admin.route("/announce-stripe-connect", methods=["GET"])
 def announce_shop_stripe_connect_ids():
-    """Accounce this shop's stripe connect account id(s)
+    """Announce this shop's stripe connect account id(s)
     to the STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST
     - stripe_live_connect_account_id
     - stripe_test_connect_account_id
@@ -2162,7 +2240,7 @@ def enable_geo_currency():
 @admin.route("/spamcheck/<string:account_name>")
 @login_required
 def check_spam(account_name) -> int:
-    """Check if shop name is likley to be spam or not"""
+    """Check if shop name is likely to be spam or not"""
     from subscribie.anti_spam_subscribie_shop_names.run import detect_spam_shop_name
 
     return str(detect_spam_shop_name(account_name))

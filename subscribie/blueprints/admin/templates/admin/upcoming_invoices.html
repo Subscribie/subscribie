@@ -94,7 +94,7 @@ li { list-style: none}
                               <span class="upcoming-invoices-plan-no-sell_price">(No up-front cost)</span>
                             {% endif %}
                         </li>
-                        <li><strong>Status: </strong>
+                        <li><strong>Subscription Status: </strong>
                             {% if upcomingInvoice.subscription.plan.requirements.subscription %}
                                 {{ upcomingInvoice.subscription.stripe_status }}
                             {% else %}
