@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 const { admin_login } = require('./features/admin_login');
 test.describe("order free plan tests:", () => {
     test("@1219 @shop-owner @1219_custom_thank_you_url @1219_shop-owner_enable_custom_url", async ({ page }) => {

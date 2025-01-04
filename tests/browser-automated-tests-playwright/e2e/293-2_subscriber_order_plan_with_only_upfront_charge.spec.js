@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { admin_login } = require('./features/admin_login');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 
 
 test.describe("order plan with only upfront charge tests:", () => {
