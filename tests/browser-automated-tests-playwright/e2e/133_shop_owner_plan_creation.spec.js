@@ -177,7 +177,7 @@ test.describe("Plan Creation tests:", () => {
     try {
       const check_plan_with_choice_and_options = await page.textContent('text="Plan with choice and options"', { timeout: 3000 });
       expect(check_plan_with_choice_and_options === "Plan with choice and options");
-      await page.click("text=See choice options");
+      await page.click("text=See choice options", { timeout: 2_000 });
       await page.click("text=Choices (2 options)");
       //check if plan options are blue and red
       const check_plan_option_red = await page.textContent('text="Red"');
@@ -239,7 +239,6 @@ test.describe("Plan Creation tests:", () => {
     await page.goto('/admin/list-choice-groups');
     await page.click("text=Options");
 
-    await page.getByRole('button', { name: 'Options' }).click()
     await page.click("text=Add Option");
     await page.fill('.form-control', 'Red');
     await page.click("text='Save'");
@@ -266,8 +265,8 @@ test.describe("Plan Creation tests:", () => {
 
     //confirm choice and option plan was added
     await page.goto('/');
-    const free_trial = await page.textContent('text="Plan with choice and options"');
-    expect(free_trial === "Plan with choice and options");
+    const plan_with_choice_options = await page.textContent('text="Plan with choice and options"');
+    expect(plan_with_choice_options === "Plan with choice and options");
 
     //check if plan options are blue and red
     const check_plan_option_red = await page.textContent('text="Red"');
@@ -284,5 +283,3 @@ test.describe("Plan Creation tests:", () => {
   });
 
 });
-
-//module.exports = plan_creation;
