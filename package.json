@@ -7,10 +7,11 @@
     "test": "tests"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.44.1"
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^22.10.5"
   },
   "scripts": {
     "test": "node tests/browser-automated-tests-playwright/index.js"

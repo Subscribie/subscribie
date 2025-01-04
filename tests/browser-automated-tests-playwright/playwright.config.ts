@@ -1,9 +1,22 @@
 import { defineConfig, devices } from '@playwright/test';
+import YAML from 'yaml';
+import fs from 'fs';
+const path = require('path');
 
 /**
- * Read environment variables from file.
+ * Read the settings.yml configuration file.
  */
-require('dotenv').config()
+
+const settings_file = fs.readFileSync(path.resolve(__dirname, '../../settings.yaml'), 'utf8');
+
+// Take each element from the YAML object and populate the process.env object.
+const settings = YAML.parse(settings_file);
+for (const key in settings) {
+  console.log(`Setting ${key} to ${settings[key]} in process.env`);
+  process.env[key] = settings[key];
+}
+
+
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;
 const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_SLOWMO = parseInt(process.env.PLAYWRIGHT_SLOWMO);
@@ -48,6 +61,10 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
     },
   ],
 });

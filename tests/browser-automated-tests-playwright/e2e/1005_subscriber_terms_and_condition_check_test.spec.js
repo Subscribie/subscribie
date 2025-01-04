@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const TEST_SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 
 
 test('@1005@subscriber @1005_subscriber_terms_and_condition_check_test', async ({ page }) => {
@@ -10,7 +10,7 @@ test('@1005@subscriber @1005_subscriber_terms_and_condition_check_test', async (
   await page.goto("/account/logout");
   //login in as subscriber
   await page.goto("/account/login");
-  await page.fill('#email', SUBSCRIBER_EMAIL_USER);
+  await page.fill('#email', TEST_SUBSCRIBER_EMAIL_USER);
   await page.fill('#password', 'password');
   await page.click('text=Sign In');
   await page.textContent('.card-title') === "Your subscriptions";

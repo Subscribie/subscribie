@@ -3,7 +3,7 @@ const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoices');
 
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_required_note", async ({ page }) => {
         await admin_login(page);
         await set_test_name_cookie(page, "@264_subscriber_order_plan_with_choice_options_and_required_note")
@@ -23,7 +23,7 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
         await page.fill('#email', SUBSCRIBER_EMAIL_USER);
-        await page.fill('#mobile', '07123456789');
+        await page.     fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
         await page.fill('#postcode', 'L01 T3U');
@@ -76,7 +76,7 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
         expect(subscriber_plan_title_content === 'Plan with choice and options');
 
-        const content_subscriber_plan_interval_amount = await page.textContent('.subscribers-plan-interval_amount');
+        const content_subscriber_plan_interval_amount = await page.locator('css=span.plan-price-interval').filter({ hasTest: '£15' });
         expect(content_subscriber_plan_interval_amount === '£15.00');
 
         const subscriber_plan_sell_price_content = await page.evaluate(() => document.querySelector('.subscribers-plan-sell-price').textContent.indexOf("(No up-front fee)"));
@@ -85,17 +85,13 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         const subscriber_plan_choice_content = await page.textContent('text="Red"');
         expect(subscriber_plan_choice_content === "Red");
 
-        const subscriber_plan_note_content = await page.textContent('text="Purple"');
-        expect(subscriber_plan_note_content === "Purple");
+        await page.textContent('text="Purple"');
 
         // Go to upcoming payments and ensure plan is attached to upcoming invoice
         await page.goto('/admin/upcoming-invoices');
         // Fetch Upcoming Invoices
         await fetch_upcomming_invoices(page);
-        await page.click('#fetch_upcoming_invoices');
-        await new Promise(x => setTimeout(x, 10000)); //10 secconds
-        const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
-        expect(content_upcoming_invoice_plan_price_interval === '£15.00');
+        await page.locator('css=span.plan-price-interval', {hasText: "£15.00"}).first().textContent() === '£15.00';
 
         const content_upcoming_invoice_plan_sell_price = await page.textContent('.upcoming-invoices-plan-no-sell_price');
         expect(content_upcoming_invoice_plan_sell_price === '(No up-front cost)');

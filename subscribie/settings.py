@@ -51,6 +51,7 @@ schema = Map(
         "TELEGRAM_CHAT_ID": Str(),
         "TELEGRAM_PYTHON_LOG_LEVEL": Str(),
         "TEST_SHOP_OWNER_EMAIL_ISSUE_704": Email(),
+        "TEST_SUBSCRIBER_EMAIL_USER": Email(),
         "TEST_SHOP_OWNER_LOGIN_URL": Url(),
     }
 )

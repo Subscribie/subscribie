@@ -3,7 +3,7 @@ const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoices');
 
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const TEST_SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with cooling off:", () => {
     test("@133 @133_subscriber_order_plan_with_cooling_off_period", async ({ page }) => {
         console.log("Ordering plan with cooling off");
@@ -17,7 +17,7 @@ test.describe("order plan with cooling off:", () => {
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
-        await page.fill('#email', SUBSCRIBER_EMAIL_USER);
+        await page.fill('#email', TEST_SUBSCRIBER_EMAIL_USER);
         await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
@@ -49,11 +49,10 @@ test.describe("order plan with cooling off:", () => {
         // Verify get to the thank you page order complete
         const order_complete_content = await page.textContent('.title-1');
         expect(order_complete_content === "Order Complete!");
-        // expect(await page.screenshot()).toMatchSnapshot('cooling-off-order-complete.png');
 
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
-        await new Promise(x => setTimeout(x, 5000)); //5 secconds
+        await new Promise(x => setTimeout(x, 5000)); //5 seconds
         await page.goto('/admin/subscribers')
         // expect(await page.screenshot()).toMatchSnapshot('cooling-off-view-subscribers.png');
 
@@ -69,7 +68,7 @@ test.describe("order plan with cooling off:", () => {
 
         // Verify that subscriber is present in the list
         const subscriber_email_content = await page.textContent('.subscriber-email');
-        expect(subscriber_email_content === SUBSCRIBER_EMAIL_USER);
+        expect(subscriber_email_content === TEST_SUBSCRIBER_EMAIL_USER);
 
         // Verify that plan is attached to subscriber
         const subscriber_plan_title_content = await page.textContent('.subscription-title');
