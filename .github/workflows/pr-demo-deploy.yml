@@ -120,7 +120,6 @@ jobs:
         run: |
           set -x
           cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
-          cp .env.example .env
           cd tests/browser-automated-tests-playwright
           python3 run-playwright-tests.py
 
