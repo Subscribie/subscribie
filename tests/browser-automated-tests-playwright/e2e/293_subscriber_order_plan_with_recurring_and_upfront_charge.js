@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
     test("@293@subscriber@Ordering recurring and upfront plan", async ({ page }) => {
         console.log("Ordering Plan with subscription and upfront charge");

@@ -3,7 +3,7 @@ const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { admin_login } = require('./features/admin_login');
 const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoices');
 
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
     test("@293-3 @293-3_subscriber_order_plan_with_recurring_and_upfront_charge", async ({ page }) => {
         console.log("@293-3_subscriber_order_plan_with_recurring_and_upfront_charge");
