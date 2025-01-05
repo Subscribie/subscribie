@@ -82,5 +82,6 @@ TELEGRAM_PYTHON_LOG_LEVEL: ERROR
 
 # Environment Settings for tests
 TEST_SHOP_OWNER_EMAIL_ISSUE_704: admin@example.com
+TEST_SUBSCRIBER_EMAIL_USER: test@example.co.uk
 TEST_SHOP_OWNER_LOGIN_URL: http://127.0.0.1:5000/auth/login
 
