@@ -29,11 +29,6 @@ test.describe("connecting to stripe:", () => {
       // Go to Stripe Connect payment gateways page
       await page.goto('/admin/connect/stripe-connect');
 
-      // deleting connect account id, if stripe was not succesfully connected
-      await page.goto('/admin/delete-connect-account');
-      await page.goto('/admin/dashboard');
-      console.log('deleting connect account id');
-
       // Start Stripe connect onboarding
       await page.goto('/admin/connect/stripe-connect');
       // Selecting countring to connect to stripe

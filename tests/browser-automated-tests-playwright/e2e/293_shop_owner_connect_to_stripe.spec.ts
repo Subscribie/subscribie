@@ -38,12 +38,6 @@ test.describe("Subscribie tests:", () => {
     await page.goto('admin/connect/stripe-connect');
     let contentStripeConnect = await page.evaluate(() => document.body.textContent);
     test.skip(contentStripeConnect.indexOf("Your currently running in test mode.") > -1);
-    //expect(await page.screenshot()).toMatchSnapshot('stripe_status.png');
-
-    // deleting connect account id, if stripe was not succesfully connected
-    await page.goto('/admin/delete-connect-account');
-    await page.goto('/admin/dashboard');
-    console.log('deleting connect account id');
 
     // Start Stripe connect onboarding
     await page.goto('/admin/connect/stripe-connect');
