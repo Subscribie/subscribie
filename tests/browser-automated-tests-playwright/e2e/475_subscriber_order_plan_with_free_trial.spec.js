@@ -3,7 +3,7 @@ const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoices');
 
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with free-trial:", () => {
   test("@475@subscriber @475_subscriber_order_plan_with_free_trial", async ({ page }) => {
     await admin_login(page);

@@ -3,7 +3,7 @@ const https = require('https');
 function checkSubscriberLogin() {
   console.log("executing checkSubscribierLogin")
   const SUBSCRIBER_EMAIL_HOST = process.env.SUBSCRIBER_EMAIL_HOST
-  const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER
+  const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER
   const SUBSCRIBER_EMAIL_PASSWORD = process.env.SUBSCRIBER_EMAIL_PASSWORD
   const IMAP_SEARCH_UNSEEN = parseInt(process.env.IMAP_SEARCH_UNSEEN)
   const RESET_PASSWORD_IMAP_SEARCH_SUBJECT = process.env.RESET_PASSWORD_IMAP_SEARCH_SUBJECT

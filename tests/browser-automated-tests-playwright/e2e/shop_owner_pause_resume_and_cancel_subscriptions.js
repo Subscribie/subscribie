@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
     test("@147@shop-owner@Pause and Resume transaction", async ({ page }) => {  

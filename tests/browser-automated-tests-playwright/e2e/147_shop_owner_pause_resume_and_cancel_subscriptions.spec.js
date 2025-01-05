@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 //Subscribie tests
 test.describe("Pause, Resume and Cancel Subscription:", () => {
     test("@147@shop_owner @147_shop_owner_pause_resume_and_cancel_subscriptions", async ({ page }) => {

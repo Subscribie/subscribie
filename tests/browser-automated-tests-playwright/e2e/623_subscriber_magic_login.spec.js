@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const checkSubscriberLogin = require('./checkSubscriberLogin.js');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 
 
 test('@623@subscriber@ @623_subscriber_magic_login_and_reset_password', async ({ page }) => {

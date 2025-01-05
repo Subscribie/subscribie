@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 
 test.describe("order free plan tests:", () => {
     test("@939 @subscriber @939_subscriber_order_free_plan_with_terms_and_conditions", async ({ page }) => {

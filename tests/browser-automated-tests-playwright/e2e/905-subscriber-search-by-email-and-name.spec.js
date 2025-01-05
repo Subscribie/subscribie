@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { admin_login } = require('./features/admin_login');
 const { set_test_name_cookie } = require('./features/set_test_name_cookie');
-const SUBSCRIBER_EMAIL_USER = process.env.SUBSCRIBER_EMAIL_USER;
+const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 
 test("@905 @905-subscriber-search-by-email-and-name", async ({ page }) => {
   console.log("subscriber filter by name and by email");
