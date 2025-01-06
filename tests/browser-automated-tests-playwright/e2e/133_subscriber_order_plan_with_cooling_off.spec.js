@@ -87,8 +87,8 @@ test.describe("order plan with cooling off:", () => {
         await page.goto('/admin/upcoming-invoices');
         // Fetch Upcoming Invoices
         await fetch_upcomming_invoices(page);
-        const content_upcoming_invoice_plan_price_interval = await page.textContent('.plan-price-interval');
-        expect(content_upcoming_invoice_plan_price_interval === '£10.00');
+        await expect(page.locator("li >> text=£10.00").first()).toBeVisible();
+        await expect(page.locator("li >> text=Cooling off plan").first()).toBeVisible();
 
         const content_upcoming_invoice_plan_sell_price = await page.textContent('.upcoming-invoices-plan-no-sell_price');
         expect(content_upcoming_invoice_plan_sell_price === '(No up-front cost)');

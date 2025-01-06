@@ -6,6 +6,7 @@ test.describe("order free plan tests:", () => {
 
         await admin_login(page);
         await page.goto('/admin/change-thank-you-url');
+        await page.reload(); // ensure refresh
         await page.fill('#custom_thank_you_url', 'https://www.google.com');
         await page.click('role=button[name="Save"]');
         const custom_url = await page.textContent('text="Custom thank you url changed to: https://www.google.com"');
