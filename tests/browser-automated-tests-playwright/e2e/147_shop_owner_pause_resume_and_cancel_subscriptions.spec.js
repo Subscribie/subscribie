@@ -32,11 +32,16 @@ test.describe("Pause, Resume and Cancel Subscription:", () => {
         const subscription_pause_notification = await page.textContent('text="Subscription paused"');
         expect(subscription_pause_notification === "Subscription paused");
 
+        // Click Refresh Subscription
+        await page.click('#refresh_subscriptions'); // this is the refresh subscription
+        await page.textContent('.alert-heading') === "Notification";
+        
         await new Promise(x => setTimeout(x, 3000)); // 3 secconds
+        await page.goto('admin/subscribers')
 
         //Resume Subscription
         await page.click('.resume-action');
-        await new Promise(x => setTimeout(x, 3000)); // 3 secconds
+        await new Promise(x => setTimeout(x, 3000)); // 3 seconds
         await page.click('.resume-yes');
         await new Promise(x => setTimeout(x, 3000)); // 3 seconds
         const subscription_resume_notification = await page.textContent('text="Subscription resumed"');

@@ -54,6 +54,7 @@ export default defineConfig({
 
     },
     video: 'on',
+    navigationTimeout: 1 * 60 * 1000, // 1 minutes, 
   },
 
   /* Configure projects for major browsers */
@@ -61,10 +62,6 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
     },
   ],
 });

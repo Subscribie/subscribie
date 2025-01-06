@@ -64,9 +64,16 @@ def load_settings():
         for key in schema._required_keys:
             if key in os.environ:
                 print(f"Overriding setting {key} with environ value: {os.getenv(key)}")
+                print(
+                    (
+                        "If overriding keeps happening & you can't "
+                        "work out why- check your IDE (hello vscode) "
+                        "isn't getting in the way. Try using a terminal instead."
+                    )
+                )
                 settings[key] = os.getenv(key)
         return settings
 
 
-# Load app setttings via strictyaml & schema
+# Load app settings via strictyaml & schema
 settings = load_settings().data

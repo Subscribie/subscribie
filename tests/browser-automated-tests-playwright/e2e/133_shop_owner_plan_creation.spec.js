@@ -237,7 +237,7 @@ test.describe("Plan Creation tests:", () => {
     //add first option
     console.log("adding options...")
     await page.goto('/admin/list-choice-groups');
-    await page.click("text=Options");
+    await page.getByRole('button', { name: 'Options' }).click();
 
     await page.click("text=Add Option");
     await page.fill('.form-control', 'Red');

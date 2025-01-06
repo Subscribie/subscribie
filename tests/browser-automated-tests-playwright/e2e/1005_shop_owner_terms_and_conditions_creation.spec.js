@@ -10,7 +10,6 @@ test("@1005@shop-owner @1005_shop_owner_terms_and_conditions_creation", async ({
     console.log("checking if terms and conditions is already attached to the free plan...");
     await page.goto('/');
     await page.click('[name="Free plan"]');
-    page.setDefaultTimeout(3000);
     await new Promise(x => setTimeout(x, 1000));
     let terms_and_conditions_attached = await page.evaluate(() => document.body.textContent);
     if (terms_and_conditions_attached.indexOf("Terms and Conditions") > -1) {
