@@ -91,6 +91,7 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         await page.goto('/admin/upcoming-invoices');
         // Fetch Upcoming Invoices
         await fetch_upcomming_invoices(page);
+        await page.reload();
         await page.locator('css=span.plan-price-interval', {hasText: "£15.00"}).first().textContent() === '£15.00';
 
         const content_upcoming_invoice_plan_sell_price = await page.textContent('.upcoming-invoices-plan-no-sell_price');

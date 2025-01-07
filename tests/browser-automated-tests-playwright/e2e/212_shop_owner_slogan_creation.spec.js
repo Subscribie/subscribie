@@ -23,8 +23,7 @@ test("@212@shop-owner@slogan creation @212_shop_owner_slogan_creation", async ({
 
   //verify home page plan creation
   await page.goto("/");
-  await new Promise(x => setTimeout(x, 1000)); // 1 secconds
+  await page.reload();
   const slogan_created = await page.textContent('text=this is a slogan');
   expect(slogan_created === 'this is a slogan');
-  // TODO screenshot cooling off plan 
 });

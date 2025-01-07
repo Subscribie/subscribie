@@ -169,7 +169,6 @@ test.describe("Plan Creation tests:", () => {
     }
   });
 
-
   test("@264@shop-owner @264_shop_owner_create_plan_with_choice_options", async ({ page }) => {
     await admin_login(page);
     await set_test_name_cookie(page, "@264_shop_owner_create_plan_with_choice_options")
@@ -224,44 +223,54 @@ test.describe("Plan Creation tests:", () => {
 
     //Add options and choices
     console.log('adding plan options and choices');
-    await page.goto('/admin/add-choice-group');
-
-    //add choice group
+    await page.goto('/admin/list-choice-groups');
     const add_choice_group = await page.textContent('text="Add Choice Group"');
     expect(add_choice_group === "Add Choice Group");
-    await page.fill('.form-control', 'Choices');
-    await page.click("text='Save'");
-    await page.textContent('.alert-heading') === "Notification";
-    console.log("Choice Created");
 
-    //add first option
-    console.log("adding options...")
-    await page.goto('/admin/list-choice-groups');
-    await page.getByRole('button', { name: 'Options' }).click();
+    // Check if choice group named 'Choices' already exists
+    try {
+      const check_choice_group = await page.textContent('text="Choices"', { timeout: 2000 });
+      if (check_choice_group === "Choices") {
+        console.log("Choice Group already created.");
+      }
+    } catch (e) {
+      console.log("Choice Group 'Choices' does not exist, continuing with creation");
+      //add choice group
+      await page.goto('/admin/add-choice-group');
+      await page.fill('.form-control', 'Choices');
+      await page.click("text='Save'");
+      await page.textContent('.alert-heading') === "Notification";
+      console.log("Choice Created");
 
-    await page.click("text=Add Option");
-    await page.fill('.form-control', 'Red');
-    await page.click("text='Save'");
-    await page.textContent('.alert-heading') === "Notification";
-    console.log("First Option added");
+      //add first option
+      console.log("adding options...")
+      await page.goto('/admin/list-choice-groups');
+      await page.getByRole('button', { name: 'Options' }).first().click();
 
-    //add second option
-    await page.click("text=Add Option");
-    await page.fill('.form-control', 'Blue');
-    await page.click("text='Save'");
-    await page.textContent('.alert-heading') === "Notification";
-    console.log("Second Option added");
+      await page.click("text=Add Option");
+      await page.fill('.form-control', 'Red');
+      await page.click("text='Save'");
+      await page.textContent('.alert-heading') === "Notification";
+      console.log("First Option added");
 
-    //assign choice to plan
-    console.log("Assigning Choice to plan...")
-    await page.goto('/admin/list-choice-groups');
-    await page.click("text=Assign Plan");
-    const assign_choice_to_plan = await page.textContent('text="Choice Group - Assign Plan"');
-    expect(assign_choice_to_plan === "Choice Group - Assign Plan");
-    await page.click("text=Plan with choice and options");
-    await page.click("text='Save'");
-    await page.textContent('.alert-heading') === "Notification";
-    console.log("Choice assigned to plan");
+      //add second option
+      await page.click("text=Add Option");
+      await page.fill('.form-control', 'Blue');
+      await page.click("text='Save'");
+      await page.textContent('.alert-heading') === "Notification";
+      console.log("Second Option added");
+
+      //assign choice to plan
+      console.log("Assigning Choice to plan...")
+      await page.goto('/admin/list-choice-groups');
+      await page.click("text=Assign Plan");
+      const assign_choice_to_plan = await page.textContent('text="Choice Group - Assign Plan"');
+      expect(assign_choice_to_plan === "Choice Group - Assign Plan");
+      await page.click("text=Plan with choice and options");
+      await page.click("text='Save'");
+      await page.textContent('.alert-heading') === "Notification";
+      console.log("Choice assigned to plan");
+    }
 
     //confirm choice and option plan was added
     await page.goto('/');
@@ -280,6 +289,7 @@ test.describe("Plan Creation tests:", () => {
     const expand_choice = await page.textContent('text="Choices (2 options)"');
     expect(expand_choice === "Choices (2 options)");
     console.log("Plan with option and choices shown in homepage");
+
   });
 
 });
