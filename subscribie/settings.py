@@ -16,7 +16,7 @@ schema = Map(
         "SAAS_ACTIVATE_ACCOUNT_PATH": Str(),
         "SUBSCRIBIE_REPO_DIRECTORY": Str(),
         "SQLALCHEMY_TRACK_MODIFICATIONS": Bool(),
-        "SQLALCHEMY_DATABASE_URI": Regex("sqlite:////.*"),
+        "SQLALCHEMY_DATABASE_URI": Regex("sqlite:///.*"),
         "SECRET_KEY": Str(),
         "DB_FULL_PATH": Str(),
         "MODULES_PATH": Str(),
