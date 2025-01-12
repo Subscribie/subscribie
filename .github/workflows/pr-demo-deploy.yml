@@ -112,6 +112,11 @@ jobs:
 
       - name: Run & Record browser automated tests (Playwright)
         env:
+          # TODO these envs arn't read- update yaml settings loading
+          # to read from environment and have those take precedence
+          # if set just like before when using .env
+          # see tests/browser-automated-tests-playwright/playwright.config.ts
+          # to update.
           PLAYWRIGHT_HOST: http://${{ env.SUBDOMAIN }}.pcpink.co.uk/
           PLAYWRIGHT_SLOWMO: 1000
           PLAYWRIGHT_HEADLESS: true
@@ -125,6 +130,8 @@ jobs:
         run: |
           set -x
           cp settings.yaml.example settings.yaml
+          # Replace PLAYWRIGHT_HOST the pr-preview url
+          sed -i "s|PLAYWRIGHT_HOST.*|PLAYWRIGHT_HOST: http://${{ env.SUBDOMAIN }}.pcpink.co.uk/|g" settings.yaml
           cd tests/browser-automated-tests-playwright
           pip3 install -r requirements.txt
           python3 run-playwright-tests.py
