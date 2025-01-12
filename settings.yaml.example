@@ -1,5 +1,12 @@
 ---
-# Change FLASK_ENV: live for live
+# Settings for Subscribie
+# This is the example settings file for Subscribie
+# If you see settings errors when starting Subscribie
+# re-read the error message. Also, looking at "settings.py"
+# will help because that defines the schema (types) expected
+# for each setting.
+
+# For production, set FLASK_ENV to live
 FLASK_ENV: development
 # Cookie policies
 # SESSION_COOKIE_SECURE: True
@@ -53,12 +60,6 @@ STRIPE_TEST_SECRET_KEY: "sk_test_changeme"
 # Internal server where shop should send its stripe connect account id to. See https://github.com/Subscribie/subscribie/issues/352
 STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST: http://127.0.0.1:8001
 
-# For development: 
-
-PYTHON_LOG_LEVEL: DEBUG
-
-PLAYWRIGHT_HOST: http://127.0.0.1:5000/
-PLAYWRIGHT_HEADLESS: true
 
 #rename shop variables
 PATH_TO_SITES: "/path/to/sites/subscribie/"
@@ -85,3 +86,26 @@ TEST_SHOP_OWNER_EMAIL_ISSUE_704: admin@example.com
 TEST_SUBSCRIBER_EMAIL_USER: test@example.co.uk
 TEST_SHOP_OWNER_LOGIN_URL: http://127.0.0.1:5000/auth/login
 
+PYTHON_LOG_LEVEL: DEBUG
+
+PLAYWRIGHT_HOST: http://127.0.0.1:5000/
+PLAYWRIGHT_HEADLESS: true
+PLAYWRIGHT_SLOWMO: 500
+PLAYWRIGHT_MAX_RETRIES: 1
+
+# Email settings for tests
+IMAP_SEARCH_UNSEEN: "1"
+IMAP_SEARCH_SINCE_DATE: 21-Aug-2024
+EMAIL_SEARCH_API_HOST: email-search-api.example.com
+
+# SHOP OWNER EMAIL SETTINGS for tests
+SHOP_OWNER_EMAIL_HOST: email.example.co.uk
+SHOP_OWNER_EMAIL_USER: alice@example.co.uk
+SHOP_OWNER_MAGIC_LOGIN_IMAP_SEARCH_SUBJECT: Subscribie Magic Login
+SHOP_OWNER_EMAIL_PASSWORD: secret
+
+# SUBSCRIBER EMAIL Settings for tests
+SUBSCRIBER_EMAIL_HOST: email.example.co.uk
+SUBSCRIBER_EMAIL_USER: test@example.co.uk
+SUBSCRIBER_EMAIL_PASSWORD: secret
+RESET_PASSWORD_IMAP_SEARCH_SUBJECT: Password Reset

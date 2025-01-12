@@ -7,6 +7,7 @@ test("@334@shop-owner@Creating Private Page @334-shop-owner-create-private-page"
   await admin_login(page);
   await set_test_name_cookie(page, "@334-shop-owner-create-private-page");
   await page.goto('/page/privatetestpage');
+  await new Promise(x => setTimeout(x, 5000));
 
   console.log("Continuing with Private page creation");
   await page.goto('/pages/add-page');
@@ -16,18 +17,22 @@ test("@334@shop-owner@Creating Private Page @334-shop-owner-create-private-page"
   const page_created = await page.content("#alert-heading");
   expect(page_created === "Notification");
   console.log("Page already created, now configuring to private");
+  await new Promise(x => setTimeout(x, 3000));
 
   await page.goto('/pages/private-pages');
   const private_page_feature = await page.content("text='Update Private Pages'");
   expect(private_page_feature === "Update Private Pages");
   page.click("input[type=checkbox]");
+  await new Promise(x => setTimeout(x, 2000));
   page.click("text='Submit'");
+  await new Promise(x => setTimeout(x, 2000));
 
   const private_page_created = await page.content("#alert-heading");
   expect(private_page_created === "Notification");
   console.log("Private Page created");
 
   await page.goto('/page/privatetestpage');
+  await new Promise(x => setTimeout(x, 2000));
   const visiting_private_page = await page.textContent("text='This is a Private Page'");
   expect(visiting_private_page === "This is a Private Page");
   console.log("Private Page succedded");
@@ -39,6 +44,7 @@ test("@334@shop-owner@Creating Private Page @334-shop-owner-create-private-page"
   console.log("Logged out");
 
   await page.goto('/page/privatetestpage');
+  await new Promise(x => setTimeout(x, 3000));
   let private_page_content = await page.evaluate(() => document.body.textContent);
   if (private_page_content.indexOf("This is a Private Page") > -1) {
     console.log("ERROR: the page is not private")
