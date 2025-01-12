@@ -5,9 +5,9 @@ const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 
 const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with only recurring charge test:", () => {
-    test("@293-1@subscriber@Ordering recurring plan @293_shop_owner_order_recurring_plan", async ({ page }) => {
+    test("@293-1@subscriber@Ordering recurring plan @293_subscriber_order_recurring_plan", async ({ page }) => {
         await admin_login(page);
-        await set_test_name_cookie(page, "@293_shop_owner_order_recurring_plan")
+        await set_test_name_cookie(page, "@293_subscriber_order_recurring_plan")
 
         console.log("Ordering plan with only recurring charge...");
         // Buy item with subscription & upfront fee

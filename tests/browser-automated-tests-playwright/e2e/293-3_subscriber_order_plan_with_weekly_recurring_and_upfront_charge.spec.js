@@ -5,9 +5,9 @@ const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoice
 
 const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with recurring and upfront charge test:", () => {
-    test("@293-3 @293-3_subscriber_order_plan_with_recurring_and_upfront_charge", async ({ page }) => {
-        console.log("@293-3_subscriber_order_plan_with_recurring_and_upfront_charge");
-        await set_test_name_cookie(page, "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge")
+    test("@293-3 @293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge", async ({ page }) => {
+        console.log("@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge");
+        await set_test_name_cookie(page, "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge")
         // Buy item with subscription & upfront fee
         await page.goto('/'); // Go to home before selecting product
         await page.click('[name="Hair Gel"]');
