@@ -1,3 +1,4 @@
+import strictyaml
 from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSeparated
 import os
 
@@ -38,8 +39,6 @@ schema = Map(
         "STRIPE_TEST_SECRET_KEY": Regex("sk_test_..*"),
         "STRIPE_CONNECT_ACCOUNT_ANNOUNCER_HOST": Url(),
         "PYTHON_LOG_LEVEL": Str(),
-        "PLAYWRIGHT_HOST": Url(),
-        "PLAYWRIGHT_HEADLESS": Bool(),
         "PATH_TO_SITES": Str(),
         "PATH_TO_RENAME_SCRIPT": Str(),
         "SUBSCRIBIE_DOMAIN": Str(),
@@ -53,6 +52,21 @@ schema = Map(
         "TEST_SHOP_OWNER_EMAIL_ISSUE_704": Email(),
         "TEST_SUBSCRIBER_EMAIL_USER": Email(),
         "TEST_SHOP_OWNER_LOGIN_URL": Url(),
+        "PLAYWRIGHT_HOST": Url(),
+        "PLAYWRIGHT_HEADLESS": Bool(),
+        "PLAYWRIGHT_SLOWMO": Int(),
+        "PLAYWRIGHT_MAX_RETRIES": Int(),
+        "IMAP_SEARCH_UNSEEN": Str(),  # Example: "1"
+        "IMAP_SEARCH_SINCE_DATE": Str(),  # Example: "21-Aug-2024"
+        "EMAIL_SEARCH_API_HOST": Str(),  # Example: "email-search-api.example.com"
+        "SHOP_OWNER_EMAIL_HOST": Str(),
+        "SHOP_OWNER_EMAIL_USER": Email(),
+        "SHOP_OWNER_MAGIC_LOGIN_IMAP_SEARCH_SUBJECT": Str(),  # "Subscribie Magic Login"
+        "SHOP_OWNER_EMAIL_PASSWORD": Str(),
+        "SUBSCRIBER_EMAIL_HOST": Str(),
+        "SUBSCRIBER_EMAIL_USER": Email(),
+        "SUBSCRIBER_EMAIL_PASSWORD": Str(),
+        "RESET_PASSWORD_IMAP_SEARCH_SUBJECT": Str(),  # Example: "Password Reset"
     }
 )
 
@@ -60,18 +74,26 @@ schema = Map(
 def load_settings():
     with open("settings.yaml") as fp:
         settings_string = fp.read()
-        settings = load(settings_string, schema)
-        for key in schema._required_keys:
-            if key in os.environ:
-                print(f"Overriding setting {key} with environ value: {os.getenv(key)}")
-                print(
-                    (
-                        "If overriding keeps happening & you can't "
-                        "work out why- check your IDE (hello vscode) "
-                        "isn't getting in the way. Try using a terminal instead."
+        try:
+            settings = load(settings_string, schema)
+            for key in schema._required_keys:
+                if key in os.environ:
+                    print(
+                        f"Overriding setting {key} with environ value: {os.getenv(key)}"  # noqa: E501
                     )
-                )
-                settings[key] = os.getenv(key)
+                    print(
+                        (
+                            "If overriding keeps happening & you can't "
+                            "work out why- check your IDE (hello vscode) "
+                            "isn't getting in the way. Try using a terminal instead."
+                        )
+                    )
+                    settings[key] = os.getenv(key)
+        except strictyaml.exceptions.YAMLValidationError as e:
+            raise ValueError(
+                "The app settings have a validation error."
+                f" Check settings.yaml The error was: {e}"
+            )
         return settings
 
 

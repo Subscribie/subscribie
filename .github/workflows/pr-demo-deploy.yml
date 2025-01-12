@@ -124,7 +124,7 @@ jobs:
           IMAP_SEARCH_SINCE_DATE: "01-Sep-2022"
         run: |
           set -x
-          cp tests/browser-automated-tests-playwright/.env.example tests/browser-automated-tests-playwright/.env
+          cp settings.yaml.example settings.yaml
           cd tests/browser-automated-tests-playwright
           pip3 install -r requirements.txt
           python3 run-playwright-tests.py

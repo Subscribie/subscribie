@@ -94,7 +94,7 @@ graph = {
         "@293_subscriber_order_recurring_plan",
         "@264_subscriber_order_plan_with_choice_options_and_required_note",
         "@475_subscriber_order_plan_with_free_trial",
-        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
+        "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
     ],
 }
 
