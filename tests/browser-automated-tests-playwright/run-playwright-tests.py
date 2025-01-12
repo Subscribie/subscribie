@@ -133,7 +133,7 @@ def run_test(test_name: str):
     print(f"Running test {test_name}")
     output_path = "./test-videos/" + test_name[1:]
     result = subprocess.run(
-        # f"npx playwright test --grep {test_name} --headed --update-snapshots",
+        # f"npx playwright test --grep {test_name} --headed --retries 0 --update-snapshots",
         f"npx playwright test --update-snapshots --grep '{test_name}' --output '{output_path}'",
         shell=True,
     )
