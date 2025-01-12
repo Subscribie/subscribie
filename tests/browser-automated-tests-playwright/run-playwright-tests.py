@@ -1,4 +1,5 @@
 from graphlib import TopologicalSorter
+from graphviz import Digraph
 import subprocess
 from multiprocessing import Manager, Pool
 
@@ -89,16 +90,24 @@ graph = {
         "@1005_shop_owner_terms_and_conditions_creation",
         "@stripe_connect",
     ],
+    "1431_shop_owner_bulk_pause_payment_collection_all_subscribers": [
+        "@293_subscriber_order_recurring_plan",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@475_subscriber_order_plan_with_free_trial",
+        "@293-3_subscriber_order_plan_with_recurring_and_upfront_charge",
+    ],
 }
 
 # Visualise DAG
-# dot = Digraph()
-# for node in graph:
-#    dot.node(str(node))
-#    for child in graph[node]:
-#        dot.edge(str(node), str(child))
+dot = Digraph()
+for node in graph:
+    dot.node(str(node))
+    for child in graph[node]:
+        dot.edge(str(node), str(child))
 
-# dot.render("./graphviz_output.gv", view=True)
+# Flick to True to open the graph in a viewer right away
+dot.render("./graphviz_output.gv", view=False)
+
 
 ts = TopologicalSorter(graph)
 
