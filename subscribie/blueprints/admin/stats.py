@@ -112,6 +112,11 @@ def get_number_of_recent_subscription_cancellations():
     except stripe._error.AuthenticationError as e:
         log.error(f"stripe._error.AuthenticationError {e} ")
         return "unknown"
+    except stripe._error.PermissionError as e:
+        log.error(
+            f"stripe._error.PermissionError (does the account still exist?): {e} "
+        )
+        return "unknown"
     except stripe._error.APIConnectionError as e:
         log.error(f"stripe._error.APIConnectionError {e} ")
         return "unknown"
