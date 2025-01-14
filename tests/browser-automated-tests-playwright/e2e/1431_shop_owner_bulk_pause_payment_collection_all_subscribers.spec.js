@@ -5,14 +5,14 @@ const { admin_login } = require('./features/admin_login');
 test('test', async ({ page }) => {
   await admin_login(page);
   await set_test_name_cookie(page, "@1431_shop_owner_bulk_pause_payment_collection_all_subscribers");
-  await page.goto('http://127.0.0.1:5000/admin/dashboard');
+  await page.goto('/admin/dashboard');
   await page.getByRole('button', { name: 'My Subscribers' }).click();
   await page.getByRole('link', { name: 'Pause all Subscribers payment' }).click();
   await page.getByRole('link', { name: 'Pause payment collection for' }).click();
   await page.getByRole('link', { name: 'Yes' }).click();
   await page.getByText('All payment collections are').click();
   await expect(page.getByText('All payment collections are being paused in the background. You can move away from this page.')).toBeVisible();
-  await page.goto('http://127.0.0.1:5000/admin/dashboard');
+  await page.goto('/admin/dashboard');
   await page.getByRole('button', { name: 'My Subscribers' }).click();
   await page.getByRole('link', { name: 'View Subscribers' }).click();
   await page.getByRole('button', { name: 'Refresh Subscriptions' }).click();
