@@ -1245,7 +1245,7 @@ def stripe_onboarding():
             payment_provider.stripe_test_connect_account_id = account.id
 
     database.session.commit()
-
+    announce_stripe_connect_account(account.id, live_mode=1 if stripe_livemode() else 0)
     session["account_id"] = account.id
     account_link_url = _generate_account_link(account.id)
     try:
