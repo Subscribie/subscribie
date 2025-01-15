@@ -1,3 +1,42 @@
+# v0.1.223 (Wed Jan 15 2025)
+
+#### 🐛 Bug Fix
+
+- #1431 pr-deploy preview restored [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 remove hardcoded host in test tests/browser-automated-tests-playwright/e2e/1431_shop_owner_bulk_pause_payment_collection_all_subscribers.spec.js [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 pr-preview Update all settings which point to localhost (the default) to the pr-preview url [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 Always announce stripe connect account to router when connecting payment gateway stripe. related #1433 [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 drop non spec.ts playwright test [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 bump playwright action to use recommended approach https://github.com/microsoft/playwright-github-action?tab=readme-ov-file#playwright-cli-with-github-actions-ci [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 correctly handle stripe._error.PermissionError when account may be removed [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 sed set PLAYWRIGHT_HOST in settings.yml [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 broarden SQLALCHEMY_DATABASE_URI schema setting regex [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 drop use of .env & update tests to use settings.yaml.example [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 add utility scripts to operational_scripts [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Ref #1431 pr preview debug branch 1431-as-a-shop-owner-i-can-bulk-pause-all-payment-collections-acr [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Ref #1431 clarify browser tests naming & add 1431_shop_owner_bulk_pause_payment_collection_all_subscribers to tests DAG [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 always generate graphviz DAG file graphviz_output.gv when tests run [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 add test @1431_shop_owner_bulk_pause_payment_collection_all_subscribers [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 drop old repeated test e2e/293_subscriber_order_plan_with_only_recurring_charge.js [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 run-playwright-tests.py contextual retries example [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 correct flakey tests, increase fetch upcoming invoices wait time (to give time for invoices to be created at stripes end [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 remove duplicate tests & fix other tests [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 don't delete stripe account during playwright test runs [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 SUBSCRIBER_EMAIL_USER -> TEST_SUBSCRIBER_EMAIL_USER [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 +TEST_SUBSCRIBER_EMAIL_USER to settings.yaml.example [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #431 bump checkout actions to v4 [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- CodeQL action version bumps [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Ref #1431 update playwright to use yaml schema settings over dotenv [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 Fix test 264_shop_owner_create_plan_with_choice_options [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1431 set SERVER_NAME during pr deploy [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- WIP Fix #1431 As shop owner I can pause all payment collections [#1432](https://github.com/Subscribie/subscribie/pull/1432) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.222 (Sun Jan 12 2025)
 
 #### ⚠️ Pushed to `master`
