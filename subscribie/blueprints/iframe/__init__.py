@@ -13,7 +13,7 @@ def get_iframe_embed():
     """Set optimised title tags for your pages."""
     log.info("Generating iframe")
     iframe = (
-        f'<iframe src={request.host_url}?iframe_embeded="1" '
+        f'<iframe src="{request.host_url}?iframe_embeded=1" '
         'width="100%" frameborder="0" height="800px" scrolling="auto" '
         'allowfullscreen="true" '
         'title="Subscription shop">\n'
