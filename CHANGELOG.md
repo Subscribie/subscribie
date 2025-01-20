@@ -1,3 +1,15 @@
+# v0.1.224 (Mon Jan 20 2025)
+
+#### 🐛 Bug Fix
+
+- #1435 unrelated fix quotes around iframe embed code snippet example [#1436](https://github.com/Subscribie/subscribie/pull/1436) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.223 (Wed Jan 15 2025)
 
 #### 🐛 Bug Fix
