@@ -70,6 +70,11 @@ jobs:
           ssh dokku@$DOKKU_HOST -C "dokku config:set --no-restart ${{ env.SUBDOMAIN }} SERVER_NAME=${{ env.SUBDOMAIN }}.pcpink.co.uk"
           # mount email-queue folder
           ssh dokku@$DOKKU_HOST -C "dokku storage:mount ${{ env.SUBDOMAIN }} ${{ secrets.HOST_EMAIL_QUEUE_PATH }}:${{ secrets.DOKKU_EMAIL_QUEUE_FOLDER }} && dokku ps:restart ${{ env.SUBDOMAIN }} || true"
+          echo Disable dokku checks until healthchecks updated
+          ssh dokku@$DOKKU_HOST -C "dokku checks:disable ${{ env.SUBDOMAIN }}"
+          echo Clear and then set dokku ports map
+          ssh dokku@$DOKKU_HOST -C "dokku ports:clear ${{ env.SUBDOMAIN }}"
+          ssh dokku@$DOKKU_HOST -C "dokku ports:add ${{ env.SUBDOMAIN }} http:80:5000"
 
       - name: Deploy branch ${{ github.head_ref }} to dokku
         uses: idoberko2/dokku-deploy-github-action@v1
