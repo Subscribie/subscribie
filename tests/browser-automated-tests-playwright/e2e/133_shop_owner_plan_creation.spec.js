@@ -39,7 +39,7 @@ test.describe("Plan Creation tests:", () => {
     await page.goto("/");
 
     //verify home page plan creation
-    await new Promise(x => setTimeout(x, 1000)); // 1 secconds
+    await new Promise(x => setTimeout(x, 1000)); // 1 seconds
     const cooling_off_plan = await page.textContent('text="Cooling off plan"');
     expect(cooling_off_plan === 'Cooling off plan');
   });

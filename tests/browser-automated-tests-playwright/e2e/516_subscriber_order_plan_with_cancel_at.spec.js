@@ -28,11 +28,11 @@ test.describe("order plan with cancel at:", () => {
     expect(order_summary_content === "Order Summary");
     await page.click('#checkout-button');
 
-    //Verify first payment is correct (recuring charge only)
+    //Verify first payment is correct (recurring charge only)
     const payment_content = await page.textContent('div.mr2.flex-item.width-fixed');
     expect(payment_content === "£10.00");
-    const recuring_charge_content = await page.textContent('.Text-fontSize--16');
-    expect(recuring_charge_content === "Subscribe to cancel at plan");
+    const recurring_charge_content = await page.textContent('.Text-fontSize--16');
+    expect(recurring_charge_content === "Subscribe to cancel at plan");
 
     // Pay with test card
     await page.fill('#cardNumber', '4242 4242 4242 4242');
@@ -49,7 +49,7 @@ test.describe("order plan with cancel at:", () => {
 
     // Go to My Subscribers page
     // Crude wait before we check subscribers to allow webhooks time
-    await new Promise(x => setTimeout(x, 5000)); //5 secconds
+    await new Promise(x => setTimeout(x, 5000)); //5 seconds
     await page.goto('/admin/subscribers')
 
     // Click Refresh Subscription
