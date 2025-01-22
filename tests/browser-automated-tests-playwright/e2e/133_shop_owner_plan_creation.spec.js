@@ -85,8 +85,8 @@ test.describe("Plan Creation tests:", () => {
     await set_test_name_cookie(page, "@516_shop_owner_create_cancel_at_plan")
     await page.goto('/');
     try {
-      const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"', { timeout: 3000 });
-      if (free_trial === "Automatically cancels on: 09-07-2025") {
+      const plan = await page.textContent('text="Automatically cancels on: 09-07-2025"', { timeout: 3000 });
+      if (plan === "Automatically cancels on: 09-07-2025") {
         console.log("Cancel At plan already created, exiting test");
         return 0;
       }
@@ -118,8 +118,8 @@ test.describe("Plan Creation tests:", () => {
     await page.click('text="Save"');
     await page.goto('/');
 
-    const free_trial = await page.textContent('text="Automatically cancels on: 09-07-2025"');
-    expect(free_trial === "Automatically cancels on: 07-09-2025");
+    const plan = await page.textContent('text="Automatically cancels on: 09-07-2025"');
+    expect(plan === "Automatically cancels on: 07-09-2025");
 
   });
   test("@491@shop-owner@Create Private Plan @491_shop_owner_create_private_plan", async ({ page }) => {
