@@ -223,6 +223,9 @@
                   {% endif %}
                 <br />
                 <strong>Started: </strong> {{ subscription.created_at.strftime('%d-%m-%Y') }}<br />
+                {% if subscription.stripe_cancel_at %}
+                <strong>Automatically cancels at:</strong> {{ subscription.stripe_cancel_at | timestampToDate }}<br />
+                {% endif %}
                 <strong>Interval Unit:</strong> 
                         {% if subscription.plan.requirements.subscription %}
                           {{ subscription.plan.interval_unit|capitalize }} 
