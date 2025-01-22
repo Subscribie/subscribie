@@ -126,6 +126,9 @@
                                 {% endif %}
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
                                 <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d-%m-%Y') }}</li>
+                                {% if subscription.stripe_cancel_at %}
+                                  <li><strong>Automatically cancels at:</strong> {{ subscription.stripe_cancel_at | timestampToDate }}</li>
+                                {% endif %}                        
                                 <li>
                                     {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                         <strong>Price: </strong>
@@ -227,10 +230,6 @@
                                     <li>
                                       <strong>Date ended at:</strong> {{ subscription.stripe_ended_at | timestampToDate }}
                                     </li>
-                                    {% endif %}
-                                    {% if subscription.stripe_cancel_at %}
-                                      <strong>Automatically Cancels at:</strong>
-                                      {{ subscription.stripe_cancel_at | timestampToDate }}
                                     {% endif %}
                                     <li>
                                     </li>
