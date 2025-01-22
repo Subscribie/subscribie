@@ -1,3 +1,15 @@
+# v0.1.226 (Wed Jan 22 2025)
+
+#### 🐛 Bug Fix
+
+- spellings [#1438](https://github.com/Subscribie/subscribie/pull/1438) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.225 (Wed Jan 22 2025)
 
 #### 🐛 Bug Fix
