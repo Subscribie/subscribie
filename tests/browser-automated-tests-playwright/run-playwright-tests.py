@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 from graphlib import TopologicalSorter
 from graphviz import Digraph
 import subprocess
@@ -75,6 +77,7 @@ graph = {
         "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
     ],
     "@516_subscriber_order_plan_with_cancel_at": [
+        "@stripe_connect",
         "@516_shop_owner_create_cancel_at_plan"
     ],
     "@905-subscriber-search-by-email-and-name": [
