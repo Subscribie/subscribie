@@ -5,9 +5,9 @@ const { fetch_upcomming_invoices } = require('./features/fetch_upcomming_invoice
 
 const SUBSCRIBER_EMAIL_USER = process.env.TEST_SUBSCRIBER_EMAIL_USER;
 test.describe("order plan with cancel at:", () => {
-  test("@516 @516_shop_owner_order_plan_with_cancel_at", async ({ page }) => {
+  test("@516 @516_subscriber_order_plan_with_cancel_at", async ({ page }) => {
     await admin_login(page);
-    await set_test_name_cookie(page, "@516_shop_owner_order_plan_with_cancel_at")
+    await set_test_name_cookie(page, "@516_subscriber_order_plan_with_cancel_at")
     console.log("Ordering plan with cancel_at");
     // Go to home before selecting product
     await page.goto('/');
@@ -56,7 +56,6 @@ test.describe("order plan with cancel at:", () => {
     await page.click('#refresh_subscriptions'); // this is the refresh subscription
     await page.textContent('.alert-heading') === "Notification";
 
-    // TODO screenshot to the trialing subscriber
     await page.goto('admin/dashboard');
     // go back to subscriptions
     await page.goto('/admin/subscribers')
