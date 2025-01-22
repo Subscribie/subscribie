@@ -214,7 +214,7 @@ def order_summary():
     # right after a subscription creation, at which point, the created subscription
     # must be updated with checkout session attributes such as
     # `stripe_subscription_id=stripe_subscription_id` and `stripe_external_id`
-    # The existance of a subscription object may be located by its
+    # The existence of a subscription object may be located by its
     # `subscribie_checkout_session_id` (an identifier created by subscribie, not
     # an external payment provider such as Stripe)
     subscribie_checkout_session_id = session.get("subscribie_checkout_session_id")
@@ -336,7 +336,7 @@ def thankyou():
             req = requests.get(activate_shop_url, timeout=1)
             log.info(f"Activating shop {sitename}")
             if req.status_code == 200:
-                log.info(f"Succedd activating shop. status_code: {req.status_code}")
+                log.info(f"Succeed activating shop. status_code: {req.status_code}")
             # Set site url for login button on thank you page
             session["site-url"] = f"{scheme}://{sitename}"
             # Remove sitename from session as no longer needed
@@ -406,10 +406,10 @@ def stripe_create_checkout_session():
     metadata = {}
     # Store the fact the person at least attempted to go to stripe
     # checkout (https://github.com/Subscribie/subscribie/issues/1370)
-    # so that can distingish between drop-offs before or after attempting
+    # so that can distinguish between drop-offs before or after attempting
     # payment via checkout flow.
 
-    # Store stripe_checkout_attampted True or similar against
+    # Store stripe_checkout_attempted True or similar against
     # subscription object using subscribie_checkout_session_id
     # to determine subscription object
     email = session["email"]
@@ -639,13 +639,13 @@ def create_subscription(
 ) -> Subscription:
     """Create subscription model
     Note: A subscription model is also created if a plan only has
-    one up_front payment (no recuring subscription). This allows
-    the storing of chosen options againt their plan choice.
+    one up_front payment (no recurring subscription). This allows
+    the storing of chosen options against their plan choice.
     Chosen option ids may be passed via webhook or through session
     """
     with current_app.test_request_context("/"):  # TODO remove need for request context
         log.info("Creating Subscription model if needed")
-        subscription = None  # Initalize subscription model to None
+        subscription = None  # Initialize subscription model to None
         # Get the associated plan they have purchased
         plan = (
             Plan.query.execution_options(include_archived=True)
@@ -694,7 +694,7 @@ def create_subscription(
             # Create new subscription model
             # - Get current pricing
             # - TODO address race condition:
-            #   - add validation for potential discrepency between Stripe
+            #   - add validation for potential discrepancy between Stripe
             #     webhook delivery delay and price rules changing
             subscription = Subscription(
                 sku_uuid=package,
@@ -759,28 +759,20 @@ def create_subscription(
             database.session.commit()
             session["subscription_uuid"] = subscription.uuid
 
-            # If subscription plan has cancel_at set, modify Stripe subscription
-            # charge_at property
-            stripe.api_key = get_stripe_secret_key()
-            connect_account_id = get_stripe_connect_account_id()
+            # If subscription plan has cancel_at set
+            # we can set subscription.plan.cancel_at right now without
+            # needing to call Stripe api yet.
+            # Note fore free plans, there's no Stripe subscription
+            # object to modify for Subscribie free plans
+            # When the Stripe subscription webhook is sent,
+            # subscription will exist in Subscribie's datamodel
+            # (subscription != None) and the Stripe api will be called
+            # asynchronously to stripe api modify the stripe subscription
+            # object with the cancel_at value.
             if subscription.plan.cancel_at:
                 cancel_at = subscription.plan.cancel_at
-                try:
-                    stripe.Subscription.modify(
-                        sid=subscription.stripe_subscription_id,
-                        stripe_account=connect_account_id,
-                        cancel_at=cancel_at,
-                    )
-                    subscription.stripe_cancel_at = cancel_at
-                    database.session.commit()
-                except Exception as e:  # noqa
-                    # OK to fail if plan is free since
-                    # there may not be a Stripe object for
-                    # free plans (but there could be for plans
-                    # which started paid then became free, which
-                    # is why we still attempt the lookup)
-                    if subscription.plan.is_free() is False:
-                        log.error("Could not set cancel_at: {e}")
+                subscription.stripe_cancel_at = cancel_at
+            database.session.commit()
 
     # Clear chosen_question_ids_answers from session since we've now stored them
     # Ref https://github.com/Subscribie/subscribie/issues/1374
@@ -1119,6 +1111,27 @@ def stripe_webhook():
             if subscription is not None:
                 stripe.api_key = get_stripe_secret_key()
                 connect_account_id = get_stripe_connect_account_id()
+
+                # If subscription's plan has a cancel_at date, and is not free
+                # update the Stripe subscription object to set the cancel_at
+                # field.
+                # Note: subscription.stripe_cancel_at is set before the Stripe
+                # subscription object is created, before calls to stripe
+                # api hence why we update Stripe's datamodel here.
+                if subscription.plan.cancel_at and subscription.plan.is_not_free():
+                    log.info("Setting Stripe subscription object cancel_at property")
+                    try:
+                        stripe.Subscription.modify(
+                            id=stripe_subscription_id,
+                            stripe_account=connect_account_id,
+                            cancel_at=subscription.stripe_cancel_at,
+                        )
+                    except Exception as e:
+                        log.error(
+                            f"Could not set cancel_at on Stripe subscription object: {e}"  # noqa: E501
+                        )
+                    database.session.commit()
+
                 proration_behavior = subscription.plan.proration_behavior or "none"
                 log.info(
                     f"Updating stripe proration_behavior to {proration_behavior}"

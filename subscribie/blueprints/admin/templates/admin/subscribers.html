@@ -158,8 +158,29 @@
                                         <li><strong>Proration mode: </strong>
                                           {% if subscription.stripe_proration_behavior == "create_prorations" %}
                                             Apply Pro Rata Charges
+                                            <details style="display: inline">
+                                              <summary><em><small>explain</small></em></summary>
+                                              <div class="alert alert-info">
+                                               <p>"Apply Pro Rata Charges" means in the event that a Subscription is cancelled before 
+                                                the subscription period is over, then *don't* charge the subscriber of this Plan 
+                                                the full amount, instead charge only the used amount of the current period.</p>
+                                                
+                                                <p>For example, if a monthly subscription ends partway through a month, 
+                                                  the final charge will be less since it is prorated based on the time used.
+                                                </p>
+                                              </div>
+                                             </details>                                            
                                           {% elif subscription.stripe_proration_behavior == "none" %}
                                             No Pro Rata Charges
+                                            <details style="display: inline">
+                                              <summary><em><small>explain</small></em></summary>
+                                              <div class="alert alert-info">
+                                               <p>"No Pro Rata Charges" (Do not prorate) means that if Subscribers' subscription is
+                                                 stopped before a subscription period is over, then the full amount of the subscription
+                                                 is still charged.
+                                                </p>
+                                              </div>
+                                             </details>                                              
                                           {% endif %}
                                         </li>                                        
                                     {% else %}

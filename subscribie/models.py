@@ -1041,6 +1041,9 @@ class Plan(database.Model, HasArchived, HasCreatedAt):
             return True
         return False
 
+    def is_not_free(self):
+        return self.is_free() is not True
+
 
 class Category(database.Model, HasCreatedAt):
     __tablename__ = "category"
