@@ -1,3 +1,24 @@
+# v0.1.225 (Wed Jan 22 2025)
+
+#### 🐛 Bug Fix
+
+- #1437 correct case of test asserting text="Automatically cancels at:" [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1133 explicitly set ports map & disable dokku checks during pr preview [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- black format [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1437 show cancel_at on show_subscriber view [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1437 show "Automatically cancels at" below "Date started" on plans which have cancel_at date set [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1437 add shebang allow run-playwright-tests.py to be ran as script, verified all tests pass [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip 1133 Fix #1437 restore cancel_at plans feature including test [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1133 rebase & merge conflicting migrations [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1133 document proration feature [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip Fix #1133 I can configure plan prorations as a shop owner [#1383](https://github.com/Subscribie/subscribie/pull/1383) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.224 (Mon Jan 20 2025)
 
 #### 🐛 Bug Fix
