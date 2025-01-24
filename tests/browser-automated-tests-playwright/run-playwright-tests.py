@@ -8,12 +8,26 @@ from multiprocessing import Manager, Pool
 
 graph = {
     "@stripe_connect": [],
+    "@1333_shop_owner_add_free_text_question": [],
+    "@1333-1_shop_owner_create_plan_with_question_attached": [
+        "@1333_shop_owner_add_free_text_question"
+    ],
+    "@475_shop_owner_create_free_plan_with_question_attached": [
+        "@1333_shop_owner_add_free_text_question"
+    ],
+    "@1333-1_subscriber_order_free_plan_with_question_attached": [
+        "@1333_shop_owner_add_free_text_question",
+        "@475_shop_owner_create_free_plan_with_question_attached",
+    ],
     "@452_shop_owner_create_category": [],
     "@121_shop-owner-create-public-page": [],
     "@212_shop_owner_slogan_creation": [],
     "@387_shop_owner_change_shop_colour": [],
     "@463_shop_owner_adding_vat": [],
     "@133_shop_owner_plan_creation": ["@334-shop-owner-create-private-page"],
+    "@264_shop_owner_create_plan_with_choice_options": [
+        "@130-1_shop_owner_can_create_choice_options"
+    ],
     "@275_shop_owner_change_plan_order": [
         "@133_shop_owner_plan_creation",
         "@475_shop_owner_create_free_trial",
