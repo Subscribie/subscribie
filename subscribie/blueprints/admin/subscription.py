@@ -29,7 +29,7 @@ def update_stripe_subscription_status(subscription_uuid):
 
     if stripe_connect_active() is False:
         msg = "Stripe connect must be connected."
-        log.ingo(msg)
+        log.info(msg)
         return msg, 500
 
     subscription = (
@@ -55,8 +55,9 @@ def update_stripe_subscription_status(subscription_uuid):
             log.info(subscription.stripe_subscription_id)
             database.session.commit()
         except Exception as e:
-            log.error("Failed updating individual subscription status. {e}")
-            return "Failed updating individual subscription status.", 500
+            msg = f"Failed updating individual subscription status. {e}"
+            log.error(msg)
+            return msg, 500
 
 
 @background_task

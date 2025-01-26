@@ -17,7 +17,7 @@ test('test', async ({ page }) => {
   await page.getByRole('link', { name: 'View Subscribers' }).click();
   await page.getByRole('button', { name: 'Refresh Subscriptions' }).click();
   await page.waitForTimeout(3000);
-  await page.reload();
+  await page.goto('/admin/subscribers');
   await page.getByText('Paused - (keep_as_draft)').first().click();
   await page.getByText('Paused - (keep_as_draft)').nth(1).click();
 });

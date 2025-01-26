@@ -8,6 +8,7 @@ from subscribie.models import (
     PaymentProvider,
     TaxRate,
     Document,
+    Page,
 )
 from flask import jsonify, session
 from subscribie.utils import get_stripe_connect_account_id, get_stripe_secret_key
@@ -56,6 +57,18 @@ def remove_transactions():
     database.session.commit()
 
     msg = {"msg": "all transactions deleted"}
+
+    return jsonify(msg)
+
+
+@admin.route("/remove-pages", methods=["GET"])
+@login_required
+@development_mode_only
+def remove_pages():
+    database.session.query(Page).delete()
+    database.session.commit()
+
+    msg = {"msg": "all pages deleted"}
 
     return jsonify(msg)
 

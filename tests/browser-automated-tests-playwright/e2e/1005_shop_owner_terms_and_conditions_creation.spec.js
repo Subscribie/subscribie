@@ -40,7 +40,7 @@ test("@1005@shop-owner @1005_shop_owner_terms_and_conditions_creation", async ({
   const category_plans = await page.textContent("text=Document - Assign Plan");
   expect(category_plans === "Document - Assign Plan");
 
-  await page.getByText('Free plan').setChecked(true);
+  await page.getByLabel('Free plan', {exact: true}).check();
 
   await new Promise(x => setTimeout(x, 1000));
   await page.click('text="Save"');
