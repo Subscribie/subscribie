@@ -233,7 +233,17 @@ def order_summary():
 
     # If is a donation, then there is no plan associated
     if is_donation is False:
-        plan = Plan.query.filter_by(uuid=session["plan"]).first()
+        plan = (
+            Plan.query.execution_options(include_archived=True)
+            .filter_by(uuid=session["plan"])
+            .first()
+        )
+        if plan.archived:
+            log.warning(
+                "Person is signing up to an archived plan. "
+                "This can happen if a checkout session has started, "
+                "but not ended, and a shop owner makes an edit to a given plan"
+            )
         # if plan is free, skip Stripe checkout and store subscription right away
         if plan.is_free():
             log.info("Plan is free, so skipping Stripe checkout")
@@ -360,12 +370,15 @@ def thankyou():
         # TODO if checkout_session_id is None (because free plan)
         subscription = (
             database.session.query(Subscription)
+            .execution_options(
+                include_archived=True
+            )  # To account for plans editing during checkout session starts
             .filter_by(subscribie_checkout_session_id=checkout_session_id)
             .first()
         )
         uuid = subscription.uuid
         # Store note to seller if in session
-        if session.get("note_to_seller", False) is not False:
+        if session.get("note_to_seller", False):
             note = SubscriptionNote(
                 note=session["note_to_seller"], subscription_id=subscription.id
             )
@@ -467,7 +480,11 @@ def stripe_create_checkout_session():
     if is_donation is False:
         payment_intent_data = {"application_fee_amount": 20, "metadata": metadata}
 
-        plan = Plan.query.filter_by(uuid=session["plan"]).first()
+        plan = (
+            Plan.query.execution_options(include_archived=True)
+            .filter_by(uuid=session["plan"])
+            .first()
+        )
         charge["sell_price"] = plan.getSellPrice(currency_code)
         charge["interval_amount"] = plan.getIntervalAmount(currency_code)
         success_url = url_for(
@@ -967,9 +984,14 @@ def stripe_webhook():
             subscribie_checkout_session_id = eventObj["metadata"][
                 "subscribie_checkout_session_id"
             ]
-            subscription = Subscription.query.filter_by(
-                subscribie_checkout_session_id=subscribie_checkout_session_id
-            ).one()
+            subscription = (
+                # Include archived to account for plan edits during an active checkout
+                Subscription.query.execution_options(include_archived=True)
+                .filter_by(
+                    subscribie_checkout_session_id=subscribie_checkout_session_id
+                )
+                .one()
+            )
         except Exception:
             log.error(
                 "Unable to locate subscription associated with event customer.subscription.deleted"  # noqa: E501
@@ -1102,7 +1124,9 @@ def stripe_webhook():
         # payment provider.
         if stripe_subscription_id:
             subscription = (
-                Subscription.query.filter_by(
+                # Include archived to account for plan edits during an active checkout
+                Subscription.query.execution_options(include_archived=True)
+                .filter_by(
                     subscribie_checkout_session_id=subscribie_checkout_session_id
                 )
                 .filter(Subscription.person.has(email=email))

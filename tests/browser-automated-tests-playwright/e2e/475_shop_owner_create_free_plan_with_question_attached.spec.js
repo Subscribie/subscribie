@@ -5,7 +5,7 @@ const { set_test_name_cookie } = require('./features/set_test_name_cookie');
 const testName = "@475_shop_owner_create_free_plan_with_question_attached";
 
 
-test('test', async ({ page }) => {
+test('@475_shop_owner_create_free_plan_with_question_attached', async ({ page }) => {
   await admin_login(page);
   await set_test_name_cookie(page, testName);
   await page.goto('/admin/dashboard');
@@ -27,32 +27,4 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Assign Plan' }).first().click();
   await page.getByLabel('Free plan with question').first().check();
   await page.getByRole('button', { name: 'Save' }).click();
-  await page.goto('/');
-  await page.locator('.pricing-plan').filter({hasText: "Free plan with question attached"}).first().getByRole('link').click();
-  await page.getByPlaceholder('Please enter...').click();
-  await page.getByPlaceholder('Please enter...').fill('The Grapevine');
-  await page.locator('form').filter({ hasText: 'The Free plan with question' }).getByRole('button').click();
-  await page.getByPlaceholder('John', { exact: true }).click();
-  await page.getByPlaceholder('John', { exact: true }).fill('Joh');
-  await page.getByPlaceholder('John', { exact: true }).press('Tab');
-  await page.getByPlaceholder('Smith', { exact: true }).press('Shift+Tab');
-  await page.getByPlaceholder('John', { exact: true }).press('ArrowRight');
-  await page.getByPlaceholder('John', { exact: true }).fill('John');
-  await page.getByPlaceholder('John', { exact: true }).press('Tab');
-  await page.getByPlaceholder('Smith', { exact: true }).fill('Smith');
-  await page.getByPlaceholder('Smith', { exact: true }).press('Tab');
-  await page.getByPlaceholder('johnsmith@gmail.com').fill('johnsmith@example.com');
-  await page.getByPlaceholder('johnsmith@gmail.com').press('Tab');
-  await page.getByPlaceholder('+').fill('00000000000');
-  await page.getByPlaceholder('+').press('Tab');
-  await page.locator('#address_line_one').fill('00');
-  await page.locator('#address_line_one').press('Tab');
-  await page.locator('#city').fill('00');
-  await page.locator('#city').press('Tab');
-  await page.locator('#postcode').fill('00');
-  await page.getByRole('button', { name: 'Continue to Payment' }).click();
-  await page.getByRole('link', { name: 'Dashboard' }).click();
-  await page.goto('/admin/subscribers');
-  await page.getByRole('cell', { name: 'Title: Free plan with' }).locator('summary').first().click();
-  await page.getByText('Where did you hear about us?: The Grapevine').first().click();
 });

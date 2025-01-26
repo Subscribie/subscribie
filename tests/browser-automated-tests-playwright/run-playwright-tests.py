@@ -8,10 +8,6 @@ from multiprocessing import Manager, Pool
 
 graph = {
     "@stripe_connect": [],
-    "@1333_shop_owner_add_free_text_question": [],
-    "@1333-1_shop_owner_create_plan_with_question_attached": [
-        "@1333_shop_owner_add_free_text_question"
-    ],
     "@475_shop_owner_create_free_plan_with_question_attached": [
         "@1333_shop_owner_add_free_text_question"
     ],
@@ -19,11 +15,29 @@ graph = {
         "@1333_shop_owner_add_free_text_question",
         "@475_shop_owner_create_free_plan_with_question_attached",
     ],
-    "@452_shop_owner_create_category": [],
+    "@452_shop_owner_create_category": [
+        "@475_subscriber_order_plan_with_free_trial",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293_subscriber_order_recurring_plan",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
+        "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
+        "@939_subscriber_order_free_plan_with_terms_and_conditions",
+        "@516_subscriber_order_plan_with_cancel_at"
+    ],
     "@121_shop-owner-create-public-page": [],
     "@212_shop_owner_slogan_creation": [],
     "@387_shop_owner_change_shop_colour": [],
-    "@463_shop_owner_adding_vat": [],
+    "@463_shop_owner_adding_vat": [
+        "@475_subscriber_order_plan_with_free_trial",
+        "@264_subscriber_order_plan_with_choice_options_and_required_note",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293_subscriber_order_recurring_plan",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
+        "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
+        "@939_subscriber_order_free_plan_with_terms_and_conditions",
+        "@516_subscriber_order_plan_with_cancel_at"
+    ],
     "@133_shop_owner_plan_creation": ["@334-shop-owner-create-private-page"],
     "@264_shop_owner_create_plan_with_choice_options": [
         "@130-1_shop_owner_can_create_choice_options"
@@ -34,6 +48,7 @@ graph = {
         "@516_shop_owner_create_cancel_at_plan",
         "@491_shop_owner_create_private_plan",
         "@264_shop_owner_create_plan_with_choice_options",
+        "@130-1_shop_owner_can_create_choice_options",
     ],
     "@1219_shop-owner_enable_custom_url": [
         "@463_subscriber_order_plan_with_vat",
@@ -45,10 +60,14 @@ graph = {
         "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
         "@939_subscriber_order_free_plan_with_terms_and_conditions",
     ],
+    "@264_subscriber_order_plan_with_choice_options_and_required_note": [
+        "@stripe_connect",
+        "@130-1_shop_owner_can_create_choice_options",
+        "@264_shop_owner_create_plan_with_choice_options",
+    ],
     "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge": [
         "@stripe_connect",
         "@293_subscriber_order_recurring_plan",
-        "@463_subscriber_order_plan_with_vat",
         "@475_subscriber_order_plan_with_free_trial",
         "@264_subscriber_order_plan_with_choice_options_and_required_note",
         "@133_subscriber_order_plan_with_cooling_off_period",
@@ -65,16 +84,11 @@ graph = {
         "@475_shop_owner_create_free_trial",
         "@1005_shop_owner_terms_and_conditions_creation",
         "@293_subscriber_order_recurring_plan",
-        "@463_subscriber_order_plan_with_vat",
         "@264_subscriber_order_plan_with_choice_options_and_required_note",
         "@133_subscriber_order_plan_with_cooling_off_period",
         "@293_subscriber_order_recurring_plan",
         "@293-2_subscriber_order_plan_with_only_upfront_charge",
         "@939_subscriber_order_free_plan_with_terms_and_conditions",
-    ],
-    "@264_subscriber_order_plan_with_choice_options_and_required_note": [
-        "@stripe_connect",
-        "@264_shop_owner_create_plan_with_choice_options",
     ],
     "@133_subscriber_order_plan_with_cooling_off_period": [
         "@stripe_connect",
@@ -115,6 +129,10 @@ graph = {
         "@264_subscriber_order_plan_with_choice_options_and_required_note",
         "@475_subscriber_order_plan_with_free_trial",
         "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
+        "@463_subscriber_order_plan_with_vat",
+        "@1333-1_subscriber_order_free_plan_with_question_attached",
+        "@133_subscriber_order_plan_with_cooling_off_period",
+        "@293-2_subscriber_order_plan_with_only_upfront_charge"
     ],
 }
 

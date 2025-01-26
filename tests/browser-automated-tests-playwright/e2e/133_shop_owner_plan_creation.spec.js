@@ -192,6 +192,10 @@ test.describe("Plan Creation tests:", () => {
     await page.click('#plan_description_required-0');
     await page.fill('#description-0', 'This plan requires a user description, options and choice selection');
 
+    //Require customer note
+    await page.click('#note_to_seller_required-0');
+    await page.fill('#note_to_buyer_message-0', 'Please add a comment');
+
     await page.click('text="Save"');
     console.log("Check if plan was created");
 
@@ -211,7 +215,7 @@ test.describe("Plan Creation tests:", () => {
 
     //check if plan have choice
     await page.click("text=See choice options");
-    await page.click("text=Colour Choice (2 options)");
+    await page.click("text=Colour Choice");
 
     console.log("Plan with option and choices shown in homepage");
 

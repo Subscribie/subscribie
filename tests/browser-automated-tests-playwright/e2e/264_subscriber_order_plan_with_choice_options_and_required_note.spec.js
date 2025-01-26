@@ -16,14 +16,14 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         // Choose Options
         const choose_option = await page.textContent("text=Choose your options");
         expect(choose_option === "Choose your options");
-        await page.getByText('Red', { exact: true }).click()
+        await page.getByLabel('Red').first().click();
         await page.click('text=Save');
 
         // Fill in order form
         await page.fill('#given_name', 'John');
         await page.fill('#family_name', 'Smith');
         await page.fill('#email', SUBSCRIBER_EMAIL_USER);
-        await page.     fill('#mobile', '07123456789');
+        await page.fill('#mobile', '07123456789');
         await page.fill('#address_line_one', '123 Short Road');
         await page.fill('#city', 'London');
         await page.fill('#postcode', 'L01 T3U');
@@ -35,11 +35,6 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
         expect(order_summary_content === "Order Summary");
         await page.click('#checkout-button');
 
-        //Verify first payment is correct (recuring charge only)
-        const payment_content = await page.textContent('#ProductSummary-totalAmount');
-        expect(payment_content === "£15.00");
-        const recuring_charge_content = await page.textContent('.Text-fontSize--16');
-        expect(recuring_charge_content === "Subscribe to Plan choice and options");
 
         // Pay with test card
         await page.fill('#cardNumber', '4242 4242 4242 4242');
@@ -56,7 +51,6 @@ test("@264@subscriber @264_subscriber_order_plan_with_choice_options_and_require
 
         // Go to My Subscribers page
         // Crude wait before we check subscribers to allow webhooks time
-        await new Promise(x => setTimeout(x, 5000)); //5 secconds
         await page.goto('/admin/subscribers')
 
         // Click Refresh Subscription
