@@ -23,7 +23,7 @@ graph = {
         "@293-2_subscriber_order_plan_with_only_upfront_charge",
         "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
         "@939_subscriber_order_free_plan_with_terms_and_conditions",
-        "@516_subscriber_order_plan_with_cancel_at"
+        "@516_subscriber_order_plan_with_cancel_at",
     ],
     "@121_shop-owner-create-public-page": [],
     "@212_shop_owner_slogan_creation": [],
@@ -36,7 +36,7 @@ graph = {
         "@293-2_subscriber_order_plan_with_only_upfront_charge",
         "@293-3_subscriber_order_plan_with_weekly_recurring_and_upfront_charge",
         "@939_subscriber_order_free_plan_with_terms_and_conditions",
-        "@516_subscriber_order_plan_with_cancel_at"
+        "@516_subscriber_order_plan_with_cancel_at",
     ],
     "@133_shop_owner_plan_creation": ["@334-shop-owner-create-private-page"],
     "@264_shop_owner_create_plan_with_choice_options": [
@@ -132,7 +132,7 @@ graph = {
         "@463_subscriber_order_plan_with_vat",
         "@1333-1_subscriber_order_free_plan_with_question_attached",
         "@133_subscriber_order_plan_with_cooling_off_period",
-        "@293-2_subscriber_order_plan_with_only_upfront_charge"
+        "@293-2_subscriber_order_plan_with_only_upfront_charge",
     ],
 }
 
