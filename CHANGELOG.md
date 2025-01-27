@@ -1,3 +1,17 @@
+# v0.1.227 (Mon Jan 27 2025)
+
+#### 🐛 Bug Fix
+
+- #1439 black format [#1440](https://github.com/Subscribie/subscribie/pull/1440) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1439 validated tests pass. Account for including archived plans during active checkout sessiions [#1440](https://github.com/Subscribie/subscribie/pull/1440) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip Fix #1439 add test 1_shop_owner_create_plan_with_question_attached [#1440](https://github.com/Subscribie/subscribie/pull/1440) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.226 (Wed Jan 22 2025)
 
 #### 🐛 Bug Fix
