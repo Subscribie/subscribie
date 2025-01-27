@@ -125,7 +125,9 @@
                                     </li>
                                 {% endif %}
                                 <li><strong>Subscription ID: </strong>{{ subscription.uuid }}</li>
-                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d-%m-%Y') }}</li>
+                                <li><strong>Date started: </strong>{{ subscription.created_at.strftime('%d-%m-%Y') }}
+                                  <small>({{ subscription.created_at | timeSinceHumanReadable }})</small>
+                                </li>
                                 {% if subscription.stripe_cancel_at %}
                                   <li><strong>Automatically cancels at:</strong> {{ subscription.stripe_cancel_at | timestampToDate }}</li>
                                 {% endif %}
