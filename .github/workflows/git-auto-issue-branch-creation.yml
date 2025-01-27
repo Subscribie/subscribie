@@ -57,7 +57,7 @@ jobs:
           git config --global user.email "username@users.noreply.github.com"
           git commit --allow-empty -m "Empty commit to allow auto PR creation"
           git fetch origin
-          git rebase --strategy-option=theirs origin/main --verbose # thanks https://joht.github.io/johtizen/build/2022/01/20/github-actions-push-into-repository.html
+          git rebase --strategy-option=theirs origin/master --verbose # thanks https://joht.github.io/johtizen/build/2022/01/20/github-actions-push-into-repository.html
           git push --verbose
   
       - name: Creating PR based on branch name ${{ github.ref_name }}
@@ -68,4 +68,4 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/KarmaComputing/create-pull-request-on-branch-creation/pulls \
-          -d '{"title": "#${{ steps.issue.outputs.number }} ${{ env.ISSUE_BRANCH_NAME }}","body":"Pull request related issue: #${{ steps.issue.outputs.number }}. Please pull these awesome changes in!","head":"${{ steps.issue.outputs.number }}-${{ env.ISSUE_BRANCH_NAME }}","base":"main"}'
+          -d '{"title": "#${{ steps.issue.outputs.number }} ${{ env.ISSUE_BRANCH_NAME }}","body":"Pull request related issue: #${{ steps.issue.outputs.number }}. Please pull these awesome changes in!","head":"${{ steps.issue.outputs.number }}-${{ env.ISSUE_BRANCH_NAME }}","base":"master"}'
