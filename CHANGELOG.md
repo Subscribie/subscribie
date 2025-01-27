@@ -1,3 +1,15 @@
+# v0.1.229 (Mon Jan 27 2025)
+
+#### 🐛 Bug Fix
+
+- wip Fix #1442 Show time since/time ago on Subscriber subscription list in human friendly form (e.g. 1 hour ago) [#1443](https://github.com/Subscribie/subscribie/pull/1443) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.228 (Mon Jan 27 2025)
 
 #### ⚠️ Pushed to `master`
