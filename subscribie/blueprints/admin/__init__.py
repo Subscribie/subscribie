@@ -64,7 +64,8 @@ from pathlib import Path
 from .getLoadedModules import getLoadedModules
 import uuid
 from sqlalchemy import desc
-from datetime import datetime, time
+from datetime import datetime, time, timezone
+from dateutil.relativedelta import relativedelta
 from subscribie.models import (
     Transaction,
     EmailTemplate,
@@ -165,36 +166,46 @@ def timeSinceHumanReadable(date: datetime):
     since, and return a
     x years/months/weeks/days/hours/mins/seconds ago string
     """
-    from dateutil.relativedelta import relativedelta
+    now = datetime.now(timezone.utc)
+    # Ensure is tz aware (we do store in UTC, see models.py created_at)
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=timezone.utc)
 
-    agoString = ""
-    weeks = ""
-    months = ""
-    years = ""
-    try:
-        now = datetime.now()
-        diff = relativedelta(date, now)
+    diff = relativedelta(now, date)
 
-        # Build time-since string
-        seconds = f"{abs(diff.seconds)}s"
-        mins = f"{abs(diff.minutes)} mins"
-        hours = f"{abs(diff.hours)} hours"
-        days = f"{abs(diff.days)} days"
+    if (
+        diff.years < 0
+        or diff.months < 0
+        or diff.days < 0
+        or diff.hours < 0
+        or diff.minutes < 0
+        or diff.seconds < 0
+    ):
+        return "Future date"
 
-        if diff.weeks > 0:
-            weeks = f"{abs(diff.weeks)} weeks,"
+    years = diff.years
+    months = diff.months
+    days = diff.days
+    hours = diff.hours
+    minutes = diff.minutes
+    seconds = diff.seconds
 
-        if diff.months > 0:
-            months = f"{abs(diff.months)} months,"
-
-        if diff.years > 0:
-            years = f"{abs(diff.years)} years,"
-
-        agoString = f"{years} {months} {weeks} {days}, {hours} {mins} {seconds} ago"
-    except Exception:
-        log.error("Unable to generate timeSinceHumanReadable: {e}")
-
-    return agoString
+    parts = []
+    if years:
+        parts.append(f"{years} years")
+    if months:
+        parts.append(f"{months} months")
+    if days:
+        parts.append(f"{days} days")
+    if hours:
+        parts.append(f"{hours} hours")
+    if minutes:
+        parts.append(f"{minutes} mins")
+    if seconds:
+        parts.append(f"{seconds}s")
+    if not parts:
+        return "Now"
+    return ", ".join(parts) + " ago"
 
 
 def store_stripe_transaction(stripe_external_id):
