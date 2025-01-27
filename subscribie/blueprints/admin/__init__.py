@@ -159,6 +159,44 @@ def timestampToHumanReadableDate(timestamp: str):
     return dtStylish(dt, "{th} %B %Y")
 
 
+@admin.app_template_filter()
+def timeSinceHumanReadable(date: datetime):
+    """Take a datetime object, calculate the duration
+    since, and return a
+    x years/months/weeks/days/hours/mins/seconds ago string
+    """
+    from dateutil.relativedelta import relativedelta
+
+    agoString = ""
+    weeks = ""
+    months = ""
+    years = ""
+    try:
+        now = datetime.now()
+        diff = relativedelta(date, now)
+
+        # Build time-since string
+        seconds = f"{abs(diff.seconds)}s"
+        mins = f"{abs(diff.minutes)} mins"
+        hours = f"{abs(diff.hours)} hours"
+        days = f"{abs(diff.days)} days"
+
+        if diff.weeks > 0:
+            weeks = f"{abs(diff.weeks)} weeks,"
+
+        if diff.months > 0:
+            months = f"{abs(diff.months)} months,"
+
+        if diff.years > 0:
+            years = f"{abs(diff.years)} years,"
+
+        agoString = f"{years} {months} {weeks} {days}, {hours} {mins} {seconds} ago"
+    except Exception:
+        log.error("Unable to generate timeSinceHumanReadable: {e}")
+
+    return agoString
+
+
 def store_stripe_transaction(stripe_external_id):
     """Store Stripe invoice payment in transactions table"""
     stripe.api_key = get_stripe_secret_key()
