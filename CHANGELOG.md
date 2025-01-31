@@ -1,3 +1,15 @@
+# v0.1.231 (Fri Jan 31 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1445 correctly show human readable time ago [#1446](https://github.com/Subscribie/subscribie/pull/1446) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.230 (Mon Jan 27 2025)
 
 #### ⚠️ Pushed to `master`
