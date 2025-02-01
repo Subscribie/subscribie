@@ -1,3 +1,15 @@
+# v0.1.233 (Sat Feb 01 2025)
+
+#### ⚠️ Pushed to `master`
+
+- Update git-auto-issue-branch-creation.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.232 (Sat Feb 01 2025)
 
 #### ⚠️ Pushed to `master`
