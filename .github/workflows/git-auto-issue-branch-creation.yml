@@ -67,5 +67,5 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/KarmaComputing/create-pull-request-on-branch-creation/pulls \
+          https://api.github.com/repos/Subscribie/subscribie/pulls \
           -d '{"title": "#${{ steps.issue.outputs.number }} ${{ env.ISSUE_BRANCH_NAME }}","body":"Pull request related issue: #${{ steps.issue.outputs.number }}. Please pull these awesome changes in!","head":"${{ steps.issue.outputs.number }}-${{ env.ISSUE_BRANCH_NAME }}","base":"master"}'
