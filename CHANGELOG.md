@@ -1,3 +1,16 @@
+# v0.1.234 (Sat Feb 01 2025)
+
+#### 🐛 Bug Fix
+
+- #1447 bump verify-prod-onboarding setup-node v4 [#1448](https://github.com/Subscribie/subscribie/pull/1448) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- wip Fix #1447 playwright fix verify prod onboarding [#1448](https://github.com/Subscribie/subscribie/pull/1448) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.233 (Sat Feb 01 2025)
 
 #### ⚠️ Pushed to `master`
