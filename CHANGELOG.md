@@ -1,3 +1,15 @@
+# v0.1.239 (Mon Feb 03 2025)
+
+#### 🐛 Bug Fix
+
+- #1447 screenshot dashboard during verify prod onboarding [#1452](https://github.com/Subscribie/subscribie/pull/1452) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.238 (Mon Feb 03 2025)
 
 #### 🐛 Bug Fix
