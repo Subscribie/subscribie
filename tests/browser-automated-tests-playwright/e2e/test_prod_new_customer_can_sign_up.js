@@ -49,6 +49,7 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
     // Verify new site has come online ok
     await new Promise(x => setTimeout(x, 20000)); //Allow 20 seconds for new site to boot
     await page.textContent(`text="prod-test-${epoch}"`);
+    await page.screenshot({ path: `prod-sign-up-shop-owner-dashboard-${browserType}.png` });
     await browser.close();
   }
 };
