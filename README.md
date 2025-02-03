@@ -13,7 +13,7 @@ https://user-images.githubusercontent.com/1718624/196006904-3f00f852-3b86-4ecc-b
 [![Update All Sites](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-all-sites.yml)
 [![Update Onboarding Site](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/update-onboarding-site.yml)
 [![testing stripe prod and test webhooks](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/testing-stripe-prod-and-test-webhooks.yml)
-[![Verify Prod Onboarding](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/prod-test-onboarding-works.yml)
+[![Verify Prod Onbording](https://github.com/Subscribie/subscribie/actions/workflows/verify-prod-onboarding.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/verify-prod-onboarding.yml)
 [![Login Emails Sending](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/test-email-shopowner-704.yml)
 [![Release](https://github.com/Subscribie/subscribie/actions/workflows/release.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/release.yml)
 [![Blog](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml/badge.svg)](https://github.com/Subscribie/subscribie/actions/workflows/check-online-status.yml)
