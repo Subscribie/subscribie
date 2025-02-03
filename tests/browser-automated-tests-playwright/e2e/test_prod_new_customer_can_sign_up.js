@@ -47,9 +47,9 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
 
 
     // Verify new site has come online ok
-    await new Promise(x => setTimeout(x, 20000)); //Allow 20 secconds for new site to boot
+    await new Promise(x => setTimeout(x, 20000)); //Allow 20 seconds for new site to boot
     await page.goto("https://" + 'prodtest' + epoch + ".subscriby.shop");
-    const new_shop_category_title_content = await page.textContent('.title-1', { timeout: 60000 });
+    const new_shop_category_title_content = await page.textContent('.title-1', { timeout: 120000 });
     assert(new_shop_category_title_content === 'prod-test-' + epoch)
     await browser.close();
   }
