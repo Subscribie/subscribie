@@ -1,3 +1,15 @@
+# v0.1.238 (Mon Feb 03 2025)
+
+#### 🐛 Bug Fix
+
+- wip Fix #1447 playwright fix verify prod onboarding [#1451](https://github.com/Subscribie/subscribie/pull/1451) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.237 (Mon Feb 03 2025)
 
 #### 🐛 Bug Fix
