@@ -1,3 +1,16 @@
+# v0.1.236 (Mon Feb 03 2025)
+
+#### 🐛 Bug Fix
+
+- 1447 as an operator verify prod onbording workflow is passing [#1449](https://github.com/Subscribie/subscribie/pull/1449) (username@users.noreply.github.com [@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 2
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+- nobody (username@users.noreply.github.com)
+
+---
+
 # v0.1.235 (Mon Feb 03 2025)
 
 #### ⚠️ Pushed to `master`
