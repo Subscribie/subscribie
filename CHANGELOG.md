@@ -1,3 +1,15 @@
+# v0.1.235 (Mon Feb 03 2025)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.234 (Sat Feb 01 2025)
 
 #### 🐛 Bug Fix
