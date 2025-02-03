@@ -1,10 +1,7 @@
 const playwright = require('playwright');
-const fs = require('fs');
 const { devices } = require('playwright');
 const iPhone = devices['iPhone 11'];
 const assert = require('assert');
-const DEFAULT_TIMEOUT = 500000
-const PLAYWRIGHT_HOST = process.env.PLAYWRIGHT_HOST;
 const PLAYWRIGHT_HEADLESS = process.env.PLAYWRIGHT_HEADLESS.toLocaleLowerCase() == "true" || false;;
 const videosDir = __dirname + '/videos/';
 const videoWidth = 1280
@@ -52,7 +49,7 @@ async function test_prod_new_customer_can_sign_up(browsers, browserContextOption
     // Verify new site has come online ok
     await new Promise(x => setTimeout(x, 20000)); //Allow 20 secconds for new site to boot
     await page.goto("https://" + 'prodtest' + epoch + ".subscriby.shop");
-    const new_shop_category_title_content = await page.textContent('.title-1');
+    const new_shop_category_title_content = await page.textContent('.title-1', { timeout: 60000 });
     assert(new_shop_category_title_content === 'prod-test-' + epoch)
     await browser.close();
   }
