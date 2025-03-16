@@ -1,3 +1,15 @@
+# v0.1.240 (Sun Mar 16 2025)
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md correct quickstart install requirements.lock ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.239 (Mon Feb 03 2025)
 
 #### 🐛 Bug Fix
