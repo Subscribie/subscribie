@@ -1,3 +1,15 @@
+# v0.1.241 (Mon Mar 31 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1445 handle if a subscription cannot be found during pausing, error gracefully [#1456](https://github.com/Subscribie/subscribie/pull/1456) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.240 (Sun Mar 16 2025)
 
 #### ⚠️ Pushed to `master`
