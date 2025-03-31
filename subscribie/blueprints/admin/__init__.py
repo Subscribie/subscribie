@@ -408,9 +408,15 @@ def do_pause_stripe_subscription_payment_collection(
             log.error("subscription_id cannot be None")
             return False
         try:
-            stripe_subscription = stripe.Subscription.retrieve(
-                subscription_id, stripe_account=connect_account_id
-            )
+            try:
+                stripe_subscription = stripe.Subscription.retrieve(
+                    subscription_id, stripe_account=connect_account_id
+                )
+            except stripe._error.InvalidRequestError as e:
+                msg = f"Error could not retrieve subscription ({subscription_id}) to pause (is it deleted already?)"  # noqa: E501
+                log.error(f"{msg}. {e}")
+                return False
+
             if stripe_subscription.status != "canceled":
                 stripe_pause = stripe.Subscription.modify(
                     subscription_id,
