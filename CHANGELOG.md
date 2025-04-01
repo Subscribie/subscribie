@@ -1,3 +1,15 @@
+# v0.1.243 (Tue Apr 01 2025)
+
+#### 🐛 Bug Fix
+
+- #1457 handle stripe case of subscription resource_missing due to changing connect account id (from test mode to live) [#1459](https://github.com/Subscribie/subscribie/pull/1459) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.242 (Tue Apr 01 2025)
 
 #### 🐛 Bug Fix
