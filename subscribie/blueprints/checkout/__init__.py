@@ -935,7 +935,7 @@ def stripe_webhook():
 
     stripe_livemode = PaymentProvider.query.first().stripe_livemode
     if stripe_livemode != event["livemode"]:
-        log.warn(
+        log.warning(
             f"Received a Stripe webhook event in a different livemode: {event['livemode']},  to the livemode currently set: '{stripe_livemode}'"  # noqa: E501
         )
 

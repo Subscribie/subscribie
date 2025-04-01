@@ -208,7 +208,23 @@
             {% for subscription in person.subscriptions %}
               <li class="list-group-item">
                 <strong>{{ subscription.plan.title }}</strong><br />
-                <strong>Subscription Status:</strong> {{ subscription.stripe_status or 'Unknown' }} {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
+                <strong>Subscription Status:</strong>
+                {% if subscription.stripe_status == "resource_missing" %}
+                  Obsolete
+                  <details style="display: inline">
+                    <summary><em><small>explain</small></em></summary>
+                    <div class="alert alert-info">
+                      <p>An "Obsolete" Subscription status is when a subscription is no-longer associated
+                      with your shop (resource_missing).</p>
+                      <p>For example, when you switch your shop from 'test' mode to 'live mode',
+                      all of your 'test' subscriptions are obsolete, since they are not connected
+                      to your 'live' shop (hence they are obsolete records).</p>
+                    </div>
+                  </details>
+                {% else %}
+                  {{ subscription.stripe_status or 'Unknown' }}
+                {% endif %}
+                {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
                 <br />
                 <strong>Payment Collection Status:</strong>
                   {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
