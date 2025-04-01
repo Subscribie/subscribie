@@ -248,12 +248,10 @@
                                         {% endif %}
                                     </li>
                                     <li><strong>Actions: </strong><br />
-                                      {# always show Force Refresh link so long as there's > 0 transactions against a subscription #}
-                                        {% if subscription.transactions|length > 0 %}
-                                              <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
-                                                Refresh Status
-                                              </a> |
-                                        {% endif %}
+                                      {# always show Force Refresh link regardless if there's > 0 transactions against a subscription #}
+                                        <a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid) }}">
+                                          Refresh Status
+                                        </a> |
                                         {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                                             {% if subscription.stripe_status|lower in ['active', 'trialing', 'past_due', 'unpaid'] %}
                                                 {% if subscription.stripe_status|lower != 'trialing' and subscription.stripe_pause_collection != 'void' %}

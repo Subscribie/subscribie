@@ -469,6 +469,12 @@ def do_pause_all_stripe_subscriptions(app=None):
 def pause_stripe_subscription(subscription_id: str):
     """Pause a Stripe subscription"""
 
+    subscription = (
+        Subscription.query.execution_options(include_archived=True)
+        .filter_by(stripe_subscription_id=subscription_id)
+        .one()
+    )
+
     if "confirm" in request.args and request.args["confirm"] != "1":
         return render_template(
             "admin/pause_subscription.html",
@@ -484,7 +490,9 @@ def pause_stripe_subscription(subscription_id: str):
         except Exception:
             msg = f"Error pausing subscription ({subscription_id})"
             flash(msg)
-    return redirect(url_for("admin.subscribers"))
+    return redirect(
+        url_for("admin.subscribers", _anchor=f"person-{subscription.person.uuid}")
+    )
 
 
 @admin.route("/stripe/subscriptions/all/actions/pause")
@@ -499,6 +507,12 @@ def pause_all_subscribers_subscriptions():
 @login_required
 def resume_stripe_subscription(subscription_id):
     """Resume a Stripe subscription"""
+
+    subscription = (
+        Subscription.query.execution_options(include_archived=True)
+        .filter_by(stripe_subscription_id=subscription_id)
+        .one()
+    )
     stripe.api_key = get_stripe_secret_key()
     connect_account_id = get_stripe_connect_account_id()
     if "confirm" in request.args and request.args["confirm"] != "1":
@@ -529,7 +543,9 @@ def resume_stripe_subscription(subscription_id):
             flash(f"{msg}. {e}")
             log.error(e)
 
-    return redirect(url_for("admin.subscribers"))
+    return redirect(
+        url_for("admin.subscribers", _anchor=f"person-{subscription.person.uuid}")
+    )
 
 
 @admin.route("/stripe/subscriptions/<payment_id>/actions/refund/")
