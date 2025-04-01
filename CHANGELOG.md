@@ -1,3 +1,15 @@
+# v0.1.242 (Tue Apr 01 2025)
+
+#### 🐛 Bug Fix
+
+- wip Fix #1457 ability to refresh subscription status at any time [#1458](https://github.com/Subscribie/subscribie/pull/1458) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.241 (Mon Mar 31 2025)
 
 #### 🐛 Bug Fix
