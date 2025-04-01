@@ -403,6 +403,9 @@ def do_pause_stripe_subscription_payment_collection(
     with app.app_context():
         stripe.api_key = get_stripe_secret_key()
         connect_account_id = get_stripe_connect_account_id()
+        subscription = Subscription.query.filter_by(
+            stripe_subscription_id=subscription_id
+        ).first()
 
         if subscription_id is None:
             log.error("subscription_id cannot be None")
@@ -413,10 +416,22 @@ def do_pause_stripe_subscription_payment_collection(
                     subscription_id, stripe_account=connect_account_id
                 )
             except stripe._error.InvalidRequestError as e:
+                if e.code == "resource_missing":
+                    msg = (
+                        "stripe subscription id: "
+                        f"{subscription_id} does not exist "
+                        f"for account {connect_account_id}. "
+                        "perhaps show owner has switched from test mode "
+                        "to live mode and has a new stripe connect account"
+                    )
+                    log.warning(msg)
+                    subscription.stripe_status = "resource_missing"
+                    database.session.commit()
                 msg = f"Error could not retrieve subscription ({subscription_id}) to pause (is it deleted already?)"  # noqa: E501
                 log.error(f"{msg}. {e}")
                 return False
 
+            # Update Subscribie Stripe Subscription status
             if stripe_subscription.status != "canceled":
                 stripe_pause = stripe.Subscription.modify(
                     subscription_id,
@@ -433,9 +448,12 @@ def do_pause_stripe_subscription_payment_collection(
                 ).first()
 
                 pause_collection.stripe_pause_collection = stripe_pause_filter
+                subscription.stripe_status = "paused"
                 database.session.commit()
                 log.debug(f"Subscription paused ({subscription_id})")
             else:
+                subscription.stripe_status = "canceled"
+                database.session.commit()
                 log.debug(
                     f"Skipping. Subscription {subscription_id} because it's canceled."
                 )

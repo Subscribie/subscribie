@@ -157,6 +157,19 @@
                                           <div class="subscription-status alert alert-success">Active</div>
                                         {% elif subscription.stripe_status == 'past_due'  %}
                                           <div class="subscription-status alert alert-danger">past_due</div>
+                                        {% elif subscription.stripe_status == 'resource_missing'  %}
+                                          <div class="subscription-status alert alert-dark">Obsolete
+                                            <details style="display: inline">
+                                              <summary><em><small>explain</small></em></summary>
+                                              <div class="alert alert-info">
+                                               <p>An "Obsolete" Subscription status is when a subscription is no-longer associated
+                                               with your shop (resource_missing).</p>
+                                               <p>For example, when you switch your shop from 'test' mode to 'live mode',
+                                               all of your 'test' subscriptions are obsolete, since they are not connected
+                                               to your 'live' shop (hence they are obsolete records).</p>
+                                              </div>
+                                             </details>
+                                          </div>
                                         {% else %}
                                           <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                         {% endif %}
@@ -221,6 +234,19 @@
                                               <div class="subscription-status alert alert-success">Active</div>
                                            {% elif subscription.stripe_status == 'past_due'  %}
                                               <div class="subscription-status alert alert-danger">past_due</div>
+                                           {% elif subscription.stripe_status == 'resource_missing' %}
+                                              <div class="subscription-status alert alert-dark">Obsolete
+                                              <details style="display: inline">
+                                                <summary><em><small>explain</small></em></summary>
+                                                <div class="alert alert-info">
+                                                <p>An "Obsolete" Subscription status is when a subscription is no-longer associated
+                                                with your shop (resource_missing).</p>
+                                                <p>For example, when you switch your shop from 'test' mode to 'live mode',
+                                                all of your 'test' subscriptions are obsolete, since they are not connected
+                                                to your 'live' shop (hence they are obsolete records).</p>
+                                                </div>
+                                              </details>
+                                              </div>
                                            {% else %}
                                               <div class="subscription-status alert alert-dark">{{ subscription.stripe_status }}</div>
                                            {% endif %}
