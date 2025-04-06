@@ -656,7 +656,15 @@ def dashboard():
     )
     shop_default_country_code = get_shop_default_country_code()
     saas_url = current_app.config.get("SAAS_URL")
-
+    if Setting.query.first().donations_enabled is True:
+        donation_transactions = Transaction.query.filter_by(is_donation=True).all()
+        for donations in donation_transactions:
+            # transactions have a refund id which are saved in the transaction table
+            # Named as external_refund_id so we are skipping those transactions to get the total.
+            if donations.external_refund_id is None:
+                total_donations = donations.amount + total_donations
+        currency_code = get_geo_currency_code()
+        total_donations = currencyFormat(currency_code, total_donations)
     return render_template(
         "admin/dashboard.html",
         stripe_connected=stripe_connected,
