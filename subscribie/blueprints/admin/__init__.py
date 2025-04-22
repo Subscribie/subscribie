@@ -770,7 +770,7 @@ def edit():
                 plan_requirements.note_to_seller_required = False
 
             plan_requirements.note_to_buyer_message = escape(
-                str(getPlan(form.note_to_buyer_message, index, default="").data)
+                str(getPlan(form.note_to_buyer_message, index, default="").data).strip()
             )
 
             try:
@@ -845,7 +845,29 @@ def edit():
         database.session.commit()  # Save
         flash("Plan(s) updated.")
         return redirect(url_for("admin.edit"))
-    return render_template("admin/edit.html", plans=plans, form=form)
+
+    # Form has validation errors, parse them
+    validation_errors = []
+    plansWithErrors = []
+    for key, value in form.errors.items():
+        # Work out index of error for plan index
+        try:
+            plansWithErrors = [i for i, x in enumerate(value) if x]
+            for planIndex in plansWithErrors:
+                plans[planIndex].has_errors = True
+        except Exception as e:
+            log.error(f"Error parsing plan form errors. {e}")
+        if key == "note_to_buyer_message":
+            key = "Customer note"
+        for sublist in value:
+            for item in sublist:
+                # Ensure item is a string before checking if it contains the error msg
+                if isinstance(item, str):
+                    validation_errors.append(f"{key}: {item}")
+
+    return render_template(
+        "admin/edit.html", plans=plans, form=form, validation_errors=validation_errors
+    )
 
 
 @admin.route("/add", methods=["GET", "POST"])
