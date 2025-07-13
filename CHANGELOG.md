@@ -1,3 +1,15 @@
+# v0.1.244 (Sun Jul 13 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1468 document replay failed events [#1469](https://github.com/Subscribie/subscribie/pull/1469) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.243 (Tue Apr 01 2025)
 
 #### 🐛 Bug Fix
