@@ -37,7 +37,7 @@ def failed_invoices():
         .where(StripeInvoice.status == "open")
         .where(StripeInvoice.next_payment_attempt == None)  # noqa: E711
         .execution_options(include_archived=True)
-        .order_by(Person.given_name)
+        .order_by(StripeInvoice.created.desc())
         .all()
     )
     # Build dictionary of person uuid -> (bad) invoices so
