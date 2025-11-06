@@ -1,3 +1,15 @@
+# v0.1.246 (Thu Nov 06 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1472 List failed invoices by invice date raised [#1473](https://github.com/Subscribie/subscribie/pull/1473) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.245 (Thu Nov 06 2025)
 
 #### 🐛 Bug Fix
