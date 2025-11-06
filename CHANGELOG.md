@@ -1,3 +1,15 @@
+# v0.1.245 (Thu Nov 06 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1470 only show subscription note if one exists [#1471](https://github.com/Subscribie/subscribie/pull/1471) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.244 (Sun Jul 13 2025)
 
 #### 🐛 Bug Fix
