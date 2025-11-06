@@ -103,7 +103,7 @@
                             <tr>
                               <td>{{ invoice.subscribie_subscription.plan.title }}
                               </td>
-                              <td>{% if invoice.subscribie_subscription.note %}
+                              <td>{% if invoice.subscribie_subscription.note and invoice.subscribie_subscription.note.note %}
                                     {% if invoice.subscribie_subscription.note.note.strip() != '' %}
                                       {{ invoice.subscribie_subscription.note.note }}
                                     {% else %}
