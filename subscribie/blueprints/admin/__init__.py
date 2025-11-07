@@ -1391,18 +1391,21 @@ def _generate_account_link(account_id):
     """
     From the Stripe Docs:
     A user that is redirected to your return_url might not have completed the
-    onboarding process. Use the /v1/accounts endpoint to retrieve the user’s
+    onboarding process. Use the /v1/accounts endpoint to retrieve the user's
     account and check for charges_enabled. If the account is not fully onboarded,
     provide UI prompts to allow the user to continue onboarding later. The user
     can complete their account activation through a new account link (generated
     by your integration). You can check the state of the details_submitted
-    parameter on their account to see if they’ve completed the onboarding process.
+    parameter on their account to see if they've completed the onboarding process.
     """
+    # Stripe requires HTTPS URLs when in live mode
+    url_scheme = 'https' if stripe_livemode() else None
+
     account_link = stripe.AccountLink.create(
         type="account_onboarding",
         account=account_id,
-        refresh_url=url_for("admin.stripe_connect", refresh="refresh", _external=True),
-        return_url=url_for("admin.stripe_connect", success="success", _external=True),
+        refresh_url=url_for("admin.stripe_connect", refresh="refresh", _external=True, _scheme=url_scheme),
+        return_url=url_for("admin.stripe_connect", success="success", _external=True, _scheme=url_scheme),
     )
     return account_link.url
 
