@@ -39,6 +39,7 @@ from subscribie.utils import (
     get_stripe_connect_account_id,
     get_stripe_publishable_key,
     get_stripe_invoices,
+    get_stripe_livemode,
 )
 from subscribie.email import EmailMessageQueue
 from jinja2 import Template
@@ -264,6 +265,9 @@ def account():
                 stripe_customer_id, stripe_account=stripe_connect_account_id
             )
 
+            # Stripe requires HTTPS URLs when in live mode
+            url_scheme = 'https' if get_stripe_livemode() else None
+
             stripe_session = stripe.checkout.Session.create(
                 stripe_account=stripe_connect_account_id,
                 payment_method_types=["card"],
@@ -272,9 +276,9 @@ def account():
                 setup_intent_data={
                     "metadata": {"subscription_id": stripe_subscription.id}
                 },
-                success_url=url_for("subscriber.account", _external=True)
+                success_url=url_for("subscriber.account", _external=True, _scheme=url_scheme)
                 + "?stripe_session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=url_for("subscriber.account", _external=True),
+                cancel_url=url_for("subscriber.account", _external=True, _scheme=url_scheme),
             )
             if request.args.get("stripe_session_id"):
                 # Process stripe update payment request
