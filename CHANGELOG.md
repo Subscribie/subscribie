@@ -1,3 +1,15 @@
+# v0.1.247 (Fri Nov 07 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1474 enforce HTTPS URLs for Stripe API calls in live mode [#1475](https://github.com/Subscribie/subscribie/pull/1475) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.246 (Thu Nov 06 2025)
 
 #### 🐛 Bug Fix
