@@ -2380,6 +2380,105 @@ def check_spam(account_name) -> int:
     return str(detect_spam_shop_name(account_name))
 
 
+@background_task
+def do_backfill_data(days, backfill_types, app):
+    """Background task to backfill selected data types"""
+    with app.app_context():
+        results = []
+        errors = []
+
+        # Process each selected backfill type
+        if "transactions" in backfill_types:
+            try:
+                log.info(f"Backfilling transactions for {days} days")
+                backfill_transactions(days)
+                results.append("transactions")
+                log.info("Completed backfilling transactions")
+            except Exception as e:
+                log.error(f"Error backfilling transactions: {e}")
+                errors.append(f"transactions: {str(e)}")
+
+        if "subscriptions" in backfill_types:
+            try:
+                log.info(f"Backfilling subscriptions for {days} days")
+                backfill_subscriptions(days)
+                results.append("subscriptions")
+                log.info("Completed backfilling subscriptions")
+            except Exception as e:
+                log.error(f"Error backfilling subscriptions: {e}")
+                errors.append(f"subscriptions: {str(e)}")
+
+        if "persons" in backfill_types:
+            try:
+                log.info(f"Backfilling persons for {days} days")
+                backfill_persons(days)
+                results.append("persons")
+                log.info("Completed backfilling persons")
+            except Exception as e:
+                log.error(f"Error backfilling persons: {e}")
+                errors.append(f"persons: {str(e)}")
+
+        if "invoices" in backfill_types:
+            try:
+                log.info(f"Backfilling invoices for {days} days")
+                backfill_stripe_invoices(days)
+                results.append("invoices")
+                log.info("Completed backfilling invoices")
+            except Exception as e:
+                log.error(f"Error backfilling invoices: {e}")
+                errors.append(f"invoices: {str(e)}")
+
+        # Log final results
+        if results:
+            log.info(f"Successfully backfilled {', '.join(results)} for the last {days} days")
+        if errors:
+            for error in errors:
+                log.error(f"Error backfilling {error}")
+
+
+@admin.route("/backfill", methods=["GET", "POST"])
+@login_required
+def admin_backfill_form():
+    """Backfill data with user-friendly form - supports multiple data types"""
+
+    # Handle POST from HTML form
+    if request.method == "POST":
+        try:
+            days = int(request.form.get("days", 30))
+            if days < 1 or days > 365:
+                flash("Please enter a number between 1 and 365 days")
+                return redirect(url_for("admin.admin_backfill_form"))
+
+            # Get selected backfill types
+            backfill_types = request.form.getlist("backfill_types")
+
+            if not backfill_types:
+                flash("Please select at least one data type to backfill")
+                return redirect(url_for("admin.admin_backfill_form"))
+
+            # Start background task
+            do_backfill_data(days, backfill_types)
+
+            # Show message immediately
+            flash(
+                f"Synchronization started for {', '.join(backfill_types)} "
+                f"covering the last {days} days. This may take a few minutes and will "
+                f"complete in the background."
+            )
+
+            return redirect(url_for("admin.admin_backfill_form"))
+        except ValueError:
+            flash("Invalid number of days provided")
+            return redirect(url_for("admin.admin_backfill_form"))
+        except Exception as e:
+            log.error(f"Error starting backfill: {e}")
+            flash(f"Error starting backfill: {str(e)}")
+            return redirect(url_for("admin.admin_backfill_form"))
+
+    # Handle GET request - show form
+    return render_template("admin/backfill_data.html")
+
+
 @admin.route("/backfill/transactions/<int:days>")
 @login_required
 def admin_backfill_transactions(days):

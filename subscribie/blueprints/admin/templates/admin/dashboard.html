@@ -249,6 +249,15 @@
           </div>
           <div class="px-3 py-3 my-3">
               <p class="card-subtitle mb-3 text-muted">
+                  Synchronise data from Stripe (transactions, subscriptions, subscribers, invoices) to fix missed webhooks or data corrections.
+              </p>
+              <a class="btn btn-success btn-block"
+                  href="{{ url_for('admin.admin_backfill_form') }}">
+                  Backfill Data from Stripe
+              </a>
+          </div>
+          <div class="px-3 py-3 my-3">
+              <p class="card-subtitle mb-3 text-muted">
                   View Invoices which have failed all automated retries.
               </p>
               <a class="btn btn-success btn-block"
