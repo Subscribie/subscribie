@@ -622,9 +622,10 @@ def backfill_transactions(days=30):
     Useful for fixing webhook delivery misses (such as if all webhook delivery retires
     exhausted), and data corrections from Hotfixes.
 
+    - Upserts Transaction records from Stripe PaymentIntents
     - .e.g created_at See https://github.com/Subscribie/subscribie/issues/1385
     """
-    from subscribie.models import Transaction
+    from subscribie.models import Transaction, Subscription, Person
 
     stripe_connect_account_id = get_stripe_connect_account_id()
 
@@ -638,6 +639,10 @@ def backfill_transactions(days=30):
         limit=100,
         created={"gte": days_before_today_timestamp},
     )
+
+    created_count = 0
+    updated_count = 0
+
     for paymentIntent in paymentIntents.auto_paging_iter():
         transaction = (
             database.session.query(Transaction)
@@ -645,26 +650,91 @@ def backfill_transactions(days=30):
             .first()
         )
 
+        stripe_transaction_created_at = datetime.fromtimestamp(paymentIntent.created)
+
         if transaction is not None:
-            # Update the transaction in Transaction model
-            msg = f"Current transaction.id {transaction.id} created_at: {transaction.created_at}"  # noqa: E501
+            # Update existing transaction
+            msg = f"Updating transaction.id {transaction.id} (external_id: {paymentIntent.id})"
             log.info(msg)
 
-            stripe_transaction_created_at = datetime.fromtimestamp(
-                paymentIntent.created
-            )  # noqa: E501
-            msg = f"Upstream transaction.id {transaction.id} created_at set to {stripe_transaction_created_at}"  # noqa: E501
-            log.info(msg)
-
+            # Update created_at if different
             if transaction.created_at != stripe_transaction_created_at:
-                msg = f"Setting transaction.id {transaction.id} created_at to {stripe_transaction_created_at}"  # noqa: E501
+                msg = f"Setting transaction.id {transaction.id} created_at to {stripe_transaction_created_at}"
                 log.info(msg)
                 transaction.created_at = stripe_transaction_created_at
-                database.session.commit()
-            else:
-                log.info(
-                    "Skipping transaction.created_at update as source data is equal to local"  # noqa: E501
-                )  # noqa: E501
+
+            # Update other fields that may have changed
+            transaction.amount = paymentIntent.amount
+            transaction.currency = paymentIntent.currency
+            transaction.payment_status = "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+
+            database.session.commit()
+            updated_count += 1
+        else:
+            # Create new transaction
+            log.info(f"Creating new transaction for PaymentIntent {paymentIntent.id}")
+
+            transaction = Transaction()
+            transaction.external_id = paymentIntent.id
+            transaction.external_src = "stripe"
+            transaction.currency = paymentIntent.currency
+            transaction.amount = paymentIntent.amount
+            transaction.payment_status = "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+            transaction.created_at = stripe_transaction_created_at
+
+            # Try to link to subscription and person
+            subscription_id = None
+            person = None
+
+            # Get subscription via invoice if available
+            if paymentIntent.invoice:
+                try:
+                    invoice = stripe.Invoice.retrieve(
+                        stripe_account=stripe_connect_account_id,
+                        id=paymentIntent.invoice
+                    )
+                    if invoice.subscription:
+                        subscription_id = invoice.subscription
+                except Exception as e:
+                    log.warning(f"Could not retrieve invoice {paymentIntent.invoice}: {e}")
+
+            # Try to find subscription in local database
+            if subscription_id:
+                subscribie_subscription = (
+                    database.session.query(Subscription)
+                    .filter_by(stripe_subscription_id=subscription_id)
+                    .first()
+                )
+                if subscribie_subscription:
+                    transaction.subscription = subscribie_subscription
+                    transaction.person = subscribie_subscription.person
+                    transaction.is_donation = False
+                    log.info(f"Linked transaction to subscription {subscribie_subscription.id}")
+                else:
+                    log.warning(f"Subscription {subscription_id} not found in local database")
+
+            # Try to get person from metadata if no subscription found
+            if transaction.person is None and paymentIntent.metadata:
+                person_uuid = paymentIntent.metadata.get("person_uuid")
+                if person_uuid:
+                    person = Person.query.filter_by(uuid=person_uuid).first()
+                    if person:
+                        transaction.person = person
+                        log.info(f"Linked transaction to person {person.id} via metadata")
+
+                # Check if it's a donation
+                is_donation = paymentIntent.metadata.get("is_donation", "False")
+                if is_donation == "True":
+                    transaction.is_donation = True
+                    transaction.comment = paymentIntent.metadata.get("donation_comment", "")
+                else:
+                    transaction.is_donation = False
+
+            database.session.add(transaction)
+            database.session.commit()
+            created_count += 1
+
+    log.info(f"Backfill complete: {created_count} transactions created, {updated_count} updated")
 
 
 def backfill_subscriptions(days=30):
