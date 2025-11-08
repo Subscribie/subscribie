@@ -1,3 +1,15 @@
+# v0.1.248 (Sat Nov 08 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1476 Add user-friendly backfill interface for shop owners [#1477](https://github.com/Subscribie/subscribie/pull/1477) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.247 (Fri Nov 07 2025)
 
 #### 🐛 Bug Fix
