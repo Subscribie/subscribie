@@ -1,3 +1,15 @@
+# v0.1.249 (Sat Nov 08 2025)
+
+#### 🐛 Bug Fix
+
+- Fix #1478 show backfill logs to stdout from background thread [#1479](https://github.com/Subscribie/subscribie/pull/1479) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.248 (Sat Nov 08 2025)
 
 #### 🐛 Bug Fix
