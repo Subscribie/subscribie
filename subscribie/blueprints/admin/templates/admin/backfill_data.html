@@ -1,0 +1,149 @@
+{% extends "admin/layout.html" %}
+{% block title %} Backfill Data from Stripe{% endblock %}
+
+{% block body %}
+
+<h2 class="text-center text-dark mb-3">Backfill Data from Stripe</h2>
+
+<div class="container">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Shop</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Backfill Data</li>
+  </ul>
+</div>
+
+<main>
+  <div class="section">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-md-8">
+          <h2>Synchronise Data from Stripe</h2>
+
+          <div class="alert alert-info" role="alert">
+            <h5>What does this do?</h5>
+            <p>This tool synchronises data from Stripe to your shop. It's useful for:</p>
+            <ul>
+              <li>Making sure your shop has the latest information from Stripe</li>
+              <li>Recovering from any missed updates</li>
+              <li>Ensuring your records match Stripe</li>
+            </ul>
+            <p class="mb-0"><strong>Note:</strong> This is safe to run and won't create duplicates if run multiple times.</p>
+          </div>
+
+          <form method="POST" action="{{ url_for('admin.admin_backfill_form') }}" id="backfillForm">
+            <div class="form-group">
+              <label for="days">Number of days to backfill:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="days"
+                name="days"
+                value="30"
+                min="1"
+                max="365"
+                required
+              >
+              <small class="form-text text-muted">
+                Enter a number between 1 and 365 days. Default is 30 days.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Select data types to backfill:</label>
+              <div class="card">
+                <div class="card-body">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="backfill_types" value="transactions" id="backfill_transactions" checked>
+                    <label class="form-check-label" for="backfill_transactions">
+                      <strong>Transactions</strong>
+                      <br>
+                      <small class="text-muted">Payment Intents and transaction records</small>
+                    </label>
+                  </div>
+                  <hr>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="backfill_types" value="subscriptions" id="backfill_subscriptions" checked>
+                    <label class="form-check-label" for="backfill_subscriptions">
+                      <strong>Subscriptions</strong>
+                      <br>
+                      <small class="text-muted">Subscription records and statuses</small>
+                    </label>
+                  </div>
+                  <hr>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="backfill_types" value="persons" id="backfill_persons" checked>
+                    <label class="form-check-label" for="backfill_persons">
+                      <strong>Subscribers</strong>
+                      <br>
+                      <small class="text-muted">The people related to the subscriptions.</small>
+                    </label>
+                  </div>
+                  <hr>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="backfill_types" value="invoices" id="backfill_invoices" checked>
+                    <label class="form-check-label" for="backfill_invoices">
+                      <strong>Invoices</strong>
+                      <br>
+                      <small class="text-muted">Stripe invoice records</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <small class="form-text text-muted mt-2">
+                All types are selected by default. Uncheck any you don't want to backfill.
+              </small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submitButton">
+              <span id="buttonText">Backfill Selected Data</span>
+              <span id="loadingSpinner" class="d-none">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Processing...
+              </span>
+            </button>
+          </form>
+
+          <script>
+            document.getElementById('backfillForm').addEventListener('submit', function() {
+              // Show loading spinner and disable button
+              document.getElementById('buttonText').classList.add('d-none');
+              document.getElementById('loadingSpinner').classList.remove('d-none');
+              document.getElementById('submitButton').disabled = true;
+            });
+          </script>
+
+          <hr class="my-4">
+
+          <div class="card bg-light">
+            <div class="card-body">
+              <h5 class="card-title">How It Works</h5>
+              <p class="card-text mb-0">
+                This process retrieves data from Stripe for the specified time period and ensures
+                your shop's records are up to date and match what's in Stripe.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+          <div class="card border-info">
+            <div class="card-header bg-info text-white">
+              Tips
+            </div>
+            <div class="card-body">
+              <p class="card-text small"><strong>Runs in background:</strong> The synchronisation happens behind the scenes, so you can continue using your shop while it completes.</p>
+              <p class="card-text small"><strong>Recommended:</strong> Backfill all data types together to ensure consistency.</p>
+              <p class="card-text small mb-0"><strong>Safe to re-run:</strong> You can run this multiple times without creating duplicates.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end container-->
+  </div> <!-- end section-->
+</main>
+
+{% endblock %}
