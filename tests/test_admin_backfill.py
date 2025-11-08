@@ -80,7 +80,15 @@ class TestAdminBackfillInterface:
         admin_session,
         with_default_country_code_and_default_currency,
     ):
-        """Test POST /admin/backfill with all data types selected"""
+        """Test POST /admin/backfill with all data types selected
+
+        Note: This test verifies the background task is triggered but does NOT
+        wait for it to complete. The backfill functions run in a separate thread.
+        To verify they actually execute, check the application logs when running
+        the app manually.
+        """
+        import time
+
         user = User.query.filter_by(email="admin@example.com").first()
         with user_set(app, user):
             response = client.post(
@@ -99,6 +107,16 @@ class TestAdminBackfillInterface:
             # Should show the backfill form again after redirect
             assert "Backfill Data from Stripe" in response_data or "Synchronise Data from Stripe" in response_data
 
+            # Give background thread a moment to start
+            time.sleep(0.5)
+
+            # Verify the backfill functions were called (they run in background thread)
+            # Note: These may not be called yet if thread hasn't started
+            mock_transactions.assert_called_with(30)
+            mock_subscriptions.assert_called_with(30)
+            mock_persons.assert_called_with(30)
+            mock_invoices.assert_called_with(30)
+
     @patch("subscribie.blueprints.admin.backfill_transactions")
     def test_backfill_form_submission_with_single_type(
         self,
@@ -110,6 +128,8 @@ class TestAdminBackfillInterface:
         with_default_country_code_and_default_currency,
     ):
         """Test POST /admin/backfill with only transactions selected"""
+        import time
+
         user = User.query.filter_by(email="admin@example.com").first()
         with user_set(app, user):
             response = client.post(
@@ -127,6 +147,12 @@ class TestAdminBackfillInterface:
 
             # Should show the backfill form again after redirect
             assert "Backfill Data from Stripe" in response_data or "Synchronise Data from Stripe" in response_data
+
+            # Give background thread a moment to start
+            time.sleep(0.5)
+
+            # Verify the backfill function was called
+            mock_transactions.assert_called_with(7)
 
     def test_backfill_form_submission_with_no_types_selected(
         self,

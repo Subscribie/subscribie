@@ -2383,57 +2383,94 @@ def check_spam(account_name) -> int:
 @background_task
 def do_backfill_data(days, backfill_types, app):
     """Background task to backfill selected data types"""
-    with app.app_context():
-        results = []
-        errors = []
+    import sys
+    import traceback
 
-        # Process each selected backfill type
-        if "transactions" in backfill_types:
-            try:
-                log.info(f"Backfilling transactions for {days} days")
-                backfill_transactions(days)
-                results.append("transactions")
-                log.info("Completed backfilling transactions")
-            except Exception as e:
-                log.error(f"Error backfilling transactions: {e}")
-                errors.append(f"transactions: {str(e)}")
+    try:
+        log.info("=" * 80)
+        log.info(f"BACKFILL STARTED: {backfill_types} for {days} days")
+        log.info("=" * 80)
+        sys.stdout.flush()  # Force flush to stdout
 
-        if "subscriptions" in backfill_types:
-            try:
-                log.info(f"Backfilling subscriptions for {days} days")
-                backfill_subscriptions(days)
-                results.append("subscriptions")
-                log.info("Completed backfilling subscriptions")
-            except Exception as e:
-                log.error(f"Error backfilling subscriptions: {e}")
-                errors.append(f"subscriptions: {str(e)}")
+        with app.app_context():
+            results = []
+            errors = []
 
-        if "persons" in backfill_types:
-            try:
-                log.info(f"Backfilling persons for {days} days")
-                backfill_persons(days)
-                results.append("persons")
-                log.info("Completed backfilling persons")
-            except Exception as e:
-                log.error(f"Error backfilling persons: {e}")
-                errors.append(f"persons: {str(e)}")
+            # Process each selected backfill type
+            if "transactions" in backfill_types:
+                try:
+                    log.info(f">>> Backfilling transactions for {days} days...")
+                    sys.stdout.flush()
+                    backfill_transactions(days)
+                    results.append("transactions")
+                    log.info(">>> Completed backfilling transactions")
+                    sys.stdout.flush()
+                except Exception as e:
+                    error_msg = f"Error backfilling transactions: {e}\n{traceback.format_exc()}"
+                    log.error(error_msg)
+                    sys.stdout.flush()
+                    errors.append(f"transactions: {str(e)}")
 
-        if "invoices" in backfill_types:
-            try:
-                log.info(f"Backfilling invoices for {days} days")
-                backfill_stripe_invoices(days)
-                results.append("invoices")
-                log.info("Completed backfilling invoices")
-            except Exception as e:
-                log.error(f"Error backfilling invoices: {e}")
-                errors.append(f"invoices: {str(e)}")
+            if "subscriptions" in backfill_types:
+                try:
+                    log.info(f">>> Backfilling subscriptions for {days} days...")
+                    sys.stdout.flush()
+                    backfill_subscriptions(days)
+                    results.append("subscriptions")
+                    log.info(">>> Completed backfilling subscriptions")
+                    sys.stdout.flush()
+                except Exception as e:
+                    error_msg = f"Error backfilling subscriptions: {e}\n{traceback.format_exc()}"
+                    log.error(error_msg)
+                    sys.stdout.flush()
+                    errors.append(f"subscriptions: {str(e)}")
 
-        # Log final results
-        if results:
-            log.info(f"Successfully backfilled {', '.join(results)} for the last {days} days")
-        if errors:
-            for error in errors:
-                log.error(f"Error backfilling {error}")
+            if "persons" in backfill_types:
+                try:
+                    log.info(f">>> Backfilling persons for {days} days...")
+                    sys.stdout.flush()
+                    backfill_persons(days)
+                    results.append("persons")
+                    log.info(">>> Completed backfilling persons")
+                    sys.stdout.flush()
+                except Exception as e:
+                    error_msg = f"Error backfilling persons: {e}\n{traceback.format_exc()}"
+                    log.error(error_msg)
+                    sys.stdout.flush()
+                    errors.append(f"persons: {str(e)}")
+
+            if "invoices" in backfill_types:
+                try:
+                    log.info(f">>> Backfilling invoices for {days} days...")
+                    sys.stdout.flush()
+                    backfill_stripe_invoices(days)
+                    results.append("invoices")
+                    log.info(">>> Completed backfilling invoices")
+                    sys.stdout.flush()
+                except Exception as e:
+                    error_msg = f"Error backfilling invoices: {e}\n{traceback.format_exc()}"
+                    log.error(error_msg)
+                    sys.stdout.flush()
+                    errors.append(f"invoices: {str(e)}")
+
+            # Log final results
+            log.info("=" * 80)
+            if results:
+                log.info(f"BACKFILL SUCCESS: {', '.join(results)} for the last {days} days")
+            if errors:
+                log.error(f"BACKFILL ERRORS: {len(errors)} error(s) occurred")
+                for error in errors:
+                    log.error(f"  - {error}")
+            log.info("=" * 80)
+            sys.stdout.flush()
+
+    except Exception as e:
+        # Catch any unexpected errors in the background task itself
+        error_msg = f"FATAL ERROR in backfill background task:\n{traceback.format_exc()}"
+        log.error(error_msg)
+        sys.stdout.flush()
+        # Re-raise to ensure we see it
+        raise
 
 
 @admin.route("/backfill", methods=["GET", "POST"])
