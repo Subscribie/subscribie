@@ -1,3 +1,17 @@
+# v0.1.250 (Sun Nov 09 2025)
+
+#### 🐛 Bug Fix
+
+- #1480 black format [#1481](https://github.com/Subscribie/subscribie/pull/1481) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Ref #1480 improve transaction backfill upsert [#1481](https://github.com/Subscribie/subscribie/pull/1481) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1480 Make backfill_transactions properly upsert Transaction records [#1481](https://github.com/Subscribie/subscribie/pull/1481) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.249 (Sat Nov 08 2025)
 
 #### 🐛 Bug Fix
