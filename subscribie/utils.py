@@ -649,6 +649,17 @@ def backfill_transactions(days=30):
             .filter_by(external_id=paymentIntent.id)
             .first()
         )
+        # Get transaction related invoice & subscription_id if available
+        if paymentIntent.invoice:
+            try:
+                invoice = stripe.Invoice.retrieve(
+                    stripe_account=stripe_connect_account_id,
+                    id=paymentIntent.invoice
+                )
+                if invoice.subscription:
+                    subscription_id = invoice.subscription
+            except Exception as e:
+                log.warning(f"Could not retrieve invoice {paymentIntent.invoice}: {e}")
 
         stripe_transaction_created_at = datetime.fromtimestamp(paymentIntent.created)
 
@@ -673,30 +684,14 @@ def backfill_transactions(days=30):
         else:
             # Create new transaction
             log.info(f"Creating new transaction for PaymentIntent {paymentIntent.id}")
-
             transaction = Transaction()
             transaction.external_id = paymentIntent.id
             transaction.external_src = "stripe"
             transaction.currency = paymentIntent.currency
             transaction.amount = paymentIntent.amount
             transaction.payment_status = "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+            transaction.comment = invoice.subscription_details.metadata.get("donation_comment") if invoice and invoice.subscription_details  else None
             transaction.created_at = stripe_transaction_created_at
-
-            # Try to link to subscription and person
-            subscription_id = None
-            person = None
-
-            # Get subscription via invoice if available
-            if paymentIntent.invoice:
-                try:
-                    invoice = stripe.Invoice.retrieve(
-                        stripe_account=stripe_connect_account_id,
-                        id=paymentIntent.invoice
-                    )
-                    if invoice.subscription:
-                        subscription_id = invoice.subscription
-                except Exception as e:
-                    log.warning(f"Could not retrieve invoice {paymentIntent.invoice}: {e}")
 
             # Try to find subscription in local database
             if subscription_id:
@@ -708,14 +703,13 @@ def backfill_transactions(days=30):
                 if subscribie_subscription:
                     transaction.subscription = subscribie_subscription
                     transaction.person = subscribie_subscription.person
-                    transaction.is_donation = False
                     log.info(f"Linked transaction to subscription {subscribie_subscription.id}")
                 else:
                     log.warning(f"Subscription {subscription_id} not found in local database")
 
             # Try to get person from metadata if no subscription found
-            if transaction.person is None and paymentIntent.metadata:
-                person_uuid = paymentIntent.metadata.get("person_uuid")
+            if transaction.person is None and paymentIntent.invoice:
+                person_uuid = invoice.subscription_details.metadata.get("person_uuid") if invoice and invoice.subscription_details else None
                 if person_uuid:
                     person = Person.query.filter_by(uuid=person_uuid).first()
                     if person:
@@ -723,12 +717,9 @@ def backfill_transactions(days=30):
                         log.info(f"Linked transaction to person {person.id} via metadata")
 
                 # Check if it's a donation
-                is_donation = paymentIntent.metadata.get("is_donation", "False")
+                is_donation = invoice.subscription_details.metadata.get("is_donation", "False") if invoice and invoice.subscription_details else False
                 if is_donation == "True":
                     transaction.is_donation = True
-                    transaction.comment = paymentIntent.metadata.get("donation_comment", "")
-                else:
-                    transaction.is_donation = False
 
             database.session.add(transaction)
             database.session.commit()
