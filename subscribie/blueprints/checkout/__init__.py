@@ -460,7 +460,7 @@ def stripe_create_checkout_session():
     payment_method_types = ["card"]
 
     # Stripe requires HTTPS URLs when in live mode
-    url_scheme = 'https' if get_stripe_livemode() else None
+    url_scheme = "https" if get_stripe_livemode() else None
 
     cancel_url = url_for("checkout.order_summary", _external=True, _scheme=url_scheme)
     mode = "payment"
@@ -492,7 +492,10 @@ def stripe_create_checkout_session():
         charge["sell_price"] = plan.getSellPrice(currency_code)
         charge["interval_amount"] = plan.getIntervalAmount(currency_code)
         success_url = url_for(
-            "checkout.instant_payment_complete", _external=True, plan=plan.uuid, _scheme=url_scheme
+            "checkout.instant_payment_complete",
+            _external=True,
+            plan=plan.uuid,
+            _scheme=url_scheme,
         )
 
         if plan.requirements.subscription:
@@ -568,7 +571,9 @@ def stripe_create_checkout_session():
             )
 
     elif is_donation is True:
-        success_url = url_for("checkout.instant_payment_complete", _external=True, _scheme=url_scheme)
+        success_url = url_for(
+            "checkout.instant_payment_complete", _external=True, _scheme=url_scheme
+        )
         donation_amount = int(session["donation_amount"] * 100)
         line_items.append(
             {

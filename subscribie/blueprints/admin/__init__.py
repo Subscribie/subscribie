@@ -1399,13 +1399,23 @@ def _generate_account_link(account_id):
     parameter on their account to see if they've completed the onboarding process.
     """
     # Stripe requires HTTPS URLs when in live mode
-    url_scheme = 'https' if stripe_livemode() else None
+    url_scheme = "https" if stripe_livemode() else None
 
     account_link = stripe.AccountLink.create(
         type="account_onboarding",
         account=account_id,
-        refresh_url=url_for("admin.stripe_connect", refresh="refresh", _external=True, _scheme=url_scheme),
-        return_url=url_for("admin.stripe_connect", success="success", _external=True, _scheme=url_scheme),
+        refresh_url=url_for(
+            "admin.stripe_connect",
+            refresh="refresh",
+            _external=True,
+            _scheme=url_scheme,
+        ),
+        return_url=url_for(
+            "admin.stripe_connect",
+            success="success",
+            _external=True,
+            _scheme=url_scheme,
+        ),
     )
     return account_link.url
 
@@ -2405,7 +2415,9 @@ def do_backfill_data(days, backfill_types, app):
                     log.info(">>> Completed backfilling transactions")
                     sys.stdout.flush()
                 except Exception as e:
-                    error_msg = f"Error backfilling transactions: {e}\n{traceback.format_exc()}"
+                    error_msg = (
+                        f"Error backfilling transactions: {e}\n{traceback.format_exc()}"
+                    )
                     log.error(error_msg)
                     sys.stdout.flush()
                     errors.append(f"transactions: {str(e)}")
@@ -2433,7 +2445,9 @@ def do_backfill_data(days, backfill_types, app):
                     log.info(">>> Completed backfilling persons")
                     sys.stdout.flush()
                 except Exception as e:
-                    error_msg = f"Error backfilling persons: {e}\n{traceback.format_exc()}"
+                    error_msg = (
+                        f"Error backfilling persons: {e}\n{traceback.format_exc()}"
+                    )
                     log.error(error_msg)
                     sys.stdout.flush()
                     errors.append(f"persons: {str(e)}")
@@ -2447,7 +2461,9 @@ def do_backfill_data(days, backfill_types, app):
                     log.info(">>> Completed backfilling invoices")
                     sys.stdout.flush()
                 except Exception as e:
-                    error_msg = f"Error backfilling invoices: {e}\n{traceback.format_exc()}"
+                    error_msg = (
+                        f"Error backfilling invoices: {e}\n{traceback.format_exc()}"
+                    )
                     log.error(error_msg)
                     sys.stdout.flush()
                     errors.append(f"invoices: {str(e)}")
@@ -2455,7 +2471,9 @@ def do_backfill_data(days, backfill_types, app):
             # Log final results
             log.info("=" * 80)
             if results:
-                log.info(f"BACKFILL SUCCESS: {', '.join(results)} for the last {days} days")
+                log.info(
+                    f"BACKFILL SUCCESS: {', '.join(results)} for the last {days} days"
+                )
             if errors:
                 log.error(f"BACKFILL ERRORS: {len(errors)} error(s) occurred")
                 for error in errors:
@@ -2465,7 +2483,9 @@ def do_backfill_data(days, backfill_types, app):
 
     except Exception as e:
         # Catch any unexpected errors in the background task itself
-        error_msg = f"FATAL ERROR in backfill background task:\n{traceback.format_exc()}"
+        error_msg = (
+            f"FATAL ERROR in backfill background task:\n{traceback.format_exc()}"
+        )
         log.error(error_msg)
         sys.stdout.flush()
         # Re-raise to ensure we see it

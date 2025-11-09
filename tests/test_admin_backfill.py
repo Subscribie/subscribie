@@ -4,6 +4,7 @@ Test admin backfill interface
 Tests the user-friendly backfill data form at /admin/backfill
 introduced in issue #1476.
 """
+
 import pytest
 from subscribie.models import User
 from unittest.mock import patch, MagicMock
@@ -14,6 +15,7 @@ from flask import appcontext_pushed, g
 @contextmanager
 def user_set(app, user):
     """Context manager to set g.user for testing authenticated routes"""
+
     def handler(sender, **kwargs):
         g.user = user
 
@@ -62,7 +64,7 @@ class TestAdminBackfillInterface:
             assert 'id="backfill_subscriptions"' in response_data
             assert 'id="backfill_persons"' in response_data
             assert 'id="backfill_invoices"' in response_data
-            assert 'checked' in response_data  # At least some checkboxes are checked
+            assert "checked" in response_data  # At least some checkboxes are checked
 
     @patch("subscribie.blueprints.admin.backfill_transactions")
     @patch("subscribie.blueprints.admin.backfill_subscriptions")
@@ -95,7 +97,12 @@ class TestAdminBackfillInterface:
                 "/admin/backfill",
                 data={
                     "days": "30",
-                    "backfill_types": ["transactions", "subscriptions", "persons", "invoices"],
+                    "backfill_types": [
+                        "transactions",
+                        "subscriptions",
+                        "persons",
+                        "invoices",
+                    ],
                 },
                 follow_redirects=True,
             )
@@ -105,7 +112,10 @@ class TestAdminBackfillInterface:
             response_data = response.data.decode("utf-8")
 
             # Should show the backfill form again after redirect
-            assert "Backfill Data from Stripe" in response_data or "Synchronise Data from Stripe" in response_data
+            assert (
+                "Backfill Data from Stripe" in response_data
+                or "Synchronise Data from Stripe" in response_data
+            )
 
             # Give background thread a moment to start
             time.sleep(0.5)
@@ -146,7 +156,10 @@ class TestAdminBackfillInterface:
             response_data = response.data.decode("utf-8")
 
             # Should show the backfill form again after redirect
-            assert "Backfill Data from Stripe" in response_data or "Synchronise Data from Stripe" in response_data
+            assert (
+                "Backfill Data from Stripe" in response_data
+                or "Synchronise Data from Stripe" in response_data
+            )
 
             # Give background thread a moment to start
             time.sleep(0.5)
@@ -271,7 +284,9 @@ class TestAdminBackfillInterface:
 
         # Should redirect to login
         assert response.status_code == 302
-        assert "/auth/login" in response.location or "login" in response.location.lower()
+        assert (
+            "/auth/login" in response.location or "login" in response.location.lower()
+        )
 
     @patch("subscribie.blueprints.admin.backfill_transactions")
     def test_legacy_api_endpoint_preserved(
