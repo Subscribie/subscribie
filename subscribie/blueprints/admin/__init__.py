@@ -2400,7 +2400,6 @@ def do_backfill_data(days, backfill_types, app):
                 try:
                     log.info(f">>> Backfilling transactions for {days} days...")
                     sys.stdout.flush()
-                    breakpoint()
                     backfill_transactions(days)
                     results.append("transactions")
                     log.info(">>> Completed backfilling transactions")
