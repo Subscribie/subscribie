@@ -653,8 +653,7 @@ def backfill_transactions(days=30):
         if paymentIntent.invoice:
             try:
                 invoice = stripe.Invoice.retrieve(
-                    stripe_account=stripe_connect_account_id,
-                    id=paymentIntent.invoice
+                    stripe_account=stripe_connect_account_id, id=paymentIntent.invoice
                 )
                 if invoice.subscription:
                     subscription_id = invoice.subscription
@@ -677,7 +676,9 @@ def backfill_transactions(days=30):
             # Update other fields that may have changed
             transaction.amount = paymentIntent.amount
             transaction.currency = paymentIntent.currency
-            transaction.payment_status = "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+            transaction.payment_status = (
+                "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+            )
 
             database.session.commit()
             updated_count += 1
@@ -689,8 +690,14 @@ def backfill_transactions(days=30):
             transaction.external_src = "stripe"
             transaction.currency = paymentIntent.currency
             transaction.amount = paymentIntent.amount
-            transaction.payment_status = "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
-            transaction.comment = invoice.subscription_details.metadata.get("donation_comment") if invoice and invoice.subscription_details  else None
+            transaction.payment_status = (
+                "paid" if paymentIntent.status == "succeeded" else paymentIntent.status
+            )
+            transaction.comment = (
+                invoice.subscription_details.metadata.get("donation_comment")
+                if invoice and invoice.subscription_details
+                else None
+            )
             transaction.created_at = stripe_transaction_created_at
 
             # Try to find subscription in local database
@@ -703,21 +710,35 @@ def backfill_transactions(days=30):
                 if subscribie_subscription:
                     transaction.subscription = subscribie_subscription
                     transaction.person = subscribie_subscription.person
-                    log.info(f"Linked transaction to subscription {subscribie_subscription.id}")
+                    log.info(
+                        f"Linked transaction to subscription {subscribie_subscription.id}"
+                    )
                 else:
-                    log.warning(f"Subscription {subscription_id} not found in local database")
+                    log.warning(
+                        f"Subscription {subscription_id} not found in local database"
+                    )
 
             # Try to get person from metadata if no subscription found
             if transaction.person is None and paymentIntent.invoice:
-                person_uuid = invoice.subscription_details.metadata.get("person_uuid") if invoice and invoice.subscription_details else None
+                person_uuid = (
+                    invoice.subscription_details.metadata.get("person_uuid")
+                    if invoice and invoice.subscription_details
+                    else None
+                )
                 if person_uuid:
                     person = Person.query.filter_by(uuid=person_uuid).first()
                     if person:
                         transaction.person = person
-                        log.info(f"Linked transaction to person {person.id} via metadata")
+                        log.info(
+                            f"Linked transaction to person {person.id} via metadata"
+                        )
 
                 # Check if it's a donation
-                is_donation = invoice.subscription_details.metadata.get("is_donation", "False") if invoice and invoice.subscription_details else False
+                is_donation = (
+                    invoice.subscription_details.metadata.get("is_donation", "False")
+                    if invoice and invoice.subscription_details
+                    else False
+                )
                 if is_donation == "True":
                     transaction.is_donation = True
 
@@ -725,7 +746,9 @@ def backfill_transactions(days=30):
             database.session.commit()
             created_count += 1
 
-    log.info(f"Backfill complete: {created_count} transactions created, {updated_count} updated")
+    log.info(
+        f"Backfill complete: {created_count} transactions created, {updated_count} updated"
+    )
 
 
 def backfill_subscriptions(days=30):
