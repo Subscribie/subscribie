@@ -638,7 +638,11 @@ def get_failed_invoices_with_related_subscriber(refresh_invoices=False, as_dict=
             # Create reference to person object via invoice reference
             subscribersWithFailedInvoicesMap[
                 failedInvoice.subscribie_subscription.person.uuid
-            ]["person"] = failedInvoice.subscribie_subscription.person.to_dict() if as_dict else failedInvoice.subscribie_subscription.person
+            ]["person"] = (
+                failedInvoice.subscribie_subscription.person.to_dict()
+                if as_dict
+                else failedInvoice.subscribie_subscription.person
+            )
 
         # Add hosted_invoice_url attribute to invoice
         try:
@@ -673,7 +677,9 @@ def get_failed_invoices_with_related_subscriber(refresh_invoices=False, as_dict=
         # Insert invoices per person
         subscribersWithFailedInvoicesMap[
             failedInvoice.subscribie_subscription.person.uuid
-        ]["failedInvoices"].append(failedInvoice.to_dict() if as_dict else failedInvoice)
+        ]["failedInvoices"].append(
+            failedInvoice.to_dict() if as_dict else failedInvoice
+        )
 
     return subscribersWithFailedInvoicesMap
 

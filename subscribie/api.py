@@ -296,5 +296,7 @@ def create_plan():
 @api.route("/invoices/failed")
 @token_required
 def get_failed_invoices():
-    failed_invoices_with_subscriber = get_failed_invoices_with_related_subscriber(as_dict=True)
+    failed_invoices_with_subscriber = get_failed_invoices_with_related_subscriber(
+        as_dict=True
+    )
     return jsonify(failed_invoices_with_subscriber)
