@@ -6,6 +6,7 @@ from .auth import generate_login_url
 from .auth import get_magic_login_link
 import pydantic
 from subscribie import settings, schemas, database
+from subscribie.utils import get_failed_invoices_with_related_subscriber
 import json
 import secrets
 from Crypto.Cipher import AES
@@ -290,3 +291,10 @@ def create_plan():
     resp.headers["Content-Type"] = "Application/json"
 
     return resp, 201
+
+
+@api.route("/invoices/failed")
+@token_required
+def get_failed_invoices():
+    failed_invoices_with_subscriber = get_failed_invoices_with_related_subscriber(as_dict=True)
+    return jsonify(failed_invoices_with_subscriber)

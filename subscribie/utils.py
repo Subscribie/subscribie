@@ -1,4 +1,4 @@
-from flask import request, g, session, url_for
+from flask import request, g, session, url_for, flash
 import stripe
 from subscribie import settings, database
 from currency_symbols import CurrencySymbols
@@ -6,6 +6,7 @@ import logging
 from subscribie.tasks import background_task
 from datetime import datetime, timedelta
 import requests
+import json
 
 log = logging.getLogger(__name__)
 
@@ -591,6 +592,90 @@ def get_stripe_void_subscription_invoices():
         ):
             voidInvoices.append(invoice)
     return voidInvoices
+
+
+def get_failed_invoices_with_related_subscriber(refresh_invoices=False, as_dict=False):
+    from subscribie.models import Subscription, Person, StripeInvoice
+
+    stripe.api_key = get_stripe_secret_key()
+    stripe_connect_account_id = get_stripe_connect_account_id()
+    if refresh_invoices:
+        flash("Invoice statuses are being refreshed")
+        get_stripe_invoices()
+
+    # Get failed invoices, grouped by person and their invoices
+    failedInvoices = (
+        database.session.query(StripeInvoice)
+        .join(Subscription, StripeInvoice.subscribie_subscription)
+        .join(Person, Subscription.person)
+        .group_by(Person.id, StripeInvoice.id)
+        .where(StripeInvoice.status == "open")
+        .where(StripeInvoice.next_payment_attempt == None)  # noqa: E711
+        .execution_options(include_archived=True)
+        .order_by(StripeInvoice.created.desc())
+        .all()
+    )
+    # Build dictionary of person uuid -> (bad) invoices so
+    # that it's easier for template to display bad invoices broken down
+    # per person
+    subscribersWithFailedInvoicesMap = {}
+
+    for failedInvoice in failedInvoices:
+        # Populate map with each Person.uuid
+        if (
+            failedInvoice.subscribie_subscription.person.uuid
+            not in subscribersWithFailedInvoicesMap
+        ):
+            # Create person uuid key in map
+            subscribersWithFailedInvoicesMap[
+                failedInvoice.subscribie_subscription.person.uuid
+            ] = {}
+            # Create empty list to store persons bad invoices
+            subscribersWithFailedInvoicesMap[
+                failedInvoice.subscribie_subscription.person.uuid
+            ]["failedInvoices"] = []
+
+            # Create reference to person object via invoice reference
+            subscribersWithFailedInvoicesMap[
+                failedInvoice.subscribie_subscription.person.uuid
+            ]["person"] = failedInvoice.subscribie_subscription.person.to_dict() if as_dict else failedInvoice.subscribie_subscription.person
+
+        # Add hosted_invoice_url attribute to invoice
+        try:
+            stripe_invoice = stripe.Invoice.retrieve(
+                id=failedInvoice.id, stripe_account=stripe_connect_account_id
+            )
+            setattr(
+                failedInvoice,
+                "hosted_invoice_url",
+                stripe_invoice.hosted_invoice_url,
+            )
+        except Exception as e:
+            log.error(
+                f"Unable to get/set hosted_invoice_url for invoice: {failedInvoice.id}. {e}"  # noqa: E501
+            )
+
+        # Get stripe_decline_code if possible
+        try:
+            stripeRawInvoice = json.loads(failedInvoice.stripe_invoice_raw_json)
+
+            payment_intent_id = stripeRawInvoice["payment_intent"]
+            stripe_decline_code = stripe.PaymentIntent.retrieve(
+                payment_intent_id,
+                stripe_account=stripe_connect_account_id,
+            ).last_payment_error.decline_code
+            setattr(failedInvoice, "stripe_decline_code", stripe_decline_code)
+        except Exception as e:
+            log.debug(
+                f"Failed to get stripe_decline_code for invoice {failedInvoice.id}. Exeption: {e}"  # noqa: E501
+            )
+
+        # Insert invoices per person
+        subscribersWithFailedInvoicesMap[
+            failedInvoice.subscribie_subscription.person.uuid
+        ]["failedInvoices"].append(failedInvoice.to_dict() if as_dict else failedInvoice)
+
+    return subscribersWithFailedInvoicesMap
 
 
 def get_discount_code():

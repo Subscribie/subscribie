@@ -301,6 +301,20 @@ class Person(database.Model, HasArchived, HasCreatedAt):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    def to_dict(self):
+        """Convert Person object to dictionary for JSON serialisation"""
+        return {
+            "id": self.id,
+            "uuid": self.uuid,
+            "given_name": self.given_name,
+            "family_name": self.family_name,
+            "full_name": self.full_name,
+            "email": self.email,
+            "mobile": self.mobile,
+            "created_at": self.created_at if self.created_at else None,
+            "archived": self.archived,
+        }
+
     def __repr__(self):
         return "<Person {}>".format(self.given_name)
 
@@ -579,6 +593,28 @@ class StripeInvoice(database.Model, HasCreatedAt):
     )
     created = database.Column(database.Integer(), nullable=True)
     stripe_invoice_raw_json = database.Column(database.JSON(), nullable=True)
+
+    def to_dict(self):
+        """Convert StripeInvoice object to dictionary for JSON serialisation"""
+        result = {
+            "uuid": self.uuid,
+            "id": self.id,
+            "status": self.status,
+            "amount_due": self.amount_due,
+            "amount_paid": self.amount_paid,
+            "amount_remaining": self.amount_remaining,
+            "application_fee_amount": self.application_fee_amount,
+            "attempt_count": self.attempt_count,
+            "billing_reason": self.billing_reason,
+            "collection_method": self.collection_method,
+            "currency": self.currency,
+            "next_payment_attempt": self.next_payment_attempt,
+            "stripe_subscription_id": self.stripe_subscription_id,
+            "subscribie_subscription_id": self.subscribie_subscription_id,
+            "created": self.created,
+            "created_at": self.created_at if self.created_at else None,
+        }
+        return result
 
 
 class Company(database.Model, HasCreatedAt):
