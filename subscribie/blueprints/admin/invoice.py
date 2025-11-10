@@ -8,7 +8,7 @@ from subscribie.utils import (
     get_stripe_secret_key,
     get_stripe_connect_account,
     get_stripe_connect_account_id,
-    get_failed_invoices_with_related_subscriber
+    get_failed_invoices_with_related_subscriber,
 )
 from subscribie.utils import (
     get_stripe_invoices,
@@ -24,7 +24,9 @@ log = logging.getLogger(__name__)
 @stripe_connect_id_required
 def failed_invoices():
     if "refreshFailedInvoices" in request.args:
-        subscribersWithFailedInvoicesMap = get_failed_invoices_with_related_subscriber(refresh_invoices=True)
+        subscribersWithFailedInvoicesMap = get_failed_invoices_with_related_subscriber(
+            refresh_invoices=True
+        )
     else:
         subscribersWithFailedInvoicesMap = get_failed_invoices_with_related_subscriber()
 
