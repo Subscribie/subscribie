@@ -1,3 +1,16 @@
+# v0.1.251 (Mon Nov 10 2025)
+
+#### 🐛 Bug Fix
+
+- #1482 black format [#1483](https://github.com/Subscribie/subscribie/pull/1483) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1482 api route `api/invoices/failed` minimal implementation [#1483](https://github.com/Subscribie/subscribie/pull/1483) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.250 (Sun Nov 09 2025)
 
 #### 🐛 Bug Fix
