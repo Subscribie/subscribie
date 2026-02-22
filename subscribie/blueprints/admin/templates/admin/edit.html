@@ -1,11 +1,11 @@
 {% extends "admin/layout.html" %}
-{% block title %} Dashboard {% endblock %}
+{% block title %} Edit Plans {% endblock %}
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Edit Plans</h2>
+<div class="container edit-plans-header">
+  <h2 class="text-center text-dark mb-4">Edit Plans</h2>
 
-<div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
     <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
@@ -16,283 +16,900 @@
 {% from "_formhelpers.html" import render_field %}
 
 <main>
-  <div class="section">
+  <div class="container">
     {% if form.errors %}
-    <div class="container">
-      <div class="alert alert-danger col-md-6 mx-auto">
-        <p><strong class="alert-heading">Oops, something is missing. Please take a look at:</strong></p>
-        <ul class=errors>
-          {% for error in form.errors %}
-          <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-      </div>
+    <div class="alert-card alert-warning mb-4">
+      <h4 class="mb-3"><strong>⚠ Form Validation Errors</strong></h4>
+      <p class="mb-2">Please review the following:</p>
+      <ul class="errors mb-0">
+        {% for error in form.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
     </div>
     {% endif %}
-    <div class="container">
-      <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
-        <!-- shop details -->
-        <div class="card mx-auto col-md-6 mb-3">
 
-          <fieldset>
-            <legend>Shop details</legend>
-            <div class="form-group">
+    <form method="post" action="#" enctype="multipart/form-data" id="plansForm" class="needs-validation" novalidate>
+
+      <!-- Shop Details Section -->
+      <div class="edit-section shop-details-section">
+        <div class="section-header">
+          <h3 class="section-title-alt">Shop Details</h3>
+          <p class="section-description">Configure your shop's basic information</p>
+        </div>
+
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group col-md-6">
               {{ render_field(form.company_name, value=company['name'], class="form-control" ) }}
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-6">
               {{ render_field(form.slogan, value=company['slogan'], class="form-control" ) }}
             </div>
-            <input name="email" type="hidden" value='email@example.com'>
-          </fieldset>
-        </div>
-        <!-- end shop details-->
-
-        <div class="container mb-auto mx-auto">
-          <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
-            {% for plan in plans %}
-            <div class="card">
-              <div class="card-header" id="{{ plan.uuid }}">
-                  <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">{{ plan.title }}</button>
-              </div>
-              <div id="collapse-{{ plan.uuid }}" class="collapse" aria-labelledby="{{ plan.uuid }}">
-                <!-- individual plan form -->
-                <div class="card-body">
-                  <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
-                  <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
-                  <div class="col-lg-12">
-                    {{ form.csrf_token }}
-                    <!-- plan title -->
-                    <div class="form-group">
-                      <label for="title-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Plan or Product name</label>
-                      <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
-                      <div class="invalid-feedback">
-                        Plan name is required.
-                      </div>
-                    </div>
-                    <!-- end plan title -->
-                    <!-- plan selling points -->
-                    <fieldset class="form-group">
-                      <legend class="col-form-label font-weight-bolder">Product selling points</legend>
-                      {% set ns = namespace(count=0) %}
-                      {% set outer_loop = loop %}
-                      {% for selling_point in plan.selling_points %}
-                      <div>
-                        <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2 col-md">
-                        {% set ns.count = ns.count + 1 %}
-                        <div class="invalid-feedback">
-                          Please provide a selling point {{ ns.count }}
-                        </div>
-                      </div>
-                      {% endfor %}
-                    </fieldset>
-                    <!-- end plan selling points -->
-                    <!-- plan image -->
-                    <div class="form-group">
-                      <label for="image-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Product image</label>
-                      <p> Supported image upload extensions: <br> 
-                          jpg, jpe, jpeg, png, gif, svg, bmp</p>
-                      <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
-                      {% if plan.primary_icon %}
-                      <img src="{{ plan.primary_icon }}" style="width:50%;display:block; margin:auto">
-                      <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">
-                        Remove Image
-                      </a>
-                      {% endif %}
-                    </div>
-                    <!-- end plan image-->
-                    <!-- plan pricing -->
-                    <hr>
-                    <fieldset>
-                      <div class="form-group">
-                        <div class="form-check">
-                          <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
-                          <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" {% if plan.requirements.subscription  %} checked {% endif %}>
-                          <label class="form-check-label font-weight-bolder" for="subscription-{{ loop.index0 }}">Recurring Charge?</label>
-                        </div>
-                      </div>
-
-                      <div class="extra_fields">
-                        <div class="form-group">
-                          <label for="interval_amount-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Recurring Amount</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">{{ default_currency_symbol }}</span>
-                            </div>
-                            <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}" {% if plan.interval_amount %} value="{{ plan.interval_amount/ 100 }}" {% endif %} class="form-control" type="number" step="0.01">
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="interval_unit-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Interval Unit</label>
-                          <div class="input-group">
-                            <select name="interval_unit-{{ loop.index0 }}" id="interval_unit-{{ loop.index0 }}" class="form-control">
-                              <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>
-                              <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>
-                              <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label for="days_before_first_charge-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Days before the first charge</label>
-                          <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ plan.days_before_first_charge }}" class="form-control">
-                          <small class="form-text text-muted">
-                            "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
-                          </small>
-                        </div>
-                        <div class="form-group">
-                          <label for="trial_period_days-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Free trial period number of days</label>
-                          <input id="trial_period_days-{{ loop.index0 }}" name="trial_period_days-{{ loop.index0 }}" type="number" min="0" max="" value="{{ plan.trial_period_days }}" class="form-control">
-                          <small class="form-text text-muted">
-                            If you want to offer a free trial, simply put the number of days and the plan
-                            will only start charging after the trial has ended. When creating a subscription with a
-                            trial period, no payment is taken from the customer.
-                            An immediate invoice is still created, but for a zero amount.
-                          </small>
-                        </div>
-                      </div>
-                    </fieldset>
-                    <!-- end plan pricing -->
-                    <!-- up-front pricing -->
-                    <hr>
-                    <fieldset>
-                      <div class="form-group form-check">
-                        <input type="hidden" class="instant_payment-check" data-id="{{ loop.index0 }}" name="instant_payment-{{ loop.index0 }}" value="no">
-                        <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} checked {% endif %}>
-                        <label class="form-check-label font-weight-bolder" for="instant_payment-{{ loop.index0 }}">Add upfront charge</label>
-                      </div>
-
-                      <div class="form-group extra_fields" id="upfront_price">
-                        <label for="sell_price-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Upfront price</label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">{{ default_currency_symbol }}</span>
-                          </div>
-                          <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" {% if plan.requirements.instant_payment  %} value="{{ plan.sell_price/100 }}" {% endif %} id="sell_price-{{ loop.index0 }}" class="form-control">
-                        </div>
-                      </div>
-                    </fieldset>
-                    <!-- end up-front pricing -->
-                    <!-- plan description & settings -->
-                    <hr>
-                    <fieldset>
-                      <div class="form-group ">
-                        <div class="form-check">
-                          <input type="checkbox" value="yes" class="form-check-input toggle" name="plan_description_required-{{ loop.index0 }}" id="plan_description_required-{{ loop.index0 }}" {% if plan.description is not sameas None %} checked
-                            {% endif %}>
-                          <label class="form-check-label font-weight-bolder" for="plan_description_required-{{ loop.index0 }}">Plan Description</label>
-                        </div>
-                        <small class="form-text text-muted">
-                          Add a paragraph describing the plan (optional).
-                        </small>
-                      </div>
-
-                      <div class="form-group extra_fields" id="message">
-                        <label for="description-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Plan description</label>
-                        <textarea class="form-control" id="description-{{ loop.index0 }}" name="description-{{ loop.index0 }}" rows="3">{% if plan.description is not sameas None %}{{ plan.description }}{% endif %}</textarea>
-                        <small class="form-text text-muted">
-                          Enter a description about the plan.
-                        </small>
-                      </div>
-
-                      <div class="form-group ">
-                        <div class="form-check">
-                          <input type="hidden" class="note_to_seller_required-check" data-id="{{ loop.index0 }}" name="note_to_seller_required-{{ loop.index0 }}" value="no">
-                          <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}" {% if plan.requirements.note_to_seller_required %} checked
-                            {% endif %}>
-                          <label class="form-check-label font-weight-bolder" for="note_to_seller_required-{{ loop.index0 }}">Require customer note</label>
-                        </div>
-                        <small class="form-text text-muted">
-                          Useful for product personalisation, customisation or variations
-                        </small>
-                      </div>
-
-                      <div class="form-group extra_fields" id="message">
-                        <label for="note_to_buyer_message-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Message for the customer</label>
-                        <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}">{{ plan.requirements.note_to_buyer_message }} </textarea>
-                        <small class="form-text text-muted">
-                          This message will be shown during checkout to the customer
-                        </small>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="position-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Position</label>
-                        <div class="input-group">
-                          <input type="number" step="1" data-plan-name-position="{{ plan.title|safe }}" name="position-{{ loop.index0 }}" {% if plan.position %} value="{{ plan.position }}" {% else %} value="0" {% endif %} id="position-{{ loop.index0 }}" class="form-control" placeholder="0">
-                        </div>
-                        <small class="form-text text-muted">
-                          Control the order in which plans appear. Lower number appears first
-                        </small>
-                      </div>
-                      <div class="form-group">
-                        <div class="form-check">
-                          <input type="checkbox" value="yes" class="form-check-input" name="private-{{ loop.index0 }}" id="private-{{ loop.index0 }}" {% if plan.private %} checked {% endif %}>
-                          <label class="form-check-label font-weight-bolder" for="private-{{ loop.index0 }}">Private</label>
-                        </div>
-                        <small class="form-text text-muted">
-                          Want to create a private plan? Mark a plan as private, and it won't appear on the homepage.
-                          Then, you can send a link to your customer(s) to sign-up to the private plan.
-                        </small>
-                      </div>
-                      <div class="form-group ">
-                            <div class="form-check">
-                              <input type="checkbox" value="yes" class="form-check-input toggle" name="cancel_at_set-{{ loop.index0 }}" id="cancel_at_set-{{ loop.index0 }}" {% if plan.cancel_at and plan.cancel_at != 0 %} checked {% endif %}>
-                              <label class="form-check-label font-weight-bolder" for="cancel_at_set-{{ loop.index0 }}">Cancel at</label>
-                            </div>
-                            <small class="form-text text-muted">
-                              Cancel all subscriptions to this plan at this date / time. This is useful if you run a
-                              membership style organisation with seasons (such as a Football club).
-                            </small>
-                      </div>
-                      <div class="form-group extra_fields" id="cancel_at" >
-                        <label for="cancel_at_date-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Date &amp; time to Cancel at</label>
-                        <input type="date" class="form-control" name="cancel_at-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%Y-%m-%d") }}" {% endif %} id="cancel_at_date-{{ loop.index0 }}">
-                        <small class="form-text text-muted mb-2">
-                          Date (e.g. 30th June 2022) {{ plan.cancel_at|timestampToDate("%H:%M") }}
-                        </small>
-                        <input type="time" class="form-control" name="cancel_at_time-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%H:%M") }}" {% endif %} id="cancel_at_time-{{ loop.index0 }}">
-                        <small class="form-text text-muted">
-                          Time (e.g. midnight) {{ plan.proration_behavior }}
-                        </small>
-                        <br />
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="off" id="prorate_option2-{{ loop.index0 }}" checked>
-                          <label class="form-check-label" for="prorate_option2-{{ loop.index0 }}">
-                            Do not prorate
-                          </label>
-                          <small class="form-text text-muted">
-                            Charge subscribers the full amount of the subscription, even
-                            if it ends before the period is over.
-                          </small>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="on" id="prorate_option1-{{ loop.index0 }}" {% if plan.proration_behavior == "create_prorations" %} checked {% endif %} />
-                          <label class="form-check-label" for="prorate_option1-{{ loop.index0 }}">
-                            Prorate
-                          </label>
-                          <small class="form-text text-muted">
-                            Don't charge subscribers the full amount if the subscription
-                            ends before the period is over. For example, if a monthly
-                            subscription ends partway through the month, the final charge
-                            will be less since it is prorated based on the time used.
-                          </small>
-                        </div>
-                      </div>
-
-                      <a href="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title)}}" target="_blank">Share URL</a>
-                    </fieldset>
-                    <!-- end plan description & settings -->
-                  </div><!-- end card-wrapper -->
-                  <button type="submit" class="disable-on-click btn btn-primary btn-block col-md-6 my-3 mx-auto">Save</button>
-                </div><!-- end card body -->
-              </div><!-- end plan collapse header -->
-            </div><!-- end plan cards-->
-            {% endfor %}
           </div>
-        </div><!-- end .container -->
-      </form>
-    </div><!-- end .container -->
-  </div><!-- end .section -->
+          <input name="email" type="hidden" value='email@example.com'>
+        </div>
+      </div>
+
+      <!-- Plans Section - Master-Detail Layout -->
+      <div class="edit-section plans-section">
+        <div class="section-header">
+          <h3 class="section-title-alt">Your Plans ({{ plans|length }})</h3>
+          <p class="section-description">Select a plan to edit its details</p>
+        </div>
+
+        <!-- Mobile Plan Selector (dropdown) -->
+        <div class="mobile-plan-selector">
+          <label for="mobilePlanSelect" class="form-label-bold">Select Plan to Edit</label>
+          <select id="mobilePlanSelect" class="form-control">
+            {% for plan in plans %}
+            <option value="{{ loop.index0 }}" {% if loop.index0 == 0 %}selected{% endif %}>
+              {{ plan.title }}
+              {% if plan.interval_amount %}
+                - {{ default_currency_symbol }}{{ "%.2f"|format(plan.interval_amount / 100) }}/{{ plan.interval_unit }}
+              {% endif %}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Master-Detail Container -->
+        <div class="master-detail-container">
+
+          <!-- Master Panel - Plans List -->
+          <div class="master-panel">
+            <div class="plans-list-header">
+              <h4>Plans</h4>
+              <span class="plans-count">{{ plans|length }}</span>
+            </div>
+            <div class="plans-list">
+              {% for plan in plans %}
+              <div class="plan-list-item {% if loop.index0 == 0 %}active{% endif %}" data-plan-index="{{ loop.index0 }}">
+                <div class="plan-list-content">
+                  <div class="plan-list-title" data-plan-title="{{ loop.index0 }}">{{ plan.title }}</div>
+                  <div class="plan-list-meta" data-plan-meta="{{ loop.index0 }}">
+                    {% if plan.interval_amount %}
+                      {{ default_currency_symbol }}{{ "%.2f"|format(plan.interval_amount / 100) }}/{{ plan.interval_unit }}
+                    {% endif %}
+                    {% if plan.sell_price %}
+                      {% if plan.interval_amount %}+{% endif %}
+                      {{ default_currency_symbol }}{{ "%.2f"|format(plan.sell_price / 100) }} upfront
+                    {% endif %}
+                    {% if not plan.interval_amount and not plan.sell_price %}
+                      <span class="text-muted">No pricing set</span>
+                    {% endif %}
+                  </div>
+                  {% if plan.private %}
+                  <span class="badge badge-secondary badge-sm mt-1">Private</span>
+                  {% endif %}
+                </div>
+                <div class="plan-list-arrow">
+                  <svg width="20" height="20" fill="currentColor">
+                    <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Detail Panel - Plan Edit Form -->
+          <div class="detail-panel">
+            <div class="detail-panel-header">
+              <h4>Edit Plan</h4>
+              <a href="/" id="viewPlanLink" class="btn btn-sm btn-outline-primary" target="_blank">
+                <svg width="14" height="14" fill="currentColor" class="mr-1">
+                  <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"/>
+                </svg>
+                View
+              </a>
+            </div>
+
+            {% for plan in plans %}
+            <div class="plan-detail-form {% if loop.index0 == 0 %}active{% endif %}" data-plan-detail="{{ loop.index0 }}">
+              <!-- Hidden fields for this plan -->
+              <input type="hidden" name="planIndex" value="{{ loop.index0 }}" />
+              <input type="hidden" name="uuid-{{ loop.index0 }}" value="{{ plan.uuid }}" />
+              {{ form.csrf_token }}
+
+              <!-- Basic Information -->
+              <div class="plan-form-section">
+                <h4 class="plan-section-title">Basic Information</h4>
+
+                <div class="form-group">
+                  <label for="title-{{ loop.index0 }}" class="form-label-bold">Plan or Product Name <span class="text-danger">*</span></label>
+                  <input name="title-{{ loop.index0 }}" id="title-{{ loop.index0 }}" value="{{ plan.title }}" class="form-control" required>
+                  <div class="invalid-feedback">Plan name is required.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label-bold">Product Selling Points</label>
+                  <small class="form-text text-muted mb-2">Highlight key features of this plan</small>
+                  {% set ns = namespace(count=0) %}
+                  {% set outer_loop = loop %}
+                  {% for selling_point in plan.selling_points %}
+                  <input name="selling_points-{{ outer_loop.index0 }}-{{ ns.count }}" value="{{ selling_point.point }}" class="form-control mb-2" placeholder="Selling point {{ ns.count + 1 }}">
+                  {% set ns.count = ns.count + 1 %}
+                  {% endfor %}
+                </div>
+
+                <div class="form-group">
+                  <label for="image-{{ loop.index0 }}" class="form-label-bold">Product Image</label>
+                  <small class="form-text text-muted mb-2">Supported: jpg, jpeg, png, gif, svg, bmp</small>
+                  <input type="file" data-file-upload-name="{{ plan.title|safe }}" name="image-{{ loop.index0 }}" id="image-{{ loop.index0 }}" class="form-control-file">
+                  {% if plan.primary_icon %}
+                  <div class="mt-3">
+                    <img src="{{ plan.primary_icon }}" class="plan-image-preview" alt="{{ plan.title }}">
+                    <a href="{{ url_for('admin.remove_plan_image', plan_id=plan.id) }}" class="btn btn-sm btn-danger mt-2" onclick="return confirm('Are you sure you want to remove this image?')">
+                      Remove Image
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Pricing: Recurring Charge -->
+              <div class="plan-form-section">
+                <h4 class="plan-section-title">Recurring Charge</h4>
+
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="hidden" class="subscription-check" data-id="{{ loop.index0 }}" name="subscription-{{ loop.index0 }}" value="no">
+                    <input type="checkbox" value="yes" class="custom-control-input toggle" name="subscription-{{ loop.index0 }}" id="subscription-{{ loop.index0 }}" {% if plan.requirements.subscription %} checked {% endif %}>
+                    <label class="custom-control-label form-label-bold" for="subscription-{{ loop.index0 }}">
+                      Enable Recurring Subscription
+                    </label>
+                  </div>
+                </div>
+
+                <div class="extra_fields">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="interval_amount-{{ loop.index0 }}" class="form-label-bold">Recurring Amount</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">{{ default_currency_symbol }}</span>
+                        </div>
+                        <input name="interval_amount-{{ loop.index0 }}" id="interval_amount-{{ loop.index0 }}" {% if plan.interval_amount %} value="{{ plan.interval_amount/ 100 }}" {% endif %} class="form-control" type="number" step="0.01" placeholder="0.00">
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="interval_unit-{{ loop.index0 }}" class="form-label-bold">Billing Frequency</label>
+                      <select name="interval_unit-{{ loop.index0 }}" id="interval_unit-{{ loop.index0 }}" class="form-control">
+                        <option value="monthly" {% if plan.interval_unit == "monthly" %}selected{% endif %}>Monthly</option>
+                        <option value="weekly" {% if plan.interval_unit == "weekly" %}selected{% endif %}>Weekly</option>
+                        <option value="yearly" {% if plan.interval_unit == "yearly" %}selected{% endif %}>Yearly</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="days_before_first_charge-{{ loop.index0 }}" class="form-label-bold">Days Before First Charge</label>
+                      <input id="days_before_first_charge-{{ loop.index0 }}" name="days_before_first_charge-{{ loop.index0 }}" type="number" value="{{ plan.days_before_first_charge }}" class="form-control" min="0">
+                      <small class="form-text text-muted">Cooling-off period before charging. Use 0 to charge immediately.</small>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="trial_period_days-{{ loop.index0 }}" class="form-label-bold">Free Trial Period (Days)</label>
+                      <input id="trial_period_days-{{ loop.index0 }}" name="trial_period_days-{{ loop.index0 }}" type="number" min="0" value="{{ plan.trial_period_days }}" class="form-control" placeholder="0">
+                      <small class="form-text text-muted">Number of days for free trial. No payment taken during trial.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pricing: Upfront Charge -->
+              <div class="plan-form-section">
+                <h4 class="plan-section-title">Upfront Charge</h4>
+
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="hidden" class="instant_payment-check" data-id="{{ loop.index0 }}" name="instant_payment-{{ loop.index0 }}" value="no">
+                    <input type="checkbox" value="yes" class="custom-control-input toggle" name="instant_payment-{{ loop.index0 }}" id="instant_payment-{{ loop.index0 }}" {% if plan.requirements.instant_payment %} checked {% endif %}>
+                    <label class="custom-control-label form-label-bold" for="instant_payment-{{ loop.index0 }}">
+                      Add Upfront Charge
+                    </label>
+                  </div>
+                  <small class="form-text text-muted">One-time payment at the start</small>
+                </div>
+
+                <div class="form-group extra_fields">
+                  <label for="sell_price-{{ loop.index0 }}" class="form-label-bold">Upfront Price</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">{{ default_currency_symbol }}</span>
+                    </div>
+                    <input type="number" step="0.01" name="sell_price-{{ loop.index0 }}" {% if plan.requirements.instant_payment %} value="{{ plan.sell_price/100 }}" {% endif %} id="sell_price-{{ loop.index0 }}" class="form-control" placeholder="0.00">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Plan Settings -->
+              <div class="plan-form-section">
+                <h4 class="plan-section-title">Plan Settings</h4>
+
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" value="yes" class="custom-control-input toggle" name="plan_description_required-{{ loop.index0 }}" id="plan_description_required-{{ loop.index0 }}" {% if plan.description is not sameas None %} checked {% endif %}>
+                    <label class="custom-control-label form-label-bold" for="plan_description_required-{{ loop.index0 }}">
+                      Add Plan Description
+                    </label>
+                  </div>
+                  <small class="form-text text-muted">Optional paragraph describing this plan</small>
+                </div>
+
+                <div class="form-group extra_fields">
+                  <label for="description-{{ loop.index0 }}" class="form-label-bold">Plan Description</label>
+                  <textarea class="form-control" id="description-{{ loop.index0 }}" name="description-{{ loop.index0 }}" rows="3" placeholder="Describe your plan in detail...">{% if plan.description is not sameas None %}{{ plan.description }}{% endif %}</textarea>
+                </div>
+
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="hidden" class="note_to_seller_required-check" data-id="{{ loop.index0 }}" name="note_to_seller_required-{{ loop.index0 }}" value="no">
+                    <input type="checkbox" value="yes" class="custom-control-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}" {% if plan.requirements.note_to_seller_required %} checked {% endif %}>
+                    <label class="custom-control-label form-label-bold" for="note_to_seller_required-{{ loop.index0 }}">
+                      Require Customer Note
+                    </label>
+                  </div>
+                  <small class="form-text text-muted">Useful for product personalisation or custom requirements</small>
+                </div>
+
+                <div class="form-group extra_fields">
+                  <label for="note_to_buyer_message-{{ loop.index0 }}" class="form-label-bold">Message for Customer</label>
+                  <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}" rows="2" placeholder="What would you like to ask your customer?">{{ plan.requirements.note_to_buyer_message }}</textarea>
+                  <small class="form-text text-muted">This message appears during checkout</small>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="position-{{ loop.index0 }}" class="form-label-bold">Display Position</label>
+                    <input type="number" step="1" data-plan-name-position="{{ plan.title|safe }}" name="position-{{ loop.index0 }}" {% if plan.position %} value="{{ plan.position }}" {% else %} value="0" {% endif %} id="position-{{ loop.index0 }}" class="form-control" placeholder="0">
+                    <small class="form-text text-muted">Lower numbers appear first</small>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <div class="custom-control custom-checkbox mt-4">
+                      <input type="checkbox" value="yes" class="custom-control-input" name="private-{{ loop.index0 }}" id="private-{{ loop.index0 }}" {% if plan.private %} checked {% endif %}>
+                      <label class="custom-control-label form-label-bold" for="private-{{ loop.index0 }}">
+                        Private Plan
+                      </label>
+                    </div>
+                    <small class="form-text text-muted">Won't appear on homepage. Share link directly.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Subscription End Date -->
+              <div class="plan-form-section">
+                <h4 class="plan-section-title">Subscription End Date</h4>
+
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" value="yes" class="custom-control-input toggle" name="cancel_at_set-{{ loop.index0 }}" id="cancel_at_set-{{ loop.index0 }}" {% if plan.cancel_at and plan.cancel_at != 0 %} checked {% endif %}>
+                    <label class="custom-control-label form-label-bold" for="cancel_at_set-{{ loop.index0 }}">
+                      Set Automatic Cancellation Date
+                    </label>
+                  </div>
+                  <small class="form-text text-muted">Useful for seasonal memberships (e.g., football club seasons)</small>
+                </div>
+
+                <div class="extra_fields">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="cancel_at_date-{{ loop.index0 }}" class="form-label-bold">Cancellation Date</label>
+                      <input type="date" class="form-control" name="cancel_at-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%Y-%m-%d") }}" {% endif %} id="cancel_at_date-{{ loop.index0 }}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="cancel_at_time-{{ loop.index0 }}" class="form-label-bold">Cancellation Time</label>
+                      <input type="time" class="form-control" name="cancel_at_time-{{ loop.index0 }}" {% if plan.cancel_at != 0 %} value="{{ plan.cancel_at|timestampToDate("%H:%M") }}" {% endif %} id="cancel_at_time-{{ loop.index0 }}">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label-bold">Proration Behaviour</label>
+                    <div class="custom-control custom-radio">
+                      <input class="custom-control-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="off" id="prorate_option2-{{ loop.index0 }}" checked>
+                      <label class="custom-control-label" for="prorate_option2-{{ loop.index0 }}">
+                        Do Not Prorate
+                      </label>
+                    </div>
+                    <small class="form-text text-muted ml-4 mb-2">Charge full amount even if subscription ends early</small>
+
+                    <div class="custom-control custom-radio">
+                      <input class="custom-control-input" type="radio" name="proration_behavior-{{ loop.index0 }}" value="on" id="prorate_option1-{{ loop.index0 }}" {% if plan.proration_behavior == "create_prorations" %} checked {% endif %} />
+                      <label class="custom-control-label" for="prorate_option1-{{ loop.index0 }}">
+                        Prorate
+                      </label>
+                    </div>
+                    <small class="form-text text-muted ml-4">Charge only for time used if subscription ends early</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Share URL -->
+              <div class="plan-share-url">
+                <label class="form-label-bold">Share URL</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" readonly value="{{url_for("views.view_plan", uuid=plan.uuid, plan_title=plan.title, _external=True)}}" id="shareUrl-{{ loop.index0 }}">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('shareUrl-{{ loop.index0 }}')">
+                      Copy
+                    </button>
+                  </div>
+                </div>
+                <small class="form-text text-muted">Share this link to allow customers to sign up directly to this plan</small>
+              </div>
+
+            </div>
+            {% endfor %}
+
+            <!-- Save Button -->
+            <div class="detail-panel-footer">
+              <button type="submit" class="disable-on-click btn btn-primary btn-lg btn-block">
+                Save All Changes
+              </button>
+              <small class="text-muted text-center d-block mt-2">
+                All modifications to all plans will be saved
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </form>
   </div>
 </main>
+
+<script>
+// Master-Detail Plan Switching
+(function() {
+  const currencySymbol = '{{ default_currency_symbol|safe }}';
+  let currentPlanIndex = 0;
+
+  // Format currency value
+  function formatCurrency(value) {
+    if (!value || isNaN(value) || value === '' || parseFloat(value) === 0) {
+      return null;
+    }
+    const num = parseFloat(value);
+    return currencySymbol + num.toFixed(2);
+  }
+
+  // Switch to a different plan
+  function switchToPlan(planIndex) {
+    currentPlanIndex = planIndex;
+
+    // Update master panel - active state
+    document.querySelectorAll('.plan-list-item').forEach((item, idx) => {
+      if (idx === planIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+
+    // Update detail panel - show/hide forms
+    document.querySelectorAll('.plan-detail-form').forEach((form, idx) => {
+      if (idx === planIndex) {
+        form.classList.add('active');
+      } else {
+        form.classList.remove('active');
+      }
+    });
+
+    // Update mobile selector
+    const mobileSelect = document.getElementById('mobilePlanSelect');
+    if (mobileSelect) {
+      mobileSelect.value = planIndex;
+    }
+
+    // Update view link
+    updateViewLink(planIndex);
+
+    // Scroll to top of detail panel
+    const detailPanel = document.querySelector('.detail-panel');
+    if (detailPanel) {
+      detailPanel.scrollTop = 0;
+    }
+  }
+
+  // Update the "View" link in header
+  function updateViewLink(planIndex) {
+    const planUuids = [
+      {% for plan in plans %}'{{ plan.uuid }}'{% if not loop.last %},{% endif %}{% endfor %}
+    ];
+    const planTitles = [
+      {% for plan in plans %}'{{ plan.title|safe }}'{% if not loop.last %},{% endif %}{% endfor %}
+    ];
+
+    const viewLink = document.getElementById('viewPlanLink');
+    if (viewLink && planUuids[planIndex]) {
+      viewLink.href = '{{ url_for("views.view_plan", uuid="PLAN_UUID", plan_title="PLAN_TITLE") }}'
+        .replace('PLAN_UUID', planUuids[planIndex])
+        .replace('PLAN_TITLE', encodeURIComponent(planTitles[planIndex]));
+    }
+  }
+
+  // Update plan list item display
+  function updatePlanListItem(planIndex) {
+    const titleInput = document.getElementById('title-' + planIndex);
+    const intervalAmountInput = document.getElementById('interval_amount-' + planIndex);
+    const intervalUnitSelect = document.getElementById('interval_unit-' + planIndex);
+    const sellPriceInput = document.getElementById('sell_price-' + planIndex);
+    const subscriptionCheckbox = document.getElementById('subscription-' + planIndex);
+    const instantPaymentCheckbox = document.getElementById('instant_payment-' + planIndex);
+
+    // Update title in list
+    const titleElement = document.querySelector('[data-plan-title="' + planIndex + '"]');
+    if (titleElement && titleInput) {
+      const newTitle = titleInput.value.trim() || 'Untitled Plan';
+      titleElement.textContent = newTitle;
+    }
+
+    // Update pricing in list
+    const metaElement = document.querySelector('[data-plan-meta="' + planIndex + '"]');
+    if (metaElement) {
+      let pricingParts = [];
+
+      // Recurring pricing
+      if (subscriptionCheckbox && subscriptionCheckbox.checked) {
+        const recurringAmount = formatCurrency(intervalAmountInput ? intervalAmountInput.value : null);
+        const intervalUnit = intervalUnitSelect ? intervalUnitSelect.value : 'monthly';
+        if (recurringAmount) {
+          pricingParts.push(recurringAmount + '/' + intervalUnit);
+        }
+      }
+
+      // Upfront pricing
+      if (instantPaymentCheckbox && instantPaymentCheckbox.checked) {
+        const upfrontAmount = formatCurrency(sellPriceInput ? sellPriceInput.value : null);
+        if (upfrontAmount) {
+          if (pricingParts.length > 0) {
+            pricingParts.push('+ ' + upfrontAmount + ' upfront');
+          } else {
+            pricingParts.push(upfrontAmount + ' upfront');
+          }
+        }
+      }
+
+      if (pricingParts.length > 0) {
+        metaElement.innerHTML = pricingParts.join(' ');
+      } else {
+        metaElement.innerHTML = '<span class="text-muted">No pricing set</span>';
+      }
+    }
+
+    // Update mobile dropdown option
+    const mobileSelect = document.getElementById('mobilePlanSelect');
+    if (mobileSelect && mobileSelect.options[planIndex]) {
+      const option = mobileSelect.options[planIndex];
+      const newTitle = titleInput ? titleInput.value.trim() : 'Untitled Plan';
+
+      let optionText = newTitle;
+      if (subscriptionCheckbox && subscriptionCheckbox.checked) {
+        const recurringAmount = formatCurrency(intervalAmountInput ? intervalAmountInput.value : null);
+        const intervalUnit = intervalUnitSelect ? intervalUnitSelect.value : 'monthly';
+        if (recurringAmount) {
+          optionText += ' - ' + recurringAmount + '/' + intervalUnit;
+        }
+      }
+      option.textContent = optionText;
+    }
+  }
+
+  // Copy to clipboard helper
+  window.copyToClipboard = function(elementId) {
+    const input = document.getElementById(elementId);
+    if (input) {
+      input.select();
+      document.execCommand('copy');
+
+      // Visual feedback
+      const btn = input.nextElementSibling.querySelector('button');
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('btn-success');
+      btn.classList.remove('btn-outline-secondary');
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-secondary');
+      }, 2000);
+    }
+  };
+
+  // Set up event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    // Master panel click handlers
+    document.querySelectorAll('.plan-list-item').forEach((item, index) => {
+      item.addEventListener('click', function() {
+        switchToPlan(index);
+      });
+    });
+
+    // Mobile selector
+    const mobileSelect = document.getElementById('mobilePlanSelect');
+    if (mobileSelect) {
+      mobileSelect.addEventListener('change', function() {
+        switchToPlan(parseInt(this.value));
+      });
+    }
+
+    // Set up input listeners for all plans
+    const planIndexes = document.querySelectorAll('input[name="planIndex"]');
+    planIndexes.forEach(function(indexInput) {
+      const planIndex = parseInt(indexInput.value);
+
+      // Title changes
+      const titleInput = document.getElementById('title-' + planIndex);
+      if (titleInput) {
+        titleInput.addEventListener('input', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+
+      // Recurring amount changes
+      const intervalAmountInput = document.getElementById('interval_amount-' + planIndex);
+      if (intervalAmountInput) {
+        intervalAmountInput.addEventListener('input', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+
+      // Interval unit changes
+      const intervalUnitSelect = document.getElementById('interval_unit-' + planIndex);
+      if (intervalUnitSelect) {
+        intervalUnitSelect.addEventListener('change', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+
+      // Upfront price changes
+      const sellPriceInput = document.getElementById('sell_price-' + planIndex);
+      if (sellPriceInput) {
+        sellPriceInput.addEventListener('input', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+
+      // Subscription checkbox
+      const subscriptionCheckbox = document.getElementById('subscription-' + planIndex);
+      if (subscriptionCheckbox) {
+        subscriptionCheckbox.addEventListener('change', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+
+      // Instant payment checkbox
+      const instantPaymentCheckbox = document.getElementById('instant_payment-' + planIndex);
+      if (instantPaymentCheckbox) {
+        instantPaymentCheckbox.addEventListener('change', function() {
+          updatePlanListItem(planIndex);
+        });
+      }
+    });
+
+    // Initialize view link
+    updateViewLink(0);
+  });
+})();
+</script>
+
+<style>
+/* Edit Plans Specific Styles */
+.edit-plans-header {
+  margin-bottom: 2rem;
+}
+
+.edit-section {
+  margin-bottom: 3rem;
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+}
+
+.section-title-alt {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.section-description {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.form-card label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-label-bold {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Mobile Plan Selector */
+.mobile-plan-selector {
+  display: none;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Master-Detail Layout */
+.master-detail-container {
+  display: flex;
+  gap: 1.5rem;
+  min-height: 600px;
+}
+
+/* Master Panel (Plans List) */
+.master-panel {
+  flex: 0 0 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.plans-list-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plans-list-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.plans-count {
+  background: rgba(255,255,255,0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.plans-list {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.plan-list-item {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-list-item:last-child {
+  border-bottom: none;
+}
+
+.plan-list-item:hover {
+  background: #f8f9fa;
+}
+
+.plan-list-item.active {
+  background: linear-gradient(to right, rgba(37, 117, 252, 0.1) 0%, rgba(37, 117, 252, 0.05) 100%);
+  border-left: 4px solid #2575fc;
+}
+
+.plan-list-content {
+  flex: 1;
+}
+
+.plan-list-title {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.plan-list-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.plan-list-arrow {
+  color: #ccc;
+  transition: all 0.2s ease;
+}
+
+.plan-list-item.active .plan-list-arrow {
+  color: #2575fc;
+  transform: translateX(4px);
+}
+
+/* Detail Panel */
+.detail-panel {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-panel-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 1.25rem 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-panel-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.plan-detail-form {
+  display: none;
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.plan-detail-form.active {
+  display: block;
+}
+
+.detail-panel-footer {
+  padding: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+  background: #fafbfc;
+}
+
+/* Plan Form Sections */
+.plan-form-section {
+  background: #fafbfc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #2575fc;
+}
+
+.plan-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2575fc;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.plan-image-preview {
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  display: block;
+}
+
+.plan-share-url {
+  background: #fafbfc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-left: 4px solid #28a745;
+}
+
+/* Custom checkbox/radio styles */
+.custom-control-label {
+  font-weight: 500;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #2575fc;
+  border-color: #2575fc;
+}
+
+/* Form improvements */
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.15);
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.badge-sm {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .master-panel {
+    display: none;
+  }
+
+  .mobile-plan-selector {
+    display: block;
+  }
+
+  .master-detail-container {
+    flex-direction: column;
+  }
+
+  .detail-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .plan-form-section {
+    padding: 1rem;
+  }
+
+  .detail-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .detail-panel-header h4 {
+    font-size: 1rem;
+  }
+}
+</style>
 
 {% endblock body %}

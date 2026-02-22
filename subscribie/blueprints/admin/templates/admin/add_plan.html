@@ -1,280 +1,368 @@
-{% extends "admin/layout.html" %}                                                
-{% block title %} Dashboard {% endblock %}                                                                                                        
-                                                                                 
-{% block body %}  
+{% extends "admin/layout.html" %}
+{% block title %} Add Plan {% endblock %}
 
-<h2 class="text-center text-dark mb-3">Create a new plan</h2>
+{% block body %}
 
-<div class="container">
+<div class="container add-plan-header">
+  <h2 class="text-center text-dark mb-4">Create a New Plan</h2>
+
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>   
-    <li class="breadcrumb-item active" aria-current="page">Add new plan</li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Manage My Shop</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Add New Plan</li>
   </ul>
 </div>
 
 {% from "_formhelpers.html" import render_field %}
 
 <main>
-  <div class="section">
+  <div class="container">
     {% if form.errors %}
-    <div class="container">
-      <div class="alert alert-danger col-md-6 mx-auto">
-        <p><strong class="alert-heading">Oops, something is missing. Please take a look at:</strong></p>
-        <ul class=errors>                                                            
-          {% for error in form.errors %}                                              
-            <li>{{ error }}</li>                                                       
-          {% endfor %}                                                                 
-        </ul> 
-      </div>                                                        
-    </div>                                                                    
-      {% endif %} 
+    <div class="alert-card alert-warning mb-4">
+      <h4 class="mb-3"><strong>⚠ Form Validation Errors</strong></h4>
+      <p class="mb-2">Please review the following:</p>
+      <ul class="errors mb-0">
+        {% for error in form.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
 
-    <div class="container mb-3">
+    <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate>
+      {{ form.csrf_token }}
 
-      <div class="card mx-auto col-md-6"> 
-       <form method="post" action="#" enctype="multipart/form-data" class="needs-validation" novalidate>
-           {{ form.csrf_token }}
+      <!-- Hidden Fields -->
+      <div style="display:none">
+        {{ render_field(form.company_name, value=company.name ) }}
+        <input name="email" type="hidden" value='email@example.com' />
+      </div>
 
-          <div style="display:none">
-            {{ render_field(form.company_name, value=company.name ) }}
-            <input name="email" type="hidden" value='email@example.com' />
-          </div>
+      <!-- Single Plan Form Container -->
+      <div class="add-plan-container">
+
+        <!-- Basic Information -->
+        <div class="plan-form-section">
+          <h4 class="plan-section-title">Basic Information</h4>
 
           <div class="form-group">
-            <label for="title-0" class="col-form-label font-weight-bolder">Plan or Product name
-            <small class="form-text text-muted">
-            What are you selling on subscription?
-            You can also sell one-off items which don't have a subscription and only have a one-off charge.
-            </small>
-            </label>
+            <label for="title-0" class="form-label-bold">Plan or Product Name <span class="text-danger">*</span></label>
             <input name="title-0" id="title-0" class="form-control" required>
-						<div class="invalid-feedback">
-							Plan name is required.
-						</div>
+            <div class="invalid-feedback">Plan name is required.</div>
+            <small class="form-text text-muted">
+              What are you selling on subscription? You can also sell one-off items which don't have a subscription and only have a one-off charge.
+            </small>
           </div>
 
-          <fieldset class="form-group">
-            <legend class="col-form-label font-weight-bolder">Plan selling points</legend>
-              <div>
-                <input name="selling_points-0-0" id="selling_points-0-0" class="form-control mb-2 col-md">
-              </div>
-              <div>
-                <input name="selling_points-0-1"  id="selling_points-0-1" class="form-control mb-2 col-md">
-              </div>
-              <div>
-                <input name="selling_points-0-3"  id="selling_points-0-3" class="form-control mb-2 col-md">
-              </div>
-          </fieldset>
+          <div class="form-group">
+            <label class="form-label-bold">Product Selling Points</label>
+            <small class="form-text text-muted mb-2">Highlight key features of this plan</small>
+            <input name="selling_points-0-0" id="selling_points-0-0" class="form-control mb-2" placeholder="Selling point 1">
+            <input name="selling_points-0-1" id="selling_points-0-1" class="form-control mb-2" placeholder="Selling point 2">
+            <input name="selling_points-0-3" id="selling_points-0-3" class="form-control mb-2" placeholder="Selling point 3">
+          </div>
 
           <div class="form-group">
-
-            <label for="image-0" class="col-form-label font-weight-bolder">Product image</label>
-            <p>Supported image upload extensions: <br>
-               jpg, jpe, jpeg, png, gif, svg, bmp</p>
+            <label for="image-0" class="form-label-bold">Product Image</label>
+            <small class="form-text text-muted mb-2">Supported: jpg, jpeg, png, gif, svg, bmp</small>
             <input type="file" name="image-0" id="image-0" class="form-control-file">
           </div>
-          
-          <hr>
-         
-          <fieldset>
-            <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" value="yes" class="form-check-input toggle" name="subscription-0" id="subscription-0">
-                <label class="form-check-label font-weight-bolder" for="subscription-0">Recurring Charge?</label>
-              </div>
+        </div>
+
+        <!-- Pricing: Recurring Charge -->
+        <div class="plan-form-section">
+          <h4 class="plan-section-title">Recurring Charge</h4>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" value="yes" class="custom-control-input toggle" name="subscription-0" id="subscription-0">
+              <label class="custom-control-label form-label-bold" for="subscription-0">
+                Enable Recurring Subscription
+              </label>
             </div>
-       
-            <div class="extra_fields"> 
-              
-              <div class="form-group">
-                <label for="interval_amount-0" id="interval_amount_label" class="col-form-label font-weight-bolder">Recurring Amount</label>
+          </div>
+
+          <div class="extra_fields">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="interval_amount-0" class="form-label-bold">Recurring Amount</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{ default_currency_symbol }}</span>
                   </div>
-                  <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01">
+                  <input name="interval_amount-0" id="interval_amount-0" class="form-control" type="number" step="0.01" placeholder="0.00">
                 </div>
-              </div> 
-            
-              <div class="form-group">
-               
-                <label for="interval_unit-0" class="col-form-label font-weight-bolder">Interval Unit</label>
-                <div class="input-group">
-                  <select name="interval_unit-0" id="interval_unit-0" class="form-control">
-                    <option value="monthly">Monthly</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="yearly">Yearly</option>
-                  </select>
-                </div>
-              </div> 
-
-             <div class="form-group">
-                <label for="days_before_first_charge-0" class="col-form-label font-weight-bolder">Days before the first charge</label>
-                <input id="days_before_first_charge-0" name="days_before_first_charge-0" type="number" value="0" class="form-control" >
-                <small class="form-text text-muted">
-                  "Cooling off period" before the first charge happens. Leave 0 to charge the customer as soon as possible
-                </small>
               </div>
-            
-              <div class="form-group">
-                <label for="trial_period_days-0" class="col-form-label font-weight-bolder">Free trial period number of days</label>
-                <input id="trial_period_days-0" name="trial_period_days-0" type="number" value="0" class="form-control" >
-                <small class="form-text text-muted">
-                If you want to offer a free trial, simply put the number of days and the plan
-                will only start charging after the trial has ended. When creating a subscription with a
-                trial period, no payment is taken from the customer.
-                An immediate invoice is still created, but for a zero amount.
-                </small>
+
+              <div class="form-group col-md-6">
+                <label for="interval_unit-0" class="form-label-bold">Billing Frequency</label>
+                <select name="interval_unit-0" id="interval_unit-0" class="form-control">
+                  <option value="monthly">Monthly</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
               </div>
-            
-            </div>
-          </fieldset>
-
-          <hr>
-
-          <fieldset>
-            <div class="form-group form-check">
-              <input type="checkbox" value="yes" class="form-check-input toggle" name="instant_payment-0" id="instant_payment-0" >
-              <label class="form-check-label font-weight-bolder" for="instant_payment-0">Add upfront charge</label>
             </div>
 
-            <div class="form-group extra_fields" id="upfront_price" >
-              <label for="sell_price-0" class="col-form-label font-weight-bolder">Upfront price</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">{{ default_currency_symbol }}</span>
-                </div>
-                <input type="number" step="0.01" name="sell_price-0" id="sell_price-0" class="form-control">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="days_before_first_charge-0" class="form-label-bold">Days Before First Charge</label>
+                <input id="days_before_first_charge-0" name="days_before_first_charge-0" type="number" value="0" class="form-control" min="0">
+                <small class="form-text text-muted">Cooling-off period before charging. Use 0 to charge immediately.</small>
               </div>
-            </div> 
-          </fieldset>
 
-          <hr>
-
-          <fieldset>
-            <!--- Plan Description -->
-            <div class="form-group ">
-              <div class="form-check">
-                <input type="checkbox" value="yes" class="form-check-input toggle" name="plan_description_required-0" id="plan_description_required-0">
-                <label class="form-check-label font-weight-bolder" for="plan_description_required-0">Plan Description</label>
+              <div class="form-group col-md-6">
+                <label for="trial_period_days-0" class="form-label-bold">Free Trial Period (Days)</label>
+                <input id="trial_period_days-0" name="trial_period_days-0" type="number" value="0" class="form-control" placeholder="0">
+                <small class="form-text text-muted">Number of days for free trial. No payment taken during trial.</small>
               </div>
-              <small class="form-text text-muted">
-                Add a paragraph describing the plan (optional).
-              </small>
             </div>
+          </div>
+        </div>
 
-            <div class="form-group extra_fields" id="message" >
-              <label for="description-0" class="col-form-label font-weight-bolder">Plan description</label>
-              <textarea class="form-control" id="description-0" name="description-0" rows="3"></textarea>
-              <small class="form-text text-muted">
-                Enter a description about the plan.
-              </small>
+        <!-- Pricing: Upfront Charge -->
+        <div class="plan-form-section">
+          <h4 class="plan-section-title">Upfront Charge</h4>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" value="yes" class="custom-control-input toggle" name="instant_payment-0" id="instant_payment-0">
+              <label class="custom-control-label form-label-bold" for="instant_payment-0">
+                Add Upfront Charge
+              </label>
             </div>
+            <small class="form-text text-muted">One-time payment at the start</small>
+          </div>
 
-            <!-- End Plan Description -->
-
-            <div class="form-group ">
-              <div class="form-check">
-                <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
-                <label class="form-check-label font-weight-bolder" for="note_to_seller_required-0">Require customer note</label>
+          <div class="form-group extra_fields">
+            <label for="sell_price-0" class="form-label-bold">Upfront Price</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ default_currency_symbol }}</span>
               </div>
-              <small class="form-text text-muted">
-                Useful for plan personalisation, customisation or variations
-              </small>
+              <input type="number" step="0.01" name="sell_price-0" id="sell_price-0" class="form-control" placeholder="0.00">
             </div>
-            
-            <div class="form-group extra_fields" id="message" >
-              <label for="note_to_buyer_message-0" class="col-form-label font-weight-bolder">Message for the customer</label>
-              <textarea class="form-control" id="note_to_buyer_message-0" name="note_to_buyer_message-0" rows="3"></textarea>
-              <small class="form-text text-muted">
-                This message will be shown during checkout to the customer
-              </small>
+          </div>
+        </div>
+
+        <!-- Plan Settings -->
+        <div class="plan-form-section">
+          <h4 class="plan-section-title">Plan Settings</h4>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" value="yes" class="custom-control-input toggle" name="plan_description_required-0" id="plan_description_required-0">
+              <label class="custom-control-label form-label-bold" for="plan_description_required-0">
+                Add Plan Description
+              </label>
+            </div>
+            <small class="form-text text-muted">Optional paragraph describing this plan</small>
+          </div>
+
+          <div class="form-group extra_fields">
+            <label for="description-0" class="form-label-bold">Plan Description</label>
+            <textarea class="form-control" id="description-0" name="description-0" rows="3" placeholder="Describe your plan in detail..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" value="yes" class="custom-control-input toggle" name="note_to_seller_required-0" id="note_to_seller_required-0">
+              <label class="custom-control-label form-label-bold" for="note_to_seller_required-0">
+                Require Customer Note
+              </label>
+            </div>
+            <small class="form-text text-muted">Useful for product personalisation or custom requirements</small>
+          </div>
+
+          <div class="form-group extra_fields">
+            <label for="note_to_buyer_message-0" class="form-label-bold">Message for Customer</label>
+            <textarea class="form-control" id="note_to_buyer_message-0" name="note_to_buyer_message-0" rows="2" placeholder="What would you like to ask your customer?"></textarea>
+            <small class="form-text text-muted">This message appears during checkout</small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="position-0" class="form-label-bold">Display Position</label>
+              <input type="number" step="1" name="position-0" id="position-0" class="form-control" placeholder="0">
+              <small class="form-text text-muted">Lower numbers appear first</small>
             </div>
 
-
-            <div class="form-group">
-              <label for="position-0" class="col-form-label font-weight-bolder">Position</label>
-              <div class="input-group">
-                <input type="number" step="1" name="position-0" id="position-0" class="form-control"
-                placeholder="0">
-              </div>
-              <small class="form-text text-muted">
-                Control the order in which plans appear. Lower number appears first
-              </small>
-            </div>
-            <div class="form-group">
-                              <div class="form-check">
-                                <input type="checkbox" value="yes" class="form-check-input" name="private" id="private">
-                                <label class="form-check-label font-weight-bolder" for="private">Private</label>
-                              </div>
-                              <small class="form-text text-muted">
-                              Want to create a private plan? Mark a plan as private, and it won't appear on the homepage.
-                              Then, you can send a link to your customer(s) to sign-up to the private plan.
-                              </small>
-            </div>
-
-            <div class="form-group ">
-                  <div class="form-check">
-                    <input type="checkbox" value="yes" class="form-check-input toggle" name="cancel_at_set-0" id="cancel_at_set-0">
-                    <label class="form-check-label font-weight-bolder" for="cancel_at_set-0">Cancel at</label>
-                  </div>
-                  <small class="form-text text-muted">
-                    Cancel all subscriptions to this plan at this date / time. This is useful if you run a
-                    membership style organisation with seasons (such as a Football club).
-                  </small>
-            </div>
-            <div class="form-group extra_fields" id="cancel_at" >
-              <label for="cancel_at-0" class="col-form-label font-weight-bolder">Date &amp; time to</label>
-              <label class="form-check-label font-weight-bolder" for="cancel_at_date">Cancel at</label>
-              <input type="date" class="form-control" name="cancel_at_date" id="cancel_at_date">
-              <small class="form-text text-muted mb-2">
-                Date (e.g. 30th June 2022)
-              </small>
-              <input type="time" class="form-control" name="cancel_at_time" value="00:00" id="cancel_at_time">
-              <small class="form-text text-muted">
-                Time (e.g. midnight)
-              </small>
-              <br />
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="proration_behavior-0" value="off" id="prorate_option2" checked>
-                <label class="form-check-label" for="prorate_option2">
-                  Do not prorate
+            <div class="form-group col-md-6">
+              <div class="custom-control custom-checkbox mt-4">
+                <input type="checkbox" value="yes" class="custom-control-input" name="private" id="private">
+                <label class="custom-control-label form-label-bold" for="private">
+                  Private Plan
                 </label>
-                <small class="form-text text-muted">
-                  Charge subscribers the full amount of the subscription, even
-                  if it ends before the period is over.
-                </small>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="proration_behavior-0" value="on" id="prorate_option1">
-                <label class="form-check-label" for="prorate_option1">
+              <small class="form-text text-muted">Won't appear on homepage. Share link directly.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription End Date -->
+        <div class="plan-form-section">
+          <h4 class="plan-section-title">Subscription End Date</h4>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" value="yes" class="custom-control-input toggle" name="cancel_at_set-0" id="cancel_at_set-0">
+              <label class="custom-control-label form-label-bold" for="cancel_at_set-0">
+                Set Automatic Cancellation Date
+              </label>
+            </div>
+            <small class="form-text text-muted">Useful for seasonal memberships (e.g., football club seasons)</small>
+          </div>
+
+          <div class="extra_fields">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="cancel_at_date" class="form-label-bold">Cancellation Date</label>
+                <input type="date" class="form-control" name="cancel_at_date" id="cancel_at_date">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="cancel_at_time" class="form-label-bold">Cancellation Time</label>
+                <input type="time" class="form-control" name="cancel_at_time" value="00:00" id="cancel_at_time">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label-bold">Proration Behaviour</label>
+              <div class="custom-control custom-radio">
+                <input class="custom-control-input" type="radio" name="proration_behavior-0" value="off" id="prorate_option2" checked>
+                <label class="custom-control-label" for="prorate_option2">
+                  Do Not Prorate
+                </label>
+              </div>
+              <small class="form-text text-muted ml-4 mb-2">Charge full amount even if subscription ends early</small>
+
+              <div class="custom-control custom-radio">
+                <input class="custom-control-input" type="radio" name="proration_behavior-0" value="on" id="prorate_option1">
+                <label class="custom-control-label" for="prorate_option1">
                   Prorate
                 </label>
-                <small class="form-text text-muted">
-                  Don't charge subscribers the full amount if the subscription
-                  ends before the period is over. For example, if a monthly
-                  subscription ends partway through the month, the final charge
-                  will be less since it is prorated based on the time used.
-                </small>
               </div>
+              <small class="form-text text-muted ml-4">Charge only for time used if subscription ends early</small>
             </div>
-          </fieldset>
-        
-          <button type="submit" class="disable-on-click btn btn-primary btn-block my-3 mx-auto">Save</button>
-          <span id="error"></span>
+          </div>
+        </div>
 
-        </form>
+        <!-- Save Button -->
+        <div class="form-actions">
+          <button type="submit" class="disable-on-click btn btn-primary btn-lg btn-block">
+            Create Plan
+          </button>
+          <small class="text-muted text-center d-block mt-2">
+            You can edit this plan after creation
+          </small>
+        </div>
+
       </div>
-
-    </div>
-  </div><!-- end .section -->
-<script>
-
-checkbox = document.getElementById("cancel_at_set-0");
-dateId = document.getElementById("cancel_at_date");
- 
-checkbox.addEventListener('click', function() { dateId.toggleAttribute('required'); })
-</script>
+    </form>
+  </div>
 </main>
+
+<script>
+// Toggle cancel_at_date required attribute
+(function() {
+  const checkbox = document.getElementById("cancel_at_set-0");
+  const dateField = document.getElementById("cancel_at_date");
+
+  if (checkbox && dateField) {
+    checkbox.addEventListener('click', function() {
+      dateField.toggleAttribute('required');
+    });
+  }
+})();
+</script>
+
+<style>
+/* Add Plan Specific Styles */
+.add-plan-header {
+  margin-bottom: 2rem;
+}
+
+.add-plan-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.form-label-bold {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Plan Form Sections */
+.plan-form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #2575fc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.plan-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2575fc;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.form-actions {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Custom checkbox/radio styles */
+.custom-control-label {
+  font-weight: 500;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #2575fc;
+  border-color: #2575fc;
+}
+
+/* Form improvements */
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.15);
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+/* Alert card styles */
+.alert-card {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.alert-card.alert-warning {
+  background: #fff3cd;
+  border-left-color: #ffc107;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .plan-form-section {
+    padding: 1.5rem;
+  }
+
+  .form-actions {
+    padding: 1.5rem;
+  }
+}
+</style>
+
 {% endblock body %}

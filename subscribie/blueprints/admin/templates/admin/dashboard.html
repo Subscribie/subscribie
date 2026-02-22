@@ -3,624 +3,580 @@
 
 {% block body %}
 
-<h2 class="text-center text-dark mb-3">Manage My Shop</h2>
+<div class="container dashboard-header">
+  <h2 class="text-center text-dark mb-4">Manage My Shop</h2>
 
-<div class="container">
   <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Shop</a></li>
-    <li class="breadcrumb-item active justify-content-between align-items" aria-current="page">Manage My Shop</li>
+    <li class="breadcrumb-item active" aria-current="page">Manage My Shop</li>
   </ul>
+
+  <!-- Search Bar -->
+  <div class="dashboard-search">
+    <div class="search-input-wrapper">
+      <input type="text"
+             id="dashboardSearch"
+             class="form-control"
+             placeholder="Search for features, settings, or actions..."
+             autocomplete="off">
+      <button type="button"
+              id="clearSearchBtn"
+              class="clear-search-btn"
+              aria-label="Clear search"
+              title="Clear search (or press ESC)">
+        ✕
+      </button>
+    </div>
+    <div id="searchResultSummary" class="search-result-summary"></div>
+  </div>
+
+  <!-- Checklist Alerts -->
+  {% if stripe_connected is sameas False or reply_to_email_address is sameas None %}
+  <div class="alert-card alert-warning">
+    <h4 class="mb-3"><strong>⚠ Action Required</strong></h4>
+    <p class="mb-2">Please complete these important tasks to get the most out of your shop:</p>
+    <div>
+      {% if stripe_connected is sameas False %}
+      <div class="checklist-item">
+        <span>Stripe connection is not yet complete</span>
+        <a class="btn btn-warning btn-sm" href="{{ url_for('admin.stripe_connect') }}">Review Stripe</a>
+      </div>
+      {% endif %}
+      {% if reply_to_email_address is sameas None %}
+      <div class="checklist-item">
+        <span>Set your support email address to improve subscriber support</span>
+        <a class="btn btn-info btn-sm" href="{{ url_for('admin.set_reply_to_email') }}">Set Email</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Stats Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ num_active_subscribers }}</div>
+      <div class="stat-label">Active Subscribers</div>
+      <a href="{{ url_for('admin.subscribers', action='show_active')}}" class="stat-link">View Details →</a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ num_subscribers }}</div>
+      <div class="stat-label">Subscribers Since Starting</div>
+      <a href="{{ url_for('admin.subscribers') }}" class="stat-link">View All →</a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ num_signups }}</div>
+      <div class="stat-label">Total Signups{% if settings.donations_enabled %} / Donations{% endif %}</div>
+      <a href="{{ url_for('admin.subscribers') }}" class="stat-link">View All →</a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ num_one_off_purchases }}</div>
+      <div class="stat-label">One-Off Purchases</div>
+      <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}" class="stat-link">View Details →</a>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ num_recent_subscription_cancellations }}</div>
+      <div class="stat-label">Cancellations (30 days)</div>
+      <a href="{{ url_for('admin.show_recent_subscription_cancellations')}}" class="stat-link">View Details →</a>
+    </div>
+    {% if settings.donations_enabled %}
+    <div class="stat-card">
+      <div class="stat-number">{{ num_donations }}</div>
+      <div class="stat-label">Donations</div>
+      <a href="{{ url_for('admin.subscribers', action='show_donors')}}" class="stat-link">View Details →</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="quick-actions-grid">
+      <a href="{{ url_for('admin.edit') }}" class="quick-action-btn">✏️ Edit Plans</a>
+      <a href="{{ url_for('admin.add_plan') }}" class="quick-action-btn">➕ Add Plan</a>
+      <a href="{{ url_for('admin.subscribers') }}" class="quick-action-btn">👥 View Subscribers</a>
+      <a href="{{ url_for('admin.transactions') }}" class="quick-action-btn">💳 View Transactions</a>
+      <a href="{{ url_for('admin.upcoming_invoices') }}" class="quick-action-btn">📅 Upcoming Payments</a>
+      <a href="/" class="quick-action-btn" target="_blank">🏪 View My Shop</a>
+    </div>
+  </div>
 </div>
 
 <div class="container">
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title">Checklist</h3>
-      <p class="card-subtitle mb-3 text-muted">
-          Make sure everything's in order. If tasks appear below, then
-          you'll need to complete them to get the most out of your shop.
-      </p>
-      <ul>
-          {% if stripe_connected is sameas False %}
-          <li>
-          Stripe connection is not yet complete.
-          <a class="btn btn-warning"
-              href="{{ url_for('admin.stripe_connect') }}">
-              Review Stripe
+
+  <!-- Plans & Products Section -->
+  <div class="dashboard-section">
+    <h3 class="section-title">Plans & Products</h3>
+    <div class="feature-grid">
+
+      <div class="feature-card" data-searchable="plans edit manage">
+        <div class="feature-card-title">Manage Plans</div>
+        <div class="feature-card-description">Edit your existing subscription plans, pricing, and features.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.edit') }}" class="btn btn-primary">Edit Plans</a>
+          <a href="{{ url_for('admin.add_plan') }}" class="btn btn-outline-primary">Add New Plan</a>
+          <a href="{{ url_for('admin.delete_plan') }}" class="btn btn-outline-danger">Delete Plans</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="categories organise organize group">
+        <div class="feature-card-title">Plan Categories</div>
+        <div class="feature-card-description">Organise your plans into categories to help customers find what they need.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.list_categories') }}" class="btn btn-primary">Manage Categories</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="documents terms conditions">
+        <div class="feature-card-title">Plan Documents</div>
+        <div class="feature-card-description">Assign documents (e.g. Terms & Conditions) to your plans.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.list_documents') }}" class="btn btn-primary">Manage Documents</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="choice groups options products">
+        <div class="feature-card-title">Choice Groups</div>
+        <div class="feature-card-description">Offer customers a choice between different product options (e.g. Shampoo A or Shampoo B).</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.list_choice_groups') }}" class="btn btn-primary">Manage Choice Groups</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="questions forms survey">
+        <div class="feature-card-title">Questions (Forms)</div>
+        <div class="feature-card-description">Ask questions before signup and store answers for reporting.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.list_questions') }}" class="btn btn-primary">Manage Questions</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Subscribers & Payments Section -->
+  <div class="dashboard-section">
+    <h3 class="section-title">Subscribers & Payments</h3>
+    <div class="feature-grid">
+
+      <div class="feature-card" data-searchable="subscribers customers users view">
+        <div class="feature-card-title">My Subscribers</div>
+        <div class="feature-card-description">View and manage all your subscribers and their subscriptions.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.subscribers') }}" class="btn btn-primary">View Subscribers</a>
+          <a href="{{ url_for('admin.export_subscribers', csv='') }}" class="btn btn-outline-primary">Export CSV</a>
+          <a href="{{ url_for('admin.subscribers_bulk_operations_index') }}" class="btn btn-outline-primary">Bulk Operations</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="payments upcoming invoices future">
+        <div class="feature-card-title">Upcoming Payments</div>
+        <div class="feature-card-description">View upcoming payments from your subscribers.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.upcoming_invoices') }}" class="btn btn-primary">View Upcoming</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="transactions refunds payments history">
+        <div class="feature-card-title">Transactions & Refunds</div>
+        <div class="feature-card-description">View all transactions and manage refunds for your shop.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.transactions') }}" class="btn btn-primary">View Transactions</a>
+          <a href="{{ url_for('admin.invoices') }}" class="btn btn-outline-primary">View Invoices</a>
+          <a href="{{ url_for('admin.export_transactions', csv='') }}" class="btn btn-outline-primary">Export CSV</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="stripe sync backfill data">
+        <div class="feature-card-title">Stripe Data Sync</div>
+        <div class="feature-card-description">Synchronise data from Stripe to fix missed webhooks or data corrections.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.admin_backfill_form') }}" class="btn btn-primary">Backfill Data</a>
+          <a href="{{ url_for('admin.failed_invoices') }}" class="btn btn-outline-primary">Failed Invoices</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="notes orders customer messages">
+        <div class="feature-card-title">Order Notes</div>
+        <div class="feature-card-description">View optional notes customers provide when starting their subscription.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.order_notes') }}" class="btn btn-primary">View Notes</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="payment gateway stripe connect">
+        <div class="feature-card-title">Payment Gateway</div>
+        <div class="feature-card-description">Connect Stripe to accept payments from your customers.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.stripe_connect') }}" class="btn btn-success">
+            {% if stripe_connected %}Manage Stripe{% else %}Connect Stripe{% endif %}
           </a>
-          </li>
-          {% endif %}
-          {% if reply_to_email_address is sameas None %}
-          <br />
-          <li>
-            🔔 Improve support for your subscribers by <a href="{{ url_for('admin.set_reply_to_email') }}">setting your support email address 🔔</a>
-          </li>
-          {% endif %}
-      </ul>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="card px-3 py-3 my-3">
-    <h3 class="card-title justify-content-between d-flex">Stats</h3>
-    <p>You have: {{ num_active_subscribers }} <a href="{{ url_for('admin.subscribers', action='show_active')}}">subscribers</a> with <em>active</em> subscriptions.</p>
-    <p>You've had: {{ num_recent_subscription_cancellations }} <a href="{{ url_for('admin.show_recent_subscription_cancellations')}}">subscription cancellations</a> in the last 30 days.</p>
-    <p>You've had: {{ num_subscribers }} <a href="{{ url_for('admin.subscribers') }}">subscribers</a> since starting your shop.</p>
-    <p>You've had: {{ num_one_off_purchases }} <a href="{{ url_for('admin.subscribers', action='show_one_off_payments')}}">people</a> buy a one-off item from your shop.</p>
-    <p>You've had: {{ num_signups }} <a href="{{ url_for('admin.subscribers') }}">people</a> either buy one-off or start a subscription{% if settings.donations_enabled %} or donations {% endif %} since starting your shop.</p>
-    {% if settings.donations_enabled %}
-    <p>You've had: {{ num_donations }} <a href="{{ url_for('admin.subscribers', action='show_donors')}}">Donations</a> to your shop.</p>
-    {% endif %}
-    <p><a href="/" class="btn btn-success mb-2 mt-2" style="color: white" target="_blank">View my Shop</a></p>
+  <!-- Customisation Section -->
+  <div class="dashboard-section">
+    <h3 class="section-title">Customisation</h3>
+    <div class="feature-grid">
+
+      <div class="feature-card" data-searchable="logo branding image upload">
+        <div class="feature-card-title">Shop Logo</div>
+        <div class="feature-card-description">Upload your logo to display in your shop header.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.upload_logo') }}" class="btn btn-primary">Upload Logo</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="style colours colors theme design">
+        <div class="feature-card-title">Shop Style</div>
+        <div class="feature-card-description">Customise colours and styling for your shop.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('style.style_shop') }}" class="btn btn-primary">Edit Style</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="pages content custom">
+        <div class="feature-card-title">Custom Pages</div>
+        <div class="feature-card-description">Create custom pages on your shop, including private pages for subscribers.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('pages.get_module_pages_index') }}" class="btn btn-primary">Manage Pages</a>
+          <a href="{{ url_for('pages.update_private_pages') }}" class="btn btn-outline-primary">Set Private Pages</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="seo titles meta tags">
+        <div class="feature-card-title">SEO Titles</div>
+        <div class="feature-card-description">Set optimised title tags for your pages to improve search rankings.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('seo.list_pages') }}" class="btn btn-primary">Manage SEO</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="files upload download attachments">
+        <div class="feature-card-title">File Management</div>
+        <div class="feature-card-description">Upload files for your subscribers to access.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.upload_files') }}" class="btn btn-primary">Upload Files</a>
+          <a href="{{ url_for('admin.list_files') }}" class="btn btn-outline-primary">List Files</a>
+        </div>
+      </div>
+
+      <div class="feature-card" data-searchable="iframe embed widget integration">
+        <div class="feature-card-title">iFrame Embed</div>
+        <div class="feature-card-description">Embed your shop into another website using an iframe.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('iframe.get_iframe_embed') }}" class="btn btn-primary">Get Embed Code</a>
+        </div>
+      </div>
+
+    </div>
   </div>
 
+  <!-- Integrations Section -->
+  <div class="dashboard-section">
+    <h3 class="section-title">Integrations</h3>
+    <div class="feature-grid">
 
-    <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
-      <div class="card">
-        <div class="card-header" id="headingOne">
-            <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Edit / Add Plans
-            </button>
-        </div>
-
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
-              <div class="px-3 py-3 my-3">
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.edit') }}">
-                    Edit plans
-                  </a>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.add_plan') }}">
-                    Add plan
-                  </a>
-                  <a class="btn btn-danger btn-block"
-                      href="{{ url_for('admin.delete_plan') }}">
-                    Delete plans
-                  </a>
-                  <hr />
-                  <p>Optionally group plans into categories</p>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.list_categories') }}">
-                    Manage Categories
-                  </a>
-                  <hr />
-                  <p>Optionally assign documents (e.g. Terms &amp; Conditions) to plans</p>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.list_documents') }}">
-                    Manage Documents
-                  </a>
-              </div>
+      <div class="feature-card integration-card" data-searchable="tawk chat support live">
+        <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}" alt="Tawk logo">
+        <div class="feature-card-title">Tawk Live Chat</div>
+        <div class="feature-card-description">Chat with potential customers live on your website.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.connect_tawk_manually') }}"
+             class="btn {% if integration.tawk_property_id %}btn-success{% else %}btn-primary{% endif %}">
+            {% if integration.tawk_property_id %}Active - Reconnect{% else %}Connect Tawk{% endif %}
+          </a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingTwo">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-             My Subscribers
-            </button>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
-              <div class="px-3 py-3 my-3">
-                  <p class="card-subtitle mb-3 text-muted">
-                      View your subscribers.
-                  </p>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.subscribers') }}">
-                      View Subscribers
-                  </a>
-              </div>
-              <div class="px-3 py-3 my-3">
-                  <p class="card-subtitle mb-3 text-muted">
-                      Get a csv export of your subscribers name &amp; email address
-                  </p>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.export_subscribers', csv="") }}">
-                      Export Subscribers
-                  </a>
-              </div>
-              <div class="px-3 py-3 my-3">
-                <p class="card-subtitle mb-3 text-muted">
-                    Perform bulk actions across all subscribers such as
-                    pause all Subscribers payment collections.
-                </p>
-                <a class="btn btn-success btn-block"
-                    href="{{ url_for('admin.subscribers_bulk_operations_index') }}">
-                    Pause all Subscribers payment collections
-                </a>
-            </div>
+
+      <div class="feature-card integration-card" data-searchable="mailchimp email marketing audience">
+        <img src="{{ url_for('admin.static', filename='Mailchimp-logo.png') }}" alt="Mailchimp logo">
+        <div class="feature-card-title">Mailchimp</div>
+        <div class="feature-card-description">Automatically add subscribers to a Mailchimp audience list.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.connect_mailchimp_manually') }}"
+             class="btn {% if integration.mailchimp_active %}btn-success{% else %}btn-primary{% endif %}">
+            {% if integration.mailchimp_active %}Active - Reconnect{% else %}Connect Mailchimp{% endif %}
+          </a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingThree">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-              Upcoming Payments
-            </button>
-        </div>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
-              <div class="px-3 py-3 my-3">
-                  <p class="card-subtitle mb-3 text-muted">
-                      View upcoming payments from your subscribers.
-                  </p>
-                  <a class="btn btn-success btn-block"
-                      href="{{ url_for('admin.upcoming_invoices') }}">
-                      View Upcoming Payments
-                  </a>
-              </div>
+
+      <div class="feature-card integration-card" data-searchable="google tag manager analytics tracking gtm">
+        <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}" alt="Google Tag Manager logo">
+        <div class="feature-card-title">Google Tag Manager</div>
+        <div class="feature-card-description">Track customer behaviour like the professionals. <a href="https://marketingplatform.google.com/about/tag-manager/" target="_blank">Learn more</a></div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
+             class="btn {% if integration.google_tag_manager_container_id %}btn-success{% else %}btn-primary{% endif %}">
+            {% if google_tag_manager_connected %}Active - Reconnect{% else %}Connect GTM{% endif %}
+          </a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingFour">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-             Manage Payment Gateways
-            </button>
-        </div>
-        <div id="collapseFour" class="collapse" aria-labelledby="headingFour">
-          <div class="px-3 py-3 my-3">
-            <p class="card-subtitle mb-3 text-muted">Payment gateways allow you to take payment from your customers over the internet, you'll need to link at least <b>one</b> in order to successfully generate income from your store.</p>
 
-            <div class="container">
-              <div class="row justify-content-around">
-
-                <div class="card col-lg my-3 mx-1 shadow-sm" >
-                  <img src="{{ url_for('admin.static', filename='stripe.svg') }}"
-                        class="card-img-top"
-                        alt="..."
-                        style="width:50%; display:block; margin:auto">
-                  <div class="card-body">
-                    <h5 class="card-title">Stripe</h5>
-                    <p class="card-text">Stripe works well for one-off payments, customers can use their credit or debit card to make purchases securely online.</p>
-                    <a href="{{ url_for('admin.stripe_connect') }}" class="btn btn-block btn-success">
-                    Connect Stripe
-                    </a>
-                  </div>
-                </div> <!--end card-->
-
-              </div>
-            </div> <!--end container for cards-->
-          </div>
+      <div class="feature-card" data-searchable="custom code javascript inject">
+        <div class="feature-card-title">Inject Custom Code</div>
+        <div class="feature-card-description">Add custom code (e.g. JavaScript) to your shop for analytics or other integrations.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.add_custom_code') }}" class="btn btn-primary">Add Code</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingFive">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-              Choice Groups
-            </button>
-        </div>
-        <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
-          <div class="px-3 py-3 my-3">
-            <p>
-              Create choice groups. Offer a choice between a selection
-              of products. E.g. Shampoo A or Shampoo B.
-            </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.list_choice_groups') }}">
-                Add / Edit / Delete Choice Groups
-              </a>
+
+      <!-- Dynamic Modules -->
+      {% for moduleName in loadedModules %}
+        {% if loadedModules[moduleName]['links']|length != 0 %}
+        <div class="feature-card" data-searchable="module {{ loadedModules[moduleName]['friendly-name']|lower }}">
+          <div class="feature-card-title">{{ loadedModules[moduleName]['friendly-name'] }}</div>
+          <div class="feature-card-description">Enabled module for extended functionality.</div>
+          <div class="feature-card-actions">
+            {% for link in loadedModules[moduleName]['links'] %}
+            <a href="{{ url_for(link) }}" class="btn btn-primary">Manage</a>
+            {% endfor %}
           </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <!-- Settings & Administration Section -->
+  <div class="dashboard-section">
+    <h3 class="section-title">Settings & Administration</h3>
+    <div class="feature-grid">
+
+      <div class="feature-card" data-searchable="email settings reply template welcome">
+        <div class="feature-card-title">Email Settings</div>
+        <div class="feature-card-description">Configure reply-to address and customise email templates.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.set_reply_to_email') }}" class="btn btn-primary">Set Reply-To Email</a>
+          <a href="{{ url_for('admin.edit_welcome_email') }}" class="btn btn-outline-primary">Edit Welcome Email</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="questions">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseQuestions" aria-expanded="false" aria-controls="collapseFive">
-              Questions (Simple Forms)
-            </button>
-        </div>
-        <div id="collapseQuestions" class="collapse" aria-labelledby="questions">
-          <div class="px-3 py-3 my-3">
-            <p>
-              Ask questions before people sign up to your plans and store their answers
-              for future reporting.
-            </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.list_questions') }}">
-                Add / Edit / Delete Questions
-              </a>
-          </div>
+
+      <div class="feature-card" data-searchable="admin users password security">
+        <div class="feature-card-title">User Management</div>
+        <div class="feature-card-description">Manage shop administrators and your account security.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.add_shop_admin') }}" class="btn btn-primary">Add Shop Admin</a>
+          <a href="{{ url_for('admin.delete_admin_by_id') }}" class="btn btn-outline-danger">Delete Shop Admin</a>
+          <a href="{{ url_for('admin.change_password') }}" class="btn btn-outline-primary">Change Password</a>
+          <a href="{{ url_for('admin.change_email') }}" class="btn btn-outline-primary">Change Email</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingSix">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-              All Transactions / Manage Refunds
-            </button>
-        </div>
-        <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
 
-          <div class="px-3 py-3 my-3">
-              <p class="card-subtitle mb-3 text-muted">
-                  View all transactions / Manage Refunds
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.transactions') }}">
-                  View Transactions / Manage Refunds
-              </a>
-              <br />
-              <p class="card-subtitle mb-3 text-muted">
-                  View all Invoices (excluding upcoming).
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.invoices') }}">
-                  View Invoices
-              </a>
-              <br />
-              <p class="card-subtitle mb-3 text-muted">
-                  Get a csv export of all transactions by date, name &amp; plan.
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.export_transactions', csv="") }}">
-                  Export Transactions
-              </a>
-          </div>
-          <div class="px-3 py-3 my-3">
-              <p class="card-subtitle mb-3 text-muted">
-                  Synchronise data from Stripe (transactions, subscriptions, subscribers, invoices) to fix missed webhooks or data corrections.
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.admin_backfill_form') }}">
-                  Backfill Data from Stripe
-              </a>
-          </div>
-          <div class="px-3 py-3 my-3">
-              <p class="card-subtitle mb-3 text-muted">
-                  View Invoices which have failed all automated retries.
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.failed_invoices') }}">
-                  Failed Invoices
-              </a>
-          </div>
+      <div class="feature-card" data-searchable="shop settings tax vat api donations">
+        <div class="feature-card-title">Shop Settings</div>
+        <div class="feature-card-description">Configure tax, donations, API keys, and other shop-wide settings.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.show_api_keys') }}" class="btn btn-primary">API Keys</a>
+          <a href="{{ url_for('admin.donations_enabled_settings') }}" class="btn btn-outline-primary">Donation Settings</a>
+          <a href="{{ url_for('admin.rename_shop') }}" class="btn btn-outline-primary">Rename Shop</a>
+          {% if shop_default_country_code == "GB" %}
+          <a href="{{ url_for('admin.vat_settings') }}" class="btn btn-outline-primary">VAT Settings</a>
+          {% endif %}
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingSeven">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-              Order Notes
-            </button>
-        </div>
-        <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven">
-          <div class="px-3 py-3 my-3">
-              <p class="card-subtitle mb-3 text-muted">
-                  View (optional) notes customers may give you when starting their
-                  subscription.
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.order_notes') }}">
-                  View Notes
-              </a>
-          </div>
+
+      <div class="feature-card" data-searchable="thank you page redirect payment success">
+        <div class="feature-card-title">Thank You Page</div>
+        <div class="feature-card-description">Customise the URL customers see after successful payment.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.change_thank_you_url') }}" class="btn btn-primary">Change URL</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingEight">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-              Upload logo
-            </button>
-        </div>
-        <div id="collapseEight" class="collapse" aria-labelledby="headingEight">
-            <div class="px-3 py-3 my-3" >
-                <p class="card-subtitle mb-3 text-muted">Upload your logo (optional) which is displayed in your shop header<p>
-                <a href="{{ url_for('admin.upload_logo') }}"
-               class="btn btn-block btn-success">Upload Logo
-                </a>
-            </div>
+
+      <div class="feature-card" data-searchable="currency geo location detection">
+        <div class="feature-card-title">Currency Settings</div>
+        <div class="feature-card-description">Enable or disable automatic currency detection based on visitor location.</div>
+        <div class="feature-card-actions">
+          <a href="{{ url_for('admin.enable_geo_currency') }}" class="btn btn-primary">Manage Currency</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingNine">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-              Integrations (Online Chat, Analytics &amp; inject custom code)
-            </button>
-        </div>
-        <div id="collapseNine" class="collapse" aria-labelledby="headingNine">
-          <!-- Social Integrations -->
-          <div class="px-3 py-3 my-3">
 
-            <div class="card col-lg shadow-sm" >
-              <img src="{{ url_for('admin.static', filename='tawk_logo.png') }}"
-                    class="card-img-top"
-                    alt="Tawk logo"
-                    style="width:auto; display:block; margin:1rem auto 0 auto">
-              <div class="card-body">
-                <h5 class="card-title">Tawk Online Chat</h5>
-                <p class="card-text">Chat with your potential customers live on your website</p>
-                <a href="{{ url_for('admin.connect_tawk_manually') }}"
-                    class="btn btn-block
-                    {% if integration.tawk_property_id %}
-                      btn-success
-                    {% else %}
-                      btn-info
-                    {% endif %}">
-                    {% if integration.tawk_property_id %}
-                        Active! Click to reconnect Tawk
-                    {% else %}
-                      Connect to Tawk
-                    {% endif %}
-                </a>
-              </div>
-            </div> <!--end card-->
-          </div>
-          <!-- End Tawk Integrations -->
-          <!-- Start Mailchimp Integration link-->
-          <div class="px-3 py-3 my-3">
-
-            <div class="card col-lg shadow-sm" >
-              <img src="{{ url_for('admin.static', filename='Mailchimp-logo.png') }}"
-                    class="card-img-top"
-                    alt="Mailchimp logo"
-                    style="width:auto; display:block; margin:1rem auto 0 auto">
-              <div class="card-body">
-                <h5 class="card-title">Mailchimp</h5>
-                <p class="card-text">Automatically add subscribers to a Mailchimp Audience List</p>
-                <a href="{{ url_for('admin.connect_mailchimp_manually') }}"
-                class="btn btn-block
-                {% if integration.mailchimp_active %}
-                  btn-success
-                {% else %}
-                  btn-info
-                {% endif %}">
-                {% if integration.mailchimp_active %}
-                    Active! Click to reconnect Mailchimp
-                {% else %}
-                  Connect to Mailchimp
-                {% endif %}
-                </a>
-              </div>
-            </div> <!--end card-->
-          </div>
-          <!-- End Mailchimp Integrations -->
-          <!-- Inject Code -->
-          <div class="px-3 py-3 my-3">
-
-            <div class="card col-lg shadow-sm" >
-              <div class="card-body">
-                <h5 class="card-title">Inject Code</h5>
-                <p class="card-text">Inject custom code into your shop. E.g. javascript</p>
-                <a href="{{ url_for('admin.add_custom_code') }}"
-                    class="btn btn-block btn-info">
-                      Add custom code
-                </a>
-              </div>
-            </div> <!--end card-->
-          </div>
-          <!-- End add custom code -->
-
-          <!-- Analytics Integrations -->
-          <div class="px-3 py-3 my-3">
-            <div class="card col-lg shadow-sm" >
-              <img src="{{ url_for('admin.static', filename='google_tag_manager.jpg') }}"
-                    class="card-img-top"
-                    alt="Google Tag Manager logo"
-                    style="width:25%; display:block; margin:1rem auto 0 auto">
-              <div class="card-body">
-                <h5 class="card-title">Google Tag Manager</h5>
-                <p class="card-text">Track customer behaviour like the pros.
-                  <a href="https://marketingplatform.google.com/about/tag-manager/"
-                      target="_blank">
-                  Learn about using Tag Manager</a>
-                </p>
-                <a href="{{ url_for('admin.connect_google_tag_manager_manually') }}"
-                    class="btn btn-block
-                    {% if integration.google_tag_manager_container_id %}
-                      btn-success
-                    {% else %}
-                      btn-info
-                    {% endif %}">
-                    {% if google_tag_manager_connected %}
-                        Active! Click to reconnect Tag Manager
-                    {% else %}
-                      Connect to Google Tag Manager
-                    {% endif %}
-                </a>
-              </div>
-            </div> <!--end card-->
-          </div>
-          <!-- End analytics Integrations -->
+      <div class="feature-card" data-searchable="payment card billing">
+        <div class="feature-card-title">Billing Details</div>
+        <div class="feature-card-description">Update your card details for shop subscription.</div>
+        <div class="feature-card-actions">
+          <a href="{{ saas_url }}/account/login" class="btn btn-primary">Update Card Details</a>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header" id="headingTen">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
-              Modules
-            </button>
-        </div>
-        <div id="collapseTen" class="collapse" aria-labelledby="headingTen">
-          <!-- Loaded modules and links to their index pages -->
-          <div class="px-3 py-3 my-3">
 
-            <p class="card-subtitle mb-3 text-muted">
-              List of enabled modules. For example, the iFrame embed module allows you to
-              embed your Subscription website into another website if you have an existing
-              website you want to keep using, but use Subscribie for your subscriptions.
-            </p>
+    </div>
+  </div>
 
-            {% for moduleName in loadedModules %}
-              {% if loadedModules[moduleName]['links']|length != 0 %}
-                <div class="card col-lg my-3 shadow-sm">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ loadedModules[moduleName]['friendly-name'] }}</h5>
-                    {% for link in loadedModules[moduleName]['links'] %}
-                      <a class="btn btn-block btn-success" href="{{ url_for(link) }}">Manage</a>
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-            {% endfor  %}
-              <!-- Pages module -->
-              <div class="card col-lg my-3 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Pages</h5>
-                  <p class="card-subtitle mb-3 text-muted">Create pages on your shop.</p>
-                  <a class="btn btn-block btn-success"
-                    href="{{ url_for('pages.get_module_pages_index') }}">
-                  List pages
-                  </a>
-                  <br />
-                  <p class="card-subtitle mb-3 text-muted">Mark pages as private, visible only to your subscribers.</p>
-                  <a class="btn btn-block btn-success"
-                    href="{{ url_for('pages.update_private_pages') }}">
-                  Set private pages
-                  </a>
-                </div>
-              </div>
-              <!-- end pages module -->
-              <!-- Style module -->
-              <div class="card col-lg my-3 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Style Shop</h5>
-                  <p class="card-subtitle mb-3 text-muted">Edit colours &amp; style</p>
-                  <a class="btn btn-block btn-success"
-                    href="{{ url_for('style.style_shop') }}">
-                  Style
-                  </a>
-                </div>
-              </div>
-              <!-- end Style module -->
-              <!-- iFrame module -->
-              <div class="card col-lg my-3 shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">iFrame Embed</h5>
-                  <p class="card-subtitle mb-3 text-muted">Embed Subscribie in another website</p>
-                  <a class="btn btn-block btn-success"
-                    href="{{ url_for('iframe.get_iframe_embed') }}">
-                  Get embed code
-                  </a>
-                </div>
-              </div>
-              <!-- end iFrame module -->
-              <!-- SEO Titles module -->
-              <div class="card col-lg my-3 shadow-sm">
-                 <div class="card-body">
-                    <h5 class="card-title">SEO Titles</h5>
-                    <p class="card-subtitle mb-3 text-muted">Set optimised title tags for your pages.</p>
-                    <a class="btn btn-block btn-success"
-                      href="{{ url_for('seo.list_pages') }}">
-                    Manage pages
-                    </a>
-                 </div>
-              </div>
-              <!-- end SEO Titles module -->
-          </div>
-          <!-- End Loaded modules and links to their index pages -->
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingEleven">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
-              Users, Passwords & Cards details
-            </button>
-        </div>
-        <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven">
-          <div class="px-3 py-3 my-3">
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.add_shop_admin') }}">
-                Add Shop Admin
-              </a>
-              <a class="btn btn-danger btn-block"
-                  href="{{ url_for('admin.delete_admin_by_id') }}">
-                Delete Shop Admin
-              </a>
-              <a class="btn btn-warning btn-block"
-                  href="{{ url_for('admin.change_password') }}">
-                Change my password
-              </a>
-              <a class="btn btn-warning btn-block"
-                  href="{{ url_for('admin.change_email') }}">
-                Change my email address
-              </a>
-              <a class="btn btn-warning btn-block"
-                 href="{{ saas_url }}/account/login">
-                Change my Card details
-              </a>
-          </div>
-
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingTwelve">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
-              Email settings
-            </button>
-        </div>
-        <div id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve">
-          <div class="px-3 py-3 my-3">
-
-            <h3 class="card-title">Reply-to email address</h3>
-              <p class="card-subtitle mb-3 text-muted">
-              Emails are sent from a 'noreply' email address. If you like,
-              you can set a reply-to email address so that your subscribers may reply
-              to emails, such as their welcome email.
-              </p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.set_reply_to_email') }}">
-                  Set reply-to email address
-              </a>
-            <h3 class="card-title">Templates</h3>
-              <p class="card-subtitle mb-3 text-muted">Email subscriber gets when they sign-up
-              to a plan.</p>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.edit_welcome_email') }}">
-                Customer Signup Confirmation
-              </a>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingFileManagement">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFileManagement" aria-expanded="false" aria-controls="collapseFileManagement">
-              Upload Files
-            </button>
-        </div>
-        <div id="collapseFileManagement" class="collapse" aria-labelledby="headingFileManagement">
-            <div class="px-3 py-3 my-3" >
-                <p class="card-subtitle mb-3 text-muted">Upload files for your subscribers to have access to<p>
-                <a href="{{ url_for('admin.upload_files') }}"
-               class="btn btn-block btn-success">Upload Files
-                </a>
-                <a href="{{ url_for('admin.list_files') }}"
-               class="btn btn-success btn-block">List Files
-                </a>
-            </div>
-        </div>
-
-      </div><!-- end Upload Files -->
-      <div class="card">
-        <div class="card-header" id="headingShopSettings">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseShopSettings" aria-expanded="false" aria-controls="collapseShopSettings">
-            Shop Settings (TAX{% if shop_default_country_code == "GB" %}, VAT {% endif %}, Rename Shop, Donations & Thank you Page URL)
-            </button>
-        </div>
-        <div id="collapseShopSettings" class="collapse" aria-labelledby="headingShopSettings">
-          <div class="px-3 py-3 my-3">
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.show_api_keys') }}">
-              API Keys
-              </a>
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.donations_enabled_settings') }}">
-              Donation Settings
-              </a>
-              <a class="btn btn-success btn-block" 
-                  href="{{ url_for('admin.rename_shop') }}">
-              Rename shop web address
-              </a>
-              {% if shop_default_country_code == "GB" %}
-              {# Tax not implemented for other jurisdictions yet #}
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.vat_settings') }}">
-              VAT Settings
-              </a>
-              {% endif %}
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.change_thank_you_url') }}">
-              Change Thank You Page/Payment Successful Page URL
-              </a>
-
-              <a class="btn btn-success btn-block"
-                  href="{{ url_for('admin.enable_geo_currency') }}">
-              Enable/Disable geo currency detection
-              </a>
-          </div>
-
-        </div>
-      </div>
+  <!-- No results message -->
+  <div id="noResultsMessage" class="no-results-message">
+    <h4>No features found</h4>
+    <p>Try a different search term</p>
+  </div>
 
 </div>
 
+<script>
+// Dashboard search functionality
+(function() {
+  const searchInput = document.getElementById('dashboardSearch');
+  const clearSearchBtn = document.getElementById('clearSearchBtn');
+  const featureCards = document.querySelectorAll('.feature-card');
+  const sections = document.querySelectorAll('.dashboard-section');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const searchResultSummary = document.getElementById('searchResultSummary');
+
+  // Remove any existing badges on load
+  function clearSectionBadges() {
+    document.querySelectorAll('.section-result-badge').forEach(badge => badge.remove());
+  }
+
+  // Clear search completely
+  function clearSearch() {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.focus();
+  }
+
+  // Scroll to first visible result smoothly
+  function scrollToFirstResult() {
+    const firstVisibleCard = document.querySelector('.feature-card:not(.hidden)');
+    if (firstVisibleCard) {
+      // Get the parent section
+      const parentSection = firstVisibleCard.closest('.dashboard-section');
+      if (parentSection) {
+        // Scroll to section title with offset for fixed header
+        const sectionTitle = parentSection.querySelector('.section-title');
+        if (sectionTitle) {
+          const yOffset = -100; // Offset to account for any fixed headers
+          const y = sectionTitle.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({top: y, behavior: 'smooth'});
+        }
+      }
+    }
+  }
+
+  // Update section badges showing result counts
+  function updateSectionBadges() {
+    clearSectionBadges();
+
+    sections.forEach(section => {
+      const visibleCardsInSection = section.querySelectorAll('.feature-card:not(.hidden)').length;
+      if (visibleCardsInSection > 0 && section.style.display !== 'none') {
+        const sectionTitle = section.querySelector('.section-title');
+        if (sectionTitle) {
+          const badge = document.createElement('span');
+          badge.className = 'section-result-badge';
+          badge.textContent = visibleCardsInSection;
+          sectionTitle.appendChild(badge);
+        }
+      }
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+
+      // Show/hide clear button and visual indicator
+      if (e.target.value.length > 0) {
+        clearSearchBtn.classList.add('visible');
+        searchInput.classList.add('has-active-search');
+      } else {
+        clearSearchBtn.classList.remove('visible');
+        searchInput.classList.remove('has-active-search');
+      }
+
+      if (searchTerm === '') {
+        // Show all cards and sections
+        featureCards.forEach(card => card.classList.remove('hidden'));
+        sections.forEach(section => section.style.display = 'block');
+        noResultsMessage.classList.remove('show');
+        searchResultSummary.innerHTML = '';
+        searchResultSummary.className = 'search-result-summary';
+        clearSectionBadges();
+        return;
+      }
+
+      let visibleCount = 0;
+      let visibleSections = 0;
+
+      // Filter cards
+      featureCards.forEach(card => {
+        const cardTitle = card.querySelector('.feature-card-title')?.textContent.toLowerCase() || '';
+        const cardDescription = card.querySelector('.feature-card-description')?.textContent.toLowerCase() || '';
+        const cardSearchable = card.getAttribute('data-searchable') || '';
+
+        const matches = cardTitle.includes(searchTerm) ||
+                       cardDescription.includes(searchTerm) ||
+                       cardSearchable.includes(searchTerm);
+
+        if (matches) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Hide sections with no visible cards
+      sections.forEach(section => {
+        const visibleCardsInSection = section.querySelectorAll('.feature-card:not(.hidden)').length;
+        if (visibleCardsInSection === 0) {
+          section.style.display = 'none';
+        } else {
+          section.style.display = 'block';
+          visibleSections++;
+        }
+      });
+
+      // Update result summary
+      if (visibleCount === 0) {
+        noResultsMessage.classList.add('show');
+        searchResultSummary.className = 'search-result-summary no-results';
+        searchResultSummary.innerHTML = `
+          No features found
+          <button class="jump-to-results" onclick="this.closest('.dashboard-search').clearSearch()">
+            Clear search
+          </button>
+        `;
+        clearSectionBadges();
+      } else {
+        noResultsMessage.classList.remove('show');
+        searchResultSummary.className = 'search-result-summary has-results';
+
+        const resultText = visibleCount === 1 ? 'feature' : 'features';
+        const sectionText = visibleSections === 1 ? 'section' : 'sections';
+
+        searchResultSummary.innerHTML = `
+          Found ${visibleCount} ${resultText} in ${visibleSections} ${sectionText}
+          <button class="jump-to-results" onclick="this.closest('.dashboard-search').scrollToResults()">
+            Jump to results ↓
+          </button>
+        `;
+
+        // Update section badges
+        updateSectionBadges();
+      }
+    });
+
+    // Clear search on escape key
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        clearSearch();
+      }
+    });
+
+    // Clear button click handler
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', clearSearch);
+    }
+
+    // Add methods to dashboard-search element
+    const dashboardSearch = document.querySelector('.dashboard-search');
+    dashboardSearch.scrollToResults = scrollToFirstResult;
+    dashboardSearch.clearSearch = clearSearch;
+  }
+})();
+</script>
 
 {% endblock %}
