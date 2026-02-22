@@ -808,11 +808,11 @@ def create_subscription(
 
 @backoff.on_exception(backoff.expo, Exception, max_tries=20)
 def stripe_process_event_payment_intent_succeeded(event):
-    """Store suceeded payment_intents as transactions
+    """Store succeeded payment_intents as transactions
     Stripe sends Subscribie events of different types.
-    This metod processes the payment_intent_succeeded event.
-    This event will fire both at the begining of a subscription,
-    and also at each successful recuring billing cycle.
+    This method processes the payment_intent_succeeded event.
+    This event will fire both at the beginning of a subscription,
+    and also at each successful recurring billing cycle.
 
     We use backoff because webhook event order from Stripe is not guaranteed,
     for example a `payment_intent_succeeded` event can be received before a
@@ -847,7 +847,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
         # Stripe payment_intent invoice attribute may be null if
         # the payment intent is an instant charge (meaning not part of a
-        # subscrtiption or plan).
+        # subscription or plan).
         if invoice_id is not None:
             invoice = stripe.Invoice.retrieve(
                 stripe_account=event["account"], id=invoice_id
@@ -871,7 +871,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         metadata = data["metadata"]
         is_donation = metadata["is_donation"]
     except KeyError:
-        # subscription doesnt have the "is_donation" inside the metadata
+        # subscription doesn't have the "is_donation" inside the metadata
         # Locate the Subscribie subscription by its subscribie_checkout_session_id
         is_donation = False
         subscribie_subscription = (
@@ -930,7 +930,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
 @checkout.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
-    """Recieve stripe webhook from proxy (not directly from Stripe)
+    """Receive stripe webhook from proxy (not directly from Stripe)
 
     All stripe connect webhooks are routed from a single endpoint which
     send the webhook event to the correct shop, based on the
@@ -1099,7 +1099,7 @@ def stripe_webhook():
                         stripe_account=connect_account_id,
                     )
                     log.info(
-                        f"Sucessfully modified invoice {invoice['id']} with "
+                        f"Successfully modified invoice {invoice['id']} with "
                         f"application fee amount of {calculated_fee}"
                     )
                 else:
@@ -1185,7 +1185,7 @@ def stripe_webhook():
 
         # Set proration_behavior if is a subscription
         # https://github.com/Subscribie/subscribie/issues/1133
-        # TODO proration_behavior should be set regarless of
+        # TODO proration_behavior should be set regardless of
         # payment provider.
         if stripe_subscription_id:
             subscription = (
@@ -1242,7 +1242,7 @@ def stripe_webhook():
         """
         We treat Stripe checkout session.mode equally because
         a subscribie plan may either be a one-off plan or a
-        recuring plan. A 'subscription' is still created in the
+        recurring plan. A 'subscription' is still created in the
         subscribie database regardless of if the Stripe session
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object
