@@ -500,7 +500,7 @@ def stripe_create_checkout_session():
 
         if plan.requirements.subscription:
             subscription_data = {
-                "application_fee_percent": 1.25,
+                "application_fee_percent": 2.5,
                 "metadata": {
                     "person_uuid": person.uuid,
                     "plan_uuid": session["plan"],
@@ -520,7 +520,7 @@ def stripe_create_checkout_session():
 
         if plan.requirements.instant_payment:
             payment_intent_data = {
-                "application_fee_amount": 20,
+                "application_fee_amount": 40,
                 "metadata": {"is_donation": is_donation, "person_uuid": person.uuid},
             }
         if plan.requirements.subscription:
@@ -1053,6 +1053,44 @@ def stripe_webhook():
         msg["TO"] = shop_admins
         msg.set_content(emailBody)
         msg.queue()
+        msg.queue()
+        return "OK", 200
+
+    # Handle the invoice.created event
+    if event["type"] == "invoice.created":
+        log.info("Stripe webhook event: invoice.created")
+        try:
+            invoice = event["data"]["object"]
+            # We only want to add a fee to recurring subscription invoices, not one-off setup fees
+            # or invoices that are already paid/finalized.
+            if invoice.get("status") == "draft" and invoice.get("subscription"):
+                # Calculate the 2.5% + 40p application fee
+                # invoice["total"] is in the smallest currency unit (e.g. pence)
+                calculated_fee = int(invoice["total"] * 0.025) + 40
+
+                # Stripe does not allow the application fee to exceed the total invoice amount
+                if calculated_fee > invoice["total"]:
+                    calculated_fee = invoice["total"]
+
+                log.info(
+                    f"Injecting application_fee_amount of {calculated_fee} onto draft invoice {invoice['id']}"
+                )
+                stripe.api_key = get_stripe_secret_key()
+                connect_account_id = event.get("account")
+
+                # We must pass stripe_account to act on behalf of the connected account
+                if connect_account_id:
+                    stripe.Invoice.modify(
+                        invoice["id"],
+                        application_fee_amount=calculated_fee,
+                        stripe_account=connect_account_id,
+                    )
+                else:
+                    log.error(
+                        "Received invoice.created for a connected account, but no account ID was in the event payload."
+                    )
+        except Exception as e:
+            log.error(f"Unhandled error processing invoice.created: {e}")
         return "OK", 200
 
     # Handle the payment_intent.payment_failed
