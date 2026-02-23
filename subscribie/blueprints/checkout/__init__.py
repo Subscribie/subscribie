@@ -1061,19 +1061,32 @@ def stripe_webhook():
         log.info("Stripe webhook event: invoice.created")
         try:
             invoice = event["data"]["object"]
-            # We only want to add a fee to recurring subscription invoices, not one-off setup fees
-            # or invoices that are already paid/finalized.
+            # We only want to add a fee to recurring subscription invoices,
+            # not one-off setup fees or invoices that are already
+            # paid/finalised.
+            # This is implemented to ensure active subscriptions started prior
+            # to platform fee changes still get the new platform fees applied
+            # to them going forward.
+            if invoice.get("billing_reason") == "subscription_create":
+                log.info(
+                    "Skipping subscription_create invoice as these are "
+                    "finalised instantly by Stripe upon first ever subscription"
+                    " invoice creation."
+                )
+                return "OK", 200
             if invoice.get("status") == "draft" and invoice.get("subscription"):
                 # Calculate the 2.5% + 40p application fee
                 # invoice["total"] is in the smallest currency unit (e.g. pence)
                 calculated_fee = int(invoice["total"] * 0.025) + 40
 
-                # Stripe does not allow the application fee to exceed the total invoice amount
+                # Stripe does not allow the application fee to exceed the total
+                # invoice amount
                 if calculated_fee > invoice["total"]:
                     calculated_fee = invoice["total"]
 
                 log.info(
-                    f"Injecting application_fee_amount of {calculated_fee} onto draft invoice {invoice['id']}"
+                    f"Injecting application_fee_amount of {calculated_fee} onto"
+                    f" draft invoice {invoice['id']}"
                 )
                 stripe.api_key = get_stripe_secret_key()
                 connect_account_id = event.get("account")
@@ -1085,9 +1098,14 @@ def stripe_webhook():
                         application_fee_amount=calculated_fee,
                         stripe_account=connect_account_id,
                     )
+                    log.info(
+                        f"Sucessfully modified invoice {invoice['id']} with "
+                        f"application fee amount of {calculated_fee}"
+                    )
                 else:
                     log.error(
-                        "Received invoice.created for a connected account, but no account ID was in the event payload."
+                        "Received invoice.created for a connected account, but "
+                        "no account ID was in the event payload."
                     )
         except Exception as e:
             log.error(f"Unhandled error processing invoice.created: {e}")

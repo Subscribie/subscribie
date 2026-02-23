@@ -149,6 +149,8 @@ export FLASK_APP=subscribie
 export FLASK_DEBUG=1
 flask db upgrade
 flask initdb # (recommended- gives you some example data)
+# Note if using rye (no longer maintained) use:
+# rye sync --features test # to install test requirements
 ```
 
 The database file is called `data.db`. Note,
