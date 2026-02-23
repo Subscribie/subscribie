@@ -26,6 +26,7 @@ def test_invoice_created_injects_fee(
                 "id": "in_1TestInvoice",
                 "status": "draft",
                 "subscription": "sub_1TestSubscription",
+                "billing_reason": "subscription_cycle",
                 "total": invoice_total,
             }
         },
@@ -73,14 +74,15 @@ def test_invoice_created_caps_fee_at_total(
     expected_fee = 30
 
     payload = {
-        "type": "invoice.created",
         "livemode": False,
+        "type": "invoice.created",
         "account": "acct_1TestConnectAccount",
         "data": {
             "object": {
                 "id": "in_1TestInvoice",
                 "status": "draft",
                 "subscription": "sub_1TestSubscription",
+                "billing_reason": "subscription_cycle",
                 "total": invoice_total,
             }
         },
