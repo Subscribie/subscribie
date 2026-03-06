@@ -19,21 +19,31 @@ jobs:
         run: |
           echo "::set-output name=number::${{ github.event.issue.number }}"
           echo "::set-output name=title::${{ github.event.issue.title }}"
-          # Sanitize issue title to create a valid git branch name:
-          # 1. Replace all non-alphanumeric characters with hyphens
-          # 2. Replace multiple consecutive hyphens with a single hyphen
-          # 3. Remove leading and trailing hyphens
-          # 4. Convert all uppercase letters to lowercase
-          # 5. Truncate the string to a maximum of 60 characters
-          # 6. Remove any trailing hyphen that might have resulted from truncation
-          ISSUE_BRANCH_NAME=$(echo "${{ github.event.issue.title }}" \
-            | sed 's/[^a-zA-Z0-9]/-/g' \
-            | sed 's/-\+/-/g' \
-            | sed 's/^-//;s/-$//' \
-            | tr '[:upper:]' '[:lower:]' \
-            | cut -c -60 \
-            | sed 's/-$//')
-          echo "ISSUE_BRANCH_NAME=$ISSUE_BRANCH_NAME" >> $GITHUB_ENV
+          # Sanitize issue title to:
+          # - alnum
+          # - replace spaces with hyphen '-'
+          # Example:
+          # Given an issue title: "Fix the 2'nd bug in UI where there's a # in the form"
+          # Becomes:
+          #
+                                                             # Note there is a space here, to keep both '-' and spaces ' '
+          echo ISSUE_BRANCH_NAME=`echo "${{ github.event.issue.title }}" | \
+          # Remove non alpha/numeric chars
+          tr -cd '[:alnum:]- ' | \
+          # Convert spaces to hyphens '-'
+          tr ' ' '-' | \
+          # Ensure lowercase branch name
+          tr '[:upper:]' '[:lower:]' | \
+          # Limit branch name to 60 characters
+          cut -c -60` >> $GITHUB_ENV
+
+          ALLOWED_BRANCH_NAME_CHARS='[^a-zA-Z0-9-]'
+          # Loop through each character in the branch name, replacing any not allowed characer with a hyphen '-'
+          while [[ $ISSUE_BRANCH_NAME =~ $ALLOWED_BRANCH_NAME_CHARS ]]; do
+            ISSUE_BRANCH_NAME=`echo $ISSUE_BRANCH_NAME | sed -r "s/($ALLOWED_BRANCH_NAME_CHARS)/-/g" | sed 's/--/-/g'`
+          done
+
+          echo $ISSUE_BRANCH_NAME >> $GITHUB_ENV
 
       - name: Create new branch
         run: |
