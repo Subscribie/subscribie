@@ -1,3 +1,16 @@
+# v0.1.253 (Fri Mar 06 2026)
+
+#### ⚠️ Pushed to `master`
+
+- git-auto-issue-branch-creation.yml ensure spaces to hyphens after backtick removal in branch name ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Revert "correct action git-auto-issue-branch-creation.yml to strip out [ ] chars" ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.252 (Fri Mar 06 2026)
 
 #### ⚠️ Pushed to `master`
