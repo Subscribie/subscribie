@@ -1,3 +1,15 @@
+# v0.1.252 (Fri Mar 06 2026)
+
+#### ⚠️ Pushed to `master`
+
+- correct action git-auto-issue-branch-creation.yml to strip out [ ] chars ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.251 (Mon Nov 10 2025)
 
 #### 🐛 Bug Fix
