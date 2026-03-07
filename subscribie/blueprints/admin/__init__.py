@@ -341,7 +341,7 @@ def stripe_create_charge():
             amount=amount,
             currency=currency,
             payment_method_types=["card"],
-            application_fee_amount=int(amount * 0.025),
+            application_fee_amount=int(amount * 0.025) + 40,
             customer=customer,
             description=statement_descriptor_suffix,
             statement_descriptor_suffix=statement_descriptor_suffix,

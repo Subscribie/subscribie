@@ -56,3 +56,5 @@ emails
 *.bk
 email-queue
 uploads/*
+*.deb
+stripe_listen.log

@@ -500,7 +500,7 @@ def stripe_create_checkout_session():
 
         if plan.requirements.subscription:
             subscription_data = {
-                "application_fee_percent": 1.25,
+                "application_fee_percent": 2.5,
                 "metadata": {
                     "person_uuid": person.uuid,
                     "plan_uuid": session["plan"],
@@ -520,7 +520,7 @@ def stripe_create_checkout_session():
 
         if plan.requirements.instant_payment:
             payment_intent_data = {
-                "application_fee_amount": 20,
+                "application_fee_amount": 40,
                 "metadata": {"is_donation": is_donation, "person_uuid": person.uuid},
             }
         if plan.requirements.subscription:
@@ -808,11 +808,11 @@ def create_subscription(
 
 @backoff.on_exception(backoff.expo, Exception, max_tries=20)
 def stripe_process_event_payment_intent_succeeded(event):
-    """Store suceeded payment_intents as transactions
+    """Store succeeded payment_intents as transactions
     Stripe sends Subscribie events of different types.
-    This metod processes the payment_intent_succeeded event.
-    This event will fire both at the begining of a subscription,
-    and also at each successful recuring billing cycle.
+    This method processes the payment_intent_succeeded event.
+    This event will fire both at the beginning of a subscription,
+    and also at each successful recurring billing cycle.
 
     We use backoff because webhook event order from Stripe is not guaranteed,
     for example a `payment_intent_succeeded` event can be received before a
@@ -847,7 +847,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
         # Stripe payment_intent invoice attribute may be null if
         # the payment intent is an instant charge (meaning not part of a
-        # subscrtiption or plan).
+        # subscription or plan).
         if invoice_id is not None:
             invoice = stripe.Invoice.retrieve(
                 stripe_account=event["account"], id=invoice_id
@@ -871,7 +871,7 @@ def stripe_process_event_payment_intent_succeeded(event):
         metadata = data["metadata"]
         is_donation = metadata["is_donation"]
     except KeyError:
-        # subscription doesnt have the "is_donation" inside the metadata
+        # subscription doesn't have the "is_donation" inside the metadata
         # Locate the Subscribie subscription by its subscribie_checkout_session_id
         is_donation = False
         subscribie_subscription = (
@@ -930,7 +930,7 @@ def stripe_process_event_payment_intent_succeeded(event):
 
 @checkout.route("/stripe_webhook", methods=["POST"])
 def stripe_webhook():
-    """Recieve stripe webhook from proxy (not directly from Stripe)
+    """Receive stripe webhook from proxy (not directly from Stripe)
 
     All stripe connect webhooks are routed from a single endpoint which
     send the webhook event to the correct shop, based on the
@@ -1053,6 +1053,62 @@ def stripe_webhook():
         msg["TO"] = shop_admins
         msg.set_content(emailBody)
         msg.queue()
+        msg.queue()
+        return "OK", 200
+
+    # Handle the invoice.created event
+    if event["type"] == "invoice.created":
+        log.info("Stripe webhook event: invoice.created")
+        try:
+            invoice = event["data"]["object"]
+            # We only want to add a fee to recurring subscription invoices,
+            # not one-off setup fees or invoices that are already
+            # paid/finalised.
+            # This is implemented to ensure active subscriptions started prior
+            # to platform fee changes still get the new platform fees applied
+            # to them going forward.
+            if invoice.get("billing_reason") == "subscription_create":
+                log.info(
+                    "Skipping subscription_create invoice as these are "
+                    "finalised instantly by Stripe upon first ever subscription"
+                    " invoice creation."
+                )
+                return "OK", 200
+            if invoice.get("status") == "draft" and invoice.get("subscription"):
+                # Calculate the 2.5% + 40p application fee
+                # invoice["total"] is in the smallest currency unit (e.g. pence)
+                calculated_fee = int(invoice["total"] * 0.025) + 40
+
+                # Stripe does not allow the application fee to exceed the total
+                # invoice amount
+                if calculated_fee > invoice["total"]:
+                    calculated_fee = invoice["total"]
+
+                log.info(
+                    f"Injecting application_fee_amount of {calculated_fee} onto"
+                    f" draft invoice {invoice['id']}"
+                )
+                stripe.api_key = get_stripe_secret_key()
+                connect_account_id = event.get("account")
+
+                # We must pass stripe_account to act on behalf of the connected account
+                if connect_account_id:
+                    stripe.Invoice.modify(
+                        invoice["id"],
+                        application_fee_amount=calculated_fee,
+                        stripe_account=connect_account_id,
+                    )
+                    log.info(
+                        f"Successfully modified invoice {invoice['id']} with "
+                        f"application fee amount of {calculated_fee}"
+                    )
+                else:
+                    log.error(
+                        "Received invoice.created for a connected account, but "
+                        "no account ID was in the event payload."
+                    )
+        except Exception as e:
+            log.error(f"Unhandled error processing invoice.created: {e}")
         return "OK", 200
 
     # Handle the payment_intent.payment_failed
@@ -1129,7 +1185,7 @@ def stripe_webhook():
 
         # Set proration_behavior if is a subscription
         # https://github.com/Subscribie/subscribie/issues/1133
-        # TODO proration_behavior should be set regarless of
+        # TODO proration_behavior should be set regardless of
         # payment provider.
         if stripe_subscription_id:
             subscription = (
@@ -1186,7 +1242,7 @@ def stripe_webhook():
         """
         We treat Stripe checkout session.mode equally because
         a subscribie plan may either be a one-off plan or a
-        recuring plan. A 'subscription' is still created in the
+        recurring plan. A 'subscription' is still created in the
         subscribie database regardless of if the Stripe session
         mode is "payment" or "subscription".
         See https://stripe.com/docs/api/checkout/sessions/object

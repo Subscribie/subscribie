@@ -8,7 +8,11 @@ You can find out more about how to install Hugo for your environment in our
 [Getting started](https://www.docsy.dev/docs/getting-started/#prerequisites-and-installation) guide.
 
 On `Ubuntu Linux`? You can download from [Hugu Releases on GitHub](https://github.com/gohugoio/hugo/releases) 
-e.g. `hugo_extended_0.105.0_linux-amd64.deb` then `sudo dpkg -i hugo_extended_0.105.0_linux-amd64.deb`
+e.g. 
+
+```shell
+wget https://github.com/gohugoio/hugo/releases/download/v0.105.0/hugo_extended_0.105.0_linux-amd64.deb && sudo dpkg -i hugo_extended_0.105.0_linux-amd64.deb
+```
 
 > Remember, you must download/install the **extended** version.
 

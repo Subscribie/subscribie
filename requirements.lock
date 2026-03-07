@@ -3,10 +3,11 @@
 #
 # last locked with the following flags:
 #   pre: false
-#   features: []
+#   features: ["test"]
 #   all-features: false
 #   with-sources: false
 #   generate-hashes: false
+#   universal: false
 
 -e file:.
 alembic==1.13.1
