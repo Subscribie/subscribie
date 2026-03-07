@@ -1,3 +1,19 @@
+# v0.1.254 (Sat Mar 07 2026)
+
+#### 🐛 Bug Fix
+
+- Merge branch '1464-remove--migrate-away-from-legacy-connect-account-types' [#1465](https://github.com/Subscribie/subscribie/pull/1465) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `master`
+
+- Revert "git-auto-issue-branch-creation.yml ensure spaces to hyphens after backtick removal in branch name" ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.253 (Fri Mar 06 2026)
 
 #### ⚠️ Pushed to `master`
