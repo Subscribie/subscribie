@@ -1,3 +1,15 @@
+# v0.1.255 (Mon Apr 20 2026)
+
+#### 🐛 Bug Fix
+
+- Fix #1485 restore Show Archived button on subscribers page [#1488](https://github.com/Subscribie/subscribie/pull/1488) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.254 (Sat Mar 07 2026)
 
 #### 🐛 Bug Fix
