@@ -28,6 +28,7 @@
               <a href="{{url_for('admin.subscribers', action='show_donors')}}" id="show-donors" class="btn btn-primary ">Show Donors</a>
           {% endif %}
       {% endif %}
+      <a href="{{ url_for('admin.archived_subscribers') }}" id="show-archived-subscribers" class="btn btn-secondary">Show Archived</a>
       <button id="refresh_subscriptions" title="Get latest subscription statuses (active/paused/inactive)" class="btn btn-primary disable-on-click">Refresh Subscriptions</button>
        </div>
         <form action="#" method="GET">
