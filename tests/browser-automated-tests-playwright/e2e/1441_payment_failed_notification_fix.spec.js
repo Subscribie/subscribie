@@ -1,5 +1,7 @@
 // Playwright demo for issue #1441.
 //
+// Issue: https://github.com/Subscribie/subscribie/issues/1441
+//
 // The bug was in `subscribie/notifications.py` — a Stripe webhook with a null
 // billing_details.name caused `subscriber_name.split(' ')` to raise
 // AttributeError, so the subscriber never received the "your payment failed"
@@ -13,6 +15,9 @@
 // Runs with:
 //   PLAYWRIGHT_HOST=http://127.0.0.1:5000/ PLAYWRIGHT_HEADLESS=true \
 //     npx playwright test 1441_payment_failed_notification_fix.spec.js
+//
+// Output lands in ./artifacts-1441/ (gitignored) so the binaries are never
+// committed. Attach them to the PR as comment uploads instead.
 import { test, expect } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';

@@ -1,8 +1,11 @@
 """Regression tests for issue #1441.
 
+Issue: https://github.com/Subscribie/subscribie/issues/1441
+
 The bug: when Stripe sends a ``payment_intent.payment_failed`` webhook for a
 charge whose ``billing_details.name`` is ``None``, the notifier used to crash
-with ``'NoneType' object has no attribute 'split'`` and the subscriber never
+in ``subscribie/notifications.py`` with
+``'NoneType' object has no attribute 'split'`` and the subscriber never
 received the "your payment failed" email at all.
 
 These tests exercise the notifier directly with the boundary inputs Stripe can
