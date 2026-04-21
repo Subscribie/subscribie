@@ -109,11 +109,21 @@ def subscriberPaymentFailedNotification(
     try:
         app = kwargs["app"]
         with app.app_context():
+            if not subscriber_email:
+                log.error(
+                    "Cannot send subscriberPaymentFailedNotification: "
+                    "subscriber_email is missing from the Stripe event "
+                    "(billing_details.email was None)."
+                )
+                return
             company = Company.query.first()
             kwargs["company"] = company
             kwargs["subscriber_email"] = subscriber_email
             kwargs["subscriber_name"] = subscriber_name
-            kwargs["subscriber_first_name"] = subscriber_name.split(" ")[0]
+            if subscriber_name:
+                kwargs["subscriber_first_name"] = subscriber_name.split(" ")[0]
+            else:
+                kwargs["subscriber_first_name"] = None
             kwargs["failure_message"] = failure_message
             kwargs["failure_code"] = failure_code
             kwargs["subscriber_login_url"] = (
