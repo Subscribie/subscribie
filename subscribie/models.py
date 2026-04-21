@@ -408,6 +408,11 @@ class Subscription(database.Model, HasCreatedAt):
     stripe_external_id = database.Column(database.String())
     stripe_status = database.Column(database.String())
     stripe_ended_at = database.Column(database.Integer(), nullable=True)
+    # Populated from Stripe's cancellation_details.reason on
+    # customer.subscription.deleted events. Stripe returns one of
+    # "cancellation_requested", "payment_failed", or "payment_disputed".
+    # See https://docs.stripe.com/api/subscriptions/object#subscription_object-cancellation_details-reason  # noqa: E501
+    stripe_cancellation_reason = database.Column(database.String(), nullable=True)
 
     # stripe_cancel_at is the 'live' setting (which may change)
     # and must be checked via cron/webhooks. Plan.cancel_at allows

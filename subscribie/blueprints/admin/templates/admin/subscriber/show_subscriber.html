@@ -226,6 +226,30 @@
                 {% endif %}
                 {% if subscription.transactions|length > 0 %}<a href="{{ url_for('admin.refresh_subscription', subscription_uuid=subscription.uuid, person_id=person.id) }}">(Refresh)</a>{% endif %}
                 <br />
+                {% if subscription.stripe_status == 'canceled' %}
+                <strong>Cancellation reason:</strong>
+                <span class="subscription-cancellation-reason">
+                {% if subscription.stripe_cancellation_reason == 'payment_failed' %}
+                  Payment failed
+                  <details style="display: inline">
+                    <summary><em><small>explain</small></em></summary>
+                    <div class="alert alert-info">
+                      <p>Multiple attempts to collect payment failed, so Stripe automatically
+                        cancelled the subscription.</p>
+                    </div>
+                  </details>
+                {% elif subscription.stripe_cancellation_reason == 'cancellation_requested' %}
+                  Cancellation requested
+                {% elif subscription.stripe_cancellation_reason == 'payment_disputed' %}
+                  Payment disputed
+                {% elif subscription.stripe_cancellation_reason %}
+                  {{ subscription.stripe_cancellation_reason }}
+                {% else %}
+                  Unknown
+                {% endif %}
+                </span>
+                <br />
+                {% endif %}
                 <strong>Payment Collection Status:</strong>
                   {% if subscription.plan.requirements and subscription.plan.requirements.subscription %}
                      {% if subscription.stripe_pause_collection == "keep_as_draft" %}
