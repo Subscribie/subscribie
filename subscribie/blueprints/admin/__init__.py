@@ -385,6 +385,61 @@ def stripe_create_charge():
 
 
 @background_task
+def do_delete_stripe_subscription(
+    subscription_id, app=None
+):
+    """Stop (delete) stripe_subscription via its
+    Stripe subscription_id
+    """
+    with app.app_context():
+        stripe.api_key = get_stripe_secret_key()
+        connect_account_id = get_stripe_connect_account_id()
+        subscription = Subscription.query.filter_by(
+            stripe_subscription_id=subscription_id
+        ).first()
+
+        log.info(f"Deleting (stopping) Strip subscription {subscription_id}")
+        if subscription_id is None:
+            log.error("subscription_id cannot be None")
+            return False
+        try:
+            try:
+                stripe_subscription = stripe.Subscription.retrieve(
+                    subscription_id, stripe_account=connect_account_id
+                )
+
+                stripe.Subscription.delete(
+                    subscription_id, stripe_account=connect_account_id
+                )
+                log.debug(f"Subscription deleted ({subscription_id})")
+
+                # instead of inserting cancel directly into the db,
+                # it refresh status after cancellation
+                update_stripe_subscription_statuses()
+                flash("Subscription cancelled")
+
+            except stripe._error.InvalidRequestError as e:
+                if e.code == "resource_missing":
+                    msg = (
+                        "stripe subscription id: "
+                        f"{subscription_id} does not exist "
+                        f"for account {connect_account_id}. "
+                        "perhaps show owner has switched from test mode "
+                        "to live mode and has a new stripe connect account"
+                    )
+                    log.warning(msg)
+                    subscription.stripe_status = "resource_missing"
+                    database.session.commit()
+                msg = f"Error could not retrieve subscription ({subscription_id}) to stop (is it deleted already?)"  # noqa: E501
+                log.error(f"{msg}. {e}")
+                return False
+        except Exception as e:
+            msg = f"Error deleting subscription ({subscription_id})"
+            log.error(f"{msg}. {e}")
+            raise
+
+
+@background_task
 def do_pause_stripe_subscription_payment_collection(
     subscription_id, pause_collection_behavior="keep_as_draft", app=None
 ):
@@ -481,6 +536,24 @@ def do_pause_all_stripe_subscriptions(app=None):
                     f"Error trying to pause subscription {subscription.uuid}. Error: {e}"  # noqa: E501
                 )
 
+@background_task
+def do_stop_all_stripe_subscriptions(app=None):
+    # For each Subscription object, get it's Stripe subscription
+    # object and stop it using stop_stripe_subscription.
+    with app.app_context():
+        subscriptions = Subscription.query.all()
+        for subscription in subscriptions:
+            log.debug(f"Attempting to stop subscription {subscription.uuid}")
+            stripe_subscription_id = subscription.stripe_subscription_id
+            try:
+                do_delete_stripe_subscription(
+                    stripe_subscription_id, app=current_app
+                )
+            except Exception as e:
+                log.error(
+                    f"Error trying to stop subscription {subscription.uuid}. Error: {e}"  # noqa: E501
+                )
+
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/pause")
 @login_required
@@ -519,6 +592,14 @@ def pause_all_subscribers_subscriptions():
     """Bulk action to pause all subscriptions in the shop"""
     do_pause_all_stripe_subscriptions()  # Background task
     return """All payment collections are being paused in the background. You can move away from this page."""  # noqa: E501
+
+
+@admin.route("/stripe/subscriptions/all/actions/stop")
+@login_required
+def stop_all_subscribers_subscriptions():
+    """Bulk action to stop all subscriptions in the shop"""
+    do_stop_all_stripe_subscriptions()  # Background task
+    return """All subscriptions are being stopped in the background. You can move away from this page."""  # noqa: E501
 
 
 @admin.route("/stripe/subscriptions/<subscription_id>/actions/resume")

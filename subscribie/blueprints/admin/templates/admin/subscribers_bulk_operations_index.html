@@ -17,7 +17,7 @@
 <main>
   <div class="section">
     <div class="container">
-      {% if 'confirm' not in request.args %}
+      {% if 'confirm' not in request.args and 'confirm_stop_all_subscriptions' not in request.args %}
       <div class="col-md-12">
         <p>These bulk operations effect <em>all</em> Subscribers in your shop. This can save you time, for example,
           if you want to pause payment collection from every subscriber in your shop.</p>
@@ -31,6 +31,37 @@
         <div class="">
           <a href="{{ url_for('admin.subscribers_bulk_operations_index', confirm=0) }}" class="btn btn-danger">
             Pause payment collection for every Subscription in this Shop
+          </a>
+        </div>
+      </div>
+      <hr />
+      <div class="col-md-12">
+        <h3>Stop all Subscriptions</h3>
+        <p>Stop <em>permanently</em> all current Subscriptions in this shop. Stopped Subscriptions cannot be re-started. Invoices are no longer raised
+          for stopped subscriptions. </p>
+        <p>If you intend to resume payment collection for <a href=""></a> Subscription at a later date, then you should pause
+          the subscription rather than stop them.
+        </p>
+        <div class="">
+          <a href="{{ url_for('admin.subscribers_bulk_operations_index', confirm_stop_all_subscriptions=0) }}" class="btn btn-danger">
+            Stop permanently every Subscription in this Shop
+          </a>
+        </div>
+      </div>
+
+      {% elif 'confirm_stop_all_subscriptions' in request.args %}
+      <div class="col-md-12">
+        <h3>Are you sure you want to cancel <em>all</em> Subscriptions for every Subscriber?</h3>
+        <p>Once cancelled, no payment collections will take place, and no future invoices will be generated for those
+          Subscriptions.
+        </p>
+        <p>This shop currently has {{ num_active_subscribers }} active <a href="{{ url_for('admin.subscribers', action='show_active') }}">subscriptions</a>.</p>
+        <div class="">
+          <a href="{{ url_for('admin.stop_all_subscribers_subscriptions', confirm=1) }}" class="btn btn-danger">
+            <span class="cancel-yes">Yes</span>
+          </a>
+          <a href="{{ url_for('admin.subscribers_bulk_operations_index') }}" class="btn btn-success">
+            <span class="cancel-no">No</span>
           </a>
         </div>
       </div>
