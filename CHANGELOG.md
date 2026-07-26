@@ -1,3 +1,15 @@
+# v0.1.257 (Sun Jul 26 2026)
+
+#### 🐛 Bug Fix
+
+- Fix #1491 as a shop owner I can bulk stop all subscriptions in my shop [#1493](https://github.com/Subscribie/subscribie/pull/1493) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.256 (Tue Apr 21 2026)
 
 
