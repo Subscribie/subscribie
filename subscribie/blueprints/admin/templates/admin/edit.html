@@ -22,8 +22,8 @@
       <div class="alert alert-danger col-md-6 mx-auto">
         <p><strong class="alert-heading">Oops, something is missing. Please take a look at:</strong></p>
         <ul class=errors>
-          {% for error in form.errors %}
-          <li>{{ error }}</li>
+          {% for error in validation_errors %}
+          <li style="list-style: disc;">{{ error }}</li>
           {% endfor %}
         </ul>
       </div>
@@ -51,7 +51,7 @@
           <div class="accordion col-lg-8 mx-auto mb-3" id="accordionExample">
             {% for plan in plans %}
             <div class="card">
-              <div class="card-header" id="{{ plan.uuid }}">
+              <div class="card-header{% if plan.has_errors %} alert-danger {% endif %}" id="{{ plan.uuid }}">
                   <button class="btn btn-link btn-block text-left" type="button"  data-toggle="collapse" data-target="#collapse-{{ plan.uuid }}" aria-expanded="false" aria-controls="collapse-{{ plan.uuid }}">{{ plan.title }}</button>
               </div>
               <div id="collapse-{{ plan.uuid }}" class="collapse" aria-labelledby="{{ plan.uuid }}">
@@ -197,8 +197,7 @@
                       <div class="form-group ">
                         <div class="form-check">
                           <input type="hidden" class="note_to_seller_required-check" data-id="{{ loop.index0 }}" name="note_to_seller_required-{{ loop.index0 }}" value="no">
-                          <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}" {% if plan.requirements.note_to_seller_required %} checked
-                            {% endif %}>
+                          <input type="checkbox" value="yes" class="form-check-input toggle" name="note_to_seller_required-{{ loop.index0 }}" id="note_to_seller_required-{{ loop.index0 }}" {% if plan.requirements.note_to_seller_required or plan.requirements.note_to_buyer_message | trim != "" %} checked {% endif %}>
                           <label class="form-check-label font-weight-bolder" for="note_to_seller_required-{{ loop.index0 }}">Require customer note</label>
                         </div>
                         <small class="form-text text-muted">
@@ -208,7 +207,11 @@
 
                       <div class="form-group extra_fields" id="message">
                         <label for="note_to_buyer_message-{{ loop.index0 }}" class="col-form-label font-weight-bolder">Message for the customer</label>
-                        <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}">{{ plan.requirements.note_to_buyer_message }} </textarea>
+                        {% if form.note_to_buyer_message.errors[loop.index0] %}
+                            <br />
+                            <em>{{ form.note_to_buyer_message.errors[loop.index0][0] }}</em>
+                        {% endif %}
+                        <textarea class="form-control" id="note_to_buyer_message-{{ loop.index0 }}" name="note_to_buyer_message-{{ loop.index0 }}" maxlength="500" {% if form.note_to_buyer_message.errors[loop.index0] %} style="border: 3px solid red;" {% endif %}>{{ plan.requirements.note_to_buyer_message }}</textarea>
                         <small class="form-text text-muted">
                           This message will be shown during checkout to the customer
                         </small>
