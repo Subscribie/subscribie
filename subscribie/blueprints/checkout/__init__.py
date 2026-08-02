@@ -1006,6 +1006,13 @@ def stripe_webhook():
                 "Unable to locate subscription associated with event customer.subscription.deleted"  # noqa: E501
             )
 
+        if subscription is not None:
+            subscription.stripe_cancellation_reason = cancellation_reason
+            if eventObj.get("ended_at") is not None:
+                subscription.stripe_ended_at = eventObj["ended_at"]
+            subscription.stripe_status = eventObj.get("status", "canceled")
+            database.session.commit()
+
         if person is not None:
             subject = (
                 f"{company.name}: A Subscription has ended for: {person.given_name}"

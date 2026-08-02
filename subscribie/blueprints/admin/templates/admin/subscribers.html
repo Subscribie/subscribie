@@ -259,6 +259,52 @@
                                     <li>
                                       <strong>Date ended at:</strong> {{ subscription.stripe_ended_at | timestampToDate }}
                                     </li>
+                                    <li>
+                                      <strong>Cancellation reason:</strong>
+                                      <span class="subscription-cancellation-reason">
+                                      {% if subscription.stripe_cancellation_reason == 'payment_failed' %}
+                                        Payment failed
+                                        <details style="display: inline">
+                                          <summary><em><small>explain</small></em></summary>
+                                          <div class="alert alert-info">
+                                            <p>Multiple attempts to collect payment failed, so Stripe automatically
+                                              cancelled the subscription.</p>
+                                            <p>Consider reaching out to the subscriber to resolve.</p>
+                                          </div>
+                                        </details>
+                                      {% elif subscription.stripe_cancellation_reason == 'cancellation_requested' %}
+                                        Cancellation requested
+                                        <details style="display: inline">
+                                          <summary><em><small>explain</small></em></summary>
+                                          <div class="alert alert-info">
+                                            <p>The subscription was cancelled on request (either by you via the
+                                              dashboard, or by the subscriber).</p>
+                                          </div>
+                                        </details>
+                                      {% elif subscription.stripe_cancellation_reason == 'payment_disputed' %}
+                                        Payment disputed
+                                        <details style="display: inline">
+                                          <summary><em><small>explain</small></em></summary>
+                                          <div class="alert alert-info">
+                                            <p>The subscription was cancelled because the subscriber disputed
+                                              a payment (chargeback).</p>
+                                          </div>
+                                        </details>
+                                      {% elif subscription.stripe_cancellation_reason %}
+                                        {{ subscription.stripe_cancellation_reason }}
+                                      {% else %}
+                                        Unknown
+                                        <details style="display: inline">
+                                          <summary><em><small>explain</small></em></summary>
+                                          <div class="alert alert-info">
+                                            <p>No cancellation reason has been recorded for this subscription yet.
+                                              Click <em>Refresh Status</em> to fetch the latest information from
+                                              Stripe.</p>
+                                          </div>
+                                        </details>
+                                      {% endif %}
+                                      </span>
+                                    </li>
                                     {% endif %}
                                     <li>
                                     </li>

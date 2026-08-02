@@ -51,6 +51,13 @@ def update_stripe_subscription_status(subscription_uuid):
             # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
             if stripeSubscription.ended_at is not None:
                 subscription.stripe_ended_at = stripeSubscription.ended_at
+            cancellation_details = getattr(
+                stripeSubscription, "cancellation_details", None
+            )
+            if cancellation_details is not None:
+                subscription.stripe_cancellation_reason = getattr(
+                    cancellation_details, "reason", None
+                )
             log.info(subscription.stripe_status)
             log.info(subscription.stripe_subscription_id)
             database.session.commit()
@@ -126,6 +133,13 @@ def update_stripe_subscription_statuses(app):
                         # Update stripeSubscription.ended_at if stripe subscription has ended  # noqa: E501
                         if stripeSubscription.ended_at is not None:
                             subscription.stripe_ended_at = stripeSubscription.ended_at
+                        cancellation_details = getattr(
+                            stripeSubscription, "cancellation_details", None
+                        )
+                        if cancellation_details is not None:
+                            subscription.stripe_cancellation_reason = getattr(
+                                cancellation_details, "reason", None
+                            )
                         log.info(subscription.stripe_status)
                         log.info(subscription.stripe_subscription_id)
                         database.session.commit()
