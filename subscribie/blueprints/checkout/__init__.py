@@ -519,8 +519,11 @@ def stripe_create_checkout_session():
                 subscription_data["trial_period_days"] = plan.trial_period_days
 
         if plan.requirements.instant_payment:
+            calculated_instant_fee = int(charge["sell_price"] * 0.025) + 40
+            if calculated_instant_fee > charge["sell_price"]:
+                calculated_instant_fee = charge["sell_price"]
             payment_intent_data = {
-                "application_fee_amount": 40,
+                "application_fee_amount": calculated_instant_fee,
                 "metadata": {"is_donation": is_donation, "person_uuid": person.uuid},
             }
         if plan.requirements.subscription:
