@@ -661,6 +661,7 @@ def refund_stripe_subscription(payment_id):
         try:
             stripe_refund = stripe.Refund.create(
                 payment_intent=payment_id,
+                refund_application_fee=True,
                 stripe_account=connect_account_id,
             )
             if Transaction.query.filter_by(external_id=payment_id).first() is None:
