@@ -499,8 +499,16 @@ def stripe_create_checkout_session():
         )
 
         if plan.requirements.subscription:
+            calculated_fee = int(charge["interval_amount"] * 0.025) + 40
+            if calculated_fee > charge["interval_amount"]:
+                calculated_fee = charge["interval_amount"]
+            fee_percent = (
+                round((calculated_fee / charge["interval_amount"]) * 100, 2)
+                if charge["interval_amount"] > 0
+                else 2.5
+            )
             subscription_data = {
-                "application_fee_percent": 2.5,
+                "application_fee_percent": fee_percent,
                 "metadata": {
                     "person_uuid": person.uuid,
                     "plan_uuid": session["plan"],
