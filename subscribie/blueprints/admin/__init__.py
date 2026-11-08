@@ -341,7 +341,10 @@ def stripe_create_charge():
             amount=amount,
             currency=currency,
             payment_method_types=["card"],
-            application_fee_amount=int(amount * 0.025) + 40,
+            application_fee_amount=int(
+                amount * setting.get("SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE")
+            )
+            + setting.get("SUBSCRIBIE_FIXED_FEE_PENCE_INT"),
             customer=customer,
             description=statement_descriptor_suffix,
             statement_descriptor_suffix=statement_descriptor_suffix,
@@ -385,9 +388,7 @@ def stripe_create_charge():
 
 
 @background_task
-def do_delete_stripe_subscription(
-    subscription_id, app=None
-):
+def do_delete_stripe_subscription(subscription_id, app=None):
     """Stop (delete) stripe_subscription via its
     Stripe subscription_id
     """
@@ -536,6 +537,7 @@ def do_pause_all_stripe_subscriptions(app=None):
                     f"Error trying to pause subscription {subscription.uuid}. Error: {e}"  # noqa: E501
                 )
 
+
 @background_task
 def do_stop_all_stripe_subscriptions(app=None):
     # For each Subscription object, get it's Stripe subscription
@@ -546,9 +548,7 @@ def do_stop_all_stripe_subscriptions(app=None):
             log.debug(f"Attempting to stop subscription {subscription.uuid}")
             stripe_subscription_id = subscription.stripe_subscription_id
             try:
-                do_delete_stripe_subscription(
-                    stripe_subscription_id, app=current_app
-                )
+                do_delete_stripe_subscription(stripe_subscription_id, app=current_app)
             except Exception as e:
                 log.error(
                     f"Error trying to stop subscription {subscription.uuid}. Error: {e}"  # noqa: E501

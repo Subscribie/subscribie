@@ -1,5 +1,16 @@
 import strictyaml
-from strictyaml import load, Map, Email, Str, Url, Int, Bool, Regex, CommaSeparated
+from strictyaml import (
+    load,
+    Map,
+    Email,
+    Float,
+    Str,
+    Url,
+    Int,
+    Bool,
+    Regex,
+    CommaSeparated,
+)
 import os
 
 # Load application settings according to schema
@@ -9,6 +20,7 @@ import os
 schema = Map(
     {
         "FLASK_ENV": Str(),
+        "SENTRY_ENABLED": Bool(),
         "SENTRY_SDK_DSN": Str(),
         "SENTRY_SDK_SESSION_REPLAY_ID": Str(),
         "SAAS_URL": Url(),
@@ -67,6 +79,8 @@ schema = Map(
         "SUBSCRIBER_EMAIL_USER": Email(),
         "SUBSCRIBER_EMAIL_PASSWORD": Str(),
         "RESET_PASSWORD_IMAP_SEARCH_SUBJECT": Str(),  # Example: "Password Reset"
+        "SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE": Float(),  # Example: 0.025
+        "SUBSCRIBIE_FIXED_FEE_PENCE_INT": Int(),  # Example: 40
     }
 )
 
