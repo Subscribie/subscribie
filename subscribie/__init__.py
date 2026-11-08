@@ -27,16 +27,17 @@ from flask import (
     abort,
 )
 
-sentry_sdk.init(
-    dsn=settings.get("SENTRY_SDK_DSN"),
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for tracing.
-    traces_sample_rate=1.0,
-    # Set profiles_sample_rate to 1.0 to profile 100%
-    # of sampled transactions.
-    # We recommend adjusting this value in production.
-    profiles_sample_rate=1.0,
-)
+if settings.get("SENTRY_ENABLED"):
+    sentry_sdk.init(
+        dsn=settings.get("SENTRY_SDK_DSN"),
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for tracing.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
 from flask_babel import Babel, _
 from subscribie.email import EmailMessageQueue
 from .Template import load_theme

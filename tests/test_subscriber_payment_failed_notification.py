@@ -11,6 +11,7 @@ received the "your payment failed" email at all.
 These tests exercise the notifier directly with the boundary inputs Stripe can
 produce in the wild.
 """
+
 import logging
 from unittest.mock import MagicMock, patch
 
@@ -26,10 +27,12 @@ def _call_with_mocks(app, **kwargs):
     setting.reply_to_email_address = None
     user = MagicMock()
     user.email = "admin@example.com"
-    with patch("subscribie.notifications.EmailMessageQueue") as mq, \
-            patch("subscribie.notifications.Company") as company_cls, \
-            patch("subscribie.notifications.Setting") as setting_cls, \
-            patch("subscribie.notifications.User") as user_cls:
+    with (
+        patch("subscribie.notifications.EmailMessageQueue") as mq,
+        patch("subscribie.notifications.Company") as company_cls,
+        patch("subscribie.notifications.Setting") as setting_cls,
+        patch("subscribie.notifications.User") as user_cls,
+    ):
         company_cls.query.first.return_value = company
         setting_cls.query.first.return_value = setting
         user_cls.query.first.return_value = user
@@ -65,9 +68,7 @@ def test_none_subscriber_email_is_logged_and_skipped(app, caplog):
             failure_code="card_declined",
         )
     assert not mq.return_value.queue.called
-    assert any(
-        "subscriber_email is missing" in r.message for r in caplog.records
-    )
+    assert any("subscriber_email is missing" in r.message for r in caplog.records)
 
 
 def test_happy_path_still_queues_email(app):

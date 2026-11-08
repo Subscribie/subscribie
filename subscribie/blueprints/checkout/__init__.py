@@ -10,6 +10,7 @@ from flask import (
     jsonify,
     current_app,
 )
+from subscribie.settings import settings
 from subscribie.models import (
     User,
     Plan,
@@ -446,8 +447,8 @@ def stripe_create_checkout_session():
 
     currency_code = get_geo_currency_code()
     # If VAT tax is enabled, get stripe tax id
-    settings = Setting.query.first()
-    charge_vat = settings.charge_vat
+    setting = Setting.query.first()
+    charge_vat = setting.charge_vat
     create_stripe_tax_rate()
     tax_rate = (
         TaxRate.query.filter_by(stripe_livemode=get_stripe_livemode())
@@ -499,8 +500,21 @@ def stripe_create_checkout_session():
         )
 
         if plan.requirements.subscription:
+            pct = settings.get("SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE")
+            fixed_fee = settings.get("SUBSCRIBIE_FIXED_FEE_PENCE_INT")
+            recurring_amount = charge["interval_amount"]
+            if recurring_amount > 0:
+                target_fee = int(recurring_amount * pct) + fixed_fee
+                if target_fee > recurring_amount:
+                    target_fee = recurring_amount
+                effective_percent = min(
+                    round((target_fee / recurring_amount) * 100, 2), 100.0
+                )
+            else:
+                effective_percent = pct * 100
+
             subscription_data = {
-                "application_fee_percent": 2.5,
+                "application_fee_percent": effective_percent,
                 "metadata": {
                     "person_uuid": person.uuid,
                     "plan_uuid": session["plan"],
@@ -518,11 +532,21 @@ def stripe_create_checkout_session():
             if plan.trial_period_days > 0:
                 subscription_data["trial_period_days"] = plan.trial_period_days
 
-        if plan.requirements.instant_payment:
+        if (
+            plan.requirements.instant_payment
+            and plan.requirements.subscription is False
+        ):
+            calculated_instant_fee = int(
+                charge["sell_price"]
+                * settings.get("SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE")
+            ) + settings.get("SUBSCRIBIE_FIXED_FEE_PENCE_INT")
+            if calculated_instant_fee > charge["sell_price"]:
+                calculated_instant_fee = charge["sell_price"]
             payment_intent_data = {
-                "application_fee_amount": 40,
+                "application_fee_amount": calculated_instant_fee,
                 "metadata": {"is_donation": is_donation, "person_uuid": person.uuid},
             }
+
         if plan.requirements.subscription:
             mode = "subscription"
 
@@ -1075,9 +1099,12 @@ def stripe_webhook():
                 )
                 return "OK", 200
             if invoice.get("status") == "draft" and invoice.get("subscription"):
-                # Calculate the 2.5% + 40p application fee
+                # Calculate the application fee
                 # invoice["total"] is in the smallest currency unit (e.g. pence)
-                calculated_fee = int(invoice["total"] * 0.025) + 40
+                calculated_fee = int(
+                    invoice["total"]
+                    * settings.get("SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE")
+                ) + settings.get("SUBSCRIBIE_FIXED_FEE_PENCE_INT")
 
                 # Stripe does not allow the application fee to exceed the total
                 # invoice amount
