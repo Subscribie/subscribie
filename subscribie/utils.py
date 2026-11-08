@@ -180,6 +180,14 @@ def create_stripe_connect_account(company, country_code=None, default_currency=N
             "card_payments": {"requested": True},
             "transfers": {"requested": True},
         },
+        settings={
+            "payouts": {
+                "schedule": {
+                    "interval": "weekly",
+                    "weekly_anchor": "friday",
+                }
+            }
+        },
     )
 
     return account
