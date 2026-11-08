@@ -15,7 +15,9 @@ def test_create_stripe_connect_account_configures_weekly_payouts(app):
         g.user = MagicMock()
         g.user.email = "shopowner@example.com"
 
-        with patch("subscribie.utils.get_stripe_secret_key", return_value="sk_test_123"):
+        with patch(
+            "subscribie.utils.get_stripe_secret_key", return_value="sk_test_123"
+        ):
             with patch("subscribie.utils.stripe.Account.create") as mock_account_create:
                 mock_account_create.return_value = MagicMock(id="acct_1WeeklyTest")
 

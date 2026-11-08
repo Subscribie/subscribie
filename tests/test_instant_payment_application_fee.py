@@ -135,7 +135,9 @@ def test_instant_payment_application_fee_capped_at_total(
 
         assert response.status_code == 200
         call_kwargs = mock_session_create.call_args[1]
-        assert call_kwargs["payment_intent_data"]["application_fee_amount"] == expected_fee
+        assert (
+            call_kwargs["payment_intent_data"]["application_fee_amount"] == expected_fee
+        )
 
 
 def test_subscription_application_fee_percent_calculation(
@@ -181,14 +183,25 @@ def test_subscription_application_fee_percent_calculation(
     database.session.add(sub)
     database.session.commit()
 
-    SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE = settings.get("SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE")
+    SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE = settings.get(
+        "SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE"
+    )
     SUBSCRIBIE_FIXED_FEE_PENCE_INT = settings.get("SUBSCRIBIE_FIXED_FEE_PENCE_INT")
     # Target fee example: If SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE was 0.025 and
     # SUBSCRIBIE_FIXED_FEE_PENCE_INT was 40:
     # int(interval_amount * SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE) + SUBSCRIBIE_FIXED_FEE_PENCE_INT = 14 + 40 = 54
     # Effective percent: round((54 / 599) * 100, 2) = 9.02
-    expected_fee_percent = round(((int(interval_amount * SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE) + SUBSCRIBIE_FIXED_FEE_PENCE_INT) / interval_amount) * 100, 2) 
-    
+    expected_fee_percent = round(
+        (
+            (
+                int(interval_amount * SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE)
+                + SUBSCRIBIE_FIXED_FEE_PENCE_INT
+            )
+            / interval_amount
+        )
+        * 100,
+        2,
+    )
 
     with client.session_transaction() as sess:
         sess["email"] = person.email
@@ -285,8 +298,4 @@ def test_subscription_with_instant_payment_does_not_pass_payment_intent_data(
         assert call_kwargs["mode"] == "subscription"
         assert "payment_intent_data" not in call_kwargs
         assert "subscription_data" in call_kwargs
-        assert (
-            call_kwargs["subscription_data"]["application_fee_percent"]
-            == 9.02
-        )
-
+        assert call_kwargs["subscription_data"]["application_fee_percent"] == 9.02
