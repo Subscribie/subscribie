@@ -1,3 +1,17 @@
+# v0.1.258 (Sat Nov 14 2026)
+
+#### 🐛 Bug Fix
+
+- black format [#1496](https://github.com/Subscribie/subscribie/pull/1496) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- #1464 Introduce effective_percent application charge for both up-front only, subscription and mix plan types and settings SUBSCRIBIE_APPLICATION_FEE_DECIMAL_PERCENTAGE SUBSCRIBIE_FIXED_FEE_PENCE_INT , SENTRY_ENABLED [#1496](https://github.com/Subscribie/subscribie/pull/1496) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Fix #1464 calculate 2.5% + 40p application fee for instant payments at checkout [#1496](https://github.com/Subscribie/subscribie/pull/1496) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.257 (Sun Jul 26 2026)
 
 #### 🐛 Bug Fix
