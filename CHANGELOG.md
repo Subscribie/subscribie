@@ -1,3 +1,15 @@
+# v0.1.259 (Sun Nov 15 2026)
+
+#### 🐛 Bug Fix
+
+- Fix #1497 settings.py validator updated to also be source of truth for examples [#1498](https://github.com/Subscribie/subscribie/pull/1498) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.1.258 (Sat Nov 14 2026)
 
 #### 🐛 Bug Fix
